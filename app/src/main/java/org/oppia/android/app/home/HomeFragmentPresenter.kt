@@ -194,8 +194,8 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ALL_TOPICS,
         inflateDataBinding = AllTopicsBinding::inflate,
-        setViewModel = { binding ->
-          AllTopicsBinding::setViewModel.invoke(binding)
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
           // Request spotlight against the All Topics header for all users.
           binding.allTopicsTextView?.let { headerView ->
             val manager = fragment.childFragmentManager.findFragmentByTag(

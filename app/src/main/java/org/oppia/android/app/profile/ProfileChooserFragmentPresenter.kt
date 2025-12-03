@@ -115,7 +115,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
     logProfileChooserEvent()
 
-    // Request admin controls spotlight (icon/text area) when laid out.
+    // Request admin controls spotlight (use icon as the single anchor) when laid out.
     binding.profileSelectionSettingIcon?.let { iconView ->
       getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
         SpotlightTarget(
@@ -127,29 +127,20 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
-    binding.profileSelectionAdminControlsText?.let { textView ->
-      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
-        SpotlightTarget(
-          anchor = textView,
-          hint = resourceHandler.getStringInLocale(
-            R.string.profile_chooser_spotlight_admin_controls
-          ),
-          feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
-        )
-      )
-    }
 
-    // Request add-learner FAB spotlight when laid out.
+    // Request add-learner FAB spotlight when laid out and visible.
     binding.addProfileButton?.let { fab ->
-      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
-        SpotlightTarget(
-          anchor = fab,
-          hint = resourceHandler.getStringInLocale(
-            R.string.profile_chooser_spotlight_add_learner
-          ),
-          feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+      if (fab.visibility == View.VISIBLE) {
+        getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
+          SpotlightTarget(
+            anchor = fab,
+            hint = resourceHandler.getStringInLocale(
+              R.string.profile_chooser_spotlight_add_learner
+            ),
+            feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+          )
         )
-      )
+      }
     }
 
     binding.apply {
@@ -331,7 +322,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun getSpotlightManager(): SpotlightManager? {
-    return fragment.childFragmentManager.findFragmentByTag(
+    return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as? SpotlightManager
   }

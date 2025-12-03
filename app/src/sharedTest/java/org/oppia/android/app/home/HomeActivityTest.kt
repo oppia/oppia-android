@@ -2080,6 +2080,34 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenNotSeen_showsHint() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    // Launch HomeActivity directly for admin profile 0.
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeSpotlight_allTopicsHeader_whenMarkedSeen_notShown() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    dataProviderTestMonitor.waitForNextSuccessfulResult(
+      spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER)
+    )
+
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.home_all_topics_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
