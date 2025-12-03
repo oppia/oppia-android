@@ -1,11 +1,17 @@
 package org.oppia.android.app.administratorcontrols
 
+import android.app.Dialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -69,6 +75,9 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       this.viewModel = administratorControlsViewModel
       this.lifecycleOwner = fragment
     }
+
+    // TODO(4938): Only show this dialog on the first visit.
+    fragment.requireContext().showDialog()
 
     return binding.root
   }
@@ -186,6 +195,26 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       APP_VERSION_FRAGMENT -> 4
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
+  }
+
+  private fun Context.showDialog() {
+    val dialog = Dialog(this)
+
+    val composeView = ComposeView(this).apply {
+      ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
+      ViewTreeViewModelStoreOwner.set(this, fragment)
+      ViewTreeSavedStateRegistryOwner.set(this, fragment)
+
+      setContent {
+        AdministratorControlsDialog(
+          onDismiss = { dialog.dismiss() }
+        )
+      }
+    }
+
+    dialog.setContentView(composeView)
+    dialog.setCancelable(true)
+    dialog.show()
   }
 
   private enum class ViewType {
