@@ -190,7 +190,8 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_constraint_layout))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
       onView(withId(R.id.add_profile_activity_pin_edit_text)).check(matches(isDisplayed()))
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .check(matches(isDisplayed()))
     }
   }
 

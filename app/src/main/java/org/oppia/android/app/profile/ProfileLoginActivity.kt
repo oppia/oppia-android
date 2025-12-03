@@ -6,10 +6,10 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ProfileLoginActivityParams
-import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -84,7 +84,6 @@ class ProfileLoginActivity :
           LoginFlow.OPEN_EXISTING_PROFILE.value
         )
       )
-
   }
 
   override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
