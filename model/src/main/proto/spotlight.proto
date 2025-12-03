@@ -43,6 +43,9 @@ message Spotlight {
 
     // Corresponds to the Add Learner Floating Action Button on the profile chooser screen (Onboarding V2).
     SpotlightViewState profile_add_learner_fab = 11;
+
+    // Corresponds to the All Topics header on the Home screen.
+    SpotlightViewState home_all_topics_header = 12;
   }
 }
 
@@ -93,4 +96,7 @@ message SpotlightStateDatabase {
 
   // Corresponds to the Add Learner Floating Action Button on the profile chooser screen (Onboarding V2).
   SpotlightViewState profile_add_learner_fab = 11;
+
+  // Corresponds to the All Topics header on the Home screen.
+  SpotlightViewState home_all_topics_header = 12;
 }

@@ -194,7 +194,24 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ALL_TOPICS,
         inflateDataBinding = AllTopicsBinding::inflate,
-        setViewModel = AllTopicsBinding::setViewModel,
+        setViewModel = { binding ->
+          AllTopicsBinding::setViewModel.invoke(binding)
+          // Request spotlight against the All Topics header for all users.
+          binding.allTopicsTextView?.let { headerView ->
+            val manager = fragment.childFragmentManager.findFragmentByTag(
+              org.oppia.android.app.spotlight.SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+            ) as? org.oppia.android.app.spotlight.SpotlightManager
+            manager?.requestSpotlightViewWithDelayedLayout(
+              org.oppia.android.app.spotlight.SpotlightTarget(
+                anchor = headerView,
+                hint = resourceHandler.getStringInLocale(
+                  org.oppia.android.app.ui.R.string.home_all_topics_spotlight_hint
+                ),
+                feature = org.oppia.android.app.model.Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+              )
+            )
+          }
+        },
         transformViewModel = { it as AllTopicsViewModel }
       )
       .registerViewDataBinder(

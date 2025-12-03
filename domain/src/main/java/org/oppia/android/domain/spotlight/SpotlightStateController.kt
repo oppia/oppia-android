@@ -9,6 +9,7 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+import org.oppia.android.app.model.Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
@@ -98,6 +99,7 @@ class SpotlightStateController @Inject constructor(
           PROFILE_ADMIN_CONTROLS_ITEM -> it.profileAdminControlsItem
           PROFILE_ADMIN_ITEM -> it.profileAdminItem
           PROFILE_ADD_LEARNER_FAB -> it.profileAddLearnerFab
+          HOME_ALL_TOPICS_HEADER -> it.homeAllTopicsHeader
           FEATURE_NOT_SET -> {
             return@transformAsync AsyncResult.Failure(
               SpotlightFeatureNotFoundException("Spotlight feature requested was not found")
@@ -131,6 +133,7 @@ class SpotlightStateController @Inject constructor(
           PROFILE_ADMIN_CONTROLS_ITEM -> this.setProfileAdminControlsItem(viewState)
           PROFILE_ADMIN_ITEM -> this.setProfileAdminItem(viewState)
           PROFILE_ADD_LEARNER_FAB -> this.setProfileAddLearnerFab(viewState)
+          HOME_ALL_TOPICS_HEADER -> this.setHomeAllTopicsHeader(viewState)
           FEATURE_NOT_SET -> {
             throw SpotlightFeatureNotFoundException("Spotlight feature was not found")
           }

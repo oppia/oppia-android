@@ -752,3 +752,4 @@
   <string name="profile_chooser_spotlight_admin_controls">Click here to explore administrator controls</string>
   <string name="profile_chooser_spotlight_admin_profile">Click here to enter your account and explore lessons as a learner</string>
   <string name="profile_chooser_spotlight_add_learner">Click here to create a profile for a learner</string>
+  <string name="home_all_topics_spotlight_hint">Select a Topic to start learning</string>
