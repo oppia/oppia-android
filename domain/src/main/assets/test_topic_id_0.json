@@ -23,5 +23,6 @@
     "thumbnail_filename": "",
     "title": "Test subtopic"
   }],
-  "published": true
+  "published": true,
+  "has_practice_questions": true
 }

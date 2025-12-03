@@ -872,10 +872,12 @@ class EventBundleCreatorTest {
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
-    assertThat(bundle).string("feature_flag_names").isEqualTo("2,3,4,5,6,7,8,10,11,12,13,14,15,0")
+    assertThat(bundle).string("feature_flag_names")
+      .isEqualTo("2,3,4,5,7,8,10,11,12,13,14,15,17,18,0")
     assertThat(bundle).string("feature_flag_enabled_states")
-      .isEqualTo("0,1,0,1,0,1,0,1,0,1,0,1,0,0")
-    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,0,1,2,0,1,2,0,1,2,0,0")
+      .isEqualTo("0,1,0,1,1,0,1,0,1,0,1,0,0,0,0")
+    assertThat(bundle).string("feature_flag_sync_statuses")
+      .isEqualTo("0,1,2,0,2,0,1,2,0,1,2,0,1,1,0")
   }
 
   @Test
@@ -2416,11 +2418,6 @@ class EventBundleCreatorTest {
           this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.id = FeatureFlagId.EXTRA_TOPIC_TABS_UI
-          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-          this.isEnabled = false
-        }.build(),
-        EventLog.FeatureFlagItemContext.newBuilder().apply {
           this.id = FeatureFlagId.DOWNLOADS_SUPPORT
           this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
           this.isEnabled = true
@@ -2458,6 +2455,16 @@ class EventBundleCreatorTest {
         EventLog.FeatureFlagItemContext.newBuilder().apply {
           this.id = FeatureFlagId.MULTIPLE_CLASSROOMS
           this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.TOPIC_INFO_TAB
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.TOPIC_PRACTICE_TAB
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
           this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
