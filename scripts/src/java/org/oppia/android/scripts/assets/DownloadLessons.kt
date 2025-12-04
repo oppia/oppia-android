@@ -136,7 +136,7 @@ import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 fun main(vararg args: String) {
-  check(args.size in 8..9) {
+  check(args.size in 9..10) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
       " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force>" +
       " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]>" +
