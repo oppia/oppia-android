@@ -116,7 +116,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     logProfileChooserEvent()
 
     // Request admin controls spotlight (use icon as the single anchor) when laid out.
-    binding.profileSelectionSettingIcon?.let { iconView ->
+    binding.profileSelectionSettingIcon.let { iconView ->
       getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
         SpotlightTarget(
           anchor = iconView,
@@ -129,7 +129,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
 
     // Request add-learner FAB spotlight when laid out and visible.
-    binding.addProfileButton?.let { fab ->
+    binding.addProfileButton.let { fab ->
       if (fab.visibility == View.VISIBLE) {
         getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
           SpotlightTarget(
