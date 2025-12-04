@@ -52,18 +52,16 @@ class ConceptCardTagHandler(
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 
-
 /** Updated content description logic for accessibility.
- TalkBack must read the skill ID in concept card links(e.g., “test_skill_id_1 concept card.”)
- Previously only the visible text was read, causing TalkBack to skip concept card references in Hint, Solution, and Flashback flows.
- */
+   TalkBack must read the skill ID in concept card links(e.g., “test_skill_id_1 concept card.”)
+   Previously only the visible text was read, causing TalkBack to skip concept card references in Hint, Solution, and Flashback flows.
+   */
   override fun getContentDescription(attributes: Attributes): String? {
     val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
-    return if(!skillId.isNullOrBlank()) {
+    return if (!skillId.isNullOrBlank()) {
       "$skillId concept card."
-    } else  ""
+    } else ""
   }
-
 
   /** Application-injectable factory for creating [ConceptCardTagHandler]s). */
   class Factory @Inject constructor() {
