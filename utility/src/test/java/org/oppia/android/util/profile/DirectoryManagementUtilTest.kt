@@ -128,7 +128,7 @@ class DirectoryManagementUtilTest {
 
     assertThat(success).isTrue()
     assertThat(dir.exists()).isTrue()
-    assertThat(dir.listFiles().isEmpty()).isTrue()
+    assertThat(dir.listFiles()?.isEmpty()).isTrue()
   }
 
   private fun getAbsoluteDirPath(path: String): String {
@@ -167,8 +167,9 @@ class DirectoryManagementUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

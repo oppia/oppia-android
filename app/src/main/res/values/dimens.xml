@@ -36,7 +36,7 @@
 
   <!-- Profile Chooser Fragment -->
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
-  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">20dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>
 
   <!--  Profile Chooser Profile View -->
@@ -387,6 +387,8 @@
 
   <!-- Topic List Item -->
   <dimen name="topic_list_item_margin_top_bottom">12dp</dimen>
+  <dimen name="topic_list_item_text_padding">8dp</dimen>
+  <dimen name="topic_list_item_text_size">14sp</dimen>
 
   <!-- Master Skills Text View -->
   <dimen name="master_skills_text_view_margin_end">88dp</dimen>
@@ -450,9 +452,10 @@
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">28dp</dimen>
-  <dimen name="all_topics_text_margin_top">56dp</dimen>
+  <dimen name="all_topics_text_margin_top">28dp</dimen>
   <dimen name="all_topics_text_margin_end">32dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
+  <dimen name="all_topics_text_size">18dp</dimen>
 
   <!-- Coming Soon -->
   <dimen name="coming_soon_padding_end">16dp</dimen>
@@ -465,6 +468,19 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">4dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">28dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">28dp</dimen>
+  <dimen name="coming_soon_topic_list_header_text_size">18sp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_start">28dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_top">24dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_end">28dp</dimen>
+  <dimen name="coming_soon_topic_list_padding">12dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_start">8dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_end">8dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_bottom">8dp</dimen>
+  <dimen name="coming_soon_topic_card_width">160dp</dimen>
+  <dimen name="coming_soon_topic_card_text_padding">8dp</dimen>
+  <dimen name="coming_soon_topic_card_text_padding_bottom">30dp</dimen>
+  <dimen name="coming_soon_text_padding_horizontal">6dp</dimen>
+  <dimen name="coming_soon_text_padding_vertical">12dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
@@ -509,6 +525,7 @@
   <dimen name="home_outer_margin">28dp</dimen>
   <dimen name="home_welcome_outer_padding">28dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">4dp</dimen>
+  <dimen name="home_welcome_text_size">24sp</dimen>
 
   <!-- These values are getting used only in tablet mode and therefore mentioned as 0dp here -->
   <!-- Profile Progress Header -->
@@ -527,11 +544,23 @@
   <!-- Promoted Story Card -->
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_bottom">8dp</dimen>
+  <dimen name="promoted_story_card_margin_top">8dp</dimen>
+  <dimen name="promoted_story_card_padding_horizontal">16dp</dimen>
+  <dimen name="promoted_story_card_padding_vertical">8dp</dimen>
+  <dimen name="promoted_story_card_elevation">4dp</dimen>
   <!-- The width is set to sp so that it will scale according to the device screen -->
   <dimen name="promoted_story_card_layout_width">280sp</dimen>
   <dimen name="promoted_story_card_width">280sp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
-  <dimen name="promoted_story_card_margin_top">8dp</dimen>
+  <dimen name="promoted_story_card_chapter_title_text_size">18sp</dimen>
+  <dimen name="promoted_story_card_topic_title_text_size">14sp</dimen>
+  <dimen name="promoted_story_card_classroom_title_text_size">14sp</dimen>
+
+  <!-- Topic Card -->
+  <dimen name="topic_card_margin_start">8dp</dimen>
+  <dimen name="topic_card_margin_end">8dp</dimen>
+  <dimen name="topic_card_elevation">4dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">40dp</dimen>
@@ -616,6 +645,31 @@
   <dimen name="profile_rename_activity_profile_rename_input_margin_end">28dp</dimen>
   <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">28dp</dimen>
 
+  <!-- ProfileSelectionFragment -->
+  <dimen name="profile_selection_fragment_header_text_size">20sp</dimen>
+  <dimen name="profile_selection_fragment_nickname_text_size">16sp</dimen>
+  <dimen name="profile_selection_fragment_prompt_text_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_role_text_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_last_login_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_profile_prompt_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_profile_settings_size">14sp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_padding">32dp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_margin">8dp</dimen>
+  <dimen name="profile_selection_fragment_icon_size">48dp</dimen>
+  <dimen name="profile_selection_fragment_view_min_size">48dp</dimen>
+  <dimen name="profile_selection_fragment_prompt_width">48dp</dimen>
+  <dimen name="profile_selection_fragment_icon_padding">4dp</dimen>
+  <dimen name="profile_selection_fragment_settings_icon_margin_start">12dp</dimen>
+  <dimen name="profile_selection_fragment_settings_icon_margin_bottom">12dp</dimen>
+  <dimen name="profile_selection_fragment_add_profile_button_margin_end">12dp</dimen>
+  <dimen name="profile_selection_fragment_add_button_margin_bottom">8dp</dimen>
+  <dimen name="profile_selection_fragment_prompt_margin_bottom">12dp</dimen>
+  <dimen name="profile_selection_fragment_scrollview_margin">72dp</dimen>
+  <dimen name="profile_selection_fragment_header_margin">64dp</dimen>
+
+  <dimen name="profile_item_profile_icon_size">72dp</dimen>
+  <dimen name="profile_item_profile_picture_stroke_width">2dp</dimen>
+
   <!-- SectionTitleFragment -->
   <dimen name="section_title_divider_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_start">28dp</dimen>
@@ -633,6 +687,11 @@
   <!--  PromotedStoryList-->
   <dimen name="promoted_story_list_layout_margin_end">28dp</dimen>
   <dimen name="promoted_story_list_layout_margin_start">28dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_top">24dp</dimen>
+  <dimen name="promoted_story_list_header_text_size">18sp</dimen>
+  <dimen name="promoted_story_list_view_all_text_size">14sp</dimen>
+  <dimen name="promoted_story_list_view_all_padding_start">8sp</dimen>
+  <dimen name="promoted_story_list_padding">12dp</dimen>
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
@@ -675,6 +734,8 @@
   <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_top">12dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_bottom">12dp</dimen>
 
   <!-- AdministratorControls-->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
@@ -773,6 +834,7 @@
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="audio_fragment_progress_indicator_size">20dp</dimen>
   <dimen name="audio_fragment_progress_indicator_track_thickness">3dp</dimen>
+  <dimen name="audio_fragment_title_text_size">24sp</dimen>
 
   <!-- Clickable Item Min width -->
   <dimen name="clickable_item_min_width">144dp</dimen>
@@ -782,13 +844,18 @@
   <dimen name="onboarding_shared_elevation">8dp</dimen>
   <dimen name="onboarding_profile_picture_stroke_width">4dp</dimen>
   <dimen name="onboarding_profile_picture_padding">2dp</dimen>
+
   <dimen name="onboarding_shared_padding_small">4dp</dimen>
+  <dimen name="onboarding_shared_padding_medium">8dp</dimen>
 
   <dimen name="onboarding_shared_text_size_x_small">12sp</dimen>
   <dimen name="onboarding_shared_text_size_small">14sp</dimen>
   <dimen name="onboarding_shared_text_size_medium">16sp</dimen>
   <dimen name="onboarding_shared_text_size_large">20sp</dimen>
   <dimen name="onboarding_shared_text_size_xl">32sp</dimen>
+
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">32dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">12dp</dimen>
 
   <!-- Shared Margins -->
   <dimen name="phone_shared_margin_x_small">4dp</dimen>
@@ -802,4 +869,32 @@
   <dimen name="tablet_shared_margin_medium">16dp</dimen>
   <dimen name="tablet_shared_margin_large">28dp</dimen>
   <dimen name="tablet_shared_margin_xl">36dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">28dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">28dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_list_header_text_size">18sp</dimen>
+  <dimen name="classrooms_card_width">150dp</dimen>
+  <dimen name="classrooms_card_height">182dp</dimen>
+  <dimen name="classrooms_card_collapsed_height">60dp</dimen>
+  <dimen name="classrooms_card_label_text_size">18sp</dimen>
+  <dimen name="classrooms_card_padding_horizontal">16dp</dimen>
+  <dimen name="classrooms_card_padding_vertical">28dp</dimen>
+  <dimen name="classrooms_card_collapsed_padding_vertical">20dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">20dp</dimen>
+  <dimen name="classrooms_card_icon_size">68dp</dimen>
+  <dimen name="classrooms_card_elevation">4dp</dimen>
+  <dimen name="classrooms_card_margin_start">8dp</dimen>
+  <dimen name="classrooms_card_margin_end">0dp</dimen>
+
+  <!-- Flashback Solution -->
+  <dimen name="flashback_solution_summary_card_margin_start">40dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">24dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
+  <dimen name="flashback_solution_summary_label_margin_bottom">12dp</dimen>
+  <dimen name="state_solution_summary_label_margin_bottom">24dp</dimen>
+  <dimen name="flashback_explanation_box_stroke_width">1dp</dimen>
+  <dimen name="state_solution_box_stroke_width">2dp</dimen>
 </resources>

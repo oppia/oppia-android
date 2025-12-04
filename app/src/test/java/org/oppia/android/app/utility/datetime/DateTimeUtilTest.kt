@@ -3,8 +3,8 @@ package org.oppia.android.app.utility.datetime
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -31,7 +31,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -56,14 +57,15 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -74,7 +76,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
@@ -108,20 +109,11 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DateTimeUtilTest.TestApplication::class)
 class DateTimeUtilTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -131,51 +123,68 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnEveningTime_goodEveningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnNightTime_goodEveningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(LATE_NIGHT_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(LATE_NIGHT_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnMorningTime_goodMorningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(MID_MORNING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(MID_MORNING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnEarlyMorningTime_goodMorningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnAfternoonTime_goodAfternoonMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -206,30 +215,62 @@ class DateTimeUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
-      ImageParsingModule::class, AccessibilityTestModule::class,
-      GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
-      QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      AnalyticsStartupListenerTestModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
       GlideImageLoaderModule::class,
-      HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
-      LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
       PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

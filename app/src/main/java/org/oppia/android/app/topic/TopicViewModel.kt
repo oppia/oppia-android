@@ -2,12 +2,12 @@ package org.oppia.android.app.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -26,21 +26,16 @@ class TopicViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : ObservableViewModel() {
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
-    topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId
-    ).toLiveData()
+    topicController.getTopic(profileId, topicId).toLiveData()
   }
 
   private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
     // TODO(#4754): Replace with a mechanism that properly accounts for fully completed stories.
-    topicListController.getPromotedActivityList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    ).toLiveData()
+    topicListController.getPromotedActivityList(profileId).toLiveData()
   }
 
   val numberOfChaptersCompletedLiveData: LiveData<Int> by lazy {
@@ -83,8 +78,14 @@ class TopicViewModel @Inject constructor(
     }
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  val hasPracticeQuestions: LiveData<Boolean> by lazy {
+    Transformations.map(topicLiveData) { ephemeralTopic ->
+      ephemeralTopic.topic.hasPracticeQuestions
+    }
+  }
+
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   fun setTopicId(topicId: String) {

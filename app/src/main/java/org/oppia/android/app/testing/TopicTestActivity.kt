@@ -15,6 +15,7 @@ import org.oppia.android.app.topic.TopicActivityPresenter
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
@@ -31,9 +32,11 @@ class TopicTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
-      internalProfileId = 0,
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
       storyId = ""
     )
@@ -47,11 +50,17 @@ class TopicTestActivity :
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )
@@ -60,6 +69,7 @@ class TopicTestActivity :
 
   override fun routeToExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -70,6 +80,7 @@ class TopicTestActivity :
       ExplorationActivity.createExplorationActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -80,14 +91,14 @@ class TopicTestActivity :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, internalProfileId, topicId, subtopicId, subtopicListSize
+        this, profileId, topicId, subtopicId, subtopicListSize
       )
     )
   }

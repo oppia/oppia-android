@@ -1,0 +1,69 @@
+"""
+Tests top-level test-only HTTP networking support for Oppia's App Engine backend.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "FeedbackReportingServiceTestOrchestratorTest",
+    srcs = ["FeedbackReportingServiceTestOrchestratorTest.kt"],
+    custom_package = "org.oppia.android.data.backends.gae.testing",
+    test_class = "org.oppia.android.data.backends.gae.testing.FeedbackReportingServiceTestOrchestratorTest",
+    test_manifest = "//data:test_manifest",
+    deps = [
+        "//:dagger",
+        "//data:data_assets",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:feedback_reporting_service_test_orchestrator",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "NetworkConfigTestModuleTest",
+    srcs = ["NetworkConfigTestModuleTest.kt"],
+    custom_package = "org.oppia.android.data.backends.gae.testing",
+    test_class = "org.oppia.android.data.backends.gae.testing.NetworkConfigTestModuleTest",
+    test_manifest = "//data:test_manifest",
+    deps = [
+        "//:dagger",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:moshi",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+    ],
+)
+
+oppia_android_test(
+    name = "PlatformParameterServiceTestOrchestratorTest",
+    srcs = ["PlatformParameterServiceTestOrchestratorTest.kt"],
+    custom_package = "org.oppia.android.data.backends.gae.testing",
+    test_class = "org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestratorTest",
+    test_manifest = "//data:test_manifest",
+    deps = [
+        "//:dagger",
+        "//data:data_assets",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:platform_parameter_service_test_orchestrator",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)

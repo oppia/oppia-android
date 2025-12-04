@@ -2,13 +2,18 @@
 Tests for the math expression parser developer options UI flows.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "MathExpressionParserActivityTest",
-    processed_src = test_with_resources("MathExpressionParserActivityTest.kt"),
+    srcs = [
+        "MathExpressionParserActivityTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -21,6 +26,7 @@ app_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -30,17 +36,23 @@ app_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "MathExpressionParserFragmentTest",
-    processed_src = test_with_resources("MathExpressionParserFragmentTest.kt"),
+    srcs = [
+        "MathExpressionParserFragmentTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragmentTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -54,6 +66,7 @@ app_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -63,8 +76,8 @@ app_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
-        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],

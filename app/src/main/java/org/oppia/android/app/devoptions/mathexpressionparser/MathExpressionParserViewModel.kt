@@ -2,13 +2,13 @@ package org.oppia.android.app.devoptions.mathexpressionparser
 
 import android.widget.TextView
 import androidx.databinding.ObservableField
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.math.MathExpressionParser

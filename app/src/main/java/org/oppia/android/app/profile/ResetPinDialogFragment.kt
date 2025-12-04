@@ -5,22 +5,29 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.ResetPinDialogFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-
-const val RESET_PIN_PROFILE_ID_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_profile_id"
-const val RESET_PIN_NAME_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_name"
 
 /** Dialog Fragment to input new Pin. */
 class ResetPinDialogFragment : InjectableDialogFragment() {
   companion object {
+    /** Arguments key for ResetPinDialogFragment. */
+    const val RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY = "ResetPinDialogFragment.arguments"
     fun newInstance(profileId: Int, name: String): ResetPinDialogFragment {
-      val resetPinDialogFragment = ResetPinDialogFragment()
-      val args = Bundle()
-      args.putInt(RESET_PIN_PROFILE_ID_ARGUMENT_KEY, profileId)
-      args.putString(RESET_PIN_NAME_ARGUMENT_KEY, name)
-      resetPinDialogFragment.arguments = args
-      return resetPinDialogFragment
+      val args = ResetPinDialogFragmentArguments.newBuilder().apply {
+        this.internalProfileId = profileId
+        this.name = name
+      }.build()
+      return ResetPinDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(
+            RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+            args
+          )
+        }
+      }
     }
   }
 
@@ -33,8 +40,13 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val profileId = arguments?.getInt(RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
-    val name = arguments?.getStringFromBundle(RESET_PIN_NAME_ARGUMENT_KEY)
+    val args = arguments?.getProto(
+      RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+      ResetPinDialogFragmentArguments.getDefaultInstance()
+    )
+
+    val profileId = args?.internalProfileId
+    val name = args?.name
     checkNotNull(profileId) { "Profile Id must not be null" }
     checkNotNull(name) { "Name must not be null" }
     return resetPinDialogFragmentPresenter.handleOnCreateDialog(

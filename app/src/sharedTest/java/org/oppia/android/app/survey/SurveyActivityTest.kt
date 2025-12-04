@@ -2,12 +2,11 @@ package org.oppia.android.app.survey
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -15,7 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -31,9 +29,11 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -79,7 +79,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -101,26 +100,13 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class SurveyActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    SurveyActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   @Before
   fun setUp() {
@@ -137,12 +123,15 @@ class SurveyActivityTest {
 
   @Test
   fun testSurveyActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createSurveyActivityIntent(profileId))
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.survey_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.survey_activity_title))
+      }
+    }
   }
 
   @Test
@@ -155,46 +144,82 @@ class SurveyActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
-    return SurveyActivity.createSurveyActivityIntent(
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<SurveyActivity>.() -> Unit) {
+    val intent = SurveyActivity.createSurveyActivityIntent(
       context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     )
+    ActivityScenario.launch<SurveyActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -1,13 +1,14 @@
 package org.oppia.android.app.databinding
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -16,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -34,7 +34,8 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -60,7 +61,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -68,7 +68,9 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -76,7 +78,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -86,6 +87,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Test for [AppCompatCheckBox] binding adapters. */
@@ -97,17 +99,10 @@ import javax.inject.Singleton
 )
 class AppCompatCheckBoxBindingAdaptersTest {
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule: ActivityScenarioRule<AppCompatCheckBoxBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        AppCompatCheckBoxBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private var colorRgb: Int = Color.valueOf(0x10000).toArgb()
 
@@ -124,53 +119,92 @@ class AppCompatCheckBoxBindingAdaptersTest {
 
   @Test
   fun testSetButtonTint_hasCorrectButtonColor() {
-    activityRule.scenario.onActivity {
-      val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
-      setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val appCompatCheckBox: AppCompatCheckBox = activity.findViewById(R.id.test_check_box)
+        setButtonTint(appCompatCheckBox, colorRgb)
+        assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
+      }
     }
-  }
-
-  private fun getAppCompatCheckBox(
-    it: AppCompatCheckBoxBindingAdaptersTestActivity
-  ): AppCompatCheckBox {
-    return it.findViewById(R.id.test_check_box)
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<AppCompatCheckBoxBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, AppCompatCheckBoxBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<AppCompatCheckBoxBindingAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      TestPlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
 

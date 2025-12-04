@@ -12,7 +12,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -49,7 +50,6 @@ import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
@@ -88,7 +88,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-    FirebaseLogUploaderModule::class, NetworkModule::class,
+    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
@@ -100,7 +100,7 @@ import javax.inject.Singleton
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
     MetricLogSchedulerModule::class, ActivityRouterModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+    TestingBuildFlavorModule::class,
     ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
     TestAuthenticationModule::class
   ]

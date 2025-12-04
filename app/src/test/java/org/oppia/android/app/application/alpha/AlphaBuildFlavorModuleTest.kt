@@ -54,7 +54,12 @@ class AlphaBuildFlavorModuleTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, AlphaBuildFlavorModule::class])
+  @Component(
+    modules = [
+      AlphaBuildFlavorModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

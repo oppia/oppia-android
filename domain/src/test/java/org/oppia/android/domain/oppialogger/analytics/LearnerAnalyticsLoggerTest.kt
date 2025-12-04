@@ -38,7 +38,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
@@ -53,6 +52,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -82,10 +82,12 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_INSTALL_ID = "test_installation_id"
     private const val TEST_LEARNER_ID = "test_learner_id"
     private const val UNKNOWN_INSTALL_ID = "unknown_installation_id"
+    private const val TEST_CLASSROOM_ID = "test_classroom_id"
     private const val TEST_TOPIC_ID = "test_topic_id"
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
+    private const val TEST_EXP_2_STATE_EIGHT_NAME = "RatioInput"
     private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
@@ -615,6 +617,48 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
+  fun testExpLogger_logStartExploration_outsideCard_logsConsoleWarningAndNoEvents() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
+    assertThat(log.msg).contains("Attempting to log a state event outside state")
+    assertThat(log.type).isEqualTo(Log.WARN)
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testExpLogger_logStartExploration_insideCard_logsStateEventWithStateName() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasStartExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
   fun testExpLogger_logExitExploration_outsideCard_logsConsoleWarningAndNoEvents() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
@@ -642,6 +686,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasExitExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -683,6 +728,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasFinishExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -710,6 +756,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -737,7 +784,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test
@@ -754,6 +801,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasEndCardContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -781,7 +829,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test
@@ -798,6 +846,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasHintUnlockedContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -829,19 +878,20 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewHint_logsStateEventWithHintIndex() {
+  fun testStateAnalyticsLogger_logRevealHint_logsStateEventWithHintIndex() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
     testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logViewHint(hintIndex = 1)
+    stateLogger.logRevealHint(hintIndex = 1)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -858,18 +908,48 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewHint_diffIndex_logsStateEventWithHintIndex() {
+  fun testStateAnalyticsLogger_logRevealHint_diffIndex_logsStateEventWithHintIndex() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
     testCoroutineDispatchers.runCurrent()
 
-    stateLogger.logViewHint(hintIndex = 2)
+    stateLogger.logRevealHint(hintIndex = 2)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAccessHintContextThat().hasHintIndexThat().isEqualTo(2)
+    assertThat(eventLog).hasRevealHintContextThat().hasHintIndexThat().isEqualTo(2)
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logViewHint_logsStateEventWithHintIndex() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logViewHint(hintIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasViewExistingHintContextThat {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasHintIndexThat().isEqualTo(1)
+    }
   }
 
   @Test
@@ -885,6 +965,34 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSolutionUnlockedContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logRevealSolution_logsStateEvent() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logRevealSolution()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasRevealSolutionContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -910,7 +1018,8 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAccessSolutionContextThat {
+    assertThat(eventLog).hasViewExistingSolutionContextThat() {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -942,6 +1051,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -954,6 +1064,98 @@ class LearnerAnalyticsLoggerTest {
         }
       }
       hasAnswerCorrectValueThat().isFalse()
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logFlashbackOffered_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logFlashbackOffered("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasFlashbackOfferedContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logOpenFlashback_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logOpenFlashback("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenFlashbackContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_closeFlashback_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logCloseFlashback()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasCloseFlashbackContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
     }
   }
 
@@ -990,6 +1192,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1066,6 +1269,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPauseVoiceOverContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1148,6 +1352,51 @@ class LearnerAnalyticsLoggerTest {
       hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
       hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
     }
+  }
+
+  @Test
+  @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
+  @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
+  fun testExpLogger_logStartExploration_missingOneId_logsEventWithMissingId() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger =
+      learnerAnalyticsLogger.beginExploration(
+        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+      )
+    testCoroutineDispatchers.runCurrent()
+    expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasStartExplorationContextThat {
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
+        hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logStartExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger =
+      learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
+    testCoroutineDispatchers.runCurrent()
+    expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    // Since both the learner & installation IDs are missing, the event logging fails since it would
+    // have no context. An unknown installation ID is used to indicate the installation ID was
+    // missing.
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
+    assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
+    assertThat(log.msg).contains("Event is being dropped due to incomplete event")
+    assertThat(log.type).isEqualTo(Log.ERROR)
   }
 
   @Test
@@ -1398,7 +1647,7 @@ class LearnerAnalyticsLoggerTest {
   @Test
   @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
   @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  fun testStateAnalyticsLogger_logViewHint_missingOneId_logsEventWithMissingId() {
+  fun testStateAnalyticsLogger_logRevealHint_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
@@ -1407,11 +1656,11 @@ class LearnerAnalyticsLoggerTest {
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewHint(hintIndex = 1)
+    stateLogger.logRevealHint(hintIndex = 1)
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessHintContextThat {
+    assertThat(eventLog).hasRevealHintContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
           hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1422,14 +1671,14 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewHint_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+  fun testStateAnalyticsLogger_logRevealHint_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewHint(hintIndex = 1)
+    stateLogger.logRevealHint(hintIndex = 1)
     testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
@@ -1486,7 +1735,7 @@ class LearnerAnalyticsLoggerTest {
   @Test
   @Iteration("no_install_id", "lid=learn", "iid=null", "elid=learn", "eid=")
   @Iteration("no_learner_id", "lid=null", "iid=install", "elid=", "eid=install")
-  fun testStateAnalyticsLogger_logViewSolution_missingOneId_logsEventWithMissingId() {
+  fun testStateAnalyticsLogger_logRevealSolution_missingOneId_logsEventWithMissingId() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
@@ -1495,11 +1744,11 @@ class LearnerAnalyticsLoggerTest {
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewSolution()
+    stateLogger.logRevealSolution()
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).hasAccessSolutionContextThat {
+    assertThat(eventLog).hasRevealSolutionContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
         hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
@@ -1508,14 +1757,14 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logViewSolution_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
+  fun testStateAnalyticsLogger_logRevealSolution_noInstallOrLearnerIds_logsEventAndConsoleErrors() {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logViewSolution()
+    stateLogger.logRevealSolution()
     testCoroutineDispatchers.runCurrent()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
@@ -1682,6 +1931,7 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasReachedInvestedEngagementContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1711,6 +1961,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1743,6 +1994,7 @@ class LearnerAnalyticsLoggerTest {
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSwitchInLessonLanguageContextThat {
       hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
         hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
         hasStoryIdThat().isEqualTo(TEST_STORY_ID)
         hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1771,6 +2023,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasProgressSavingSuccessContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1796,6 +2049,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasProgressSavingFailureContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1821,6 +2075,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasLessonSavedAdvertentlyContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1846,6 +2101,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeLessonSubmitCorrectAnswerContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1871,6 +2127,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeLessonSubmitIncorrectAnswerContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
       hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
@@ -1897,9 +2154,12 @@ class LearnerAnalyticsLoggerTest {
     installationId: String? = TEST_INSTALL_ID,
     profileId: ProfileId = this@LearnerAnalyticsLoggerTest.profileId,
     learnerId: String? = TEST_LEARNER_ID,
+    classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
     storyId: String = TEST_STORY_ID
-  ) = beginExploration(installationId, profileId, learnerId, exploration, topicId, storyId)
+  ) = beginExploration(
+    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId
+  )
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
 
@@ -1925,19 +2185,39 @@ class LearnerAnalyticsLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, SyncStatusTestModule::class, LoggerModule::class,
-      ExplorationStorageModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, RatioInputModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

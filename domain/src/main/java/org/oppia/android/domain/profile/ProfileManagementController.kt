@@ -9,19 +9,25 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileOnboardingMode
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -30,12 +36,14 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -63,14 +71,23 @@ private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
 private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
-private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
-private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
-  "update_audio_language_provider_id"
+private const val GET_AUDIO_LANGUAGE_PROVIDER_ID = "get_audio_language_provider_id"
+private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID = "update_audio_language_provider_id"
 private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
 private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "record_survey_last_shown_timestamp_provider_id"
 private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
+private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "set_last_selected_classroom_id_provider_id"
+private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
+  "retrieve_last_selected_classroom_id_provider_id"
+private const val UPDATE_PROFILE_DETAILS_PROVIDER_ID = "update_profile_details_data_provider_id"
+private const val UPDATE_PROFILE_TYPE_PROVIDER_ID = "update_profile_type_data_provider_id"
+private const val UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID =
+  "update_start_onboarding_flow_provider_id"
+private const val UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID = "update_end_onboarding_flow_provider_id"
+private const val PROFILE_ONBOARDING_MODE_PROVIDER_ID = "profile_onboarding_mode_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -89,7 +106,11 @@ class ProfileManagementController @Inject constructor(
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @EnableLoggingLearnerStudyIds
   private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>,
-  private val profileNameValidator: ProfileNameValidator
+  private val profileNameValidator: ProfileNameValidator,
+  private val translationController: TranslationController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val analyticsController: AnalyticsController
 ) {
   private var currentProfileId: Int = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
   private val profileDataStore =
@@ -104,7 +125,7 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the selected image was not stored properly. */
   class FailedToStoreImageException(msg: String) : Exception(msg)
 
-  /** Indicates that the profile's directory was not delete properly. */
+  /** Indicates that the profile's directory was not deleted properly. */
   class FailedToDeleteDirException(msg: String) : Exception(msg)
 
   /** Indicates that the given profileId is not associated with an existing profile. */
@@ -115,6 +136,9 @@ class ProfileManagementController @Inject constructor(
 
   /** Indicates that the Profile already has admin. */
   class ProfileAlreadyHasAdminException(msg: String) : Exception(msg)
+
+  /** Indicates that the a ProfileType was not passed. */
+  class UnknownProfileTypeException(msg: String) : Exception(msg)
 
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
@@ -161,7 +185,10 @@ class ProfileManagementController @Inject constructor(
      * Indicates that the operation failed due to an attempt to re-elevate an administrator to
      * administrator status (this should never happen in regular app operations).
      */
-    PROFILE_ALREADY_HAS_ADMIN
+    PROFILE_ALREADY_HAS_ADMIN,
+
+    /** Indicates that the operation failed due to the profileType property not supplied. */
+    PROFILE_TYPE_UNKNOWN,
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -192,6 +219,11 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
+        if (enableOnboardingFlowV2.value) {
+          if (profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)) {
+            updateProfileType(profileId, computeProfileType(profile.isAdmin, profile.pin))
+          }
+        }
         AsyncResult.Success(profile)
       } else {
         AsyncResult.Failure(
@@ -271,7 +303,6 @@ class ProfileManagementController @Inject constructor(
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
         if (enableLoggingLearnerStudyIds.value) {
@@ -303,6 +334,106 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+    }
+  }
+
+  private fun computeProfileType(isAdmin: Boolean, pin: String?): ProfileType {
+    return when {
+      isAdminWithPin(isAdmin, pin) -> ProfileType.SUPERVISOR
+      isAdmin -> ProfileType.SOLE_LEARNER
+      else -> ProfileType.ADDITIONAL_LEARNER
+    }
+  }
+
+  private fun isAdminWithPin(isAdmin: Boolean, pin: String?): Boolean {
+    return isAdmin && !pin.isNullOrBlank()
+  }
+
+  /**
+   * Marks that the profile has started the onboarding flow, so that they can skip the profile setup
+   * step if onboarding was previously abandoned.
+   *
+   * @param profileId The ID of the profile to update.
+   * @return A [DataProvider] that represents the result of the update operation.
+   */
+  fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.startedProfileOnboarding) {
+        updatedProfileBuilder.startedProfileOnboarding = true
+        analyticsController.logProfileOnboardingStartedContext(profileId)
+      }
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfileBuilder.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Marks that the profile has completed the onboarding flow so that the onboarding flow is not
+   * shown after the initial login.
+   *
+   * @param profileId the ID of the profile to update
+   * @return a [DataProvider] that represents the result of the update operation
+   */
+  fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfileBuilder = profile.toBuilder()
+      if (!profile.completedProfileOnboarding) {
+        updatedProfileBuilder.completedProfileOnboarding = true
+        analyticsController.logProfileOnboardingEndedContext(profileId)
+      }
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfileBuilder.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /** Returns the state of the app based on the number and type of existing profiles. */
+  fun getProfileOnboardingMode(): DataProvider<ProfileOnboardingMode> {
+    return getProfiles().transform(PROFILE_ONBOARDING_MODE_PROVIDER_ID) { profileList ->
+      val profileCount = profileList.size
+      when {
+        profileCount > 1 -> ProfileOnboardingMode.MULTIPLE_PROFILES
+        profileCount == 1 -> {
+          when (profileList.first().profileType) {
+            ProfileType.SUPERVISOR -> {
+              ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY
+            }
+            ProfileType.SOLE_LEARNER -> {
+              ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY
+            }
+            else -> {
+              ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE
+            }
+          }
+        }
+        else -> ProfileOnboardingMode.NEW_INSTALL
+      }
     }
   }
 
@@ -358,7 +489,7 @@ class ProfileManagementController @Inject constructor(
    * Updates the name of an existing profile.
    *
    * @param profileId the ID corresponding to the profile being updated.
-   * @param newName New name for the profile being updated.
+   * @param newName new name for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateName(profileId: ProfileId, newName: String): DataProvider<Any?> {
@@ -385,6 +516,47 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
+    }
+  }
+
+  /**
+   * Updates the profile type field of an existing profile.
+   *
+   * @param profileId the ID of the profile to update
+   * @return a [DataProvider] that represents the result of the update operation
+   */
+  fun updateProfileType(
+    profileId: ProfileId,
+    profileType: ProfileType
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+
+      val updatedProfile = profile.toBuilder()
+
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile.build()
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_TYPE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
 
@@ -625,32 +797,120 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Returns the current audio language configured for the specified profile ID, as possibly set by
+   * [updateAudioLanguage].
+   *
+   * The return [DataProvider] will automatically update for subsequent calls to
+   * [updateAudioLanguage] for this [profileId].
+   */
+  fun getAudioLanguage(profileId: ProfileId): DataProvider<AudioLanguage> {
+    return translationController.getAudioTranslationContentLanguage(
+      profileId
+    ).transform(GET_AUDIO_LANGUAGE_PROVIDER_ID) { oppiaLanguage ->
+      when (oppiaLanguage) {
+        OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
+        OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+        OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
+        OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+        OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+        OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+      }
+    }
+  }
+
+  /**
    * Updates the audio language of the profile.
    *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param audioLanguage New audio language for the profile being updated.
-   * @return a [DataProvider] that indicates the success/failure of this update operation.
+   * @param profileId the ID corresponding to the profile being updated
+   * @param audioLanguage New audio language for the profile being updated
+   * @return a [DataProvider] that indicates the success/failure of this update operation
    */
   fun updateAudioLanguage(profileId: ProfileId, audioLanguage: AudioLanguage): DataProvider<Any?> {
+    val audioSelection = AudioTranslationLanguageSelection.newBuilder().apply {
+      this.selectedLanguage = when (audioLanguage) {
+        AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
+        AudioLanguage.NO_AUDIO -> OppiaLanguage.LANGUAGE_UNSPECIFIED
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> OppiaLanguage.ENGLISH
+        AudioLanguage.HINDI_AUDIO_LANGUAGE -> OppiaLanguage.HINDI
+        AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> OppiaLanguage.BRAZILIAN_PORTUGUESE
+        AudioLanguage.ARABIC_LANGUAGE -> OppiaLanguage.ARABIC
+        AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> OppiaLanguage.NIGERIAN_PIDGIN
+      }
+    }.build()
+    // The transformation is needed to reinterpreted the result of the update to 'Any?'.
+    return translationController.updateAudioTranslationContentLanguage(
+      profileId, audioSelection
+    ).transform(UPDATE_AUDIO_LANGUAGE_PROVIDER_ID) { value -> value }
+  }
+
+  /**
+   * Updates the provided details of an newly created profile to migrate onboarding flow v2 support.
+   *
+   * @param profileId the ID of the profile to update
+   * @param avatarImagePath the path to the profile's avatar image, or null if unset
+   * @param colorRgb the randomly selected unique color to be used in place of a picture
+   * @param newName the nickname to identify the profile
+   * @param isAdmin whether the profile has administrator privileges
+   * @return [DataProvider] that represents the result of the update operation
+   */
+  fun updateNewProfileDetails(
+    profileId: ProfileId,
+    profileType: ProfileType,
+    avatarImagePath: Uri?,
+    colorRgb: Int,
+    newName: String,
+    isAdmin: Boolean
+  ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
+      if (!enableLearnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
+      }
       val profile =
         it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setAudioLanguage(audioLanguage).build()
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfile = profile.toBuilder()
+
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir)
+            ?: return@storeDataWithCustomChannelAsync Pair(
+              it,
+              ProfileActionStatus.FAILED_TO_STORE_IMAGE
+            )
+        updatedProfile.avatar =
+          ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfile.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_TYPE_UNKNOWN
+        )
+      } else {
+        updatedProfile.profileType = profileType
+      }
+
+      updatedProfile.name = newName
+
+      updatedProfile.isAdmin = isAdmin
+
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
-        updatedProfile
+        updatedProfile.build()
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_AUDIO_LANGUAGE_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_DETAILS_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
     }
   }
 
@@ -851,6 +1111,47 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
+  /**
+   * Sets the last selected [classroomId] for the specified [profileId]. Returns a [DataProvider]
+   * indicating whether the save was a success.
+   */
+  fun updateLastSelectedClassroomId(
+    profileId: ProfileId,
+    classroomId: String
+  ): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { profileDatabase ->
+      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val updatedProfile = profile?.toBuilder()?.setLastSelectedClassroomId(
+        classroomId
+      )?.build()
+      val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] containing a nullable last selected classroom ID for the specified
+   * [profileId].
+   */
+  fun retrieveLastSelectedClassroomId(
+    profileId: ProfileId
+  ): DataProvider<String?> {
+    return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
+      val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
+      AsyncResult.Success(lastSelectedClassroomId)
+    }
+  }
+
   private suspend fun getDeferredResult(
     profileId: ProfileId?,
     name: String?,
@@ -896,6 +1197,8 @@ class ProfileManagementController @Inject constructor(
             "Profile cannot be an admin"
           )
         )
+      ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
+        AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
     }
   }
 
@@ -922,7 +1225,7 @@ class ProfileManagementController @Inject constructor(
     // TODO(#3616): Migrate to the proper SDK 29+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val fileName = avatarImagePath.pathSegments.last()
+    val fileName = UUID.randomUUID().toString()
     val imageFile = File(profileDir, fileName)
     try {
       FileOutputStream(imageFile).use { fos ->

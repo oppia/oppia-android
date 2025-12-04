@@ -28,7 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
@@ -49,7 +48,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -63,6 +61,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -76,10 +75,13 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -105,7 +107,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.InternalMasteryMultiplyFactor
 import org.oppia.android.domain.question.InternalScoreMultiplyFactor
@@ -130,6 +131,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -143,7 +145,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -166,46 +167,21 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
-    QuestionPlayerActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  @field:BackgroundDispatcher
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @field:[Inject BackgroundDispatcher]
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -456,7 +432,7 @@ class QuestionPlayerActivityTest {
           matches(
             withContentDescription(
               "To write a fraction, you need to know its denominator, which is the total " +
-                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
+                "number of pieces in the whole. All of these pieces should be the same size."
             )
           )
         )
@@ -554,6 +530,75 @@ class QuestionPlayerActivityTest {
 
       onView(withId(R.id.content_text_view)).check(doesNotExist())
     }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_extraLargeTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      testCoroutineDispatchers.runCurrent()
+      verifyFontSizeMatches(67F)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_largeTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      testCoroutineDispatchers.runCurrent()
+      verifyFontSizeMatches(58F)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_mediumTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      testCoroutineDispatchers.runCurrent()
+      verifyFontSizeMatches(48F)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_smallTextSize_hasCorrectDimension() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      it.onActivity { activity ->
+        activity.questionPlayerActivityPresenter
+          .loadFragments(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      testCoroutineDispatchers.runCurrent()
+      verifyFontSizeMatches(38F)
+    }
+  }
+
+  private fun verifyFontSizeMatches(fontSize: Float) {
+    scrollToViewType(CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.question_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(
+      matches(
+        FontSizeMatcher.withFontSize(
+          fontSize = fontSize
+        )
+      )
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -786,32 +831,65 @@ class QuestionPlayerActivityTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      AccessibilityTestModule::class, CachingTestModule::class, RatioInputModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogReportWorkerModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
       PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

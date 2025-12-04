@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SU
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -32,6 +33,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -62,6 +65,7 @@ import javax.inject.Singleton
 class OppiaLoggerTest {
   private companion object {
     private const val TEST_TIMESTAMP = 1234567898765
+    private const val TEST_CLASSROOM_ID = "test_classroomId"
     private const val TEST_TOPIC_ID = "test_topicId"
     private const val TEST_STORY_ID = "test_storyId"
     private const val TEST_EXPLORATION_ID = "test_explorationId"
@@ -105,6 +109,8 @@ class OppiaLoggerTest {
     private val TEST_INFO_EXCEPTION = Throwable(TEST_INFO_LOG_EXCEPTION)
     private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
+
+    private val TEST_PROFILE_ID = ProfileId.newBuilder().setInternalId(0).build()
   }
 
   @Inject
@@ -220,6 +226,7 @@ class OppiaLoggerTest {
   @Test
   fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenExplorationActivityContext(
+      TEST_CLASSROOM_ID,
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID
@@ -418,6 +425,22 @@ class OppiaLoggerTest {
       .isEqualTo(TEST_FOREGROUND_TIME.toFloat())
   }
 
+  @Test
+  fun testLogger_createProfileOnboardingStartedContext_returnsCorrectProfileOnboardingContext() {
+    val eventContext = oppiaLogger.createProfileOnboardingStartedContext(TEST_PROFILE_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(START_PROFILE_ONBOARDING_EVENT)
+    assertThat(eventContext.startProfileOnboardingEvent.profileId).isEqualTo(TEST_PROFILE_ID)
+  }
+
+  @Test
+  fun testLogger_createProfileOnboardingEndedContext_returnsCorrectProfileOnboardingContext() {
+    val eventContext = oppiaLogger.createProfileOnboardingEndedContext(TEST_PROFILE_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+    assertThat(eventContext.endProfileOnboardingEvent.profileId).isEqualTo(TEST_PROFILE_ID)
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -461,11 +484,18 @@ class OppiaLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -1,6 +1,7 @@
 id: "test_topic_id_1"
 canonical_story_ids: "test_story_id_2"
 is_published: true
+has_practice_questions: false
 topic_thumbnail {
 }
 written_translations {

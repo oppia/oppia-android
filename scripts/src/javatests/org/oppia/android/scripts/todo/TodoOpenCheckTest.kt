@@ -777,11 +777,67 @@ class TodoOpenCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
-  private fun setUpGitHubService(issueNumbers: List<Int>) {
-    val issueJsons = issueNumbers.joinToString(separator = ",") { "{\"number\":$it}" }
+  @Test
+  fun testTodoCheck_PrPresent_checkShouldFail() {
+    setUpGitHubService(
+      issueNumbers = listOf(11004, 11003, 11002, 11001),
+      pullRequestNumbers = listOf(11005)
+    )
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val testContent1 =
+      """
+      // TODO(#11002): test summary 1.
+      # TODO(#11004): test summary 2.
+      # TODO(#11001): test summary 3.
+      test Todo
+      test TODO
+      """.trimIndent()
+    val testContent2 =
+      """
+      // TODO(#11005): test summary 3.
+      todo
+      <!-- TODO(#11003): test summary 4-->
+
+      """.trimIndent()
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      TODOs not corresponding to open issues on GitHub:
+      - TempFile2.kt:1
+
+      $wikiReferenceNote
+
+      $regenerateNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  private fun setUpGitHubService(
+    issueNumbers: List<Int>,
+    pullRequestNumbers: List<Int> = emptyList()
+  ) {
+    // Create JSON for issues with "pull_request" set to null
+    val issueJsons = issueNumbers
+      .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":null}" }
+
+    // Create JSON for pull requests with "pull_request" as an empty object
+    val pullRequestJsons = pullRequestNumbers
+      .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":{}}" }
+
+    // Combine issues and pull requests into one JSON array
+    val combinedJsons =
+      "[$issueJsons${if (pullRequestNumbers.isNotEmpty()) ", $pullRequestJsons" else ""}]"
+
     val mockWebServer = MockWebServer()
     mockWebServer.enqueue(MockResponse().setBody("[$issueJsons]"))
-    mockWebServer.enqueue(MockResponse().setBody("[]")) // No more issues.
+    mockWebServer.enqueue(MockResponse().setBody(combinedJsons))
+    mockWebServer.enqueue(MockResponse().setBody("[]"))
     GitHubClient.remoteApiUrl = mockWebServer.url("/").toString()
   }
 

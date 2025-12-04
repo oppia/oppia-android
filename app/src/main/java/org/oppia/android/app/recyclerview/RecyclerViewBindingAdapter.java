@@ -7,6 +7,7 @@ import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import org.oppia.android.app.profile.DynamicProfileItemMarginsDecorator;
 
 /** Holds all custom binding adapters that bind to [RecyclerView]. */
 public final class RecyclerViewBindingAdapter {
@@ -75,5 +76,18 @@ public final class RecyclerViewBindingAdapter {
       Drawable drawable
   ) {
     recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
+  }
+
+  /** Binds the [DynamicMarginItemDecorator] to a recyclerview to add dynamic spacing to items. */
+  @BindingAdapter("dynamicMarginItemDecorator")
+  public static void addItemDecorator(@NonNull RecyclerView recyclerView, boolean enabled) {
+    if (enabled && recyclerView.getItemDecorationCount() == 0) { // Prevent multiple decorations.
+      RecyclerView.Adapter<?> adapter = recyclerView.getAdapter();
+      if (adapter != null) {
+        recyclerView.addItemDecoration(
+                        new DynamicProfileItemMarginsDecorator(recyclerView.getContext(), adapter)
+        );
+      }
+    }
   }
 }

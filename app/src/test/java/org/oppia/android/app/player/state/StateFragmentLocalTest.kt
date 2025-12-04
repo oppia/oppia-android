@@ -58,7 +58,6 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -94,12 +93,14 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -114,6 +115,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -161,7 +163,6 @@ import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -1456,6 +1457,56 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_previousResponsesExpanded_retainedOnRotation() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { _ ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+
+      // Rotate device to trigger configuration change
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify expanded state is retained after rotation
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+    }
+  }
+
+  @Test
+  fun testStateFragment_previousResponsesCollapsed_remainsCollapsedOnRotation() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { _ ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 1))
+
+      // Rotate device to trigger configuration change
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify the header remains collapsed after rotation
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 1))
+    }
+  }
+
+  @Test
   fun testStateFragment_stateWithoutHints_wait60s_noHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1587,8 +1638,8 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_stateWithRatioInp_showSolution_notExclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+  fun testStateFragment_stateWithRatioInp_wait60seconds_hintIsAvailable() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
       playThroughTestState2()
@@ -1596,12 +1647,10 @@ class StateFragmentLocalTest {
       playThroughTestState4()
       playThroughTestState5()
       playThroughTestState6()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState7() }
 
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState7() }
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer)).check(matches(withText("One solution is: 4:5")))
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
     }
   }
 
@@ -2215,6 +2264,59 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_openHint_clickConceptCardLink_opensConceptCard_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      submitTwoWrongAnswersToTestExpState2()
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.hints_and_solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_openSolution_clickConceptCardLink_opensConceptCard_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      clickContinueButton()
+      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState2() }
+      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState2() }
+
+      // Click on the link for opening the concept card.
+      onView(withId(R.id.solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -2231,6 +2333,7 @@ class StateFragmentLocalTest {
       StateFragmentTestActivity.createTestActivityIntent(
         context,
         profileId.internalId,
+        TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
@@ -2911,31 +3014,65 @@ class StateFragmentLocalTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      RobolectricModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

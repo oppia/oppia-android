@@ -110,7 +110,6 @@
 /testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/network/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers
@@ -163,6 +162,7 @@
 # Utilities that are primarily used for frontend/UI purposes.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/statusbar/ @oppia/android-frontend-reviewers
+/utility/src/main/java/org/oppia/android/util/enumfilter/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/extensions/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/parser/html @oppia/android-frontend-reviewers
 /utility/src/*/res/**/*.xml @oppia/android-frontend-reviewers
@@ -249,6 +249,7 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 *.bazel @oppia/android-app-infrastructure-reviewers
 .bazelrc @oppia/android-app-infrastructure-reviewers
 .bazelversion @oppia/android-app-infrastructure-reviewers
+oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
 /tools/kotlin/ @oppia/android-app-infrastructure-reviewers
 
@@ -257,9 +258,6 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
-
-# Configuration for KitKat-specific curated builds.
-/config/kitkat_main_dex_class_list.txt @oppia/android-dev-workflow-reviewers
 
 # Specific manifest files specifically required for Bazel builds.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
@@ -319,6 +317,10 @@ gradle.properties @oppia/android-app-infrastructure-reviewers
 # Configurations for the languages supported by the app.
 /config/**/alllanguages/*.textproto @oppia/owners
 /config/**/productionlanguages/*.textproto @oppia/owners
+
+# Configurations for the lists of feature flags and platform parameters supported by the app.
+/config/**/platform/*.textproto @oppia/owners
+/config/**/platform/featureoverrides/**/*.textproto @oppia/owners
 
 # Primary app manifest. Eventually, this will be split up so that only the
 # sensitive portions require owners approval.

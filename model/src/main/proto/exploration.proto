@@ -270,6 +270,9 @@ message EphemeralState {
 
   // The timestamp at which continue buttons (both interaction & navigation) should start animating.
   int64 continue_button_animation_timestamp_ms = 11;
+
+  // Indicates whether this state is a flashback state.
+  bool flashback_state = 12;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -308,6 +311,8 @@ message UserAnswer {
     string plain_answer = 3;
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
+    // A representation of the selection choice answer.
+    ItemSelectionAnswerState item_selection_answer = 7;
   }
 
   // An accessible version of the corresponding plain answer. It will be used to read out the
@@ -331,6 +336,13 @@ message AnswerAndResponse {
 
   // Whether the answer was labelled by the creator as correct.
   bool is_correct_answer = 3;
+
+  // The name of the state the learner can revisit to review a concept. It's presence indicates that
+  // a flashback button should be shown.
+  string state_name_to_revisit = 4;
+
+  // Whether the flashback associated with this answer has been viewed by the learner.
+  bool flashback_viewed = 5;
 }
 
 message AnswerOutcome {
@@ -344,6 +356,9 @@ message AnswerOutcome {
   // The State the answer was submitted in (to help downstream observers make decisions based on the State without
   // needing to synchronize with other data providers).
   State state = 3;
+
+  // Whether this corresponds the the default outcome option for a state interaction.
+  bool is_default_outcome = 8;
 
   // One of several destinations the learner should be routed to as a result of submitting this answer.
   oneof destination {
@@ -419,4 +434,43 @@ enum CheckpointState {
 
   // Progress made in the exploration is not saved.
   CHECKPOINT_UNSAVED = 3;
+}
+
+// Represents the state of item selection answers that the user has selected.
+message ItemSelectionAnswerState {
+  // List of selected item indices.
+  repeated int32 selected_indexes = 1;
+}
+
+// Represents the user's answer state, retained across configuration changes.
+message UserAnswerState {
+  // Represents the last error state.
+  AnswerErrorCategory answer_error_category = 1;
+
+  // Type of answer input:
+  oneof answer_input_type {
+    // User's selection for selection input interactions.
+    ItemSelectionAnswerState item_selection = 2;
+    // Text answer entered by the user in text-based interactions.
+    string text_input_answer = 3;
+    // A user's selected list of sets of HTML content IDs in drag-and-drop interactions.
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
+    // Selected image's label.
+    string image_label = 5;
+  }
+}
+
+// Represents categories of errors that can be inferred from a pending answer.
+enum AnswerErrorCategory {
+  // The error is unknown or not specified.
+  ERROR_UNSPECIFIED = 0;
+
+  // Corresponds to the pending answer having no error.
+  NO_ERROR = 1;
+
+  // Corresponds to errors that may be found while the user is trying to input an answer.
+  REAL_TIME = 2;
+
+  // Corresponds to errors that may be found only when a user tries to submit an answer.
+  SUBMIT_TIME = 3;
 }

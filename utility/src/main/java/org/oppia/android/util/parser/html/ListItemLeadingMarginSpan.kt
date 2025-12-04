@@ -7,7 +7,9 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.text.Layout
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.LeadingMarginSpan
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
@@ -120,7 +122,8 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     context: Context,
     private val numberedItemPrefix: String,
     private val longestNumberedItemPrefix: String,
-    private val displayLocale: OppiaLocale.DisplayLocale
+    private val displayLocale: OppiaLocale.DisplayLocale,
+    private val textView: TextView
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
@@ -128,8 +131,22 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       resources.getDimensionPixelSize(R.dimen.spacing_before_number_prefix)
 
     // Try to use a computed margin, but otherwise guess if there's no guaranteed spacing.
-    private var computedLeadingMargin =
-      2 * longestNumberedItemPrefix.length + spacingBeforeText
+    private val computedLeadingMargin: Int by lazy {
+      calculateLeadingMargin()
+    }
+
+    private fun calculateLeadingMargin(): Int {
+      val textPaint = TextPaint(textView.paint)
+      val longestTextWidth = Rect().also {
+        textPaint.getTextBounds(
+          longestNumberedItemPrefix,
+          /* start= */ 0,
+          /* end= */ longestNumberedItemPrefix.length,
+          it
+        )
+      }.width()
+      return longestTextWidth + spacingBeforeNumberPrefix + spacingBeforeText
+    }
 
     private val isRtl by lazy {
       displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -166,7 +183,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
             it
           )
         }.width()
-        computedLeadingMargin = longestTextWidth + spacingBeforeNumberPrefix + spacingBeforeText
 
         // Compute the prefix's start x value such that it is right-aligned with other numbers in
         // the list.

@@ -3,13 +3,16 @@ package org.oppia.android.app.player.state.testing
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.databinding.StateFragmentTestActivityBinding
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivity.Companion.STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY
+import org.oppia.android.app.ui.R
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -17,6 +20,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -31,6 +35,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 ) {
 
   private var profileId: Int = 1
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -46,18 +51,29 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = stateFragmentTestViewModel
     }
 
-    profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    val args = activity.intent.getProtoExtra(
+      STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
+      StateFragmentTestActivityParams.getDefaultInstance()
+    )
+    profileId = args?.internalProfileId ?: 1
+    classroomId = args?.classroomId ?: TEST_CLASSROOM_ID_0
     topicId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
+      args?.topicId ?: TEST_TOPIC_ID_0
     storyId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
+      args?.storyId ?: TEST_STORY_ID_0
     explorationId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
+      args?.explorationId
       ?: TEST_EXPLORATION_ID_2
-    shouldSavePartialProgress =
-      activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
+    shouldSavePartialProgress = args?.shouldSavePartialProgress ?: false
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
+      startPlayingExploration(
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress
+      )
     }
   }
 
@@ -79,6 +95,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   private fun startPlayingExploration(
     profileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -89,10 +106,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     } else {
-      explorationDataController.replayExploration(profileId, topicId, storyId, explorationId)
+      explorationDataController.replayExploration(
+        profileId, classroomId, topicId, storyId, explorationId
+      )
     }
     startPlayingProvider.toLiveData().observe(
       activity,
@@ -157,5 +176,9 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
     ) as HintsAndSolutionExplorationManagerFragment?
+  }
+
+  fun dismissConceptCard() {
+    getStateFragment()?.dismissConceptCard()
   }
 }

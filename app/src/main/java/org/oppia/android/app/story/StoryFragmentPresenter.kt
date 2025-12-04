@@ -18,7 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.StoryChapterViewBinding
+import org.oppia.android.app.databinding.databinding.StoryFragmentBinding
+import org.oppia.android.app.databinding.databinding.StoryHeaderViewBinding
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -30,9 +32,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.StoryChapterViewBinding
-import org.oppia.android.databinding.StoryFragmentBinding
-import org.oppia.android.databinding.StoryHeaderViewBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -73,6 +73,7 @@ class StoryFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): View {
@@ -83,13 +84,12 @@ class StoryFragmentPresenter @Inject constructor(
     )
     profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     storyViewModel.setInternalProfileId(internalProfileId)
+    storyViewModel.setClassroomId(classroomId)
     storyViewModel.setTopicId(topicId)
     storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)
 
-    binding.storyToolbar.setNavigationOnClickListener {
-      (activity as StoryActivity).finish()
-    }
+    binding.storyToolbar.setNavigationOnClickListener { activity.finish() }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.storyToolbarTitle.setOnClickListener {
         binding.storyToolbarTitle.isSelected = true
@@ -115,6 +115,7 @@ class StoryFragmentPresenter @Inject constructor(
 
   fun handleSelectExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -126,6 +127,7 @@ class StoryFragmentPresenter @Inject constructor(
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -135,6 +137,7 @@ class StoryFragmentPresenter @Inject constructor(
     } else {
       playExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -266,6 +269,7 @@ class StoryFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -277,6 +281,7 @@ class StoryFragmentPresenter @Inject constructor(
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
         profileId.internalId,
+        classroomId,
         topicId,
         storyId,
         explorationId
@@ -284,6 +289,7 @@ class StoryFragmentPresenter @Inject constructor(
     } else {
       explorationDataController.replayExploration(
         profileId.internalId,
+        classroomId,
         topicId,
         storyId,
         explorationId
@@ -298,6 +304,7 @@ class StoryFragmentPresenter @Inject constructor(
           oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

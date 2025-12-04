@@ -2,7 +2,6 @@ package org.oppia.android.app.story.storyitemviewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -11,6 +10,7 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -24,6 +24,7 @@ class StoryChapterSummaryViewModel(
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
   val internalProfileId: Int,
+  val classroomId: String,
   val topicId: String,
   val storyId: String,
   private val ephemeralChapterSummary: EphemeralChapterSummary,
@@ -76,6 +77,7 @@ class StoryChapterSummaryViewModel(
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 profileId,
+                classroomId,
                 topicId,
                 storyId,
                 explorationId,
@@ -88,6 +90,7 @@ class StoryChapterSummaryViewModel(
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 profileId,
+                classroomId,
                 topicId,
                 storyId,
                 explorationId,
@@ -103,6 +106,7 @@ class StoryChapterSummaryViewModel(
     } else {
       explorationSelectionListener.selectExploration(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,

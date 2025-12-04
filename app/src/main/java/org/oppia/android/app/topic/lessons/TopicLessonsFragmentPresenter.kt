@@ -6,6 +6,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.android.app.databinding.databinding.LessonsCompletedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsInProgressChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsLockedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsNotStartedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsFragmentBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsStorySummaryBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsTitleBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -17,19 +24,13 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.databinding.LessonsCompletedChapterViewBinding
-import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
-import org.oppia.android.databinding.LessonsLockedChapterViewBinding
-import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
-import org.oppia.android.databinding.TopicLessonsFragmentBinding
-import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
-import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.enumfilter.filterByEnumCondition
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -53,7 +54,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private var isDefaultStoryExpanded: Boolean = false
@@ -67,12 +69,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
-    internalProfileId: Int,
+    profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     isDefaultStoryExpanded: Boolean
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.isDefaultStoryExpanded = isDefaultStoryExpanded
@@ -89,7 +93,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       this.viewModel = topicLessonViewModel
     }
 
-    topicLessonViewModel.setInternalProfileId(internalProfileId)
+    topicLessonViewModel.setProfileId(profileId)
     topicLessonViewModel.setTopicId(topicId)
     topicLessonViewModel.setStoryId(storyId)
 
@@ -158,18 +162,18 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     val chapterSummaries = storySummaryViewModel
       .storySummary.chapterList
-    val completedChapterCount =
-      chapterSummaries.map(ChapterSummary::getChapterPlayState)
-        .filter {
-          it == ChapterPlayState.COMPLETED
-        }
-        .size
+    val completedChapterCount = filterByEnumCondition(
+      chapterSummaries.map(ChapterSummary::getChapterPlayState),
+      { it },
+      { it == ChapterPlayState.COMPLETED }
+    ).size
+
     val inProgressChapterCount =
-      chapterSummaries.map(ChapterSummary::getChapterPlayState)
-        .filter {
-          it == ChapterPlayState.IN_PROGRESS_SAVED
-        }
-        .size
+      filterByEnumCondition(
+        chapterSummaries.map(ChapterSummary::getChapterPlayState),
+        { it },
+        { it == ChapterPlayState.IN_PROGRESS_SAVED }
+      ).size
 
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
@@ -274,7 +278,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+    routeToStoryListener.routeToStory(
+      internalProfileId = profileId.internalId,
+      classroomId = classroomId,
+      topicId = topicId,
+      storyId = storySummary.storyId
+    )
   }
 
   fun selectChapterSummary(
@@ -282,9 +291,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -308,6 +314,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpointLiveData.removeObserver(this)
                 routeToResumeLessonListener.routeToResumeLesson(
                   profileId,
+                  classroomId,
                   topicId,
                   storyId,
                   explorationId,
@@ -318,6 +325,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpointLiveData.removeObserver(this)
                 playExploration(
                   profileId,
+                  classroomId,
                   topicId,
                   storyId,
                   explorationId,
@@ -332,6 +340,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ChapterPlayState.IN_PROGRESS_NOT_SAVED -> {
         playExploration(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -342,6 +351,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       else -> {
         playExploration(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -354,6 +364,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun playExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -364,21 +375,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          internalProfileId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
     }
@@ -391,6 +402,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
             profileId,
+            classroomId,
             topicId,
             storyId,
             explorationId,

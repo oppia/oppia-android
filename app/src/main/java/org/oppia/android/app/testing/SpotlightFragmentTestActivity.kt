@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Test activity used for testing [SpotlightFragment]. */
@@ -19,9 +21,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     spotlightFragmentTestActivityPresenter.handleOnCreate(
-      intent.getIntExtra(
-        PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue= */ -1
-      )
+      intent?.extractCurrentUserProfileId()?.internalId ?: -1
     )
   }
 
@@ -34,8 +34,9 @@ class SpotlightFragmentTestActivity : TestActivity() {
   companion object {
     /** Returns the [Intent] for opening [SpotlightFragmentTestActivity]. */
     fun createSpotlightFragmentTestActivity(context: Context): Intent {
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
       return Intent(context, SpotlightFragmentTestActivity::class.java).also {
-        it.putExtra(PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue= */ 0)
+        it.decorateWithUserProfileId(profileId)
       }
     }
   }

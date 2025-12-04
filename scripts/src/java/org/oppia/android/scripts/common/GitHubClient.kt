@@ -68,13 +68,14 @@ class GitHubClient(
       val call = gitHubService.fetchOpenIssues(repoOwner, repoName, authorizationBearer, pageNumber)
       // Deferred blocking I/O operation to the dedicated I/O dispatcher.
       val response = withContext(Dispatchers.IO) { call.execute() }
+
       check(response.isSuccessful()) {
         "Failed to fetch issues at page $pageNumber: ${response.code()}\n${call.request()}" +
           "\n${response.errorBody()}."
       }
       return@async checkNotNull(response.body()) {
         "No issues response from GitHub for page: $pageNumber."
-      }
+      }.filter { it.pullRequest == null }
     }
   }
 

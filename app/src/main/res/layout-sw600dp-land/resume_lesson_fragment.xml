@@ -24,7 +24,7 @@
       android:background="@color/component_color_shared_topic_thumbnail_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@+id/guideline6"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/state_button_primary_background"
-            android:drawableTint="@color/component_color_shared_white_background_color"
+            app:drawableTint="@color/component_color_shared_white_background_color"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:minWidth="144dp"
