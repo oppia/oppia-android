@@ -122,6 +122,20 @@ class PolicyPageTagHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_withPolicyPageTag() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = POLICY_PAGE_LINK_MARKUP_1,
+        customTagHandlers = tagHandlersWithPolicyPageSupport
+      )
+
+    assertThat(contentDescription).isEqualTo(
+      "By using %s, you agree to our " +
+        " Link to Terms of Service and Link to Privacy Policy."
+    )
+  }
+
+  @Test
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForTermsOfService() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
@@ -171,8 +185,12 @@ class PolicyPageTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

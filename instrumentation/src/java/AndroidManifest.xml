@@ -5,7 +5,6 @@
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
-  <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".instrumentation.application.TestOppiaApplication"
     android:allowBackup="true"
@@ -61,7 +60,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -139,7 +137,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -164,7 +161,6 @@
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.HomeFragmentTestActivity" />
-    <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
@@ -218,11 +214,5 @@
       android:name=".app.devoptions.vieweventlogs.ViewEventLogsActivity"
       android:label="@string/view_event_logs_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-
-    <provider
-      android:name="androidx.work.impl.WorkManagerInitializer"
-      android:authorities="${applicationId}.workmanager-init"
-      android:exported="false"
-      tools:node="remove" />
   </application>
 </manifest>

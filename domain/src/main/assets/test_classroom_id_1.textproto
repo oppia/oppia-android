@@ -1,0 +1,17 @@
+id: "test_classroom_id_1"
+translatable_title {
+  content_id: "classroom_title"
+  html: "Maths"
+}
+classroom_thumbnail {
+}
+topic_prerequisites {
+  key: "GJ2rLXRKD5hw"
+  value {
+  }
+}
+topic_prerequisites {
+  key: "omzF4oqgeTXd"
+  value {
+  }
+}

@@ -14,8 +14,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
-import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
+import org.oppia.android.app.databinding.databinding.DrawerFragmentBinding
+import org.oppia.android.app.databinding.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
@@ -30,18 +32,18 @@ import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.databinding.DrawerFragmentBinding
-import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
-  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
 /** The presenter for [NavigationDrawerFragment]. */
@@ -54,7 +56,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val headerViewModel: NavigationDrawerHeaderViewModel,
   private val footerViewModel: NavigationDrawerFooterViewModel,
-  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>
+  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -69,8 +72,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
+    internalProfileId = profileId.internalId
 
     val headerBinding =
       NavHeaderNavigationDrawerBinding.inflate(
@@ -103,16 +106,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
-        drawerLayout.closeDrawers()
-        footerViewModel.isDeveloperOptionsSelected.set(true)
-        val intent = starter.createIntent(activity, internalProfileId)
-        fragment.activity!!.startActivity(intent)
-        if (previousMenuItemId == 0) fragment.activity!!.finish()
+        val intent = starter.createIntent(activity, profileId)
+        fragment.requireActivity().startActivity(intent)
+        if (previousMenuItemId == 0) fragment.requireActivity().finish()
         else if (previousMenuItemId != null &&
           NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
           NavigationDrawerItem.HOME
         ) {
-          fragment.activity!!.finish()
+          fragment.requireActivity().finish()
         }
         drawerLayout.closeDrawers()
       }
@@ -138,20 +139,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
 
-        drawerLayout.closeDrawers()
-        footerViewModel.isAdministratorControlsSelected.set(true)
         val intent =
           AdministratorControlsActivity.createAdministratorControlsActivityIntent(
             activity,
-            internalProfileId
+            profileId
           )
-        fragment.activity!!.startActivity(intent)
-        if (previousMenuItemId == -1) fragment.activity!!.finish()
+        fragment.requireActivity().startActivity(intent)
+        if (previousMenuItemId == -1) fragment.requireActivity().finish()
         else if (previousMenuItemId != null &&
           NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
           NavigationDrawerItem.HOME
         ) {
-          fragment.activity!!.finish()
+          fragment.requireActivity().finish()
         }
         drawerLayout.closeDrawers()
       }
@@ -233,38 +232,41 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          val intent = if (enableMultipleClassrooms.value)
+            ClassroomListActivity.createClassroomListActivity(activity, profileId)
+          else
+            HomeActivity.createHomeActivity(activity, profileId)
+          fragment.requireActivity().startActivity(intent)
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
-            activity, internalProfileId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
+            activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
             MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
@@ -406,7 +408,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
@@ -445,7 +447,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
@@ -455,7 +457,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_activity_status_bar_color,
             activity,
@@ -467,7 +469,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal && previousMenuItemId != -1) {
-        fragment.activity!!.finish()
+        fragment.requireActivity().finish()
       }
     }
   }

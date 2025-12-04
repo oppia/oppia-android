@@ -7,22 +7,23 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
+import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
@@ -33,8 +34,9 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
+  private lateinit var classroomId: String
   private var storyId: String? = null
 
   @Inject
@@ -43,12 +45,20 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
+    val args = intent?.getProtoExtra(
+      TOPIC_ACTIVITY_PARAMS_KEY,
+      TopicActivityParams.getDefaultInstance()
+    )
+    classroomId = checkNotNull(args?.classroomId) {
+      "Expected classroom ID to be included in intent for TopicActivity."
+    }
+    topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
+    storyId = args?.storyId
+    topicActivityPresenter.handleOnCreate(profileId, classroomId, topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -56,16 +66,22 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        profileId
       )
     )
   }
 
-  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToStory(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
         this,
         internalProfileId,
+        classroomId,
         topicId,
         storyId
       )
@@ -73,7 +89,7 @@ class TopicActivity :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -81,7 +97,7 @@ class TopicActivity :
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
@@ -91,6 +107,7 @@ class TopicActivity :
 
   override fun routeToExploration(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -101,6 +118,7 @@ class TopicActivity :
       ExplorationActivity.createExplorationActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -112,6 +130,7 @@ class TopicActivity :
 
   override fun routeToResumeLesson(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -122,6 +141,7 @@ class TopicActivity :
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -138,36 +158,42 @@ class TopicActivity :
   class TopicActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
-    override fun createIntent(profileId: ProfileId, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, topicId)
+    override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
+      createTopicActivityIntent(activity, profileId, classroomId, topicId)
 
-    override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
-      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+    override fun createIntent(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String
+    ): Intent =
+      createTopicPlayStoryActivityIntent(
+        activity,
+        profileId,
+        classroomId,
+        topicId,
+        storyId
+      )
   }
 
   companion object {
-
-    fun getProfileIdKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-    }
-
-    fun getTopicIdKey(): String {
-      return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-    }
-
-    fun getStoryIdKey(): String {
-      return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
-    }
+    /** Params key for TopicActivity. */
+    const val TOPIC_ACTIVITY_PARAMS_KEY = "TopicActivity.params"
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
+      classroomId: String,
       topicId: String
     ): Intent {
+      val args = TopicActivityParams.newBuilder().apply {
+        this.topicId = topicId
+        this.classroomId = classroomId
+      }.build()
       return Intent(context, TopicActivity::class.java).apply {
-        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-        putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(TOPIC_ACTIVITY)
       }
     }
@@ -175,12 +201,16 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
     fun createTopicPlayStoryActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String
     ): Intent {
-      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
-        putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      return createTopicActivityIntent(context, profileId, classroomId, topicId).apply {
+        val args =
+          getProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, TopicActivityParams.getDefaultInstance())
+        val updateArg = args.toBuilder().setStoryId(storyId).build()
+        putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, updateArg)
       }
     }
   }

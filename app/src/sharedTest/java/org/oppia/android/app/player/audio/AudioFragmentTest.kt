@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -22,18 +24,20 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.util.HumanReadables
+import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -48,11 +52,13 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -79,7 +85,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
@@ -90,6 +95,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -101,7 +107,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -110,8 +115,10 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -124,8 +131,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = AudioFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  application = AudioFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi"
 )
 class AudioFragmentTest {
   @get:Rule
@@ -173,8 +179,7 @@ class AudioFragmentTest {
 
   private fun createAudioFragmentTestIntent(profileId: Int): Intent {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
-      context,
-      profileId
+      context, profileId
     )
   }
 
@@ -187,14 +192,13 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_progress_seek_bar))
-        .check(
-          matches(
-            withContentDescription(
-              context.getString(R.string.audio_player_seekbar_content_description)
-            )
+      onView(withId(R.id.audio_progress_seek_bar)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_player_seekbar_content_description)
           )
         )
+      )
     }
   }
 
@@ -207,14 +211,47 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_icon))
-        .check(
-          matches(
-            withContentDescription(
-              context.getString(R.string.audio_language_icon_content_description)
+      onView(withId(R.id.audio_language_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_language_icon_content_description)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_playAudio_configurationChange_checkAudioPaused() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      waitForTheView(
+        allOf(
+          withId(R.id.play_pause_audio_icon),
+          WithNonZeroDimensionsMatcher()
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
             )
           )
         )
+      )
     }
   }
 
@@ -227,10 +264,16 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -249,8 +292,15 @@ class AudioFragmentTest {
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -267,8 +317,15 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -289,25 +346,43 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -329,17 +404,41 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_language_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.hinglish_localized_language_name))
-        .inRoot(isDialog())
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withText("Ok")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
       onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
+    }
+  }
+
+  @Test
+  fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val receivedProfileId = audioFragment.arguments?.extractCurrentUserProfileId()
+
+        assertThat(receivedProfileId).isEqualTo(profileId)
+      }
     }
   }
 
@@ -462,32 +561,65 @@ class AudioFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -520,5 +652,52 @@ class AudioFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+  /** Returns a matcher that matches view based on non-zero width and height. */
+  private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
+
+    override fun matchesSafely(target: View): Boolean {
+      val targetWidth = target.width
+      val targetHeight = target.height
+      return targetWidth > 0 && targetHeight > 0
+    }
+
+    override fun describeTo(description: Description) {
+      description.appendText("with non-zero width and height")
+    }
+  }
+
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
+  }
+
+  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String {
+        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return isRoot()
+      }
+
+      override fun perform(uiController: UiController?, view: View?) {
+        checkNotNull(uiController)
+        uiController.loopMainThreadUntilIdle()
+        val startTime = System.currentTimeMillis()
+        val endTime = startTime + millis
+
+        do {
+          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
+            return
+          }
+          uiController.loopMainThreadForAtLeast(50)
+        } while (System.currentTimeMillis() < endTime)
+
+        // Couldn't match in time.
+        throw PerformException.Builder().withActionDescription(description)
+          .withViewDescription(HumanReadables.describe(view)).withCause(TimeoutException()).build()
+      }
+    }
   }
 }

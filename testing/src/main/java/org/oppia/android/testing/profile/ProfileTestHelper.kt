@@ -1,6 +1,7 @@
 package org.oppia.android.testing.profile
 
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.util.data.AsyncResult
@@ -64,6 +65,16 @@ class ProfileTestHelper @Inject constructor(
     return monitorFactory.createMonitor(logIntoAdmin()).waitForNextResult()
   }
 
+  /** Creates one admin profile without pin and logs in to the profile. */
+  fun addOnlyAdminProfileWithoutPin() {
+    addProfileAndWait(
+      name = "Admin",
+      pin = "",
+      allowDownloadAccess = true,
+      isAdmin = true
+    )
+  }
+
   /** Create [numProfiles] number of user profiles. */
   fun addMoreProfiles(numProfiles: Int) {
     for (x in 0 until numProfiles) {
@@ -74,6 +85,16 @@ class ProfileTestHelper @Inject constructor(
         isAdmin = false
       )
     }
+  }
+
+  /** Creates one admin profile with default values for all fields. */
+  fun createDefaultAdminProfile() {
+    addProfileAndWait(
+      name = "",
+      pin = "",
+      allowDownloadAccess = false,
+      isAdmin = true
+    )
   }
 
   /** Log in to admin profile. */
@@ -92,6 +113,21 @@ class ProfileTestHelper @Inject constructor(
     return profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
     )
+  }
+
+  /** Marks a profile as having finished the onboarding flow. */
+  fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
+    return profileManagementController.markProfileOnboardingEnded(profileId)
+  }
+
+  /** Marks a profile as having started the onboarding flow. */
+  fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
+    return profileManagementController.markProfileOnboardingStarted(profileId)
+  }
+
+  /** Updates the [ProfileType] of an existing profile. */
+  fun updateProfileType(profileId: ProfileId, profileType: ProfileType): DataProvider<Any?> {
+    return profileManagementController.updateProfileType(profileId, profileType)
   }
 
   /** Returns the continue button animation seen for profile. */

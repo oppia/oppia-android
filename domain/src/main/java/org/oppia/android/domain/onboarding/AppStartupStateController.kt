@@ -6,8 +6,10 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
@@ -31,6 +33,7 @@ class AppStartupStateController @Inject constructor(
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  private val analyticsController: AnalyticsController
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -59,14 +62,20 @@ class AppStartupStateController @Inject constructor(
     }
   }
 
-  /**
-   * Saves that the user has completed the app onboarding flow.
-   *
-   * Note that this does not notify existing subscribers of the changed state, nor can future
-   * subscribers observe this state until the app restarts.
-   */
-  fun markOnboardingFlowCompleted() {
+  /** Saves that the user has completed the app onboarding flow. */
+  fun markOnboardingFlowCompleted(profileId: ProfileId? = null) {
     updateOnboardingState { alreadyOnboardedApp = true }
+    logAppOnboardedEvent(profileId)
+  }
+
+  /**
+   * Resets the app’s onboarding state, marking that the user has not been onboarded.
+   *
+   * This is only expected to occur when all profiles have been deleted from the app,
+   * for example, if the admin resets app data after forgetting their PIN.
+   */
+  fun resetOnboardingState() {
+    updateOnboardingState { alreadyOnboardedApp = false }
   }
 
   /**
@@ -111,17 +120,10 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun updateOnboardingState(updateState: OnboardingState.Builder.() -> Unit) {
-    // Note that the flavor must be written here since it only gets updated on-disk and never
-    // in-memory (which means it will be inadvertently overwritten when updating onboarding state
-    // here).
-    val deferred = onboardingFlowStore.storeDataAsync(updateInMemoryCache = false) { state ->
-      state.toBuilder().apply {
-        updateState()
-        lastUsedBuildFlavor = currentBuildFlavor
-      }.build()
-    }
-    deferred.invokeOnCompletion { failure ->
-      if (failure != null) {
+    onboardingFlowStore.storeDataAsync { state ->
+      state.toBuilder().apply(updateState).build()
+    }.invokeOnCompletion { failure ->
+      failure?.let {
         oppiaLogger.e("StartupController", "Failed to update onboarding state.", failure)
       }
     }
@@ -133,15 +135,15 @@ class AppStartupStateController @Inject constructor(
   ): StartupMode {
     // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
     // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    if (!enableAppAndOsDeprecation.get().value) {
+    return if (!enableAppAndOsDeprecation.get().value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
         else -> StartupMode.USER_NOT_YET_ONBOARDED
       }
+    } else {
+      deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
     }
-
-    return deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
   }
 
   private fun computeBuildNoticeMode(
@@ -189,5 +191,9 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.isBeforeToday() ?: true
     } else false
+  }
+
+  private fun logAppOnboardedEvent(profileId: ProfileId?) {
+    analyticsController.logAppOnboardedEvent(profileId)
   }
 }

@@ -5,12 +5,19 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.databinding.databinding.AdminAuthActivityBinding
+import org.oppia.android.app.model.AdminAuthActivityParams
+import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.databinding.AdminAuthActivityBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */
@@ -19,9 +26,16 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
   private val authViewModel: AdminAuthViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController,
 ) {
   private lateinit var binding: AdminAuthActivityBinding
+  private val args by lazy {
+    activity.intent.getProtoExtra(
+      ADMIN_AUTH_ACTIVITY_PARAMS_KEY,
+      AdminAuthActivityParams.getDefaultInstance()
+    )
+  }
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
@@ -32,8 +46,8 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
-    val adminPin = checkNotNull(activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)) {
-      "Expected $ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY to be in intent extras."
+    val adminPin = checkNotNull(args?.adminPin) {
+      "Expected AdminAuthActivity.admin_auth_admin_pin to be in intent extras."
     }
     binding.apply {
       lifecycleOwner = activity
@@ -67,27 +81,36 @@ class AdminAuthActivityPresenter @Inject constructor(
     }
 
     binding.adminAuthSubmitButton.setOnClickListener {
+      val profileId = activity.intent.extractCurrentUserProfileId()
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
-        when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
+        when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            activity.startActivity(
-              AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                context, activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
-              )
-            )
-            activity.finish()
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+              if (it is AsyncResult.Success) {
+                activity.startActivity(
+                  AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                    context, profileId
+                  )
+                )
+                activity.finish()
+              }
+            }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-            activity.startActivity(
-              AddProfileActivity.createAddProfileActivityIntent(
-                context, activity.intent.getIntExtra(ADMIN_AUTH_COLOR_RGB_EXTRA_KEY, -10710042)
-              )
-            )
-            activity.finish()
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+              if (it is AsyncResult.Success) {
+                activity.startActivity(
+                  AddProfileActivity.createAddProfileActivityIntent(
+                    context, args?.colorRgb ?: -10710042
+                  )
+                )
+                activity.finish()
+              }
+            }
           }
         }
       } else if (inputPin.length == adminPin.length) {
@@ -99,7 +122,7 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
 
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
-    when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
+    when (args?.adminPinEnum ?: 0) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
         activity.title =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_access_controls_title)

@@ -2,7 +2,10 @@
 <!-- Authors:
 * Busayo
 * Confidence
+* Manuellabubakar
 * Osetiemoria
+* SaldırganSincap
+* Seanlip
 * Yigakpoa
 -->
 <resources>
@@ -36,7 +39,7 @@
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="concept_card_two_button_text">Concept Card 2</string>
-  <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="revision_card_toolbar_title">Guide wey go help you learn</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
   <string name="unsaved_exploration_dialog_leave_button">Comot</string>
@@ -70,10 +73,13 @@
   <string name="next_state_description">Go di next card</string>
   <string name="state_submit_button">Submit</string>
   <string name="submit_button_text">Submit</string>
+  <string name="state_flashback_button">Na example be dis</string>
+  <string name="state_return_to_question_button">Back to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Di Topic</string>
   <string name="previous_responses_header">Former reply (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
+  <string name="image_error_empty_input">Select picture make u continue</string>
   <string name="state_learn_again_button">Learn Am Again</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
@@ -82,23 +88,22 @@
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
-  <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
-  <string name="lessons">Lessons</string>
+  <string name="learn">Learn</string>
   <string name="practice">Practice</string>
-  <string name="revision">Revision</string>
+  <string name="study">Put head for book</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics wey dey in Progress</string>
-  <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter %s with title %s don complete</string>
-  <string name="chapter_in_progress">Chapter %s with title %s dey in progress</string>
-  <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock dis chapter.</string>
-  <string name="chapter_locked_prerequisite_title_label">Chapter %s: %s dey locked currently. Abeg complete chapter %s: %s to fit unlock dis chapter.</string>
+  <string name="chapter_name">Chapter %1$s: %2$s</string>
+  <string name="chapter_completed">You don complete Chapter %1$s: “%2$s”</string>
+  <string name="chapter_in_progress">Chapter %1$s – “%2$s” dey on ground</string>
+  <string name="chapter_prerequisite_title_label">You gats complete Chapter %1$s: “%2$s” before this one go unlock</string>
+  <string name="chapter_locked_prerequisite_title_label">You gats complete Chapter %1$s: “%2$s before  chapter %3$s: %4$s go unlock</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Finish the chapter wey dey before to fit open dis chapter</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter fraction wey dey in di form x/x, or mixed nomba wey dey in di form x x/x.</string>
@@ -106,8 +111,11 @@
   <string name="numeric_input_hint">Enter a nomba.</string>
   <string name="number_with_units_input_hint_text">Write nombas with units for here.</string>
   <string name="numeric_expression_default_hint_text">Use only nombas write an expression for here.</string>
+  <string name="numeric_expression_error_empty_input">Put number wey make sense to take continue</string>
   <string name="algebraic_expression_default_hint_text">Write an expression for here.</string>
+  <string name="algebraic_expression_error_empty_input">Put Algebra wey correct to take continue</string>
   <string name="math_equation_default_hint_text">Write an equation for here.</string>
+  <string name="math_equation_error_empty_input">Put equation make you continue</string>
   <string name="math_expression_error_spaces_in_numerical_input">Abeg remove di spaces between di nombas for your ansa.</string>
   <string name="math_expression_error_unbalanced_parentheses">Abeg close or remove di bracket.</string>
   <string name="math_expression_error_single_redundant_parentheses">Abeg remove di bracket wey dey around di whole ansa: \'%s\'.</string>
@@ -153,7 +161,7 @@
   <string name="topic_downloaded">Topic Wey You Don Download</string>
   <string name="downloaded">You don download am</string>
   <string name="question_player_title">Practice Mode</string>
-  <string name="question_training_session_progress">Question %s of %s</string>
+  <string name="question_training_session_progress">Na number %1$s question out of %2$s</string>
   <string name="question_training_session_progress_finished">Complete</string>
   <string name="question_training_session_finished_header">Finished</string>
   <string name="question_training_session_finished_message">You don finish all of di questions! You fit choose to play anoda set of questions, or go back to di topic.</string>
@@ -169,14 +177,19 @@
   <string name="fraction_error_invalid_format">Abeg enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Abeg no put 0 for di denominator</string>
   <string name="fraction_error_larger_than_seven_digits">None of di nombas for di fraction go get more dan 7 digits.</string>
+  <string name="fraction_error_empty_input">Put fraction make you continue</string>
   <string name="number_error_starting_with_floating_point">Abeg start your ansa with nomba (e.g.,”0” for 0.5).</string>
   <string name="number_error_invalid_format">Abeg put correct nomba.</string>
   <string name="number_error_larger_than_fifteen_characters">Di ansa fit get at most 15 digits (0–9) or sign (. or -).</string>
+  <string name="number_error_empty_input">Put number make you continue</string>
   <string name="ratio_error_invalid_chars">Abeg write a ratio wey get nomba separated by colons (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_format">Abeg enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_colons">Your ansa get two colons (:) next to each other.</string>
   <string name="ratio_error_invalid_size">Nomba of terms no dey equal to di required terms.</string>
   <string name="ratio_error_includes_zero">Ratios no suppose get 0 as an element.</string>
+  <string name="ratio_error_empty_input">Put ratio make you continue</string>
+  <string name="text_error_empty_input">Put text for hear make you continue</string>
+  <string name="selection_error_empty_input">Make you pick one answer to take continue</string>
   <string name="unknown_size">Size wey dey no know</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -184,6 +197,10 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">You get am!</string>
   <string name="topic_prefix">Topic: %s</string>
+  <string name="selected_image_region_selection_content_description">Picture wey show %1$s</string>
+  <string name="unselected_image_region_selection_content_description">Select the image wey show %1$s</string>
+  <string name="flashback_toolbar_title_text" fuzzy="true">Check the question wey you do before</string>
+  <string name="flashback_state_feedback_text" fuzzy="true">You dey confuse? No wahala. Make we check how we take solve the last question.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -193,22 +210,20 @@
     <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%s of %s Chapter Completed</item>
-    <item quantity="other">%s of %s Chapters Completed</item>
+    <item quantity="one">You don finish %1$s out of %2$s chapter</item>
+    <item quantity="other">You don finish %1$s out of %2$s chapters</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">1 Lesson</item>
     <item quantity="other">%s Lessons</item>
   </plurals>
-  <plurals name="completed_story_count" fuzzy="true">
-    <item quantity="one">1 Story Completed</item>
-    <item quantity="zero">%s Stories Completed</item>
-    <item quantity="other">%s Stories Completed</item>
+  <plurals name="completed_story_count">
+    <item quantity="one">You don finish 1 story</item>
+    <item quantity="other">You don finish %s stories</item>
   </plurals>
-  <plurals name="ongoing_topic_count" fuzzy="true">
-    <item quantity="one">1 Topic in Progress</item>
-    <item quantity="zero">%s Topics in Progress</item>
-    <item quantity="other">%s Topics in Progress</item>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">You get 1 topic wey still dey on ground</item>
+    <item quantity="other">You get %s topics wey still dey on ground</item>
   </plurals>
   <string name="profile_chooser_activity_label">Page to select profile</string>
   <string name="profile_chooser_admin">Administrator</string>
@@ -218,6 +233,14 @@
   <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
+  <string name="profile_selection_header">Pick your profile to take start the lessons</string>
+  <string name="profile_selection_profile_icon_description">Na im profile picture be this</string>
+  <string name="profile_selection_add_icon_description">Make you add extra profile</string>
+  <string name="profile_selection_add_profile_text">Make you add learner profile</string>
+  <string name="profile_selection_admin_label">Person wey dey in charge</string>
+  <string name="profile_selection_scroll_left_content_description">Move am go left side</string>
+  <string name="profile_selection_scroll_right_content_description">Move am go right side</string>
+  <string name="profile_selection_administrator_controls">Oga settings</string>
   <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
   <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
@@ -251,6 +274,8 @@
   <string name="add_profile_error_name_not_unique">Anoda profile don already dey use dis name.</string>
   <string name="add_profile_error_name_empty">Abeg put valid name for dis profile.</string>
   <string name="add_profile_error_name_only_letters">Abeg choose profile name wey no get nombas or symbols.</string>
+  <string name="add_profile_error_missing_profile_type">We no sabi this profile type</string>
+  <string name="add_profile_default_error_message">Wahala happen as we dey create the profile</string>
   <string name="add_profile_error_pin_length">Your PIN suppose dey 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Abeg make sure sey di two PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
@@ -267,7 +292,8 @@
   <string name="skip">Skip</string>
   <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
-  <string name="onboarding_slide_dots_content_description">Slide %s of %s</string>
+  <string name="onboarding_slide_dots_content_description">Na slide %1$s out of %2$s</string>
+  <string name="pin_password_activity_title">PIN verification</string>
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Abeg put your Administrator PIN.</string>
   <string name="pin_password_user_enter">Abeg put your PIN.</string>
@@ -309,6 +335,8 @@
   <string name="home_activity_title">Home</string>
   <string name="promoted_story_spotlight_hint">From now, you go see lessons recommended for you here.</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <string name="classroom_list_activity_title">Home</string>
+  <string name="classrooms_list_activity_section_header">Classrooms</string>
   <string name="profile_list_activity_title">Profiles</string>
   <string name="profile_edit_activity_title">Edit Profile</string>
   <string name="profile_edit_created">Created on %s</string>
@@ -323,7 +351,9 @@
   <string name="profile_edit_delete_dialog_message">All progress go delete and you no fit get am back.</string>
   <string name="profile_edit_delete_dialog_positive">Delete</string>
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
+  <string name="profile_edit_delete_successful_message">Profile don comot without wahala</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
+  <string name="profile_edit_delete_success_dialog_positive_button">No wahala</string>
   <string name="profile_edit_allow_download_sub">Di user no fit download and delete content without Administrator password</string>
   <string name="profile_picture_activity_title">Profile Picture</string>
   <string name="profile_progress_edit_dialog_title">Profile Picture</string>
@@ -420,17 +450,17 @@
   <string name="return_to_lesson">Go back to lesson</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items dey equal, join dem.</string>
+  <string name="drag_and_drop_interaction_empty_input">Arrange the boxes make you continue</string>
   <string name="link_to_item_below">Link to item %s</string>
   <string name="unlink_items">Unlink items at %s</string>
   <string name="move_item_down_content_description">Move item down to %s</string>
   <string name="move_item_up_content_description">Move item up to %s</string>
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
-  <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes_ago" fuzzy="true">
-    <item quantity="zero">0 minutes ago</item>
-    <item quantity="one">a minute ago</item>
-    <item quantity="other">%s minutes ago</item>
+  <string name="profile_last_visited">Na %1$s %2$s</string>
+  <plurals name="minutes_ago">
+    <item quantity="one">one minute don pass</item>
+    <item quantity="other">%s minutes don pass</item>
   </plurals>
   <plurals name="hours_ago">
     <item quantity="one">an hour ago</item>
@@ -463,11 +493,11 @@
   <string name="beta_notice_dialog_title">Beta Notice</string>
   <string name="beta_notice_dialog_message">Hello! Your app don dey update to di Beta version. If you experience any problems while you dey use di app, or get any questions, abeg contact us at android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_do_not_show_again_text">No show dis message again</string>
-  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="beta_notice_dialog_close_button_text">No wahala</string>
   <string name="general_availability_notice_dialog_title">General Availability Notice</string>
   <string name="general_availability_notice_dialog_message">Hello! Your app don dey update to di General Availability version. If you experience any problems while you dey use di app, or get any questions, abeg contact us at android-feedback@oppia.org.</string>
   <string name="general_availability_notice_dialog_do_not_show_again_text">No show dis message again</string>
-  <string name="general_availability_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_close_button_text">No wahala</string>
   <string name="ratio_content_description_separator">to</string>
   <string name="ratio_default_hint_text">Enter a ratio in di form x:y.</string>
   <string name="text_input_default_hint_text">Tap here to put text.</string>
@@ -510,28 +540,28 @@
   <string name="faq_question_whats_oppia">Wetin be %s?</string>
   <string name="faq_question_whos_an_admin">Who be Administrator?</string>
   <string name="faq_question_create_profile">How I go fit create a new profile?</string>
-  <string name="faq_question_app_language" fuzzy="true">How I fit get the app for my language?</string>
-  <string name="faq_question_bug_reporting" fuzzy="true">I see bug for di app. How I fit report am?</string>
-  <string name="faq_question_math_lessons" fuzzy="true">Why only math lessons dey available?</string>
-  <string name="faq_question_more_lessons" fuzzy="true">Una go dey create more lessons?</string>
-  <string name="faq_question_exploration_player" >Why di Exploration player no dey load?</string>
+  <string name="faq_question_app_language">How I go fit get the app for my language?</string>
+  <string name="faq_question_bug_reporting">I see one bug. How I go take report am?</string>
+  <string name="faq_question_math_lessons">Why na only maths lesson dey show?</string>
+  <string name="faq_question_more_lessons">Una go still add more lessons?</string>
+  <string name="faq_question_exploration_player">Why di Exploration player no dey load?</string>
   <string name="faq_question_audio_not_playing">Why my audio no dey play?</string>
   <string name="faq_question_delete_profile">How I go delete a profile?</string>
-  <string name="faq_question_update_app" fuzzy="true">How I fit update di app?</string>
-  <string name="faq_question_update_os" fuzzy="true">How I fit update my Android OS?</string>
+  <string name="faq_question_update_app">How I go fit update di app?</string>
+  <string name="faq_question_update_os">How I go fit update my Android OS?</string>
   <string name="faq_question_cant_find_question">I no dey find my question here. What now?</string>
   <string name="faq_answer_whats_oppia">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"to learn\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s\'s mission na to help anyone learn anything dey want in an effective and enjoyable way.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;By creating a set of free, high-quality, demonstrably effective lessons with di help of educators from around di world, %1$s dey aim to provide students with quality education — regardless of where dem dey or di traditional resources wey dem get access to.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;As a student, you fit start your learning adventure by browsing di topics listed on di Home Page!&lt;/p&gt;</string>
-  <string name="faq_answer_whos_an_admin">&lt;p&gt;An Administrator na di main user wey dey manage profiles and settings for every profile on top their account. They fit be your parent, teacher, or guardian wey don create dis profile for you. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Administrators get di ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions fit dey required for some features such as changing your PIN, and more. &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;To see who your Administrator be, go di Profile Chooser. Di first profile fot di list and get \"Administrator\" written under their name na di Administrator. &lt;/p&gt;</string>
+  <string name="faq_answer_whos_an_admin">&lt;p&gt;Administrator na the main person wey dey manage profiles and settings for every profile inside their account. Dem fit be your papa, teacher, or guardian wey create this profile for you.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Administrators fit manage profiles, set PINs, and change other settings for their account. Based on your profile, you fit need Administrator permission to do some things like change your PIN and other settings.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;If you wan know who be your Administrator, go the Profile Chooser. The first profile wey show and get \"Administrator\" under the name — na the Administrator be that.&lt;/p&gt;</string>
   <string name="faq_answer_create_profile">&lt;p&gt;If na your first time creating a profile and not have a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Set up Multiple Profiles&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Create a PIN and &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt;(Optional) Upload a photo.&lt;/li&gt;&lt;li&gt;Enter a name.&lt;/li&gt;&lt;li&gt;(Optional) Assign a 3-digit PIN.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt; If you don create a profile before and you get a PIN:&lt;ol&gt;&lt;li&gt;From di Profile Chooser, tap on &lt;strong&gt;Add Profile&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Enter your PIN and tap &lt;strong&gt;Submit&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Fill in all boxes for di profile.&lt;ol&gt;&lt;li&gt; (Optional) Upload a photo. &lt;/li&gt;&lt;li&gt; Enter a name. &lt;/li&gt;&lt;li&gt; (Optional) Assign a 3-digit PIN. &lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. Dis profile go add to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
-  <string name="faq_answer_app_language" fuzzy="true">&lt;p&gt;The %s app dey support English, Brazilian Portuguese, Arabic, Swahili, and Nigerian Pidgin. Select one of these languages for di menu, under Options. To ask for the app for your language, abeg contact us for <strong>admin@oppia.org</strong>.&lt;/p&gt;</string>
-  <string name="faq_answer_bug_reporting" fuzzy="true">&lt;p&gt;<ol><li>From your %s app home screen, tap the menu for di top left corner.</li><li>Tap <strong>Share feedback</strong>.</li><li>Follow di instructions to report di bug or share feedback.</li></ol>&lt;/p&gt;</string>
-  <string name="faq_answer_math_lessons" fuzzy="true"><p>%1$s mission na to help learners gain necessary life skills. Math na essential skill for everyday life. %1$s go dey offer new lessons on science and other subjects very soon!</p></string>
-  <string name="faq_answer_more_lessons" fuzzy="true"><p>Yes, %s go dey offer new lessons on science and other subjects very soon. Abeg check back for updates!</p></string>
-  <string name="faq_answer_exploration_player">&lt;p&gt;If di Exploration Player no dey load&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps above &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_audio_not_playing">&lt;p&gt;If your audio no dey play&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check to see if di app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Go to di Play Store and make sure sey di app dey updated to di latest version &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; If your internet connection dey slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet fit cause di audio to load irregularly, and go make am difficult to play. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ask di Administrator to check their device and internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Get di Administrator to troubleshoot using di steps for up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Let us know if you still dey get issues with loading:&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Report a problem by contacting us at admin@oppia.org. &lt;/li&gt;&lt;/ul&gt;</string>
-  <string name="faq_answer_delete_profile">&lt;p&gt;Once profile don delete:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Di profile no fit dey recovered. &lt;/li&gt;&lt;li&gt; Profile information such as name, photos, and progress go permanently delete. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;To delete a profile (excluding the &lt;u&gt;Administrator\'s&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt; From di Administrator\'s Home Page, tap on di menu button on di top left. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Administrator Controls&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on &lt;strong&gt;Edit Profiles&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap on di Profile wey you wan delete. &lt;/li&gt;&lt;li&gt;For di bottom of di screen, tap &lt;strong&gt;Profile Deletion&lt;/strong&gt;. &lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Delete&lt;/strong&gt; to confirm deletion. &lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Only di &lt;u&gt;Administrator&lt;/u&gt; go dey able to manage profiles.&lt;/p&gt;</string>
-  <string name="faq_answer_update_app" fuzzy="true"><p><ol><li>Open di Google Play Store app.</li><li>Search for di %s app.</li><li>Tap Update.</li></ol></p></string>
-  <string name="faq_answer_update_os" fuzzy="true"><ol><li>Tap your phone\'s Settings app.</li><li>Tap System updates.</li><li>Tap System updates and follow di instructions to update your Android operating system.</li></ol></string>
+  <string name="faq_answer_app_language">&lt;p&gt;The %s app dey support English, Brazilian Portuguese, Arabic, Swahili, and Nigerian Pidgin for now. Make you select any of these languages from the menu under Options. If you wan make we add your language, abeg contact us for &lt;strong&gt;admin@oppia.org&lt;/strong&gt;.&lt;/p&gt;</string>
+  <string name="faq_answer_bug_reporting">&lt;p&gt;&lt;ol&gt;&lt;li&gt;From your %s app home screen, tap the menu wey dey top left corner.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Share feedback&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Make you follow the instructions to report the bug or tell us wetin you think&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
+  <string name="faq_answer_math_lessons">&lt;p&gt;The mission of %1$s na to help learners get the life skills wey dem need. Maths na one important skill for everyday life. %1$s go soon bring new lessons for science and other subjects!&lt;/p&gt;</string>
+  <string name="faq_answer_more_lessons">&lt;p&gt;Yes, %s go soon bring new lessons for science and other subjects. Abeg check back later for updates!&lt;/p&gt;</string>
+  <string name="faq_answer_exploration_player">&lt;p&gt;If the Exploration Player no dey load&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check whether the app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Go Play Store and make sure say the app don update to the latest version&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;If your internet slow, try reconnect to your Wi-Fi or connect to another network&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Tell the Administrator make dem check their device and internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Make Administrator try fix am using the steps wey dey up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Still get wahala to load?&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Report the problem by contacting us for admin@oppia.org&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_audio_not_playing">&lt;p&gt;If your audio no dey play&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check whether the app dey up to date:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Go Play Store and make sure say the app don update to the latest version&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Check your internet connection:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;If your internet slow, try reconnect to your Wi-Fi or connect to another network. Slow internet fit make the audio no load well, and e go hard to play.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tell the Administrator make dem check their device and internet:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Make Administrator try fix am using the steps wey dey up&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Still get wahala to play the audio?&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Report the problem by contacting us for admin@oppia.org&lt;/li&gt;&lt;/ul&gt;</string>
+  <string name="faq_answer_delete_profile">&lt;p&gt;Once you delete a profile:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;You no go fit recover the profile again.&lt;/li&gt;&lt;li&gt;Profile info like name, photo, and progress go delete permanently.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;To delete a profile (no include the &lt;u&gt;Administrator&lt;/u&gt;):&lt;/p&gt;&lt;ol&gt;&lt;li&gt;From the Administrator Home Page, tap the menu button wey dey top left.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Administrator Controls&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Edit Profiles&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Tap the profile wey you wan delete.&lt;/li&gt;&lt;li&gt;Scroll go bottom, then tap &lt;strong&gt;Profile Deletion&lt;/strong&gt;.&lt;/li&gt;  &lt;li&gt;Tap &lt;strong&gt;Delete&lt;/strong&gt; to confirm say you wan delete am.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Na only the &lt;u&gt;Administrator&lt;/u&gt; fit manage profiles.&lt;/p&gt;</string>
+  <string name="faq_answer_update_app">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Open your Google Play Store app.&lt;/li&gt;&lt;li&gt;Search for the %s app.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Update&lt;/strong&gt;.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
+  <string name="faq_answer_update_os">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Tap the Settings app for your phone.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;System updates&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;System updates&lt;/strong&gt; again and follow the steps to update your Android operating system.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_cant_find_question">&lt;p&gt;If you no fit find your question or you go like to report a bug, contact us for admin@oppia.org.&lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
@@ -588,4 +618,42 @@
   <string name="lock_icon_content_description">Lock Icon</string>
   <string name="download_status_image_content_description">Download Status</string>
   <string name="font_scale_html_content_text">html Content</string>
+  <string name="onboarding_language_activity_title">You dey welcome to %s!</string>
+  <string name="onboarding_language_activity_subtitle">You fit learn maths for free, anytime wey you like!</string>
+  <string name="onboarding_language_activity_text">Na for students wey be 7 to 14 years old</string>
+  <string name="onboarding_language_activity_select_label">Pick language wey you want use start</string>
+  <string name="onboarding_language_activity_explanation_text">You fit change your language anytime for inside app settings</string>
+  <string name="onboarding_language_activity_button_text">Make we go!</string>
+  <string name="onboarding_profile_type_activity_title">Pick the kind profile you want</string>
+  <string name="onboarding_profile_type_activity_header">Yarn us small about who you be!</string>
+  <string name="onboarding_profile_type_activity_student_text">I be student and I wan learn new things!</string>
+  <string name="onboarding_profile_type_activity_parent_text">I be the student own parent, teacher or guardian.</string>
+  <string name="onboarding_step_count_two">Na step 2 out of 5</string>
+  <string name="create_profile_activity_title">Make new profile</string>
+  <string name="create_profile_activity_header">Wetin make we dey call you?</string>
+  <string name="create_profile_activity_nickname_label">Name wey people sabi you with</string>
+  <string name="create_profile_activity_profile_picture_prompt">Click here make you add your picture</string>
+  <string name="create_profile_activity_nickname_error">Click the box wey dey up to type your nickname</string>
+  <string name="create_profile_activity_edit_icon_content_description">Touch photo to change am</string>
+  <string name="create_profile_activity_current_picture_content_description">The picture wey you dey use now</string>
+  <string name="onboarding_step_count_three">Na step 3 out of 5</string>
+  <string name="onboarding_learner_intro_activity_title">Welcome o!</string>
+  <string name="onboarding_learner_intro_activity_text">Welcome o!, %s!</string>
+  <string name="onboarding_learner_intro_classroom_text">Maths go sweet you with story-style lessons</string>
+  <string name="onboarding_learner_intro_practice_text">Answer small questions to check wetin you don learn</string>
+  <string name="onboarding_learner_intro_feedback_text">Use %s correction take get better</string>
+  <string name="onboarding_step_count_four">Na Step 4 of 5</string>
+  <string name="onboarding_otter_content_description">Otter wey fine and dey wear glasses</string>
+  <string name="onboarding_learner_otter_content_description">Fine Otter wey dey with books.</string>
+  <string name="onboarding_parent_otter_content_description">Baby Otter and him mama.</string>
+  <string name="onboarding_navigation_back">Waka back</string>
+  <string name="onboarding_navigation_continue">Make you continue</string>
+  <string name="audio_language_fragment_text">Inside %s, lesson dey wey you fit hear</string>
+  <string name="audio_language_fragment_subtitle">Choose how you wan take hear the lesson</string>
+  <string name="onboarding_step_count_five">Na Step 5 of 5</string>
+  <string name="arabic_language_display_name_content_description">Arabic</string>
+  <string name="flashback_confirmation_dialog_continue_button_text">Make you continue</string>
+  <string name="flashback_confirmation_dialog_not_now_text">No be now</string>
+  <string name="flashback_confirmation_dialog_title_text">You need sometin? No wahala.</string>
+  <string name="flashback_confirmation_dialog_message_text">Go look how dem solve the previous question</string>
 </resources>

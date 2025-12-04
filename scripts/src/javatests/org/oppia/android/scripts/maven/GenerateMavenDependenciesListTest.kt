@@ -1334,7 +1334,7 @@ class GenerateMavenDependenciesListTest {
     build.appendText(
       """
       android_binary(
-          name = "oppia",
+          name = "oppia_dev",
           manifest = "AndroidManifest.xml",
           deps = depsList
       )

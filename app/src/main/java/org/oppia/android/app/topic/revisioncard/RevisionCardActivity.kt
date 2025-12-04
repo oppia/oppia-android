@@ -3,13 +3,22 @@ package org.oppia.android.app.topic.revisioncard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
+import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity for revision card. */
@@ -18,6 +27,7 @@ class RevisionCardActivity :
   ReturnToTopicClickListener,
   ConceptCardListener,
   RouteToRevisionCardListener,
+  DefaultFontSizeStateListener,
   BottomSheetOptionsMenuItemClickListener {
 
   @Inject
@@ -26,20 +36,36 @@ class RevisionCardActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+
     intent?.let { intent ->
-      val internalProfileId = intent.getIntExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, -1)
-      val topicId = checkNotNull(intent.getStringExtra(TOPIC_ID_EXTRA_KEY)) {
+      val args = intent.getProtoExtra(
+        REVISION_CARD_ACTIVITY_PARAMS_KEY,
+        RevisionCardActivityParams.getDefaultInstance()
+      )
+
+      val profileId = intent.extractCurrentUserProfileId()
+      val topicId = checkNotNull(args.topicId) {
         "Expected topic ID to be included in intent for RevisionCardActivity."
       }
-      val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
-      val subtopicListSize = intent.getIntExtra(SUBTOPIC_LIST_SIZE_EXTRA_KEY, -1)
+      val subtopicId = args?.subtopicId ?: -1
+      val subtopicListSize = args?.subtopicListSize ?: -1
+
       revisionCardActivityPresenter.handleOnCreate(
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
       )
     }
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          revisionCardActivityPresenter.setReadingTextSizeMedium()
+          onReturnToTopicRequested()
+        }
+      }
+    )
   }
 
   override fun handleOnOptionsItemSelected(itemId: Int) {
@@ -47,31 +73,32 @@ class RevisionCardActivity :
   }
 
   companion object {
-    internal const val INTERNAL_PROFILE_ID_EXTRA_KEY = "RevisionCardActivity.internal_profile_id"
-    internal const val TOPIC_ID_EXTRA_KEY = "RevisionCardActivity.topic_id"
-    internal const val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
-    internal const val SUBTOPIC_LIST_SIZE_EXTRA_KEY = "RevisionCardActivity.subtopic_list_size"
+    /** Params key for RevisionCardActivity. */
+    const val REVISION_CARD_ACTIVITY_PARAMS_KEY = "RevisionCardActivity.params"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       subtopicId: Int,
       subtopicListSize: Int
     ): Intent {
+      val args = RevisionCardActivityParams.newBuilder().apply {
+        this.topicId = topicId
+        this.subtopicId = subtopicId
+        this.subtopicListSize = subtopicListSize
+      }.build()
       return Intent(context, RevisionCardActivity::class.java).apply {
-        putExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
-        putExtra(TOPIC_ID_EXTRA_KEY, topicId)
-        putExtra(SUBTOPIC_ID_EXTRA_KEY, subtopicId)
-        putExtra(SUBTOPIC_LIST_SIZE_EXTRA_KEY, subtopicListSize)
+        putProtoExtra(REVISION_CARD_ACTIVITY_PARAMS_KEY, args)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(REVISION_CARD_ACTIVITY)
       }
     }
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -79,7 +106,7 @@ class RevisionCardActivity :
     startActivity(
       createRevisionCardActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
@@ -97,7 +124,7 @@ class RevisionCardActivity :
     revisionCardActivityPresenter.dismissConceptCard()
   }
 
-  override fun onBackPressed() {
-    onReturnToTopicRequested()
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    revisionCardActivityPresenter.loadRevisionCardFragment(readingTextSize)
   }
 }

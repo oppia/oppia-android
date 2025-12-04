@@ -7,7 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.AdministratorControlsFragmentArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+
+/** Argument key for Administrator Controls Fragment. */
+const val ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY = "AdministratorControlsFragment.arguments"
 
 /** Fragment that contains Administrator Controls of the application. */
 class AdministratorControlsFragment : InjectableFragment() {
@@ -15,15 +21,16 @@ class AdministratorControlsFragment : InjectableFragment() {
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
   companion object {
-    private const val IS_MULTIPANE_ARGUMENT_KEY = "AdministratorControlsFragment.is_multipane"
 
     /** Creates a new instance of [AdministratorControlsFragment]. */
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
-      val args = Bundle()
-      args.putBoolean(IS_MULTIPANE_ARGUMENT_KEY, isMultipane)
-      val fragment = AdministratorControlsFragment()
-      fragment.arguments = args
-      return fragment
+      val args =
+        AdministratorControlsFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
+      return AdministratorControlsFragment().apply {
+        arguments = Bundle().apply {
+          putProto(ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -37,11 +44,15 @@ class AdministratorControlsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
+    val arguments =
       checkNotNull(arguments) {
         "Expected arguments to be passed to AdministratorControlsFragment"
       }
-    val isMultipane = args.getBoolean(IS_MULTIPANE_ARGUMENT_KEY)
+    val args = arguments.getProto(
+      ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
+      AdministratorControlsFragmentArguments.getDefaultInstance()
+    )
+    val isMultipane = args.isMultipane
     return administratorControlsFragmentPresenter
       .handleCreateView(inflater, container, isMultipane)
   }

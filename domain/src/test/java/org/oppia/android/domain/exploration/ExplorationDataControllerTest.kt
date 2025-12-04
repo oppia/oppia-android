@@ -28,6 +28,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -35,7 +36,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -54,6 +54,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -187,7 +188,11 @@ class ExplorationDataControllerTest {
   fun testStartPlayingNewExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -195,12 +200,20 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStartPlayingNewExploration_afterCompletingIt_returnsSuccess() {
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     stopExploration()
 
     val secondStartProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0, TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -208,13 +221,23 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testResumeExploration_afterStartingIt_returnsSuccess() {
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     stopExploration(isCompletion = false)
 
     val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
     val secondStartProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        checkpoint
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -224,7 +247,11 @@ class ExplorationDataControllerTest {
   fun testRestartExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -232,12 +259,21 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testRestartExploration_afterStartingIt_returnsSuccess() {
-    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    restartExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     stopExploration(isCompletion = false)
 
     val secondStartProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -247,7 +283,11 @@ class ExplorationDataControllerTest {
   fun testReplayExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -255,12 +295,21 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testReplayExploration_afterCompletingIt_returnsSuccess() {
-    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    replayExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
     stopExploration()
 
     val secondStartProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -268,11 +317,20 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testReplayExploration_withoutStoppingPreviousSession_returnsSuccess() {
-    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    replayExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
 
     val dataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, TEST_TOPIC_ID_1, TEST_STORY_ID_2, TEST_EXPLORATION_ID_4
+        profileId.internalId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_1,
+        TEST_STORY_ID_2,
+        TEST_EXPLORATION_ID_4
       )
 
     // The new session overwrites the previous.
@@ -290,7 +348,12 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStopPlayingExploration_afterStarting_notCompletion_returnsSuccess() {
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
 
     val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
 
@@ -299,7 +362,12 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStopPlayingExploration_afterStarting_completion_returnsSuccess() {
-    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
 
     val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = true)
 
@@ -310,26 +378,41 @@ class ExplorationDataControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun startPlayingNewExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun startPlayingNewExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
-  private fun restartExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun restartExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
-  private fun replayExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun replayExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -380,20 +463,39 @@ class ExplorationDataControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

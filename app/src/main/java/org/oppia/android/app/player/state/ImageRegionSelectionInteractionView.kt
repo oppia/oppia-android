@@ -9,7 +9,9 @@ import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.view.ViewComponentFactory
@@ -45,12 +47,15 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @Inject lateinit var accessibilityService: AccessibilityService
   @Inject lateinit var imageLoader: ImageLoader
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private lateinit var entityId: String
   private lateinit var overlayView: FrameLayout
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
+
+  private lateinit var userAnswerState: UserAnswerState
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -59,6 +64,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   fun setImageUrl(imageUrl: String) {
     this.imageUrl = imageUrl
     maybeInitializeClickableAreas()
+  }
+
+  fun setUserAnswerState(userAnswerState: UserAnswerState) {
+    this.userAnswerState = userAnswerState
   }
 
   fun setEntityId(entityId: String) {
@@ -111,7 +120,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
       ::entityId.isInitialized &&
       ::imageUrl.isInitialized &&
       ::onRegionClicked.isInitialized &&
-      ::overlayView.isInitialized
+      ::overlayView.isInitialized &&
+      ::resourceHandler.isInitialized
     ) {
       loadImage()
 
@@ -121,7 +131,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         onRegionClicked,
         bindingInterface,
         isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
-        clickableAreas
+        clickableAreas,
+        userAnswerState,
+        resourceHandler
       )
       areasImage.addRegionViews()
       performAttachment(areasImage)

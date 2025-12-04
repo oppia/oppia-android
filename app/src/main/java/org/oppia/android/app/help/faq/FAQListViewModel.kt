@@ -1,11 +1,11 @@
 package org.oppia.android.app.help.faq
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.extensions.containsPlaceholderRegex
 import javax.inject.Inject
