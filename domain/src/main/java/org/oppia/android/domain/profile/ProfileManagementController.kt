@@ -266,6 +266,48 @@ class ProfileManagementController @Inject constructor(
    * @param colorRgb Indicates the color RGB integer used for the avatar background.
    * @return a [DataProvider] that indicates the success/failure of this add operation.
    */
+
+  fun createDefaultProfile(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      if (it.profilesCount > 0) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILES_EXIST)
+      }
+
+      val nextProfileId = it.nextProfileId
+      val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
+
+      val newProfile = Profile.newBuilder().apply {
+        this.name = ""
+        this.pin = ""
+        this.allowDownloadAccess = false
+        this.allowInLessonQuickLanguageSwitching = false
+        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
+        this.isAdmin = false
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        numberOfLogins = 0
+
+        avatar = ProfileAvatar.newBuilder().apply {
+          avatarColorRgb = -10710042
+        }.build()
+      }.build()
+
+      val wasProfileEverAdded = it.profilesCount > 0
+
+      val profileDatabaseBuilder =
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfile)
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+    }
+  }
+
   fun addProfile(
     name: String,
     pin: String,
