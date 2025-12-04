@@ -11,8 +11,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.ExplorationActivityBinding
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralExploration
@@ -32,8 +32,8 @@ import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
@@ -70,6 +70,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
   private lateinit var profileId: ProfileId
+  private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -85,6 +86,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun handleOnCreate(
     context: Context,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -111,8 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
-      @Suppress("DEPRECATION") // TODO(#5404): Migrate to a back pressed dispatcher.
-      activity.onBackPressed()
+      activity.onBackPressedDispatcher.onBackPressed()
     }
 
     binding.actionAudioPlayer.setOnClickListener {
@@ -125,6 +126,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     this.profileId = profileId
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -187,6 +189,7 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
           profileId,
+          classroomId,
           topicId,
           storyId,
           explorationId,
@@ -211,7 +214,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -221,7 +224,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity,
-          profileId.internalId,
+          profileId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -244,6 +247,14 @@ class ExplorationActivityPresenter @Inject constructor(
     getExplorationFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
+
+  fun hideFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(false)
+  }
+
+  fun showFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(true)
+  }
 
   private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
@@ -319,6 +330,10 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    if (exploreViewModel.showFlashbackToolbar.get() == true) {
+      getExplorationFragment()?.onFlashbackToolbarBackPressed()
+      return
+    }
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
@@ -378,7 +393,8 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun backPressActivitySelector() {
+  /** Selects the appropriate way to close the activity based on the parent screen. */
+  fun backPressActivitySelector() {
     when (parentScreen) {
       ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
@@ -386,7 +402,12 @@ class ExplorationActivityPresenter @Inject constructor(
       ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
         // Default to the topic activity.
         activity.startActivity(
-          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
+          TopicActivity.createTopicActivityIntent(
+            context,
+            profileId,
+            classroomId,
+            topicId
+          )
         )
         activity.finish()
       }
@@ -401,12 +422,28 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewHint(hintIndex)
+  }
+
   fun revealSolution() {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(
         TAG_EXPLORATION_FRAGMENT
       ) as ExplorationFragment
     explorationFragment.revealSolution()
+  }
+
+  fun viewSolution() {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
+    explorationFragment.viewSolution()
   }
 
   private fun showProgressDatabaseFullDialogFragment() {
@@ -540,6 +577,9 @@ class ExplorationActivityPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
+                oppiaLogger.d(
+                  "ExplorationActivity", "Successfully retrieved gating decision"
+                )
                 val dialogFragment =
                   SurveyWelcomeDialogFragment.newInstance(
                     profileId,
@@ -547,13 +587,13 @@ class ExplorationActivityPresenter @Inject constructor(
                     explorationId,
                     SURVEY_QUESTIONS
                   )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
+                activity.supportFragmentManager
+                  .beginTransaction()
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
+                  .commitNow()
 
-                // Changes to underlying DataProviders will update the gating result.
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
                 liveData.removeObserver(this)
               } else {
                 backPressActivitySelector()

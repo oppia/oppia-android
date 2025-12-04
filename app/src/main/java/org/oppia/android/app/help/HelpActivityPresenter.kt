@@ -9,18 +9,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.help.HelpActivity.Companion.HELP_ACTIVITY_STATE_KEY
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
+import org.oppia.android.app.model.HelpActivityStateBundle
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
@@ -146,18 +148,22 @@ class HelpActivityPresenter @Inject constructor(
   /** Handles onSavedInstanceState() method for [HelpActivity]. */
   fun handleOnSavedInstanceState(outState: Bundle) {
     val titleTextView = activity.findViewById<TextView>(R.id.help_multipane_options_title_textview)
-    if (titleTextView != null) {
-      outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
-    selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
-    selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
+
     val policiesActivityParams =
       PoliciesActivityParams
         .newBuilder()
         .setPolicyPage(internalPolicyPage)
         .build()
-    outState.putProto(POLICIES_ARGUMENT_PROTO, policiesActivityParams)
+    val args = HelpActivityStateBundle.newBuilder().apply {
+      if (titleTextView != null) {
+        this.helpOptionsTitle = titleTextView.text.toString()
+        this.selectedFragmentTag = this@HelpActivityPresenter.selectedFragmentTag
+        this.selectedDependencyIndex = this@HelpActivityPresenter.selectedDependencyIndex!!
+        this.selectedLicenseIndex = this@HelpActivityPresenter.selectedLicenseIndex!!
+        this.policiesActivityParams = policiesActivityParams
+      }
+    }.build()
+    outState.putProto(HELP_ACTIVITY_STATE_KEY, args)
   }
 
   private fun setUpToolbar() {
@@ -342,7 +348,7 @@ class HelpActivityPresenter @Inject constructor(
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(R.string.terms_of_service_title)
       )
-      else -> { }
+      else -> {}
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG

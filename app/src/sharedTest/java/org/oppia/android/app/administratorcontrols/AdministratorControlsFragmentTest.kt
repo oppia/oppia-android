@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -23,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -32,7 +34,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -44,6 +45,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AdministratorControlsFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
@@ -51,12 +53,14 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyIt
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyItemDisplayedOnListItemDoesNotExist
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.verifyTextOnListItemAtPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -98,9 +102,9 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -144,25 +148,28 @@ class AdministratorControlsFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.registerIdlingResource()
+    // TODO(#5835): Call setUpTestApplicationComponent() here once flag overrides init earlier.
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @Test
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+    // TODO(#5835): Make this the default for the test suite & remove it from other tests.
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -197,6 +204,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -226,6 +235,7 @@ class AdministratorControlsFragmentTest {
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -248,6 +258,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -282,6 +294,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_wifiSwitchIsUnchecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -294,6 +308,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_autoUpdateSwitchIsUnchecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -307,6 +323,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_wifiSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -323,6 +341,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_orientationLand_wifiSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -341,6 +361,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -360,6 +382,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControls_clickWifiContainer_orientationLand_autoUpdateSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -377,6 +401,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -395,6 +421,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickAutoUpdateContainer_autoUpdateSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -410,6 +438,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_nonDownloadPermissionProfile_wifiSwitchIsNonClickable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -423,6 +453,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_autoUpdateSwitchIsNonClickable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -431,6 +463,37 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchNotClickable()
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val administratorControlsFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.administrator_controls_fragment_test_activity_fragment_container)
+          as AdministratorControlsFragment
+        val isMultipane = activity
+          .findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout) != null
+
+        val arguments = checkNotNull(administratorControlsFragment.arguments) {
+          "Expected arguments to be passed to AdministratorControlsFragment"
+        }.getProto(
+          ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
+          AdministratorControlsFragmentArguments.getDefaultInstance()
+        )
+        val receivedIsMultipane = arguments.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
     }
   }
 
@@ -593,32 +656,65 @@ class AdministratorControlsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

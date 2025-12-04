@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -39,6 +40,7 @@
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         android:forceDarkAllowed="false"
+        tools:targetApi="29"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,10 +88,29 @@
           android:text="@{viewModel.topicTitle}"
           android:textAllCaps="true"
           android:textColor="@color/component_color_shared_story_card_topic_name_text_color"
-          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintBottom_toTopOf="@id/classroom_name_text_view"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/story_name_text_view" />
+
+        <TextView
+          android:id="@+id/classroom_name_text_view"
+          style="@style/CaptionViewStart"
+          android:layout_width="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginBottom="12dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif-light"
+          android:maxLines="1"
+          android:text="@{viewModel.classroomTitle}"
+          android:textAllCaps="true"
+          android:textColor="@color/component_color_classroom_promoted_list_classroom_label_color"
+          android:background="@drawable/classroom_label_text_background"
+          android:visibility="@{viewModel.showClassroomLabel ? View.VISIBLE : View.GONE}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

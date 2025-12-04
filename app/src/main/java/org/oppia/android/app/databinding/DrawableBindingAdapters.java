@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-import org.oppia.android.R;
+import org.oppia.android.app.databinding.adapters.R;
 
 /** Holds all custom binding adapters that set background drawables. */
 public final class DrawableBindingAdapters {
@@ -34,6 +34,18 @@ public final class DrawableBindingAdapters {
     view.setBackgroundResource(R.drawable.top_rounded_rect_background);
     // The input color needs to have alpha channel prepended to it.
     GradientDrawable background = (GradientDrawable) view.getBackground();
+    background.setColor(0xff000000 | colorRgb);
+  }
+
+  /** Used to set a large rounded-rect background drawable with a data-bound color. */
+  @BindingAdapter("largeRoundedRectDrawableWithColor")
+  public static void setLargeBorderRadiusBackgroundDrawable(
+      @NonNull View view,
+      @ColorInt int colorRgb
+  ) {
+    view.setBackgroundResource(R.drawable.rounded_rect_large_border_radius);
+    // The input color needs to have alpha channel prepended to it.
+    GradientDrawable background = (GradientDrawable) view.getBackground().mutate();
     background.setColor(0xff000000 | colorRgb);
   }
 }

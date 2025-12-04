@@ -1,19 +1,21 @@
 package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.android.R
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.hintsandsolution.dropLastUnavailable
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionAvailable
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import javax.inject.Inject
 
 /**
@@ -27,7 +29,11 @@ class HintsAndSolutionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val solutionViewModelFactory: SolutionViewModel.Factory
+  private val solutionViewModelFactory: SolutionViewModel.Factory,
+  private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+  private val consoleLogger: ConsoleLogger,
+  private val explorationId: String,
+  private val solutionBoxStrokeWidth: Int
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
   private val solution by lazy {
@@ -57,7 +63,9 @@ class HintsAndSolutionViewModel private constructor(
   private fun createViewModels(): List<HintsAndSolutionItemViewModel> {
     return hintList.mapIndexed { index, hint ->
       createHintViewModel(
-        index, hint, isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList))
+        index,
+        hint,
+        isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList))
       )
     } + listOfNotNull(solution?.let(this::createSolutionViewModel)) + ReturnToLessonViewModel
   }
@@ -73,30 +81,41 @@ class HintsAndSolutionViewModel private constructor(
         resourceHandler.toHumanReadableString(hintIndex + 1)
       ),
       hintSummary = translationController.extractString(
-        hint.hintContent, writtenTranslationContext
+        hint.hintContent,
+        writtenTranslationContext
       ),
-      isHintRevealed = isHintRevealed
+      isHintRevealed = isHintRevealed,
+      conceptCardLinkClickListener =
+        conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+      consoleLogger = consoleLogger
     )
   }
 
-  private fun createSolutionViewModel(solution: Solution): SolutionViewModel {
-    return solutionViewModelFactory.create(
+  private fun createSolutionViewModel(solution: Solution): HintsDialogSolutionViewModel {
+    val coreViewModel = solutionViewModelFactory.create(
       solutionSummary = translationController.extractString(
-        solution.explanation, writtenTranslationContext
+        solution.explanation,
+        writtenTranslationContext
       ),
       isSolutionRevealed = isSolutionRevealed,
       isSolutionExclusive = solution.answerIsExclusive,
       correctAnswer = solution.correctAnswer,
       interaction = state.interaction,
-      writtenTranslationContext = writtenTranslationContext
+      writtenTranslationContext = writtenTranslationContext,
+      explorationId = explorationId,
+      isFlashback = false,
+      solutionBoxStrokeWidth = solutionBoxStrokeWidth
     )
+    return solutionViewModelFactory.createHintsDialogSolutionViewModel(coreViewModel)
   }
 
   /** Application-injectable factory for creating [HintsAndSolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
-    private val solutionViewModelFactory: SolutionViewModel.Factory
+    private val solutionViewModelFactory: SolutionViewModel.Factory,
+    private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+    private val consoleLogger: ConsoleLogger
   ) {
     /**
      * Returns a new [HintsAndSolutionViewModel] that populates a list of item view models (to be
@@ -106,7 +125,9 @@ class HintsAndSolutionViewModel private constructor(
     fun create(
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      explorationId: String,
+      solutionBoxStrokeWidth: Int
     ): HintsAndSolutionViewModel {
       return HintsAndSolutionViewModel(
         state,
@@ -114,7 +135,11 @@ class HintsAndSolutionViewModel private constructor(
         writtenTranslationContext,
         resourceHandler,
         translationController,
-        solutionViewModelFactory
+        solutionViewModelFactory,
+        conceptCardTagHandlerFactory,
+        consoleLogger,
+        explorationId,
+        solutionBoxStrokeWidth
       )
     }
   }

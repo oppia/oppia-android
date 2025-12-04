@@ -630,6 +630,32 @@ class StateRetrieverTest {
     assertThat(state.linkedSkillId).isEqualTo("test_skill_id_2")
   }
 
+  @Test
+  fun testParseState_withFractionInputInteraction_parsesRuleHasIntegerPartEqualToRuleSpec() {
+    val state = loadStateFromJson(
+      stateName = "Fractions",
+      explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("HasIntegerPartEqualTo")
+  }
+
+  @Test
+  fun testParseState_withFractionInput_parsesRuleHasIntegerPartEqualToValueAtX() {
+    val state = loadStateFromJson(
+      stateName = "Fractions",
+      explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "HasIntegerPartEqualTo")
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setSignedInt(1).build()
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
+  }
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.
@@ -694,8 +720,12 @@ class StateRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, AssetModule::class, LocaleProdModule::class
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

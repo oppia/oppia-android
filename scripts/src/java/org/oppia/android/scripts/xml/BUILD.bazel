@@ -52,3 +52,14 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
     ],
 )
+
+kt_jvm_library(
+    name = "check_textview_styles",
+    testonly = True,
+    srcs = ["TextViewStyleCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":xml_syntax_error_handler",
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+    ],
+)

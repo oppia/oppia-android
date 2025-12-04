@@ -5,21 +5,27 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import org.oppia.android.util.parser.html.ImageTagHandler
 import javax.inject.Inject
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
@@ -49,7 +55,9 @@ class SelectionInteractionViewModel private constructor(
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  userAnswerState: UserAnswerState,
+  consoleLogger: ConsoleLogger
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -60,6 +68,9 @@ class SelectionInteractionViewModel private constructor(
       ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
       ?: listOf()
   }
+
+  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
   }
@@ -75,9 +86,20 @@ class SelectionInteractionViewModel private constructor(
       ObservableBoolean(true)
     }
   }
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
+  private val customTagHandlers = mapOf<String, CustomHtmlContentHandler.CustomTagHandler>(
+    CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger)
+  )
 
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
+    computeChoiceItems(
+      choiceSubtitledHtmls,
+      hasConversationView,
+      this,
+      enabledItemsList,
+      this@SelectionInteractionViewModel.writtenTranslationContext,
+      translationController,
+      customTagHandlers
+    )
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   val errorMessage = ObservableField<String>("")
@@ -106,14 +128,32 @@ class SelectionInteractionViewModel private constructor(
       pendingAnswerError = null,
       inputAnswerAvailable = true
     )
+
+    if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
+      userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
+        selectedItems += selectedIndex
+        choiceItems[selectedIndex].isAnswerSelected.set(true)
+      }
+      updateItemSelectability()
+      updateSelectionText()
+      updateIsAnswerAvailable()
+    }
+
+    checkPendingAnswerError(userAnswerState.answerErrorCategory)
+  }
+
+  override fun getUserAnswerState(): UserAnswerState {
+    return UserAnswerState.newBuilder().apply {
+      this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
+        selectedItems
+      ).build()
+      this.answerErrorCategory = answerErrorCetegory
+    }.build()
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
     val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
-    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
-      translationController.extractString(subtitledHtml, translationContext)
-    }
     if (interactionId == "ItemSelectionInput") {
       answer = InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
@@ -126,12 +166,16 @@ class SelectionInteractionViewModel private constructor(
           )
         }.build()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+      itemSelectionAnswer = ItemSelectionAnswerState.newBuilder()
+        .addAllSelectedIndexes(selectedItems)
+        .build()
     } else if (selectedItems.size == 1) {
       answer = InteractionObject.newBuilder().apply {
         nonNegativeInt = selectedItems.first()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+      itemSelectionAnswer = ItemSelectionAnswerState.newBuilder()
+        .addAllSelectedIndexes(selectedItems)
+        .build()
     }
     writtenTranslationContext = translationContext
   }.build()
@@ -141,24 +185,17 @@ class SelectionInteractionViewModel private constructor(
    * updates the error string based on the specified error category.
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    answerErrorCetegory = category
     pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME -> null
+      AnswerErrorCategory.REAL_TIME -> {
+        null
+      }
       AnswerErrorCategory.SUBMIT_TIME ->
         getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+      else -> null
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
-  }
-
-  /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
-    return when (itemHtmls.size) {
-      0 -> ""
-      1 -> itemHtmls.first()
-      else -> {
-        "<ul><li>${itemHtmls.joinToString(separator = "</li><li>")}</li></ul>"
-      }
-    }
   }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
@@ -256,7 +293,8 @@ class SelectionInteractionViewModel private constructor(
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
     private val translationController: TranslationController,
-    private val resourceHandler: AppLanguageResourceHandler
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val consoleLogger: ConsoleLogger
   ) : InteractionItemFactory {
     override fun create(
       entityId: String,
@@ -267,7 +305,8 @@ class SelectionInteractionViewModel private constructor(
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?
+      timeToStartNoticeAnimationMs: Long?,
+      userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return SelectionInteractionViewModel(
         entityId,
@@ -277,7 +316,9 @@ class SelectionInteractionViewModel private constructor(
         isSplitView,
         writtenTranslationContext,
         translationController,
-        resourceHandler
+        resourceHandler,
+        userAnswerState,
+        consoleLogger
       )
     }
   }
@@ -287,7 +328,10 @@ class SelectionInteractionViewModel private constructor(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel,
-      enabledItemsList: List<ObservableBoolean>
+      enabledItemsList: List<ObservableBoolean>,
+      writtenTranslationContext: WrittenTranslationContext,
+      translationController: TranslationController,
+      customTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler>
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
@@ -296,7 +340,10 @@ class SelectionInteractionViewModel private constructor(
           hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel,
-          isEnabled = enabledItemsList[index]
+          isEnabled = enabledItemsList[index],
+          customTagHandlers,
+          writtenTranslationContext,
+          translationController
         )
       }
       return observableList

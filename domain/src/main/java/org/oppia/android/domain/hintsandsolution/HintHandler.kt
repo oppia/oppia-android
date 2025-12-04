@@ -35,7 +35,7 @@ interface HintHandler {
    * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
    * @param helpIndex the cached state of hints/solution from the checkpoint
    * @param state the restored pending state
-   * */
+   */
   suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,

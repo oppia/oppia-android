@@ -16,22 +16,24 @@ import org.oppia.android.app.model.AppLanguageSelection.SelectionTypeCase.USE_SY
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_SURVEY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
@@ -50,22 +52,28 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_IN
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_INCORRECT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-
-// TODO(#4272): Add tests for this class.
 
 /**
  * Truth subject for verifying properties of [EventLog]s.
@@ -75,7 +83,6 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
  *
  * Call [assertThat] to create the subject.
  */
-@Suppress("unused", "MemberVisibilityCanBePrivate") // TODO(#4272): Remove suppression when tested.
 class EventLogSubject private constructor(
   metadata: FailureMetadata,
   private val actual: EventLog
@@ -505,29 +512,55 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies that the [EventLog] under test has a context corresponding to [ACCESS_HINT_CONTEXT]
+   * Verifies that the [EventLog] under test has a context corresponding to [REVEAL_HINT_CONTEXT]
    * (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessHintContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_HINT_CONTEXT)
+  fun hasRevealHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_HINT_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessHintContext] and returns a [HintContextSubject]
+   * Verifies the [EventLog]'s context per [hasRevealHintContext] and returns a [HintContextSubject]
    * to test the corresponding context.
    */
-  fun hasAccessHintContextThat(): HintContextSubject {
-    hasAccessHintContext()
-    return HintContextSubject.assertThat(actual.context.accessHintContext)
+  fun hasRevealHintContextThat(): HintContextSubject {
+    hasRevealHintContext()
+    return HintContextSubject.assertThat(actual.context.revealHintContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessHintContextThat].
+   * [hasRevealHintContextThat].
    */
-  fun hasAccessHintContextThat(block: HintContextSubject.() -> Unit) {
-    hasAccessHintContextThat().block()
+  fun hasRevealHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasRevealHintContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to [VIEW_EXISTING_HINT_CONTEXT]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewExistingHintContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_HINT_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewExistingHintContext] and returns a [HintContextSubject]
+   * to test the corresponding context.
+   */
+  fun hasViewExistingHintContextThat(): HintContextSubject {
+    hasViewExistingHintContext()
+    return HintContextSubject.assertThat(actual.context.viewExistingHintContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewExistingHintContextThat].
+   */
+  fun hasViewExistingHintContextThat(block: HintContextSubject.() -> Unit) {
+    hasViewExistingHintContextThat().block()
   }
 
   /**
@@ -558,28 +591,54 @@ class EventLogSubject private constructor(
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
-   * [ACCESS_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   * [REVEAL_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
    */
-  fun hasAccessSolutionContext() {
-    assertThat(actual.context.activityContextCase).isEqualTo(ACCESS_SOLUTION_CONTEXT)
+  fun hasRevealSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REVEAL_SOLUTION_CONTEXT)
   }
 
   /**
-   * Verifies the [EventLog]'s context per [hasAccessSolutionContext] and returns an
+   * Verifies the [EventLog]'s context per [hasRevealSolutionContext] and returns an
    * [ExplorationContextSubject] to test the corresponding context.
    */
-  fun hasAccessSolutionContextThat(): ExplorationContextSubject {
-    hasAccessSolutionContext()
-    return ExplorationContextSubject.assertThat(actual.context.accessSolutionContext)
+  fun hasRevealSolutionContextThat(): ExplorationContextSubject {
+    hasRevealSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.revealSolutionContext)
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
-   * [hasAccessSolutionContextThat].
+   * [hasRevealSolutionContextThat].
    */
-  fun hasAccessSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
-    hasAccessSolutionContextThat().block()
+  fun hasRevealSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasRevealSolutionContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [VIEW_EXISTING_SOLUTION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasViewExistingSolutionContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasViewExistingSolutionContext] and returns an
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasViewExistingSolutionContextThat(): ExplorationContextSubject {
+    hasViewExistingSolutionContext()
+    return ExplorationContextSubject.assertThat(actual.context.viewExistingSolutionContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
+   * [hasViewExistingSolutionContextThat].
+   */
+  fun hasViewExistingSolutionContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasViewExistingSolutionContextThat().block()
   }
 
   /**
@@ -710,6 +769,32 @@ class EventLogSubject private constructor(
    */
   fun hasAppInForegroundContextThat(block: LearnerDetailsContextSubject.() -> Unit) {
     hasAppInForegroundContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [START_EXPLORATION_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasStartExplorationContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(START_EXPLORATION_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasStartExplorationContext] and returns an
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasStartExplorationContextThat(): ExplorationContextSubject {
+    hasStartExplorationContext()
+    return ExplorationContextSubject.assertThat(actual.context.startExplorationContext)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasStartExplorationContextThat] except for the conditions of, and subject returned by,
+   * [hasStartExplorationContextThat].
+   */
+  fun hasStartExplorationContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasStartExplorationContextThat().block()
   }
 
   /**
@@ -1245,6 +1330,130 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [START_PROFILE_ONBOARDING_EVENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasStartProfileOnboardingContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(START_PROFILE_ONBOARDING_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasStartProfileOnboardingContext] and returns a
+   * [ProfileOnboardingContextSubject] to test the corresponding context.
+   */
+  fun hasStartProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
+    hasStartProfileOnboardingContext()
+    return ProfileOnboardingContextSubject.assertThat(
+      actual.context.startProfileOnboardingEvent
+    )
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasStartProfileOnboardingContextThat(
+    block: ProfileOnboardingContextSubject.() -> Unit
+  ) {
+    hasStartProfileOnboardingContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [END_PROFILE_ONBOARDING_EVENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasEndProfileOnboardingContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasEndProfileOnboardingContext] and returns a
+   * [ProfileOnboardingContextSubject] to test the corresponding context.
+   */
+  fun hasEndProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
+    hasEndProfileOnboardingContext()
+    return ProfileOnboardingContextSubject.assertThat(
+      actual.context.endProfileOnboardingEvent
+    )
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasEndProfileOnboardingContextThat(
+    block: ProfileOnboardingContextSubject.() -> Unit
+  ) {
+    hasEndProfileOnboardingContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [FLASHBACK_OFFERED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasFlashbackOfferedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(FLASHBACK_OFFERED_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasFlashbackOfferedContext] and returns a
+   * [FlashbackContextSubject] to test the corresponding context.
+   */
+  fun hasFlashbackOfferedContextThat(): FlashbackContextSubject {
+    hasFlashbackOfferedContext()
+    return FlashbackContextSubject.assertThat(actual.context.flashbackOfferedContext)
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasFlashbackOfferedContextThat(
+    block: FlashbackContextSubject.() -> Unit
+  ) {
+    hasFlashbackOfferedContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to [OPEN_FLASHBACK_EVENT]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasOpenFlashbackContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(OPEN_FLASHBACK_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasOpenFlashbackContext] and returns a
+   * [FlashbackContextSubject] to test the corresponding context.
+   */
+  fun hasOpenFlashbackContextThat(): FlashbackContextSubject {
+    hasOpenFlashbackContext()
+    return FlashbackContextSubject.assertThat(actual.context.openFlashbackEvent)
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasOpenFlashbackContextThat(
+    block: FlashbackContextSubject.() -> Unit
+  ) {
+    hasOpenFlashbackContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to [CLOSE_FLASHBACK_EVENT]
+   * (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasCloseFlashbackContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(CLOSE_FLASHBACK_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasCloseFlashbackContext] and returns a
+   * [CardContextSubject] to test the corresponding context.
+   */
+  fun hasCloseFlashbackContextThat(): CardContextSubject {
+    hasCloseFlashbackContext()
+    return CardContextSubject.assertThat(actual.context.closeFlashbackEvent)
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasCloseFlashbackContextThat(
+    block: CardContextSubject.() -> Unit
+  ) {
+    hasCloseFlashbackContextThat().block()
+  }
+
+  /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -1481,6 +1690,14 @@ class EventLogSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.ExplorationContext
   ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [StringSubject] to test [EventLog.ExplorationContext.getClassroomId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasClassroomIdThat(): StringSubject = assertThat(actual.classroomId)
+
     /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getTopicId].
      *
@@ -2194,7 +2411,7 @@ class EventLogSubject private constructor(
    * Truth subject for verifying properties of [EventLog.FeatureFlagListContext]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [EventLog.FeatureFlagContext] proto can be verified through inherited methods.
+   * [EventLog.FeatureFlagListContext] proto can be verified through inherited methods.
    *
    * Call [FeatureFlagListContextSubject.assertThat] to create the subject.
    */
@@ -2273,32 +2490,28 @@ class EventLogSubject private constructor(
     private val actual: FeatureFlagItemContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [StringSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagName].
-     *
-     * This method never fails since the underlying property defaults to empty string if it's not
-     * defined in the context.
-     */
-    fun hasFeatureFlagNameThat(): StringSubject = assertThat(actual.flagName)
-
-    /**
-     * Returns a [BooleanSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagEnabledState].
-     *
-     * This method never fails since the underlying property defaults to false if it's not
-     * defined in the context.
-     */
-    fun hasFeatureFlagEnabledStateThat(): BooleanSubject = assertThat(actual.flagEnabledState)
-
-    /**
-     * Returns a [ComparableSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagSyncStatus].
+     * Returns a [ComparableSubject] to test [EventLog.FeatureFlagItemContext.getId].
      *
      * This method never fails since the underlying property defaults to the unspecified enum value
      * if it's not defined in the context.
      */
-    fun hasFeatureFlagSyncStateThat(): ComparableSubject<SyncStatus> =
-      assertThat(actual.flagSyncStatus)
+    fun hasFeatureFlagIdThat(): ComparableSubject<FeatureFlagId> = assertThat(actual.id)
+
+    /**
+     * Returns a [BooleanSubject] to test [EventLog.FeatureFlagItemContext.getIsEnabled].
+     *
+     * This method never fails since the underlying property defaults to false if it's not defined
+     * in the context.
+     */
+    fun hasFeatureFlagEnabledStateThat(): BooleanSubject = assertThat(actual.isEnabled)
+
+    /**
+     * Returns a [ComparableSubject] to test [EventLog.FeatureFlagItemContext.getSyncStatus].
+     *
+     * This method never fails since the underlying property defaults to the unspecified enum value
+     * if it's not defined in the context.
+     */
+    fun hasFeatureFlagSyncStateThat(): ComparableSubject<SyncStatus> = assertThat(actual.syncStatus)
 
     companion object {
       /**
@@ -2308,6 +2521,92 @@ class EventLogSubject private constructor(
       fun assertThat(actual: FeatureFlagItemContext?):
         FeatureFlagItemContextSubject =
           assertAbout(::FeatureFlagItemContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.ProfileOnboardingContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.ProfileOnboardingContext] proto can be verified through inherited methods.
+   *
+   * Call [ProfileOnboardingContextSubject.assertThat] to create the subject.
+   */
+  class ProfileOnboardingContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.ProfileOnboardingContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [LiteProtoSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
+
+    companion object {
+      /**
+       * Returns a new [ProfileOnboardingContextSubject] to verify aspects of the specified
+       * [EventLog.ProfileOnboardingContext] value.
+       */
+      fun assertThat(actual: EventLog.ProfileOnboardingContext): ProfileOnboardingContextSubject =
+        assertAbout(::ProfileOnboardingContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.FlashbackContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.FlashbackContext] proto can be verified through inherited methods.
+   *
+   * Call [FlashbackContextSubject.assertThat] to create the subject.
+   */
+  class FlashbackContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.FlashbackContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [ExplorationContextSubject] to test
+     * [EventLog.FlashbackContext.getExplorationDetails].
+     *
+     * This method never fails since the underlying property defaults to empty proto if it's not
+     * defined in the context.
+     */
+    fun hasExplorationDetailsThat(): ExplorationContextSubject =
+      ExplorationContextSubject.assertThat(actual.explorationDetails)
+
+    /**
+     * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
+     * [hasOpenExplorationActivityContextThat].
+     */
+    fun hasExplorationDetailsThat(block: ExplorationContextSubject.() -> Unit) {
+      hasExplorationDetailsThat().block()
+    }
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.FlashbackContext.getSkillId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSkillIdThat(): StringSubject = assertThat(actual.skillId)
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.FlashbackContext.getStateNameToRevisit].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasStateNameToRevisitThat(): StringSubject = assertThat(actual.stateNameToRevisit)
+
+    companion object {
+      /**
+       * Returns a new [FlashbackContextSubject] to verify aspects of the specified
+       * [EventLog.FlashbackContext] value.
+       */
+      fun assertThat(actual: EventLog.FlashbackContext): FlashbackContextSubject =
+        assertAbout(::FlashbackContextSubject).that(actual)
     }
   }
 

@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit
  * Note that this test executes real commands on the local filesystem & requires Bazel in the local
  * environment.
  */
-// Same parameter value: helpers reduce test context, even if they are used by 1 test.
-// Function name: test names are conventionally named with underscores.
+// Same parameter value: helpers reduce test context, even if they are used by 1 test
+// Function name: test names are conventionally named with underscores
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -377,6 +377,513 @@ class BazelClientTest {
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
     assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
+  }
+
+  @Test
+  fun testRunCoverageForTestTarget_forSampleTestTarget_returnsCoverageResult() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class AddNums {
+      
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+              "Both numbers are zero"
+            } else {
+              a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val result = bazelClient.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+    val expectedResult = listOf(
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:4",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,1",
+        "LH:3",
+        "LF:4",
+        "end_of_record"
+      )
+    )
+    assertThat(result).isEqualTo(expectedResult)
+  }
+
+  @Test
+  fun testRunCoverageForTestTarget_forShardConfiguredTestTarget_returnsCoverageResult() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val sourceContent =
+      """
+      package com.example
+      
+      class AddNums {
+      
+        companion object {
+          fun sumNumbers(a: Int, b: Int): Any {
+            return if (a == 0 && b == 0) {
+              "Both numbers are zero"
+            } else {
+              a + b
+            }
+          }
+        }
+      }
+      """.trimIndent()
+
+    val testContent =
+      """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+      
+        @Test
+        fun testSumNumbers() {
+          assertEquals(AddNums.sumNumbers(0, 1), 1)
+          assertEquals(AddNums.sumNumbers(3, 4), 7)
+        }
+        
+        @Test
+        fun testBothNumbersAreZero() {        
+          assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
+        }
+      }
+      """.trimIndent()
+
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = sourceContent,
+      testContent = testContent,
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
+    testBuildFile.writeText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      
+      kt_jvm_test(
+          name = "AddNumsTest",
+          srcs = ["AddNumsTest.kt"],
+          size = "large",
+          shard_count = 2,
+          deps = [
+            "//coverage/main/java/com/example:addnums",
+            "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.AddNumsTest",
+      )
+      """.trimIndent()
+    )
+
+    val result = bazelClient.runCoverageForTestTarget(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+    val expectedShardResult1 = listOf(
+      "SF:coverage/main/java/com/example/AddNums.kt",
+      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/AddNums::<init> ()V",
+      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/AddNums::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,1",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,1",
+      "BRDA:7,0,3,0",
+      "BRF:4",
+      "BRH:3",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,0",
+      "DA:10,1",
+      "LH:2",
+      "LF:4",
+      "end_of_record"
+    )
+
+    val expectedShardResult2 = listOf(
+      "SF:coverage/main/java/com/example/AddNums.kt",
+      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FN:3,com/example/AddNums::<init> ()V",
+      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+      "FNDA:0,com/example/AddNums::<init> ()V",
+      "FNF:2",
+      "FNH:1",
+      "BRDA:7,0,0,0",
+      "BRDA:7,0,1,1",
+      "BRDA:7,0,2,0",
+      "BRDA:7,0,3,1",
+      "BRF:4",
+      "BRH:2",
+      "DA:3,0",
+      "DA:7,1",
+      "DA:8,1",
+      "DA:10,0",
+      "LH:2",
+      "LF:4",
+      "end_of_record"
+    )
+    assertThat(result).contains(expectedShardResult1)
+    assertThat(result).contains(expectedShardResult2)
+  }
+
+  @Test
+  fun testRunCoverageForTestTarget_forNonTestTarget_fails() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+    }
+
+    // Verify that the underlying Bazel command failed since the test target was not available.
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+    assertThat(exception).hasMessageThat().contains("no such package")
+  }
+
+  @Test
+  fun testRetrieveBazelInfo_emptyFolder_fails() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.retrieveBazelInfo()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+  }
+
+  @Test
+  fun testRetrieveBazelInfo_validWorkspace_returnsWorkspaceInfo() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+
+    assertThat(bazelInfo).containsKey("workspace")
+    assertThat(bazelInfo).containsKey("execution_root")
+    assertThat(bazelInfo).containsKey("output_base")
+    assertThat(bazelInfo).containsKey("output_path")
+
+    assertThat(bazelInfo["workspace"]).isEqualTo(tempFolder.root.absolutePath)
+  }
+
+  @Test
+  fun testRetrieveBazelInfo_withMockExecutor_returnsCorrectInfo() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = listOf(
+            "workspace: /tmp/test_workspace",
+            "execution_root: /tmp/test_workspace/bazel-out",
+            "output_base: /tmp/test_workspace/bazel-TestWorkspace",
+            "output_path: /tmp/test_workspace/bazel-out"
+          ),
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+
+    assertThat(bazelInfo).containsExactly(
+      "workspace", "/tmp/test_workspace",
+      "execution_root", "/tmp/test_workspace/bazel-out",
+      "output_base", "/tmp/test_workspace/bazel-TestWorkspace",
+      "output_path", "/tmp/test_workspace/bazel-out"
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithDependencies_returnsDependencyFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary("LibB", dependencies = listOf(libA.first))
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libB.first)
+
+    assertThat(dependencies).contains(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithTransitiveDependencies_returnsAllFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary(
+      "LibB",
+      dependencies = listOf(libA.first)
+    )
+    val libC = testBazelWorkspace.createLibrary(
+      "LibC",
+      dependencies = listOf(libB.first)
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libC.first)
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibB_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibC_lib.jar",
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithoutDependencies_returnsOwnFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libA.first)
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "LibA.kt"
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forNonExistentTarget_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val exception = assertThrows<IllegalStateException> {
+      bazelClient.retrieveTargetModuleDependencies("//:nonexistent_target")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithMixedDependencies_returnsAllFileTypes() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("junit:junit:4.12", "androidx.annotation:annotation:1.1.0")
+    )
+
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    // Create a JVM library with mixed dependencies
+    testBazelWorkspace.rootBuildFile.appendText(
+      """
+    load("@rules_jvm_external//:defs.bzl", "artifact")
+    
+    kt_jvm_library(
+        name = "mixed_deps_lib",
+        srcs = ["MixedDepsLib.kt"],
+        deps = [
+            "${libA.first}",
+            artifact("junit:junit:4.12"),
+            artifact("androidx.annotation:annotation:1.1.0"),
+        ],
+        visibility = ["//visibility:public"],
+    )
+      """.trimIndent() + "\n"
+    )
+
+    val sourceFile = tempFolder.newFile("MixedDepsLib.kt")
+    sourceFile.writeText("class MixedDepsLib")
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:mixed_deps_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "LibA.kt",
+      "MixedDepsLib.kt",
+    )
+    assertThat(dependencies.any { it.contains("junit-4.12.jar") }).isTrue()
+    assertThat(dependencies.any { it.contains("annotation-1.1.0.jar") }).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forComplexTargetHierarchy_returnsAllTransitiveDeps() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.google.guava:guava:30.1-jre")
+    )
+
+    // Create a dependency chain: LibD -> LibC -> LibB -> LibA + Maven dep
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary(
+      "LibB",
+      dependencies = listOf(libA.first)
+    )
+    val libC = testBazelWorkspace.createLibrary(
+      "LibC", dependencies = listOf(libB.first)
+    )
+
+    // LibD depends on LibC and a Maven dependency
+    testBazelWorkspace.rootBuildFile.appendText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      
+      kt_jvm_library(
+          name = "LibD_lib",
+          srcs = ["LibD.kt"],
+          deps = [
+              "${libC.first}",
+              artifact("com.google.guava:guava:30.1-jre"),
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:LibD_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibB_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibC_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibD_lib.jar",
+      "LibA.kt",
+      "LibB.kt",
+      "LibC.kt",
+      "LibD.kt"
+    )
+    // Should also contain Guava dependency
+    assertThat(dependencies.any { it.contains("guava") }).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetInSubpackage_returnsCorrectPaths() {
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    tempFolder.newFolder("subpackage")
+    val subpackageBuildFile = tempFolder.newFile("subpackage/BUILD.bazel")
+
+    subpackageBuildFile.writeText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+      
+      kt_jvm_library(
+          name = "sub_lib",
+          srcs = ["SubLib.kt"],
+          deps = ["${libA.first}"],
+          visibility = ["//visibility:public"],
+      )
+      """.trimIndent()
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//subpackage:sub_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "subpackage/SubLib.kt",
+      "LibA.kt",
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/subpackage/sub_lib.jar"
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_withMockExecutor_parsesSingleLineCorrectly() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val mockDependencies = listOf(
+      "bazel-out/k8-fastbuild/bin/LibA.jar",
+      "bazel-out/k8-fastbuild/bin/LibB.jar",
+      "LibA.kt",
+      "LibB.kt",
+      "external/maven/androidx_appcompat_appcompat-1.4.0.aar"
+    )
+
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = mockDependencies,
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:test_target")
+
+    assertThat(dependencies).containsExactlyElementsIn(mockDependencies)
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_withEmptyResult_returnsEmptyList() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = listOf(),
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:empty_target")
+
+    assertThat(dependencies).isEmpty()
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {

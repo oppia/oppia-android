@@ -30,6 +30,7 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
+import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -42,6 +43,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -105,7 +107,8 @@ class TopicController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val classroomController: ClassroomController,
 ) {
 
   /**
@@ -372,7 +375,7 @@ class TopicController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    storyProgressList.forEach { storyProgress ->
+    storyProgressList.safeForEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&
@@ -392,6 +395,7 @@ class TopicController @Inject constructor(
           .setStoryWrittenTranslationContext(storyTranslationContext)
           .setTopicWrittenTranslationContext(topicTranslationContext)
           .setStoryTitle(storySummary.storyTitle)
+          .setClassroomId(topic.classroomId)
           .setTopicId(topic.topicId)
           .setTopicTitle(topic.title)
           .setLessonThumbnail(storySummary.storyThumbnail)
@@ -482,6 +486,7 @@ class TopicController @Inject constructor(
               availableToPlayNow = true
             } else availableToPlayInFuture = true
           }.build()
+          hasPracticeQuestions = topicRecord.hasPracticeQuestions
         }.build()
       }
     } else createTopicFromJson(topicId)
@@ -558,16 +563,20 @@ class TopicController @Inject constructor(
       contentId = "description"
       html = topicData.getStringFromObject("topic_description")
     }.build()
+    val classroomId = classroomController.getClassroomIdByTopicId(topicId)
+    val hasPracticeQuestions = topicData.getBoolean("has_practice_questions")
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setTitle(topicTitle)
       .setDescription(topicDescription)
+      .setClassroomId(classroomId)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
+      .setHasPracticeQuestions(hasPracticeQuestions)
       .build()
   }
 

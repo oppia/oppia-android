@@ -22,6 +22,7 @@ class ExplorationFragment : InjectableFragment() {
     /** Returns a new [ExplorationFragment] with the corresponding fragment parameters. */
     fun newInstance(
       profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -29,6 +30,7 @@ class ExplorationFragment : InjectableFragment() {
     ): ExplorationFragment {
       val args = ExplorationFragmentArguments.newBuilder().apply {
         this.profileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId
@@ -72,11 +74,21 @@ class ExplorationFragment : InjectableFragment() {
     explorationFragmentPresenter.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    explorationFragmentPresenter.viewHint(hintIndex)
+  }
   fun revealSolution() {
     explorationFragmentPresenter.revealSolution()
   }
+  fun viewSolution() {
+    explorationFragmentPresenter.viewSolution()
+  }
+
+  fun getExplorationCheckpointState() = explorationFragmentPresenter.getExplorationCheckpointState()
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
 
-  fun getExplorationCheckpointState() = explorationFragmentPresenter.getExplorationCheckpointState()
+  fun onFlashbackToolbarBackPressed() {
+    explorationFragmentPresenter.onFlashbackToolbarBackPressed()
+  }
 }

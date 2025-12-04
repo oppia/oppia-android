@@ -233,8 +233,10 @@ class NetworkConnectionUtilDebugImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConnectionUtilDebugModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

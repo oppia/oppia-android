@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!-- TODO(#59): Make this layout only accessible to tests. -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -20,6 +21,7 @@
       android:layout_height="wrap_content"
       android:max="@{viewModel.defaultMaximum}"
       android:min="@{viewModel.defaultMinimum}"
+      tools:targetApi="26"
       app:animatedProgress="@{viewModel.currentAutoProgress}" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -27,6 +29,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:max="@{viewModel.defaultMaximum}"
-      android:min="@{viewModel.defaultMinimum}" />
+      android:min="@{viewModel.defaultMinimum}"
+      tools:targetApi="26"/>
   </LinearLayout>
 </layout>

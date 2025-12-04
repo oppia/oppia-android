@@ -28,13 +28,17 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -61,7 +65,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -70,6 +73,8 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -79,7 +84,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -115,7 +119,12 @@ class HomeActivityLocalTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val internalProfileId: Int = 1
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  private val internalProfileId: Int = 0
+
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -124,14 +133,15 @@ class HomeActivityLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
   @Test
-  fun testHomeActivity_onLaunch_logsEvent() {
-    setUpTestApplicationComponent()
+  fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
+    setUpTestWithOnboardingV2Enabled(false)
 
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getOldestEvent()
 
@@ -141,26 +151,77 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onFirstLaunch_logsCompletedOnboardingEvent() {
-    setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testActivity_onboardingV2_soleProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(
+      profileId = profileId,
+      profileType = ProfileType.SOLE_LEARNER
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
-      assertThat(event.priority).isEqualTo(EventLog.Priority.OPTIONAL)
-      assertThat(event.context.activityContextCase).isEqualTo(COMPLETE_APP_ONBOARDING)
+      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
+      assertThat(hasCompleteAppOnboardingEvent).isTrue()
     }
   }
 
   @Test
-  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedOnboardingEvent() {
+  fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.updateProfileType(
+      profileId = profileId,
+      profileType = ProfileType.SUPERVISOR
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
+      assertThat(hasCompleteAppOnboardingEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_nonAdminProfile_onInitialLaunch_doesNotLogAppOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(1)
+    val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileTestHelper.updateProfileType(
+      profileId = profileId1,
+      profileType = ProfileType.ADDITIONAL_LEARNER
+    )
+    launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
+      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
+
+      assertThat(eventCount).isEqualTo(2)
+      assertThat(events.first().priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(events.first().context.activityContextCase).isEqualTo(OPEN_HOME)
+      assertThat(events.last().priority).isEqualTo(EventLog.Priority.OPTIONAL)
+      assertThat(events.last().context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_adminProfile_onSubsequentLaunch_doesNotLogAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
+      testComponent.getProfileTestHelper().updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+      testComponent.getProfileTestHelper().markProfileOnboardingStarted(profileId)
+      testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
-    setUpTestApplicationComponent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    setUpTestWithOnboardingV2Enabled(false)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -169,6 +230,102 @@ class HomeActivityLocalTest {
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
+  }
+
+  @Test
+  fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
+    }
+
+    setUpTestWithOnboardingV2Enabled(false)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      val eventCount = fakeAnalyticsEventLogger.getEventListCount()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+
+      assertThat(eventCount).isEqualTo(1)
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_soleLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEndedEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_additionalLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addMoreProfiles(1)
+    profileTestHelper.updateProfileType(profileId, ProfileType.ADDITIONAL_LEARNER)
+
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEndedEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_supervisor_onInitialLaunch_doesNotLogEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEndedEvent).isFalse()
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
+    }
+
+    setUpTestWithOnboardingV2Enabled(true)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEvent).isFalse()
+    }
+  }
+
+  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingFlowV2: Boolean) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
+    setUpTestApplicationComponent()
   }
 
   /**
@@ -192,7 +349,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
@@ -204,32 +361,66 @@ class HomeActivityLocalTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      IntentFactoryShimModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
       SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -243,6 +434,8 @@ class HomeActivityLocalTest {
     fun getAppStartupStateController(): AppStartupStateController
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
+    fun getProfileTestHelper(): ProfileTestHelper
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {

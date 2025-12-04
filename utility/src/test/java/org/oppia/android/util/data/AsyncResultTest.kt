@@ -986,8 +986,9 @@ class AsyncResultTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -12,25 +12,19 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
-
-internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_profile_id"
-internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_topic_id"
-internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_story_id"
-internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_exploration_id"
-internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
 /** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
@@ -42,7 +36,9 @@ class StateFragmentTestActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
-  HintsAndSolutionExplorationManagerListener {
+  HintsAndSolutionExplorationManagerListener,
+  ConceptCardListener,
+  FlashbackToolbarListener {
   @Inject
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
@@ -52,8 +48,13 @@ class StateFragmentTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    val args = intent.getProtoExtra(
+      STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
+      StateFragmentTestActivityParams.getDefaultInstance()
+    )
+
     profileId = ProfileId.newBuilder().apply {
-      internalId = intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+      internalId = args?.internalProfileId ?: -1
     }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
@@ -67,23 +68,29 @@ class StateFragmentTestActivity :
   override fun onEditorAction(actionCode: Int) {}
 
   companion object {
+
+    /** Params key for StateFragmentTestActivity. */
+    const val STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY = "StateFragmentTestActivity.params"
+
     fun createTestActivityIntent(
       context: Context,
       profileId: Int,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
       shouldSavePartialProgress: Boolean
     ): Intent {
+      val args = StateFragmentTestActivityParams.newBuilder().apply {
+        this.internalProfileId = profileId
+        this.classroomId = classroomId
+        this.topicId = topicId
+        this.storyId = storyId
+        this.explorationId = explorationId
+        this.shouldSavePartialProgress = shouldSavePartialProgress
+      }.build()
       val intent = Intent(context, StateFragmentTestActivity::class.java)
-      intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
-      intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
-      intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
-      intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
-      intent.putExtra(
-        TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY,
-        shouldSavePartialProgress
-      )
+      intent.putProtoExtra(STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY, args)
       return intent
     }
   }
@@ -98,6 +105,10 @@ class StateFragmentTestActivity :
 
   override fun setAudioBarVisibility(isVisible: Boolean) {}
 
+  override fun showFlashbackToolbar() {}
+
+  override fun hideFlashbackToolbar() {}
+
   override fun scrollToTop() {
     stateFragmentTestActivityPresenter.scrollToTop()
   }
@@ -106,7 +117,9 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.stopExploration(isCompletion)
   }
 
-  override fun dismiss() {}
+  override fun dismiss() {
+    getHintsAndSolution()?.dismiss()
+  }
 
   override fun routeToHintsAndSolution(id: String, helpIndex: HelpIndex) {
     if (getHintsAndSolution() == null) {
@@ -141,5 +154,10 @@ class StateFragmentTestActivity :
     return supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_DIALOG
     ) as HintsAndSolutionDialogFragment?
+  }
+
+  override fun dismissConceptCard() {
+    getHintsAndSolution()?.dismissConceptCard()
+      ?: stateFragmentTestActivityPresenter.dismissConceptCard()
   }
 }

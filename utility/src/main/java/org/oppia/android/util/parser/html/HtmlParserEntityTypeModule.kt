@@ -2,10 +2,19 @@ package org.oppia.android.util.parser.html
 
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 /** Provides Html parsing entity type dependencies. */
 @Module
 class HtmlParserEntityTypeModule {
+  @Provides
+  @Singleton
+  fun provideConceptCardLinkClickListener(
+    factory: ConceptCardTagHandler.Factory
+  ): ConceptCardTagHandler.ConceptCardLinkClickListener {
+    return factory.createConceptCardLinkClickListener()
+  }
+
   @Provides
   @ExplorationHtmlParserEntityType
   fun provideExplorationHtmlParserEntityType(): String {
@@ -16,6 +25,12 @@ class HtmlParserEntityTypeModule {
   @ConceptCardHtmlParserEntityType
   fun provideConceptCardHtmlParserEntityType(): String {
     return "skill"
+  }
+
+  @Provides
+  @ClassroomHtmlParserEntityType
+  fun provideClassroomCardHtmlParserEntityType(): String {
+    return "classroom"
   }
 
   @Provides

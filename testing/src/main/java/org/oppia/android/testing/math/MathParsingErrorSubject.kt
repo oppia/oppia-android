@@ -43,8 +43,6 @@ import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
 
-// TODO(#4132): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [MathParsingError]s.
  *

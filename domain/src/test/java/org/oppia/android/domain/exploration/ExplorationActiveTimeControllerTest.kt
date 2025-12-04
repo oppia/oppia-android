@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +28,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -102,6 +104,11 @@ class ExplorationActiveTimeControllerTest {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
   }
 
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
   @Test
   fun testSessionTimer_explorationStartedCallbackReceived_startsSessionTimer() {
     setUpTestApplicationComponent()
@@ -109,7 +116,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -131,7 +142,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -153,7 +168,11 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -206,7 +225,11 @@ class ExplorationActiveTimeControllerTest {
 
     applicationLifecycleObserver.onAppInForeground()
     startPlayingNewExploration(
-      TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, firstTestProfile
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      firstTestProfile
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -262,6 +285,7 @@ class ExplorationActiveTimeControllerTest {
 
     explorationActiveTimeController.onAppInForeground()
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -308,6 +332,7 @@ class ExplorationActiveTimeControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.DAYS.toMillis(1))
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -353,6 +378,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -380,6 +406,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -389,6 +416,7 @@ class ExplorationActiveTimeControllerTest {
     stopExploration()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -423,6 +451,7 @@ class ExplorationActiveTimeControllerTest {
     applicationLifecycleObserver.onAppInForeground()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -432,6 +461,7 @@ class ExplorationActiveTimeControllerTest {
     stopExploration()
 
     startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
@@ -460,6 +490,7 @@ class ExplorationActiveTimeControllerTest {
   }
 
   private fun startPlayingNewExploration(
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -467,7 +498,7 @@ class ExplorationActiveTimeControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, topicId, storyId, explorationId
+        profileId.internalId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -526,19 +557,39 @@ class ExplorationActiveTimeControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, ContinueModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class, FractionInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, ImageClickInputModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class, AssetModule::class,
-      NetworkConnectionUtilDebugModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
-      TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
-      LogStorageModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.DragDropTestFragmentBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.DragDropTestFragmentBinding
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestFragment]. */

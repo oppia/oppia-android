@@ -114,7 +114,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
-            android:tint="@color/component_color_add_profile_activity_info_icon_color"
+            app:tint="@color/component_color_add_profile_activity_info_icon_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box"
             app:srcCompat="@drawable/ic_info_icon" />

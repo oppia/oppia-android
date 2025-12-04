@@ -25,9 +25,19 @@ class CustomHtmlContentHandler private constructor(
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
+  private val contentDescriptionBuilder = StringBuilder()
+  private val tagContentDescriptions = mutableMapOf<Int, String>()
+  private var isInListItem = false
+  private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
+  // Indicates if a newline should be added before the next text content for block elements.
+  private var pendingNewline = false
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
+    val tagName = qName ?: localName
+    if (tagName in blockTags) {
+      isInListItem = false
+    }
     currentTrackedTag = null
   }
 
@@ -45,6 +55,11 @@ class CustomHtmlContentHandler private constructor(
 
   override fun characters(ch: CharArray?, start: Int, length: Int) {
     originalContentHandler?.characters(ch, start, length)
+    if (pendingNewline) {
+      contentDescriptionBuilder.append('\n')
+      pendingNewline = false
+    }
+    ch?.let { contentDescriptionBuilder.appendRange(it, start, start + length) }
   }
 
   override fun endDocument() {
@@ -56,6 +71,17 @@ class CustomHtmlContentHandler private constructor(
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
     currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
+    val tagName = qName ?: localName
+    if (tagName in blockTags) {
+      pendingNewline = true
+      isInListItem = true
+    }
+    if (tagName == "a") {
+      val href = atts.getValue("href")
+      if (href != null) {
+        tagContentDescriptions[contentDescriptionBuilder.length] = "$href "
+      }
+    }
     originalContentHandler?.startElement(uri, localName, qName, atts)
   }
 
@@ -105,14 +131,29 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."
         }
-        val currentTrackedCustomTag = currentTrackedCustomTags.removeLast()
+        val currentTrackedCustomTag =
+          currentTrackedCustomTags.removeAt(currentTrackedCustomTags.lastIndex)
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
+
+        val handler = customTagHandlers.getValue(tag)
+        if (handler is ContentDescriptionProvider) {
+          val contentDesc = handler.getContentDescription(attributes)
+          if (contentDesc != null) {
+            tagContentDescriptions[openTagIndex] = contentDesc
+          }
+        }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
-        customTagHandlers.getValue(tag)
-          .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+
+        if (imageRetriever == null) {
+          customTagHandlers.getValue(tag)
+            .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
+        } else {
+          customTagHandlers.getValue(tag)
+            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        }
       }
     }
   }
@@ -123,6 +164,32 @@ class CustomHtmlContentHandler private constructor(
     val attributes: Attributes,
     val openTagIndex: Int
   )
+
+  /**
+   * Returns the complete content description for the processed HTML, including descriptions
+   * from all custom tags.
+   */
+  private fun getContentDescription(): String {
+    val rawDesc = buildString {
+      var lastIndex = 0
+      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
+        if (index > lastIndex && index <= contentDescriptionBuilder.length) {
+          append(
+            contentDescriptionBuilder.substring(
+              lastIndex,
+              minOf(index, contentDescriptionBuilder.length)
+            )
+          )
+        }
+        append(description)
+        lastIndex = minOf(index, contentDescriptionBuilder.length)
+      }
+      if (lastIndex < contentDescriptionBuilder.length) {
+        append(contentDescriptionBuilder.substring(lastIndex))
+      }
+    }
+    return rawDesc.replace(Regex("\n+"), "\n").trim()
+  }
 
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
@@ -145,6 +212,22 @@ class CustomHtmlContentHandler private constructor(
     }
 
     /**
+     * Called when a custom tag is encountered during content description generation.
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which content can be added
+     */
+    fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+    }
+
+    /**
      * Called when the opening of a custom tag is encountered. This does not support processing
      * attributes of the tag--[handleTag] should be used, instead.
      *
@@ -158,12 +241,21 @@ class CustomHtmlContentHandler private constructor(
      * Called when the closing of a custom tag is encountered. This does not support processing
      * attributes of the tag--[handleTag] should be used, instead.
      *
-     * This function will always be called before [handleClosingTag].
+     * This function will always be called before [handleTag].
      *
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+  }
+
+  /** Handler Interface for tag handlers that provide content descriptions. */
+  interface ContentDescriptionProvider {
+    /**
+     * Returns a content description string for this tag based on its attributes,
+     * or null if no description is available.
+     */
+    fun getContentDescription(attributes: Attributes): String?
   }
 
   /**
@@ -196,6 +288,30 @@ class CustomHtmlContentHandler private constructor(
   }
 
   companion object {
+    /**
+     * Returns the content description for the HTML content, processing all custom tags that implement
+     * [ContentDescriptionProvider].
+     */
+    fun getContentDescription(
+      html: String,
+      customTagHandlers: Map<String, CustomTagHandler>
+    ): String {
+      val handler = CustomHtmlContentHandler(
+        customTagHandlers,
+        null
+      )
+
+      // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
+      // intercept and populate the contentDescriptionBuilder.
+      HtmlCompat.fromHtml(
+        "<init-custom-handler/>$html",
+        HtmlCompat.FROM_HTML_MODE_LEGACY,
+        null,
+        handler
+      )
+      return handler.getContentDescription()
+    }
+
     /**
      * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageRetriever]
      * for handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom

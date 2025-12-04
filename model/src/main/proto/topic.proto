@@ -43,6 +43,9 @@ message Topic {
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 8;
 
+  // Whether practice questions are available for this topic.
+  bool has_practice_questions = 13;
+
   // The old name of the topic (as a string).
   reserved 2;
 
@@ -679,6 +682,9 @@ message TopicRecord {
 
   // Whether this topic is published/available to be played.
   bool is_published = 6;
+
+  // Whether practice questions are available for this topic.
+  bool has_practice_questions = 11;
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 7;

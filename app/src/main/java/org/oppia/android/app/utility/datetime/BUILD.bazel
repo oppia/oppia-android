@@ -4,22 +4,9 @@ General purposes utilities to manage date and time in user-facing strings.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-# Resource shim needed so that DateTimeUtil can build in both Gradle & Bazel.
-genrule(
-    name = "update_DateTimeUtil",
-    srcs = ["DateTimeUtil.kt"],
-    outs = ["DateTimeUtil_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
-    """,
-)
-
 kt_android_library(
     name = "date_time_util",
-    srcs = [
-        "DateTimeUtil_updated.kt",
-    ],
+    srcs = ["DateTimeUtil.kt"],
     visibility = ["//app:__subpackages__"],
     deps = [
         "//app:resources",

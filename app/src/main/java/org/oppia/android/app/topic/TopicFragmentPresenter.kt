@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.TopicFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
@@ -17,11 +17,12 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.TopicFragmentBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -33,22 +34,30 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
+  @EnableTopicInfoTab private val enableTopicInfoTabFlag: PlatformParameterValue<Boolean>,
+  @EnableTopicPracticeTab private val enableTopicPracticeTabFlag: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   @Inject
   lateinit var accessibilityService: AccessibilityService
 
   private lateinit var tabLayout: TabLayout
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
 
+  private var enableTopicInfoTab: Boolean = enableTopicInfoTabFlag.value
+  private var enableTopicPracticeTab: Boolean = false
+    set(hasPracticeQuestions) {
+      field = enableTopicPracticeTabFlag.value && hasPracticeQuestions
+    }
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean
@@ -62,22 +71,30 @@ class TopicFragmentPresenter @Inject constructor(
     this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.topicId = topicId
 
-    binding.topicToolbar.setNavigationOnClickListener {
-      (activity as TopicActivity).finish()
-    }
+    binding.topicToolbar.setNavigationOnClickListener { activity.finish() }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.topicToolbarTitle.setOnClickListener {
         binding.topicToolbarTitle.isSelected = true
       }
     }
-    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setProfileId(profileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, topicId, isConfigChanged)
+    viewModel.hasPracticeQuestions.observe(fragment) { hasPracticeQuestions ->
+      enableTopicPracticeTab = hasPracticeQuestions
+
+      setUpViewPager(
+        viewPager,
+        classroomId,
+        topicId,
+        isConfigChanged
+      )
+    }
+
     return binding.root
   }
 
@@ -85,7 +102,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun startSpotlight() {
     viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
       if (numberOfChaptersCompleted != null) {
-        val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
+        val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LEARN))?.view
         lessonsTabView?.let {
           val lessonsTabSpotlightTarget = SpotlightTarget(
             lessonsTabView,
@@ -96,7 +113,7 @@ class TopicFragmentPresenter @Inject constructor(
           checkNotNull(getSpotlightManager()).requestSpotlight(lessonsTabSpotlightTarget)
 
           if (numberOfChaptersCompleted > 2) {
-            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
+            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.STUDY))?.view
             val revisionTabSpotlightTarget = SpotlightTarget(
               revisionTabView!!,
               resourceHandler.getStringInLocale(R.string.topic_revision_tab_spotlight_hint),
@@ -121,29 +138,52 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-    return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
+    return tab.getPosition(enableTopicInfoTab, enableTopicPracticeTab)
   }
 
-  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
+  private fun setUpViewPager(
+    viewPager2: ViewPager2,
+    classroomId: String,
+    topicId: String,
+    isConfigChanged: Boolean
+  ) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableExtraTopicTabsUi.value)
+      ViewPagerAdapter(
+        fragment,
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        enableTopicInfoTab,
+        enableTopicPracticeTab
+      )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
+      val topicTab = TopicTab.getTabForPosition(
+        position,
+        enableTopicInfoTab,
+        enableTopicPracticeTab
+      )
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      if (enableExtraTopicTabsUi.value) {
-        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      if (enableTopicInfoTab) {
+        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LEARN else TopicTab.INFO)
       } else {
-        setCurrentTab(TopicTab.LESSONS)
+        setCurrentTab(TopicTab.LEARN)
       }
     }
     viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
       override fun onPageSelected(position: Int) {
-        logTopicEvents(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value))
+        logTopicEvents(
+          TopicTab.getTabForPosition(
+            position,
+            enableTopicInfoTab,
+            enableTopicPracticeTab
+          )
+        )
       }
     })
   }
@@ -151,13 +191,10 @@ class TopicFragmentPresenter @Inject constructor(
   private fun logTopicEvents(tab: TopicTab) {
     val eventContext = when (tab) {
       TopicTab.INFO -> oppiaLogger.createOpenInfoTabContext(topicId)
-      TopicTab.LESSONS -> oppiaLogger.createOpenLessonsTabContext(topicId)
+      TopicTab.LEARN -> oppiaLogger.createOpenLessonsTabContext(topicId)
       TopicTab.PRACTICE -> oppiaLogger.createOpenPracticeTabContext(topicId)
-      TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
+      TopicTab.STUDY -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
-    analyticsController.logImportantEvent(
-      eventContext,
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-    )
+    analyticsController.logImportantEvent(eventContext, profileId)
   }
 }
