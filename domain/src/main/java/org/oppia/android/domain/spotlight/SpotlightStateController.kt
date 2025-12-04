@@ -5,11 +5,11 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FEATURE_NOT_SET
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
 import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
-import org.oppia.android.app.model.Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB

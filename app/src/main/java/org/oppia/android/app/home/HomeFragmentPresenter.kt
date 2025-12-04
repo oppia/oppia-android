@@ -21,8 +21,11 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -197,17 +200,17 @@ class HomeFragmentPresenter @Inject constructor(
         setViewModel = { binding, viewModel ->
           binding.viewModel = viewModel
           // Request spotlight against the All Topics header for all users.
-          binding.allTopicsTextView?.let { headerView ->
-            val manager = fragment.childFragmentManager.findFragmentByTag(
-              org.oppia.android.app.spotlight.SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-            ) as? org.oppia.android.app.spotlight.SpotlightManager
+          binding.allTopicsTextView.let { headerView ->
+            val manager = activity.supportFragmentManager.findFragmentByTag(
+              SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+            ) as? SpotlightManager
             manager?.requestSpotlightViewWithDelayedLayout(
-              org.oppia.android.app.spotlight.SpotlightTarget(
+              SpotlightTarget(
                 anchor = headerView,
                 hint = resourceHandler.getStringInLocale(
-                  org.oppia.android.app.ui.R.string.home_all_topics_spotlight_hint
+                  R.string.home_all_topics_spotlight_hint
                 ),
-                feature = org.oppia.android.app.model.Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+                feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
               )
             )
           }

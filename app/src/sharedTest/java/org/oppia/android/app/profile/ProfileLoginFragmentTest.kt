@@ -50,7 +50,6 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.CreateProfileActivity

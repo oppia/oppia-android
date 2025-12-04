@@ -6,6 +6,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -67,8 +69,8 @@ class ProfileChooserActivityPresenter @Inject constructor(
     if (getSpotlightFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_spotlight_fragment_placeholder,
-        org.oppia.android.app.spotlight.SpotlightFragment.newInstance(profileId.internalId),
-        org.oppia.android.app.spotlight.SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }
@@ -81,9 +83,9 @@ class ProfileChooserActivityPresenter @Inject constructor(
       ) as ProfileChooserFragment?
   }
 
-  private fun getSpotlightFragment(): org.oppia.android.app.spotlight.SpotlightFragment? {
+  private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.profile_spotlight_fragment_placeholder
-    ) as? org.oppia.android.app.spotlight.SpotlightFragment
+    ) as? SpotlightFragment
   }
 }

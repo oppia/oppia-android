@@ -174,7 +174,9 @@ class CreateProfileFragmentTest {
   fun testAdditionalLearnerFlow_pinUi_checkboxVisible_fieldsHiddenInitially() {
     // When the flow is for creating an additional learner, the checkbox should be visible but
     // the PIN fields should be hidden until the box is checked.
-    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+    launchNewLearnerProfileActivity(
+      profileType = ProfileType.ADDITIONAL_LEARNER
+    ).use {
       onView(withId(R.id.create_profile_pin_check_box)).check(matches(isDisplayed()))
       onView(withId(R.id.create_profile_pin_constraint_layout))
         .check(matches(withEffectiveVisibility(Visibility.GONE)))
@@ -183,20 +185,29 @@ class CreateProfileFragmentTest {
 
   @Test
   fun testAdditionalLearnerFlow_checkPinCheckbox_showsPinAndConfirmFields() {
-    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+    launchNewLearnerProfileActivity(
+      profileType = ProfileType.ADDITIONAL_LEARNER
+    ).use {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
 
       // After checking, the PIN fields container should be visible.
-      onView(withId(R.id.create_profile_pin_constraint_layout))
-        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      onView(withId(R.id.add_profile_activity_pin_edit_text)).check(matches(isDisplayed()))
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.create_profile_pin_constraint_layout)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+      onView(withId(R.id.add_profile_activity_pin_edit_text)).check(
+        matches(isDisplayed())
+      )
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text)).check(
+        matches(isDisplayed())
+      )
     }
   }
 
   @Test
   fun testAdditionalLearnerFlow_shortPin_showsPinLengthError() {
-    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+    launchNewLearnerProfileActivity(
+      profileType = ProfileType.ADDITIONAL_LEARNER
+    ).use {
       // Provide a valid nickname to bypass nickname validation.
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())

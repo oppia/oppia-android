@@ -118,7 +118,9 @@ class ProfileChooserSpotlightTest {
 
   // Helpers & DI setup
 
-  data class ActivityScenarioRuleProxy<T : Activity>(val scenario: androidx.test.core.app.ActivityScenario<T>)
+  data class ActivityScenarioRuleProxy<T : Activity>(
+    val scenario: androidx.test.core.app.ActivityScenario<T>
+  )
 
   @Module
   class TestModule {

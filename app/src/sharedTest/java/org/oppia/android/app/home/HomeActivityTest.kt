@@ -2098,9 +2098,13 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = false)
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
-    dataProviderTestMonitor.waitForNextSuccessfulResult(
-      spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER)
-    )
+    dataProviderTestMonitor
+      .waitForNextSuccessfulResult(
+        spotlightStateController.markSpotlightViewed(
+          profileId,
+          Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+        )
+      )
 
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
