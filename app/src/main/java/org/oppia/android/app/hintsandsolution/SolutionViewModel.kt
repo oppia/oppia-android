@@ -1,5 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
+import android.view.View
 import androidx.databinding.ObservableBoolean
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -40,6 +41,9 @@ import org.oppia.android.util.math.toPlainString
 import org.oppia.android.util.math.toRawLatex
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import javax.inject.Inject
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 
 /**
  * Represent a solution that the user may reveal.
@@ -61,19 +65,36 @@ class SolutionViewModel private constructor(
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
   val isFlashback: Boolean,
-  val solutionBoxStrokeWidth: Int
+  val solutionBoxStrokeWidth: Int,
+  private val consoleLogger: ConsoleLogger
+
+
 ) {
-  /**
-   * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
-   * of the original summary.
-   */
+
+  /** Override default HTML parsing to include custom concept card tags when generating TalkBack-readable text for Solution and Flashback dialogs.
+     The previous implementation ignored custom tags, causing TalkBack to skip this fix ensures that TalkBack reads the concept card reference
+     exactly once and consistently.
+  */
   val solutionSummaryContentDescription by lazy {
-    CustomHtmlContentHandler.fromHtml(
+    CustomHtmlContentHandler.getContentDescription(
       solutionSummary,
-      imageRetriever = null,
-      customTagHandlers = mapOf()
-    ).toString()
+      customTagHandlers = mapOf(
+        CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+          listener = object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+            override fun onConceptCardLinkClicked(view: View, skillId: String) {
+              // No action for TalkBack readout
+            }
+          },   
+          consoleLogger = consoleLogger
+        )
+      )
+    )
   }
+
+
+
+
+
 
   /** A displayable HTML representation of the correct answer presented by this model's solution. */
   val correctAnswerHtml: String by lazy { computeCorrectAnswerHtml() }
@@ -239,7 +260,8 @@ class SolutionViewModel private constructor(
   /** Application-injectable factory to create [SolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val appLanguageResourceHandler: AppLanguageResourceHandler,
-    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+    private val consoleLogger: ConsoleLogger
   ) {
     /**
      * Returns a new [SolutionViewModel] with the specified summary HTML text, correct answer,
@@ -269,7 +291,8 @@ class SolutionViewModel private constructor(
         mathExpressionAccessibilityUtil,
         explorationId,
         isFlashback,
-        solutionBoxStrokeWidth
+        solutionBoxStrokeWidth,
+        consoleLogger
       )
     }
 
