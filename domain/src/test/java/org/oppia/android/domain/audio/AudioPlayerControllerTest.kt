@@ -11,6 +11,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
+import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,6 +62,7 @@ import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -72,10 +76,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -114,6 +114,17 @@ class AudioPlayerControllerTest {
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
   private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+
+  @Before
+  fun setUp() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
@@ -444,6 +455,17 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_releasePlayerMultipleTimes_doesNoThrowException() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer()
+
+    assertNoExceptionIsThrown {
+      audioPlayerController.releaseMediaPlayer()
+      audioPlayerController.releaseMediaPlayer()
+    }
+  }
+
+  @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows<IllegalStateException>() {
@@ -505,7 +527,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -538,7 +565,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = true)
     testCoroutineDispatchers.runCurrent()
@@ -571,7 +603,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -604,7 +641,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -634,7 +676,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
 
@@ -669,7 +716,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
 
@@ -704,7 +756,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
@@ -723,7 +780,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
@@ -740,7 +802,12 @@ class AudioPlayerControllerTest {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
     logIntoAnalyticsReadyAdminProfile()
-    beginExploration(topicId = "test_topic_id", storyId = "test_story_id", explorationId)
+    beginExploration(
+      classroomId = "test_classroom_id",
+      topicId = "test_topic_id",
+      storyId = "test_story_id",
+      explorationId
+    )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
 
@@ -791,10 +858,15 @@ class AudioPlayerControllerTest {
     )
   }
 
-  private fun beginExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun beginExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        internalProfileId = 0, topicId, storyId, explorationId
+        internalProfileId = 0, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())
@@ -807,7 +879,8 @@ class AudioPlayerControllerTest {
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpMediaReadyApplication()
   }
 
@@ -822,47 +895,21 @@ class AudioPlayerControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun assertNoExceptionIsThrown(block: () -> Unit) {
+    try {
+      block()
+    } catch (e: Exception) {
+      fail("Expected no exception, but got: $e")
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      var enableLearnerStudyAnalytics: Boolean = false
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
 
@@ -870,19 +917,41 @@ class AudioPlayerControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterSingletonModule::class, ExplorationStorageModule::class,
-      InteractionsModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
-      HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

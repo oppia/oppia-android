@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.app.views.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
@@ -193,6 +193,12 @@ class LessonThumbnailImageView @JvmOverloads constructor(
         R.drawable.topic_fractions_03
       LessonThumbnailGraphic.MIXED_NUMBERS ->
         R.drawable.topic_fractions_04
+      LessonThumbnailGraphic.SCIENCE_CLASSROOM ->
+        R.drawable.ic_science
+      LessonThumbnailGraphic.MATHS_CLASSROOM ->
+        R.drawable.ic_maths
+      LessonThumbnailGraphic.ENGLISH_CLASSROOM ->
+        R.drawable.ic_english
       else ->
         R.drawable.topic_fractions_01
     }

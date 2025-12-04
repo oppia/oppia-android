@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -14,6 +14,27 @@ android_sdk_repository(
     name = "androidsdk",
     api_level = BUILD_SDK_VERSION,
     build_tools_version = BUILD_TOOLS_VERSION,
+)
+
+# The rules_java contains the java_lite_proto_library rule used in the model module.
+http_archive(
+    name = "rules_java",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
+    url = "https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_java"]["version"]),
+)
+
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+
+rules_java_dependencies()
+
+rules_java_toolchains()
+
+http_archive(
+    name = "zlib",
+    build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["zlib"]["sha"],
+    strip_prefix = "zlib-" + HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    url = "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
 )
 
 # Oppia's backend proto API definitions.
@@ -53,7 +74,7 @@ load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "
 # Use the 1.6 compiler since Kotlin 1.6 is the current supported version in the repository.
 kotlin_repositories(
     compiler_release = kotlinc_version(
-        release = "1.6.10",
+        release = KOTLIN_COMPILER_VERSION,
         sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
     ),
 )
@@ -74,19 +95,6 @@ bind(
     name = "proto_java_toolchain",
     actual = "//tools:java_toolchain",
 )
-
-# The rules_java contains the java_lite_proto_library rule used in the model module.
-http_archive(
-    name = "rules_java",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
-    url = "https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_java"]["version"]),
-)
-
-load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
-
-rules_java_dependencies()
-
-rules_java_toolchains()
 
 # The rules_proto contains the proto_library rule used in the model module.
 http_archive(

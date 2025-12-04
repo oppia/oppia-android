@@ -5,40 +5,53 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The activity for displaying [MyDownloadsFragment]. */
 class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
+
+  @Inject
+  @EnableMultipleClassrooms
+  lateinit var enableMultipleClassrooms: PlatformParameterValue<Boolean>
+
   private var internalProfileId: Int = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     myDownloadsActivityPresenter.handleOnCreate()
-    internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
   }
 
   companion object {
-    fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createMyDownloadsActivityIntent(context: Context, internalProfileId: Int?): Intent {
+      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, MyDownloadsActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+      if (profileId != null) {
+        intent.decorateWithUserProfileId(profileId)
+      }
       intent.decorateWithScreenName(MY_DOWNLOADS_ACTIVITY)
       return intent
-    }
-
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createHomeActivity(this, internalProfileId)
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val intent = if (enableMultipleClassrooms.value)
+      ClassroomListActivity.createClassroomListActivity(this, profileId)
+    else
+      HomeActivity.createHomeActivity(this, profileId)
     startActivity(intent)
     finish()
   }

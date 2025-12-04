@@ -63,7 +63,8 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
     readingTextSizeFragmentPresenter.onTextSizeSelected(selectedTextSize)
   }
 
-  private fun retrieveFragmentArguments(): ReadingTextSizeFragmentArguments {
+  /** Returns the [ReadingTextSizeFragmentArguments] stored in the fragment's arguments. */
+  fun retrieveFragmentArguments(): ReadingTextSizeFragmentArguments {
     return checkNotNull(arguments) {
       "Expected arguments to be passed to ReadingTextSizeFragment"
     }.getProto(FRAGMENT_ARGUMENTS_KEY, ReadingTextSizeFragmentArguments.getDefaultInstance())

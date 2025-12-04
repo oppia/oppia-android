@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -41,9 +40,13 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -51,15 +54,23 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
+import org.oppia.android.app.onboarding.AdminIntroActivity
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -87,7 +98,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -103,6 +113,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedAutoAndroidTestRunner
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -113,7 +125,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -122,6 +133,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -160,6 +172,8 @@ class SplashActivityTest {
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Parameter
   lateinit var firstOpen: String
@@ -178,6 +192,7 @@ class SplashActivityTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -947,7 +962,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_onboarded_devFlavor_doesNotWaitToStart() {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.DEVELOPER)
     initializeTestApplicationWithFlavor(BuildFlavor.DEVELOPER)
@@ -1035,6 +1049,7 @@ class SplashActivityTest {
       val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
       testCoroutineDispatchers.advanceUntilIdle()
       monitor.ensureNextResultIsSuccess()
+      TestPlatformParameterModule.reset()
     }
   }
 
@@ -1050,6 +1065,140 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_initialOpen_onboardingV2Enabled_routesToOnboardingActivity() {
+    initializeTestApplication(onboardingV2Enabled = true)
+
+    launchSplashActivityPartially {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    val params = IntroActivityParams.newBuilder()
+      .setProfileNickname("Admin")
+      .build()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(IntroActivity::class.java.name))
+      intended(hasProtoExtra(IntroActivity.PARAMS_KEY, params))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
+    simulateAppAlreadyOnboarded()
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    testCoroutineDispatchers.runCurrent()
+
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.markProfileOnboardingStarted(profileId)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.markProfileOnboardingEnded(profileId)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
+    simulateAppAlreadyOnboarded()
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    initializeTestApplication(onboardingV2Enabled = true)
+    testCoroutineDispatchers.unregisterIdlingResource()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    testCoroutineDispatchers.runCurrent()
+
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.markProfileOnboardingStarted(profileId)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.markProfileOnboardingEnded(profileId)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2_onboardedAdminProfile_routesToProfileChooserActivity() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfile()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+  @Test
+  fun testSplashActivity_onboardingV2_partiallyOnboardedAdmin_routesToAdminIntroActivity() {
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    val params = AdminIntroActivityParams.newBuilder()
+      .setProfileType(ProfileType.SUPERVISOR)
+      .setProfileNickname("Admin")
+      .build()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(AdminIntroActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_INTRO_PARAMS_KEY, params))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addMoreProfiles(5)
+
+    launchSplashActivityPartially {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_resetAppOnboardingState_routesToOnboardingActivity() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.initializeProfiles()
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityPartially {
+      // Routes to OnboardingActivity because the app is not onboarded.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -1059,6 +1208,7 @@ class SplashActivityTest {
     runInNewTestApplication {
       appStartupStateController.markOnboardingFlowCompleted()
       testCoroutineDispatchers.advanceUntilIdle()
+      TestPlatformParameterModule.reset()
     }
   }
 
@@ -1084,6 +1234,7 @@ class SplashActivityTest {
   private fun recreateExistingApplication() {
     testCoroutineDispatchers.unregisterIdlingResource()
     ApplicationProvider.getApplicationContext<TestApplication>().recreateDaggerGraph()
+    TestPlatformParameterModule.reset()
     initializeTestApplication()
 
     // Reset any intents previously recorded.
@@ -1115,7 +1266,8 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
   }
 
-  private fun initializeTestApplication() {
+  private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
@@ -1203,32 +1355,65 @@ class SplashActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, PlatformParameterModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
       PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -1246,6 +1431,8 @@ class SplashActivityTest {
 
     fun getMonitorFactory(): DataProviderTestMonitor.Factory
 
+    fun getProfieTestHelper(): ProfileTestHelper
+
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
@@ -1258,6 +1445,8 @@ class SplashActivityTest {
       get() = component.getTestCoroutineDispatchers()
     val monitorFactory: DataProviderTestMonitor.Factory
       get() = component.getMonitorFactory()
+    val profileTestHelper: ProfileTestHelper
+      get() = component.getProfieTestHelper()
 
     fun inject(splashActivityTest: SplashActivityTest) {
       component.inject(splashActivityTest)

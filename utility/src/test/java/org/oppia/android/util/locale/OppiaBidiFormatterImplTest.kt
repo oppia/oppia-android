@@ -139,7 +139,8 @@ class OppiaBidiFormatterImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class
+      LocaleProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

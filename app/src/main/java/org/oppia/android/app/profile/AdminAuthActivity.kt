@@ -4,40 +4,42 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
+import org.oppia.android.app.model.AdminAuthActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-const val ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY = "AdminAuthActivity.admin_auth_admin_pin"
-const val ADMIN_AUTH_COLOR_RGB_EXTRA_KEY = "AdminAuthActivity.admin_auth_color_rgb"
-const val ADMIN_AUTH_ENUM_EXTRA_KEY = "AdminAuthActivity.admin_auth_enum"
-const val ADMIN_AUTH_PROFILE_ID_EXTRA_KEY = "AdminAuthActivity.admin_auth_profile_id"
-
 /** Activity that authenticates by checking for admin's PIN. */
-class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
+class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
   @Inject
   lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
   companion object {
+    /** Params key for AdminAuthActivity. */
+    const val ADMIN_AUTH_ACTIVITY_PARAMS_KEY = "AdminAuthActivity.params"
     fun createAdminAuthActivityIntent(
       context: Context,
       adminPin: String,
-      profileId: Int,
+      internalProfileId: Int,
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
+      // TODO(#5440): Ensure the ProfileId is valid.
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val args = AdminAuthActivityParams.newBuilder().apply {
+        this.adminPin = adminPin
+        this.colorRgb = colorRgb
+        this.adminPinEnum = adminPinEnum
+      }.build()
       return Intent(context, AdminAuthActivity::class.java).apply {
-        putExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY, adminPin)
-        putExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, profileId)
-        putExtra(ADMIN_AUTH_COLOR_RGB_EXTRA_KEY, colorRgb)
-        putExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, adminPinEnum)
+        putProtoExtra(ADMIN_AUTH_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADMIN_AUTH_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
-    }
-
-    fun getIntentKey(): String {
-      return ADMIN_AUTH_ENUM_EXTRA_KEY
     }
   }
 

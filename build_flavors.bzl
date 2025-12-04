@@ -2,26 +2,18 @@
 Macros & definitions corresponding to Oppia binary build flavors.
 """
 
-load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
+load("//:oppia_android_application.bzl", "generate_universal_apk", "oppia_android_application")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
 # flavors as they mature).
 AVAILABLE_FLAVORS = [
     "dev",
-    "dev_kitkat",
     "alpha",
-    "alpha_kitkat",
-    "alpha_kenya",
     "beta",
     "ga",
 ]
-
-# This file contains the list of classes that must be in the main dex list for the legacy multidex
-# build used on KitKat devices. Generally, this is the main application class is needed so that it
-# can load multidex support, plus any dependencies needed by that pipeline.
-_MAIN_DEX_LIST_TARGET_KITKAT = "//:config/kitkat_main_dex_class_list.txt"
 
 # keep sorted
 _PRODUCTION_PROGUARD_SPECS = [
@@ -41,12 +33,11 @@ _PRODUCTION_PROGUARD_SPECS = [
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
-# TODO(#4419): Remove the Kenya-specific alpha flavor.
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
@@ -57,73 +48,31 @@ _FLAVOR_METADATA = {
         "version_code": OPPIA_DEV_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
-    "dev_kitkat": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 19,
-        "target_sdk_version": 33,
-        "multidex": "manual_main_dex",
-        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
-        "proguard_specs": [],  # Developer builds are not optimized.
-        "production_release": False,
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
-            "//config/src/java/org/oppia/android/config:all_languages_config",
-        ],
-        "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
-        "application_class": ".app.application.dev.DeveloperOppiaApplication",
-    },
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
+            "//config/src/java/org/oppia/android/config:alpha_feature_flags_override_config",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
-    "alpha_kitkat": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 19,
-        "target_sdk_version": 33,
-        "multidex": "manual_main_dex",
-        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
-        "proguard_specs": [],
-        "production_release": True,
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
-            "//config/src/java/org/oppia/android/config:all_languages_config",
-        ],
-        "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
-        "application_class": ".app.application.alpha.AlphaOppiaApplication",
-    },
-    "alpha_kenya": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "target_sdk_version": 33,
-        "multidex": "native",
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "production_release": True,
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
-            "//config/src/java/org/oppia/android/config:all_languages_config",
-        ],
-        "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
-        "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
-    },
     "beta": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:beta_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_BETA_VERSION_CODE,
@@ -132,12 +81,13 @@ _FLAVOR_METADATA = {
     "ga": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+            "//config/src/java/org/oppia/android/config:ga_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_GA_VERSION_CODE,
@@ -258,7 +208,7 @@ def define_oppia_aab_binary_flavor(flavor):
 
     This will define two targets:
     - //:oppia_<flavor> (the AAB)
-    - //:install_oppia_<flavor> (the installable binary target--see declare_deployable_application
+    - //:oppia_<flavor>_universal_apk (the installable binary target--see generate_universal_apk
       for details)
 
     Args:
@@ -288,13 +238,12 @@ def define_oppia_aab_binary_flavor(flavor):
             "targetSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["target_sdk_version"],
         },
         multidex = _FLAVOR_METADATA[flavor]["multidex"],
-        main_dex_list = _FLAVOR_METADATA[flavor].get("main_dex_list"),
         proguard_generate_mapping = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
         shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         deps = _FLAVOR_METADATA[flavor]["deps"],
     )
-    declare_deployable_application(
-        name = "install_oppia_%s" % flavor,
+    generate_universal_apk(
+        name = "oppia_%s_universal_apk" % flavor,
         aab_target = ":oppia_%s" % flavor,
     )

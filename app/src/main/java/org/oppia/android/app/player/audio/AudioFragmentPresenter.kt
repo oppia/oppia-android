@@ -11,13 +11,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.AudioFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.CellularDataPreference
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
@@ -26,7 +23,7 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.AudioFragmentBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.audio.CellularAudioDialogController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -39,7 +36,6 @@ import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
-const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
@@ -76,7 +72,7 @@ class AudioFragmentPresenter @Inject constructor(
     cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
-        Observer<AsyncResult<CellularDataPreference>> {
+        {
           if (it is AsyncResult.Success) {
             showCellularDataDialog = !it.value.hideDialog
             useCellularData = it.value.useCellularData
@@ -104,7 +100,7 @@ class AudioFragmentPresenter @Inject constructor(
       })
     audioViewModel.playStatusLiveData.observe(
       fragment,
-      Observer {
+      {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
 
@@ -147,17 +143,17 @@ class AudioFragmentPresenter @Inject constructor(
     ) as? SpotlightManager
   }
 
-  private fun getProfileData(): LiveData<String> {
+  private fun retrieveAudioLanguageCode(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
+      profileManagementController.getAudioLanguage(profileId).toLiveData(),
+      ::processAudioLanguageResult
     )
   }
 
   private fun subscribeToAudioLanguageLiveData() {
-    getProfileData().observe(
+    retrieveAudioLanguageCode().observe(
       activity,
-      Observer<String> { result ->
+      { result ->
         audioViewModel.selectedLanguageCode = result
         audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
       }
@@ -165,11 +161,9 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Gets language code by [AudioLanguage]. */
-  private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+  private fun computeLanguageCode(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
       AudioLanguage.ARABIC_LANGUAGE -> "ar"
       AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
@@ -178,16 +172,16 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
-    val profile = when (profileResult) {
+  private fun processAudioLanguageResult(languageResult: AsyncResult<AudioLanguage>): String {
+    val audioLanguage = when (languageResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.error)
-        Profile.getDefaultInstance()
+        oppiaLogger.e("AudioFragment", "Failed to retrieve audio language", languageResult.error)
+        AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
+      is AsyncResult.Pending -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+      is AsyncResult.Success -> languageResult.value
     }
-    return getAudioLanguage(profile.audioLanguage)
+    return computeLanguageCode(audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel. */

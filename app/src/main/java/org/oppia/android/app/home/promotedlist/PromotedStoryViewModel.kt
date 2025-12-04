@@ -5,9 +5,10 @@ import android.content.res.Resources
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
 import java.util.Objects
@@ -39,6 +40,11 @@ class PromotedStoryViewModel(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
+  val classroomTitle by lazy {
+    translationController.extractString(
+      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
+    )
+  }
 
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
 
@@ -57,7 +63,8 @@ class PromotedStoryViewModel(
 
   fun clickOnStoryTile() {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      internalProfileId,
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      promotedStory.classroomId,
       promotedStory.topicId,
       promotedStory.storyId
     )

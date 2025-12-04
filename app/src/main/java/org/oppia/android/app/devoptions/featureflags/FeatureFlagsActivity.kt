@@ -1,0 +1,37 @@
+package org.oppia.android.app.devoptions.featureflags
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ScreenName.FEATURE_FLAGS_ACTIVITY
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
+
+/** Activity for feature flag dashboard of the app. */
+class FeatureFlagsActivity : InjectableAutoLocalizedAppCompatActivity() {
+  @Inject
+  lateinit var featureFlagsActivityPresenter: FeatureFlagsActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    (activityComponent as ActivityComponentImpl).inject(this)
+    featureFlagsActivityPresenter.handleOnCreate()
+    title = resourceHandler.getStringInLocale(R.string.feature_flags_activity_title)
+  }
+
+  companion object {
+    /** Returns [Intent] for [FeatureFlagsActivity]. */
+    fun createFeatureFlagsActivityIntent(context: Context): Intent {
+      return Intent(context, FeatureFlagsActivity::class.java).apply {
+        decorateWithScreenName(FEATURE_FLAGS_ACTIVITY)
+      }
+    }
+  }
+}

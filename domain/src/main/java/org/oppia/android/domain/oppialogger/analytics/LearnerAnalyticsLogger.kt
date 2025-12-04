@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
@@ -75,6 +76,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     profileId: ProfileId,
     learnerId: String?,
     exploration: Exploration,
+    classroomId: String,
     topicId: String,
     storyId: String
   ): ExplorationAnalyticsLogger {
@@ -82,6 +84,7 @@ class LearnerAnalyticsLogger @Inject constructor(
       installationId,
       profileId,
       learnerId,
+      classroomId,
       topicId,
       storyId,
       exploration.id,
@@ -185,6 +188,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     installationId: String?,
     profileId: ProfileId,
     learnerId: String?,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -213,6 +217,7 @@ class LearnerAnalyticsLogger @Inject constructor(
         ExplorationContext.newBuilder().apply {
           sessionId = learnerSessionId
           this.explorationId = explorationId
+          this.classroomId = classroomId
           this.topicId = topicId
           this.storyId = storyId
           this.explorationVersion = explorationVersion
@@ -233,6 +238,11 @@ class LearnerAnalyticsLogger @Inject constructor(
       baseLogger.maybeLogLearnerEvent(learnerDetailsContext) {
         createAnalyticsEvent(it, EventBuilder::setStartOverExplorationContext)
       }
+    }
+
+    /** Logs that an exploration has been started by the learner. */
+    fun logStartExploration() {
+      getExpectedStateLogger()?.logStartExploration()
     }
 
     /** Logs that the current exploration has been exited (i.e. not finished). */
@@ -321,6 +331,11 @@ class LearnerAnalyticsLogger @Inject constructor(
   ) {
     private val linkedSkillId by lazy { currentState.linkedSkillId }
 
+    /** Logs that an exploration has been started (at this state). */
+    internal fun logStartExploration() {
+      logStateEvent(EventBuilder::setStartExplorationContext)
+    }
+
     /** Logs that the current exploration has been exited (at this state). */
     internal fun logExitExploration() {
       logStateEvent(EventBuilder::setExitExplorationContext)
@@ -371,9 +386,17 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setHintUnlockedContext)
     }
 
-    /** Logs that the hint corresponding to [hintIndex] has been viewed by the learner. */
+    /** Logs that the hint corresponding to [hintIndex] has been revealed by the learner. */
+    fun logRevealHint(hintIndex: Int) {
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setRevealHintContext)
+    }
+
+    /**
+     * Logs the event indicating that the learner has viewed a hint corresponding to [hintIndex],
+     * excluding the first-time viewing.
+     */
     fun logViewHint(hintIndex: Int) {
-      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
+      logStateEvent(hintIndex, ::createHintContext, EventBuilder::setViewExistingHintContext)
     }
 
     /** Logs that the solution to the current card has been unlocked by the learner. */
@@ -382,8 +405,16 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /** Logs that the solution to the current card has been viewed by the learner. */
+    fun logRevealSolution() {
+      logStateEvent(EventBuilder::setRevealSolutionContext)
+    }
+
+    /**
+     * Logs the event indicating that the learner has viewed the solution to the current card,
+     * excluding the first-time viewing.
+     */
     fun logViewSolution() {
-      logStateEvent(EventBuilder::setAccessSolutionContext)
+      logStateEvent(EventBuilder::setViewExistingSolutionContext)
     }
 
     /**
@@ -444,6 +475,46 @@ class LearnerAnalyticsLogger @Inject constructor(
         isCorrect,
         ::createSubmitAnswerContext,
         EventBuilder::setSubmitAnswerContext
+      )
+    }
+
+    /**
+     * Logs that flashback is offered to learner. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
+    fun logFlashbackOffered(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setFlashbackOfferedContext
+      )
+    }
+
+    /**
+     * Logs that the learner opened a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
+    fun logOpenFlashback(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setOpenFlashbackEvent
+      )
+    }
+
+    /**
+     * Logs that the learner closed a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state.
+     */
+    fun logCloseFlashback() {
+      logStateEvent(
+        linkedSkillId,
+        ::createCardContext,
+        EventBuilder::setCloseFlashbackEvent
       )
     }
 
@@ -627,6 +698,16 @@ class LearnerAnalyticsLogger @Inject constructor(
       explorationDetails: ExplorationContext
     ) = CardContext.newBuilder().apply {
       this.skillId = skillId
+      this.explorationDetails = explorationDetails
+    }.build()
+
+    private fun createFlashbackContext(
+      skillId: String,
+      stateNameToRevisit: String,
+      explorationDetails: ExplorationContext
+    ) = FlashbackContext.newBuilder().apply {
+      this.skillId = skillId
+      this.stateNameToRevisit = stateNameToRevisit
       this.explorationDetails = explorationDetails
     }.build()
 

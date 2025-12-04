@@ -1,11 +1,12 @@
 package org.oppia.android.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
 
 /** Recently played item [ViewModel] for the recycler view in [ProfileProgressFragment]. */
@@ -35,7 +36,12 @@ class RecentlyPlayedStorySummaryViewModel(
   }
 
   fun onStoryItemClicked() {
-    routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
+    routeToTopicPlayStory(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      classroomId = promotedStory.classroomId,
+      topicId = promotedStory.topicId,
+      storyId = promotedStory.storyId
+    )
   }
 
   fun computeLessonThumbnailContentDescription(): String {
@@ -44,10 +50,16 @@ class RecentlyPlayedStorySummaryViewModel(
     )
   }
 
-  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+    storyId: String
+  ) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
-      internalProfileId,
+      profileId.internalId,
+      classroomId,
       topicId,
       storyId
     )

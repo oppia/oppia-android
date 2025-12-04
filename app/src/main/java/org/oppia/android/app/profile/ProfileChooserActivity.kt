@@ -5,14 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ScreenName.PROFILE_CHOOSER_ACTIVITY
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
 class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
-  @Inject
-  lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
+  @Inject lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
     fun createProfileChooserActivity(context: Context): Intent {
@@ -26,6 +29,14 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileChooserActivityPresenter.handleOnCreate()
+
+    val parentScreen = intent.getProtoExtra(
+      PROFILE_CHOOSER_PARAMS_KEY,
+      ProfileChooserActivityParams.getDefaultInstance()
+    ).parentScreen
+
+    val profileId = intent.extractCurrentUserProfileId()
+
+    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen)
   }
 }

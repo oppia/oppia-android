@@ -117,6 +117,7 @@ kt_android_library(
     ],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -133,32 +134,6 @@ kt_android_library(
         ":sync_status_manager_impl",
         "//:dagger",
         "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "standard_event_logging_configuration_module",
-    srcs = [
-        "EventLoggingConfigurationModule.kt",
-        "StandardEventTypeToHumanReadableNameConverterImpl.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":event_type_to_human_readable_name_converter",
-        "//:dagger",
-    ],
-)
-
-kt_android_library(
-    name = "kenya_alpha_event_logging_configuration_module",
-    srcs = [
-        "KenyaAlphaEventLoggingConfigurationModule.kt",
-        "KenyaAlphaEventTypeToHumanReadableNameConverterImpl.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":event_type_to_human_readable_name_converter",
-        "//:dagger",
     ],
 )
 

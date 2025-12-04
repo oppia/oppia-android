@@ -1,7 +1,7 @@
 package org.oppia.android.app.databinding
 
-import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +11,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
@@ -19,10 +18,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -42,7 +37,8 @@ import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -68,7 +64,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -77,7 +72,9 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -85,7 +82,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -95,6 +91,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ImageViewBindingAdapters]. */
@@ -108,20 +105,11 @@ class ImageViewBindingAdaptersTest {
 
   // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        ImageViewBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -136,45 +124,53 @@ class ImageViewBindingAdaptersTest {
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
-      )
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
+        )
+      }
     }
   }
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
-      )
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+        )
+      }
     }
   }
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
-      )
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+        )
+      }
     }
   }
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
-      )
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        )
+      }
     }
   }
 
@@ -184,55 +180,83 @@ class ImageViewBindingAdaptersTest {
     return imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: ImageViewBindingAdaptersTest.Consumer<V> =
-      mock(ImageViewBindingAdaptersTest.Consumer::class.java)
-        as ImageViewBindingAdaptersTest.Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
-      .inject(this)
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ImageViewBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, ImageViewBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<ImageViewBindingAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   /** Create a TestApplicationComponent. */
@@ -268,10 +292,5 @@ class ImageViewBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }

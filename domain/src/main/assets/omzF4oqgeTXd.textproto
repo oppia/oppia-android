@@ -3,6 +3,7 @@ canonical_story_ids: "wAMdg4oOClga"
 canonical_story_ids: "xBSdg4oOClga"
 subtopic_ids: 1
 is_published: true
+has_practice_questions: true
 topic_thumbnail {
 }
 written_translations {

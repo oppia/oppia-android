@@ -4,12 +4,12 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
@@ -72,6 +72,7 @@ class AudioViewModel @Inject constructor(
   }
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
+    setStateAndExplorationId(state, explorationId)
     hasFeedback = false
     loadAudio(contentId = null, allowAutoPlay, reloadingContent)
   }
@@ -88,7 +89,12 @@ class AudioViewModel @Inject constructor(
    * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean, reloadingMainContent: Boolean) {
-    val targetContentId = contentId ?: state.content.contentId
+    val targetContentId = when {
+      !contentId.isNullOrEmpty() -> contentId
+      this::state.isInitialized -> state.content.contentId
+      else -> ""
+    }
+
     val voiceoverMapping =
       state.recordedVoiceoversMap[targetContentId] ?: VoiceoverMapping.getDefaultInstance()
 
@@ -106,10 +112,9 @@ class AudioViewModel @Inject constructor(
     selectedLanguageName.set(locale.getDisplayLanguage(locale))
 
     when {
-      selectedLanguageCode.isEmpty() && languages.any {
-        it == defaultLanguage
-      } -> setAudioLanguageCode(defaultLanguage)
-      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
+      selectedLanguageCode.isEmpty() && languages.contains(defaultLanguage) ->
+        setAudioLanguageCode(defaultLanguage)
+      languages.contains(selectedLanguageCode) -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
         this.reloadingMainContent = false

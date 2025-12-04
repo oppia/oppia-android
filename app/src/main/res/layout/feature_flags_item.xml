@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <import type="android.view.View" />
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.featureflags.FeatureFlagItemViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/feature_flag_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="64dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+      <TextView
+        android:id="@+id/feature_flag_label_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@{viewModel.featureFlagDisplayName}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/feature_flag_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/feature_flag_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="4dp"
+        android:checked="@{viewModel.isChecked}"
+        android:focusable="false"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:onClick="@{() -> viewModel.onToggleFeatureFlagSwitch()}"
+        android:theme="@style/OppiaSwitchCompatTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/feature_flag_label_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/sync_details_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="64dp"
+      android:background="@color/component_color_shared_screen_tertiary_background_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/feature_flag_constraint_layout">
+
+      <ImageView
+        android:id="@+id/currently_overridden_alert_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/feature_flag_alert_icon_content_description"
+        app:srcCompat="@drawable/ic_alert_icon_yellow_24dp"
+        android:visibility="@{viewModel.isFlagOverridden &amp;&amp; viewModel.isResetButtonEnabled  ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/sync_details_text_view"
+        style="@style/SubtitleLight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@{viewModel.syncDetails}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reset_button"
+        app:layout_constraintStart_toEndOf="@id/currently_overridden_alert_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <Button
+        android:id="@+id/reset_button"
+        style="@style/StateButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginVertical="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="20dp"
+        android:background="@{viewModel.isResetButtonEnabled ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+        android:enabled="@{viewModel.isResetButtonEnabled}"
+        android:text="@string/feature_flag_reset"
+        android:textColor="@{viewModel.isResetButtonEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
+        android:visibility="@{viewModel.isFlagOverridden ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sync_details_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/component_color_shared_divider_color" />
+  </LinearLayout>
+</layout>

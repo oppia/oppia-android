@@ -15,6 +15,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -77,6 +78,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
+private const val TEST_CLASSROOM_ID = "test_classroomId"
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_STORY_ID = "test_storyId"
 private const val TEST_EXPLORATION_ID = "test_explorationId"
@@ -112,6 +114,11 @@ class AnalyticsControllerTest {
   private val profileManagementController by lazy { profileManagementControllerProvider.get() }
   private val analyticsController by lazy { analyticsControllerProvider.get() }
 
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
   @Test
   fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {
     setUpTestApplicationComponent()
@@ -138,6 +145,7 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenExplorationActivityContext(
+        TEST_CLASSROOM_ID,
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
@@ -383,6 +391,7 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
       oppiaLogger.createOpenExplorationActivityContext(
+        TEST_CLASSROOM_ID,
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
@@ -1148,6 +1157,32 @@ class AnalyticsControllerTest {
     assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingStartedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingStartedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingEndedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingEndedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasEndProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1359,11 +1394,19 @@ class AnalyticsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

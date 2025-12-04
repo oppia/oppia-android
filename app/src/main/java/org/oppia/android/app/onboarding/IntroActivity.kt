@@ -1,0 +1,57 @@
+package org.oppia.android.app.onboarding
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
+import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
+
+/** The activity for showing the learner welcome screen. */
+class IntroActivity : InjectableSystemLocalizedAppCompatActivity() {
+  @Inject
+  lateinit var onboardingLearnerIntroActivityPresenter: IntroActivityPresenter
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    (activityComponent as ActivityComponentImpl).inject(this)
+
+    val activityParams = intent.getProtoExtra(PARAMS_KEY, IntroActivityParams.getDefaultInstance())
+    val profileNickname = activityParams.profileNickname
+
+    val profileId = intent.extractCurrentUserProfileId()
+
+    val parentScreen = activityParams.parentScreen
+
+    onboardingLearnerIntroActivityPresenter.handleOnCreate(profileNickname, profileId, parentScreen)
+  }
+
+  companion object {
+    /** Argument key for [IntroActivity]'s intent parameters. */
+    const val PARAMS_KEY = "OnboardingIntroActivity.params"
+
+    /**
+     * A convenience function for creating a new [IntroActivity] intent by prefilling
+     * common params needed by the activity.
+     */
+    fun createIntroActivity(
+      context: Context,
+      introActivityParams: IntroActivityParams,
+      profileId: ProfileId
+    ): Intent {
+      return Intent(context, IntroActivity::class.java).apply {
+        putProtoExtra(PARAMS_KEY, introActivityParams)
+        decorateWithUserProfileId(profileId)
+        decorateWithScreenName(INTRO_ACTIVITY)
+      }
+    }
+  }
+}

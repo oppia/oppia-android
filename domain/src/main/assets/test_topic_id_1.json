@@ -17,5 +17,6 @@
   "thumbnail_filename": "",
   "skill_descriptions": {},
   "subtopics": [],
-  "published": true
+  "published": true,
+  "has_practice_questions": false
 }

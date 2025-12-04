@@ -6,11 +6,10 @@ name: Unit Tests (Robolectric -- Gradle)
 # events or push events in the develop branch.
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      # Push events on develop branch
-      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 # This workflow has the following jobs:
 # robolectric_tests: Robolectric tests for all modules except the app module
@@ -21,10 +20,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: cache
         with:
           path: ~/.gradle
@@ -54,52 +53,60 @@ jobs:
         run: sudo ./gradlew --full-stacktrace assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Utility tests
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Utility Test Reports
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: utility reports
           path: utility/build/reports
 
       - name: Data tests
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: sudo ./gradlew --full-stacktrace :data:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Data Test Reports
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: data reports
           path: data/build/reports
 
       - name: Domain tests
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Domain Test Reports
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: domain reports
           path: domain/build/reports
 
       - name: Testing tests
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Testing Test Reports
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: testing reports
           path: testing/build/reports
 
   run_app_module_test:
     name: Run app module Robolectric test shard
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -107,7 +114,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
@@ -132,8 +139,8 @@ jobs:
         run: |
           sudo ./gradlew --full-stacktrace :app:testDebugUnitTest --${{ matrix.shard }} -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload App Test Reports
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: app reports ${{ matrix.shard }}
           path: app/build/reports
@@ -141,11 +148,13 @@ jobs:
   app_tests:
     name: App Module Robolectric Tests
     needs: run_app_module_test
-    if: ${{ always() }}
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-24.04]
     steps:
       - name: Check tests passed (for tests that ran)
         if: ${{ needs.run_app_module_test.result != 'success' }}

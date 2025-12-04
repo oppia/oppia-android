@@ -298,6 +298,185 @@ class CustomHtmlContentHandlerTest {
     assertThat(jsonObject?.getString("key")).isEqualTo("value with \\frac{1}{2}")
   }
 
+  @Test
+  fun testGetContentDescription_withNestedTags_handlesNestingCorrectly() {
+    val outerHandler = FakeContentDescriptionTagHandler("Outer Tag ")
+    val innerHandler = FakeContentDescriptionTagHandler("Inner Tag ")
+
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<outer-tag>before <inner-tag>nested</inner-tag> after</outer-tag>",
+      customTagHandlers = mapOf(
+        "outer-tag" to outerHandler,
+        "inner-tag" to innerHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Outer Tag before Inner Tag nested after")
+  }
+
+  @Test
+  fun testGetContentDescription_withMultipleTags_preservesOrder() {
+    val firstHandler = FakeContentDescriptionTagHandler("First ")
+    val secondHandler = FakeContentDescriptionTagHandler("Second ")
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "Start <first-tag>one</first-tag> middle <second-tag>two</second-tag> end",
+      customTagHandlers = mapOf(
+        "first-tag" to firstHandler,
+        "second-tag" to secondHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
+  }
+
+  @Test
+  fun testGetContentDescription_whitespaceHandling_normalizedCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+              <p>First    paragraph</p>
+              
+              <p>Second     paragraph</p>
+              
+              <p>Third    paragraph</p>
+        """.trimIndent(),
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "First    paragraph\n" +
+        "Second     paragraph\n" +
+        "Third    paragraph"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_blockElements_preserveStructure() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+              <header>Header text</header>
+              <article>Article content</article>
+              <section>Section text</section>
+              <aside>Aside content</aside>
+              <footer>Footer text</footer>
+        """.trimIndent(),
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Header text\n" +
+        "Article content\n" +
+        "Section text\n" +
+        "Aside content\n" +
+        "Footer text"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_mixedContentTypes_handlesCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+              <p>Regular paragraph</p>
+              <custom-tag>Custom content</custom-tag>
+              <ul><li>List item 1</li><li>List item 2</li></ul>
+              <custom-tag>More custom</custom-tag>
+              <p>Final paragraph</p>
+        """.trimIndent(),
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Regular paragraph\n" +
+        "Custom content\n" +
+        "List item 1\n" +
+        "List item 2\n" +
+        "More custom\n" +
+        "Final paragraph"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_anchorTag_handlesCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+              <p>Visit <a href="https://example.com">Example</a> for more info.</p>
+              <a href="https://another.com">Another Link</a>
+        """.trimIndent(),
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Visit https://example.com Example for more info.\n" +
+        "https://another.com Another Link"
+    )
+  }
+
+  @Test
+  fun testParseHtml_withCustomTag_handlesContentDescriptionCorrectly() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.getContentDescription(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagCalled).isFalse()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_withCustomTag_normalParsingCallsHandleTag() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.fromHtml(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isFalse()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_withNullImageRetriever_callsHandleTagForContentDescription() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.fromHtml(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      imageRetriever = null,
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagCalled).isFalse()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_contentDescriptionGeneration_methodCallOrder() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.getContentDescription(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleClosingTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
+
+    assertThat(fakeTagHandler.handleOpeningTagCallIndex)
+      .isLessThan(fakeTagHandler.handleClosingTagCallIndex)
+    assertThat(fakeTagHandler.handleClosingTagCallIndex)
+      .isLessThan(fakeTagHandler.handleTagForContentDescriptionCallIndex)
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
@@ -316,9 +495,26 @@ class CustomHtmlContentHandlerTest {
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
   }
 
-  private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
+  private class FakeContentDescriptionTagHandler(
+    private val contentDesc: String
+  ) : CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    ) {}
+
+    override fun getContentDescription(attributes: Attributes): String {
+      return contentDesc
+    }
+  }
+  private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1
+    var handleTagForContentDescriptionCalled = false
+    var handleTagForContentDescriptionCallIndex = -1
     var handleOpeningTagCalled = false
     var handleOpeningTagCallIndex = -1
     var handleClosingTagCalled = false
@@ -335,6 +531,17 @@ class CustomHtmlContentHandlerTest {
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
+      this.attributes = attributes
+    }
+
+    override fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+      handleTagForContentDescriptionCalled = true
+      handleTagForContentDescriptionCallIndex = methodCallCount++
       this.attributes = attributes
     }
 
@@ -358,7 +565,7 @@ class CustomHtmlContentHandlerTest {
 
   private class ReplacingTagHandler(
     private val attributeTextToReplaceWith: String
-  ) : CustomHtmlContentHandler.CustomTagHandler {
+  ) : CustomTagHandler {
     override fun handleTag(
       attributes: Attributes,
       openIndex: Int,
@@ -393,8 +600,12 @@ class CustomHtmlContentHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
 

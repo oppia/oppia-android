@@ -2,9 +2,9 @@ package org.oppia.android.app.topic.lessons
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
 
 private const val DEFAULT_STORY_PERCENTAGE = 0

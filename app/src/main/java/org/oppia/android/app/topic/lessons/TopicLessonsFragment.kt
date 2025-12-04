@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.TopicLessonsFragmentArguments
+import org.oppia.android.app.model.TopicLessonsFragmentStateBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
@@ -27,22 +30,32 @@ class TopicLessonsFragment :
   ChapterSummarySelector {
 
   companion object {
+    /** Arguments key for TopicLessonsFragment. */
+    const val TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY = "TopicLessonsFragment.arguments"
+
+    /** State key for TopicLessonsFragment. */
+    const val TOPIC_LESSONS_FRAGMENT_STATE_KEY = "TopicLessonsFragment.state"
+
     /** Returns a new [TopicLessonsFragment]. */
     fun newInstance(
-      internalProfileId: Int,
+      profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String
     ): TopicLessonsFragment {
-      val topicLessonsFragment = TopicLessonsFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
 
-      if (storyId.isNotEmpty())
-        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
-
-      topicLessonsFragment.arguments = args
-      return topicLessonsFragment
+      val args = TopicLessonsFragmentArguments.newBuilder().apply {
+        this.classroomId = classroomId
+        this.topicId = topicId
+        if (storyId.isNotBlank())
+          this.storyId = storyId
+      }.build()
+      return TopicLessonsFragment().apply {
+        arguments = Bundle().apply {
+          putProto(TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -63,25 +76,37 @@ class TopicLessonsFragment :
     savedInstanceState: Bundle?
   ): View? {
     if (savedInstanceState != null) {
+      val stateArgs = savedInstanceState.getProto(
+        TOPIC_LESSONS_FRAGMENT_STATE_KEY,
+        TopicLessonsFragmentStateBundle.getDefaultInstance()
+      )
       currentExpandedChapterListIndex =
-        savedInstanceState.getInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, -1)
+        stateArgs?.currentExpandedChapterListIndex ?: -1
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
-      isDefaultStoryExpanded = savedInstanceState.getBoolean(IS_DEFAULT_STORY_SHOWN)
+      isDefaultStoryExpanded = stateArgs?.isDefaultStoryExpanded ?: false
     }
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
+    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
+    val args = arguments?.getProto(
+      TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
+      TopicLessonsFragmentArguments.getDefaultInstance()
+    )
+    val classroomId = checkNotNull(args?.classroomId) {
+      "Expected classroom ID to be included in arguments for TopicLessonsFragment."
+    }
+    val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
-    val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
-
+    val storyId = args?.storyId ?: ""
     return topicLessonsFragmentPresenter.handleCreateView(
       inflater,
       container,
       currentExpandedChapterListIndex,
       this as ExpandedChapterListIndexListener,
-      internalProfileId,
+      profileId,
+      classroomId,
       topicId,
       storyId,
       isDefaultStoryExpanded
@@ -90,10 +115,18 @@ class TopicLessonsFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if (currentExpandedChapterListIndex != null) {
-      outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedChapterListIndex!!)
-    }
-    outState.putBoolean(IS_DEFAULT_STORY_SHOWN, isDefaultStoryExpanded)
+
+    val args = TopicLessonsFragmentStateBundle.newBuilder().apply {
+      if (this@TopicLessonsFragment.currentExpandedChapterListIndex != null) {
+        this.currentExpandedChapterListIndex =
+          this@TopicLessonsFragment.currentExpandedChapterListIndex!!
+      }
+      this.isDefaultStoryExpanded = this@TopicLessonsFragment.isDefaultStoryExpanded
+    }.build()
+    outState.putProto(
+      TOPIC_LESSONS_FRAGMENT_STATE_KEY,
+      args
+    )
   }
 
   override fun onExpandListIconClicked(index: Int?) {

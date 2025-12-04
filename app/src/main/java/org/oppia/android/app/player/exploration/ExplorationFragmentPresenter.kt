@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.ExplorationFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
 import org.oppia.android.app.model.ProfileId
@@ -19,8 +19,8 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -58,7 +58,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       StateFragment.newInstance(
         args.profileId.internalId, args.topicId, args.storyId, args.explorationId
       )
-    logPracticeFragmentEvent(args.topicId, args.storyId, args.explorationId)
+    logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
@@ -129,12 +129,17 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun revealHint(hintIndex: Int) {
     getStateFragment()?.revealHint(hintIndex)
   }
+  fun viewHint(hintIndex: Int) {
+    getStateFragment()?.viewHint(hintIndex)
+  }
 
   fun revealSolution() {
     getStateFragment()?.revealSolution()
   }
 
-  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+  fun viewSolution() {
+    getStateFragment()?.viewSolution()
+  }
 
   fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 
@@ -146,9 +151,16 @@ class ExplorationFragmentPresenter @Inject constructor(
       ) as StateFragment?
   }
 
-  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
+  private fun logPracticeFragmentEvent(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId),
+      oppiaLogger.createOpenExplorationActivityContext(
+        classroomId, topicId, storyId, explorationId
+      ),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
@@ -170,6 +182,12 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   private fun updateArguments(updatedArgs: ExplorationFragmentArguments) {
     fragment.requireArguments().putProto(ARGUMENTS_KEY, updatedArgs)
+  }
+
+  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+
+  fun onFlashbackToolbarBackPressed() {
+    getStateFragment()?.onReturnToQuestionButtonClicked()
   }
 
   companion object {

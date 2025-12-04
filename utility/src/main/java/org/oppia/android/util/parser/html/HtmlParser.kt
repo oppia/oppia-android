@@ -145,7 +145,10 @@ class HtmlParser private constructor(
       val urlSpan = URLSpan(url)
       htmlSpannable.setSpan(urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
     }
-
+    htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
+      htmlContent,
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+    )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
@@ -154,6 +157,7 @@ class HtmlParser private constructor(
     htmlContentTextView: TextView
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
+    bulletTagHandler.setTextView(htmlContentTextView)
     handlersMap[CUSTOM_LIST_LI_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_UL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_OL_TAG] = bulletTagHandler
@@ -174,10 +178,18 @@ class HtmlParser private constructor(
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
-    val trimmedText = spannable.toString()
-    val trimStart = if (trimmedText.startsWith("\n")) 1 else 0
-    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 2 else 0
-    return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
+    val text = spannable.toString()
+
+    // Find the first non-newline from the start.
+    var start = 0
+    while (start < text.length && text[start] == '\n') { start++ }
+
+    // Find the last non-newline from the end.
+    var end = text.length
+    while (end > start && text[end - 1] == '\n') { end-- }
+
+    // Return only the trimmed span.
+    return SpannableStringBuilder(spannable.subSequence(start, end))
   }
 
   private fun ensureNonEmpty(spannable: SpannableStringBuilder): SpannableStringBuilder {

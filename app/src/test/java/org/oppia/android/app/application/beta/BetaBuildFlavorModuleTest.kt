@@ -54,7 +54,12 @@ class BetaBuildFlavorModuleTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, BetaBuildFlavorModule::class])
+  @Component(
+    modules = [
+      BetaBuildFlavorModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

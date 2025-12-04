@@ -71,7 +71,10 @@
   <dimen name="submitted_answer_exploration_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
-  <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
+
+  <dimen name="profile_selection_fragment_recyclerview_margin_single_item" tools:ignore="MissingDefaultResource">120dp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_margin_few_items" tools:ignore="MissingDefaultResource">72dp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_margin_many_items" tools:ignore="MissingDefaultResource">16dp</dimen>
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
@@ -277,7 +280,7 @@
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">72dp</dimen>
-  <dimen name="all_topics_text_margin_top">68dp</dimen>
+  <dimen name="all_topics_text_margin_top">48dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">24dp</dimen>
 
@@ -290,6 +293,10 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">20dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_start">72dp</dimen>
+  <dimen name="coming_soon_topic_list_layout_margin_end">72dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_start">0dp</dimen>
+  <dimen name="coming_soon_topic_card_layout_margin_end">32dp</dimen>
 
   <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
@@ -351,7 +358,7 @@
   <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
 
   <dimen name="home_fragment_padding_top">48dp</dimen>
-  <dimen name="home_fragment_padding_bottom">100dp</dimen>
+  <dimen name="home_fragment_padding_bottom">232dp</dimen>
 
   <!-- Recently Played -->
   <dimen name="recently_played_fragment_padding_top">0dp</dimen>
@@ -361,6 +368,10 @@
   <dimen name="promoted_story_card_layout_margin_end">32dp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">4dp</dimen>
+
+  <!-- Topic Card -->
+  <dimen name="topic_card_margin_start">0dp</dimen>
+  <dimen name="topic_card_margin_end">32dp</dimen>
 
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">8dp</dimen>
@@ -507,4 +518,25 @@
   <dimen name="topic_fragment_tab_layout_margin_start">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <!-- Classrooms -->
+  <dimen name="classrooms_text_margin_start">72dp</dimen>
+  <dimen name="classrooms_text_margin_top">20dp</dimen>
+  <dimen name="classrooms_text_margin_end">72dp</dimen>
+  <dimen name="classrooms_text_margin_bottom">12dp</dimen>
+  <dimen name="classrooms_card_collapsed_padding_vertical">28dp</dimen>
+  <dimen name="classrooms_card_padding_vertical">52dp</dimen>
+  <dimen name="classrooms_card_icon_padding_bottom">32dp</dimen>
+  <dimen name="classrooms_card_icon_size">100dp</dimen>
+  <dimen name="classrooms_card_margin_start">0dp</dimen>
+  <dimen name="classrooms_card_margin_end">16dp</dimen>
+
+  <!-- Flashback Solution -->
+  <dimen name="flashback_solution_summary_card_margin_start">208dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">176dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
+
+  <!-- Onboarding V2 -->
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">108dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">108dp</dimen>
 </resources>

@@ -12,15 +12,16 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -103,6 +104,18 @@ class ProfileTestHelperTest {
   }
 
   @Test
+  fun testAddDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
+    profileTestHelper.createDefaultAdminProfile()
+    testCoroutineDispatchers.runCurrent()
+    val profilesProvider = profileManagementController.getProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
+    assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isTrue()
+  }
+
+  @Test
   fun testLogIntoAdmin_initializeProfiles_logIntoAdmin_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
     val loginProvider = profileTestHelper.logIntoAdmin()
@@ -124,6 +137,47 @@ class ProfileTestHelperTest {
     val loginProvider = profileTestHelper.logIntoNewUser()
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
     assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
+  }
+
+  @Test
+  fun testLogIntoAdmin_addOnlyAdminProfileWithoutPin_logIntoAdminWithoutPin_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val loginProvider = profileTestHelper.logIntoAdmin()
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingStarted_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val onboardingProvider = profileTestHelper.markProfileOnboardingStarted(profileId!!)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
+  @Test
+  fun testProfileOnboarding_markOnboardingCompleted_checkIsSuccessful() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val onboardingProvider = profileTestHelper.markProfileOnboardingEnded(profileId!!)
+    monitorFactory.waitForNextSuccessfulResult(onboardingProvider)
+  }
+
+  @Test
+  fun testUpdateProfile_updateProfileType_profileTypeShouldBeUpdated() {
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = profileManagementController.getCurrentProfileId()
+    val updateProvider = profileTestHelper.updateProfileType(profileId!!, ProfileType.SUPERVISOR)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    val profilesProvider = profileManagementController.getProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
+    assertThat(profiles.size).isEqualTo(1)
+    assertThat(profiles[0].name).isEqualTo("Admin")
+    assertThat(profiles[0].isAdmin).isTrue()
+    assertThat(profiles[0].profileType).isEqualTo(ProfileType.SUPERVISOR)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -154,11 +208,20 @@ class ProfileTestHelperTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, AssetModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
