@@ -17,3 +17,9 @@ build:ignore_build_warnings --//tools/kotlin:warn_mode=warning
 
 # Show all test output by default (for better debugging).
 test --test_output=all
+
+# Always start the app by default when using mobile-install.
+mobile-install --start_app
+
+# Ensure that all tests have access to the ANDROID_HOME environment variable.
+test --test_env=ANDROID_HOME

@@ -3,9 +3,9 @@ package org.oppia.android.app.drawer
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 

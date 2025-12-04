@@ -34,7 +34,7 @@ This module contains all the activities and fragments, as well as the view, view
 -   **app/view** - Basic Dagger code for View implementation.
 -   **app/viewmodel** - Basic Dagger code for ViewModel implementation.
     
-In addition to the above-mentioned subdirectories, this module also contains other subdirectories that contain activities, fragments, interfaces and view models for various screens in the app. These subdirectories follow the naming convention **app/<screen_name>**. For example, the subdirectory **app/resumeLesson** contains all the activities, fragments, interfaces and ViewModels used by the resume lesson screen.
+In addition to the above-mentioned subdirectories, this module also contains other subdirectories that contain activities, fragments, interfaces and view models for various screens in the app. These subdirectories follow the naming convention **app/<screen_name>**. For example, the subdirectory **app/resumeLessonLesson** contains all the activities, fragments, interfaces and ViewModels used by the resume lesson screen.
 
 #### 2. data
 
@@ -152,7 +152,7 @@ Following these steps would lead to completing the entire task with all the code
 
 **Task:**  
 
-Finding code from a string ( e g., story name under lessons tab) that you see in UI when running the app all the way to the UI components, domain controllers and the tests ultimately behind that text appearing.
+Finding code from a string ( e g., story name under Learn tab) that you see in UI when running the app all the way to the UI components, domain controllers and the tests ultimately behind that text appearing.
 
 <img width="300" height="600" alt="example 2 task image" src="https://github.com/oppia/oppia-android/assets/76530270/a1785b0e-7c8e-4ece-a375-e9042f1002da">
 
@@ -162,7 +162,7 @@ Finding code from a string ( e g., story name under lessons tab) that you see in
 
 1.  The first step is to identify the id of the UI component that is responsible for displaying the text. We can do this by using the layout inspector of the android studio.
     
-2.  To do this, run the app on an emulator. Now navigate to the screen that displays the UI component, i.e. the lessons tab.
+2.  To do this, run the app on an emulator. Now navigate to the screen that displays the UI component, i.e. the Learn tab.
     
 3.  Next, open the layout inspector from the android studio, and click on the UI component displaying the story name. Now all the attributes of this UI component are displayed on the right side of the layout inspector. Here, you can see this UI component's id, i.e. story_name_text_view.
 

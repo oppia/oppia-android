@@ -6,6 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsFragmentBinding
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsModifyLessonProgressViewBinding
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsOverrideAppBehaviorsViewBinding
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsTestParsersViewBinding
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsViewLogsViewBinding
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
@@ -13,11 +18,6 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.DeveloperOptionsFragmentBinding
-import org.oppia.android.databinding.DeveloperOptionsModifyLessonProgressViewBinding
-import org.oppia.android.databinding.DeveloperOptionsOverrideAppBehaviorsViewBinding
-import org.oppia.android.databinding.DeveloperOptionsTestParsersViewBinding
-import org.oppia.android.databinding.DeveloperOptionsViewLogsViewBinding
 import javax.inject.Inject
 
 /** The presenter for [DeveloperOptionsFragment]. */

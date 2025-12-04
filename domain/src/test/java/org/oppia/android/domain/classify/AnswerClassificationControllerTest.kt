@@ -24,13 +24,13 @@ import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createReal
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createFraction
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createMixedNumber
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createReal
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createString
+import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -844,19 +844,35 @@ class AnswerClassificationControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class,
-      ImageClickInputModule::class, RatioInputModule::class, LocaleProdModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent {

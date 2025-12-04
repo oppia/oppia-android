@@ -73,12 +73,14 @@ class ExplorationDataController @Inject constructor(
    */
   fun startPlayingNewExploration(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,
@@ -102,6 +104,7 @@ class ExplorationDataController @Inject constructor(
    */
   fun resumeExploration(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -109,6 +112,7 @@ class ExplorationDataController @Inject constructor(
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,
@@ -131,12 +135,14 @@ class ExplorationDataController @Inject constructor(
    */
   fun restartExploration(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,
@@ -162,12 +168,14 @@ class ExplorationDataController @Inject constructor(
    */
   fun replayExploration(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
+      classroomId,
       topicId,
       storyId,
       explorationId,
@@ -206,6 +214,7 @@ class ExplorationDataController @Inject constructor(
    */
   private fun startPlayingExploration(
     internalProfileId: Int,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -215,6 +224,7 @@ class ExplorationDataController @Inject constructor(
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      classroomId,
       topicId,
       storyId,
       explorationId,

@@ -1,6 +1,6 @@
 package org.oppia.android.app.utility.math
 
-import org.oppia.android.R
+import org.oppia.android.app.R
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE

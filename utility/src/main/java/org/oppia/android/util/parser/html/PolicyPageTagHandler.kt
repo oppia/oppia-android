@@ -22,13 +22,12 @@ private const val TERMS_OF_SERVICE = "Terms of Service"
 class PolicyPageTagHandler(
   private val listener: PolicyPageLinkClickListener,
   private val consoleLogger: ConsoleLogger
-) : CustomHtmlContentHandler.CustomTagHandler {
-  override fun handleTag(
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+  override fun handleTagForContentDescription(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
-    output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    output: Editable
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
@@ -82,5 +81,12 @@ class PolicyPageTagHandler(
      * specified policy link.
      */
     fun onPolicyPageLinkClicked(policyType: PolicyType)
+  }
+
+  override fun getContentDescription(attributes: Attributes): String {
+    return when (attributes.getJsonStringValue("link")) {
+      TERMS_OF_SERVICE_PAGE, PRIVACY_POLICY_PAGE -> "Link to "
+      else -> ""
+    }
   }
 }

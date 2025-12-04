@@ -17,7 +17,7 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import nl.dionsegijn.konfetti.KonfettiView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.StateFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
@@ -25,23 +25,26 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
-import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyGatingController
@@ -111,7 +114,8 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    userAnswerState: UserAnswerState
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
@@ -125,7 +129,7 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
+      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, userAnswerState),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -199,12 +203,28 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
+    if (ephemeralState.flashbackState) {
+      (activity as FlashbackToolbarListener).showFlashbackToolbar()
+    } else {
+      (activity as FlashbackToolbarListener).hideFlashbackToolbar()
+    }
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
     val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     if (answer != null) {
       handleSubmitAnswer(answer)
     }
+  }
+
+  fun onFlashbackButtonClicked(stateName: String) {
+    explorationProgressController.moveToFlashback(stateName)
+  }
+
+  fun onReturnToQuestionButtonClicked() {
+    explorationProgressController.moveBackToLatest()
   }
 
   fun onResponsesHeaderClicked() {
@@ -245,6 +265,7 @@ class StateFragmentPresenter @Inject constructor(
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
+      .addRedirectionSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
@@ -261,6 +282,7 @@ class StateFragmentPresenter @Inject constructor(
         this::getAudioUiManager
       )
       .addConceptCardSupport()
+      .addFlashbackSolutionSupport()
       .build()
   }
 
@@ -268,8 +290,16 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
   }
 
+  fun viewHint(hintIndex: Int) {
+    explorationProgressController.submitHintIsViewed(hintIndex)
+  }
+
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
+  }
+
+  fun viewSolution() {
+    explorationProgressController.submitSolutionIsViewed()
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -321,6 +351,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
+    showOrHideFlashbackToolbar(ephemeralState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -365,6 +396,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
   ) {
+    recyclerViewAssembler.resetUserAnswerState()
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(
       fragment,
@@ -383,6 +415,11 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /** Returns the [UserAnswerState] representing the user's current pending answer. */
+  fun getUserAnswerState(): UserAnswerState {
+    return stateViewModel.getUserAnswerState(recyclerViewAssembler::getPendingAnswerHandler)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -412,6 +449,7 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 
+  /** Removes all [ConceptCardFragment] in the given FragmentManager. */
   fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
@@ -430,9 +468,8 @@ class StateFragmentPresenter @Inject constructor(
     val inputManager: InputMethodManager =
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
-      fragment.view!!.windowToken,
-      @Suppress("DEPRECATION") // TODO(#5406): Use the correct constant value here.
-      InputMethodManager.SHOW_FORCED
+      fragment.requireView().windowToken,
+      0 // Flag value to force hide the keyboard when possible.
     )
   }
 
@@ -539,38 +576,48 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
       activity,
-      { gatingResult ->
-        when (gatingResult) {
-          is AsyncResult.Pending -> {
-            oppiaLogger.d("StateFragment", "A gating decision is pending")
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "StateFragment",
-              "Failed to retrieve gating decision",
-              gatingResult.error
-            )
-            (activity as StopStatePlayingSessionWithSavedProgressListener)
-              .deleteCurrentProgressAndStopSession(isCompletion = true)
-          }
-          is AsyncResult.Success -> {
-            if (gatingResult.value) {
-              val dialogFragment =
-                SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  SURVEY_QUESTIONS
-                )
-              val transaction = activity.supportFragmentManager.beginTransaction()
-              transaction
-                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                .commitNow()
-            } else {
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
+          when (gatingResult) {
+            null, is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+
+            is AsyncResult.Success -> {
+              oppiaLogger.d("StateFragment", "Successfully retrieved gating decision")
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
+                liveData.removeObserver(this)
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
             }
           }
         }
@@ -606,5 +653,15 @@ class StateFragmentPresenter @Inject constructor(
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
+  }
+
+  /** Saves the assembler's state to a protobuf message. */
+  fun saveAssemblerState(): StatePlayerRecyclerViewAssemblerState {
+    return recyclerViewAssembler.saveState()
+  }
+
+  /** Restores the assembler's state from a protobuf message. */
+  fun restoreAssemblerState(state: StatePlayerRecyclerViewAssemblerState) {
+    recyclerViewAssembler.restoreState(state)
   }
 }

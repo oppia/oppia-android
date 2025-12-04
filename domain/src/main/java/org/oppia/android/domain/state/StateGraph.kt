@@ -27,6 +27,7 @@ class StateGraph constructor(
       .setFeedback(outcome.feedback)
       .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
       .setState(currentState)
+      .setIsDefaultOutcome(outcome == currentState.interaction.defaultOutcome)
     when {
       outcome.refresherExplorationId.isNotEmpty() ->
         answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId

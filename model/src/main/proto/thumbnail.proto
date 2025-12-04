@@ -82,4 +82,13 @@ enum LessonThumbnailGraphic {
 
   // Corresponds to Number line Fractions subtopic.
   THE_NUMBER_LINE = 20;
+
+  // Corresponds to Science classroom.
+  SCIENCE_CLASSROOM = 21;
+
+  // Corresponds to Maths classroom.
+  MATHS_CLASSROOM = 22;
+
+  // Corresponds to English classroom.
+  ENGLISH_CLASSROOM = 23;
 }

@@ -1,0 +1,22 @@
+"""
+Package for providing platform parameter and feature flag test-only functionality.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+# TODO(#5835): Remove the extra visibility exposure needed here once the test platform parameter
+#  module can be moved to part of this package.
+kt_android_library(
+    name = "test_platform_parameter_config_retriever",
+    testonly = True,
+    srcs = ["TestPlatformParameterConfigRetriever.kt"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:__pkg__",
+    ],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:config_retriever",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+    ],
+)

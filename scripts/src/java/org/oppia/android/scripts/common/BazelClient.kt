@@ -131,6 +131,73 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
+   * Runs code coverage for the specified Bazel test target.
+   *
+   * An empty list being returned typically occurs when the coverage command fails to generate any
+   * 'coverage.dat' file. This can happen due to tests failures or a misconfiguration that prevents
+   * the coverage data from being properly generated.
+   *
+   * @param bazelTestTarget Bazel test target for which code coverage will be run
+   * @return the generated coverage data as a list of list of strings (since there may be more than
+   *     one file corresponding to a single test target, e.g. in the case of a sharded test), or an
+   *     empty list if no coverage data was found while running the test
+   */
+  fun runCoverageForTestTarget(bazelTestTarget: String): List<List<String>> {
+    val instrumentation = bazelTestTarget.split(":")[0]
+    val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
+    val coverageCommandOutputLines = executeBazelCommand(
+      "coverage",
+      bazelTestTarget,
+      "--instrumentation_filter=$computeInstrumentation"
+    )
+    return parseCoverageDataFilePath(bazelTestTarget, coverageCommandOutputLines).map { path ->
+      File(path).readLines()
+    }
+  }
+
+  /**
+   * Returns all file dependencies for the specified Bazel target.
+   *
+   * @param bazelTarget the Bazel target to query dependencies for
+   * @return list of file paths that the target depends on
+   */
+  fun retrieveTargetModuleDependencies(bazelTarget: String): List<String> {
+    return executeBazelCommand(
+      "cquery",
+      "deps($bazelTarget)",
+      "--output=files"
+    )
+  }
+
+  /**
+   * Returns Bazel workspace information.
+   *
+   * @return map of Bazel workspace information
+   */
+  fun retrieveBazelInfo(): Map<String, String> {
+    val infoLines = executeBazelCommand("info")
+    return infoLines.mapNotNull { line ->
+      val parts = line.split(": ", limit = 2)
+      if (parts.size == 2) {
+        parts[0] to parts[1]
+      } else {
+        null
+      }
+    }.toMap()
+  }
+
+  private fun parseCoverageDataFilePath(
+    bazelTestTarget: String,
+    coverageCommandOutputLines: List<String>
+  ): List<String> {
+    // Use the test target as the base path for the generated coverage.dat file since the test
+    // itself may output lines that look like the coverage.dat line (such as in BazelClientTest).
+    val targetBasePath = bazelTestTarget.removePrefix("//").replace(':', '/')
+    val coverageDatRegex = "^.+?testlogs/$targetBasePath/[^/]*?/?coverage\\.dat$".toRegex()
+    return coverageCommandOutputLines.filter(coverageDatRegex::matches).map(String::trim)
+  }
+
+  /**
    * Returns the results of a query command with a potentially large list of [values] that will be
    * split up into multiple commands to avoid overflow the system's maximum argument limit.
    *

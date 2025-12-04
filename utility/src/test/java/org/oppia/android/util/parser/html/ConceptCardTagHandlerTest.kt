@@ -118,6 +118,16 @@ class ConceptCardTagHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_withConceptCardTag() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = CONCEPT_CARD_LINK_MARKUP_1,
+        customTagHandlers = tagHandlersWithConceptCardSupport
+      )
+    assertThat(contentDescription).isEqualTo("refresher lesson")
+  }
+
+  @Test
   fun testParseHtml_withConceptCardMarkup_addsLinkText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
@@ -285,8 +295,12 @@ class ConceptCardTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -45,7 +45,7 @@
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleUpMovement(adapter)}"
           android:padding="12dp"
-          android:tint="@{dragDropMoveUpItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
+          app:tint="@{dragDropMoveUpItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/drag_drop_content_unlink_items"
@@ -62,7 +62,7 @@
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleDownMovement(adapter)}"
           android:padding="12dp"
-          android:tint="@{dragDropMoveDownItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
+          app:tint="@{dragDropMoveDownItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
           app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp" />
       </LinearLayout>
 
@@ -91,7 +91,7 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
       android:padding="16dp"
-      android:tint="@{dragDropContentGroupItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
+      app:tint="@{dragDropContentGroupItem.enabled? @color/component_color_shared_merge_icon_enabled_color : @color/component_color_shared_merge_icon_disabled_color}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/drag_drop_content_unlink_items"
@@ -107,7 +107,7 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleUnlinking(adapter)}"
       android:padding="16dp"
-      android:tint="@color/component_color_shared_icon_color"
+      app:tint="@color/component_color_shared_icon_color"
       app:layout_constraintBottom_toTopOf="@+id/drag_drop_content_group_item"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"

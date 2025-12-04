@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="oval">
+      <corners android:radius="10dp" />
+      <size
+        android:width="48dp"
+        android:height="48dp" />
+      <gradient
+        android:endColor="@android:color/transparent"
+        android:gradientRadius="60"
+        android:startColor="@color/component_color_onboarding_shared_black_color"
+        android:type="radial" />
+    </shape>
+  </item>
+  <item
+    android:bottom="8dp"
+    android:left="8dp"
+    android:right="8dp"
+    android:top="8dp">
+    <shape android:shape="oval">
+      <solid android:color="@color/component_color_onboarding_profile_edit_icon_color" />
+      <corners android:radius="10dp" />
+    </shape>
+  </item>
+  <item
+    android:bottom="16dp"
+    android:drawable="@drawable/ic_outline_edit_24"
+    android:left="16dp"
+    android:right="16dp"
+    android:state_enabled="true"
+    android:top="16dp" />
+</layer-list>

@@ -6,8 +6,11 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
+import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
@@ -17,6 +20,8 @@ import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStories
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
+import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
@@ -31,7 +36,11 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
+import org.oppia.android.app.onboarding.AdminIntroActivity
+import org.oppia.android.app.onboarding.CreateProfileActivity
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
+import org.oppia.android.app.onboarding.OnboardingProfileTypeActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.options.AppLanguageActivity
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -45,6 +54,7 @@ import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
 import org.oppia.android.app.profile.PinPasswordActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.profile.ProfileLoginActivity
 import org.oppia.android.app.profileprogress.ProfilePictureActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
@@ -68,11 +78,9 @@ import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.testing.FractionInputInteractionViewTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
-import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.InputInteractionViewTestActivity
-import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.MathExpressionInteractionsViewTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
@@ -142,6 +150,10 @@ interface ActivityComponentImpl :
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
+  fun inject(featureFlagsActivity: FeatureFlagsActivity)
+  fun inject(featureFlagsTestActivity: FeatureFlagsTestActivity)
+  fun inject(platformParametersActivity: PlatformParametersActivity)
+  fun inject(platformParametersTestActivity: PlatformParametersTestActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
   fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)
@@ -149,7 +161,6 @@ interface ActivityComponentImpl :
   fun inject(homeActivity: HomeActivity)
   fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
   fun inject(homeTestActivity: HomeTestActivity)
-  fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
@@ -158,7 +169,6 @@ interface ActivityComponentImpl :
   fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
-  fun inject(listItemLeadingMarginSpanTestActivity: ListItemLeadingMarginSpanTestActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
@@ -218,4 +228,10 @@ interface ActivityComponentImpl :
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)
   fun inject(colorBindingAdaptersTestActivity: ColorBindingAdaptersTestActivity)
+  fun inject(classroomListActivity: ClassroomListActivity)
+  fun inject(onboardingProfileTypeActivity: OnboardingProfileTypeActivity)
+  fun inject(createProfileActivity: CreateProfileActivity)
+  fun inject(introActivity: IntroActivity)
+  fun inject(profileLoginActivity: ProfileLoginActivity)
+  fun inject(adminIntroActivity: AdminIntroActivity)
 }

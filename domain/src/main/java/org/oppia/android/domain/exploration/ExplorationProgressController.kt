@@ -39,6 +39,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -46,6 +47,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -61,7 +64,11 @@ private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_answer_result"
 private const val SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_hint_revealed_result"
+private const val SUBMIT_HINT_VIEWED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_hint_revealed_result"
 private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_solution_revealed_result"
+private const val SUBMIT_SOLUTION_VIEWED_RESULT_PROVIDER_ID =
   "ExplorationProgressController.submit_solution_revealed_result"
 private const val MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_previous_state_result"
@@ -71,6 +78,10 @@ private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.cur
 private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
 private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID =
   "ExplorationProgressController.update_written_translation_content"
+private const val MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_to_flashback_state_result"
+private const val MOVE_BACK_TO_LATEST_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_back_to_latest_state_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -114,7 +125,8 @@ class ExplorationProgressController @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -148,6 +160,7 @@ class ExplorationProgressController @Inject constructor(
    */
   internal fun beginExplorationAsync(
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -165,6 +178,7 @@ class ExplorationProgressController @Inject constructor(
     val message =
       ControllerMessage.InitializeController(
         profileId,
+        classroomId,
         topicId,
         storyId,
         explorationId,
@@ -276,6 +290,24 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
+   * Notifies the controller that the user has viewed a hint.
+   *
+   * @param hintIndex index of the hint that is being viewed
+   *
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
+   */
+
+  fun submitHintIsViewed(hintIndex: Int): DataProvider<Any?> {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogHintIsViewed(hintIndex, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for viewing hint: $hintIndex."
+    }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_HINT_VIEWED_RESULT_PROVIDER_ID)
+  }
+
+  /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
@@ -289,6 +321,18 @@ class ExplorationProgressController @Inject constructor(
     val message = ControllerMessage.SolutionIsRevealed(activeSessionId, submitResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for revealing the solution." }
     return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Notifies the controller that the user has viewed the answer.
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
+   */
+  fun submitSolutionIsViewed(): DataProvider<Any?> {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.LogSolutionIsViewed(activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for viewing the solution." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_VIEWED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -334,6 +378,28 @@ class ExplorationProgressController @Inject constructor(
     val message = ControllerMessage.MoveToNextState(activeSessionId, moveResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
     return moveResultFlow.convertToSessionProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Navigates to the flashback state in the graph.
+   * @return a [DataProvider] indicating whether the movement to the flashback state was successful.
+   */
+  fun moveToFlashback(stateName: String): DataProvider<Any?> {
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToFlashback(stateName, activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Navigates to the latest state in the graph.
+   * @return a [DataProvider] indicating whether the movement to the latest state was successful.
+   */
+  fun moveBackToLatest(): DataProvider<Any?> {
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveBackToLatest(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
+    return moveResultFlow.convertToSessionProvider(MOVE_BACK_TO_LATEST_STATE_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -419,7 +485,6 @@ class ExplorationProgressController @Inject constructor(
   @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
-
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
     @Suppress("JoinDeclarationAndAssignment") // Warning is incorrect in this case.
@@ -468,6 +533,7 @@ class ExplorationProgressController @Inject constructor(
                   it.beginExplorationImpl(
                     message.callbackFlow,
                     message.profileId,
+                    message.classroomId,
                     message.topicId,
                     message.storyId,
                     message.explorationId,
@@ -488,11 +554,21 @@ class ExplorationProgressController @Inject constructor(
             }
             is ControllerMessage.SubmitAnswer ->
               controllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+            is ControllerMessage.MoveToFlashback ->
+              controllerState.moveToFlashbackImpl(message.callbackFlow, message.stateName)
+            is ControllerMessage.MoveBackToLatest ->
+              controllerState.moveBackToLatestImpl(message.callbackFlow)
             is ControllerMessage.HintIsRevealed -> {
               controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
+            is ControllerMessage.LogHintIsViewed ->
+              controllerState.logViewedHintImpl(
+                activeSessionId, message.hintIndex, message.callbackFlow
+              )
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+            is ControllerMessage.LogSolutionIsViewed ->
+              controllerState.logViewedSolutionImpl(activeSessionId, message.callbackFlow)
             is ControllerMessage.MoveToPreviousState ->
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
@@ -549,6 +625,7 @@ class ExplorationProgressController @Inject constructor(
   private suspend fun ControllerState.beginExplorationImpl(
     beginExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     profileId: ProfileId,
+    classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -562,6 +639,7 @@ class ExplorationProgressController @Inject constructor(
 
       explorationProgress.apply {
         currentProfileId = profileId
+        currentClassroomId = classroomId
         currentTopicId = topicId
         currentStoryId = storyId
         currentExplorationId = explorationId
@@ -652,7 +730,14 @@ class ExplorationProgressController @Inject constructor(
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
+        val linkedSkillId = explorationProgress.stateDeck.getCurrentState().linkedSkillId
+        val showFlashback = shouldOfferFlashback(answerOutcome, explorationProgress.stateDeck)
         when {
+          showFlashback -> {
+            val stateName = explorationProgress.stateDeck.getFlashbackStateName(linkedSkillId)
+            explorationProgress.stateDeck.addFlashbackState(stateName)
+            stateAnalyticsLogger?.logFlashbackOffered(stateName)
+          }
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
             endState()
             val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
@@ -790,6 +875,92 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  private suspend fun ControllerState.moveToFlashbackImpl(
+    moveToFlashbackStateResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    stateName: String
+  ) {
+    tryOperation(moveToFlashbackStateResultFlow, false) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot navigate to a previous state if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot navigate to a previous state if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot navigate to a previous state if an answer submission is pending."
+      }
+
+      hintHandler.navigateToPreviousState()
+      recomputeCurrentFlashbackStateAndNotifySync(stateName)
+      stateAnalyticsLogger?.logOpenFlashback(stateName)
+    }
+  }
+
+  private suspend fun ControllerState.moveBackToLatestImpl(
+    moveBackToLatestStateResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveBackToLatestStateResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot navigate to a next state if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot navigate to a next state if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot navigate to a next state if an answer submission is pending."
+      }
+
+      if (!explorationProgress.stateDeck.isFlashbackViewed()) {
+        explorationProgress.stateDeck.setFlashbackIsViewed()
+      }
+      stateAnalyticsLogger?.logCloseFlashback()
+      if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
+        hintHandler.navigateBackToLatestPendingState()
+
+        // Only mark checkpoint if current state is pending state. This ensures that checkpoints
+        // will not be marked on any of the completed states.
+        saveExplorationCheckpoint()
+      }
+    }
+  }
+
+  private suspend fun ControllerState.logViewedHintImpl(
+    sessionId: String,
+    hintIndex: Int,
+    submitLogHintViewedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitLogHintViewedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot log hint viewed if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot log hint viewed if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot log hint viewed if an answer submission is pending."
+      }
+      maybeLogViewedHint(sessionId, hintIndex)
+    }
+  }
+
+  private suspend fun ControllerState.logViewedSolutionImpl(
+    sessionId: String,
+    submitLogSolutionViewedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitLogSolutionViewedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot log solution viewed if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot log solution viewed while the exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot log solution viewed if an answer submission is pending."
+      }
+      maybeLogViewedSolution(sessionId)
+    }
+  }
+
   private fun ControllerState.maybeLogUpdatedHelpIndex(
     helpIndex: HelpIndex,
     activeSessionId: String
@@ -797,6 +968,25 @@ class ExplorationProgressController @Inject constructor(
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
       checkForChangedHintState(helpIndex)
+    }
+  }
+
+  private fun ControllerState.maybeLogViewedHint(
+    activeSessionId: String,
+    hintIndex: Int
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      stateAnalyticsLogger?.logViewHint(hintIndex)
+    }
+  }
+
+  private fun ControllerState.maybeLogViewedSolution(
+    activeSessionId: String
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      stateAnalyticsLogger?.logViewSolution()
     }
   }
 
@@ -840,6 +1030,33 @@ class ExplorationProgressController @Inject constructor(
 
   private suspend fun ControllerState.recomputeCurrentStateAndNotifyImpl() {
     ephemeralStateFlow.emit(retrieveCurrentStateAsync())
+  }
+
+  /**
+   * Immediately recomputes the current flashback state & notifies it's been changed.
+   *
+   * This should only be called when the caller can guarantee that the current [ControllerState] is
+   * correct and up-to-date (i.e. that this is being called via a direct call path from the actor).
+   */
+  private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifySync(
+    stateName: String
+  ) {
+    recomputeCurrentFlashbackStateAndNotifyImpl(computeCurrentFlashbackEphemeralState(stateName))
+  }
+
+  private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifyImpl(
+    ephemeralState: EphemeralState
+  ) {
+    ephemeralStateFlow.emit(AsyncResult.Success(ephemeralState))
+  }
+
+  private fun ControllerState.computeCurrentFlashbackEphemeralState(
+    stateName: String
+  ): EphemeralState {
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    return ephemeralState.toBuilder().apply {
+      flashbackState = true
+    }.build()
   }
 
   private suspend fun ControllerState.retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
@@ -900,6 +1117,10 @@ class ExplorationProgressController @Inject constructor(
       val state = progress.stateDeck.getCurrentState()
       hintHandler.startWatchingForHintsInNewState(state)
       startState(logStartCard = true)
+
+      if (!isRestart) {
+        explorationAnalyticsLogger.logStartExploration()
+      }
     }
 
     // Advance the stage, but do not notify observers since the current state can be reported
@@ -1050,6 +1271,18 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  /** Returns whether flashback should be offered based on the current state and [outcome]. */
+  private fun shouldOfferFlashback(outcome: AnswerOutcome, stateDeck: StateDeck): Boolean {
+    val linkedSkillId = stateDeck.getCurrentState().linkedSkillId
+    return enableFlashbackSupport.value &&
+      !outcome.labelledAsCorrectAnswer &&
+      !doesInteractionAutoContinue(outcome.state.interaction.id) &&
+      !linkedSkillId.isNullOrEmpty() &&
+      outcome.isDefaultOutcome &&
+      !stateDeck.wasFlashbackPreviouslyOffered() &&
+      stateDeck.hasFlashbackState(linkedSkillId)
+  }
+
   /**
    * Returns whether the specified interaction automatically continues the user to the next state
    * upon completion.
@@ -1160,6 +1393,7 @@ class ExplorationProgressController @Inject constructor(
         profileId,
         learnerId,
         exploration,
+        explorationProgress.currentClassroomId,
         explorationProgress.currentTopicId,
         explorationProgress.currentStoryId
       )
@@ -1216,12 +1450,12 @@ class ExplorationProgressController @Inject constructor(
           NEXT_AVAILABLE_HINT_INDEX ->
             stateAnalyticsLogger?.logHintUnlocked(newHelpIndex.nextAvailableHintIndex)
           LATEST_REVEALED_HINT_INDEX ->
-            stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
+            stateAnalyticsLogger?.logRevealHint(newHelpIndex.latestRevealedHintIndex)
           SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionUnlocked()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
-            SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logRevealSolution()
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
-              stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
+              stateAnalyticsLogger?.logRevealHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
             LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
@@ -1269,6 +1503,7 @@ class ExplorationProgressController @Inject constructor(
     /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
       val profileId: ProfileId,
+      val classroomId: String,
       val topicId: String,
       val storyId: String,
       val explorationId: String,
@@ -1324,6 +1559,19 @@ class ExplorationProgressController @Inject constructor(
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
+    /** [ControllerMessage] to move to the flashback state in the exploration. */
+    data class MoveToFlashback(
+      val stateName: String,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] to move to the latest state in the exploration. */
+    data class MoveBackToLatest(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
     /**
      * [ControllerMessage] to indicate that the session's current partial completion progress should
      * be saved to disk.
@@ -1347,6 +1595,31 @@ class ExplorationProgressController @Inject constructor(
       val helpIndex: HelpIndex,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
+
+    /**
+     * [ControllerMessage] to log cases when the user has viewed a hint for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed (since that's generally indicative of an
+     * error--hints can't continue to change after the session has ended).
+     */
+    data class LogHintIsViewed(
+      val hintIndex: Int,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /**
+     * [ControllerMessage] to log cases when the user has viewed the solution for the current
+     * session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed.
+     */
+    data class LogSolutionIsViewed(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
     /**

@@ -11,7 +11,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import org.oppia.android.R;
+import org.oppia.android.app.databinding.adapters.R;
 import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.ProfileAvatar;
 
@@ -78,6 +78,17 @@ public final class ImageViewBindingAdapters {
             .into(imageView);
       }
     }
+  }
+
+  /**
+   * Applies the specified color tint to the ImageView.
+   *
+   * @param imageView the view to apply the tint on
+   * @param color the resolved color int to apply as tint
+   */
+  @BindingAdapter("tint")
+  public static void setTint(@NonNull ImageView imageView, int color) {
+    imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN);
   }
 
   /**

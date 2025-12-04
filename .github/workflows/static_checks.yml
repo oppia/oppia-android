@@ -9,10 +9,14 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   check_codeowners:
     name: Check CODEOWNERS & Repository files
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
 
@@ -23,7 +27,7 @@ jobs:
 
   check_base_branch:
     name: Check base branch
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: github.event_name == 'pull_request'
     steps:
       - name: "Branch is not based on develop or release branch"
@@ -44,17 +48,12 @@ jobs:
 
   linters:
     name: Lint Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
 
       - name: Create oppia android tools directory
         run: mkdir -p $HOME/oppia-android-tools
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
 
       - name: Download Checkstyle
         run: |
@@ -94,18 +93,20 @@ jobs:
 
   script_checks:
     name: Script Checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -147,39 +148,67 @@ jobs:
         shell: bash
 
       - name: Regex Patterns Validation Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:regex_pattern_validation_check -- $(pwd)
 
       - name: XML Syntax Validation Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:xml_syntax_check -- $(pwd)
 
+      - name: TextView Style Validation Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if:  ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:check_textview_styles -- $(pwd)
+
+      - name: Android Lint Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if:  ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:android_lint_check -- $(pwd)
+
       - name: Testfile Presence Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
 
       - name: Accessibility label Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 
       - name: KDoc Validation Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 
       - name: Todo Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
 
       - name: String Resource Validation Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
 
@@ -188,7 +217,7 @@ jobs:
   # ensure the results exactly match the current state of the repository).
   third_party_dependencies_check:
     name: Maven Dependencies Checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
 
@@ -198,16 +227,22 @@ jobs:
           version: 6.5.0
 
       - name: Maven Repin Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           REPIN=1 bazel run @unpinned_maven//:pin
 
       - name: Maven Dependencies Update Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
 
       - name: License Texts Check
-        if: always()
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml

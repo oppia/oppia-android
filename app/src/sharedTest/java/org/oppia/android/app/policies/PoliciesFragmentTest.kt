@@ -4,12 +4,14 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -22,7 +24,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -31,16 +32,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -52,15 +48,19 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity.Companion.createPoliciesFragmentTestActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -86,7 +86,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -94,6 +93,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -101,10 +101,11 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -112,7 +113,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -128,48 +128,16 @@ import kotlin.reflect.KClass
   qualifiers = "port-xxhdpi"
 )
 class PoliciesFragmentTest {
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+  @Mock lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Mock
-  lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
-
-  @field:[Rule JvmField]
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Captor
-  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @get:Rule
-  var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        getApplicationContext(),
-        PoliciesFragmentTestActivity::class.java
-      )
-    )
-
-  // Note that the locale rule must be initialized first since the scenario rule can depend on the
-  // locale being initialized.
-  @get:Rule
-  val chain: TestRule =
-    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
+  @Inject lateinit var context: Context
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Before
   fun setUp() {
@@ -184,31 +152,17 @@ class PoliciesFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return createPoliciesFragmentTestActivity(context, policyPage)
-  }
-
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -223,13 +177,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_opensTheLink() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -249,25 +198,15 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use { scenario ->
-      scenario.onActivity {
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity {
         it.mockCallbackListener = mockRouteToPoliciesListener
         onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
         // Verify the displayed text is correct & has a clickable span.
@@ -284,13 +223,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -302,14 +236,32 @@ class PoliciesFragmentTest {
   }
 
   @Test
+  fun testPoliciesFragment_privacyPolicy_retainsScrollPositionAfterOrientationChange() {
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
+        val scrollView = activity.findViewById<ScrollView>(R.id.policy_scroll_view)
+        scrollView.scrollTo(0, 500)
+        testCoroutineDispatchers.runCurrent()
+
+        // Capture the current scroll position.
+        val initialScrollPosition = scrollView.scrollY
+        assertThat(initialScrollPosition).isEqualTo(500)
+
+        // Rotate the screen (simulate an orientation change).
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        testCoroutineDispatchers.runCurrent()
+
+        // Verify that the scroll position is retained after the orientation change.
+        val newScrollPosition = scrollView.scrollY
+        assertThat(newScrollPosition).isEqualTo(initialScrollPosition)
+      }
+    }
+  }
+
+  @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_opensTheLink() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -325,8 +277,50 @@ class PoliciesFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
+        val policiesFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.policies_fragment_placeholder) as PoliciesFragment
+
+        val policiesActivityParams = activity.intent.getProtoExtra(
+          PoliciesFragmentTestActivity.POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
+          PoliciesActivityParams.getDefaultInstance()
+        )
+        val policiesFragmentArguments =
+          PoliciesFragmentArguments
+            .newBuilder()
+            .setPolicyPage(policiesActivityParams.policyPage)
+            .build()
+
+        val args = checkNotNull(policiesFragment.arguments) {
+          "Expected arguments to be passed to PoliciesFragment"
+        }
+        val receivedPolicies =
+          args.getProto(
+            POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
+            PoliciesFragmentArguments.getDefaultInstance()
+          )
+
+        assertThat(receivedPolicies.policyPage).isEqualTo(policiesFragmentArguments.policyPage)
+      }
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
-    getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    policyPage: PolicyPage,
+    testBlock: ActivityScenario<PoliciesFragmentTestActivity>.() -> Unit
+  ) {
+    val intent = createPoliciesFragmentTestActivity(context, policyPage)
+    ActivityScenario.launch<PoliciesFragmentTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
@@ -336,32 +330,65 @@ class PoliciesFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
       ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      TestPlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

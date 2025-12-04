@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
+import org.oppia.android.app.databinding.databinding.AdministratorControlsActivityBinding
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.model.AdministratorControlActivityStateBundle
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.AdministratorControlsActivityBinding
+import org.oppia.android.app.ui.R
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
@@ -27,7 +31,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var binding: AdministratorControlsActivityBinding
 
   private lateinit var lastLoadedFragment: String
-  private var selectedProfileId: Int = -1
+  private var selectedProfileId: ProfileId = ProfileId.getDefaultInstance()
   private lateinit var extraControlsTitle: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
@@ -35,7 +39,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun handleOnCreate(
     extraControlsTitle: String?,
     lastLoadedFragment: String,
-    selectedProfileId: Int,
+    selectedProfileId: ProfileId,
     isProfileDeletionDialogVisible: Boolean
   ) {
     binding = DataBindingUtil.setContentView(
@@ -66,7 +70,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
             activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
-            if (isProfileDeletionDialogVisible && profileId != 0) {
+            if (isProfileDeletionDialogVisible && profileId.internalId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )
@@ -140,13 +144,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
-  fun loadProfileEdit(profileId: Int, profileName: String) {
+  fun loadProfileEdit(profileId: ProfileId, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     selectedProfileId = profileId
     extraControlsTitle = profileName
     setExtraControlsTitle(extraControlsTitle)
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
+    val fragment = ProfileEditFragment.newInstance(profileId.internalId, isMultipane)
     activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       fragment
@@ -198,13 +202,20 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Saves the state of the views on configuration changes. */
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
-    if (titleTextView != null) {
-      outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
-    isProfileDeletionDialogVisible.let {
-      outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, it)
-    }
-    selectedProfileId.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
+    val args = AdministratorControlActivityStateBundle.newBuilder()
+      .apply {
+        if (titleTextView != null) {
+          selectedControlsTitle = titleTextView.text.toString()
+        }
+        lastLoadedFragment = this@AdministratorControlsActivityPresenter.lastLoadedFragment
+        this@AdministratorControlsActivityPresenter.isProfileDeletionDialogVisible.let {
+          isProfileDeletionDialogVisible = it
+        }
+      }
+      .build()
+    outState.decorateWithUserProfileId(
+      this@AdministratorControlsActivityPresenter.selectedProfileId
+    )
+    outState.putProto(ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY, args)
   }
 }

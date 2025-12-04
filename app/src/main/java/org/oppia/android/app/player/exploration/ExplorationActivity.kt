@@ -3,12 +3,15 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.hintsandsolution.ViewHintListener
+import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
@@ -17,9 +20,12 @@ import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.survey.DismissSurveyListener
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -37,12 +43,16 @@ class ExplorationActivity :
   HintsAndSolutionListener,
   RouteToHintsAndSolutionListener,
   RevealHintListener,
+  ViewHintListener,
   RevealSolutionInterface,
+  ViewSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
   BottomSheetOptionsMenuItemClickListener,
-  RequestVoiceOverIconSpotlightListener {
+  RequestVoiceOverIconSpotlightListener,
+  FlashbackToolbarListener,
+  DismissSurveyListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
@@ -56,11 +66,20 @@ class ExplorationActivity :
     explorationActivityPresenter.handleOnCreate(
       this,
       params.profileId,
+      params.classroomId,
       params.topicId,
       params.storyId,
       params.explorationId,
       params.parentScreen,
       params.isCheckpointingEnabled
+    )
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          explorationActivityPresenter.backButtonPressed()
+        }
+      }
     )
   }
 
@@ -75,6 +94,7 @@ class ExplorationActivity :
     fun createExplorationActivityIntent(
       context: Context,
       profileId: ProfileId,
+      classroomId: String,
       topicId: String,
       storyId: String,
       explorationId: String,
@@ -83,6 +103,7 @@ class ExplorationActivity :
     ): Intent {
       val params = ExplorationActivityParams.newBuilder().apply {
         this.profileId = profileId
+        this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId
@@ -105,10 +126,6 @@ class ExplorationActivity :
 
     private fun Intent.extractParams() =
       getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
-  }
-
-  override fun onBackPressed() {
-    explorationActivityPresenter.backButtonPressed()
   }
 
   override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
@@ -183,9 +200,37 @@ class ExplorationActivity :
     this.writtenTranslationContext = writtenTranslationContext
   }
 
-  override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+  override fun dismissConceptCard() {
+    getHintsAndSolution()?.dismissConceptCard() ?: explorationActivityPresenter.dismissConceptCard()
+  }
 
   override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
+  }
+
+  override fun viewHint(hintIndex: Int) {
+    explorationActivityPresenter.viewHint(hintIndex)
+  }
+
+  override fun viewSolution() {
+    explorationActivityPresenter.viewSolution()
+  }
+
+  override fun hideFlashbackToolbar() {
+    explorationActivityPresenter.hideFlashbackToolbar()
+  }
+
+  override fun showFlashbackToolbar() {
+    explorationActivityPresenter.showFlashbackToolbar()
+  }
+
+  override fun dismissSurvey() {
+    val previousFragment = supportFragmentManager
+      .findFragmentByTag(TAG_SURVEY_WELCOME_DIALOG)
+
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+      explorationActivityPresenter.backPressActivitySelector()
+    }
   }
 }

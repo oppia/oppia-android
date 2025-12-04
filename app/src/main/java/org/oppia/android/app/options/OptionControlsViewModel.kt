@@ -5,8 +5,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -20,7 +20,8 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** [ViewModel] for [OptionsFragment]. */
+private const val OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID =
+  "OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID"
 private const val OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID =
   "OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID"
 
@@ -67,11 +68,14 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private fun createOptionsItemViewModelProvider(): DataProvider<List<OptionsItemViewModel>> {
+    val appAudioLangProvider =
+      translationController.getAppLanguage(profileId).combineWith(
+        profileManagementController.getAudioLanguage(profileId),
+        OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID
+      ) { appLanguage, audioLanguage -> appLanguage to audioLanguage }
     return profileManagementController.getProfile(profileId).combineWith(
-      translationController.getAppLanguage(profileId),
-      OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID,
-      ::processViewModelList
-    )
+      appAudioLangProvider, OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID
+    ) { profile, (appLang, audioLang) -> processViewModelList(profile, appLang, audioLang) }
   }
 
   private fun processViewModelListsResult(
@@ -93,12 +97,13 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun processViewModelList(
     profile: Profile,
-    oppiaLanguage: OppiaLanguage
+    appLanguage: OppiaLanguage,
+    audioLanguage: AudioLanguage
   ): List<OptionsItemViewModel> {
     return listOfNotNull(
       createReadingTextSizeViewModel(profile),
-      createAppLanguageViewModel(oppiaLanguage),
-      createAudioLanguageViewModel(profile)
+      createAppLanguageViewModel(appLanguage),
+      createAudioLanguageViewModel(audioLanguage)
     )
   }
 
@@ -117,12 +122,14 @@ class OptionControlsViewModel @Inject constructor(
     )
   }
 
-  private fun createAudioLanguageViewModel(profile: Profile): OptionsAudioLanguageViewModel {
+  private fun createAudioLanguageViewModel(
+    audioLanguage: AudioLanguage
+  ): OptionsAudioLanguageViewModel {
     return OptionsAudioLanguageViewModel(
       routeToAudioLanguageListListener,
       loadAudioLanguageListListener,
-      profile.audioLanguage,
-      resourceHandler.computeLocalizedDisplayName(profile.audioLanguage)
+      audioLanguage,
+      resourceHandler.computeLocalizedDisplayName(audioLanguage)
     )
   }
 }

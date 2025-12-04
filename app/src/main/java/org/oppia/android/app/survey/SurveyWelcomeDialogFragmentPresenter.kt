@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.databinding.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
-import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -30,6 +30,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) {
   private lateinit var explorationId: String
+  private val dismissSurveyListener = activity as DismissSurveyListener
 
   /** Sets up data binding. */
   fun handleCreateView(
@@ -51,9 +52,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     }
 
     binding.maybeLaterButton.setOnClickListener {
-      activity.supportFragmentManager.beginTransaction()
-        .remove(fragment)
-        .commitNow()
+      dismissSurveyListener.dismissSurvey()
     }
 
     profileManagementController.updateSurveyLastShownTimestamp(profileId)
@@ -90,7 +89,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
             fragment.startActivity(intent)
             activity.finish()
             val transaction = activity.supportFragmentManager.beginTransaction()
-            transaction.remove(fragment).commitAllowingStateLoss()
+            transaction.remove(fragment).commitNow()
           }
         }
       }

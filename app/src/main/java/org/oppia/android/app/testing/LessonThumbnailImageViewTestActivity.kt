@@ -1,9 +1,9 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.LessonThumbnailImageView
+import org.oppia.android.app.ui.R
 
 /** Test-only activity for verifying behaviors of [LessonThumbnailImageView]. */
 class LessonThumbnailImageViewTestActivity : InjectableAutoLocalizedAppCompatActivity() {

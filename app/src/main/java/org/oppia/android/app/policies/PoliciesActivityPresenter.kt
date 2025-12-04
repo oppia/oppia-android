@@ -3,11 +3,11 @@ package org.oppia.android.app.policies
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.android.R
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [PoliciesActivity]. */

@@ -5,20 +5,34 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.AdminSettingsDialogFragmentArguments
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-
-const val ADMIN_SETTINGS_PIN_ARGUMENT_KEY = "AdminSettingsDialogFragment.admin_settings_pin"
 
 /** DialogFragment that allows user to input admin PIN. */
 class AdminSettingsDialogFragment : InjectableDialogFragment() {
   companion object {
-    fun newInstance(adminPin: String): AdminSettingsDialogFragment {
-      val adminSettingDialogFragment = AdminSettingsDialogFragment()
-      val args = Bundle()
-      args.putString(ADMIN_SETTINGS_PIN_ARGUMENT_KEY, adminPin)
-      adminSettingDialogFragment.arguments = args
-      return adminSettingDialogFragment
+    /** Arguments key for AdminSettingsDialogFragment. */
+    const val ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY = "AdminSettingsDialogFragment.arguments"
+    fun newInstance(
+      adminPin: String,
+      profileId: ProfileId,
+      profileName: String
+    ): AdminSettingsDialogFragment {
+      val args = AdminSettingsDialogFragmentArguments.newBuilder()
+        .setAdminPin(adminPin)
+        .setCurrentProfileName(profileName)
+        .build()
+      return AdminSettingsDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(profileId)
+        }
+      }
     }
   }
 
@@ -31,11 +45,21 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val adminPin = arguments?.getStringFromBundle(ADMIN_SETTINGS_PIN_ARGUMENT_KEY)
+    val args = arguments?.getProto(
+      ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+      AdminSettingsDialogFragmentArguments.getDefaultInstance()
+    )
+    val adminPin = args?.adminPin
+    val profileName = args?.currentProfileName ?: ""
+    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
     checkNotNull(adminPin) { "Admin Pin must not be null" }
+
     return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(
       activity as ProfileRouteDialogInterface,
-      adminPin
+      adminPin,
+      profileId,
+      profileName
     )
   }
 }

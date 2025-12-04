@@ -20,8 +20,6 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -29,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_RE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -47,12 +46,17 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVEAL_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FeatureFlagListContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.Priority.ESSENTIAL
@@ -64,6 +68,7 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
@@ -81,15 +86,20 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -121,6 +131,7 @@ class EventBundleCreatorTest {
   private companion object {
     private const val TEST_TIMESTAMP_1 = 1556094120000
     private const val TEST_TIMESTAMP_2 = 1234567898765
+    private const val TEST_CLASSROOM_ID = "test_classroom_id"
     private const val TEST_TOPIC_ID = "test_topic_id"
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXPLORATION_ID = "test_exploration_id"
@@ -164,7 +175,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -563,13 +574,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_player_screen")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -587,13 +599,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_player_screen")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -844,6 +857,30 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  fun testFillEventBundle_fillsFeatureFlagsContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createFeatureFlagListContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("feature_flag_list")
+    assertThat(bundle).hasSize(14)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(FEATURE_FLAG_LIST_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("feature_flag_names")
+      .isEqualTo("2,3,4,5,7,8,10,11,12,13,14,15,17,18,0")
+    assertThat(bundle).string("feature_flag_enabled_states")
+      .isEqualTo("0,1,0,1,1,0,1,0,1,0,1,0,0,0,0")
+    assertThat(bundle).string("feature_flag_sync_statuses")
+      .isEqualTo("0,1,2,0,2,0,1,2,0,1,2,0,1,1,0")
+  }
+
+  @Test
   fun testFillEventBundle_openQuestionPlayerContextEvent_fillsAllFieldsInBundleAndReturnsName() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
@@ -951,13 +988,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_exploration_card")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -976,13 +1014,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_exploration_card")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1003,13 +1042,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_exploration_card")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1028,13 +1068,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_exploration_card")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1055,13 +1096,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("unlock_hint")
-    assertThat(bundle).hasSize(18)
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1080,10 +1122,64 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("unlock_hint")
-    assertThat(bundle).hasSize(20)
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(HINT_UNLOCKED_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_revealHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createRevealHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(bundle).hasSize(19)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_revealHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createRevealHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(bundle).hasSize(21)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
@@ -1099,21 +1195,22 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+  fun testFillEventBundle_viewExistingHintEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createViewExistingHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_hint")
-    assertThat(bundle).hasSize(18)
+    assertThat(typeName).isEqualTo("view_existing_hint")
+    assertThat(bundle).hasSize(19)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1124,21 +1221,22 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
+  fun testFillEventBundle_viewExistingHintEvent_studyOn_fillsAllFieldsAndReturnsName() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessHintContext())
+    val eventLog = createEventLog(context = createViewExistingHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_hint")
-    assertThat(bundle).hasSize(20)
+    assertThat(typeName).isEqualTo("view_existing_hint")
+    assertThat(bundle).hasSize(21)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_HINT_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1159,13 +1257,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("unlock_solution")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1183,13 +1282,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("unlock_solution")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_UNLOCKED_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1205,17 +1305,18 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1229,17 +1330,69 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val bundle = Bundle()
 
-    val eventLog = createEventLog(context = createAccessSolutionContext())
+    val eventLog = createEventLog(context = createRevealSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reveal_solution")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
-    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("event_type").isEqualTo(REVEAL_SOLUTION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOff_fillsNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution")
+    assertThat(bundle).hasSize(18)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_viewExistingSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createViewExistingSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("view_existing_solution")
+    assertThat(bundle).hasSize(20)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(VIEW_EXISTING_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1259,13 +1412,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1285,13 +1439,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer")
-    assertThat(bundle).hasSize(21)
+    assertThat(bundle).hasSize(22)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1313,13 +1468,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1339,13 +1495,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_play_voiceover_button")
-    assertThat(bundle).hasSize(21)
+    assertThat(bundle).hasSize(22)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1367,13 +1524,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_pause_voiceover_button")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1393,13 +1551,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_pause_voiceover_button")
-    assertThat(bundle).hasSize(21)
+    assertThat(bundle).hasSize(22)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(PAUSE_VOICE_OVER_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1497,13 +1656,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("leave_exploration")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1521,13 +1681,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("leave_exploration")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1547,13 +1708,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("complete_exploration")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1571,13 +1733,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("complete_exploration")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1747,13 +1910,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reach_invested_engagement")
-    assertThat(bundle).hasSize(17)
+    assertThat(bundle).hasSize(18)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1771,13 +1935,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("reach_invested_engagement")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1797,13 +1962,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_switch_language_in_lesson")
-    assertThat(bundle).hasSize(19)
+    assertThat(bundle).hasSize(20)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1823,13 +1989,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("click_switch_language_in_lesson")
-    assertThat(bundle).hasSize(21)
+    assertThat(bundle).hasSize(22)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).integer("event_type").isEqualTo(SWITCH_IN_LESSON_LANGUAGE.number)
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("ed_classroom_id").isEqualTo(TEST_CLASSROOM_ID)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -2109,16 +2276,23 @@ class EventBundleCreatorTest {
   private fun createHintUnlockedContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setHintUnlockedContext)
 
-  private fun createAccessHintContext(hintContext: HintContext = createHintContext()) =
-    createEventContext(hintContext, EventContextBuilder::setAccessHintContext)
+  private fun createRevealHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setRevealHintContext)
+
+  private fun createViewExistingHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setViewExistingHintContext)
 
   private fun createSolutionUnlockedContext(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
 
-  private fun createAccessSolutionContext(
+  private fun createRevealSolutionContext(
     explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setAccessSolutionContext)
+  ) = createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
+
+  private fun createViewExistingSolutionContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setViewExistingSolutionContext)
 
   private fun createSubmitAnswerContext(
     submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()
@@ -2175,6 +2349,10 @@ class EventBundleCreatorTest {
       createSwitchInLessonLanguageEventContext(),
   ) = createEventContext(switchLanguageContext, EventContextBuilder::setSwitchInLessonLanguage)
 
+  private fun createFeatureFlagListContext(
+    featureFlagListContext: FeatureFlagListContext = createFeatureFlagListEventContext()
+  ) = createEventContext(featureFlagListContext, EventContextBuilder::setFeatureFlagListContext)
+
   private fun createInstallationIdForFailedAnalyticsLogContext(
     installationId: String = TEST_INSTALLATION_ID
   ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
@@ -2185,6 +2363,7 @@ class EventBundleCreatorTest {
   ) = EventLog.Context.newBuilder().setter(value).build()
 
   private fun createExplorationContext(
+    classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
     storyId: String = TEST_STORY_ID,
     explorationId: String = TEST_EXPLORATION_ID,
@@ -2193,6 +2372,7 @@ class EventBundleCreatorTest {
     stateName: String = TEST_STATE_NAME,
     learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
   ) = ExplorationContext.newBuilder().apply {
+    this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -2212,6 +2392,88 @@ class EventBundleCreatorTest {
 
   private fun createTopicContext(topicId: String = TEST_TOPIC_ID) =
     TopicContext.newBuilder().apply { this.topicId = topicId }.build()
+
+  private fun createFeatureFlagListEventContext() = FeatureFlagListContext.newBuilder()
+    .setAppSessionId("test session")
+    .addAllFeatureFlags(
+      listOf(
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.LEARNER_STUDY_ANALYTICS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.SPOTLIGHT_UI
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.DOWNLOADS_SUPPORT
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.APP_AND_OS_DEPRECATION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.NPS_SURVEY
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.ONBOARDING_FLOW_V2
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.MULTIPLE_CLASSROOMS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.TOPIC_INFO_TAB
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.TOPIC_PRACTICE_TAB
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+      )
+    ).build()
 
   private fun createQuestionContext(
     questionId: String = TEST_QUESTION_ID,
@@ -2354,12 +2616,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = false
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = true
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
@@ -2385,35 +2647,28 @@ class EventBundleCreatorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLoggingLearnerStudyIds
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, EventLoggingConfigurationModule::class])
+  @Component(
+    modules = [
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

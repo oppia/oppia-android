@@ -3,10 +3,13 @@ package org.oppia.android.app.walkthrough
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.WALKTHROUGH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
@@ -20,6 +23,15 @@ class WalkthroughActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     walkthroughActivityPresenter.handleOnCreate()
+
+    onBackPressedDispatcher.addCallback(
+      this,
+      object : OnBackPressedCallback(/* enabled = */ true) {
+        override fun handleOnBackPressed() {
+          walkthroughActivityPresenter.handleSystemBack()
+        }
+      }
+    )
   }
 
   override fun currentPage(walkthroughPage: Int) {
@@ -31,17 +43,11 @@ class WalkthroughActivity :
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
-  override fun onBackPressed() {
-    walkthroughActivityPresenter.handleSystemBack()
-  }
-
   companion object {
-    internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
-      "WalkthroughActivity.internal_profile_id"
 
-    fun createWalkthroughActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createWalkthroughActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, WalkthroughActivity::class.java).apply {
-        putExtra(WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(WALKTHROUGH_ACTIVITY)
       }
     }

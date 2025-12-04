@@ -3,13 +3,13 @@ package org.oppia.android.app.topic.revisioncard
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -47,7 +47,7 @@ class RevisionCardViewModel private constructor(
   /** Called when the previous navigation card is clicked. */
   fun onPreviousCardClicked() {
     routeToReviewListener.routeToRevisionCard(
-      profileId.internalId,
+      profileId,
       topicId,
       subtopicId - 1,
       subtopicListSize
@@ -57,7 +57,7 @@ class RevisionCardViewModel private constructor(
   /** Called when the next navigation card is clicked. */
   fun onNextCardClicked() {
     routeToReviewListener.routeToRevisionCard(
-      profileId.internalId,
+      profileId,
       topicId,
       subtopicId + 1,
       subtopicListSize

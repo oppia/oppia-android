@@ -42,12 +42,11 @@
           app:itemTextColor="@color/component_color_shared_drawer_item"
           app:menu="@menu/navigation_drawer_menu" />
 
-        <LinearLayout
+        <Space
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
-          android:minHeight="48dp"
-          android:orientation="vertical" />
+          android:minHeight="48dp" />
 
         <LinearLayout
           android:id="@+id/developer_options_linear_layout"
@@ -67,10 +66,11 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_baseline_code_24"
-            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
+            app:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
             android:contentDescription="@string/developer_options_icon_content_description" />
 
           <TextView
+            android:id="@+id/developer_options_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -98,19 +98,15 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
+            app:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
             app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
             android:contentDescription="@string/administrator_controls_icon_content_description" />
 
           <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"
-            android:fontFamily="sans-serif-medium"
+            android:id="@+id/administrator_controls_text_view"
+            style="@style/AdministratorControlsText"
             android:text="@string/administrator_controls"
-            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_shared_primary_dark_text_color}"
-            android:textSize="14sp" />
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_shared_primary_dark_text_color}" />
         </LinearLayout>
       </LinearLayout>
     </androidx.core.widget.NestedScrollView>
