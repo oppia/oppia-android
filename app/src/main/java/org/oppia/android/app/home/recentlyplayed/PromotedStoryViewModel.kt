@@ -3,9 +3,9 @@ package org.oppia.android.app.home.recentlyplayed
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
 
 // TODO(#297): Add download status information to promoted-story-card.
@@ -18,6 +18,7 @@ class PromotedStoryViewModel(
   private val promotedStoryClickListener: PromotedStoryClickListener,
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
+  val showClassroomLabel: Boolean,
   translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
   /** Sets the story title of the recently played story. */
@@ -36,6 +37,12 @@ class PromotedStoryViewModel(
   val nextChapterTitle by lazy {
     translationController.extractString(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
+    )
+  }
+  /** Sets the classroom of the recently played story. */
+  val classroomTitle by lazy {
+    translationController.extractString(
+      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
     )
   }
 

@@ -7,13 +7,19 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
+import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
+import org.oppia.android.app.devoptions.AppRestartDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.ForceDownloadRemoteParametersDialogFragment
+import org.oppia.android.app.devoptions.PendingChangesDialogFragment
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragment
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -35,7 +41,11 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
+import org.oppia.android.app.onboarding.AdminIntroFragment
+import org.oppia.android.app.onboarding.CreateProfileFragment
+import org.oppia.android.app.onboarding.IntroFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
+import org.oppia.android.app.onboarding.OnboardingProfileTypeFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
 import org.oppia.android.app.options.AudioLanguageFragment
@@ -55,10 +65,12 @@ import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
+import org.oppia.android.app.profile.ProfileLoginFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfilePictureEditDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
 import org.oppia.android.app.resumelesson.ResumeLessonFragment
+import org.oppia.android.app.settings.profile.ProfileDeleteSuccessDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditDeletionDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
@@ -113,6 +125,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appLanguageFragment: AppLanguageFragment)
+  fun inject(appRestartDialogFragment: AppRestartDialogFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
@@ -124,6 +137,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(profileDeleteSuccessDialogFragment: ProfileDeleteSuccessDialogFragment)
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(dragDropTestFragment: DragDropTestFragment)
@@ -132,6 +146,10 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
+  fun inject(featureFlagsFragment: FeatureFlagsFragment)
+  fun inject(
+    forceDownloadRemoteParametersDialogFragment: ForceDownloadRemoteParametersDialogFragment
+  )
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
@@ -156,6 +174,8 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(optionalAppDeprecationNoticeDialogFragment: OptionalAppDeprecationNoticeDialogFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
+  fun inject(pendingChangesDialogFragment: PendingChangesDialogFragment)
+  fun inject(platformParametersFragment: PlatformParametersFragment)
   fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
@@ -194,4 +214,10 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(exitSurveyConfirmationDialogFragment: ExitSurveyConfirmationDialogFragment)
   fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
   fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
+  fun inject(classroomListFragment: ClassroomListFragment)
+  fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
+  fun inject(createProfileFragment: CreateProfileFragment)
+  fun inject(introFragment: IntroFragment)
+  fun inject(profileLoginFragment: ProfileLoginFragment)
+  fun inject(adminIntroFragment: AdminIntroFragment)
 }

@@ -1,0 +1,7 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+  <androidx.compose.ui.platform.ComposeView
+    android:id="@+id/admin_intro_compose_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_primary_background_color" />
+</layout>

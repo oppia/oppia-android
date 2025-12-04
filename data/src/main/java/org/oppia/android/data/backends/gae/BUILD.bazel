@@ -9,7 +9,6 @@ kt_android_library(
     name = "network_interceptors",
     srcs = [
         "JsonPrefixNetworkInterceptor.kt",
-        "NetworkApiKey.kt",
         "NetworkLoggingInterceptor.kt",
         "RemoteAuthNetworkInterceptor.kt",
     ],
@@ -55,6 +54,7 @@ kt_android_library(
     name = "network_config_annotations",
     srcs = [
         "BaseUrl.kt",
+        "NetworkApiKey.kt",
         "XssiPrefix.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
@@ -75,9 +75,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "prod_module",
+    name = "retrofit_module",
     srcs = [
-        "NetworkModule.kt",
+        "RetrofitModule.kt",
+        "RetrofitServiceModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [

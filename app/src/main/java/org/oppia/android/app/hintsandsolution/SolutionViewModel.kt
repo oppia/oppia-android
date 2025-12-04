@@ -1,8 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.android.R
-import org.oppia.android.app.hintsandsolution.HintsAndSolutionViewModel.Factory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
@@ -26,9 +24,11 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.itemviewmodel.StateSolutionViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.app.view.models.R
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
@@ -42,12 +42,13 @@ import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import javax.inject.Inject
 
 /**
- * [HintsAndSolutionItemViewModel] that represents a solution that the user may reveal.
+ * Represent a solution that the user may reveal.
  *
  * Instances of this class are created using its [Factory].
  *
  * @property solutionSummary the solution's explanation text (which may contain HTML)
  * @property isSolutionRevealed whether the solution is currently expanded and viewable
+ * @property isFlashback Whether the solution is being displayed as part of the flashback screen.
  */
 class SolutionViewModel private constructor(
   val solutionSummary: String,
@@ -57,8 +58,11 @@ class SolutionViewModel private constructor(
   private val interaction: Interaction,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
-) : HintsAndSolutionItemViewModel() {
+  private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+  val explorationId: String,
+  val isFlashback: Boolean,
+  val solutionBoxStrokeWidth: Int
+) {
   /**
    * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
    * of the original summary.
@@ -249,7 +253,10 @@ class SolutionViewModel private constructor(
       isSolutionRevealed: ObservableBoolean,
       isSolutionExclusive: Boolean,
       interaction: Interaction,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      explorationId: String,
+      isFlashback: Boolean,
+      solutionBoxStrokeWidth: Int
     ): SolutionViewModel {
       return SolutionViewModel(
         solutionSummary,
@@ -259,8 +266,25 @@ class SolutionViewModel private constructor(
         interaction,
         writtenTranslationContext,
         appLanguageResourceHandler,
-        mathExpressionAccessibilityUtil
+        mathExpressionAccessibilityUtil,
+        explorationId,
+        isFlashback,
+        solutionBoxStrokeWidth
       )
+    }
+
+    /**
+     * Returns a [HintsDialogSolutionViewModel] wrapper around the given core [SolutionViewModel].
+     */
+    fun createHintsDialogSolutionViewModel(core: SolutionViewModel): HintsDialogSolutionViewModel {
+      return HintsDialogSolutionViewModel(core)
+    }
+
+    /**
+     * Returns a [StateSolutionViewModel] wrapper around the given core [SolutionViewModel].
+     */
+    fun createStateSolutionViewModel(core: SolutionViewModel): StateSolutionViewModel {
+      return StateSolutionViewModel(core)
     }
   }
 }

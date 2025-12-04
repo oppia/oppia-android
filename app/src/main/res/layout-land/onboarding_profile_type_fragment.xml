@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+      android:id="@+id/profile_type_title"
+      style="@style/OnboardingProfileTypeHeaderStyleLandscape"
+      android:layout_marginTop="@dimen/phone_shared_margin_large"
+      android:text="@string/onboarding_profile_type_activity_header"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/profile_type_center_guide"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.35" />
+
+    <org.oppia.android.app.customview.OppiaCurveBackgroundView
+      android:id="@+id/onboarding_profile_type_background"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:customBackgroundColor="@{@color/component_color_onboarding_profile_type_background_color}"
+      app:layout_constraintTop_toBottomOf="@id/profile_type_center_guide" />
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/profile_type_learner_navigation_card"
+      style="@style/OnboardingProfileTypeNavigationCardStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/phone_shared_margin_medium"
+      android:layout_marginTop="@dimen/phone_shared_margin_medium"
+      android:layout_marginEnd="@dimen/phone_shared_margin_medium"
+      android:layout_marginBottom="@dimen/phone_shared_margin_medium"
+      app:layout_constraintBottom_toTopOf="@id/onboarding_navigation_back"
+      app:layout_constraintEnd_toStartOf="@id/profile_type_supervisor_navigation_card"
+      app:layout_constraintHorizontal_chainStyle="packed"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_type_title">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+          android:id="@+id/profile_type_learner_image"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@color/component_color_onboarding_learner_profile_type_background_color"
+          android:contentDescription="@string/onboarding_learner_otter_content_description"
+          android:scaleType="centerCrop"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/learner_otter" />
+
+        <TextView
+          android:id="@+id/profile_type_learner_text"
+          style="@style/OnboardingProfileTypeTextStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/onboarding_profile_type_activity_student_text"
+          app:layout_constraintEnd_toEndOf="@id/profile_type_learner_image"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_type_learner_image" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/profile_type_supervisor_navigation_card"
+      style="@style/OnboardingProfileTypeNavigationCardStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/phone_shared_margin_small"
+      android:layout_marginEnd="@dimen/phone_shared_margin_medium"
+      app:layout_constraintBottom_toBottomOf="@id/profile_type_learner_navigation_card"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profile_type_learner_navigation_card">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+          android:id="@+id/profile_type_parent_image"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@color/component_color_onboarding_supervisor_profile_type_background_color"
+          android:contentDescription="@string/onboarding_parent_otter_content_description"
+          android:scaleType="centerCrop"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/parent_teacher_otter" />
+
+        <TextView
+          android:id="@+id/profile_type_parent_text"
+          style="@style/OnboardingProfileTypeTextStyle"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/onboarding_profile_type_activity_parent_text"
+          app:layout_constraintEnd_toEndOf="@id/profile_type_parent_image"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_type_parent_image" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <Button
+      android:id="@+id/onboarding_navigation_back"
+      style="@style/OnboardingNavigationSecondaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/phone_shared_margin_large"
+      android:layout_marginBottom="@dimen/phone_shared_margin_medium"
+      android:background="@drawable/onboarding_back_button_white_background"
+      android:text="@string/onboarding_navigation_back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

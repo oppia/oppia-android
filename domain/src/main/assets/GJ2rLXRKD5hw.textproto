@@ -5,6 +5,7 @@ subtopic_ids: 2
 subtopic_ids: 3
 subtopic_ids: 4
 is_published: true
+has_practice_questions: true
 topic_thumbnail {
 }
 written_translations {

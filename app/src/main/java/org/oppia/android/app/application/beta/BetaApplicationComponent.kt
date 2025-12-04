@@ -11,7 +11,8 @@ import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.auth.AuthenticationModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -49,7 +50,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -85,7 +85,7 @@ import javax.inject.Singleton
     RatioInputModule::class, UncaughtExceptionLoggerModule::class,
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-    FirebaseLogUploaderModule::class, NetworkModule::class,
+    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
@@ -97,9 +97,9 @@ import javax.inject.Singleton
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
-    EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+    ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
-    ExplorationProgressModule::class, AuthenticationModule::class,
+    ExplorationProgressModule::class, AuthenticationModule::class
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {

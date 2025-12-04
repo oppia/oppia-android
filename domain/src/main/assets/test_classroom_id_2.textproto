@@ -1,0 +1,12 @@
+id: "test_classroom_id_2"
+translatable_title {
+  content_id: "classroom_title"
+  html: "English"
+}
+classroom_thumbnail {
+}
+topic_prerequisites {
+  key: "test_topic_id_2"
+  value {
+  }
+}

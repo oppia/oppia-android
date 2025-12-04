@@ -36,7 +36,7 @@ class MavenDependenciesRetriever(
   /** Returns the list of third-party dependency names per Bazel. */
   fun retrieveThirdPartyMavenDependenciesList(): List<String> {
     return bazelClient
-      .retrieveThirdPartyMavenDepsListForBinary("//:oppia")
+      .retrieveThirdPartyMavenDepsListForBinary("//:oppia_dev")
       .map { it.removePrefix(MAVEN_PREFIX) }
   }
 

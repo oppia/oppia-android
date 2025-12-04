@@ -3,7 +3,6 @@ package org.oppia.android.util.logging.performancemetrics
 import android.app.ActivityManager
 import android.content.Context
 import android.net.TrafficStats
-import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
@@ -39,8 +38,12 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     // TODO(#3616): Migrate to the proper SDK 28+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val apkPath =
-      context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo.sourceDir
-    return File(apkPath).length()
+      context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo?.sourceDir
+    return if (apkPath != null) {
+      File(apkPath).length()
+    } else {
+      -1L // Default to a sentinel value that we can track in metrics.
+    }
   }
 
   override fun getUsedStorage(): Long {
@@ -110,17 +113,12 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
 
   /** Returns the number of processors that are currently online/available. */
   private fun getNumberOfOnlineCores(): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      // Returns the number of processors currently available in the system. This may be less than
-      // the total number of configured processors because some of them may be offline. It must also
-      // be noted that a similar OsConstant, _SC_NPROCESSORS_CONF also exists which provides the
-      // total number of configured processors in the system. This value is similar to that
-      // returned from Runtime.getRuntime().availableProcessors().
-      // Reference: https://man7.org/linux/man-pages/man3/sysconf.3.html
-      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
-    } else {
-      // Returns the maximum number of processors available. This value is never smaller than one.
-      Runtime.getRuntime().availableProcessors()
-    }
+    // Returns the number of processors currently available in the system. This may be less than the
+    // total number of configured processors because some of them may be offline. It must also be
+    // noted that a similar OsConstant, _SC_NPROCESSORS_CONF also exists which provides the total
+    // number of configured processors in the system. This value is similar to that returned from
+    // Runtime.getRuntime().availableProcessors(). Reference:
+    // https://man7.org/linux/man-pages/man3/sysconf.3.html
+    return Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
   }
 }

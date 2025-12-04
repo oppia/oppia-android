@@ -1,0 +1,16 @@
+feature_flag_definition {
+  id: LEARNER_STUDY_ANALYTICS
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: SPOTLIGHT_UI
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: MULTIPLE_CLASSROOMS
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: ONBOARDING_FLOW_V2
+  default_is_enabled: true
+}

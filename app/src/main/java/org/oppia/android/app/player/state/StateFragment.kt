@@ -8,18 +8,24 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.StateFragmentArguments
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
-import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
@@ -34,8 +40,19 @@ class StateFragment :
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
-  ShowHintAvailabilityListener {
+  ShowHintAvailabilityListener,
+  FlashbackButtonListener,
+  ReturnToQuestionButtonListener {
   companion object {
+
+    /** Arguments key for StateFragment. */
+    const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
+
+    /** Arguments key for StateFragment saved state. */
+    const val STATE_FRAGMENT_STATE_KEY = "StateFragment.state"
+
+    private const val STATE_PLAYER_ASSEMBLER_STATE_KEY = "StatePlayerRecyclerViewAssembler.state"
+
     /**
      * Creates a new instance of a StateFragment.
      * @param internalProfileId used by StateFragment to mark progress.
@@ -50,14 +67,18 @@ class StateFragment :
       storyId: String,
       explorationId: String
     ): StateFragment {
-      val stateFragment = StateFragment()
-      val args = Bundle()
-      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      stateFragment.arguments = args
-      return stateFragment
+
+      val args = StateFragmentArguments.newBuilder().apply {
+        this.internalProfileId = internalProfileId
+        this.topicId = topicId
+        this.storyId = storyId
+        this.explorationId = explorationId
+      }.build()
+      return StateFragment().apply {
+        arguments = Bundle().apply {
+          putProto(STATE_FRAGMENT_ARGUMENTS_KEY, args)
+        }
+      }
     }
   }
 
@@ -74,18 +95,27 @@ class StateFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getStringFromBundle(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
+    val args =
+      arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
+
+    val userAnswerState = savedInstanceState?.getProto(
+      STATE_FRAGMENT_STATE_KEY,
+      UserAnswerState.getDefaultInstance()
+    ) ?: UserAnswerState.getDefaultInstance()
+
+    val internalProfileId = args?.internalProfileId ?: -1
+    val topicId = args?.topicId!!
+    val storyId = args.storyId!!
     val explorationId =
-      arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+      args.explorationId!!
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      userAnswerState
     )
   }
 
@@ -103,6 +133,14 @@ class StateFragment :
     stateFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
+
+  override fun onFlashbackButtonClicked(stateName: String) {
+    stateFragmentPresenter.onFlashbackButtonClicked(stateName)
+  }
+
+  override fun onReturnToQuestionButtonClicked() {
+    stateFragmentPresenter.onReturnToQuestionButtonClicked()
+  }
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
@@ -129,9 +167,45 @@ class StateFragment :
     stateFragmentPresenter.revealHint(hintIndex)
   }
 
+  fun viewHint(hintIndex: Int) {
+    stateFragmentPresenter.viewHint(hintIndex)
+  }
+
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
+  fun viewSolution() {
+    stateFragmentPresenter.viewSolution()
+  }
+
+  /**
+   * Delegates the removal of all [ConceptCardFragment] instances
+   * to the [StateFragmentPresenter].
+   */
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    // Save the user answer state as before
+    outState.putProto(
+      STATE_FRAGMENT_STATE_KEY,
+      stateFragmentPresenter.getUserAnswerState()
+    )
+    // Save the assembler state using protobuf
+    val assemblerState = stateFragmentPresenter.saveAssemblerState()
+    outState.putProto(STATE_PLAYER_ASSEMBLER_STATE_KEY, assemblerState)
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    if (savedInstanceState != null) {
+      // Restore the assembler state using protobuf
+      val assemblerState = savedInstanceState.getProto(
+        STATE_PLAYER_ASSEMBLER_STATE_KEY,
+        StatePlayerRecyclerViewAssemblerState.getDefaultInstance()
+      )
+      stateFragmentPresenter.restoreAssemblerState(assemblerState)
+    }
+  }
 }

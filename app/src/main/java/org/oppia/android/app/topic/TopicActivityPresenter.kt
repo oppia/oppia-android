@@ -2,38 +2,50 @@ package org.oppia.android.app.topic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.ui.R
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
-const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
-const val STORY_ID_ARGUMENT_KEY = "story_id"
+const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+  private lateinit var classroomId: String
   private lateinit var topicId: String
 
-  private lateinit var profileId: ProfileId
-
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
+  fun handleOnCreate(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+    storyId: String?
+  ) {
     this.topicId = topicId
+    this.classroomId = classroomId
     activity.setContentView(R.layout.topic_activity)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      if (storyId != null) {
-        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+      val arguments = Bundle().apply {
+        val args = TopicFragmentArguments.newBuilder().apply {
+          this.classroomId = classroomId
+          this.topicId = topicId
+          if (storyId != null) {
+            this.storyId = storyId
+          }
+        }.build()
+        putProto(TOPIC_FRAGMENT_ARGUMENTS_KEY, args)
+        decorateWithUserProfileId(profileId)
       }
-      topicFragment.arguments = args
+
+      topicFragment.arguments = arguments
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
         topicFragment, TOPIC_FRAGMENT_TAG
@@ -43,7 +55,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getSpotlightFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(internalProfileId),
+        SpotlightFragment.newInstance(profileId.internalId),
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }

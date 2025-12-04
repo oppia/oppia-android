@@ -385,7 +385,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -609,7 +608,7 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
+    linked_skill_id: "test_skill_id_1"
   }
 }
 states {
@@ -806,6 +805,15 @@ states {
           }
           rule_type: "IsExactlyEqualTo"
         }
+        rule_specs {
+         input {
+          key: "x"
+            value {
+             signed_int: 1
+              }
+             }
+           rule_type: "HasIntegerPartEqualTo"
+         }
       }
       solution {
         answer_is_exclusive: true
@@ -947,7 +955,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -1235,7 +1242,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -1263,7 +1269,7 @@ states {
       }
     }
     recorded_voiceovers {
-      key: "default_outcome"
+      key: "default_outcome_id_with_extras_because_this_is_valid"
       value {
       }
     }
@@ -1364,7 +1370,7 @@ states {
       }
     }
     written_translations {
-      key: "default_outcome"
+      key: "default_outcome_id_with_extras_because_this_is_valid"
       value {
         translation_mapping {
           key: "pt"
@@ -1541,7 +1547,7 @@ states {
         dest_state_name: "RatioInput"
         feedback {
           html: "<p>Not correct</p>"
-          content_id: "default_outcome"
+          content_id: "default_outcome_id_with_extras_because_this_is_valid"
         }
       }
       customization_args {
@@ -1820,7 +1826,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2060,7 +2065,7 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
+    linked_skill_id: "test_skill_id_1"
   }
 }
 states {
@@ -2452,7 +2457,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2796,7 +2800,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2845,7 +2848,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 init_state_name: "Continue"

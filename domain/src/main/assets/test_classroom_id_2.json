@@ -1,0 +1,12 @@
+{
+  "classroom_id": "test_classroom_id_2",
+  "classroom_title": {
+    "content_id": "classroom_title",
+    "html": "English"
+  },
+  "thumbnail_bg_color": "#00FFFFFF",
+  "thumbnail_filename": "",
+  "topic_prerequisites": {
+    "test_topic_id_2": []
+  }
+}

@@ -4,7 +4,7 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.R
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.locale.OppiaLocale
@@ -154,8 +154,6 @@ class AppLanguageResourceHandler @Inject constructor(
   fun computeLocalizedDisplayName(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> getLocalizedDisplayName("hi")
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> getLocalizedDisplayName("fr")
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> getLocalizedDisplayName("zh")
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
       AudioLanguage.ARABIC_LANGUAGE -> getLocalizedDisplayName("ar", "EG")
       AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE ->
