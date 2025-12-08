@@ -11,6 +11,19 @@
     "outline": "",
     "title": "Fifth Exploration",
     "acquired_skill_ids": []
+  },
+  {
+    "description": "<unknown>",
+    "exploration_id": "test_exp_id_6",
+    "destination_node_ids": [],
+    "thumbnail_filename": "",
+    "outline_is_finalized": true,
+    "id": "test_exp_id_6",
+    "prerequisite_skill_ids": [],
+    "thumbnail_bg_color": "#d68f78",
+    "outline": "",
+    "title": "Number With Units Exploration",
+    "acquired_skill_ids": []
   }],
   "story_title": "Other Interesting Story",
   "story_description": "<removed>"
