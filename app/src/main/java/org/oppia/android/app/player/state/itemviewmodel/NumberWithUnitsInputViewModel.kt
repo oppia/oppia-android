@@ -98,7 +98,7 @@ class NumberWithUnitsInputViewModel private constructor(
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       answer = InteractionObject.newBuilder().apply {
-        numberWithUnits =
+        normalizedString = answerTextString
       }.build()
       plainAnswer = answerTextString
       writtenTranslationContext = this@NumberWithUnitsInputViewModel.writtenTranslationContext

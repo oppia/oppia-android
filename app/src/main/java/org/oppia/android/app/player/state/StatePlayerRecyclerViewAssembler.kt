@@ -32,8 +32,8 @@ import org.oppia.android.app.databinding.databinding.ItemSelectionSubmittedAnswe
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
-import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.NumberWithUnitsInputInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.android.app.databinding.databinding.RatioInputInteractionItemBinding
@@ -75,8 +75,8 @@ import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewM
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
-import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel
+import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
