@@ -53,8 +53,8 @@ This wiki page explains how to install Oppia Android on your local machine. If y
      
      <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
     
-   - In the "SDK Platforms" tab (which is the default), select `API Level 30` and also `API Level 34`.
-   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
+   - In the "SDK Platforms" tab (which is the default), select `API Level 35`.
+   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then expand "Android SDK Build-Tools" and select 34.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
      - On this screen, note the **Android SDK Location**, which is set as the ANDROID_HOME variable in the Bazel setup step below.
@@ -85,7 +85,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
          
         * If you already have a project open in Android Studio, in the right hand toolbar, locate `Device Manager`.
       - Click the **+**, and then click **Create Virtual Device**.
-      - Follow the wizard to create a phone and a tablet AVD, setting the **system image** to be one of `API Level 30` or `API Level 34` as installed above.
+      - Follow the wizard to create a phone and a tablet AVD, setting the **system image** to be `API Level 35` as installed above.
       - After creating your devices, you will be able to see a list of all the devices on the device manager panel.
       - For more information on the different configurations available for AVDs, please visit the [official documentation page.](https://developer.android.com/studio/run/managing-avds)
 
@@ -209,7 +209,7 @@ Run the following command in your terminal:
 bazel --version
 ```
 
-### Bazel Set up for Windows
+### Bazel Set up for Windows(Not Recommended)
 This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. We suggest that you post a discussion at [github-discussions](https://github.com/oppia/oppia-android/discussions/categories/q-a-installation) if you run into any problems.
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem.
@@ -335,8 +335,8 @@ Click on the 3 dots to open the file picker. Scroll down and select `oppia-andro
 
    <img width="991" alt="Screenshot 2025-03-19 at 18 45 23" src="https://github.com/user-attachments/assets/31e0694c-a179-4adf-8d4d-28793c586ee5" />
 
-6. The project view will be generated as follows. Click the **Create** button to complete the import.
-
+6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
+   
    ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
 
 7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).

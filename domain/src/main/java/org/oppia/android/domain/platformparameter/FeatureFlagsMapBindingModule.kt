@@ -7,7 +7,6 @@ import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
@@ -18,6 +17,8 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -83,14 +84,6 @@ interface FeatureFlagsMapBindingModule {
   @Binds
   @IntoMap
   @FeatureFlags
-  @FeatureFlagIdKey(FeatureFlagId.EXTRA_TOPIC_TABS_UI)
-  fun bindExtraTopicTabsUi(
-    @EnableExtraTopicTabsUi param: PlatformParameterValue<Boolean>
-  ): PlatformParameterValue<Boolean>
-
-  @Binds
-  @IntoMap
-  @FeatureFlags
   @FeatureFlagIdKey(FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION)
   fun bindInteractionConfigChangeStateRetention(
     @EnableInteractionConfigChangeStateRetention param: PlatformParameterValue<Boolean>
@@ -134,5 +127,21 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.FLASHBACK_SUPPORT)
   fun bindFlashbackSupport(
     @EnableFlashbackSupport param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.TOPIC_INFO_TAB)
+  fun bindTopicInfoTab(
+    @EnableTopicInfoTab param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.TOPIC_PRACTICE_TAB)
+  fun bindTopicPracticeTab(
+    @EnableTopicPracticeTab param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }

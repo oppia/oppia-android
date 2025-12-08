@@ -111,7 +111,7 @@ class TopicInfoFragmentLocalTest {
 
   @Test
   fun testTopicInfoFragment_onLaunch_logsEvent() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
     launchTopicActivityIntent(profileId = profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()

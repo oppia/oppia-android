@@ -78,6 +78,12 @@ class TopicViewModel @Inject constructor(
     }
   }
 
+  val hasPracticeQuestions: LiveData<Boolean> by lazy {
+    Transformations.map(topicLiveData) { ephemeralTopic ->
+      ephemeralTopic.topic.hasPracticeQuestions
+    }
+  }
+
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }

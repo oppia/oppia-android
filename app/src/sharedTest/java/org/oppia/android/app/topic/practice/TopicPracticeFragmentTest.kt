@@ -116,7 +116,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -147,13 +148,16 @@ class TopicPracticeFragmentTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
@@ -438,6 +442,7 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 1)
       onView(
@@ -477,7 +482,13 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue.value).name),
+        withText(
+          TopicTab.getTabForPosition(
+            position = 1,
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
+          ).name
+        ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
