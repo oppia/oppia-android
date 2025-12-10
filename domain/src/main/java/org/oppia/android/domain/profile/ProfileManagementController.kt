@@ -281,11 +281,11 @@ class ProfileManagementController @Inject constructor(
       val newProfile = Profile.newBuilder().apply {
         this.name = ""
         this.pin = ""
-        this.allowDownloadAccess = false
+        this.allowDownloadAccess = true
         this.allowInLessonQuickLanguageSwitching = false
         this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
-        this.isAdmin = false
+        this.isAdmin = true
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
         numberOfLogins = 0
 
