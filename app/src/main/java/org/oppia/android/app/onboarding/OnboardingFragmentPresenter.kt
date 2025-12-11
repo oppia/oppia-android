@@ -248,7 +248,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun createDefaultProfile() {
     profileManagementController.createDefaultProfile()
-    .toLiveData()
+      .toLiveData()
       .observe(
         fragment,
         { result ->

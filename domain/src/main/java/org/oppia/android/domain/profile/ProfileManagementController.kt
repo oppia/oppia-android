@@ -143,7 +143,7 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
 
-  /** Indicates  that profiles already exist in the app. */
+  /** Indicates that profiles already exist in the app. */
   class ProfilesAlreadyExistException(msg: String) : Exception(msg)
 
   /**
