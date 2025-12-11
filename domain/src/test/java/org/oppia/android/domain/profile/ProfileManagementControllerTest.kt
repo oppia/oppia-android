@@ -1539,7 +1539,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_checkUpdateIsSuccessful() {
     setUpTestApplicationComponent()
-    addAdminProfileAndWait(name = "John")
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1582,7 +1582,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_nullAvatarUri_setsAvatarColorSuccessfully() {
     setUpTestApplicationComponent()
-    addAdminProfileAndWait(name = "John")
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1607,7 +1607,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateProfile_updateMultipleFields_unspecifiedProfileType_returnsProfileTypeError() {
     setUpTestApplicationComponent()
-    addAdminProfileAndWait(name = "John")
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
       PROFILE_ID_0,
@@ -1693,7 +1693,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateDefaultProfile_profileTypeToSoleLearner_checkProfileTypeSoleLearner() {
     setUpTestApplicationComponent()
-    addAdminProfileAndWait(name = "Admin")
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
       PROFILE_ID_0,
@@ -1709,7 +1709,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateDefaultProfile_profileTypeUnspecified_returnsProfileTypeError() {
     setUpTestApplicationComponent()
-    addAdminProfileAndWait(name = "Admin")
+    profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
       PROFILE_ID_0,

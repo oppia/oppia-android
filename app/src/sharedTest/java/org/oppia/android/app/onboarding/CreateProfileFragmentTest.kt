@@ -158,7 +158,7 @@ class CreateProfileFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.createDefaultAdminProfile()
   }
 
   @After
