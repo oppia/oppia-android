@@ -262,17 +262,7 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  /**
-   * Adds a new profile with the specified parameters.
-   *
-   * @param name Name of the new profile.
-   * @param pin Pin of the new profile.
-   * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
-   * @param allowDownloadAccess Indicates whether the new profile can download content.
-   * @param colorRgb Indicates the color RGB integer used for the avatar background.
-   * @return a [DataProvider] that indicates the success/failure of this add operation.
-   */
-
+  /** Creates a profile with all default attributes */
   fun createDefaultProfile(): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
@@ -313,6 +303,16 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
+  /**
+   * Adds a new profile with the specified parameters.
+   *
+   * @param name Name of the new profile.
+   * @param pin Pin of the new profile.
+   * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
+   * @param allowDownloadAccess Indicates whether the new profile can download content.
+   * @param colorRgb Indicates the color RGB integer used for the avatar background.
+   * @return a [DataProvider] that indicates the success/failure of this add operation.
+   */
   fun addProfile(
     name: String,
     pin: String,
