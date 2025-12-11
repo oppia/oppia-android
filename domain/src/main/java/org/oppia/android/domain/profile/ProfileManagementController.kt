@@ -282,7 +282,6 @@ class ProfileManagementController @Inject constructor(
       }
 
       val nextProfileId = it.nextProfileId
-      val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
       val newProfile = Profile.newBuilder().apply {
         this.name = ""
