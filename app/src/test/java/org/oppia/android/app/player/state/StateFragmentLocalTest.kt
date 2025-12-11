@@ -1321,7 +1321,7 @@ class StateFragmentLocalTest {
         matches(
           withContentDescription(
             "Start by dividing the cake into equal parts:\n" +
-              "\n"+
+              "\n" +
               "Circle divided into four quadrants; three of them are shaded red.\n" +
               "\n" +
               "Three of the four equal parts are red. So, the answer is 3/4."
