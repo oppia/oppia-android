@@ -124,7 +124,7 @@ class ConceptCardTagHandlerTest {
         html = CONCEPT_CARD_LINK_MARKUP_1,
         customTagHandlers = tagHandlersWithConceptCardSupport
       )
-    assertThat(contentDescription).isEqualTo("refresher lesson")
+    assertThat(contentDescription).isEqualTo("skill_id_1 concept card.")
   }
 
   @Test
