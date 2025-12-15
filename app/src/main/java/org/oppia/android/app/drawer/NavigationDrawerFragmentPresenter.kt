@@ -473,7 +473,24 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       }
     }
   }
-
+  fun updateDrawerHighlights() {
+    binding.fragmentDrawerNavView.menu.forEach { it.isChecked = false }
+    footerViewModel.isAdministratorControlsSelected.set(false)
+    footerViewModel.isDeveloperOptionsSelected.set(false)
+    previousMenuItemId?.let { itemId ->
+      if (itemId != 0 && itemId != -1) {
+        binding.fragmentDrawerNavView.menu
+          .findItem(itemId)
+          ?.isChecked = true
+      } else if (itemId == 0) {
+        footerViewModel.isAdministratorControlsSelected.set(true)
+        uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+      } else if (itemId == -1) {
+        footerViewModel.isDeveloperOptionsSelected.set(true)
+        uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+      }
+    }
+  }
   private fun checkIfPreviousActivityShouldGetFinished(currentMenuItemId: Int): Boolean {
     if (previousMenuItemId != null &&
       (previousMenuItemId == 0 || previousMenuItemId == -1) &&
