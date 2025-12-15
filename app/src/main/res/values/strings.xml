@@ -261,7 +261,7 @@
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize manage profiles on the device.</string>
-  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_pin_description">Do &lt;b&gt;not&lt;/b&gt; use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
@@ -731,4 +731,10 @@
   <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel</string>
   <string name="profile_login_reset_pin_success_dialog_close">Close</string>
   <string name="profile_login_reset_pin_success_dialog_message">PIN changed successfully!</string>
+
+  <!-- Onboarding Admin Intro Activity -->
+  <string name="admin_intro_activity_title">Introduction</string>
+  <string name="admin_intro_activity_header">As the admin of the app, you can</string>
+  <string name="admin_intro_activity_settings_text">Manage profile settings for all learners on this device</string>
+  <string name="admin_intro_activity_learners_text">Add new learners to this device (up to 10)</string>
 </resources>

@@ -4,11 +4,6 @@ feature_flag_definition {
   default_is_enabled: false
 }
 feature_flag_definition {
-  id: EXTRA_TOPIC_TABS_UI
-  remote_server_name: "android_enable_extra_topic_tabs_ui"
-  default_is_enabled: false
-}
-feature_flag_definition {
   id: LEARNER_STUDY_ANALYTICS
   remote_server_name: "android_enable_learner_study_analytics"
   default_is_enabled: false
@@ -67,4 +62,14 @@ feature_flag_definition {
   id: FLASHBACK_SUPPORT
   remote_server_name: "android_enable_flashback_support"
   default_is_enabled: true
+}
+feature_flag_definition {
+  id: TOPIC_INFO_TAB
+  remote_server_name: "android_enable_topic_info_tab"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: TOPIC_PRACTICE_TAB
+  remote_server_name: "android_enable_topic_practice_tab"
+  default_is_enabled: false
 }

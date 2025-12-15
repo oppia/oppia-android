@@ -1,20 +1,23 @@
-package org.oppia.android.app.testing
+package org.oppia.android.app.onboarding
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,14 +34,15 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
-import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -70,11 +74,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -92,108 +99,171 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableTopicInfoTab
-import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
-import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TopicTestActivityForStory]. */
+/** Tests for [AdminIntroFragment]. */
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = TopicTestActivityForStoryTest.TestApplication::class,
+  application = AdminIntroFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TopicTestActivityForStoryTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @field:[Inject EnableTopicInfoTab]
-  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
-
-  @field:[Inject EnableTopicPracticeTab]
-  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
+class AdminIntroFragmentTest {
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val composeRule = createEmptyComposeRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
-    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
+    Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
-    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  @Test
+  fun testIntroFragment_onLaunch_allViewsAreCorrectlyDisplayed() {
+    launch(AdminIntroActivity::class.java).use {
+
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithContentDescription(
+        context.getString(R.string.onboarding_otter_content_description)
+      )
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testIntroFragment_landscapeMode_viewsAreCorrectlyDisplayed_stepCountIsNotVisible() {
+    launch(AdminIntroActivity::class.java).use {
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithContentDescription(
+        context.getString(R.string.onboarding_otter_content_description)
+      )
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
+        .assertDoesNotExist()
+    }
+  }
+
+  @Test
+  fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
+    launch(AdminIntroActivity::class.java).use { scenario ->
+
+      scenario.onActivity { activity ->
+        composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+          .performClick()
+
+        testCoroutineDispatchers.runCurrent()
+
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  // This is a placeholder test that should fail when the PIN creation screen has been implemented.
+  @Test
+  fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
+    launchAdminIntroActivity().use {
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .performClick()
+
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ProfileChooserActivityParams.newBuilder()
+        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
+        .build()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      intended(hasProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, expectedParams))
+      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
+    }
+  }
+
+  @Test
+  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
+    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    launch(AdminIntroActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(event).hasStartProfileOnboardingContextThat {
+        hasProfileIdThat().isEqualTo(testProfileId)
+      }
+    }
+  }
+
+  private fun launchAdminIntroActivity(): ActivityScenario<AdminIntroActivity> {
+    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    val scenario = launch<AdminIntroActivity>(
+      AdminIntroActivity.createAdminIntroActivityIntent(
+        context,
+        testProfileId,
+        ProfileType.SUPERVISOR,
+        "Admin"
+      ).apply {
+        decorateWithUserProfileId(testProfileId)
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Test
-  fun testTopicTestActivityForStory_defaultTabIsPlay_isSuccessful() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(
-              position = 1,
-              enableTopicInfoTab.value,
-              enableTopicPracticeTab.value
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testTopicTestActivityForStory_showsTopicPlay() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPosition(
-          recyclerViewId = R.id.story_summary_recycler_view,
-          position = 1
-        )
-      ).check(matches(hasDescendant(withText(containsString("First Story")))))
-    }
-  }
-
-  @Test
-  fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      // Story 0 of the topic should be expanded.
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.chapter_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-    }
-  }
-
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
@@ -264,18 +334,18 @@ class TopicTestActivityForStoryTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest)
+    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicTestActivityForStoryTest_TestApplicationComponent.builder()
+      DaggerAdminIntroFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest) {
-      component.inject(topicTestActivityForStoryTest)
+    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest) {
+      component.inject(adminIntroFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

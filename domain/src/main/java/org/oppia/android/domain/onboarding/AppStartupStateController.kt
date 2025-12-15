@@ -69,6 +69,16 @@ class AppStartupStateController @Inject constructor(
   }
 
   /**
+   * Resets the app’s onboarding state, marking that the user has not been onboarded.
+   *
+   * This is only expected to occur when all profiles have been deleted from the app,
+   * for example, if the admin resets app data after forgetting their PIN.
+   */
+  fun resetOnboardingState() {
+    updateOnboardingState { alreadyOnboardedApp = false }
+  }
+
+  /**
    * Saves that the user never wants to see beta notices again.
    *
    * Note that this does not notify existing subscribers of the changed state, nor can future

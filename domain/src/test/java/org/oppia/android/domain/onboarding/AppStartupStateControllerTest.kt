@@ -718,6 +718,24 @@ class AppStartupStateControllerTest {
   }
 
   @Test
+  fun testController_resetOnboardingState_providesState_userIsNotOnboarded() {
+    executeInPreviousAppInstance { testComponent ->
+      testComponent.getAppStartupStateController().apply {
+        markOnboardingFlowCompleted()
+      }
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpDefaultTestApplicationComponent()
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
   @Iteration("testing_to_beta", "initialFlavorName=TESTING")
   @Iteration("dev_to_beta", "initialFlavorName=DEVELOPER")
   @Iteration("alpha_to_beta", "initialFlavorName=ALPHA")

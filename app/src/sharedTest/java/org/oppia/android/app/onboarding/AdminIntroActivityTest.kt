@@ -1,20 +1,15 @@
-package org.oppia.android.app.testing
+package org.oppia.android.app.onboarding
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,14 +26,13 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
-import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -76,7 +70,6 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -84,6 +77,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -92,105 +86,62 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableTopicInfoTab
-import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = TopicTestActivityForStoryTest.TestApplication::class,
+  application = AdminIntroActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TopicTestActivityForStoryTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+class AdminIntroActivityTest {
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @field:[Inject EnableTopicInfoTab]
-  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
-
-  @field:[Inject EnableTopicPracticeTab]
-  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
-    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
+    Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
-    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createAdminIntroActivityIntent().extractCurrentAppScreenName()
+    assertThat(screenName).isEqualTo(ScreenName.ADMIN_INTRO_ACTIVITY)
+  }
+
+  @Test
+  fun testActivity_hasCorrectActivityLabel() {
+    launch<AdminIntroActivity>(createAdminIntroActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.admin_intro_activity_title))
+      }
+    }
+  }
+
+  private fun createAdminIntroActivityIntent(): Intent {
+    return AdminIntroActivity.createAdminIntroActivityIntent(
+      context,
+      testProfileId,
+      ProfileType.SUPERVISOR,
+      "John"
+    )
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
-  }
-
-  @Test
-  fun testTopicTestActivityForStory_defaultTabIsPlay_isSuccessful() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(
-              position = 1,
-              enableTopicInfoTab.value,
-              enableTopicPracticeTab.value
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testTopicTestActivityForStory_showsTopicPlay() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPosition(
-          recyclerViewId = R.id.story_summary_recycler_view,
-          position = 1
-        )
-      ).check(matches(hasDescendant(withText(containsString("First Story")))))
-    }
-  }
-
-  @Test
-  fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
-    launch(TopicTestActivityForStory::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      // Story 0 of the topic should be expanded.
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.chapter_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-    }
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -260,22 +211,20 @@ class TopicTestActivityForStoryTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest)
+    fun inject(adminIntroActivityTest: AdminIntroActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicTestActivityForStoryTest_TestApplicationComponent.builder()
+      DaggerAdminIntroActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest) {
-      component.inject(topicTestActivityForStoryTest)
+    fun inject(adminIntroActivityTest: AdminIntroActivityTest) {
+      component.inject(adminIntroActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

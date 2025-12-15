@@ -179,6 +179,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when a user with a PIN wants to log in to their profile.
   PROFILE_LOGIN_ACTIVITY = 56;
+
+  // Screen name value for the scenario when a user is viewing the admin onboarding screen.
+  ADMIN_INTRO_ACTIVITY = 57;
 }
 
 // Defines the current visible UI screen of the application.

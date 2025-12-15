@@ -140,7 +140,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -183,14 +184,18 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
   private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1068,6 +1073,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
@@ -1089,6 +1095,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
@@ -1111,6 +1118,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       orientationLandscape()
@@ -1264,6 +1272,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()
 
@@ -1271,6 +1280,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 2)
       onView(
@@ -1324,7 +1334,13 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue.value).name),
+        withText(
+          TopicTab.getTabForPosition(
+            position = 1,
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
+          ).name
+        ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

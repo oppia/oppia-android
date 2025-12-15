@@ -21,6 +21,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
@@ -86,10 +87,21 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    adminProfileId: ProfileId,
+    parentScreen: ParentScreen
+  ): View? {
     StatusBarColor.statusBarColorUpdate(
       R.color.component_color_shared_profile_status_bar_color, activity, false
     )
+
+    if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
+      // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
+      // flow again if they exit the app at this point.
+      profileManagementController.markProfileOnboardingEnded(adminProfileId)
+    }
 
     binding =
       ProfileSelectionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

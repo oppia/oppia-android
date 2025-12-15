@@ -9,7 +9,6 @@ import kotlinx.coroutines.async
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
-import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
@@ -19,6 +18,8 @@ import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
+import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
+import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
 import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
 import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
 import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
@@ -113,10 +114,6 @@ class TestPlatformParameterModule {
       TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, value)
     }
 
-    fun forceEnableExtraTopicTabsUi(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, value)
-    }
-
     fun forceEnablePerformanceMetricsCollection(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(PERFORMANCE_METRICS_COLLECTION, value)
     }
@@ -143,6 +140,14 @@ class TestPlatformParameterModule {
 
     fun forceEnableFlashbackSupport(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(FLASHBACK_SUPPORT, value)
+    }
+
+    fun forceEnableTopicInfoTab(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_INFO_TAB, value)
+    }
+
+    fun forceEnableTopicPracticeTab(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
     }
 
     fun reset() {

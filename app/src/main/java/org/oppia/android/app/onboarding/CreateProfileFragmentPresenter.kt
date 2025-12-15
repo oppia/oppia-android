@@ -159,51 +159,68 @@ class CreateProfileFragmentPresenter @Inject constructor(
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
-      fragment,
-      { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            createProfileViewModel.hasErrorMessage.set(false)
+      fragment
+    ) { result ->
+      when (result) {
+        is AsyncResult.Success -> {
+          createProfileViewModel.hasErrorMessage.set(false)
 
-            val params = IntroActivityParams.newBuilder()
-              .setProfileNickname(profileName)
-              .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
-              .build()
+          val params = IntroActivityParams.newBuilder()
+            .setProfileNickname(profileName)
+            .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+            .build()
 
-            val intent = IntroActivity.createIntroActivity(activity, params, profileId)
-            fragment.startActivity(intent)
+          val learnerIntroIntent = IntroActivity.createIntroActivity(activity, params, profileId)
+
+          val adminIntroIntent = AdminIntroActivity.createAdminIntroActivityIntent(
+            activity,
+            profileId,
+            profileType,
+            profileName
+          )
+
+          val intent = if (profileType == ProfileType.SUPERVISOR) {
+            adminIntroIntent
+          } else {
+            learnerIntroIntent
           }
-          is AsyncResult.Failure -> {
-            createProfileViewModel.hasErrorMessage.set(true)
 
-            val errorMessage = when (result.error) {
-              is ProfileManagementController.ProfileNameOnlyLettersException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_name_only_letters
-                )
-              is ProfileManagementController.UnknownProfileTypeException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_missing_profile_type
-                )
-              else -> {
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_default_error_message
-                )
-              }
-            }
-
-            createProfileViewModel.errorMessage.set(errorMessage)
-
-            oppiaLogger.e(
-              "CreateProfileFragment",
-              "Failed to update profile details.",
-              result.error
-            )
-          }
-          is AsyncResult.Pending -> {}
+          fragment.startActivity(intent)
         }
+
+        is AsyncResult.Failure -> {
+          createProfileViewModel.hasErrorMessage.set(true)
+
+          val errorMessage = when (result.error) {
+            is ProfileManagementController.ProfileNameOnlyLettersException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
+
+            is ProfileManagementController.UnknownProfileTypeException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_missing_profile_type
+              )
+
+            else -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_default_error_message
+              )
+            }
+          }
+
+          createProfileViewModel.errorMessage.set(errorMessage)
+
+          oppiaLogger.e(
+            "CreateProfileFragment",
+            "Failed to update profile details.",
+            result.error
+          )
+        }
+
+        is AsyncResult.Pending -> {}
       }
-    )
+    }
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */

@@ -44,6 +44,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
@@ -56,6 +57,8 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
+import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -1147,6 +1150,24 @@ class SplashActivityTest {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
+  @Test
+  fun testSplashActivity_onboardingV2_partiallyOnboardedAdmin_routesToAdminIntroActivity() {
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    val params = AdminIntroActivityParams.newBuilder()
+      .setProfileType(ProfileType.SUPERVISOR)
+      .setProfileNickname("Admin")
+      .build()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(AdminIntroActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_INTRO_PARAMS_KEY, params))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
 
   @Test
   fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
@@ -1156,6 +1177,20 @@ class SplashActivityTest {
 
     launchSplashActivityPartially {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_resetAppOnboardingState_routesToOnboardingActivity() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.initializeProfiles()
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityPartially {
+      // Routes to OnboardingActivity because the app is not onboarded.
+      intended(hasComponent(OnboardingActivity::class.java.name))
     }
   }
 
