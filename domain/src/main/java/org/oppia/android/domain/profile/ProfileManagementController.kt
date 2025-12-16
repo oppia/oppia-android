@@ -193,7 +193,7 @@ class ProfileManagementController @Inject constructor(
     /** Indicates that the operation failed due to the profileType property not supplied. */
     PROFILE_TYPE_UNKNOWN,
 
-    /** Indicates that the operation failed due to profiles already existing in the app */
+    /** Indicates that the operation failed due to profiles already existing in the app. */
     PROFILES_ALREADY_EXIST
   }
 
