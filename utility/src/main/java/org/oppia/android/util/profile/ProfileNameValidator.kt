@@ -33,7 +33,10 @@ class ProfileNameValidator @Inject constructor() {
     return !name.contains(noRepeatedAllowedSymbolsRegex)
   }
 
-  /** Checks if name contains only symbols */
+  /**
+   * Ensures the name is not made up exclusively of allowed symbols
+   * (i.e. it must contain at least one alphabetic character).
+   */
   private fun doesNotContainOnlyAllowedSymbolsAndSpaces(name: String): Boolean {
     return name.any { it.isAlphabetic() }
   }
