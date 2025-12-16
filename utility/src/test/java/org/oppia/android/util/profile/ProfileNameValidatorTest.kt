@@ -91,6 +91,18 @@ class ProfileNameValidatorTest {
     assertThat(profileNameValidator.isNameValid(nameWithArabicLetters)).isTrue()
   }
 
+  @Test
+  fun testIsNameValid_nameMadeOfOnlySpaces_returnsFalse() {
+    val nameMadeOfOnlySpaces = " "
+    assertThat(profileNameValidator.isNameValid(nameMadeOfOnlySpaces)).isFalse()
+  }
+
+  @Test
+  fun testIsNameValid_nameMadeOfOnlyPeriods_returnsFalse() {
+    val nameMadeOfOnlyPeriods = "."
+    assertThat(profileNameValidator.isNameValid(nameMadeOfOnlySpaces)).isFalse()
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerProfileNameValidatorTest_TestApplicationComponent
       .builder()
