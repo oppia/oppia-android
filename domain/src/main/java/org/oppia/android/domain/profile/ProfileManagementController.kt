@@ -1248,7 +1248,7 @@ class ProfileManagementController @Inject constructor(
         AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
 
       ProfileActionStatus.PROFILES_ALREADY_EXIST ->
-        AsyncResult.Failure(ProfilesAlreadyExistException("Profiles already exist."))
+        AsyncResult.Failure(ProfilesAlreadyExistException("Failed to create a default profile because profiles already exist."))
     }
   }
 
