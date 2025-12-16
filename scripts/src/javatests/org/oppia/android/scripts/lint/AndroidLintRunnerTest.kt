@@ -1043,7 +1043,7 @@ class AndroidLintRunnerTest {
 
       abstract class Adapter<VH : ViewHolder> {
         abstract fun onBindViewHolder(holder: VH, position: Int)
-        open fun notifyDataSetChanged() {} 
+        open fun notifyDataSetChanged() {}
       }
     }
   """
@@ -1064,7 +1064,7 @@ class AndroidLintRunnerTest {
         RecyclerView.Adapter<TestAdapter.TextViewHolder>() {
 
         init {
-          notifyDataSetChanged() 
+          notifyDataSetChanged()
         }
 
         class TextViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -1150,9 +1150,9 @@ class AndroidLintRunnerTest {
 
       inner class Inner {
         fun trigger() {
-          AccessTest2()       
-          val x = secret       
-          hiddenMethod()       
+          AccessTest2()
+          val x = secret
+          hiddenMethod()
         }
       }
     }
@@ -1197,11 +1197,11 @@ class AndroidLintRunnerTest {
       import android.content.Context
       import android.net.ConnectivityManager
       import android.os.Build
-      
-      @SuppressLint("MissingPermission") 
+
+      @SuppressLint("MissingPermission")
       fun test(context: Context) {
           val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-          val network = cm.activeNetwork 
+          val network = cm.activeNetwork
           if (Build.VERSION.SDK_INT >= 23) {
               val network2 = cm.activeNetwork // OK
           }
@@ -1421,32 +1421,30 @@ class AndroidLintRunnerTest {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
 
-    createModule("app")
-    createModule("utility")
-    createModule("domain")
-    createModule("testing")
-    createModule("data")
+    createLayer("app")
+    createLayer("utility")
+    createLayer("domain")
+    createLayer("testing")
+    createLayer("data")
 
     setupFakeCommandExecutor()
   }
 
-  private fun createModule(
-    moduleName: String,
-  ) {
-    createModuleDirectories(moduleName)
-    createModuleFiles(moduleName)
+  private fun createLayer(layerName: String) {
+    createLayerDirectories(layerName)
+    createLayerFiles(layerName)
   }
 
-  private fun createModuleDirectories(moduleName: String) {
+  private fun createLayerDirectories(layerName: String) {
     val directories = listOf(
-      moduleName,
-      "$moduleName/src",
-      "$moduleName/src/main",
-      "$moduleName/src/main/java",
-      "$moduleName/src/main/res",
-      "$moduleName/src/main/res/values",
-      "$moduleName/src/test",
-      "$moduleName/src/test/java"
+      layerName,
+      "$layerName/src",
+      "$layerName/src/main",
+      "$layerName/src/main/java",
+      "$layerName/src/main/res",
+      "$layerName/src/main/res/values",
+      "$layerName/src/test",
+      "$layerName/src/test/java"
     )
 
     directories.forEach { dir ->
@@ -1454,21 +1452,21 @@ class AndroidLintRunnerTest {
     }
   }
 
-  private fun createModuleFiles(moduleName: String) {
-    createManifestFile(moduleName)
-    createTestManifestFile(moduleName)
-    createSourceFile(moduleName)
-    createTestFile(moduleName)
-    createResourceFile(moduleName)
+  private fun createLayerFiles(layerName: String) {
+    createManifestFile(layerName)
+    createTestManifestFile(layerName)
+    createSourceFile(layerName)
+    createTestFile(layerName)
+    createResourceFile(layerName)
   }
 
-  private fun createManifestFile(moduleName: String) {
-    val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
+  private fun createManifestFile(layerName: String) {
+    val manifest = tempFolder.newFile("$layerName/src/main/AndroidManifest.xml")
     manifest.writeText(
       """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.oppia.android.$moduleName"
+      package="org.oppia.android.$layerName"
       android:versionCode="1"
       android:versionName="1.0.0">
       <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" android:targetSdkVersion="$TARGET_SDK_VERSION" />
@@ -1488,67 +1486,67 @@ class AndroidLintRunnerTest {
     )
   }
 
-  private fun createTestManifestFile(moduleName: String) {
-    val manifest = tempFolder.newFile("$moduleName/src/test/AndroidManifest.xml")
+  private fun createTestManifestFile(layerName: String) {
+    val manifest = tempFolder.newFile("$layerName/src/test/AndroidManifest.xml")
     manifest.writeText(
       """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.oppia.android.$moduleName">
+      package="org.oppia.android.$layerName">
       <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" android:targetSdkVersion="$TARGET_SDK_VERSION" />
     </manifest>
       """.trimIndent()
     )
   }
 
-  private fun createSourceFile(moduleName: String) {
-    val className = moduleName.replaceFirstChar { it.uppercase() }
+  private fun createSourceFile(layerName: String) {
+    val className = layerName.replaceFirstChar { it.uppercase() }
     val sourceDir = tempFolder.newFolder(
-      moduleName, "src", "main", "java", "org", "oppia", "android", moduleName
+      layerName, "src", "main", "java", "org", "oppia", "android", layerName
     )
     val sourceFile = File(sourceDir, "${className}Class.kt")
     sourceFile.writeText(
       """
-    package org.oppia.android.$moduleName
-    
+    package org.oppia.android.$layerName
+
     class ${className}Class {
-        fun doSomething(): String = "Hello from $moduleName"
+        fun doSomething(): String = "Hello from $layerName"
     }
       """.trimIndent()
     )
   }
 
-  private fun createTestFile(moduleName: String) {
-    val className = moduleName.replaceFirstChar { it.uppercase() }
+  private fun createTestFile(layerName: String) {
+    val className = layerName.replaceFirstChar { it.uppercase() }
     val testDir = tempFolder.newFolder(
-      moduleName, "src", "test", "java", "org", "oppia", "android", moduleName
+      layerName, "src", "test", "java", "org", "oppia", "android", layerName
     )
     val testFile = File(testDir, "${className}ClassTest.kt")
     testFile.writeText(
       """
-    package org.oppia.android.$moduleName
-    
+    package org.oppia.android.$layerName
+
     import org.junit.Test
     import org.junit.Assert.assertEquals
-    
+
     class ${className}ClassTest {
         @Test
         fun testDoSomething() {
             val instance = ${className}Class()
-            assertEquals("Hello from $moduleName", instance.doSomething())
+            assertEquals("Hello from $layerName", instance.doSomething())
         }
     }
       """.trimIndent()
     )
   }
 
-  private fun createResourceFile(moduleName: String) {
-    val resourceFile = tempFolder.newFile("$moduleName/src/main/res/values/strings.xml")
+  private fun createResourceFile(layerName: String) {
+    val resourceFile = tempFolder.newFile("$layerName/src/main/res/values/strings.xml")
     resourceFile.writeText(
       """
       <?xml version="1.0" encoding="utf-8"?>
       <resources>
-          <string name="${moduleName}_name">$moduleName Module</string>
+          <string name="${layerName}_name">$layerName Layer</string>
       </resources>
       """.trimIndent()
     )

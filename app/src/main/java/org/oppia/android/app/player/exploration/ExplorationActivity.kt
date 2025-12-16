@@ -83,7 +83,7 @@ class ExplorationActivity :
     )
   }
 
-  // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+  // TODO(#1655): Re-restrict access to fields in tests.
   companion object {
     private const val PARAMS_KEY = "ExplorationActivity.params"
 

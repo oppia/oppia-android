@@ -33,13 +33,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TopicController.ChapterNotFoundException
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -920,7 +917,6 @@ class TopicControllerTest {
   /* Localization-based tests. */
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
@@ -936,7 +932,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
@@ -960,7 +955,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLangProfile_includesTranslationContextForEnglish() {
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
     updateContentLanguage(profileId1, ENGLISH)
@@ -975,7 +969,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, ENGLISH)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
@@ -992,7 +985,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, ENGLISH)
     updateContentLanguage(profileId2, ARABIC)
@@ -1006,7 +998,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     val revisionCardDataProvider =
@@ -1023,7 +1014,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     val revisionCardDataProvider =
@@ -1049,7 +1039,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLangProfile_includesTranslationContextForEnglish() {
     val revisionCardDataProvider =
       topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
@@ -1065,7 +1054,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, ENGLISH)
     val revisionCardDataProvider =
@@ -1083,7 +1071,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, ENGLISH)
     updateContentLanguage(profileId2, ARABIC)
@@ -1180,8 +1167,7 @@ class TopicControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

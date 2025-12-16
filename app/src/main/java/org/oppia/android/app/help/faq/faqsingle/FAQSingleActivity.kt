@@ -37,7 +37,7 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val FAQ_SINGLE_ACTIVITY_QUESTION = "FAQSingleActivity.question"
     const val FAQ_SINGLE_ACTIVITY_ANSWER = "FAQSingleActivity.answer"
 

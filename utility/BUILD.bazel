@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains utilities that all other modules, minus model, depend on.
 """
@@ -9,7 +8,7 @@ load("//utility:utility_test.bzl", "utility_test")
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will automatically be excluded from the top-level utility library. It's recommended to use
 # globs here to ensure new files added to migrated packages don't accidentally get included in the
-# top-level module library.
+# top-level layer library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
     "src/main/java/org/oppia/android/util/caching/*.kt",
@@ -147,7 +146,7 @@ TEST_DEPS = [
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
+# shouldn't be defined as layer-level tests.
 # keep sorted
 MIGRATED_TESTS = [
     "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",

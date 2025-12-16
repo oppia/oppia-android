@@ -15,16 +15,12 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
-import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 
-// TODO(#2747): Update this to not need reflection, and instead depend on the necessary app layer
-//  packages directly. At the time of writing this utility, Gradle disallowed a dependency in
-//  testing module on app module since the latter is an Android application rather than a library.
-//  This utility also can't be moved to the app module since it depends on test-only dependencies
-//  like JUnit and AndroidX test.
 /**
  * JUnit rule for automatically initializing the application's locale in app layer tests. Note that
  * this is likely needed for all app layer tests that make use of activities which interact with the
@@ -47,7 +43,7 @@ class InitializeDefaultLocaleRule : TestRule {
           description?.getDefineAppLanguageLocaleContext()?.createLocaleContext()
             ?: localeController.getLikelyDefaultAppStringLocaleContext()
         val defaultLocale = localeController.reconstituteDisplayLocale(initialContext)
-        initializeLocale(localeHandler, defaultLocale)
+        localeHandler.initializeLocale(defaultLocale)
 
         val oldLocale = Locale.getDefault()
         base?.evaluate()
@@ -57,42 +53,22 @@ class InitializeDefaultLocaleRule : TestRule {
   }
 
   private companion object {
-    private val injectorProviderClass by lazy {
-      Class.forName("org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider")
-    }
-    private val injectorClass by lazy {
-      Class.forName("org.oppia.android.app.translation.AppLanguageApplicationInjector")
-    }
-    private val handlerClass by lazy {
-      Class.forName("org.oppia.android.app.translation.AppLanguageLocaleHandler")
-    }
-    private val displayLocaleClass by lazy {
-      Class.forName("org.oppia.android.util.locale.OppiaLocale\$DisplayLocale")
-    }
-
     private fun Context.asLocaleApplicationInjectorProvider() =
       this as? LocaleApplicationInjectorProvider
 
     private fun Context.getLocaleApplicationInjector() =
       asLocaleApplicationInjectorProvider()?.getLocaleApplicationInjector()
 
-    private fun Context.getAppLanguageLocaleHandler(): Any {
-      val getInjectorMethod =
-        injectorProviderClass.getDeclaredMethod("getAppLanguageApplicationInjector")
-      return injectorProviderClass.tryCast(this)?.let { injectorProvider ->
-        val getHandlerMethod = injectorClass.getDeclaredMethod("getAppLanguageHandler")
-        injectorClass.tryCast(getInjectorMethod.invoke(injectorProvider))?.let { injector ->
-          handlerClass.tryCast(getHandlerMethod.invoke(injector))
-        }
-      } ?: error(
-        "Failed to retrieve locale handler (something is misconfigured in the test application)"
-      )
-    }
+    private fun Context.asAppLanguageApplicationInjectorProvider() =
+      this as? AppLanguageApplicationInjectorProvider
 
-    private fun initializeLocale(localeHandler: Any, defaultLocale: OppiaLocale.DisplayLocale) {
-      val initializeLocaleMethod =
-        handlerClass.getDeclaredMethod("initializeLocale", displayLocaleClass)
-      initializeLocaleMethod.invoke(localeHandler, defaultLocale)
+    private fun Context.getAppLanguageApplicationInjector() =
+      asAppLanguageApplicationInjectorProvider()?.getAppLanguageApplicationInjector()
+
+    private fun Context.getAppLanguageLocaleHandler(): AppLanguageLocaleHandler {
+      return checkNotNull(getAppLanguageApplicationInjector()?.getAppLanguageHandler()) {
+        "Failed to retrieve language handler (something is misconfigured in the test application)"
+      }
     }
 
     private fun Context.getLocaleController(): LocaleController {
@@ -198,12 +174,5 @@ class InitializeDefaultLocaleRule : TestRule {
     private fun String.tryExtractAnnotationStringConstant(): String? = takeIf {
       it != DefineAppLanguageLocaleContext.DEFAULT_UNDEFINED_STRING_VALUE
     }
-
-    /**
-     *  A version of [Class.cast] that simulates Kotlin's "as?" syntax, that is, returns null if the
-     *  cast fails rather than throwing an exception.
-     */
-    private fun Class<*>.tryCast(obj: Any?): Any? =
-      try { cast(obj) } catch (e: ClassCastException) { null }
   }
 }

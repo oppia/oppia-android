@@ -12,8 +12,8 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Install oppia-android](#install-oppia-android)
 - [Opening the Project in Android Studio](#opening-the-project-in-android-studio)
 - [Set up and Run tests](#set-up-and-run-tests)
-  - [Running app module tests](#running-app-module-tests)
-  - [Running non-app module tests](#running-non-app-module-tests)
+  - [Running app layer tests](#running-app-layer-tests)
+  - [Running non-app layer tests](#running-non-app-layer-tests)
 - [Next Steps](#next-steps)
 - [Troubleshooting Installation](#troubleshooting-installation)
 
@@ -48,11 +48,11 @@ This wiki page explains how to install Oppia Android on your local machine. If y
        ```
 
 2. Configure your Android Studio
-   - From your PC's application menu, open Android Studio. 
+   - From your PC's application menu, open Android Studio.
    - On the welcome screen, find the "more options menu" and select **SDK Manager**
-     
+
      <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
-    
+
    - In the "SDK Platforms" tab (which is the default), select `API Level 35`.
    - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then expand "Android SDK Build-Tools" and select 34.0.0 (this is needed for Bazel support).
 
@@ -60,29 +60,29 @@ This wiki page explains how to install Oppia Android on your local machine. If y
      - On this screen, note the **Android SDK Location**, which is set as the ANDROID_HOME variable in the Bazel setup step below.
 
 3. Prepare a test device
-   You require a physical Android device or an Android emulator to run the Oppia app. 
+   You require a physical Android device or an Android emulator to run the Oppia app.
    - Physical devices are useful for a real-user experience feel, and testing with [accessibility tools](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide#setting-up-accessibility-scanner-and-talkback).
-   
+
      **Set up a physical device for development**
       - On the device, open the **Settings** app, select **Developer options**, and then **enable USB debugging** (if applicable).
         - If you don't see **Developer options**, you might need to enable developer mode first. Follow [these instructions](https://developer.android.com/studio/debug/dev-options#enable) to do so.
         - Connect to your device using USB.
         - Verify that your device is connected by running the `adb devices` command from your terminal.
-   
+
       - Emulators provide the flexibility of testing the application on a variety of devices and Android API levels without needing to have each physical device.
-   
+
      **Set up an Emulator**
       - For the best experience, you should use the emulator in Android Studio on a computer with at least the following specs:
         - 16 GB RAM
         - 64-bit Windows 10 or higher, MacOS 12 or higher, Linux, or ChromeOS operating system
         - 16 GB disk space
-     
+
       - If you don't have these specs, the emulator might still run but not smoothly. In this case, consider testing on a physical device.
 
       - On the welcome screen, find the "more options menu" and select **Virtual Device Manager**
-     
+
         <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
-         
+
         * If you already have a project open in Android Studio, in the right hand toolbar, locate `Device Manager`.
       - Click the **+**, and then click **Create Virtual Device**.
       - Follow the wizard to create a phone and a tablet AVD, setting the **system image** to be `API Level 35` as installed above.
@@ -167,7 +167,7 @@ bazel --version
 ```
 
 ### Bazel Set up for Linux
-This section covers Bazel installation on Ubuntu. 
+This section covers Bazel installation on Ubuntu.
 
 Recommendations:
 - use Ubuntu 18.04 (LTS), 20.04 (LTS), or 22.04 (LTS).
@@ -293,8 +293,8 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 2. Run the `bash scripts/setup.sh` script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.). You should see a message indicating that the various tools have been downloaded.
 
-   ![image](https://github.com/user-attachments/assets/d039f070-a842-4874-b534-01df39599ce6)  
-   
+   ![image](https://github.com/user-attachments/assets/d039f070-a842-4874-b534-01df39599ce6)
+
    **Note** These tools perform important pre-push checks to ensure that your code is properly formatted as per Oppia standards.
 
     - **For Mac or Linux**
@@ -336,7 +336,7 @@ Click on the 3 dots to open the file picker. Scroll down and select `oppia-andro
    <img width="991" alt="Screenshot 2025-03-19 at 18 45 23" src="https://github.com/user-attachments/assets/31e0694c-a179-4adf-8d4d-28793c586ee5" />
 
 6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
-   
+
    ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
 
 7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
@@ -376,7 +376,7 @@ We can run tests either through the UI supported by the Bazel Plugin, or via run
 
 Please refer to the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide) for more information on how to run tests via the terminal.
 
-### Running app module tests
+### Running app layer tests
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
@@ -393,16 +393,16 @@ Please refer to the [Bazel User Guide](https://github.com/oppia/oppia-android/wi
    - **Bazel flags** are optional.
    - Select **Apply** and then **Close** or **Ok**.
 
-### Running non-app module tests
+### Running non-app layer tests
 
-These are tests in other modules, such as **domain** or **utility**.
+These are tests in other layers, such as **domain** or **utility**.
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
-   
+
    ![Screenshot 2025-03-18 at 21 35 11](https://github.com/user-attachments/assets/4f83c8d2-cbb9-49cb-ac3b-3e500e1f82f6)
 
 2. A second way to run a test class would be to open the `BUILD` file located in the same package as the test file, and clicking on the green arrow next to the test target name.
-  
+
    ![Image](https://github.com/user-attachments/assets/c1ee9e23-b0b2-430a-9592-9f87a2fdcbf0)
 
 ### Next Steps
@@ -428,7 +428,7 @@ These are tests in other modules, such as **domain** or **utility**.
       - Run the app again.
 
 #### Bazel issues
-The team is in the process of migrating away from Gradle to Bazel, so while the project still has Gradle build files, they are no longer maintained and cannot be used to build the project.
+The team is in the process finalizing its migration to Bazel by modularizing all of the components and tests in the codebase.
 
 Please note that:
 - The IntelliJ Bazel plugin currently has some known issues:
@@ -461,23 +461,23 @@ Other problems that you may run into:
       Use --sandbox_debug to see verbose messages from the sandbox protoc failed: error executing command bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/com_google_protobuf/protoc '--proto_path=bazel-out/android-armeabi-v7a-fastbuild/bin/model/src/main/proto/_virtual_imports/languages_proto' ... (remaining 8 argument(s) skipped)
       ```
     Bazel requires Xcode commandline tools to build on M1, and the Xcode license also needs to be accepted.
-    
+
     **Follow these steps to solve this error:**
-    
+
     - Install the commandline tools: `xcode-select --install`
-    
+
     - Accept the Xcode licence: `sudo xcodebuild -licence`
-    
+
     - Reset the xcode select path: `sudo xcode-select -r `
-    
+
     - Set the xcode select path to use CommandLineTools: `sudo xcode-select -s /Library/Developer/CommandLineTools`
         Note: As of macOS 15.2.1(Sequoia), the full Xcode is required rather than just the CLT. The xcode-select path needs to point to Xcode instead:
         `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
-    
+
     - Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools` or `/Applications/Xcode.app/Contents/Developer` in macOS 15 and later.
-    
+
         `xcode-select -p`
-    
+
     After successfully running the above commands, build the app using Bazel by running the following command:
 
       ```
@@ -504,9 +504,9 @@ Other problems that you may run into:
     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
     Caused by: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
     ```
-    
+
     Then you will need to use `adb install` directly:
-    
+
     ```shell
     adb install bazel-bin/oppia_dev_binary.apk
     ```
