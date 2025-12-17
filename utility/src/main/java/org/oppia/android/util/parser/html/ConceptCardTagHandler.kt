@@ -69,7 +69,7 @@ class ConceptCardTagHandler(
      * and the associated skill ID to enable further action handling.
      */
     fun createConceptCardLinkClickListener(): ConceptCardLinkClickListener {
-     // return object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+      // return object : ConceptCardTagHandler.ConceptCardLinkClickListener {
       return object : ConceptCardLinkClickListener {
         override fun onConceptCardLinkClicked(view: View, skillId: String) {}
       }
