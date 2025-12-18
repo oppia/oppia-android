@@ -63,7 +63,13 @@ fun main(vararg args: String) {
     .map { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+          val sourceFile = findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+          if (sourceFile == null) {
+            // Return a special marker for failure, to be handled in the main logic
+            "__NO_SOURCE_FOUND__::$filePath"
+          } else {
+            sourceFile
+          }
         }
         filePath.endsWith(".kt") -> filePath
         else -> null
@@ -87,6 +93,16 @@ fun main(vararg args: String) {
   println("Using format: $reportFormat")
 
   for (filePath in filePathList) {
+    if (filePath.startsWith("__NO_SOURCE_FOUND__::")) {
+      val testFilePath = filePath.removePrefix("__NO_SOURCE_FOUND__::")
+      println("COVERAGE FAILURE REPORT:")
+      println("-----------------------")
+      println("Coverage Report Failure:")
+      println("------------------------")
+      println("Test Target: $testFilePath")
+      println("Failure Message: No source files found for test file: $testFilePath")
+      kotlin.system.exitProcess(1)
+    }
     check(File(repoRoot, filePath).exists()) {
       "File doesn't exist: $filePath."
     }
