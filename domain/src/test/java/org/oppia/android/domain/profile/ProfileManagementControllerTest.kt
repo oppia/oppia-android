@@ -124,9 +124,11 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testCreateDefaultProfile_createDefaultProfile_checkResultIsFailure() {
+  fun testCreateDefaultProfile_ifProfileExists_checkResultIsFailure() {
     setUpTestApplicationComponent()
+    // Ensure a profile already exists.
     createDefaultProfile()
+    // Attempt to create another default profile.
     val dataProvider = createDefaultProfile()
 
     val failure = monitorFactory.waitForNextFailureResult(dataProvider)
@@ -136,9 +138,11 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testCreateDefaultProfile_createDefaultProfile_onBoardingV2Enabled_checkProfileIsFauilure() {
+  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFauilure() {
     setUpTestWithOnboardingV2Enabled(true)
+    // Ensure a profile already exists.
     createDefaultProfile()
+    // Attempt to create another default profile.
     val dataProvider = createDefaultProfile()
 
     val failure = monitorFactory.waitForNextFailureResult(dataProvider)
