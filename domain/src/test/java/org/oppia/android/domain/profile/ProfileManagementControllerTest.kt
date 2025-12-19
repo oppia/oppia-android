@@ -138,7 +138,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFauilure() {
+  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFailure() {
     setUpTestWithOnboardingV2Enabled(true)
     // Ensure a profile already exists.
     createDefaultProfile()
