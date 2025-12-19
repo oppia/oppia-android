@@ -100,7 +100,7 @@ class ProfileNameValidatorTest {
   @Test
   fun testIsNameValid_nameMadeOfOnlyPeriods_returnsFalse() {
     val nameMadeOfOnlyPeriods = "."
-    assertThat(profileNameValidator.isNameValid(nameMadeOfOnlySpaces)).isFalse()
+    assertThat(profileNameValidator.isNameValid(nameMadeOfOnlyPeriods)).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {
