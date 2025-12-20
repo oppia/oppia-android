@@ -122,6 +122,72 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testCreateDefaultProfile_ifProfileExists_checkResultIsFailure() {
+    setUpTestApplicationComponent()
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFailure() {
+    setUpTestWithOnboardingV2Enabled(true)
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
+    setUpTestApplicationComponent()
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_onBoardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+  }
+
+  @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
     setUpTestApplicationComponent()
     val dataProvider = addAdminProfile(name = "James", pin = "123")
@@ -1936,6 +2002,10 @@ class ProfileManagementControllerTest {
     return FileInputStream(
       File(context.filesDir, "profile_database.cache")
     ).use(ProfileDatabase::parseFrom)
+  }
+
+  private fun createDefaultProfile(): DataProvider<Any?> {
+    return profileManagementController.createDefaultProfile()
   }
 
   private fun addAdminProfile(name: String, pin: String = DEFAULT_PIN): DataProvider<Any?> =
