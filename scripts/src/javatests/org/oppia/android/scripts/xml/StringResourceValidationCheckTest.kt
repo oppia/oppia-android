@@ -222,9 +222,9 @@ class StringResourceValidationCheckTest {
       mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
-    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINES))
+    populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
     populateHindiTranslations(
-      mapOf("str1" to HI_STRING_NO_NEWLINE, "str2" to HI_STRING_TWO_NEWLINES)
+      mapOf("str1" to HI_STRING_NO_NEWLINES, "str2" to HI_STRING_TWO_NEWLINES)
     )
 
     val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
@@ -271,7 +271,7 @@ class StringResourceValidationCheckTest {
     assertThat(exception).hasMessageThat().contains("STRING RESOURCE VALIDATION CHECKS FAILED")
     assertThat(outContent.asString().trim()).isEqualTo(
       """
-      4 language(s) were found with string consistency errors.
+      5 language(s) were found with string consistency errors.
       
       2 consistency error(s) were found for ARABIC strings (file: app/src/main/res/values-ar/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
@@ -286,6 +286,10 @@ class StringResourceValidationCheckTest {
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       
       2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
+      - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
+      - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
+      
+      2 consistency error(s) were found for HINDI strings (file: app/src/main/res/values-hi/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
       """.trimIndent().trim()
