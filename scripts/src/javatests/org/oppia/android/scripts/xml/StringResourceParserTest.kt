@@ -8,9 +8,9 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.ARABIC
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.ENGLISH
+import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.HINDI
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.SWAHILI
-import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage.HINDI
 import org.oppia.android.testing.assertThrows
 import org.w3c.dom.Document
 import org.xml.sax.SAXParseException
