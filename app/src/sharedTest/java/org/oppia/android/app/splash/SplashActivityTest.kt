@@ -101,7 +101,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -304,7 +303,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_englishLocale_initializesLocaleHandlerWithEnglishContext() {
     initializeTestApplication()
     forceDefaultLocale(Locale.ENGLISH)
@@ -325,7 +323,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_arabicLocale_initializesLocaleHandlerWithArabicContext() {
     initializeTestApplication()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -340,7 +337,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_brazilianPortugueseLocale_initializesLocaleHandlerPortugueseContext() {
     initializeTestApplication()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -355,7 +351,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_nigerianPidginLocale_initializesLocaleHandlerNaijaContext() {
     initializeTestApplication()
     forceDefaultLocale(NIGERIAN_PIDGIN_LOCALE)
@@ -385,7 +380,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_initializationFailure_initializesLocaleHandlerWithDefaultContext() {
     corruptCacheFile()
     initializeTestApplication()

@@ -43,7 +43,7 @@ This will build, install and launch the app on your device.
    ```
 followed by:
    ```
-   adb install bazel-bin/oppia_dev_binary.apk  
+   adb install bazel-bin/oppia_dev_binary.apk
    ```
 * Starting from SDK 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
 
@@ -79,9 +79,9 @@ A test target in Bazel refers to a specific testable entity defined in a BUILD f
 To ensure you always use the correct test target, follow one of these steps:
 1. If the test file is open in Android Studio:
    * Right-click to open the context menu and select **Copy BUILD target string** as shown.
-     
+
      ![Screenshot 2025-03-18 at 22 30 22](https://github.com/user-attachments/assets/286ebcb6-4f4e-4055-b6f0-4c070b039375)
-   
+
    * Paste the target to the bazel test command, e.g. `bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest`
 
 2. If the test file is open in Android Studio, but **Copy BUILD target string** is not available in the context menu:
@@ -89,7 +89,7 @@ Sometimes, the **Copy BUILD target string** is not available in the context menu
    * In the AS sidebar, right click on the file, and select `copy path/reference`.
      or
    * Right-click on the file tab and then click `copy path/reference`.
-   * Next, select `copy path from repository root`. 
+   * Next, select `copy path from repository root`.
    * Paste the copied path to the bazel test command in the terminal and remove the `.kt` extension, e.g. `bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest`.
 
 With this syntax, Bazel implicitly converts the file path into a target if it matches a test rule in the BUILD file. If the file is not part of a test target in the BUILD file, this command may fail.
@@ -100,7 +100,7 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
    * Copy the relative path of the test file.
    * Run the following command in your terminal to get the test’s Bazel target: `bazel query relative-path-of-test-file`
    Example
-   
+
    ```shell
    bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt
    ```
@@ -115,7 +115,7 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
 `--runs_per_test=100` → Specifies number of times to run each test.
 
 ### Running multiple test targets
-To run all the test targets in the app module:
+To run all the test targets in the app layer:
 
 ```
 bazel test //app/...
@@ -148,7 +148,7 @@ In Android, rules are defined using `android_binary`. Android rules for testing 
 
 **[BUILD files](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/app/BUILD.bazel#L3)**
 
-Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
+Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for layer-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
 
 **[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**
 
@@ -175,7 +175,7 @@ Arguments to the load function must be string literals. Load statements must app
 
 **[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**
 
-With the example from our codebase, target `app` whose visibility is public. 
+With the example from our codebase, target `app` whose visibility is public.
 
  - `visibility = ["//visibility:public"],` - Anyone can use this target.
  - `"//visibility:private"` - Only targets in this package can use this target.
@@ -225,7 +225,7 @@ The IntelliJ Bazel Plugin's Sync process has a purpose to query Bazel for inform
 
 It runs automatically during a project import, and manually by either clicking on the sync icon in the menu bar or, partially syncing packages and individual files in contextual menus.
 
-Running a sync generates a `.aswb` directory in the project root. 
+Running a sync generates a `.aswb` directory in the project root.
 
 ### Structure of the .aswb
 The `.aswb` is known as the **project directory**. It contains metadata about the project that bridges Bazel and IntelliJ project models.
@@ -235,14 +235,14 @@ The `.aswb` is known as the **project directory**. It contains metadata about th
 ├── .blaze
 │   ├── aar_libraries
 │   ├── modules
-│   ├── remoteOutputCache 
+│   ├── remoteOutputCache
 │   └── renderjars
 └── .idea
 ```
 
 The `.bazelproject` is the project view file which contains project-wide settings, like targets to sync, Bazel flags, and enabled languages. It is used to import a subset of Bazel packages into the IDE. The project view determines which rules are imported and how. Read more information [here](https://ij.bazel.build/docs/project-views.html).
 
-The `.blaze` is the Bazel data subdirectory, containing mostly IntelliJ module definitions. 
+The `.blaze` is the Bazel data subdirectory, containing mostly IntelliJ module definitions.
   - `modules` directory contains IntelliJ module definition files.
   - `remoteOutputCache` is a general-purpose local cache for output artifacts generated remotely. During a project sync, updated outputs of interest will be copied locally.
   - `aar_libraries` is the location of the plugin's JAR cache. This helps provide a more robust code navigation experience, but with the possibility of missing changes made by Bazel outside of the IDE view.
@@ -265,7 +265,7 @@ Your working set is any files your VCS says are dirty, roughly corresponding to 
 
 **Non-Incrementally Sync Project with BUILD Files**
 
-This option recomputes certain things that are otherwise cached. 
+This option recomputes certain things that are otherwise cached.
 - You should never have to use this option, but it exists for debugging/fallback purposes.
 
 **Sync Working Set**

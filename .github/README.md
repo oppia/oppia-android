@@ -2,7 +2,7 @@
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
 
-[![Unit Tests (Robolectric -- Gradle)](https://github.com/oppia/oppia-android/actions/workflows/main.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/main.yml) [![Unit Tests (Robolectric - Bazel)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml) [![Build Tests](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml) [![Static Checks](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml)
+[![Unit Tests (Robolectric)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml) [![Build Tests](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml) [![Static Checks](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml)
 
 Oppia is an online learning tool that enables anyone to easily create and share interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
@@ -26,19 +26,19 @@ Please refer to the [Installing Oppia Android](https://github.com/oppia/oppia-an
 The Oppia project is built by the community for the community. We welcome contributions from everyone, especially new contributors.
 
 You can help with Oppia's development in many ways, including
-- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change)
-- [instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia)
+- [Coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change)
+- [Instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia)
 - [UX research](https://github.com/oppia/oppia/wiki/Conducting-research-with-students)
-- [creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists)
-- [design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design)
-- [documentation](https://github.com/oppia/oppia-android/issues/1723)
-- [donating to support our work](https://www.oppia.org/donate)
+- [Creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists)
+- [Design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design)
+- [Documentation](https://github.com/oppia/oppia-android/issues/1723)
+- [Donating to support our work](https://www.oppia.org/donate)
 
-**Mobile developers**: please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on setting things up and committing changes.
+**Mobile developers**: Please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on setting things up and committing changes.
 
-**Other developers**: see [this wiki page](https://github.com/oppia/oppia/wiki/Contributing-code-to-Oppia#setting-things-up) for instructions on setting things up for development on Oppia's frontend or backend.
+**Other developers**: Please see [this wiki page](https://github.com/oppia/oppia/wiki/Contributing-code-to-Oppia#setting-things-up) for instructions on setting things up for development on Oppia's frontend or backend.
 
-**All other contributors**: please see our [general contributor guidelines](https://github.com/oppia/oppia/wiki).
+**All other contributors**: Please see our [general contributor guidelines](https://github.com/oppia/oppia/wiki).
 
 
 ## Development
@@ -72,7 +72,7 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
   * [Discussion forum](https://github.com/oppia/oppia-android/discussions)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
 
-## Social Media
+## Connect with us!
 [<img height="30" src="https://img.shields.io/badge/twitter-1DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" />][twitter]
 [<img height="30" src="https://img.shields.io/badge/linkedin-0077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" />][LinkedIn]
 [<img height="30" src = "https://img.shields.io/badge/facebook-1877F2.svg?&style=for-the-badge&logo=facebook&logoColor=white">][Facebook]

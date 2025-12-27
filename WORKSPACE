@@ -16,7 +16,7 @@ android_sdk_repository(
     build_tools_version = BUILD_TOOLS_VERSION,
 )
 
-# The rules_java contains the java_lite_proto_library rule used in the model module.
+# The rules_java contains the java_lite_proto_library rule used for Java generated protos.
 http_archive(
     name = "rules_java",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
@@ -81,8 +81,8 @@ kotlin_repositories(
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
-# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
-# module while helping us avoid the unnecessary compilation of protoc. Referecences:
+# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for generating
+# protos while helping us avoid the unnecessary compilation of protoc. Referecences:
 # - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 # - https://github.com/bazelbuild/bazel/issues/7095
 
@@ -96,7 +96,7 @@ bind(
     actual = "//tools:java_toolchain",
 )
 
-# The rules_proto contains the proto_library rule used in the model module.
+# The rules_proto contains the proto_library rule used for proto generation.
 http_archive(
     name = "rules_proto",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],

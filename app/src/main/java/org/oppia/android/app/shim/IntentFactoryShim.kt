@@ -9,9 +9,9 @@ import android.content.Intent
  * by adding all Intent functionality here.
  *
  * Please note that this file is temporary and all functionality will be returned to its respective
- * ViewModel once Gradle has been removed.
+ * ViewModel once Bazel modularization work has completed.
  */
-// TODO(#1619): Remove file post-Gradle
+// TODO(#1619): Remove this file.
 interface IntentFactoryShim {
   /**
    * Creates a [TopicActivity] intent for [PromotedStoryViewModel] and passes necessary string

@@ -143,6 +143,9 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
 
+  /** Indicates that profiles already exist in the app. */
+  class ProfilesAlreadyExistException(msg: String) : Exception(msg)
+
   /**
    * These statuses correspond to the exceptions above such that if the deferred contains
    * PROFILE_NOT_FOUND, the [ProfileNotFoundException] will be passed to a failed AsyncResult.
@@ -189,6 +192,9 @@ class ProfileManagementController @Inject constructor(
 
     /** Indicates that the operation failed due to the profileType property not supplied. */
     PROFILE_TYPE_UNKNOWN,
+
+    /** Indicates that the operation failed due to profiles already existing in the app. */
+    PROFILES_ALREADY_EXIST
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -253,6 +259,47 @@ class ProfileManagementController @Inject constructor(
       } else {
         AsyncResult.Failure(DeviceSettingsNotFoundException("Device Settings not found."))
       }
+    }
+  }
+
+  /** Creates a profile with all default attributes. */
+  fun createDefaultProfile(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      if (it.profilesCount > 0) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILES_ALREADY_EXIST)
+      }
+
+      val nextProfileId = it.nextProfileId
+
+      val newProfile = Profile.newBuilder().apply {
+        this.name = ""
+        this.pin = ""
+        this.allowDownloadAccess = true
+        this.allowInLessonQuickLanguageSwitching = false
+        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
+        this.isAdmin = true
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        numberOfLogins = 0
+
+        avatar = ProfileAvatar.newBuilder().apply {
+          avatarColorRgb = -10710042
+        }.build()
+      }.build()
+
+      val wasProfileEverAdded = it.profilesCount > 0
+
+      val profileDatabaseBuilder =
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfile)
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(null, "", deferred)
     }
   }
 
@@ -1199,6 +1246,13 @@ class ProfileManagementController @Inject constructor(
         )
       ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
         AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
+
+      ProfileActionStatus.PROFILES_ALREADY_EXIST ->
+        AsyncResult.Failure(
+          ProfilesAlreadyExistException(
+            "Failed to create a default profile because profiles already exist."
+          )
+        )
     }
   }
 

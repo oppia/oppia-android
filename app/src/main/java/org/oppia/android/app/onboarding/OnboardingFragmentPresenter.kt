@@ -247,14 +247,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun createDefaultProfile() {
-    profileManagementController.addProfile(
-      name = "",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    ).toLiveData()
+    profileManagementController.createDefaultProfile()
+      .toLiveData()
       .observe(
         fragment,
         { result ->
