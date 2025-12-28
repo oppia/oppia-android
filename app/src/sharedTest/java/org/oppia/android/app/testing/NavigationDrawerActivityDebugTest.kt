@@ -238,7 +238,7 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.options)).perform(click())
+      onView(withText(R.string.menu_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       testCoroutineDispatchers.runCurrent()
@@ -254,7 +254,7 @@ class NavigationDrawerActivityDebugTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.options)).perform(click())
+      onView(withText(R.string.menu_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
