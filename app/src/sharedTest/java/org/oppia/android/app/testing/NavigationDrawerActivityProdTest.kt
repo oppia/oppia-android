@@ -728,7 +728,37 @@ class NavigationDrawerActivityProdTest {
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
-
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_selectOptions_pressBack_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_selectOptions_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
