@@ -9,6 +9,8 @@ on:
 jobs:
   holiday_message:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
     - name: Check current date
       id: check_current_date
@@ -33,7 +35,7 @@ jobs:
             return;
           }
 
-          const holidayIsActive = currentDateTimestamp > startDateTimestamp && currentDateTimestamp < endDateTimestamp;
+          const holidayIsActive = currentDateTimestamp >= startDateTimestamp && currentDateTimestamp < endDateTimestamp;
           const formattedEndDate = new Intl.DateTimeFormat('en-GB', {
             day: '2-digit',
             month: 'long',
