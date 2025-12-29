@@ -92,7 +92,7 @@ class ProfileProgressActivity :
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()

@@ -1,7 +1,5 @@
 package org.oppia.android.testing
 
-import org.oppia.android.testing.BuildEnvironment.BAZEL
-import org.oppia.android.testing.BuildEnvironment.GRADLE
 import org.oppia.android.testing.TestPlatform.ESPRESSO
 import org.oppia.android.testing.TestPlatform.ROBOLECTRIC
 
@@ -12,15 +10,6 @@ enum class TestPlatform {
 
   /** Corresponds to instrumented tests that can run on a real device or emulator via Espresso. */
   ESPRESSO
-}
-
-/** Specifies a build environment to target in conjunction with [RunOn]. */
-enum class BuildEnvironment {
-  /** Corresponds to tests run within the Gradle build environment. */
-  GRADLE,
-
-  /** Corresponds to tests run within the Bazel build environment. */
-  BAZEL
 }
 
 /**
@@ -36,11 +25,6 @@ enum class BuildEnvironment {
  * is used and any defined at the class level are ignored.
  *
  * @property testPlatforms the list of platforms that this method or class should run on
- * @property buildEnvironments the list of build environments in which this method or class should
- *     run
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class RunOn(
-  vararg val testPlatforms: TestPlatform = [ROBOLECTRIC, ESPRESSO],
-  val buildEnvironments: Array<BuildEnvironment> = [GRADLE, BAZEL]
-)
+annotation class RunOn(vararg val testPlatforms: TestPlatform = [ROBOLECTRIC, ESPRESSO])

@@ -16,10 +16,8 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -39,8 +37,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.espresso.util.HumanReadables
-import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -141,7 +137,6 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -182,7 +177,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -859,7 +853,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
 
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
@@ -1034,7 +1027,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
 
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
@@ -1617,7 +1609,7 @@ class ExplorationActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -1755,7 +1747,7 @@ class ExplorationActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
     markAllSpotlightsSeen()
     updateContentLanguage(
@@ -2447,10 +2439,6 @@ class ExplorationActivityTest {
       "exploration/$explorationId/assets/audio/$audioFileName"
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
@@ -2557,49 +2545,6 @@ class ExplorationActivityTest {
     scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
     onView(withId(R.id.submit_answer_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
-  }
-
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
-  /**
-   * Perform action of waiting for a specific matcher to finish. Adapted from:
-   * https://stackoverflow.com/a/22563297/3689782.
-   */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        checkNotNull(uiController)
-        uiController.loopMainThreadUntilIdle()
-        val startTime = System.currentTimeMillis()
-        val endTime = startTime + millis
-
-        do {
-          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
-            return
-          }
-          uiController.loopMainThreadForAtLeast(50)
-        } while (System.currentTimeMillis() < endTime)
-
-        // Couldn't match in time.
-        throw PerformException.Builder()
-          .withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view))
-          .withCause(TimeoutException())
-          .build()
-      }
-    }
   }
 
   /**

@@ -146,7 +146,7 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      - name: Extract caching bucket
+      - name: Extract caching bucket & targets
         env:
           CHANGED_FILES_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.changed-files-bucket-base64-encoded-shard }}
         run: |
@@ -165,7 +165,8 @@ jobs:
           echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
+          # Write targets to file for --target_pattern_file
+          printf '%s\n' $BAZEL_TEST_TARGETS > bazel_targets.txt
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -217,8 +218,6 @@ jobs:
         shell: bash
 
       - name: Build Oppia Tests
-        env:
-          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
           # Attempt to build 5 times in case there are flaky builds.
           # TODO(#3759): Remove this once there are no longer app test build failures.
@@ -228,7 +227,7 @@ jobs:
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
             echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going -- $BAZEL_TEST_TARGETS
+            bazel build --keep_going --target_pattern_file=bazel_targets.txt
           done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
           last_error_code=$?
@@ -249,6 +248,13 @@ jobs:
         with:
           name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
           path: coverage_reports
+
+      - name: Upload bazel target file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-bazel-targets-${{ env.SHARD_NAME }}
+          path: bazel_targets.txt
 
   evaluate_code_coverage_reports:
     name: Evaluate Code Coverage Reports
@@ -323,3 +329,4 @@ jobs:
       - name: Check that coverage status is passed
         if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate_code_coverage_reports.result != 'success' }}
         run: exit 1
+

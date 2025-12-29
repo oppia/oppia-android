@@ -24,7 +24,7 @@
 
 
 ################################################################################
-#                                  app module                                  #
+#                                  app layer                                   #
 ################################################################################
 
 # All app code files.
@@ -38,20 +38,20 @@
 /app/src/main/res/raw/shrink_exemptions.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                  data module                                 #
+#                                  data layer                                  #
 ################################################################################
 
-# All data module code.
+# All data layer code.
 /data/**/*.kt @oppia/android-app-infrastructure-reviewers
 
 # Test networking assets.
 /data/src/test/assets/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
-#                                 domain module                                #
+#                                 domain layer                                 #
 ################################################################################
 
-# All domain module code.
+# All domain layer code.
 /domain/**/*.kt @oppia/android-app-infrastructure-reviewers
 
 # Lesson assets.
@@ -66,23 +66,21 @@
 /instrumentation/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                 model module                                 #
+#                                 model layer                                  #
 ################################################################################
 
 # All protos shared between the domain and app layers.
 /model/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
-#                                testing module                                #
+#                                testing layer                                 #
 ################################################################################
 
 # All general-purpose shared test infrastructure.
 /testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt @oppia/android-dev-workflow-reviewers
 /testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-dev-workflow-reviewers
 /testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-dev-workflow-reviewers
-/testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-dev-workflow-reviewers
-/testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/mockito/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/platformparameter/ @oppia/android-dev-workflow-reviewers
@@ -130,14 +128,14 @@
 /scripts/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                              third_party module                              #
+#                             third_party directory                            #
 ################################################################################
 
 # Third-party configurations and infrastructure (not covered elsewhere).
 /third_party/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                utility module                                #
+#                                utility layer                                 #
 ################################################################################
 
 # Utilities that support central developer workflow infrastructure.
@@ -259,7 +257,7 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
 
-# Specific manifest files specifically required for Bazel builds.
+# Specific manifest files specifically required for Bazel builds or the Android lint tool.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingResourcesManifest.xml @oppia/android-dev-workflow-reviewers
@@ -269,29 +267,11 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 /app/src/main/ViewsManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /config/src/java/org/oppia/android/config/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/data/src/main/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /data/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /domain/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /testing/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /utility/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
-
-################################################################################
-#                             Gradle infrastructure                            #
-################################################################################
-
-# Gradle build files.
-*.gradle @oppia/android-app-infrastructure-reviewers
-gradle.properties @oppia/android-app-infrastructure-reviewers
-/gradlew @oppia/android-app-infrastructure-reviewers
-/gradlew.bat @oppia/android-app-infrastructure-reviewers
-/gradle/ @oppia/android-app-infrastructure-reviewers
-
-# Configuration files only used by Gradle builds.
-/app/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/data/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/domain/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/utility/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-*.properties @oppia/android-app-infrastructure-reviewers
-/data/src/main/AndroidManifest.xml @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                           Sensitive file ownership                           #

@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Package for test-only threading utilities, including classes to coordinate cross-thread operations
 in a way that can improve test reliability, correctness, and performance.

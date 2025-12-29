@@ -4,37 +4,37 @@ import java.io.File
 import java.time.Instant
 
 /**
- * Enum representing module names in the project.
+ * Enum representing layer names in the project.
  *
- * @property moduleName The name of the module as a string.
+ * @property layerName The name of the layer as a string.
  */
-enum class ModuleName(val moduleName: String) {
-  /** Represents the application module. */
+enum class LayerName(val layerName: String) {
+  /** Represents the app layer. */
   APP("app"),
 
-  /** Represents the domain module. */
+  /** Represents the domain layer. */
   DOMAIN("domain"),
 
-  /** Represents the testing module. */
+  /** Represents the testing layer. */
   TESTING("testing"),
 
-  /** Represents the utility module. */
+  /** Represents the utility layer. */
   UTILITY("utility"),
 
-  /** Represents the data module. */
+  /** Represents the data layer. */
   DATA("data");
 
   companion object {
-    /** The application module instance. */
-    val APPLICATION_MODULE = APP
+    /** The application layer instance. */
+    val APPLICATION_LAYER = APP
 
-    /** list of library modules in the project. */
-    val LIBRARY_MODULES = listOf(DOMAIN, TESTING, UTILITY, DATA)
+    /** list of library layers in the project. */
+    val LIBRARY_LAYERS = listOf(DOMAIN, TESTING, UTILITY, DATA)
   }
 }
 
-/** Represents module configuration for lint project description. */
-data class ModuleConfig(
+/** Represents layer configuration for lint project description. */
+data class LayerConfig(
   val name: String,
   val isAndroid: Boolean,
   val isLibrary: Boolean,
@@ -53,7 +53,7 @@ data class ModuleConfig(
   val proGuardFiles: List<String>
 ) {
   init {
-    require(name.isNotBlank()) { "Module name cannot be blank" }
+    require(name.isNotBlank()) { "Layer name cannot be blank" }
 
     require(partialResultsDir.canWrite() || partialResultsDir.mkdirs()) {
       "Cannot create or write to partialResultsDir: ${partialResultsDir.absolutePath}"
