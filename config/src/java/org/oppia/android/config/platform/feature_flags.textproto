@@ -41,7 +41,7 @@ feature_flag_definition {
 feature_flag_definition {
   id: APP_AND_OS_DEPRECATION
   remote_server_name: "android_enable_app_and_os_deprecation"
-  default_is_enabled: false
+  default_is_enabled: true
 }
 feature_flag_definition {
   id: NPS_SURVEY

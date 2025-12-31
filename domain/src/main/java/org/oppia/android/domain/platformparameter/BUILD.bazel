@@ -84,7 +84,9 @@ kt_android_library(
     visibility = ["//:oppia_debug_visibility"],
     deps = [
         ":prod_impl",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api:debug_api",
         "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
+        "//utility/src/main/java/org/oppia/android/util/properties:custom_property_retriever",
     ],
 )
 

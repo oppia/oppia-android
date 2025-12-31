@@ -2,10 +2,15 @@ package org.oppia.android.app.application
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
@@ -69,11 +74,28 @@ abstract class AbstractOppiaApplication(
             PlayIntegrityAppCheckProviderFactory.getInstance(),
           )
         }
-        WorkManager.initialize(applicationContext, workManagerConfiguration)
+        android.util.Log.e("@@@@@@@", "before initialize WorkManager")
+        try {
+          val wm = WorkManager.getInstance(applicationContext)
+
+          // 2. Prune finished work to force a database write/cleanup
+          wm.pruneWork()
+
+          // 3. Enqueue a "Dummy" job with a unique name to force schema creation
+          val dummy = OneTimeWorkRequestBuilder<DummyWorker>()
+            .addTag("SCHEMA_FORCE")
+            .build()
+          wm.enqueueUniqueWork("force_db", ExistingWorkPolicy.REPLACE, dummy)
+        } catch (e: Exception) {
+          android.util.Log.e("WM_FATAL", "WorkManager failed to initialize schema", e)
+        }
+
         val workManager = WorkManager.getInstance(applicationContext)
+        android.util.Log.e("@@@@@@@", "after initialize WorkManager")
         component.getAnalyticsStartupListenerStartupListeners().safeForEach {
           it.onCreate(workManager)
         }
+        android.util.Log.e("@@@@@@@", "after initialize WorkManager and enqueing")
         component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
       }.invokeOnCompletion {
         if (it != null) {
@@ -83,7 +105,16 @@ abstract class AbstractOppiaApplication(
     }
   }
 
+  class DummyWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+    override fun doWork(): Result {
+      // Just a log to prove it ran
+      android.util.Log.e("@@@@@@@", "DummyWorker executed")
+      return Result.success()
+    }
+  }
+
   override fun getWorkManagerConfiguration(): Configuration {
+    android.util.Log.e("@@@@@", "getWorkManagerConfiguration()", Exception("trace"))
     return component.getWorkManagerConfiguration()
   }
 }

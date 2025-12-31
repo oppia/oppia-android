@@ -36,21 +36,21 @@ platform_parameter_definition {
 }
 platform_parameter_definition {
   id: OPTIONAL_APP_UPDATE_VERSION_CODE
-  remote_server_name: "android_optional_app_update_version_code"
+  remote_server_name: "android_min_version_code_for_recommending_app_update"
   default_value: {
     integer: 0
   }
 }
 platform_parameter_definition {
   id: FORCED_APP_UPDATE_VERSION_CODE
-  remote_server_name: "android_forced_app_update_version_code"
+  remote_server_name: "android_min_supported_version_code"
   default_value: {
     integer: 0
   }
 }
 platform_parameter_definition {
   id: LOWEST_SUPPORTED_API_LEVEL
-  remote_server_name: "lowest_supported_api_level"
+  remote_server_name: "android_min_supported_api_level"
   default_value: {
     # The lowest supported version of the app is currently Lollipop.
     integer: 21

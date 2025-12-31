@@ -58,11 +58,14 @@ class MetricLogSchedulingWorker private constructor(
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     // TODO(#4463): Add withTimeout() to avoid potential hanging.
     return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
+      when (val workerCase = inputData.getStringFromData(WORKER_CASE_KEY)) {
         PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
         STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
         PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
-        else -> Result.failure()
+        else -> {
+          consoleLogger.e(TAG, "Encountered unknown worker case: $workerCase.")
+          Result.failure()
+        }
       }
     }.asListenableFuture()
   }
@@ -72,7 +75,7 @@ class MetricLogSchedulingWorker private constructor(
       performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
+      consoleLogger.e(TAG, "Failed to log network usage.", e)
       return Result.failure()
     }
   }
@@ -82,7 +85,7 @@ class MetricLogSchedulingWorker private constructor(
       performanceMetricsLogger.logStorageUsage(BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
+      consoleLogger.e(TAG, "Failed to log storage usage.", e)
       return Result.failure()
     }
   }
@@ -93,7 +96,7 @@ class MetricLogSchedulingWorker private constructor(
       performanceMetricsLogger.logMemoryUsage(currentScreen)
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
+      consoleLogger.e(TAG, "Failed to log memory usage.", e)
       return Result.failure()
     }
   }

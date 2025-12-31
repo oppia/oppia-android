@@ -85,18 +85,21 @@ class LogReportWorkManagerInitializer @Inject constructor(
 
   private val workRequestForUploadingEvents: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+    .addTag("UploadEventsWorker")
     .setInputData(workerCaseForUploadingEvents)
     .setConstraints(logReportWorkerConstraints)
     .build()
 
   private val workRequestForUploadingExceptions: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+    .addTag("UploadExceptionsWorker")
     .setInputData(workerCaseForUploadingExceptions)
     .setConstraints(logReportWorkerConstraints)
     .build()
 
   private val workRequestForUploadingPerformanceMetrics: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+    .addTag("UploadPerformanceMetricsWorker")
     .setInputData(workerCaseForUploadingPerformanceMetrics)
     .setConstraints(logReportWorkerConstraints)
     .build()
@@ -107,6 +110,7 @@ class LogReportWorkManagerInitializer @Inject constructor(
       performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
+      .addTag("SchedulePeriodicBgMetricsLogsWorker")
       .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
@@ -117,6 +121,7 @@ class LogReportWorkManagerInitializer @Inject constructor(
       performanceMetricCollectionLowFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
+      .addTag("ScheduleStorageUsageMetricsLogsWorker")
       .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
@@ -127,12 +132,14 @@ class LogReportWorkManagerInitializer @Inject constructor(
       performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
+      .addTag("SchedulePeriodicUiMetricsLogsWorker")
       .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
 
   private val workRequestForUploadingFireStoreData: PeriodicWorkRequest =
     PeriodicWorkRequest.Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+      .addTag("UploadFireStoreDataWorker")
       .setInputData(workerCaseForUploadingFirestoreData)
       .setConstraints(logReportWorkerConstraints)
       .build()

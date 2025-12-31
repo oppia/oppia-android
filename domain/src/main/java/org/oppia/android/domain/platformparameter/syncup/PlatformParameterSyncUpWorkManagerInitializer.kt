@@ -46,7 +46,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
       workRequestRepeatInterval.value.toLong(),
       TimeUnit.HOURS
     )
-      .addTag(PlatformParameterSyncUpWorker.TAG)
+      .addTag("SyncPlatformParametersWorker")
       .setInputData(workerTypeForSyncingPlatformParameters)
       .setConstraints(platformParameterSyncUpWorkerConstraints)
       .build()

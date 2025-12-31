@@ -1,0 +1,45 @@
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "custom_property_retriever",
+    srcs = ["CustomPropertyRetriever.kt"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "debug_impl",
+    srcs = ["CustomPropertyRetrieverDebugImpl.kt"],
+    deps = [
+        ":custom_property_retriever",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_impl",
+    srcs = ["CustomPropertyRetrieverProdImpl.kt"],
+    deps = [
+        ":custom_property_retriever",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "debug_module",
+    srcs = ["CustomPropertyRetrieverDebugModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":debug_impl",
+        "//:dagger",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = ["CustomPropertyRetrieverProdModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":prod_impl",
+        "//:dagger",
+    ],
+)

@@ -17,6 +17,7 @@ class LogUploadWorkerFactory @Inject constructor(
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker? {
+    android.util.Log.e("@@@@@", "create luw worker for class: $workerClassName")
     return workerFactory.create(appContext, workerParameters)
   }
 }

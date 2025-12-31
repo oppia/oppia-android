@@ -7,11 +7,13 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "model",
     srcs = [
+        "GaeFeatureFlag.kt",
         "GaeFeedbackReport.kt",
         "GaeFeedbackReportingAppContext.kt",
         "GaeFeedbackReportingDeviceContext.kt",
         "GaeFeedbackReportingEntryPoint.kt",
         "GaeFeedbackReportingSystemContext.kt",
+        "GaePlatformParameter.kt",
         "GaePlatformParameterValue.kt",
         "GaeUserSuppliedFeedback.kt",
     ],

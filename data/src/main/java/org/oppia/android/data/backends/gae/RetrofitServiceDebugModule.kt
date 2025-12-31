@@ -6,11 +6,10 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import retrofit2.Retrofit
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.api.PlatformParameterDebugService
 
-// TODO: Rename this.
-/** Module which provides Retrofit services. */
 @Module
-class RetrofitServiceModule {
+class RetrofitServiceDebugModule {
   @Provides
   @Singleton
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService =
@@ -18,6 +17,12 @@ class RetrofitServiceModule {
 
   @Provides
   @Singleton
-  fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService =
-    retrofit.create(PlatformParameterService::class.java)
+  fun providePlatformParameterDebugService(
+    @OppiaRetrofit retrofit: Retrofit
+  ): PlatformParameterDebugService = retrofit.create(PlatformParameterDebugService::class.java)
+
+  @Provides
+  fun providePlatformParameterService(
+    platformParameterDebugService: PlatformParameterDebugService
+  ): PlatformParameterService = platformParameterDebugService
 }

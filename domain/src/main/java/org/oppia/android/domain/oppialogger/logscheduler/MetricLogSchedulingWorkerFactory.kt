@@ -17,6 +17,7 @@ class MetricLogSchedulingWorkerFactory @Inject constructor(
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker {
+    android.util.Log.e("@@@@@", "create mlsw worker for class: $workerClassName")
     return workerFactory.create(appContext, workerParameters)
   }
 }

@@ -25,5 +25,6 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/properties:debug_module",
     ],
 )

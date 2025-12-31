@@ -15,6 +15,7 @@ class PlatformParameterSyncUpWorkerFactory @Inject constructor(
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker? {
+    android.util.Log.e("@@@@@", "create ppsuw worker for class: $workerClassName")
     return platformParameterSyncUpWorkerFactory.create(context, workerParameters)
   }
 }

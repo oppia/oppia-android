@@ -32,7 +32,8 @@ class PlatformParameterControllerProdImpl(
   private val oppiaLogger: OppiaLogger,
   private val backgroundCoroutineDispatcher: CoroutineDispatcher,
 ) : PlatformParameterController {
-  private val databaseStore by lazy {
+  // TODO: Re-privatize this.
+  val databaseStore by lazy {
     cacheStoreFactory.create(
       DATABASE_NAME, RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
     )
@@ -73,7 +74,7 @@ class PlatformParameterControllerProdImpl(
       "Can only remotely download parameters after they have been loaded."
     }
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      // TODO(#5835): Finish implementing forcing remote parameter downloads.
+      // TODO: Finish implementing forcing remote parameter downloads.
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.

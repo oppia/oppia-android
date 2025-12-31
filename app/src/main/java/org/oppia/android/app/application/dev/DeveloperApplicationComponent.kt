@@ -13,7 +13,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
-import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.RetrofitServiceDebugModule
 import org.oppia.android.domain.auth.AuthenticationModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -65,6 +65,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.util.properties.CustomPropertyRetrieverDebugModule
 
 /**
  * Root Dagger component for developer versions of the application.
@@ -87,7 +88,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
-    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceDebugModule::class,
     PlatformParameterSingletonModule::class, PlatformParameterDebugModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
@@ -101,7 +102,7 @@ import javax.inject.Singleton
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     DeveloperBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-    AuthenticationModule::class
+    AuthenticationModule::class, CustomPropertyRetrieverDebugModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

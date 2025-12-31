@@ -21,6 +21,21 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.oppia.android.app.model.FeatureFlagDefinition
+import org.oppia.android.app.model.PlatformParameterDefinition
+import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.RemoteFeatureFlag
+import org.oppia.android.app.model.RemotePlatformParameter
+import org.oppia.android.data.backends.gae.api.PlatformParameterDebugService
+import org.oppia.android.data.backends.gae.model.GaeFeatureFlag
+import org.oppia.android.data.backends.gae.model.GaePlatformParameter
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
+import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.properties.CustomPropertyRetriever
+import retrofit2.HttpException
+import retrofit2.await
 
 /**
  * Debug implementation for the controller to manage and synchronize platform parameters and
@@ -32,6 +47,9 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val processState: PlatformParameterProcessState,
   private val cacheStoreFactory: PersistentCacheStore.Factory,
+  private val platformParameterDebugService: PlatformParameterDebugService,
+  private val customPropertyRetriever: CustomPropertyRetriever,
+  private val exceptionLogger: ExceptionLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PlatformParameterController {
 
@@ -251,15 +269,133 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private fun downloadRemoteParametersInternal(): DataProvider<Unit> {
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
       if (ongoingDownloadTask == null) {
-        oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
+        oppiaLogger.d("PlatformParameterController", "Force downloading remote parameters")
         ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
-          // TODO(#5950): Replace with actual logic to force-download remote parameters.
-          oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
+          // TODO: Much of this can be moved to the prod impl and exposed here. In fact, only the
+          //  service needs to be able to vary.
+          val currentParams = platformParameterControllerProdImpl.loadRemotePlatformParameters()
+          val currentFlags = platformParameterControllerProdImpl.loadRemoteFeatureFlags()
+          val paramDefs = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
+          val flagDefs = platformParameterControllerProdImpl.loadSupportedFeatureFlags()
+          val gaeParams = try {
+            fetchRemotePlatformParametersListAsync().await()
+          } catch (e: HttpException) {
+            oppiaLogger.e("PlatformParameterController", "Error while downloading parameters.", e)
+            exceptionLogger.logException(e)
+            emptyList()
+          }
+          val gaeFlags = try {
+            fetchRemoteFeatureFlagsListAsync().await()
+          } catch (e: HttpException) {
+            oppiaLogger.e("PlatformParameterController", "Error while downloading flags.", e)
+            exceptionLogger.logException(e)
+            emptyList()
+          }
+          val incomingParams = convertAndFilterPlatformParameters(gaeParams, paramDefs)
+          val incomingFlags = convertAndFilterFeatureFlags(gaeFlags, flagDefs)
+          if (gaeParams.size != incomingParams.size) {
+            val extraCount = gaeParams.size - incomingParams.size
+            oppiaLogger.w("PlatformParameterController", "Received $extraCount extra parameter(s).")
+          }
+          if (gaeFlags.size != incomingFlags.size) {
+            val extraCount = gaeFlags.size - incomingFlags.size
+            oppiaLogger.w("PlatformParameterController", "Received $extraCount extra flag(s).")
+          }
+          val newRemoteParams = computeNewPlatformParametersList(currentParams, incomingParams)
+          val newRemoteFlags = computeNewFeatureFlagsList(currentFlags, incomingFlags)
+          platformParameterControllerProdImpl.databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
+            oldDatabase.toBuilder()
+              .clearRemotePlatformParameter()
+              .clearRemoteFeatureFlag()
+              .addAllRemotePlatformParameter(newRemoteParams)
+              .addAllRemoteFeatureFlag(newRemoteFlags)
+              .build()
+          }
+          oppiaLogger.d("PlatformParameterController", "Finished download attempt.")
         }
       }
       ongoingDownloadTask?.await()
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
+  }
+
+  private fun fetchRemotePlatformParametersListAsync(): Deferred<List<GaePlatformParameter>> {
+    return CoroutineScope(backgroundCoroutineDispatcher).async {
+      withContext(Dispatchers.IO) {
+        platformParameterDebugService.getPlatformParameters(
+          overrideAndroidMinVersionCodeForRecommendingAppUpdate = customPropertyRetriever.getInt(
+            "android_min_version_code_for_recommending_app_update"
+          ),
+          overrideAndroidMinSupportedVersionCode = customPropertyRetriever.getInt(
+            "android_min_supported_version_code"
+          ),
+          overrideAndroidMinSupportApiLevel = customPropertyRetriever.getInt(
+            "android_min_supported_api_level"
+          )
+        ).await()
+      }
+    }
+  }
+
+  private fun fetchRemoteFeatureFlagsListAsync(): Deferred<List<GaeFeatureFlag>> {
+    return CoroutineScope(backgroundCoroutineDispatcher).async {
+      withContext(Dispatchers.IO) {
+        platformParameterDebugService.getFeatureFlags(
+          overrideEnableEnableFastLanguageSwitchingInLesson = customPropertyRetriever.getBoolean(
+            "android_enable_fast_language_switching_in_lesson"
+          )
+        ).await()
+      }
+    }
+  }
+
+  private fun convertAndFilterPlatformParameters(gaeParameters: List<GaePlatformParameter>, supportedParameters: List<PlatformParameterDefinition>): List<RemotePlatformParameter> {
+    return gaeParameters.mapNotNull { convertAndFilterPlatformParameter(it, supportedParameters) }
+  }
+
+  // TODO: Optimize definitions by compiling a map by remote server name.
+  private fun convertAndFilterPlatformParameter(gaeParameter: GaePlatformParameter, supportedParameters: List<PlatformParameterDefinition>): RemotePlatformParameter? {
+    val parameterId = supportedParameters.find { it.remoteServerName == gaeParameter.name }?.id ?: return null
+    val paramValue = gaeParameter.value.convertToProto() ?: return null
+    return RemotePlatformParameter.newBuilder().apply {
+      this.id = parameterId
+      this.remoteValue = paramValue
+      this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+    }.build()
+  }
+
+  private fun GaePlatformParameterValue.convertToProto(): PlatformParameterValue? {
+    return when (this) {
+      is GaePlatformParameterValue.BooleanValue -> PlatformParameterValue.newBuilder().setBoolean(value).build()
+      is GaePlatformParameterValue.IntValue -> PlatformParameterValue.newBuilder().setInteger(value).build()
+      is GaePlatformParameterValue.StringValue -> PlatformParameterValue.newBuilder().setString(value).build()
+      GaePlatformParameterValue.UnsupportedValue -> return null // Unsupported value.
+    }
+  }
+
+  private fun convertAndFilterFeatureFlags(gaeFlags: List<GaeFeatureFlag>, supportedFlags: List<FeatureFlagDefinition>): List<RemoteFeatureFlag> {
+    return gaeFlags.mapNotNull { convertAndFilterFeatureFlag(it, supportedFlags) }
+  }
+
+  private fun convertAndFilterFeatureFlag(gaeFlag: GaeFeatureFlag, supportedFlags: List<FeatureFlagDefinition>): RemoteFeatureFlag? {
+    val flagId = supportedFlags.find { it.remoteServerName == gaeFlag.name }?.id ?: return null
+    return RemoteFeatureFlag.newBuilder().apply {
+      this.id = flagId
+      this.remoteIsEnabled = gaeFlag.isEnabled
+      this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+    }.build()
+  }
+
+  private fun computeNewPlatformParametersList(currentRemote: List<RemotePlatformParameter>, incomingRemote: List<RemotePlatformParameter>): List<RemotePlatformParameter> {
+    val currentById = currentRemote.associateBy { it.id }
+    val incomingById = incomingRemote.associateBy { it.id }
+    return (currentById + incomingById).values.toList()
+  }
+
+  private fun computeNewFeatureFlagsList(currentRemote: List<RemoteFeatureFlag>, incomingRemote: List<RemoteFeatureFlag>): List<RemoteFeatureFlag> {
+    val currentById = currentRemote.associateBy { it.id }
+    val incomingById = incomingRemote.associateBy { it.id }
+    return (currentById + incomingById).values.toList()
   }
 
   /**
