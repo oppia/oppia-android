@@ -165,13 +165,16 @@ class RunCoverage(
       filePathList.forEach { filePath ->
         val coverageReport = runCoverageForFile(filePath)
         if (coverageReport.hasFailure()) {
-          println("COVERAGE FAILURE REPORT:")
-          println("-----------------------")
-          println("Coverage Report Failure:")
-          println("------------------------")
-          println("Test Target: $filePath")
-          println("Failure Message: ${coverageReport.failure.failureMessage}")
-          kotlin.system.exitProcess(1)
+          val failureMessage = buildString {
+            appendLine("COVERAGE FAILURE REPORT:")
+            appendLine("-----------------------")
+            appendLine("Coverage Report Failure:")
+            appendLine("------------------------")
+            appendLine("Test Target: $filePath")
+            appendLine("Failure Message: ${coverageReport.failure.failureMessage}")
+          }
+          print(failureMessage)
+          error(failureMessage.trim())
         }
         val filePathDir = filePath.substringBeforeLast(".")
         val protoOutputPath = "$repoRoot/coverage_reports/$filePathDir/coverage_report.pb"

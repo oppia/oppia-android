@@ -161,6 +161,33 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_withProtoReportFormat_savesCoverageReportProto() {
+    val filePath = "coverage/main/java/com/example/AddNums.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.addSourceAndTestFileWithContent(
+      filename = "AddNums",
+      testFilename = "AddNumsTest",
+      sourceContent = getAddNumsSourceContent(),
+      testContent = getAddNumsTestContent(),
+      sourceSubpackage = "coverage/main/java/com/example",
+      testSubpackage = "coverage/test/java/com/example"
+    )
+
+    main(
+      "${tempFolder.root}",
+      filePath,
+      "--format=Proto",
+      "--processTimeout=10"
+    )
+
+    val outputFilePath = "${tempFolder.root}" +
+      "$coverageDir/${filePath.removeSuffix(".kt")}/coverage_report.pb"
+
+    assertThat(File(outputFilePath).exists()).isTrue()
+  }
+
+  @Test
   fun testRunCoverage_reorderedArguments_generatesCoverageReport() {
     val filePath = "coverage/main/java/com/example/AddNums.kt"
 
@@ -2330,18 +2357,55 @@ class RunCoverageTest {
   }
 
   @Test
-  fun testRunCoverage_withProtoReportFormat_savesCoverageReportProto() {
+  fun testRunCoverage_withProtoReportFormat_missingTestFile_generatesFailureReport() {
     val sampleFile = "file.kt"
-    val outputFilePath = "${tempFolder.root}/coverage_reports/file/coverage_report.pb"
     testBazelWorkspace.initEmptyWorkspace()
     tempFolder.newFile(sampleFile)
-    main(
-      tempFolder.root.absolutePath,
-      sampleFile,
-      "--format=Proto"
-    )
 
-    assertThat(File(outputFilePath).exists()).isTrue()
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        tempFolder.root.absolutePath,
+        sampleFile,
+        "--format=Proto"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("No appropriate test file found for $sampleFile")
+  }
+
+  @Test
+  fun testRunCoverage_testFileWithNoSourceMapping_generatesFailureReport() {
+    val testFilePath = "coverage/test/java/com/example/AddNumsTest.kt"
+    testBazelWorkspace.initEmptyWorkspace()
+
+    // Create a test file without a corresponding source file
+    val testFileContent = """
+      package com.example
+      
+      import org.junit.Assert.assertEquals
+      import org.junit.Test
+      
+      class AddNumsTest {
+        @Test
+        fun testSumNumbers() {
+          assertEquals(1, 1)
+        }
+      }
+    """.trimIndent()
+
+    val testFile = File(tempFolder.root, testFilePath)
+    testFile.parentFile?.mkdirs()
+    testFile.writeText(testFileContent)
+
+    val exception = assertThrows<SecurityException>() {
+      main(
+        tempFolder.root.absolutePath,
+        testFilePath
+      )
+    }
+
+    // Bazel catches the System.exit() call and throws a SecurityException
+    assertThat(exception).hasMessageThat().contains("System.exit()")
   }
 
   private fun getExpectedMarkdownText(filePath: String): String {
