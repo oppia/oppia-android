@@ -2370,7 +2370,8 @@ class RunCoverageTest {
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("No appropriate test file found for $sampleFile")
+    assertThat(exception).hasMessageThat()
+      .contains("No appropriate test file found for $sampleFile")
   }
 
   @Test
@@ -2379,7 +2380,8 @@ class RunCoverageTest {
     testBazelWorkspace.initEmptyWorkspace()
 
     // Create a test file without a corresponding source file
-    val testFileContent = """
+    val testFileContent =
+      """
       package com.example
       
       import org.junit.Assert.assertEquals
@@ -2391,7 +2393,7 @@ class RunCoverageTest {
           assertEquals(1, 1)
         }
       }
-    """.trimIndent()
+      """.trimIndent()
 
     val testFile = File(tempFolder.root, testFilePath)
     testFile.parentFile?.mkdirs()
