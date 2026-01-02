@@ -1,0 +1,38 @@
+"""
+Library for providing a debug work manager worker that can be used for validating the work manager
+configuration in the app.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "scheduler",
+    srcs = ["DebugWorkerScheduler.kt"],
+    deps = [
+        ":worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:startup_worker_schedule_readiness_listener",
+    ],
+)
+
+kt_android_library(
+    name = "worker",
+    srcs = ["DebugWorker.kt"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "debug_module",
+    srcs = ["DebugWorkerDebugModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":scheduler",
+        ":worker",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
+    ],
+)

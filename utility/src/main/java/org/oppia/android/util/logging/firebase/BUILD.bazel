@@ -19,7 +19,6 @@ kt_android_library(
     name = "prod_impl",
     srcs = [
         "FirebaseAnalyticsEventLogger.kt",
-        "FirebaseLogUploader.kt",
     ],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
@@ -30,7 +29,6 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
@@ -40,7 +38,6 @@ kt_android_library(
 kt_android_library(
     name = "prod_module",
     srcs = [
-        "FirebaseLogUploaderModule.kt",
         "LogReportingModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
@@ -54,7 +51,6 @@ kt_android_library(
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
 )
 

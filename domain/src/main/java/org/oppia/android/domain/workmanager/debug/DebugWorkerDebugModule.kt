@@ -1,4 +1,4 @@
-package org.oppia.android.domain.oppialogger.loguploader
+package org.oppia.android.domain.workmanager.debug
 
 import dagger.Binds
 import dagger.Module
@@ -8,17 +8,16 @@ import dagger.multibindings.StringKey
 import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 
-/** Provides [LogUploadWorker] related dependencies. */
 @Module
-interface LogReportWorkerModule {
+interface DebugWorkerDebugModule {
   @Binds
   @IntoSet
-  fun bindLogReportWorkerScheduler(
-    scheduler: LogReportWorkerScheduler
+  fun bindDebugWorkerScheduler(
+    scheduler: DebugWorkerScheduler
   ): StartupWorkerScheduleReadinessListener
 
   @Binds
   @IntoMap
-  @StringKey(LogUploadWorker.WORKER_NAME)
-  fun bindLogUploadWorkerFactoryProvider(factory: LogUploadWorker.Factory): OppiaWorker.Factory<*>
+  @StringKey(DebugWorker.WORKER_NAME)
+  fun bindDebugWorkerFactoryProvider(factory: DebugWorker.Factory): OppiaWorker.Factory<*>
 }

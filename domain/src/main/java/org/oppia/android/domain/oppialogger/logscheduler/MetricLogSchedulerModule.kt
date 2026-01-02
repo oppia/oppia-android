@@ -2,13 +2,23 @@ package org.oppia.android.domain.oppialogger.logscheduler
 
 import dagger.Binds
 import dagger.Module
-import org.oppia.android.util.logging.MetricLogScheduler
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
+import org.oppia.android.domain.workmanager.OppiaWorker
+import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 
 /** Provides metric log scheduler related dependencies. */
 @Module
-abstract class MetricLogSchedulerModule {
+interface MetricLogSchedulerModule {
   @Binds
-  abstract fun provideMetricLogScheduler(
-    performanceMetricLogScheduler: PerformanceMetricsLogScheduler
-  ): MetricLogScheduler
+  fun bindMetricLogSchedulingWorkerScheduler(
+    scheduler: MetricLogSchedulingWorkerScheduler
+  ): StartupWorkerScheduleReadinessListener
+
+  @Binds
+  @IntoMap
+  @StringKey(MetricLogSchedulingWorker.WORKER_NAME)
+  fun bindLogUploadWorkerFactoryProvider(
+    factory: MetricLogSchedulingWorker.Factory
+  ): OppiaWorker.Factory<*>
 }

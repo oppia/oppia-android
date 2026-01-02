@@ -1,19 +1,11 @@
 package org.oppia.android.domain.oppialogger.logscheduler
 
-import android.content.Context
-import androidx.work.ListenableWorker
-import androidx.work.WorkerParameters
-import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserver
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleLogger
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
-import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /**
@@ -21,80 +13,40 @@ import javax.inject.Inject
  * and then stores it in in device cache.
  */
 class MetricLogSchedulingWorker private constructor(
-  context: Context,
-  params: WorkerParameters,
   private val consoleLogger: ConsoleLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
-  private val applicationLifecycleObserver: ApplicationLifecycleObserver,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-) : ListenableWorker(context, params) {
+  private val applicationLifecycleLogger: ApplicationLifecycleLogger,
+  private val oppiaClock: OppiaClock
+) : OppiaWorker<MetricLogSchedulingWorker.Operation> {
 
   companion object {
-    private const val TAG = "MetricLogSchedulingWorker"
-    /**
-     * The key for an input key-value pair for [MetricLogSchedulingWorker] where one of
-     * [PERIODIC_BACKGROUND_METRIC_WORKER], [PERIODIC_UI_METRIC_WORKER] and [STORAGE_USAGE_WORKER] indicates what
-     * kind of work to perform.
-     */
-    const val WORKER_CASE_KEY = "metric_log_scheduling_worker_case_key"
-    /**
-     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for periodic
-     * performance metrics.
-     */
-    const val PERIODIC_BACKGROUND_METRIC_WORKER = "periodic_background_metric_worker"
-    /**
-     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for storage usage
-     * performance metrics.
-     */
-    const val STORAGE_USAGE_WORKER = "storage_usage_worker"
-    /**
-     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for ui-related
-     * memory usage performance metrics.
-     */
-    const val PERIODIC_UI_METRIC_WORKER = "periodic_ui_metric_worker"
+    const val WORKER_NAME = "MetricLogSchedulingWorker"
   }
 
-  override fun startWork(): ListenableFuture<Result> {
-    val backgroundScope = CoroutineScope(backgroundDispatcher)
-    // TODO(#4463): Add withTimeout() to avoid potential hanging.
-    return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
-        PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
-        STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
-        PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
-        else -> Result.failure()
+  enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
+    SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS("schedule_log_periodic_background_metrics"),
+    SCHEDULE_LOG_PERIODIC_UI_METRICS("schedule_log_periodic_ui_metrics"),
+    SCHEDULE_LOG_STORAGE_USAGE_METRICS("schedule_log_storage_usage_metrics")
+  }
+
+  override suspend fun doWork(taskType: Operation): OppiaWorker.Result {
+    val timestamp = oppiaClock.getCurrentTimeMs()
+    return try {
+      when (taskType) {
+        Operation.SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS ->
+          performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN, timestamp)
+        Operation.SCHEDULE_LOG_STORAGE_USAGE_METRICS ->
+          performanceMetricsLogger.logStorageUsage(BACKGROUND_SCREEN, timestamp)
+        Operation.SCHEDULE_LOG_PERIODIC_UI_METRICS -> {
+          performanceMetricsLogger.logMemoryUsage(
+            applicationLifecycleLogger.getCurrentScreen(), timestamp
+          )
+        }
       }
-    }.asListenableFuture()
-  }
-
-  private fun schedulePeriodicBackgroundMetricLogging(): Result {
-    return try {
-      performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN)
-      Result.success()
+      OppiaWorker.Result.SUCCESS
     } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
-      return Result.failure()
-    }
-  }
-
-  private fun scheduleStorageUsageMetricLogging(): Result {
-    return try {
-      performanceMetricsLogger.logStorageUsage(BACKGROUND_SCREEN)
-      Result.success()
-    } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
-      return Result.failure()
-    }
-  }
-
-  private fun schedulePeriodicUiMetricLogging(): Result {
-    return try {
-      val currentScreen = applicationLifecycleObserver.getCurrentScreen()
-      performanceMetricsLogger.logMemoryUsage(currentScreen)
-      Result.success()
-    } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
-      return Result.failure()
+      consoleLogger.e(WORKER_NAME, "Failed operation: ${taskType.persistentName}.", e)
+      OppiaWorker.Result.FAILURE
     }
   }
 
@@ -102,23 +54,17 @@ class MetricLogSchedulingWorker private constructor(
   class Factory @Inject constructor(
     private val consoleLogger: ConsoleLogger,
     private val performanceMetricsLogger: PerformanceMetricsLogger,
-    private val applicationLifecycleObserver: ApplicationLifecycleObserver,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) {
-    /**
-     * Returns a new [MetricLogSchedulingWorker].
-     *
-     * This [MetricLogSchedulingWorker] implements the [ListenableWorker] for facilitating metric
-     * log scheduling.
-     */
-    fun create(context: Context, params: WorkerParameters): ListenableWorker {
+    private val applicationLifecycleLogger: ApplicationLifecycleLogger,
+    private val oppiaClock: OppiaClock
+  ) : OppiaWorker.Factory<Operation> {
+    override val supportedTaskTypes: List<Operation> = Operation.values().toList()
+
+    override fun createWorker(): OppiaWorker<Operation> {
       return MetricLogSchedulingWorker(
-        context,
-        params,
         consoleLogger,
         performanceMetricsLogger,
-        applicationLifecycleObserver,
-        backgroundDispatcher
+        applicationLifecycleLogger,
+        oppiaClock
       )
     }
   }

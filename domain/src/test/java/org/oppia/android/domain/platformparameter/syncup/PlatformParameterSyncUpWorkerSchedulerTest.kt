@@ -48,14 +48,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PlatformParameterSyncUpWorkManagerInitializer]. */
+/** Tests for [PlatformParameterSyncUpWorkerScheduler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class PlatformParameterSyncUpWorkManagerInitializerTest {
+class PlatformParameterSyncUpWorkerSchedulerTest {
 
   @Inject
-  lateinit var syncUpWorkManagerInitializer: PlatformParameterSyncUpWorkManagerInitializer
+  lateinit var platformParameterSyncUpWorkerScheduler: PlatformParameterSyncUpWorkerScheduler
 
   @Inject
   lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
@@ -79,17 +79,18 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
     val workManager = WorkManager.getInstance(context)
-    syncUpWorkManagerInitializer.onCreate(workManager)
+    platformParameterSyncUpWorkerScheduler.scheduleWork(workManager)
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedSyncUpWorkRequestId = syncUpWorkManagerInitializer.getSyncUpWorkRequestId()
+    val enqueuedSyncUpWorkRequestId =
+      platformParameterSyncUpWorkerScheduler.getSyncUpWorkRequestId()
 
     // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
     val workInfoList = workManager.getWorkInfosByTag(PlatformParameterSyncUpWorker.TAG).get()
     // There should be only one such work request having "PlatformParameterSyncUpWorker.TAG" tag
     assertThat(workInfoList.size).isEqualTo(1)
     // Match the ID of this work request with the ID of another work request which was enqueued by
-    // PlatformParameterSyncUpWorkManagerInitializer
+    // PlatformParameterSyncUpWorkerScheduler.
     assertThat(enqueuedSyncUpWorkRequestId).isEqualTo(workInfoList[0].id)
   }
 
@@ -100,7 +101,8 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       .setRequiresBatteryNotLow(true)
       .build()
 
-    val syncUpWorkRequestConstraints = syncUpWorkManagerInitializer.getSyncUpWorkerConstraints()
+    val syncUpWorkRequestConstraints =
+      platformParameterSyncUpWorkerScheduler.getSyncUpWorkerConstraints()
     assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
   }
 
@@ -111,17 +113,18 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
     ).build()
 
-    val syncUpWorkRequestData = syncUpWorkManagerInitializer.getSyncUpWorkRequestData()
+    val syncUpWorkRequestData = platformParameterSyncUpWorkerScheduler.getSyncUpWorkRequestData()
 
     assertThat(syncUpWorkRequestData).isEqualTo(workerTypeForSyncingUpParameters)
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestPeriodicity() {
-    syncUpWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
+    platformParameterSyncUpWorkerScheduler.scheduleWork(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
-    val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
+    val syncUpWorkerTimePeriodInMs =
+      platformParameterSyncUpWorkerScheduler.getSyncUpWorkerTimePeriod()
     val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
 
     assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
@@ -130,7 +133,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPlatformParameterSyncUpWorkManagerInitializerTest_TestApplicationComponent.builder()
+    DaggerPlatformParameterSyncUpWorkerSchedulerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -192,6 +195,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkManagerInitializerTest)
+    fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerSchedulerTest)
   }
 }

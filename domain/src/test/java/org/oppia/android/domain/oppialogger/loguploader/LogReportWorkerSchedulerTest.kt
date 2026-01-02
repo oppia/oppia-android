@@ -62,8 +62,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LogReportWorkManagerInitializerTest.TestApplication::class)
-class LogReportWorkManagerInitializerTest {
+@Config(application = LogReportWorkerSchedulerTest.TestApplication::class)
+class LogReportWorkerSchedulerTest {
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -72,7 +72,7 @@ class LogReportWorkManagerInitializerTest {
   lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
 
   @Inject
-  lateinit var logReportWorkManagerInitializer: LogReportWorkManagerInitializer
+  lateinit var logReportWorkerScheduler: LogReportWorkerScheduler
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -118,23 +118,23 @@ class LogReportWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logReportWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
+    logReportWorkerScheduler.scheduleWork(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
+    val enqueuedEventWorkRequestId = logReportWorkerScheduler.getWorkRequestForEventsId()
     val enqueuedExceptionWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForExceptionsId()
+      logReportWorkerScheduler.getWorkRequestForExceptionsId()
     val enqueuedPerformanceMetricsWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForPerformanceMetricsId()
+      logReportWorkerScheduler.getWorkRequestForPerformanceMetricsId()
     val enqueuedSchedulingStorageUsageMetricWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
+      logReportWorkerScheduler.getWorkRequestForSchedulingStorageUsageMetricLogsId()
     val enqueuedSchedulingPeriodicUiMetricWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForSchedulingPeriodicUiMetricLogsId()
+      logReportWorkerScheduler.getWorkRequestForSchedulingPeriodicUiMetricLogsId()
     val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
-      logReportWorkManagerInitializer
+      logReportWorkerScheduler
         .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
     val enqueuedFirestoreWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForFirestoreId()
+      logReportWorkerScheduler.getWorkRequestForFirestoreId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -165,7 +165,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     val logUploadingWorkRequestConstraints =
-      logReportWorkManagerInitializer.getLogReportWorkerConstraints()
+      logReportWorkerScheduler.getLogReportWorkerConstraints()
 
     assertThat(logUploadingWorkRequestConstraints).isEqualTo(workerConstraints)
   }
@@ -179,7 +179,7 @@ class LogReportWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
+    assertThat(logReportWorkerScheduler.getWorkRequestDataForEvents()).isEqualTo(
       workerCaseForUploadingEvents
     )
   }
@@ -194,7 +194,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForExceptions()
+      logReportWorkerScheduler.getWorkRequestDataForExceptions()
     ).isEqualTo(workerCaseForUploadingExceptions)
   }
 
@@ -207,7 +207,7 @@ class LogReportWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
+    assertThat(logReportWorkerScheduler.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
       workerCaseForUploadingPerformanceMetrics
     )
   }
@@ -222,7 +222,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
+      logReportWorkerScheduler.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
     ).isEqualTo(workerCaseForSchedulingStorageUsageMetricLogs)
   }
 
@@ -236,7 +236,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer
+      logReportWorkerScheduler
         .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs()
     ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
   }
@@ -251,7 +251,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
+      logReportWorkerScheduler.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
@@ -265,7 +265,7 @@ class LogReportWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForFirestore()
+      logReportWorkerScheduler.getWorkRequestDataForFirestore()
     ).isEqualTo(workerCaseForUploadingFirestoreData)
   }
 
@@ -346,17 +346,17 @@ class LogReportWorkManagerInitializerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
+    fun inject(logUploadWorkRequestTest: LogReportWorkerSchedulerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
+      DaggerLogReportWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: LogReportWorkManagerInitializerTest) {
+    fun inject(test: LogReportWorkerSchedulerTest) {
       component.inject(test)
     }
 

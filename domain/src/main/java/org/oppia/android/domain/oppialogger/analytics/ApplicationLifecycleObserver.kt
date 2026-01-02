@@ -9,213 +9,65 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.oppia.android.app.model.ProfileId
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
 import org.oppia.android.app.model.ScreenName
-import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
-import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
-import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 /** Observer that observes application and activity lifecycle. */
 @Singleton
+@OptIn(ObsoleteCoroutinesApi::class)
 class ApplicationLifecycleObserver @Inject constructor(
   private val application: Application,
   private val oppiaClock: OppiaClock,
-  private val loggingIdentifierController: LoggingIdentifierController,
-  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val performanceMetricsLogger: PerformanceMetricsLogger,
-  private val featureFlagsLogger: FeatureFlagsLogger,
-  private val performanceMetricsController: PerformanceMetricsController,
-  private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
-  @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
-  private val analyticsController: AnalyticsController,
-  private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val applicationLifecycleLoggerProvider: Provider<ApplicationLifecycleLogger>,
+  private val listenersProvider: Provider<Set<@JvmSuppressWildcards ApplicationLifecycleListener>>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
+  private lateinit var commandQueue: SendChannel<LifecycleChangeMessage>
 
-  /**
-   * Timestamp indicating the time of application start-up. It will be used to calculate the
-   * cold-startup latency of the application.
-   *
-   * We're using a large Long value such that the time difference based on any timestamp will be
-   * negative and thus ignored until the app records initial time during [onCreate].
-   */
-  private var appStartTimeMillis: Long = Long.MAX_VALUE
-
-  /**
-   * Returns a boolean flag that makes sure that startup latency is logged only once in the entire
-   * application lifecycle.
-   */
-  private var isStartupLatencyLogged: Boolean = false
-
-  private var currentScreen: ScreenName = ScreenName.SCREEN_NAME_UNSPECIFIED
-
-  /**
-   * Returns the current active UI screen that's visible to the user.
-   *
-   * A few exceptions:
-   * [BACKGROUND_SCREEN] is returned when the UI is inactive or when the app is backgrounded.
-   * [FOREGROUND_SCREEN] is never returned.
-   * [SCREEN_NAME_UNSPECIFIED] is the default value for [currentScreen] and is returned until a
-   * currentScreen value has been set by the launcher activity's onResume method.
-   */
-  fun getCurrentScreen(): ScreenName = currentScreen
-
-  /** Returns the time in millis at which the application started. */
-  fun getAppStartupTimeMs(): Long = appStartTimeMillis
-
-  override fun onCreate() {
-    appStartTimeMillis = oppiaClock.getCurrentTimeMs()
+  override fun onCreateStarted() {
+    // Create the command queue so that lifecycle messages can be recorded without loss, then start
+    // listening for them. Messages cannot be processed immediately since logging requirements and
+    // other listener callbacks may require dependencies not yet available this early in the app
+    // lifecycle.
+    commandQueue = createObserverCommandActor(appStartupTimeMillis = oppiaClock.getCurrentTimeMs())
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     application.registerActivityLifecycleCallbacks(this)
-    logApplicationStartupMetrics()
-    logAllFeatureFlags()
-    cpuPerformanceSnapshotter.initialiseSnapshotter()
   }
 
-  // Use a large Long value such that the time difference based on any timestamp will be negative
-  // and thus ignored until the app goes into the background at least once.
-  private var firstTimestamp: Long = Long.MAX_VALUE
+  override fun onCompletedInitialization() {
+    // The app is fully ready to go so start enable full logging and process any previously missed
+    // commands.
+    enqueueMessage(LifecycleChangeMessage::Initialize)
+  }
 
-  /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
-    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
-    val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
-    if (timeDifferenceMs > inactivityLimitMillis) {
-      loggingIdentifierController.updateSessionId()
-    }
-    if (enablePerformanceMetricsCollection.value) {
-      cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
-    }
-    performanceMetricsController.setAppInForeground()
-    logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
-
-    analyticsController.listenForConsoleErrorLogs()
-    analyticsController.listenForNetworkCallLogs()
-    analyticsController.listenForFailedNetworkCallLogs()
+    enqueueMessage(LifecycleChangeMessage::AppInForeground)
   }
 
-  /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
-    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
-    firstTimestamp = oppiaClock.getCurrentTimeMs()
-    if (enablePerformanceMetricsCollection.value) {
-      cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
-    }
-    performanceMetricsController.setAppInBackground()
-    logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
-
-    logAppInForegroundTime()
+    enqueueMessage(LifecycleChangeMessage::AppInBackground)
   }
 
   override fun onActivityResumed(activity: Activity) {
-    currentScreen = activity.intent.extractCurrentAppScreenName()
-    if (!isStartupLatencyLogged) {
-      performanceMetricsLogger.logStartupLatency(
-        getStartupLatencyMillis(appStartTimeMillis),
-        currentScreen
-      )
-      isStartupLatencyLogged = true
-    }
-    performanceMetricsLogger.logMemoryUsage(currentScreen)
+    val currentScreen = activity.intent.extractCurrentAppScreenName()
+    enqueueMessage { time -> LifecycleChangeMessage.ActivityResumed(time, currentScreen) }
   }
 
   override fun onActivityPaused(activity: Activity) {
-    currentScreen = BACKGROUND_SCREEN
+    enqueueMessage(LifecycleChangeMessage::ActivityPaused)
   }
-
-  private fun logAppLifecycleEventInBackground(logMethod: (String?, ProfileId?, String?) -> Unit) {
-    CoroutineScope(backgroundDispatcher).launch {
-      val installationId = loggingIdentifierController.fetchInstallationId()
-      val profileId = profileManagementController.getCurrentProfileId()
-      val learnerId = profileManagementController.fetchCurrentLearnerId()
-      logMethod(installationId, profileId, learnerId)
-    }.invokeOnCompletion { failure ->
-      if (failure != null) {
-        oppiaLogger.e(
-          "ApplicationLifecycleObserver",
-          "Encountered error while trying to log app lifecycle event.",
-          failure
-        )
-      }
-    }
-  }
-
-  private fun logApplicationStartupMetrics() {
-    CoroutineScope(backgroundDispatcher).launch {
-      performanceMetricsLogger.logApkSize(currentScreen)
-      performanceMetricsLogger.logStorageUsage(currentScreen)
-    }.invokeOnCompletion { failure ->
-      if (failure != null) {
-        oppiaLogger.e(
-          "ActivityLifecycleObserver",
-          "Encountered error while trying to log app's performance metrics.",
-          failure
-        )
-      }
-    }
-  }
-
-  private fun logAllFeatureFlags() {
-    CoroutineScope(backgroundDispatcher).launch {
-      // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
-      val appSessionId = loggingIdentifierController.getAppSessionIdFlow().value
-      featureFlagsLogger.logAllFeatureFlags(appSessionId)
-    }.invokeOnCompletion { failure ->
-      if (failure != null) {
-        oppiaLogger.e(
-          "ActivityLifecycleObserver",
-          "Encountered error while logging feature flags.",
-          failure
-        )
-      }
-    }
-  }
-
-  private fun logAppInForegroundTime() {
-    CoroutineScope(backgroundDispatcher).launch {
-      val sessionId = loggingIdentifierController.getSessionIdFlow().value
-      val installationId = loggingIdentifierController.fetchInstallationId()
-      val timeInForeground = oppiaClock.getCurrentTimeMs() - appStartTimeMillis
-      analyticsController.logLowPriorityEvent(
-        oppiaLogger.createAppInForegroundTimeContext(
-          installationId = installationId,
-          appSessionId = sessionId,
-          foregroundTime = timeInForeground
-        ),
-        profileId = null
-      )
-    }.invokeOnCompletion { failure ->
-      if (failure != null) {
-        oppiaLogger.e(
-          "ApplicationLifecycleObserver",
-          "Encountered error while trying to log app's time in the foreground.",
-          failure
-        )
-      }
-    }
-  }
-
-  private fun getStartupLatencyMillis(initialTimestampMillis: Long): Long =
-    oppiaClock.getCurrentTimeMs() - initialTimestampMillis
 
   override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
 
@@ -226,4 +78,94 @@ class ApplicationLifecycleObserver @Inject constructor(
   override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {}
 
   override fun onActivityDestroyed(activity: Activity) {}
+
+  private fun createObserverCommandActor(
+    appStartupTimeMillis: Long
+  ): SendChannel<LifecycleChangeMessage> {
+    lateinit var state: ObserverState
+    var replayBuffer: MutableSet<LifecycleChangeMessage>? = mutableSetOf()
+    return CoroutineScope(backgroundCoroutineDispatcher).actor(capacity = Channel.UNLIMITED) {
+      for (message in channel) {
+        // First check this is a case of a post-initialization message coming in before
+        // initialization. That's supported by this command queue since it will store them in a
+        // replay buffer.
+        val buffer = replayBuffer
+        when {
+          message is LifecycleChangeMessage.Initialize -> {
+            checkNotNull(buffer) { "Attempting to re-initialize command queue." }
+
+            // It's now safe to fetch all dependencies for processing.
+            state = ObserverState(
+              appStartupTimeMillis,
+              applicationLifecycleLoggerProvider.get(),
+              listenersProvider.get()
+            )
+
+            // Process any other messages that came in.
+            state.processMessage(message)
+            for (it in buffer) {
+              check(it !is LifecycleChangeMessage.Initialize) {
+                "Attempting to re-initialize command queue."
+              }
+              state.processMessage(it)
+            }
+            buffer.clear()
+            replayBuffer = null
+          }
+          buffer != null -> buffer += message // Queue the message for later.
+          else -> state.processMessage(message) // Otherwise it can be processed immediately.
+        }
+      }
+    }
+  }
+
+  private fun enqueueMessage(factory: (Long) -> LifecycleChangeMessage) {
+    // Failures to enqueue lifecycle changes could be catastrophic to internal app state so it's
+    // almost certainly better to crash than try to recover. It's also expected that such a failure
+    // should be impossible since the queue is configured to be unlimited.
+    check(commandQueue.trySend(factory(oppiaClock.getCurrentTimeMs())).isSuccess) {
+      "Failed to enqueue command to capture lifecycle change."
+    }
+  }
+
+  private sealed class LifecycleChangeMessage {
+    abstract val timestamp: Long
+
+    data class Initialize(override val timestamp: Long) : LifecycleChangeMessage()
+    data class AppInForeground(override val timestamp: Long) : LifecycleChangeMessage()
+    data class AppInBackground(override val timestamp: Long) : LifecycleChangeMessage()
+    data class ActivityResumed(
+      override val timestamp: Long,
+      val activityScreen: ScreenName
+    ) : LifecycleChangeMessage()
+    data class ActivityPaused(override val timestamp: Long) : LifecycleChangeMessage()
+  }
+
+  private class ObserverState(
+    val appStartupTimeMillis: Long,
+    val applicationLifecycleLogger: ApplicationLifecycleLogger,
+    val applicationLifecycleListeners: Set<ApplicationLifecycleListener>
+  ) {
+    fun processMessage(message: LifecycleChangeMessage) {
+      when (message) {
+        is LifecycleChangeMessage.Initialize ->
+          applicationLifecycleLogger.recordAppOpened(appStartupTimeMillis)
+        is LifecycleChangeMessage.AppInForeground -> {
+          applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
+          applicationLifecycleLogger.recordAppInForeground(message.timestamp)
+        }
+        is LifecycleChangeMessage.AppInBackground -> {
+          applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
+          applicationLifecycleLogger.recordAppInBackground(message.timestamp)
+        }
+        is LifecycleChangeMessage.ActivityResumed -> {
+          applicationLifecycleLogger.recordActivityResumed(
+            message.activityScreen, appStartupTimeMillis, message.timestamp
+          )
+        }
+        is LifecycleChangeMessage.ActivityPaused ->
+          applicationLifecycleLogger.recordActivityPaused()
+      }
+    }
+  }
 }

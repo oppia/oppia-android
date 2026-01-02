@@ -45,16 +45,16 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PerformanceMetricsLogScheduler]. */
+/** Tests for [MetricLogSchedulingWorkerScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PerformanceMetricsLogSchedulerTest.TestApplication::class)
-class PerformanceMetricsLogSchedulerTest {
+@Config(application = MetricLogSchedulingWorkerSchedulerTest.TestApplication::class)
+class MetricLogSchedulingWorkerSchedulerTest {
 
   @Inject
-  lateinit var performanceMetricsLogScheduler: PerformanceMetricsLogScheduler
+  lateinit var metricLogSchedulingWorkerScheduler: MetricLogSchedulingWorkerScheduler
 
   @Inject
   lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
@@ -106,7 +106,7 @@ class PerformanceMetricsLogSchedulerTest {
       .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
       .build()
 
-    performanceMetricsLogScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
+    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
       workManager,
       request
     )
@@ -125,7 +125,7 @@ class PerformanceMetricsLogSchedulerTest {
       .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
       .build()
 
-    performanceMetricsLogScheduler.enqueueWorkRequestForPeriodicUiMetrics(
+    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForPeriodicUiMetrics(
       workManager,
       request
     )
@@ -144,7 +144,7 @@ class PerformanceMetricsLogSchedulerTest {
       .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
       .build()
 
-    performanceMetricsLogScheduler.enqueueWorkRequestForStorageUsage(
+    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForStorageUsage(
       workManager,
       request
     )
@@ -155,7 +155,7 @@ class PerformanceMetricsLogSchedulerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent.builder()
+    DaggerMetricLogSchedulingWorkerSchedulerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -202,18 +202,18 @@ class PerformanceMetricsLogSchedulerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(performanceMetricsLogSchedulerTest: PerformanceMetricsLogSchedulerTest)
+    fun inject(metricLogSchedulingWorkerSchedulerTest: MetricLogSchedulingWorkerSchedulerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent.builder()
+      DaggerMetricLogSchedulingWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(performanceMetricsLogSchedulerTest: PerformanceMetricsLogSchedulerTest) {
-      component.inject(performanceMetricsLogSchedulerTest)
+    fun inject(metricLogSchedulingWorkerSchedulerTest: MetricLogSchedulingWorkerSchedulerTest) {
+      component.inject(metricLogSchedulingWorkerSchedulerTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
