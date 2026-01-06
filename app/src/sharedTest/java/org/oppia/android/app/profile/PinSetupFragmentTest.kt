@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -123,13 +122,12 @@ class PinSetupFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
   }
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
     Intents.release()
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -230,7 +228,7 @@ class PinSetupFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withMismatchedPins_showsMismatchError() {
+  fun testFragment_clickContinue_withMismatchedPins_showsMismatchError_continueButtonIsDisabled() {
     launch(PinSetupActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -243,14 +241,12 @@ class PinSetupFragmentTest {
         .performTextInput("54321")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
         .assertIsDisplayed()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
     }
   }
 
@@ -577,7 +573,9 @@ class PinSetupFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(pinSetupFragmentTest: PinSetupFragmentTest)
   }
