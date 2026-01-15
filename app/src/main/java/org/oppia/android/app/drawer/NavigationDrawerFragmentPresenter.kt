@@ -474,6 +474,19 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     }
   }
 
+  /**
+   * Re-checks the current menu item in the navigation drawer. This is needed when the user returns
+   * to this fragment from another activity (like Administrator Controls) where the selection might
+   * have been cleared.
+   */
+  fun handleOnResume() {
+     if (this::binding.isInitialized && previousMenuItemId != null && previousMenuItemId != 0 && previousMenuItemId != -1) {
+       binding.fragmentDrawerNavView.menu.getItem(
+         NavigationDrawerItem.valueFromNavId(previousMenuItemId!!).ordinal
+       ).isChecked = true
+     }
+  }
+
   private fun checkIfPreviousActivityShouldGetFinished(currentMenuItemId: Int): Boolean {
     if (previousMenuItemId != null &&
       (previousMenuItemId == 0 || previousMenuItemId == -1) &&

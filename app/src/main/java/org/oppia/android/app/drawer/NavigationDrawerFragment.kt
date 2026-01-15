@@ -64,7 +64,12 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.highlightDeveloperOptionsItem()
   }
 
-  override fun unhighlightSwitchProfileMenuItem() {
     navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
   }
+
+  override fun onResume() {
+    super.onResume()
+    navigationDrawerFragmentPresenter.handleOnResume()
+  }
+
 }
