@@ -12,7 +12,7 @@ import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
@@ -43,7 +43,7 @@ class NavigationDrawerTestActivity :
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId = internalProfileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
       }
@@ -59,14 +59,14 @@ class NavigationDrawerTestActivity :
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: LegacyProfileId, classroomId: String, topicId: String) {
     startActivity(
       TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -86,7 +86,7 @@ class NavigationDrawerTestActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 

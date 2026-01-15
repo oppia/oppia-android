@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -42,7 +42,7 @@ class ProfileProgressViewModel @Inject constructor(
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var limit: Int = 0
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
@@ -52,7 +52,7 @@ class ProfileProgressViewModel @Inject constructor(
   )
 
   fun setProfileId(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.internalProfileId = internalProfileId
 
     subscribeToProfileLiveData()

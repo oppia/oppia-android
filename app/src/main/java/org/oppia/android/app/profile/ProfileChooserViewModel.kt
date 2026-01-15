@@ -8,7 +8,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileChooserUiModel
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -90,8 +90,8 @@ class ProfileChooserViewModel @Inject constructor(
   /** The admin profile's PIN. */
   lateinit var adminPin: String
 
-  /** The [ProfileId] of the admin profile. */
-  lateinit var adminProfileId: ProfileId
+  /** The [LegacyProfileId] of the admin profile. */
+  lateinit var adminProfileId: LegacyProfileId
 
   /** List of RGB colors that have already been assigned to a profile. */
   val usedColors = mutableListOf<Int>()

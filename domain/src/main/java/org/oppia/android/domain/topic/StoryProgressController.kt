@@ -3,7 +3,7 @@ package org.oppia.android.domain.topic
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
@@ -69,7 +69,7 @@ class StoryProgressController @Inject constructor(
     SUCCESS
   }
 
-  private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
+  private val cacheStoreMap = mutableMapOf<LegacyProfileId, PersistentCacheStore<TopicProgressDatabase>>()
 
   /**
    * Records the specified chapter completed within the context of the specified exploration, story,
@@ -84,7 +84,7 @@ class StoryProgressController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordCompletedChapter(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -147,7 +147,7 @@ class StoryProgressController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordChapterAsInProgressSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -230,7 +230,7 @@ class StoryProgressController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordChapterAsInProgressNotSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -301,7 +301,7 @@ class StoryProgressController @Inject constructor(
 
   /** Returns the [ChapterPlayState] [DataProvider] for a particular explorationId and profile. */
   fun retrieveChapterPlayStateByExplorationId(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -319,7 +319,7 @@ class StoryProgressController @Inject constructor(
 
   /** Returns list of [TopicProgress] [DataProvider] for a particular profile. */
   internal fun retrieveTopicProgressListDataProvider(
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
       .transformAsync(RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID) { topicProgressDatabase ->
@@ -331,7 +331,7 @@ class StoryProgressController @Inject constructor(
 
   /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
   private fun retrieveTopicProgressDataProvider(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ): DataProvider<TopicProgress> {
     return retrieveTopicsProgressDataProvider(profileId, listOf(topicId))
@@ -345,7 +345,7 @@ class StoryProgressController @Inject constructor(
    * The provider defaults the progress for any IDs that don't have progress corresponding to them.
    */
   internal fun retrieveTopicsProgressDataProvider(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicIds: List<String>
   ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
@@ -358,7 +358,7 @@ class StoryProgressController @Inject constructor(
 
   /** Returns a [StoryProgress] [DataProvider] for a specific storyId, per-profile basis. */
   internal fun retrieveStoryProgressDataProvider(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String
   ): DataProvider<StoryProgress> {
@@ -377,7 +377,7 @@ class StoryProgressController @Inject constructor(
   }
 
   private fun retrieveCacheStore(
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): PersistentCacheStore<TopicProgressDatabase> {
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!

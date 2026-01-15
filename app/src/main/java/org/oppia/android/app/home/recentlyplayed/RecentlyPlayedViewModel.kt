@@ -3,7 +3,7 @@ package org.oppia.android.app.home.recentlyplayed
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -26,7 +26,7 @@ class RecentlyPlayedViewModel private constructor(
   private val translationController: TranslationController,
   private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   private val promotedStoryClickListener: PromotedStoryClickListener,
-  private val profileId: ProfileId,
+  private val profileId: LegacyProfileId,
 ) {
 
   /** Factory of RecentlyPlayedViewModel. */
@@ -43,7 +43,7 @@ class RecentlyPlayedViewModel private constructor(
     /** Creates an instance of [RecentlyPlayedViewModel]. */
     fun create(
       promotedStoryClickListener: PromotedStoryClickListener,
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): RecentlyPlayedViewModel {
       return RecentlyPlayedViewModel(
         activity,
@@ -59,7 +59,7 @@ class RecentlyPlayedViewModel private constructor(
   }
 
   /**
-   * [LiveData] with the list of recently played items for a ProfileId, organized in sections.
+   * [LiveData] with the list of recently played items for a LegacyProfileId, organized in sections.
    */
   val recentlyPlayedItems: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
     Transformations.map(promotedActivityListLiveData, ::processPromotedStoryList)

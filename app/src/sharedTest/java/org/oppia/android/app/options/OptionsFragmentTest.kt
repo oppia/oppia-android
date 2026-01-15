@@ -46,7 +46,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -163,7 +163,7 @@ class OptionsFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       context = ApplicationProvider.getApplicationContext(),
       profileId = profileId,

@@ -27,7 +27,7 @@ import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
@@ -132,7 +132,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testEventLogSubject_eventWithProfileId_failsNoProfileExpected() {
-    val profileId = ProfileId.newBuilder()
+    val profileId = LegacyProfileId.newBuilder()
       .setInternalId(1)
       .build()
     val eventLog = EventLog.newBuilder()
@@ -146,7 +146,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testHasProfileIdThat_eventWithProfileId_returnsProfileIdSubject() {
-    val profileId = ProfileId.newBuilder()
+    val profileId = LegacyProfileId.newBuilder()
       .setInternalId(1)
       .build()
     val eventLog = EventLog.newBuilder()
@@ -160,13 +160,13 @@ class EventLogSubjectTest {
 
   @Test
   fun testEventLogSubject_failsOnDifferentProfileId() {
-    val profileId = ProfileId.newBuilder()
+    val profileId = LegacyProfileId.newBuilder()
       .setInternalId(1)
       .build()
     val eventLog = EventLog.newBuilder()
       .setProfileId(profileId)
       .build()
-    val differentProfileId = ProfileId.newBuilder()
+    val differentProfileId = LegacyProfileId.newBuilder()
       .setInternalId(2)
       .build()
     assertThrows(AssertionError::class.java) {
@@ -4206,7 +4206,7 @@ class EventLogSubjectTest {
   @Test
   fun testEventLogSubject_hasStartProfileOnboardingContext_passes() {
     val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(123))
       .build()
 
     val eventLog = EventLog.newBuilder()
@@ -4224,7 +4224,7 @@ class EventLogSubjectTest {
   @Test
   fun testEventLogSubject_contextIsStartProfileOnboarding_returnsProfileOnboardingContextSubject() {
     val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(123))
       .build()
 
     val eventLog = EventLog.newBuilder()
@@ -4244,7 +4244,7 @@ class EventLogSubjectTest {
   @Test
   fun testHasStartProfileOnboardingContextThat_blockIsProvided_executesWithCorrectSubject() {
     val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(123))
       .build()
 
     val eventLog = EventLog.newBuilder()
@@ -4264,7 +4264,7 @@ class EventLogSubjectTest {
   @Test
   fun testEventLogSubject_hasEndProfileOnboardingContext_passes() {
     val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(456))
       .build()
 
     val eventLog = EventLog.newBuilder()
@@ -4282,7 +4282,7 @@ class EventLogSubjectTest {
   @Test
   fun testEventLogSubject_contextIsEndProfileOnboarding_returnsProfileOnboardingContextSubject() {
     val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(456))
       .build()
 
     val eventLog = EventLog.newBuilder()
@@ -4301,7 +4301,7 @@ class EventLogSubjectTest {
   @Test
   fun testHasEndProfileOnboardingContextThat_blockIsProvided_executesWithCorrectSubject() {
     val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
-      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .setProfileId(LegacyProfileId.newBuilder().setInternalId(456))
       .build()
 
     val eventLog = EventLog.newBuilder()

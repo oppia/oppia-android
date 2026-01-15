@@ -12,7 +12,7 @@ import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -78,9 +78,9 @@ class StateViewModel @Inject constructor(
   var currentStateName = ObservableField<String>(null as? String?)
 
   private val canSubmitAnswer = ObservableField(false)
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
-  fun initializeProfile(profileId: ProfileId) {
+  fun initializeProfile(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

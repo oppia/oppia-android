@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.SpotlightFragmentTestActivityBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.ui.R
@@ -26,7 +26,7 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
 
     if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()
-      val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId = internalProfileId.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)
       spotlightFragment.arguments = args

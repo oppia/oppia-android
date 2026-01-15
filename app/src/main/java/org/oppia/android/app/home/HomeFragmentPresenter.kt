@@ -19,7 +19,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -65,7 +65,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -216,7 +216,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicSummary.classroomId,
       topicSummary.topicId,
       topicSummary.firstStoryId
@@ -226,7 +226,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 

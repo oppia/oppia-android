@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.MarketFitAnswer
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
@@ -75,7 +75,7 @@ class SurveyProgressController @Inject constructor(
   private val surveyLogger: SurveyEventsLogger
 ) {
   // TODO(#606): Replace this with a profile scope.
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var surveyId: String
 
   private var mostRecentSessionId: String? = null
@@ -113,7 +113,7 @@ class SurveyProgressController @Inject constructor(
    */
   fun beginSurveySession(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProvider<Any?> {
     val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralSurveyQuestion>()

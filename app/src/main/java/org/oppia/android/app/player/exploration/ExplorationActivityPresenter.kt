@@ -17,7 +17,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.SurveyQuestionName
@@ -69,7 +69,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -85,7 +85,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun handleOnCreate(
     context: Context,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -557,7 +557,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+  private fun maybeShowSurveyDialog(profileId: LegacyProfileId, topicId: String) {
     val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
     liveData.observe(
       activity,

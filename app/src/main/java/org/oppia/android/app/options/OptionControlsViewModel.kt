@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -34,7 +34,7 @@ class OptionControlsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : OptionsItemViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
@@ -62,8 +62,8 @@ class OptionControlsViewModel @Inject constructor(
     uiLiveData.value = isInitialized
   }
 
-  /** Sets the user's ProfileId value in this ViewModel. */
-  fun setProfileId(profileId: ProfileId) {
+  /** Sets the user's LegacyProfileId value in this ViewModel. */
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

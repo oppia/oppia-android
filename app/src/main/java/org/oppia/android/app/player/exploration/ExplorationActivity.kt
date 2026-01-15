@@ -14,7 +14,7 @@ import org.oppia.android.app.hintsandsolution.ViewHintListener
 import org.oppia.android.app.hintsandsolution.ViewSolutionInterface
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
@@ -93,7 +93,7 @@ class ExplorationActivity :
      */
     fun createExplorationActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,

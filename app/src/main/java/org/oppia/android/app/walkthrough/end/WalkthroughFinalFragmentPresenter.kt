@@ -10,7 +10,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -34,7 +34,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughFinalFragmentBinding
   private lateinit var walkthroughFinalViewModel: WalkthroughFinalViewModel
   private lateinit var topicId: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicName: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View {
@@ -45,7 +45,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     this.topicId = topicId
-    profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    profileId = activity.intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()
 

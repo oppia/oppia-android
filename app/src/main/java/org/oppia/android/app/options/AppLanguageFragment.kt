@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AppLanguageFragmentArguments
 import org.oppia.android.app.model.AppLanguageFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
@@ -29,7 +29,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
   @field:EnableOnboardingFlowV2
   lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
 
   companion object {
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
@@ -37,7 +37,7 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
 
     /** Returns a new [AppLanguageFragment] instance. */
     fun newInstance(oppiaLanguage: OppiaLanguage, internalProfileId: Int): AppLanguageFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return AppLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AppLanguageFragmentArguments.newBuilder().apply {

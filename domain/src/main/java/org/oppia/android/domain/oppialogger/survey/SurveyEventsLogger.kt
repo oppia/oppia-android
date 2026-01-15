@@ -2,7 +2,7 @@ package org.oppia.android.domain.oppialogger.survey
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.MarketFitAnswer
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -25,7 +25,7 @@ class SurveyEventsLogger @Inject constructor(
    * Logs an event representing a survey session being started and ended before the
    * mandatory questions are completed.
    */
-  fun logAbandonSurvey(surveyId: String, profileId: ProfileId, questionName: SurveyQuestionName) {
+  fun logAbandonSurvey(surveyId: String, profileId: LegacyProfileId, questionName: SurveyQuestionName) {
     analyticsController.logImportantEvent(
       createAbandonSurveyContext(surveyId, profileId, questionName),
       profileId
@@ -35,7 +35,7 @@ class SurveyEventsLogger @Inject constructor(
   /** Logs an event representing the responses to the m sandatory survey questions. */
   fun logMandatoryResponses(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     userTypeAnswer: UserTypeAnswer,
     marketFitAnswer: MarketFitAnswer,
     npsScore: Int
@@ -53,7 +53,7 @@ class SurveyEventsLogger @Inject constructor(
   }
 
   /** Logs an event representing the response to the optional survey question. */
-  fun logOptionalResponse(surveyId: String, profileId: ProfileId?, answer: String) {
+  fun logOptionalResponse(surveyId: String, profileId: LegacyProfileId?, answer: String) {
     dataController.logEvent(
       createOptionalSurveyResponseContext(surveyId, profileId, answer),
       profileId
@@ -62,7 +62,7 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createMandatorySurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     userTypeAnswer: UserTypeAnswer,
     marketFitAnswer: MarketFitAnswer,
     npsScore: Int
@@ -82,7 +82,7 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createAbandonSurveyContext(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     questionName: SurveyQuestionName
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -98,7 +98,7 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?
+    profileId: LegacyProfileId?
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
       .setProfileId(profileId?.internalId.toString())
@@ -108,7 +108,7 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()

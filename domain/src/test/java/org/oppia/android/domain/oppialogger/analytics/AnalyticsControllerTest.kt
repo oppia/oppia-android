@@ -27,7 +27,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -1160,7 +1160,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_lowPriorityEvent_withProfileOnboardingStartedContext_checkLogsEvent() {
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     analyticsController.logProfileOnboardingStartedContext(profileId = profileId)
     testCoroutineDispatchers.runCurrent()
 
@@ -1173,7 +1173,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_lowPriorityEvent_withProfileOnboardingEndedContext_checkLogsEvent() {
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     analyticsController.logProfileOnboardingEndedContext(profileId = profileId)
     testCoroutineDispatchers.runCurrent()
 
@@ -1261,7 +1261,7 @@ class AnalyticsControllerTest {
     }.waitForSuccessfulResult()
   }
 
-  private fun addNewProfileAndLogIn(): ProfileId {
+  private fun addNewProfileAndLogIn(): LegacyProfileId {
     val addProfileProvider = profileManagementController.addProfile(
       name = "Test Profile",
       pin = "",
@@ -1272,13 +1272,13 @@ class AnalyticsControllerTest {
     )
     monitorFactory.ensureDataProviderExecutes(addProfileProvider)
 
-    return ProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
+    return LegacyProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
       val logInProvider = profileManagementController.loginToProfile(expectedProfileId)
       monitorFactory.waitForNextSuccessfulResult(logInProvider) // Ensure that the login succeeds.
     }
   }
 
-  private fun ensureAppLanguageIsUpdatedTo(profileId: ProfileId, language: OppiaLanguage) {
+  private fun ensureAppLanguageIsUpdatedTo(profileId: LegacyProfileId, language: OppiaLanguage) {
     val resultProvider =
       translationController.updateAppLanguage(
         profileId, AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build()
@@ -1287,7 +1287,7 @@ class AnalyticsControllerTest {
   }
 
   private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     language: OppiaLanguage
   ) {
     val resultProvider =
@@ -1301,7 +1301,7 @@ class AnalyticsControllerTest {
   }
 
   private fun ensureAudioTranslationsLanguageIsUpdatedTo(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     language: OppiaLanguage
   ) {
     val resultProvider =

@@ -20,7 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -84,7 +84,7 @@ class FirestoreDataControllerTest {
   @Inject
   lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { LegacyProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   private val dataController by lazy { dataControllerProvider.get() }
 
@@ -267,7 +267,7 @@ class FirestoreDataControllerTest {
 
   private fun createAbandonSurveyContext(
     surveyId: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     questionName: SurveyQuestionName
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -382,7 +382,7 @@ class FirestoreDataControllerTest {
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -398,7 +398,7 @@ class FirestoreDataControllerTest {
 
   private fun createSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?
+    profileId: LegacyProfileId?
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
       .setProfileId(profileId?.internalId.toString())

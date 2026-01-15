@@ -8,7 +8,7 @@ import org.oppia.android.app.databinding.databinding.AppLanguageFragmentBinding
 import org.oppia.android.app.databinding.databinding.AppLanguageItemBinding
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
@@ -25,7 +25,7 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var appLanguage: OppiaLanguage
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Initializes and creates the views for [AppLanguageFragment]. */
   fun handleOnCreateView(
@@ -40,7 +40,7 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
-    this.profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
+    this.profileId = LegacyProfileId.newBuilder().apply { internalId = profileId }.build()
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment

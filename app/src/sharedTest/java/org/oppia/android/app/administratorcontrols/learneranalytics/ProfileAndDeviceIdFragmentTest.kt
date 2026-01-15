@@ -56,7 +56,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -1013,19 +1013,19 @@ class ProfileAndDeviceIdFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun logAnalyticsEvent(profileId: ProfileId? = null) {
+  private fun logAnalyticsEvent(profileId: LegacyProfileId? = null) {
     learnerAnalyticsLogger.logAppInForeground(
       installationId = TEST_INSTALLATION_ID, profileId, learnerId = TEST_LEARNER_ID
     )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun logTwoAnalyticsEvents(profileId: ProfileId? = null) {
+  private fun logTwoAnalyticsEvents(profileId: LegacyProfileId? = null) {
     logAnalyticsEvent(profileId)
     logAnalyticsEvent(profileId)
   }
 
-  private fun logThreeAnalyticsEvents(profileId: ProfileId? = null) {
+  private fun logThreeAnalyticsEvents(profileId: LegacyProfileId? = null) {
     logTwoAnalyticsEvents(profileId)
     logAnalyticsEvent(profileId)
   }
@@ -1082,7 +1082,7 @@ class ProfileAndDeviceIdFragmentTest {
     hasNoProfileId()
   }
 
-  private fun EventLogSubject.hasCommonPropsWithProfile(profileId: ProfileId) {
+  private fun EventLogSubject.hasCommonPropsWithProfile(profileId: LegacyProfileId) {
     hasCommonProperties()
     hasProfileIdThat().isEqualTo(profileId)
   }
@@ -1215,7 +1215,7 @@ class ProfileAndDeviceIdFragmentTest {
     private val LEARNER_PROFILE_ID_0 = createProfileId(internalProfileId = 1)
     private val LEARNER_PROFILE_ID_1 = createProfileId(internalProfileId = 2)
 
-    private fun createProfileId(internalProfileId: Int) = ProfileId.newBuilder().apply {
+    private fun createProfileId(internalProfileId: Int) = LegacyProfileId.newBuilder().apply {
       internalId = internalProfileId
     }.build()
   }

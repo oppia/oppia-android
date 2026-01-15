@@ -22,7 +22,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -90,7 +90,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    adminProfileId: ProfileId,
+    adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
     StatusBarColor.statusBarColorUpdate(
@@ -320,7 +320,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+  private fun launchOnboardingScreen(profileId: LegacyProfileId, profileName: String) {
     val introActivityParams = IntroActivityParams.newBuilder()
       .setProfileNickname(profileName)
       .setParentScreen(IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN)
@@ -330,7 +330,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun launchHomeScreen(profileId: ProfileId) {
+  private fun launchHomeScreen(profileId: LegacyProfileId) {
     profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
@@ -346,7 +346,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun launchPinScreen(profileId: ProfileId) {
+  private fun launchPinScreen(profileId: LegacyProfileId) {
     activity.startActivity(
       ProfileLoginActivity.createProfileLoginActivityIntent(
         context,
@@ -359,7 +359,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
       val profileId =
-        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+        LegacyProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,

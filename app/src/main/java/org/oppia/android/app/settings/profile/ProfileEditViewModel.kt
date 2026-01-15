@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -26,7 +26,7 @@ class ProfileEditViewModel @Inject constructor(
   @EnableFastLanguageSwitchingInLesson
   private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Whether the admin is allowed to mark chapters as finished. */
   val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
@@ -55,7 +55,7 @@ class ProfileEditViewModel @Inject constructor(
 
   /** Sets the identifier of the profile. */
   fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(id).build()
   }
 
   /** Fetches the profile of a user asynchronously. */

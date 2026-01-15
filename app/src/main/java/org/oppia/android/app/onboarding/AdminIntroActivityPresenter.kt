@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.AdminIntroFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
@@ -23,7 +23,7 @@ class AdminIntroActivityPresenter @Inject constructor(
 ) {
 
   /** Creates the view for [AdminIntroActivity]. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType, profileNickname: String) {
+  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, profileNickname: String) {
     activity.setContentView(R.layout.admin_intro_activity)
 
     if (getAdminIntroFragment() == null) {

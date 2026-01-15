@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.AdminAuthActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -28,8 +28,8 @@ class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
-      // TODO(#5440): Ensure the ProfileId is valid.
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      // TODO(#5440): Ensure the LegacyProfileId is valid.
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = AdminAuthActivityParams.newBuilder().apply {
         this.adminPin = adminPin
         this.colorRgb = colorRgb

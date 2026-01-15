@@ -12,7 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MarketFitAnswer
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -70,7 +70,7 @@ class SurveyEventsLoggerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { LegacyProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Before
   fun setUp() {

@@ -22,7 +22,7 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -101,11 +101,11 @@ class QuestionAssessmentProgressControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var translationController: TranslationController
 
-  private lateinit var profileId1: ProfileId
+  private lateinit var profileId1: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
   }
 
   @Test
@@ -1311,7 +1311,7 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
 
@@ -1327,7 +1327,7 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
     val monitor =
@@ -1346,8 +1346,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
+    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 3 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startSuccessfulTrainingSession(arabicProfileId, TEST_SKILL_ID_LIST_01)
@@ -1374,7 +1374,7 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(profileId1, skillIdList)
   }
 
-  private fun startSuccessfulTrainingSession(profileId: ProfileId, skillIdList: List<String>) {
+  private fun startSuccessfulTrainingSession(profileId: LegacyProfileId, skillIdList: List<String>) {
     monitorFactory.waitForNextSuccessfulResult(
       questionTrainingController.startQuestionTrainingSession(profileId, skillIdList)
     )
@@ -1546,7 +1546,7 @@ class QuestionAssessmentProgressControllerTest {
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

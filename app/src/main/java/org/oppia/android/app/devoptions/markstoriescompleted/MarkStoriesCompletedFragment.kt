@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.MarkStoriesCompletedFragmentStateBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -28,7 +28,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
     /** Returns a new [MarkStoriesCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return MarkStoriesCompletedFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.util.extensions.getProto
@@ -37,7 +37,7 @@ class SurveyFragment :
       internalProfileId: Int,
       topicId: String
     ): SurveyFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = SurveyFragmentArguments.newBuilder().apply {
         this.topicId = topicId
       }.build()

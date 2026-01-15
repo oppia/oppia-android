@@ -55,7 +55,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.RevisionCardFragmentArguments
@@ -172,7 +172,7 @@ class RevisionCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   private val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
 
@@ -892,7 +892,7 @@ class RevisionCardFragmentTest {
     text: String
   ): ClickableSpan? = find { text in it.first }?.second
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

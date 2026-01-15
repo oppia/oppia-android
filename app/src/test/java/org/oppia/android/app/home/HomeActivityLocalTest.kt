@@ -30,7 +30,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -124,7 +124,7 @@ class HomeActivityLocalTest {
 
   private val internalProfileId: Int = 0
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -191,7 +191,7 @@ class HomeActivityLocalTest {
     setUpTestWithOnboardingV2Enabled(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(1)
-    val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
     profileTestHelper.updateProfileType(
       profileId = profileId1,
       profileType = ProfileType.ADDITIONAL_LEARNER
@@ -349,7 +349,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
+  private fun createHomeActivityIntent(profileId: LegacyProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 

@@ -7,7 +7,7 @@ import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -48,7 +48,7 @@ class StoryChapterSummaryViewModel(
   }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
   private val profileId by lazy {
-    ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
   }
 
   fun onExplorationClicked() {
@@ -63,7 +63,7 @@ class StoryChapterSummaryViewModel(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
+          LegacyProfileId.newBuilder().apply {
             internalId = internalProfileId
           }.build(),
           explorationId

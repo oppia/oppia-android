@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileEditFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -75,7 +75,7 @@ class ProfileEditFragment :
     profileEditFragmentPresenter.deleteProfile(internalProfileId)
   }
 
-  override fun loadProfileEditDeletionDialog(profileId: ProfileId) {
+  override fun loadProfileEditDeletionDialog(profileId: LegacyProfileId) {
     profileEditFragmentPresenter.handleLoadProfileDeletionDialog(profileId.internalId)
   }
 }

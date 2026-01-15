@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
@@ -24,7 +24,7 @@ class ConceptCardFragmentTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     conceptCardFragmentTestActivityController.handleOnCreate(
-      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, LegacyProfileId.getDefaultInstance())
     )
   }
 
@@ -40,7 +40,7 @@ class ConceptCardFragmentTestActivity :
     private const val TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
       "ConceptCardFragmentTestActivity.profile_id"
 
-    fun createIntent(context: Context, profileId: ProfileId): Intent {
+    fun createIntent(context: Context, profileId: LegacyProfileId): Intent {
       return Intent(context, ConceptCardFragmentTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       }
