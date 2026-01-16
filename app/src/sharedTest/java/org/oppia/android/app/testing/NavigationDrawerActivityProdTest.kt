@@ -728,6 +728,7 @@ class NavigationDrawerActivityProdTest {
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
+
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -744,6 +745,8 @@ class NavigationDrawerActivityProdTest {
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_selectOptions_pressBack_configChange_homeIsSelected() {
@@ -759,6 +762,7 @@ class NavigationDrawerActivityProdTest {
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
+
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
