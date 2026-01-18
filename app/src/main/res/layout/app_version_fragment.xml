@@ -12,51 +12,155 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_shared_screen_tertiary_background_color">
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    android:fillViewport="true">
 
-    <TextView
-      android:id="@+id/app_version_text_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/general_item_background_border"
-      android:fontFamily="sans-serif"
-      android:paddingStart="@dimen/app_version_text_view_padding_start"
-      android:paddingTop="20dp"
-      android:paddingEnd="@dimen/app_version_text_view_padding_end"
-      android:paddingBottom="20dp"
-      android:text="@{viewModel.computeVersionNameText()}"
-      android:textColor="@color/component_color_shared_primary_dark_text_color"
-      android:textSize="16sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_height="wrap_content">
 
-    <ImageView
-      android:id="@+id/app_info_image_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/app_version_image_view_margin_start"
-      app:layout_constraintEnd_toStartOf="@id/app_last_update_date_text_view"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@id/app_last_update_date_text_view"
-      app:srcCompat="@drawable/ic_info_icon_gray_24dp"
-      app:tint="@color/component_color_app_version_activity_info_icon_color"
-      android:contentDescription="@string/app_info_icon_content_description" />
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/installation_id_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/general_item_background_border"
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-      android:id="@+id/app_last_update_date_text_view"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
-      android:layout_marginTop="28dp"
-      android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
-      android:fontFamily="sans-serif"
-      android:text="@{viewModel.computeLastUpdatedDateText()}"
-      android:textColor="@color/component_color_app_version_activity_description_text_color"
-      android:textSize="12sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_weight="1"
-      app:layout_constraintStart_toEndOf="@id/app_info_image_view"
-      app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
+        <TextView
+          android:id="@+id/installation_id_label"
+          style="@style/Heading2"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/installation_id_label"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/installation_id_text"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:layout_marginEnd="10dp"
+          android:fontFamily="sans-serif"
+          android:text="@{viewModel.installationId}"
+          android:textColor="@color/component_color_shared_primary_dark_text_color"
+          android:textSize="18sp"
+          app:layout_constraintEnd_toStartOf="@+id/copy_installation_id_button"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/installation_id_label"
+          app:layout_constraintBottom_toBottomOf="parent" />
+
+        <org.oppia.android.app.administratorcontrols.learneranalytics.CopyIdMaterialButtonView
+          style="@style/BorderlessMaterialButton"
+          android:id="@+id/copy_installation_id_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:textColor="@color/component_color_profile_and_device_id_activity_primary_text_color"
+          android:enabled="@{viewModel.installationId != null}"
+          android:text="@{viewModel.isInstallationIdCopied ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
+          android:onClick="@{(v) -> viewModel.copyInstallationId(viewModel.installationId)}"
+          app:icon="@{viewModel.isInstallationIdCopied ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
+          app:iconGravity="top"
+          app:iconSize="28dp"
+          app:iconTint="@color/component_color_profile_and_device_id_activity_enabled_icon_button_color"
+          app:backgroundTint="@color/component_color_shared_white_background_color"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@id/installation_id_text"
+          app:layout_constraintBottom_toBottomOf="@id/installation_id_text"
+          android:contentDescription="@string/copy_installation_id" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <ImageView
+        android:id="@+id/installation_id_info_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/installation_id_container"
+        app:srcCompat="@drawable/ic_info_icon_gray_24dp"
+        app:tint="@color/component_color_app_version_activity_info_icon_color"
+        android:contentDescription="@string/app_info_icon_content_description" />
+
+      <TextView
+        android:id="@+id/installation_id_explanation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/installation_id_explanation"
+        android:textColor="@color/component_color_app_version_activity_description_text_color"
+        android:textSize="14sp"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/installation_id_info_image_view"
+        app:layout_constraintTop_toBottomOf="@id/installation_id_container" />
+
+      <TextView
+        android:id="@+id/app_version_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/general_item_background_border"
+        android:fontFamily="sans-serif"
+        android:paddingStart="@dimen/app_version_text_view_padding_start"
+        android:paddingTop="20dp"
+        android:paddingEnd="@dimen/app_version_text_view_padding_end"
+        android:paddingBottom="20dp"
+        android:text="@{viewModel.computeVersionNameText()}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/installation_id_explanation" />
+
+      <ImageView
+        android:id="@+id/app_info_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/app_version_image_view_margin_start"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_version_text_view"
+        app:srcCompat="@drawable/ic_info_icon_gray_24dp"
+        app:tint="@color/component_color_app_version_activity_info_icon_color"
+        android:contentDescription="@string/app_info_icon_content_description" />
+
+      <TextView
+        android:id="@+id/app_last_update_date_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.computeLastUpdatedDateText()}"
+        android:textColor="@color/component_color_app_version_activity_description_text_color"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/app_info_image_view"
+        app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
