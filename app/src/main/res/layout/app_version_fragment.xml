@@ -3,7 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <variable
       name="viewModel"
       type="org.oppia.android.app.administratorcontrols.appversion.AppVersionViewModel" />
