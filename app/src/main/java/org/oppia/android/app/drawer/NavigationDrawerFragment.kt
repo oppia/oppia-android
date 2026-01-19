@@ -42,6 +42,11 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
   }
 
+  override fun onResume() {
+    super.onResume()
+    navigationDrawerFragmentPresenter.updateDrawerHighlights()
+  }
+
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     this.drawerLayout = drawerLayout
     this.toolbar = toolbar
