@@ -235,6 +235,37 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
+  /**
+   * Handles play/pause button click with network status check.
+   * Checks if network is available before attempting to play audio.
+   * Shows offline dialog if no network is available.
+   */
+  fun handlePlayPauseButtonClick() {
+    val playStatus = audioViewModel.playStatusLiveData.value
+
+    if (playStatus == UiAudioPlayStatus.PLAYING) {
+      audioViewModel.togglePlayPause(playStatus)
+      return
+    }
+
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+        audioViewModel.togglePlayPause(playStatus)
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+        if (useCellularData) {
+          audioViewModel.togglePlayPause(playStatus)
+        } else {
+          showOfflineDialog()
+        }
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+        showOfflineDialog()
+        setAudioFragmentVisible(false)
+      }
+    }
+  }
+
   fun handleEnableAudio(saveUserChoice: Boolean) {
     setAudioFragmentVisible(true)
     if (saveUserChoice) {
