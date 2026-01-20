@@ -67,19 +67,7 @@ class SolutionViewModel private constructor(
   val isFlashback: Boolean,
   val solutionBoxStrokeWidth: Int,
   private val consoleLogger: ConsoleLogger
-
 ) {
-
-  /**
-   * Overrides default HTML parsing to include custom concept card tags when generating
-   * TalkBack-readable text for Solution and Flashback dialogs.
-   *
-   * The previous implementation ignored custom tags.
-   * This caused TalkBack to skip concept card references.
-   *
-   * This fix ensures that TalkBack reads the concept card reference exactly once
-   * and consistently.
-   */
 
   val solutionSummaryContentDescription by lazy {
     CustomHtmlContentHandler.getContentDescription(
