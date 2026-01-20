@@ -467,7 +467,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Portrait_AnalyticsEnabled_profileAndDeviceIdDisplayed() {
+  fun testAdministratorControlsFragment_Portrait_AnalyticsEnabled_profileIdDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -491,7 +491,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Landscape_AnalyticsEnabled_profileAndDeviceIdDisplayed() {
+  fun testAdministratorControlsFragment_Landscape_AnalyticsEnabled_profileIdDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -517,7 +517,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Portrait_AnalyticsDisabled_profileAndDeviceIdNotDisplayed() {
+  fun testAdministratorControlsFragment_Portrait_AnalyticsDisabled_profileIdNotDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -535,7 +535,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Landscape_AnalyticsDisabled_profileAndDeviceIdNotDisplayed() {
+  fun testAdministratorControlsFragment_Landscape_AnalyticsDisabled_profileIdNotDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
