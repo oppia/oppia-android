@@ -21,8 +21,8 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -1374,7 +1374,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(profileId1, skillIdList)
   }
 
-  private fun startSuccessfulTrainingSession(profileId: LegacyProfileId, skillIdList: List<String>) {
+  private fun startSuccessfulTrainingSession(
+    profileId: LegacyProfileId,
+    skillIdList: List<String>
+  ) {
     monitorFactory.waitForNextSuccessfulResult(
       questionTrainingController.startQuestionTrainingSession(profileId, skillIdList)
     )

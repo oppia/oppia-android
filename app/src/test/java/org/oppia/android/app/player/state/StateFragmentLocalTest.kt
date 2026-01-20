@@ -70,10 +70,10 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule

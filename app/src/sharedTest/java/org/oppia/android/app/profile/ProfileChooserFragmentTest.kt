@@ -51,8 +51,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule

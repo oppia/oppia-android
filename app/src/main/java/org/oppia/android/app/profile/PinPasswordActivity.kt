@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
-import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName

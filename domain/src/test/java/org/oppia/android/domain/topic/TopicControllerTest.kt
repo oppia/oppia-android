@@ -18,10 +18,10 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.WrittenTranslationContext

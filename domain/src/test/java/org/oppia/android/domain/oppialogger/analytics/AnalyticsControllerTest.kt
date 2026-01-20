@@ -22,12 +22,12 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize

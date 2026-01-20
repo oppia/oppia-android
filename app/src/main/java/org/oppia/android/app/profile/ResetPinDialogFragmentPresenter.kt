@@ -90,8 +90,9 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (input.length == 3) {
+          val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(profileId).build()
           profileManagementController
-            .updatePin(LegacyProfileId.newBuilder().setInternalId(profileId).build(), input).toLiveData()
+            .updatePin(legacyProfileId, input).toLiveData()
             .observe(
               fragment,
               Observer {

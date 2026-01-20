@@ -23,9 +23,10 @@ class ConceptCardFragmentTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    conceptCardFragmentTestActivityController.handleOnCreate(
-      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, LegacyProfileId.getDefaultInstance())
+    val profileId = intent.getProtoExtra(
+      TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, LegacyProfileId.getDefaultInstance()
     )
+    conceptCardFragmentTestActivityController.handleOnCreate(profileId)
   }
 
   override fun dismissConceptCard() {

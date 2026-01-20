@@ -11,10 +11,10 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.OptionsActivityStateBundle
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY

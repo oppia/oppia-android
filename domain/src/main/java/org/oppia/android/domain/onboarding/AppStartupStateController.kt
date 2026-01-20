@@ -5,8 +5,8 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
-import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController

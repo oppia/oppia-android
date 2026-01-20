@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel

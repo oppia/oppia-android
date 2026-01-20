@@ -58,8 +58,8 @@ import kotlinx.coroutines.delay
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileLoginFragmentBinding
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -369,7 +369,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun ForgotPinButton(profileType: ProfileType, profileId: LegacyProfileId, profileName: String) {
+  private fun ForgotPinButton(
+    profileType: ProfileType,
+    profileId: LegacyProfileId,
+    profileName: String
+  ) {
     val adminProfile:
       Profile by adminProfileLiveData.observeAsState(initial = Profile.getDefaultInstance())
     val adminPin = adminProfile.pin

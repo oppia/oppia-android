@@ -25,9 +25,9 @@ import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -675,7 +675,8 @@ class ProfileManagementControllerTest {
     val updateProvider = profileManagementController.updateName(PROFILE_ID_6, "John")
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat()
+      .contains("LegacyProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -718,7 +719,8 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat()
+      .contains("LegacyProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -743,7 +745,8 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat()
+      .contains("LegacyProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -756,7 +759,8 @@ class ProfileManagementControllerTest {
     )
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat()
+      .contains("LegacyProfileId 6 does not match an existing Profile")
   }
 
   @Test

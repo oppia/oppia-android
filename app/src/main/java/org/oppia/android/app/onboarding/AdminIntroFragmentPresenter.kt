@@ -44,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler

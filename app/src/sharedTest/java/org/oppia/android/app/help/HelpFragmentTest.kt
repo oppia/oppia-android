@@ -52,9 +52,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.HelpFragmentArguments
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition

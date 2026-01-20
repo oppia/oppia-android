@@ -8,8 +8,8 @@ import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -176,7 +176,9 @@ class TranslationController @Inject constructor(
    *
    * This language can be updated via [updateWrittenTranslationContentLanguage].
    */
-  fun getWrittenTranslationContentLanguage(profileId: LegacyProfileId): DataProvider<OppiaLanguage> {
+  fun getWrittenTranslationContentLanguage(
+    profileId: LegacyProfileId
+  ): DataProvider<OppiaLanguage> {
     val providerId = WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return getWrittenTranslationContentLocale(profileId).transform(providerId) { locale ->
       locale.getCurrentLanguage()

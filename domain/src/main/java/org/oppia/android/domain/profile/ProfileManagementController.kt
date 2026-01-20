@@ -11,11 +11,11 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
@@ -873,7 +873,10 @@ class ProfileManagementController @Inject constructor(
    * @param audioLanguage New audio language for the profile being updated
    * @return a [DataProvider] that indicates the success/failure of this update operation
    */
-  fun updateAudioLanguage(profileId: LegacyProfileId, audioLanguage: AudioLanguage): DataProvider<Any?> {
+  fun updateAudioLanguage(
+    profileId: LegacyProfileId,
+    audioLanguage: AudioLanguage
+  ): DataProvider<Any?> {
     val audioSelection = AudioTranslationLanguageSelection.newBuilder().apply {
       this.selectedLanguage = when (audioLanguage) {
         AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,

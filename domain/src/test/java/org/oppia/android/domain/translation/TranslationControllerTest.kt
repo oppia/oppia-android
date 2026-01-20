@@ -20,6 +20,7 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -38,7 +39,6 @@ import org.oppia.android.app.model.OppiaRegion.BRAZIL
 import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString

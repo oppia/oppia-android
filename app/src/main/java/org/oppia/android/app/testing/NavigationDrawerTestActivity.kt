@@ -43,7 +43,8 @@ class NavigationDrawerTestActivity :
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      val profileId = internalProfileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
+      val profileId =
+        internalProfileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
       }

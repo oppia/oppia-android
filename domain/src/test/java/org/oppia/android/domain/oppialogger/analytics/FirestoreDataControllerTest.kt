@@ -19,8 +19,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize

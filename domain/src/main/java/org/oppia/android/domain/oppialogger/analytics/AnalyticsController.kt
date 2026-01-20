@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
-import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE

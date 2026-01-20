@@ -15,10 +15,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -300,7 +300,8 @@ class AppLanguageLocaleHandlerTest {
    * hasn't been explicitly set (since it then defaults to the system's language).
    */
   private fun retrieveAppLanguageLocale(): OppiaLocale.DisplayLocale {
-    val localeProvider = translationController.getAppLanguageLocale(LegacyProfileId.getDefaultInstance())
+    val localeProvider =
+      translationController.getAppLanguageLocale(LegacyProfileId.getDefaultInstance())
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 

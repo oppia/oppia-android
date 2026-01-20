@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AppLanguageFragmentBinding
 import org.oppia.android.app.databinding.databinding.AppLanguageItemBinding
 import org.oppia.android.app.model.AppLanguageSelection
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController

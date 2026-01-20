@@ -11,8 +11,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler

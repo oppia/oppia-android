@@ -43,10 +43,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ProfileEditActivityParams
 import org.oppia.android.app.model.ProfileEditFragmentArguments
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R

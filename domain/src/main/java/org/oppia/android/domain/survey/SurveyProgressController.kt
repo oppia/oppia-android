@@ -11,8 +11,8 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
-import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName

@@ -41,10 +41,10 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId

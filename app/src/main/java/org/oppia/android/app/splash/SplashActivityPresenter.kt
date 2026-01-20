@@ -18,9 +18,9 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment

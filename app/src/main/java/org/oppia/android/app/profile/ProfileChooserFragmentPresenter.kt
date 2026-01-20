@@ -20,9 +20,9 @@ import org.oppia.android.app.databinding.databinding.ProfileSelectionFragmentBin
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -358,8 +358,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   /** Handles navigation to either the [AdministratorControlsActivity] or [AdminAuthActivity]. */
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
-      val profileId =
-        LegacyProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+      val profileId = LegacyProfileId.newBuilder()
+        .setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,

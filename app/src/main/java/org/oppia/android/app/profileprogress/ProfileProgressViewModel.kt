@@ -8,9 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler

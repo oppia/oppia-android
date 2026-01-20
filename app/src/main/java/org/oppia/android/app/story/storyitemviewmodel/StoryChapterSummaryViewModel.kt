@@ -6,8 +6,8 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R

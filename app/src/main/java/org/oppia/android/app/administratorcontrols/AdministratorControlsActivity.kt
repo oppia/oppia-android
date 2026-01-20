@@ -76,7 +76,8 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
+    val selectedProfileId =
+      intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
@@ -121,8 +122,10 @@ class AdministratorControlsActivity :
   companion object {
 
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: LegacyProfileId?): Intent {
-
+    fun createAdministratorControlsActivityIntent(
+      context: Context,
+      profileId: LegacyProfileId?
+    ): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
       if (profileId != null) {

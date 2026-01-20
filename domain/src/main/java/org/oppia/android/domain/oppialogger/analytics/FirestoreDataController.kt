@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize

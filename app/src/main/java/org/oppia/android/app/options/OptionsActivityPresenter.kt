@@ -10,8 +10,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.ui.R
 import javax.inject.Inject

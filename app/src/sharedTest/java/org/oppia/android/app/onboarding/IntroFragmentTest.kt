@@ -131,7 +131,8 @@ class IntroFragmentTest {
 
   private val testProfileNickname = "John"
   private val testInternalProfileId = 0
-  private val testProfileId = LegacyProfileId.newBuilder().setInternalId(testInternalProfileId).build()
+  private val testProfileId =
+    LegacyProfileId.newBuilder().setInternalId(testInternalProfileId).build()
 
   @Before
   fun setUp() {

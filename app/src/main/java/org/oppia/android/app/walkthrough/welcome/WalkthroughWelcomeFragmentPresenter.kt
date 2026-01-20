@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
@@ -47,7 +47,8 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
 
-    profileId = activity.intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
+    profileId =
+      activity.intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 
     binding.let {

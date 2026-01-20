@@ -25,9 +25,9 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity

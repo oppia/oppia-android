@@ -35,7 +35,10 @@ class ExplorationDataController @Inject constructor(
   private val translationController: TranslationController
 ) {
   /** Returns an [EphemeralExploration] given an ID. */
-  fun getExplorationById(profileId: LegacyProfileId, id: String): DataProvider<EphemeralExploration> {
+  fun getExplorationById(
+    profileId: LegacyProfileId,
+    id: String
+  ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     val explorationProvider = dataProviders.createInMemoryDataProviderAsync(

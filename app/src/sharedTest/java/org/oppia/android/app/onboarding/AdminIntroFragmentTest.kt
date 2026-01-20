@@ -34,8 +34,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity

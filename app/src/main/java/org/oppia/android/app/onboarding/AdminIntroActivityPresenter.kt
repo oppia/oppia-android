@@ -23,7 +23,11 @@ class AdminIntroActivityPresenter @Inject constructor(
 ) {
 
   /** Creates the view for [AdminIntroActivity]. */
-  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, profileNickname: String) {
+  fun handleOnCreate(
+    profileId: LegacyProfileId,
+    profileType: ProfileType,
+    profileNickname: String
+  ) {
     activity.setContentView(R.layout.admin_intro_activity)
 
     if (getAdminIntroFragment() == null) {

@@ -14,8 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule

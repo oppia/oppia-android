@@ -4,8 +4,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel

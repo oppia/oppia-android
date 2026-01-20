@@ -7,8 +7,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AppLanguageActivityStateBundle
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ScreenName.APP_LANGUAGE_ACTIVITY
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra

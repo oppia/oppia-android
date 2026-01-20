@@ -142,7 +142,9 @@ class ApplicationLifecycleObserver @Inject constructor(
     currentScreen = BACKGROUND_SCREEN
   }
 
-  private fun logAppLifecycleEventInBackground(logMethod: (String?, LegacyProfileId?, String?) -> Unit) {
+  private fun logAppLifecycleEventInBackground(
+    logMethod: (String?, LegacyProfileId?, String?) -> Unit
+  ) {
     CoroutineScope(backgroundDispatcher).launch {
       val installationId = loggingIdentifierController.fetchInstallationId()
       val profileId = profileManagementController.getCurrentProfileId()

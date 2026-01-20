@@ -69,7 +69,8 @@ class StoryProgressController @Inject constructor(
     SUCCESS
   }
 
-  private val cacheStoreMap = mutableMapOf<LegacyProfileId, PersistentCacheStore<TopicProgressDatabase>>()
+  private val cacheStoreMap =
+    mutableMapOf<LegacyProfileId, PersistentCacheStore<TopicProgressDatabase>>()
 
   /**
    * Records the specified chapter completed within the context of the specified exploration, story,

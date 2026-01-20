@@ -11,8 +11,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize

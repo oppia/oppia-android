@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection

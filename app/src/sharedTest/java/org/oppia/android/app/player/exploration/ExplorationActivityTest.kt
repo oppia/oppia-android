@@ -68,9 +68,9 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection

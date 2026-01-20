@@ -1,8 +1,8 @@
 package org.oppia.android.domain.oppialogger.survey
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -25,7 +25,11 @@ class SurveyEventsLogger @Inject constructor(
    * Logs an event representing a survey session being started and ended before the
    * mandatory questions are completed.
    */
-  fun logAbandonSurvey(surveyId: String, profileId: LegacyProfileId, questionName: SurveyQuestionName) {
+  fun logAbandonSurvey(
+    surveyId: String,
+    profileId: LegacyProfileId,
+    questionName: SurveyQuestionName
+  ) {
     analyticsController.logImportantEvent(
       createAbandonSurveyContext(surveyId, profileId, questionName),
       profileId

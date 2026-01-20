@@ -158,8 +158,11 @@ class TopicActivity :
   class TopicActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
-    override fun createIntent(profileId: LegacyProfileId, classroomId: String, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId, classroomId, topicId)
+    override fun createIntent(
+      profileId: LegacyProfileId,
+      classroomId: String,
+      topicId: String
+    ): Intent = createTopicActivityIntent(activity, profileId, classroomId, topicId)
 
     override fun createIntent(
       profileId: LegacyProfileId,

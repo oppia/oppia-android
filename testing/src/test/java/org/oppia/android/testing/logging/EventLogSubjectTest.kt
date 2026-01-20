@@ -25,9 +25,9 @@ import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer

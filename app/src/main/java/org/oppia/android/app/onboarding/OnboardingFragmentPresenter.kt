@@ -14,10 +14,10 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger

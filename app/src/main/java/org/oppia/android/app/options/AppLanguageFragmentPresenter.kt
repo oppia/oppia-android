@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmentBinding
 import org.oppia.android.app.model.AppLanguageFragmentStateBundle
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.onboarding.AppLanguageViewModel
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler

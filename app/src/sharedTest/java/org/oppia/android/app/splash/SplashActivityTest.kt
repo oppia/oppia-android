@@ -47,6 +47,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -54,7 +55,6 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY

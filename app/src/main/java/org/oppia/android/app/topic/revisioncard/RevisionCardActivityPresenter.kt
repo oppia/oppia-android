@@ -11,8 +11,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.RevisionCardActivityBinding
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu

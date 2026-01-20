@@ -8,8 +8,8 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.ResumeLessonActivityBinding
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.ui.R

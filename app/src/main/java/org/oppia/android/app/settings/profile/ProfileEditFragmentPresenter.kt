@@ -143,8 +143,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
    * currently using a tablet device.
    */
   fun deleteProfile(internalProfileId: Int) {
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     profileManagementController
-      .deleteProfile(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
+      .deleteProfile(legacyProfileId).toLiveData()
       .observe(
         fragment,
         Observer {

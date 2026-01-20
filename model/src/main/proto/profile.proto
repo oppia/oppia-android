@@ -136,6 +136,17 @@ message LegacyProfileId {
   int32 internal_id = 1;
 }
 
+// New schema with optional functionality
+message ProfileId {
+  // Uninitialized profiles won't have ID as 0.
+  optional int32 internal_id = 1;
+}
+
+message Proto {
+  LegacyProfileId legacy_id = 1;
+  ProfileId id = 23;
+}
+
 // Used in BindableAdapter for ProfileChooserFragment.
 message ProfileChooserUiModel {
   oneof model_type {

@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileEditFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileEditFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject

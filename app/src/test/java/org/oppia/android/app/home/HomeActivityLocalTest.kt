@@ -124,7 +124,8 @@ class HomeActivityLocalTest {
 
   private val internalProfileId: Int = 0
 
-  private val profileId: LegacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId =
+    LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {

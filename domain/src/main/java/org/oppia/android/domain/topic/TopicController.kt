@@ -14,10 +14,10 @@ import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
@@ -136,7 +136,10 @@ class TopicController @Inject constructor(
    *
    * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
    */
-  fun getTopics(profileId: LegacyProfileId, topicIds: List<String>): DataProvider<List<EphemeralTopic>> {
+  fun getTopics(
+    profileId: LegacyProfileId,
+    topicIds: List<String>
+  ): DataProvider<List<EphemeralTopic>> {
     val topicsDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPICS_PROVIDER_ID) {
         val topics = topicIds.map { topicId ->
@@ -238,7 +241,10 @@ class TopicController @Inject constructor(
    * Returns the [EphemeralConceptCard] corresponding to the specified skill ID, or a failed result
    * if there is none.
    */
-  fun getConceptCard(profileId: LegacyProfileId, skillId: String): DataProvider<EphemeralConceptCard> {
+  fun getConceptCard(
+    profileId: LegacyProfileId,
+    skillId: String
+  ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
       profileId
     ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->

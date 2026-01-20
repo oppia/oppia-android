@@ -43,8 +43,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule

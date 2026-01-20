@@ -17,8 +17,8 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
@@ -167,7 +167,10 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
   }
 
-  private fun updateSelectedAudioLanguage(selectedLanguage: OppiaLanguage, profileId: LegacyProfileId) {
+  private fun updateSelectedAudioLanguage(
+    selectedLanguage: OppiaLanguage,
+    profileId: LegacyProfileId
+  ) {
     val audioLanguageSelection =
       AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
     translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)

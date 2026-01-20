@@ -84,8 +84,12 @@ class StoryProgressTestHelperTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId0: LegacyProfileId by lazy { LegacyProfileId.newBuilder().setInternalId(0).build() }
-  private val profileId1: LegacyProfileId by lazy { LegacyProfileId.newBuilder().setInternalId(1).build() }
+  private val profileId0: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(0).build()
+  }
+  private val profileId1: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(1).build()
+  }
 
   @Before
   fun setUp() {

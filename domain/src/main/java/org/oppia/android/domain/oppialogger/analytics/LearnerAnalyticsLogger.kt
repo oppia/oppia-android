@@ -14,8 +14,8 @@ import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController

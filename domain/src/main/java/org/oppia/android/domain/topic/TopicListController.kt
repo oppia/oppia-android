@@ -8,9 +8,9 @@ import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList

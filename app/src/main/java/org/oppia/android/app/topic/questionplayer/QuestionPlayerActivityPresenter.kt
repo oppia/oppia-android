@@ -10,8 +10,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
