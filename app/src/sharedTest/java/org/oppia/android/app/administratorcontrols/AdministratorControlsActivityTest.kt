@@ -825,6 +825,75 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControls_AnalyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_Landscape_AnalyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+  @Test
+  fun testAdministratorControls_learnerAnalyticsDisabled_profileNotDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
