@@ -874,6 +874,7 @@ class AdministratorControlsActivityTest {
       )
     }
   }
+
   @Test
   fun testAdministratorControls_learnerAnalyticsDisabled_profileNotDisplayed() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
