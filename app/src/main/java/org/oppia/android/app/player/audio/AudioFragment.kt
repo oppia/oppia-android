@@ -73,6 +73,10 @@ class AudioFragment :
     audioFragmentPresenter.handleOnDestroy()
   }
 
+  override fun playPauseButtonClicked() {
+    audioFragmentPresenter.handlePlayPauseButtonClick()
+  }
+
   override fun enableAudioPlayback(contentId: String?) {
     audioFragmentPresenter.handleAudioClick(
       shouldEnableAudioPlayback = true, feedbackId = contentId
