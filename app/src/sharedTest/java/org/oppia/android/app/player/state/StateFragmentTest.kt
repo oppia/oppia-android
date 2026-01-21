@@ -5621,7 +5621,7 @@ class StateFragmentTest {
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
       onView(withId(R.id.solution_summary))
-        .perform(openClickableSpan("Click on this test_skill_id_1 concept card."))
+        .perform(openClickableSpan("\n\nClick on this test_skill_id_1 concept card."))
 
       // Verify Return to question button is visible.
       scrollToViewType(RETURN_TO_QUESTION_BUTTON)
@@ -5673,7 +5673,7 @@ class StateFragmentTest {
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
       onView(withId(R.id.solution_summary))
-        .perform(openClickableSpan("Click on this test_skill_id_1 concept card."))
+        .perform(openClickableSpan("\n\nClick on this test_skill_id_1 concept card."))
 
       // Verify Return to question button is visible.
       scrollToViewType(RETURN_TO_QUESTION_BUTTON)
