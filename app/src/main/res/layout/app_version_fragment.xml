@@ -11,8 +11,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_shared_screen_tertiary_background_color"
-    android:fillViewport="true">
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
