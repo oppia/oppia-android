@@ -1,8 +1,6 @@
 package org.oppia.android.app.administratorcontrols.appversion
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -19,6 +17,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getLastUpdateTime
 import org.oppia.android.util.extensions.getVersionName
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import javax.inject.Inject
 
 private const val COPY_ICON_RESET_DELAY_MS = 2000L
@@ -31,12 +30,12 @@ class AppVersionViewModel @Inject constructor(
   private val clipboardController: ClipboardController,
   private val oppiaLogger: OppiaLogger,
   private val fragment: Fragment,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   context: Context
 ) : ObservableViewModel() {
 
   private val versionName: String = context.getVersionName()
   private val lastUpdateDateTime = context.getLastUpdateTime()
-  private val handler = Handler(Looper.getMainLooper())
 
   /** Indicates whether the installation ID was recently copied. */
   val isInstallationIdCopied = ObservableField(false)
@@ -62,9 +61,9 @@ class AppVersionViewModel @Inject constructor(
       ).toLiveData().observe(fragment) { result ->
         if (result is AsyncResult.Success) {
           isInstallationIdCopied.set(true)
-          handler.postDelayed({
+          lifecycleSafeTimerFactory.createTimer(COPY_ICON_RESET_DELAY_MS).observe(fragment) {
             isInstallationIdCopied.set(false)
-          }, COPY_ICON_RESET_DELAY_MS)
+          }
         } else {
           oppiaLogger.w(
             "AppVersionViewModel",
