@@ -241,6 +241,89 @@ class AppVersionActivityTest {
     }
   }
 
+  @Test
+  fun testAppVersionActivity_installationIdIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_text)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_installationIdLabelIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.installation_id_label))
+        .check(matches(withText(R.string.installation_id_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_copyButton_isDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickCopyButton_showsCopiedState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickCopyButton_afterDelay_resetsState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Advance time past the 2000ms reset delay.
+      testCoroutineDispatchers.advanceTimeBy(2001)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_configurationChange_installationIdIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.copy_installation_id_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_installationIdExplanationIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.installation_id_explanation))
+        .check(matches(withText(R.string.installation_id_explanation)))
+    }
+  }
+
   private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
     timestampMillis: Long
   ): String {
