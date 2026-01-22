@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.R
 import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
 import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
@@ -54,7 +54,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.compose.OppiaComposeTheme
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.onboarding.AppStartupStateController
@@ -194,7 +194,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
     binding.composeView.apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
-        MaterialTheme {
+        OppiaComposeTheme {
           ClassroomListScreen()
         }
       }
