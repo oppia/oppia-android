@@ -271,7 +271,7 @@ class TopicFragmentTest {
       profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
     ) {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 

@@ -1690,7 +1690,7 @@ class ExplorationActivityTest {
         .check(
           matches(
             withContentDescription(
-              "Remember that two halves, when added together, make one whole.\n\n" +
+              "Remember that two halves, when added together, make one whole.\n" +
                 "Click on this test_skill_id_1 concept card."
             )
           )
