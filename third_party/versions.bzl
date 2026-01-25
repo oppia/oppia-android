@@ -165,12 +165,12 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.7",
     },
     "rules_java": {
-        "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
-        "version": "5.3.5",
+        "sha": "4018e97c93f97680f1650ffd2a7530245b864ac543fd24fae8c02ba447cb2864",
+        "version": "7.3.1",
     },
     "rules_jvm": {
-        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
-        "version": "5.1",
+        "sha": "ec60d258e6f55a1014368e40ca52058b1a645a3d455ca471c4edb7c03f4b8d88",
+        "version": "6.6",
     },
     "rules_kotlin": {
         "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",

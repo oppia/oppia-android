@@ -170,16 +170,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
     private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
     private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
 
-    private val falsePositiveIssues: Set<FalsePositiveIssue> = setOf(
-      // TODO(#5930): Remove this once lint no longer falsely triggers on Iterable#forEach.
-      FalsePositiveIssue(
-        issueId = "NewApi",
-        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
-        severity = LintSeverity.ERROR,
-        workaroundMessage = "Use safeForEach from IterableExtensions.kt instead of directly" +
-          " calling forEach to avoid known lint false positives on API < 24."
-      )
-    )
+    private val falsePositiveIssues: Set<FalsePositiveIssue> = setOf()
   }
 
   /**
