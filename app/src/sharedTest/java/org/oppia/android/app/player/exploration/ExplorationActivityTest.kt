@@ -1901,7 +1901,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.hints_and_solution_summary))
         .inRoot(isDialog())
-        .perform(openClickableSpan(containsString("Click on this test_skill_id_1 concept card")))
+        .perform(openClickableSpan("Click on this test_skill_id_1 concept card"))
 
       testCoroutineDispatchers.runCurrent()
 
@@ -1978,7 +1978,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.hints_and_solution_summary))
         .inRoot(isDialog())
-        .perform(openClickableSpan(containsString("Click on this test_skill_id_1 concept card")))
+        .perform(openClickableSpan("Click on this test_skill_id_1 concept card"))
 
       testCoroutineDispatchers.runCurrent()
 
