@@ -8,12 +8,12 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 
 /** Test tag for the welcome section. */
 const val WELCOME_TEST_TAG = "TEST_TAG.welcome"
@@ -21,8 +21,6 @@ const val WELCOME_TEST_TAG = "TEST_TAG.welcome"
 /** Displays a welcome text with an underline. */
 @Composable
 fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
-  val outerPadding = dimensionResource(id = R.dimen.home_welcome_outer_padding)
-  val textMarginEnd = dimensionResource(id = R.dimen.home_welcome_text_view_margin_end)
   val greetingLineColor = colorResource(
     id = R.color.component_color_home_activity_layout_greeting_text_line_color
   )
@@ -32,9 +30,9 @@ fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
     modifier = Modifier
       .testTag(WELCOME_TEST_TAG)
       .padding(
-        start = outerPadding,
-        top = outerPadding,
-        end = outerPadding + textMarginEnd,
+        start = OppiaTheme.spacing.medium,
+        top = OppiaTheme.spacing.medium,
+        end = OppiaTheme.spacing.large,
       )
       .drawBehind {
         val strokeWidthPx = 6.dp.toPx()

@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
@@ -55,6 +54,7 @@ import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.onboarding.AppStartupStateController
@@ -358,7 +358,7 @@ fun <T> LazyListScope.gridItems(
           colorResource(id = R.color.component_color_classroom_topic_list_background_color)
         )
         .padding(
-          horizontal = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+          horizontal = OppiaTheme.spacing.medium,
           vertical = 10.dp
         )
     ) {
@@ -383,7 +383,7 @@ fun <T> LazyListScope.gridItems(
       Spacer(
         modifier = Modifier
           .fillMaxWidth()
-          .height(dimensionResource(id = R.dimen.home_fragment_padding_bottom))
+          .height(OppiaTheme.spacing.extraLarge)
           .background(
             colorResource(id = R.color.component_color_classroom_topic_list_background_color)
           )

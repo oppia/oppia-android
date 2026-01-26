@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +30,7 @@ import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 import org.oppia.android.util.locale.OppiaLocale
 
 /** Test tag for the header of the promoted story list. */
@@ -53,21 +53,21 @@ fun ComingSoonTopicList(
     fontSize = dimensionResource(id = R.dimen.coming_soon_topic_list_header_text_size).value.sp,
     modifier = Modifier
       .padding(
-        start = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_start),
-        top = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_top),
-        end = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_end),
+        start = OppiaTheme.spacing.medium,
+        top = OppiaTheme.spacing.medium,
+        end = OppiaTheme.spacing.medium,
       )
       .testTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG),
   )
   LazyRow(
     modifier = Modifier
       .padding(
-        top = dimensionResource(id = R.dimen.coming_soon_topic_list_padding)
+        top = OppiaTheme.spacing.small
       )
       .testTag(COMING_SOON_TOPIC_LIST_TEST_TAG),
     contentPadding = PaddingValues(
-      start = dimensionResource(id = R.dimen.coming_soon_topic_list_layout_margin_start),
-      end = dimensionResource(id = R.dimen.home_padding_end),
+      start = OppiaTheme.spacing.medium,
+      end = OppiaTheme.spacing.medium,
     ),
   ) {
     items(comingSoonTopicListViewModel.comingSoonTopicList) {
@@ -87,13 +87,13 @@ fun ComingSoonTopicCard(
 ) {
   Card(
     modifier = Modifier
-      .width(dimensionResource(id = R.dimen.coming_soon_topic_card_width))
+      .width(200.dp)
       .padding(
-        start = dimensionResource(id = R.dimen.coming_soon_topic_card_layout_margin_start),
-        end = dimensionResource(id = R.dimen.coming_soon_topic_card_layout_margin_end),
-        bottom = dimensionResource(id = R.dimen.coming_soon_topic_card_layout_margin_bottom),
+        start = OppiaTheme.spacing.small,
+        end = OppiaTheme.spacing.small,
+        bottom = OppiaTheme.spacing.medium,
       ),
-    elevation = dimensionResource(id = R.dimen.topic_card_elevation),
+    elevation = OppiaTheme.spacing.small,
   ) {
     Box(
       contentAlignment = Alignment.TopEnd
@@ -120,8 +120,8 @@ fun ComingSoonTopicCard(
             shape = RoundedCornerShape(topEnd = 4.dp, bottomStart = 12.dp),
           )
           .padding(
-            horizontal = dimensionResource(id = R.dimen.coming_soon_text_padding_horizontal),
-            vertical = dimensionResource(id = R.dimen.coming_soon_text_padding_vertical),
+            horizontal = OppiaTheme.spacing.small,
+            vertical = OppiaTheme.spacing.extraSmall,
           ),
         fontSize = 12.sp,
         color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
@@ -150,10 +150,10 @@ fun ComingSoonTopicCardTextSection(comingSoonTopicsViewModel: ComingSoonTopicsVi
       modifier = Modifier
         .fillMaxWidth()
         .padding(
-          start = dimensionResource(id = R.dimen.coming_soon_topic_card_text_padding),
-          top = dimensionResource(id = R.dimen.coming_soon_topic_card_text_padding),
-          end = dimensionResource(id = R.dimen.coming_soon_topic_card_text_padding),
-          bottom = dimensionResource(id = R.dimen.coming_soon_topic_card_text_padding_bottom),
+          start = OppiaTheme.spacing.medium,
+          top = OppiaTheme.spacing.medium,
+          end = OppiaTheme.spacing.medium,
+          bottom = OppiaTheme.spacing.small,
         ),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,

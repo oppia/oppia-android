@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 
 /** Displays a card with the topic summary information. */
 @Composable
@@ -29,11 +30,11 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
   Card(
     modifier = Modifier
       .padding(
-        start = dimensionResource(R.dimen.topic_card_margin_start),
-        end = dimensionResource(R.dimen.topic_card_margin_end),
+        start = OppiaTheme.spacing.medium,
+        end = OppiaTheme.spacing.medium,
       )
       .clickable { topicSummaryViewModel.clickOnSummaryTile() },
-    elevation = dimensionResource(id = R.dimen.topic_card_elevation),
+    elevation = OppiaTheme.spacing.small,
   ) {
     Column(
       verticalArrangement = Arrangement.Center,
@@ -66,9 +67,9 @@ fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
       text = topicSummaryViewModel.title,
       modifier = Modifier
         .padding(
-          start = dimensionResource(id = R.dimen.topic_list_item_text_padding),
-          top = dimensionResource(id = R.dimen.topic_list_item_text_padding),
-          end = dimensionResource(id = R.dimen.topic_list_item_text_padding)
+          start = OppiaTheme.spacing.medium,
+          top = OppiaTheme.spacing.medium,
+          end = OppiaTheme.spacing.medium
         ),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
@@ -80,7 +81,7 @@ fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
     Text(
       text = topicSummaryViewModel.computeLessonCountText(),
       modifier = Modifier
-        .padding(all = dimensionResource(id = R.dimen.topic_list_item_text_padding)),
+        .padding(all = OppiaTheme.spacing.medium),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Light,

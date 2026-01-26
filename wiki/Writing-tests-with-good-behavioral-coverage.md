@@ -335,7 +335,7 @@ fun checkSign(number: Int): String {
 }
 ```
 
-### Testing different scenerios
+### Testing different scenarios
 
 Positive Number: Verifies that the function correctly identifies positive numbers.
 
@@ -627,7 +627,7 @@ In this scenario, the `confirmPayment()` function throws an `IllegalStateExcepti
 
 ### Importance of Specific Error Messages
 
-Imagine if both checks in the `reserveSeat()` and `confirmPayment()` functions used generic messages like "Error occured" as:
+Imagine if both checks in the `reserveSeat()` and `confirmPayment()` functions used generic messages like "Error occurred" as:
 
 ```kotlin
 check(seatsAvailable > 0) { "Error occurred" }

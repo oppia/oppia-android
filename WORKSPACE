@@ -82,7 +82,7 @@ kotlin_repositories(
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for generating
-# protos while helping us avoid the unnecessary compilation of protoc. Referecences:
+# protos while helping us avoid the unnecessary compilation of protoc. References:
 # - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 # - https://github.com/bazelbuild/bazel/issues/7095
 

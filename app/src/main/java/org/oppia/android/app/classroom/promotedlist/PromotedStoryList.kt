@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +34,7 @@ import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 import org.oppia.android.util.locale.OppiaLocale
 
 /** Test tag for the header of the promoted story list. */
@@ -57,9 +57,9 @@ fun PromotedStoryList(
         .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
         .fillMaxWidth()
         .padding(
-          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-          top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
-          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+          start = OppiaTheme.spacing.medium,
+          top = OppiaTheme.spacing.medium,
+          end = OppiaTheme.spacing.medium,
         ),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
@@ -84,7 +84,7 @@ fun PromotedStoryList(
           ).value.sp,
           modifier = Modifier
             .padding(
-              start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
+              start = OppiaTheme.spacing.small
             )
             .clickable { promotedStoryListViewModel.clickOnViewAll() },
         )
@@ -94,9 +94,9 @@ fun PromotedStoryList(
   LazyRow(
     modifier = Modifier
       .testTag(PROMOTED_STORY_LIST_TEST_TAG)
-      .padding(top = dimensionResource(id = R.dimen.promoted_story_list_padding)),
+      .padding(top = OppiaTheme.spacing.small),
     contentPadding = PaddingValues(
-      start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+      start = OppiaTheme.spacing.medium,
       end = promotedStoryListViewModel.endPadding.dp,
     ),
   ) {
@@ -122,17 +122,17 @@ fun PromotedStoryCard(
 
   Card(
     modifier = Modifier
-      .width(width = dimensionResource(id = R.dimen.promoted_story_card_layout_width))
+      .width(width = 336.dp)
       .padding(
-        start = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_start),
-        end = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_end),
-        bottom = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_bottom),
+        start = OppiaTheme.spacing.small,
+        end = OppiaTheme.spacing.small,
+        bottom = OppiaTheme.spacing.medium,
       )
       .clickable { promotedStoryViewModel.clickOnStoryTile() },
     backgroundColor = colorResource(
       id = R.color.component_color_classroom_promoted_list_card_background_color
     ),
-    elevation = dimensionResource(id = R.dimen.promoted_story_card_elevation),
+    elevation = OppiaTheme.spacing.small,
   ) {
     Column(
       modifier = cardColumnModifier
@@ -146,15 +146,9 @@ fun PromotedStoryCard(
       Text(
         text = promotedStoryViewModel.nextChapterTitle,
         modifier = Modifier.padding(
-          start = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
-          top = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_vertical
-          ),
-          end = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
+          start = OppiaTheme.spacing.medium,
+          top = OppiaTheme.spacing.small,
+          end = OppiaTheme.spacing.medium,
         ),
         color = colorResource(id = R.color.component_color_shared_primary_text_color),
         fontFamily = FontFamily.SansSerif,
@@ -169,15 +163,9 @@ fun PromotedStoryCard(
       Text(
         text = machineLocale.run { promotedStoryViewModel.topicTitle.toMachineUpperCase() },
         modifier = Modifier.padding(
-          start = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
-          top = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_vertical
-          ),
-          end = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
+          start = OppiaTheme.spacing.medium,
+          top = OppiaTheme.spacing.extraSmall,
+          end = OppiaTheme.spacing.medium,
         ),
         color = colorResource(
           id = R.color.component_color_shared_story_card_topic_name_text_color
@@ -195,8 +183,8 @@ fun PromotedStoryCard(
         text = machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
         modifier = Modifier
           .padding(
-            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
-            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+            horizontal = OppiaTheme.spacing.medium,
+            vertical = OppiaTheme.spacing.small,
           )
           .border(
             width = 2.dp,
@@ -206,8 +194,8 @@ fun PromotedStoryCard(
             shape = RoundedCornerShape(50)
           )
           .padding(
-            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
-            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+            horizontal = OppiaTheme.spacing.small,
+            vertical = OppiaTheme.spacing.extraSmall,
           ),
         color = colorResource(
           id = R.color.component_color_classroom_promoted_list_classroom_label_color

@@ -318,11 +318,11 @@ class AppLanguageFragmentTest {
 
           val appLanguageFragment = activity.supportFragmentManager
             .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-          val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
+          val receivedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
           val receivedProfileId =
             appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
 
-          assertThat(recievedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
+          assertThat(receivedLanguage).isEqualTo(OppiaLanguage.ENGLISH)
           assertThat(receivedProfileId).isEqualTo(internalProfileId)
         }
       }

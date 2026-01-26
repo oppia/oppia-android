@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.ui.theme.OppiaTheme
 
 /** Test tag for the all classrooms section header. */
 const val ALL_CLASSROOMS_HEADER_TEST_TAG = "TEST_TAG.all_classrooms_header"
@@ -28,9 +28,9 @@ fun AllClassroomsHeaderText() {
     modifier = Modifier
       .testTag(ALL_CLASSROOMS_HEADER_TEST_TAG)
       .padding(
-        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-        top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+        start = OppiaTheme.spacing.medium,
+        top = OppiaTheme.spacing.medium,
+        end = OppiaTheme.spacing.medium,
       ),
   )
 }
