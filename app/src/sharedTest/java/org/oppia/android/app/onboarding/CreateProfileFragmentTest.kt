@@ -212,7 +212,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -241,7 +241,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity(profileType = ProfileType.SUPERVISOR).use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -265,7 +265,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -302,7 +302,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -339,7 +339,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -374,7 +374,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -390,7 +390,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -418,7 +418,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -456,7 +456,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -564,7 +564,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John123"),
+          EditTextInputAction.appendText("John123"),
           closeSoftKeyboard()
         )
 
@@ -609,7 +609,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John123"),
+          EditTextInputAction.appendText("John123"),
           closeSoftKeyboard()
         )
 
@@ -628,7 +628,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John123"),
+          EditTextInputAction.appendText("John123"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -652,7 +652,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John123"),
+          EditTextInputAction.appendText("John123"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -665,7 +665,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -680,7 +680,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John123"),
+          EditTextInputAction.appendText("John123"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()
@@ -696,7 +696,7 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
-          editTextInputAction.appendText("John"),
+          EditTextInputAction.appendText("John"),
           closeSoftKeyboard()
         )
       testCoroutineDispatchers.runCurrent()

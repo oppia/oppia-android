@@ -136,8 +136,6 @@ class MathExpressionInteractionsViewTest {
 
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-
   @Parameter lateinit var type: String
   @Parameter lateinit var lang: String
   @Parameter lateinit var text: String
@@ -368,7 +366,7 @@ class MathExpressionInteractionsViewTest {
 
       // Request, then clear focus after inputting text.
       onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText("12+7"))
+        .perform(EditTextInputAction.appendText("12+7"))
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
@@ -1692,7 +1690,7 @@ class MathExpressionInteractionsViewTest {
    */
   private fun typeExpressionInput(text: String) {
     onView(withId(R.id.test_math_expression_input_interaction_view))
-      .perform(editTextInputAction.appendText(text))
+      .perform(EditTextInputAction.appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1708,7 +1706,7 @@ class MathExpressionInteractionsViewTest {
     // Note that replaceText is used here since some answers can contain extra spaces (which will
     // trigger an automatic period to be entered) or Unicode (which Espresso doesn't supported).
     onView(withId(R.id.test_math_expression_input_interaction_view))
-      .perform(editTextInputAction.replaceText(text))
+      .perform(EditTextInputAction.replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 

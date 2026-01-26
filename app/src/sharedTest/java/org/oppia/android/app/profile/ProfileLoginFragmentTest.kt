@@ -139,7 +139,6 @@ class ProfileLoginFragmentTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var appStartupStateController: AppStartupStateController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
 
@@ -689,7 +688,7 @@ class ProfileLoginFragmentTest {
       onView(withId(R.id.admin_settings_input_pin_edit_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-        .perform(editTextInputAction.appendText("1111"), closeSoftKeyboard())
+        .perform(EditTextInputAction.appendText("1111"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -721,7 +720,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(EditTextInputAction.appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -752,7 +751,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(EditTextInputAction.appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -761,7 +760,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.reset_pin_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+      .perform(EditTextInputAction.appendText("111"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -794,7 +793,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(EditTextInputAction.appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -803,7 +802,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.reset_pin_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+      .perform(EditTextInputAction.appendText("111"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())

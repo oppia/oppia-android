@@ -154,7 +154,7 @@ class TextInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "abc"
         )
       )
@@ -175,7 +175,7 @@ class TextInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "abc"
         )
       )

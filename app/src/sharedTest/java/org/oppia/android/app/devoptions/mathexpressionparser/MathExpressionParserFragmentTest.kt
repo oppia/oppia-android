@@ -114,7 +114,6 @@ class MathExpressionParserFragmentTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Before
@@ -1393,7 +1392,7 @@ class MathExpressionParserFragmentTest {
   private fun typeIntoView(@IdRes viewId: Int, text: String) {
     // First, ensure the view is visible before trying to input text.
     scrollToView(viewId)
-    onView(withId(viewId)).perform(editTextInputAction.replaceText(text))
+    onView(withId(viewId)).perform(EditTextInputAction.replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 

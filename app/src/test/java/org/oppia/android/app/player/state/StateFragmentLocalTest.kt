@@ -198,7 +198,7 @@ class StateFragmentLocalTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var editTextInputAction: EditTextInputAction
+
   @Inject lateinit var accessibilityManager: FakeAccessibilityService
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
@@ -2643,7 +2643,7 @@ class StateFragmentLocalTest {
   }
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
-    onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
+    onView(withId(interactionViewId)).perform(EditTextInputAction.appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 

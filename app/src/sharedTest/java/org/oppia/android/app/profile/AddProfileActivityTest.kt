@@ -141,7 +141,6 @@ class AddProfileActivityTest {
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
@@ -196,7 +195,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -221,7 +220,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -233,7 +232,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -263,7 +262,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -285,7 +284,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -359,7 +358,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -371,7 +370,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -387,7 +386,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -409,7 +408,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -426,7 +425,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -442,7 +441,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -480,7 +479,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("Rajat"),
+        EditTextInputAction.appendText("Rajat"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -498,7 +497,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("Rajat"),
+        EditTextInputAction.appendText("Rajat"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -517,7 +516,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("Admin"),
+        EditTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -546,7 +545,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("Admin"),
+        EditTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -574,7 +573,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("Admin"),
+        EditTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -587,7 +586,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText(" "),
+        EditTextInputAction.appendText(" "),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -609,7 +608,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("Admin"),
+        EditTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -628,7 +627,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText(" "),
+        EditTextInputAction.appendText(" "),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -646,7 +645,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -676,7 +675,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -704,7 +703,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -717,7 +716,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText(" "),
+        EditTextInputAction.appendText(" "),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -737,7 +736,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -756,7 +755,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText(" "),
+        EditTextInputAction.appendText(" "),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -775,7 +774,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -787,7 +786,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -817,7 +816,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -835,7 +834,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -865,7 +864,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -877,7 +876,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("3"),
+        EditTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -901,7 +900,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo()).perform(click())
@@ -917,7 +916,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(
-        editTextInputAction.appendText("3"),
+        EditTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_pin))
@@ -934,7 +933,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -946,7 +945,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -961,7 +960,7 @@ class AddProfileActivityTest {
           withId(R.id.add_profile_activity_confirm_pin_edit_text),
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
-      ).perform(editTextInputAction.appendText("12"))
+      ).perform(EditTextInputAction.appendText("12"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
@@ -988,7 +987,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1006,7 +1005,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1022,7 +1021,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1062,7 +1061,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -1077,7 +1076,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -1094,7 +1093,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("3"),
+        EditTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
@@ -1114,7 +1113,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -1123,7 +1122,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("12"),
+        EditTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -1140,7 +1139,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("3"),
+        EditTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
@@ -1157,7 +1156,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1168,7 +1167,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -1177,7 +1176,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         pressImeActionButton()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -1196,7 +1195,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1222,7 +1221,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
       ).perform(scrollTo()).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_allow_download_constraint_layout))
@@ -1247,7 +1246,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1263,7 +1262,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1289,7 +1288,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1305,7 +1304,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1382,7 +1381,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -1407,7 +1406,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1434,7 +1433,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1458,7 +1457,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1470,7 +1469,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1486,7 +1485,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1531,7 +1530,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1543,7 +1542,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1553,7 +1552,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(scrollTo())
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(EditTextInputAction.appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
@@ -1575,7 +1574,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("Admin"),
+        EditTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1616,7 +1615,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1632,7 +1631,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1668,7 +1667,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(
-        editTextInputAction.appendText("test"),
+        EditTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1680,7 +1679,7 @@ class AddProfileActivityTest {
         )
       ).perform(
         scrollTo(),
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -1695,7 +1694,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("321 "),
+        EditTextInputAction.appendText("321 "),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()

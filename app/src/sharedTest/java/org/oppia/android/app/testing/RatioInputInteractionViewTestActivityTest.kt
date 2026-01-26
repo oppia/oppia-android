@@ -180,7 +180,7 @@ class RatioInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "1:2"
         )
       )

@@ -153,7 +153,7 @@ class FractionInputInteractionViewTestActivityTest {
       FractionInputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(editTextInputAction.appendText("-9"))
+      .perform(EditTextInputAction.appendText("-9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -172,7 +172,7 @@ class FractionInputInteractionViewTestActivityTest {
       FractionInputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(editTextInputAction.appendText("9"))
+      .perform(EditTextInputAction.appendText("9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -192,7 +192,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "9/10"
         )
       )
@@ -216,7 +216,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "-9/10"
         )
       )
@@ -240,7 +240,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "5 9/10"
         )
       )
@@ -265,7 +265,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "-55 59/9"
         )
       )
@@ -289,7 +289,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "9/5"
         )
       )
@@ -306,7 +306,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "55-"
         )
       )
@@ -327,7 +327,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "--55"
         )
       )
@@ -348,7 +348,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "5/5/"
         )
       )
@@ -369,7 +369,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "/5"
         )
       )
@@ -390,7 +390,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "5 5/"
         )
       )
@@ -404,7 +404,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "5 5/"
         )
       )
@@ -428,7 +428,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "3 1/2"
         )
       )
@@ -445,7 +445,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "1/0"
         )
       )
@@ -459,7 +459,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        EditTextInputAction.appendText(
           "1/0"
         )
       )
@@ -483,7 +483,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-          editTextInputAction.appendText(
+          EditTextInputAction.appendText(
             "."
           )
         )
@@ -505,7 +505,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-          editTextInputAction.appendText(
+          EditTextInputAction.appendText(
             "12345678"
           )
         )

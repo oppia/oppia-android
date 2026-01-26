@@ -361,7 +361,7 @@ class QuestionPlayerActivityLocalTest {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
-      editTextInputAction.appendText("1/2"),
+      EditTextInputAction.appendText("1/2"),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -376,7 +376,7 @@ class QuestionPlayerActivityLocalTest {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
-      editTextInputAction.appendText("1/4"),
+      EditTextInputAction.appendText("1/4"),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -403,7 +403,7 @@ class QuestionPlayerActivityLocalTest {
   private fun submitWrongAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1"))
+    onView(withId(R.id.text_input_interaction_view)).perform(EditTextInputAction.appendText("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))

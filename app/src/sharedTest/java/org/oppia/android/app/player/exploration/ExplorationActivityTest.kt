@@ -198,7 +198,6 @@ class ExplorationActivityTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
@@ -943,7 +942,7 @@ class ExplorationActivityTest {
 
       scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
-        editTextInputAction.appendText("123"),
+        EditTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_answer_button)).perform(click())
@@ -2239,7 +2238,7 @@ class ExplorationActivityTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      EditTextInputAction.appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -2458,7 +2457,7 @@ class ExplorationActivityTest {
   private fun submitFractionAnswer(answerText: String) {
     scrollToViewType(FRACTION_INPUT_INTERACTION)
     onView(withId(R.id.fraction_input_interaction_view)).perform(
-      editTextInputAction.appendText(answerText)
+      EditTextInputAction.appendText(answerText)
     )
     testCoroutineDispatchers.runCurrent()
 
