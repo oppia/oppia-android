@@ -467,7 +467,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Portrait_AnalyticsEnabled_profileIdDisplayed() {
+  fun testAdministratorControlsFragment_portrait_analyticsEnabled_profileIdDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -491,7 +491,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Landscape_AnalyticsEnabled_profileIdDisplayed() {
+  fun testAdministratorControlsFragment_landscape_analyticsEnabled_profileIdDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -517,7 +517,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Portrait_AnalyticsDisabled_profileIdNotDisplayed() {
+  fun testAdministratorControlsFragment_portrait_analyticsDisabled_profileIdNotDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -535,7 +535,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_Landscape_AnalyticsDisabled_profileIdNotDisplayed() {
+  fun testAdministratorControlsFragment_landscape_analyticsDisabled_profileIdNotDisplayed() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
@@ -545,6 +545,50 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = R.id.administrator_controls_list,
+        itemPosition = 2,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControlsFragment_tablet_analyticsEnabled_profileIdDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = R.id.administrator_controls_list,
+        itemPosition = 2,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = R.id.administrator_controls_list,
+        itemPosition = 2,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControlsFragment_tablet_analyticsDisabled_profileIdNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnListItemDoesNotExist(
         recyclerViewId = R.id.administrator_controls_list,
         itemPosition = 2,
