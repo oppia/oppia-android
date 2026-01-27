@@ -102,7 +102,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    
+
     // Clear clickable areas and remove child views to prevent memory leak
     removeAllViews()
   }

@@ -133,16 +133,16 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    
+
     // Remove touch listener to prevent memory leak
     removeOnItemTouchListener(touchListener)
-    
+
     // Cancel any ongoing timers
     touchListener.cancelCurrentTimer()
-    
+
     // Clear adapter to release references
     adapter = null
-    
+
     // Detach ItemTouchHelper
     itemTouchHelper?.attachToRecyclerView(null)
     itemTouchHelper = null

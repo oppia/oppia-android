@@ -54,7 +54,7 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    
+
     // Clear adapter and snap helper to release references
     adapter = null
     onFlingListener = null

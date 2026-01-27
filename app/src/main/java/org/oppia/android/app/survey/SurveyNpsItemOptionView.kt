@@ -40,7 +40,7 @@ class SurveyNpsItemOptionView @JvmOverloads constructor(
 
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    
+
     // Clear adapter to release references
     adapter = null
   }
