@@ -164,14 +164,8 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
     launchAppVersionActivityIntent().use { scenario ->
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_version_name),
-            context.getVersionName()
-          )
-        )
-      ).check(matches(isDisplayed()))
+      onView(withId(R.id.app_version_text_view))
+        .check(matches(withText(context.getVersionName())))
       onView(
         withText(
           String.format(
@@ -190,20 +184,8 @@ class AppVersionActivityTest {
     launchAppVersionActivityIntent().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withId(
-          R.id.app_version_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_version_name),
-              context.getVersionName()
-            )
-          )
-        )
-      )
+      onView(withId(R.id.app_version_text_view))
+        .check(matches(withText(context.getVersionName())))
       onView(
         withId(
           R.id.app_last_update_date_text_view
@@ -321,6 +303,46 @@ class AppVersionActivityTest {
       onView(withId(R.id.installation_id_explanation)).check(matches(isDisplayed()))
       onView(withId(R.id.installation_id_explanation))
         .check(matches(withText(R.string.installation_id_explanation)))
+    }
+  }
+
+
+  @Test
+  fun testAppVersionActivity_appVersionCopyButton_isDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_showsCopiedState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_afterDelay_resetsState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Advance time past the 2000ms reset delay.
+      testCoroutineDispatchers.advanceTimeBy(2001)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button))
+        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
     }
   }
 

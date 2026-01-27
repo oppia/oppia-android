@@ -40,6 +40,13 @@ class AppVersionViewModel @Inject constructor(
   /** Indicates whether the installation ID was recently copied. */
   val isInstallationIdCopied = ObservableField(false)
 
+  /** Indicates whether the app version was recently copied. */
+  val isAppVersionCopied = ObservableField(false)
+
+  /** The app version name. */
+  val appVersion: String
+    get() = versionName
+
   /** The device installation ID. */
   val installationId: LiveData<String?> by lazy {
     Transformations.map(
@@ -70,6 +77,29 @@ class AppVersionViewModel @Inject constructor(
             "Encountered unexpected non-successful result when copying to clipboard: $result"
           )
         }
+      }
+    }
+  }
+
+  /** Copies the app version to the user's clipboard. */
+  fun copyAppVersion() {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+    clipboardController.setCurrentClip(
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.learner_analytics_device_id_clipboard_label_description, appName
+      ),
+      versionName
+    ).toLiveData().observe(fragment) { result ->
+      if (result is AsyncResult.Success) {
+        isAppVersionCopied.set(true)
+        lifecycleSafeTimerFactory.createTimer(COPY_ICON_RESET_DELAY_MS).observe(fragment) {
+          isAppVersionCopied.set(false)
+        }
+      } else {
+        oppiaLogger.w(
+          "AppVersionViewModel",
+          "Encountered unexpected non-successful result when copying to clipboard: $result"
+        )
       }
     }
   }
