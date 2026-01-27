@@ -52,6 +52,14 @@ class PromotedStoryListView @JvmOverloads constructor(
     maybeInitializeAdapter()
   }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    
+    // Clear adapter and snap helper to release references
+    adapter = null
+    onFlingListener = null
+  }
+
   private fun maybeInitializeAdapter() {
     if (::bindingInterface.isInitialized &&
       ::bindingInterface.isInitialized &&

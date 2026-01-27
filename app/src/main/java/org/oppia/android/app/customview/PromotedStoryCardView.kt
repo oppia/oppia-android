@@ -57,4 +57,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
   }
+
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    // Cleanup to prevent memory leak - no specific resources to release
+  }
 }

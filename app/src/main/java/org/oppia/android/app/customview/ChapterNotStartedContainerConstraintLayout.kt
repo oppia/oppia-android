@@ -64,4 +64,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
       }
     }
   }
+
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    // Cleanup to prevent memory leak - no specific resources to release
+  }
 }

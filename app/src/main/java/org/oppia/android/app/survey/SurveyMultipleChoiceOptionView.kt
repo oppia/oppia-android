@@ -38,6 +38,13 @@ class SurveyMultipleChoiceOptionView @JvmOverloads constructor(
     maybeInitializeAdapter()
   }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    
+    // Clear adapter to release references
+    adapter = null
+  }
+
   /**
    * Sets the view's RecyclerView [MultipleChoiceOptionContentViewModel] data list.
    *

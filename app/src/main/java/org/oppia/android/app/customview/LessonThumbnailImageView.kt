@@ -153,6 +153,11 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     }
   }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    // Cleanup to prevent memory leak - image loader handles its own cleanup
+  }
+
   private fun getLessonDrawableResource(lessonThumbnail: LessonThumbnail): Int {
     return when (lessonThumbnail.thumbnailGraphic) {
       LessonThumbnailGraphic.BAKER ->

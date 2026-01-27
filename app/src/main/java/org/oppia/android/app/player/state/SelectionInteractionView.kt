@@ -48,6 +48,13 @@ class SelectionInteractionView @JvmOverloads constructor(
     maybeInitializeAdapter()
   }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    
+    // Clear adapter to release references
+    adapter = null
+  }
+
   fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
     this.selectionItemInputType = selectionItemInputType
     maybeInitializeAdapter()

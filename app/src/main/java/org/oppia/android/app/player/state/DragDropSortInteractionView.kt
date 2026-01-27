@@ -112,7 +112,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         }
       )
     }
-    private fun cancelCurrentTimer() {
+    fun cancelCurrentTimer() {
       currentTimer?.let { timer ->
         fragment.viewLifecycleOwner.let { lifecycleOwner ->
           timer.removeObservers(lifecycleOwner)
@@ -129,6 +129,23 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
     maybeInitializeAdapter()
+  }
+
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    
+    // Remove touch listener to prevent memory leak
+    removeOnItemTouchListener(touchListener)
+    
+    // Cancel any ongoing timers
+    touchListener.cancelCurrentTimer()
+    
+    // Clear adapter to release references
+    adapter = null
+    
+    // Detach ItemTouchHelper
+    itemTouchHelper?.attachToRecyclerView(null)
+    itemTouchHelper = null
   }
 
   fun setAllowMultipleItemsInSamePosition(isAllowed: Boolean) {

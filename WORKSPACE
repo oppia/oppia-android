@@ -29,6 +29,16 @@ rules_java_dependencies()
 
 rules_java_toolchains()
 
+# Workaround for missing remote_java_tools_darwin in rules_java 5.3.5 with Bazel 6.5.0
+http_archive(
+    name = "remote_java_tools_darwin",
+    sha256 = "0db40d8505a2b65ef0ed46e4256757807db8162f7acff16225be57c1d5726dbc",
+    urls = [
+        "https://mirror.bazel.build/bazel_java_tools/releases/java/v13.1/java_tools_darwin_x86_64-v13.1.zip",
+        "https://github.com/bazelbuild/java_tools/releases/download/java_v13.1/java_tools_darwin_x86_64-v13.1.zip",
+    ],
+)
+
 http_archive(
     name = "zlib",
     build_file = "@com_google_protobuf//:third_party/zlib.BUILD",

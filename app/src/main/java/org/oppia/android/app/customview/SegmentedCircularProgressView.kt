@@ -106,6 +106,11 @@ class SegmentedCircularProgressView @JvmOverloads constructor(
     viewComponent.inject(this)
   }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    // Cleanup to prevent memory leak - no specific resources to release
+  }
+
   override fun onDraw(canvas: Canvas) {
     if (isRtl)
       rotationY = 180f
