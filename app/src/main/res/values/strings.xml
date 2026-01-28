@@ -418,12 +418,13 @@
   <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
+  <string name="app_version_label">App Version</string>
   <string name="app_version_name">%s</string>
-  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="app_last_update_date">The last update was installed on %s. Please share the above version when sending feedback about bugs.</string>
   <string name="app_version_activity_title">App Version</string>
   <string name="copy_app_version">Copy app version</string>
   <string name="installation_id_label">Installation ID</string>
-  <string name="installation_id_explanation">This ID uniquely identifies this app installation. Use this ID when reporting bugs.</string>
+  <string name="installation_id_explanation">This ID uniquely identifies this app installation. You may be asked to provide this when filing feedback about the app or using certain features.</string>
   <string name="copy_installation_id">Copy installation ID</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>

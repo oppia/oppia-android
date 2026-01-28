@@ -18,10 +18,24 @@
       android:layout_height="wrap_content"
       android:padding="16dp">
 
+      <TextView
+        android:id="@+id/app_version_label"
+        style="@style/Heading2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/app_version_label"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_version_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:background="@drawable/general_item_background_border"
         android:paddingStart="24dp"
         android:paddingTop="12dp"
@@ -29,7 +43,7 @@
         android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/app_version_label">
 
         <TextView
           android:id="@+id/app_version_text_view"
