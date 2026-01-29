@@ -487,12 +487,6 @@ message EventLog {
     // String of the url being called.
     string request_url = 1;
 
-    // Headers passed as part of the retrofit call.
-    string headers = 2;
-
-    // Body of the retrofit call.
-    string body = 3;
-
     // Http response code from the call.
     int32 response_status_code = 4;
   }
@@ -501,12 +495,6 @@ message EventLog {
   message RetrofitCallFailedContext {
     // String of the url being called.
     string request_url = 1;
-
-    // Headers passed as part of the retrofit call.
-    string headers = 2;
-
-    // Body of the retrofit call.
-    string body = 3;
 
     // Response code from the call.
     int32 response_status_code = 4;

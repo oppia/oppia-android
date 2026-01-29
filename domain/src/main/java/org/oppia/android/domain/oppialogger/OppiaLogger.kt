@@ -302,15 +302,11 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
    */
   fun createRetrofitCallContext(
     url: String,
-    headers: String,
-    body: String,
     responseCode: Int
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallContext(
       EventLog.RetrofitCallContext.newBuilder()
         .setRequestUrl(url)
-        .setHeaders(headers)
-        .setBody(body)
         .setResponseStatusCode(responseCode)
         .build()
     ).build()
@@ -321,16 +317,12 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
    */
   fun createRetrofitCallFailedContext(
     url: String,
-    headers: String,
-    body: String,
     responseCode: Int,
     errorMessage: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallFailedContext(
       EventLog.RetrofitCallFailedContext.newBuilder()
         .setRequestUrl(url)
-        .setHeaders(headers)
-        .setBody(body)
         .setResponseStatusCode(responseCode)
         .setErrorMessage(errorMessage)
         .build()

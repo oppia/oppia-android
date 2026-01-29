@@ -349,8 +349,6 @@ class AnalyticsController @Inject constructor(
         logLowPriorityEvent(
           oppiaLogger.createRetrofitCallContext(
             url = retrofitCallContext.requestUrl,
-            headers = retrofitCallContext.headers,
-            body = retrofitCallContext.body,
             responseCode = retrofitCallContext.responseStatusCode,
           ),
           profileId = null
@@ -369,8 +367,6 @@ class AnalyticsController @Inject constructor(
         logLowPriorityEvent(
           oppiaLogger.createRetrofitCallFailedContext(
             url = retrofitFailedCallContext.requestUrl,
-            headers = retrofitFailedCallContext.headers,
-            body = retrofitFailedCallContext.body,
             responseCode = retrofitFailedCallContext.responseStatusCode,
             errorMessage = retrofitFailedCallContext.errorMessage,
           ),
