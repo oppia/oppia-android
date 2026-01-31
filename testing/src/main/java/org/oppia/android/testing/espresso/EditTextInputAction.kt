@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.typeText
 import org.hamcrest.Matcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
+import javax.inject.Inject
 
 /**
  * Action for inputting text into an EditText in a test infrastructure-specific way.
@@ -17,7 +18,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
  * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
  * for specifics.
  */
-class EditTextInputAction {
+class EditTextInputAction @Inject constructor() {
   companion object {
     /**
      * Returns a [ViewAction] that appends the specified string into the view targeted by the
