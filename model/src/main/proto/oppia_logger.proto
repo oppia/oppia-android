@@ -487,6 +487,14 @@ message EventLog {
     // String of the url being called.
     string request_url = 1;
 
+    // Deprecated headers field. Headers always exceeded GA4's 100-character parameter limit and were
+    // discarded by Firebase Analytics.
+    reserved 2;
+
+    // Deprecated body field. Body always exceeded GA4's 100-character parameter limit and was
+    // discarded by Firebase Analytics.
+    reserved 3;
+
     // Http response code from the call.
     int32 response_status_code = 4;
   }
@@ -495,6 +503,14 @@ message EventLog {
   message RetrofitCallFailedContext {
     // String of the url being called.
     string request_url = 1;
+
+    // Deprecated headers field. Headers always exceeded GA4's 100-character parameter limit and were
+    // discarded by Firebase Analytics.
+    reserved 2;
+
+    // Deprecated body field. Body always exceeded GA4's 100-character parameter limit and was
+    // discarded by Firebase Analytics.
+    reserved 3;
 
     // Response code from the call.
     int32 response_status_code = 4;
