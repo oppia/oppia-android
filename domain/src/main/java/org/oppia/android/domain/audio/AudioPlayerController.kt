@@ -28,7 +28,7 @@ import kotlin.concurrent.withLock
  * See documentation for both to understand how to use them correctly.
  */
 @Singleton
-class AudioPlayerController @Inject constructor(
+open class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
@@ -93,7 +93,7 @@ class AudioPlayerController @Inject constructor(
    * Loads audio source from a URL and return LiveData to send updates.
    * This controller cannot already be initialized.
    */
-  fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
+  open fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
       mediaPlayerActive = true
       if (isReleased) {
@@ -112,7 +112,7 @@ class AudioPlayerController @Inject constructor(
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String, contentId: String?, languageCode: String) {
+  open fun changeDataSource(url: String, contentId: String?, languageCode: String) {
     audioLock.withLock {
       prepared = false
       currentContentId = contentId
@@ -163,9 +163,12 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
+  open fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
@@ -191,7 +194,7 @@ class AudioPlayerController @Inject constructor(
    *     (like clicking a pause button) vs. an incidental one (like an autoplay transition or
    *     closing the audio bar)
    */
-  fun pause(isFromExplicitUserAction: Boolean) {
+  open fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
@@ -249,7 +252,7 @@ class AudioPlayerController @Inject constructor(
    * Stop updating seek bar and removes all observers.
    * MediaPlayer must already be initialized.
    */
-  fun releaseMediaPlayer() {
+  open fun releaseMediaPlayer() {
     audioLock.withLock {
       if (!isReleased) {
         check(mediaPlayerActive) { "Media player has not been previously initialized" }
@@ -267,7 +270,7 @@ class AudioPlayerController @Inject constructor(
    * Seek to specific position in MediaPlayer.
    * Controller must already have audio prepared.
    */
-  fun seekTo(position: Int) {
+  open fun seekTo(position: Int) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       mediaPlayer.seekTo(position)

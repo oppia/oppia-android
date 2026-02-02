@@ -72,9 +72,10 @@ class AudioViewModel @Inject constructor(
   }
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
-    setStateAndExplorationId(state, explorationId)
-    hasFeedback = false
-    loadAudio(contentId = null, allowAutoPlay, reloadingContent)
+    if (this::state.isInitialized) {
+      hasFeedback = false
+      loadAudio(contentId = null, allowAutoPlay, reloadingContent)
+    }
   }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
@@ -142,7 +143,9 @@ class AudioViewModel @Inject constructor(
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause(isFromExplicitUserAction = true)
     } else {
-      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+      if (type != UiAudioPlayStatus.LOADING && type != UiAudioPlayStatus.FAILED) {
+        audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+      }
     }
   }
 

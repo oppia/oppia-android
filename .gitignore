@@ -22,3 +22,5 @@ bazel-*
 .aswb
 *.pb
 coverage_reports
+logs_*
+oppia-android.wiki

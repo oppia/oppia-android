@@ -1,0 +1,27 @@
+"""
+Tests for AudioViewModel.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AudioViewModelTest",
+    srcs = ["AudioViewModelTest.kt"],
+    custom_package = "org.oppia.android.app.player.audio",
+    test_class = "org.oppia.android.app.player.audio.AudioViewModelTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        "//app:view_models",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
+        "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)

@@ -9,7 +9,7 @@ build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_
 
 # Ensure all built Java files treat warnings as errors (similar to the Kotlin configuration) to help
 # reduce code smell & potential bugs during development.
-build --javacopt="-Werror"
+build --javacopt="-Werror -Xlint:-options" --host_javacopt="-Werror -Xlint:-options"
 
 # Note that this doesn't stop 'Werror' from being passed above, but that shouldn't affect most of
 # the Oppia Android-specific build.

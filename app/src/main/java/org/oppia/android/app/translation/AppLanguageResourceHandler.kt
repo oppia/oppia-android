@@ -27,7 +27,7 @@ import javax.inject.Inject
  * (rather than needing to manually connect the current activity's resources with a display locale
  * instance).
  */
-class AppLanguageResourceHandler @Inject constructor(
+open class AppLanguageResourceHandler @Inject constructor(
   private val activity: AppCompatActivity,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
@@ -60,7 +60,10 @@ class AppLanguageResourceHandler @Inject constructor(
    * See [OppiaLocale.DisplayLocale.getStringInLocaleWithWrapping] for specifics. This returns a
    * string corresponding to the current activity's resources.
    */
-  fun getStringInLocaleWithWrapping(@StringRes id: Int, vararg formatArgs: CharSequence): String {
+  open fun getStringInLocaleWithWrapping(
+    @StringRes id: Int,
+    vararg formatArgs: CharSequence
+  ): String {
     return getDisplayLocale().run { resources.getStringInLocaleWithWrapping(id, *formatArgs) }
   }
 
