@@ -35,8 +35,8 @@ http_archive(
     sha256 = HTTP_DEPENDENCY_VERSIONS["zlib"]["sha"],
     strip_prefix = "zlib-" + HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
     urls = [
-        "https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz",
-        "http://zlib.net/fossils/zlib-1.3.1.tar.gz",
+        "https://github.com/madler/zlib/releases/download/v{0}/zlib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["zlib"]["version"]),
+        "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
     ],
 )
 
