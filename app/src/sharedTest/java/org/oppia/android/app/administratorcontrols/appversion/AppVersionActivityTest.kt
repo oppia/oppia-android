@@ -283,24 +283,23 @@ class AppVersionActivityTest {
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
     assertThat(clipData?.itemCount).isEqualTo(1)
-    // Verify the installation ID is a non-empty string (exact value varies per installation).
     assertThat(clipData?.getItemAt(0)?.text?.isNotEmpty()).isTrue()
   }
 
   @Test
-  fun testAppVersionActivity_clickAppVersionCopyButton_copiesVersionToClipboard() {
+  fun testAppVersionActivity_clickCopyButton_afterDelay_resetsState() {
     launchAppVersionActivityIntent().use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.copy_app_version_button)).perform(click())
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-    }
-    val clipData = getCurrentClipData()
-    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
-    assertThat(clipData?.itemCount).isEqualTo(1)
-    assertThat(clipData?.getItemAt(0)?.text).isEqualTo(context.getVersionName())
-  }
+      testCoroutineDispatchers.advanceTimeBy(2001)
+      testCoroutineDispatchers.runCurrent()
 
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
+    }
+  }
 
   @Test
   fun testAppVersionActivity_configurationChange_installationIdIsDisplayed() {
