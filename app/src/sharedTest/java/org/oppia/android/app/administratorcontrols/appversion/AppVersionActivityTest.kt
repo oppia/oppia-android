@@ -288,21 +288,19 @@ class AppVersionActivityTest {
   }
 
   @Test
-  fun testAppVersionActivity_clickCopyButton_afterDelay_resetsState() {
+  fun testAppVersionActivity_clickAppVersionCopyButton_copiesVersionToClipboard() {
     launchAppVersionActivityIntent().use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      onView(withId(R.id.copy_app_version_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-
-      // Advance time past the 2000ms reset delay.
-      testCoroutineDispatchers.advanceTimeBy(2001)
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.copy_installation_id_button))
-        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
     }
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo(context.getVersionName())
   }
+
 
   @Test
   fun testAppVersionActivity_configurationChange_installationIdIsDisplayed() {
