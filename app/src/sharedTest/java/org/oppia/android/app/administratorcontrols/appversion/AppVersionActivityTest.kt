@@ -1,6 +1,8 @@
 package org.oppia.android.app.administratorcontrols.appversion
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -121,6 +123,10 @@ class AppVersionActivityTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val clipboardManager by lazy {
+    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+  }
 
   @Before
   fun setUp() {
@@ -266,6 +272,22 @@ class AppVersionActivityTest {
   }
 
   @Test
+  fun testAppVersionActivity_clickCopyButton_copiesInstallationIdToClipboard() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    // Verify the installation ID is a non-empty string (exact value varies per installation).
+    assertThat(clipData?.getItemAt(0)?.text?.isNotEmpty()).isTrue()
+  }
+
+  @Test
   fun testAppVersionActivity_clickCopyButton_afterDelay_resetsState() {
     launchAppVersionActivityIntent().use {
       testCoroutineDispatchers.runCurrent()
@@ -306,7 +328,6 @@ class AppVersionActivityTest {
     }
   }
 
-
   @Test
   fun testAppVersionActivity_appVersionCopyButton_isDisplayed() {
     launchAppVersionActivityIntent().use {
@@ -327,6 +348,21 @@ class AppVersionActivityTest {
       onView(withId(R.id.copy_app_version_button))
         .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
     }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_copiesVersionToClipboard() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    val clipData = getCurrentClipData()
+    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
+    assertThat(clipData?.itemCount).isEqualTo(1)
+    assertThat(clipData?.getItemAt(0)?.text).isEqualTo(context.getVersionName())
   }
 
   @Test
@@ -364,6 +400,8 @@ class AppVersionActivityTest {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return createAdministratorControlsActivityIntent(context, profileId)
   }
+
+  private fun getCurrentClipData(): ClipData? = clipboardManager.primaryClip
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

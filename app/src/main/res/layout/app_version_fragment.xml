@@ -16,7 +16,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="16dp">
+      android:padding="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/app_version_label"
@@ -78,7 +81,6 @@
           app:layout_constraintBottom_toBottomOf="@id/app_version_text_view"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@id/app_version_text_view" />
-
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <ImageView
@@ -169,7 +171,6 @@
           app:layout_constraintBottom_toBottomOf="@id/installation_id_text"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@id/installation_id_text" />
-
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <ImageView
@@ -197,7 +198,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/installation_id_info_image_view"
         app:layout_constraintTop_toBottomOf="@id/installation_id_container" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

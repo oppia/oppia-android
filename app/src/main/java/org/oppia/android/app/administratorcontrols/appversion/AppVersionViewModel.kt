@@ -8,6 +8,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.clipboard.ClipboardController
@@ -17,7 +18,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getLastUpdateTime
 import org.oppia.android.util.extensions.getVersionName
-import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import javax.inject.Inject
 
 private const val COPY_ICON_RESET_DELAY_MS = 2000L
