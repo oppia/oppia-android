@@ -72,7 +72,7 @@ class AppVersionViewModel @Inject constructor(
             isInstallationIdCopied.set(false)
           }
         } else {
-          oppiaLogger.w(
+          oppiaLogger.d(
             "AppVersionViewModel",
             "Encountered unexpected non-successful result when copying to clipboard: $result"
           )
