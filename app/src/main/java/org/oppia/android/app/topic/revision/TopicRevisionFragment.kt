@@ -22,7 +22,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     /** Arguments key for TopicRevisionFragment. */
     const val TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY = "TopicRevisionFragment.arguments"
 
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
 
     /** Returns a new [TopicRevisionFragment]. */

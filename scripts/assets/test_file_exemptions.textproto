@@ -4268,10 +4268,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt"
   test_file_not_required: true
 }
@@ -4285,10 +4281,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/environment/TestEnvironmentConfig.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4317,7 +4309,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
-  override_min_coverage_percent_required: 38
+  override_min_coverage_percent_required: 100
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/OppiaParameterizedBaseRunner.kt"

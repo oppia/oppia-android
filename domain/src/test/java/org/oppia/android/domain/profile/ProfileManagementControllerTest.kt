@@ -37,10 +37,8 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -121,6 +119,72 @@ class ProfileManagementControllerTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testCreateDefaultProfile_ifProfileExists_checkResultIsFailure() {
+    setUpTestApplicationComponent()
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFailure() {
+    setUpTestWithOnboardingV2Enabled(true)
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
+    setUpTestApplicationComponent()
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_onBoardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
   }
 
   @Test
@@ -823,9 +887,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testGetAudioLanguage_initialProfileCreation_defaultsToEnglish() {
     setUpTestApplicationComponent()
 
@@ -888,9 +950,7 @@ class ProfileManagementControllerTest {
     monitor.ensureNextResultIsSuccess()
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToHindi_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -904,9 +964,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(HINDI_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -920,9 +978,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabic_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -936,9 +992,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ARABIC_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToNigerianPidgin_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -952,9 +1006,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(NIGERIAN_PIDGIN_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabicThenEnglish_updateChangesAudioLanguageToEnglish() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -971,9 +1023,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateProfile1ToArabic_profile2IsUnchanged() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -1952,6 +2002,10 @@ class ProfileManagementControllerTest {
     return FileInputStream(
       File(context.filesDir, "profile_database.cache")
     ).use(ProfileDatabase::parseFrom)
+  }
+
+  private fun createDefaultProfile(): DataProvider<Any?> {
+    return profileManagementController.createDefaultProfile()
   }
 
   private fun addAdminProfile(name: String, pin: String = DEFAULT_PIN): DataProvider<Any?> =

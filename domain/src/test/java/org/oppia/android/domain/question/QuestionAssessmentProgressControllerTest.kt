@@ -53,10 +53,8 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -1270,7 +1268,6 @@ class QuestionAssessmentProgressControllerTest {
   /* Localization-based tests. */
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     forceDefaultLocale(Locale.US)
@@ -1287,7 +1284,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -1313,7 +1309,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
@@ -1330,7 +1325,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
@@ -1350,7 +1344,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()

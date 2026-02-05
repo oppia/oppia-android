@@ -25,18 +25,6 @@ const val DOWNLOADS_SUPPORT = "android_enable_downloads_support"
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
- */
-@Qualifier
-annotation class EnableExtraTopicTabsUi
-
-/** Name of the feature flag that controls whether to enable the extra topics tab UI. */
-const val EXTRA_TOPIC_TABS_UI = "android_enable_extra_topic_tabs_ui"
-
-/** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
-const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
-
-/**
  * Qualifier for the feature flag that controls the visibility of [ProfileAndDeviceIdActivity]
  * and working of learner study related analytics logging.
  */
@@ -189,3 +177,27 @@ const val ENABLE_FLASHBACK_SUPPORT = "android_enable_flashback_support"
 
 /** Default value of the feature flag corresponding to [EnableFlashbackSupport]. */
 const val ENABLE_FLASHBACK_SUPPORT_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the feature flag corresponding to enabling the topic info tab.
+ */
+@Qualifier
+annotation class EnableTopicInfoTab
+
+/** Name of the feature flag that controls whether to enable the topic info tab. */
+const val ENABLE_TOPIC_INFO_TAB = "enable_topic_info_tab"
+
+/** Default value for the feature flag corresponding to [EnableTopicInfoTab]. */
+const val ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the feature flag corresponding to enabling the topic practice tab.
+ */
+@Qualifier
+annotation class EnableTopicPracticeTab
+
+/** Name of the feature flag that controls whether to enable the topic practice  tab. */
+const val ENABLE_TOPIC_PRACTICE_TAB = "enable_topic_practice_tab"
+
+/** Default value for the feature flag corresponding to [EnableTopicPracticeTab]. */
+const val ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE = false

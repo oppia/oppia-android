@@ -4,8 +4,8 @@ Central macros pertaining to setting up tests across the codebase.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-# TODO(#1620): Remove module-specific test macros once Gradle is removed
-def oppia_android_module_level_test(
+# TODO(#1620): Remove layer-specific test macros.
+def oppia_android_layer_level_test(
         name,
         filtered_tests,
         deps,
@@ -15,7 +15,7 @@ def oppia_android_module_level_test(
         additional_srcs = [],
         **kwargs):
     """
-    Creates individual tests for a test file at the module level.
+    Creates individual tests for a test file at the layer level.
 
     Args:
         name: str. The relative path to the Kotlin test file.
@@ -61,7 +61,7 @@ def oppia_android_test(
       name: str. The name of the Kotlin test file without the '.kt' suffix.
       srcs: list of str. The name of the Kotlin test files to be run.
       test_manifest: str. The path to the test manifest file.
-      custom_package: str. The module's package. Example: 'org.oppia.utility'.
+      custom_package: str. The layers's package. Example: 'org.oppia.utility'.
       test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
       enable_data_binding: boolean. Indicates whether the test enables data-binding.

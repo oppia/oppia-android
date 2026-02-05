@@ -100,8 +100,8 @@ enum FeatureFlagId {
   // Corresponds to an app-wide feature for enabling spotlights.
   SPOTLIGHT_UI = 5;
 
-  // Corresponds to a topic activity feature that enables two extra tabs: info and practice.
-  EXTRA_TOPIC_TABS_UI = 6;
+  // Previously used for a feature that enabled the info and practice tabs simultaneously.
+  reserved 6;
 
   // Corresponds to a feature enabling the ability to remotely download lessons.
   DOWNLOADS_SUPPORT = 7;
@@ -143,6 +143,12 @@ enum FeatureFlagId {
   // Corresponds to a feature that enables a UI for quick revision when a learner answers a specific
   // question incorrectly.
   FLASHBACK_SUPPORT = 16;
+
+  // Corresponds to a topic activity feature that enables the info tab.
+  TOPIC_INFO_TAB = 17;
+
+  // Corresponds to a topic activity feature that enables the practice tab.
+  TOPIC_PRACTICE_TAB = 18;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to

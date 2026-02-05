@@ -9,7 +9,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 // TODO(#59): Add tests for this matcher suite once testing-only activities can be added outside of
-//  the app module.
+//  the app layer.
 
 /**
  * Generic Espresso view matchers. Note that view-type specific view matchers shouldn't go here,

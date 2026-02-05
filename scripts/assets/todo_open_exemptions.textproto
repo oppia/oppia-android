@@ -345,7 +345,7 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md"
-  line_number: 43
+  line_number: 42
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Static-Analysis-Checks.md"

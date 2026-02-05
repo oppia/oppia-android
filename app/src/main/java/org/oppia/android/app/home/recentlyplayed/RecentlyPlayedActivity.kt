@@ -41,7 +41,7 @@ class RecentlyPlayedActivity :
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY =
       "RecentlyPlayedActivity.intent_extras"
 

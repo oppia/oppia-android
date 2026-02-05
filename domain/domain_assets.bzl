@@ -1,5 +1,5 @@
 """
-Macros for preparing & creating assets to include in the domain module.
+Macros for preparing & creating assets to include in the domain layer.
 """
 
 load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")

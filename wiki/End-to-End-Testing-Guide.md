@@ -10,12 +10,12 @@
 
 ## Overview
 
-End-to-End tests test the app from an end user’s experience by simulating the real user scenario and validating the system under test and its components for integration and data integrity. 
+End-to-End tests test the app from an end user’s experience by simulating the real user scenario and validating the system under test and its components for integration and data integrity.
 
 These tests play a major role in publishing the app. They run on a real or emulated device to make sure that our code interacts with the Android environment as expected, providing confidence in the final application or a feature when it's finished.
 
 End-to-End tests in Oppia-android are written using [UiAutomator](https://developer.android.com/training/testing/ui-automator).
-These tests are written under the instrumentation module and don’t have Gradle support.
+These tests are written under the instrumentation directory.
 
 ```
 instrumentation/ -- android test binaries for each test suite.
@@ -49,7 +49,7 @@ The android_binary of a test suite generates a test apk with the same name as th
 2. Add adb to the environment (platform-tools) i.e, add the following line to the .bashrc or the file path (note that this is platform dependent):
     ```
     export PATH=/home/<username>/Android/Sdk/platform-tools:$PATH
-    ``` 
+    ```
 3. download and install [test-services-1.1.0.apk](https://mvnrepository.com/artifact/androidx.test.services/test-services/1.1.0) and [orchestrator-1.1.0.apk](https://mvnrepository.com/artifact/androidx.test/orchestrator/1.1.0) in the emulator. (run command in the directory where both apk are downloaded)
     ```
     adb install -r test-services-1.1.0.apk && adb install -r orchestrator-1.1.0.apk
@@ -89,7 +89,7 @@ The android_binary of a test suite generates a test apk with the same name as th
     -e targetInstrumentation org.oppia.android.app.instrumentation/androidx.test.runner.AndroidJUnitRunner \
     androidx.test.orchestrator/.AndroidTestOrchestrator'
     ```
-    **Note:** "-e clearPackageData true" is used to clear your app's data in between runs. 
+    **Note:** "-e clearPackageData true" is used to clear your app's data in between runs.
 
 ### Best practices when writing End-to-End tests
 1. Each test suite should use the macro [oppia_instrumentation_test](https://github.com/oppia/oppia-android/blob/develop/instrumentation/oppia_instrumentation_test.bzl#L7) which generates the necessary targets required for each test suite.
@@ -100,11 +100,11 @@ The android_binary of a test suite generates a test apk with the same name as th
 6. Use uiautomatorviewer to get details of each view such as resource ID, content description, class, and other properties.
 
 ### Writing E2E tests
-Unlike Robolectric and Espresso, tests in UiAutomator don't share the same code as Espresso and Robolectric. UiAutomator tests are dependent on [UiDevice](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice). UiDevice provides access to all the views and gives possibilities to stimulate all UserActions in the device/emulator including an app other than the current app. 
+Unlike Robolectric and Espresso, tests in UiAutomator don't share the same code as Espresso and Robolectric. UiAutomator tests are dependent on [UiDevice](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice). UiDevice provides access to all the views and gives possibilities to stimulate all UserActions in the device/emulator including an app other than the current app.
 
-In the instrumentation module all the UiAutomator tests are written using the Extensions of UiDevice in [EndToEndTestHelper.kt](https://github.com/oppia/oppia-android/blob/develop/instrumentation/src/java/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt)  
+In the instrumentation directory all the UiAutomator tests are written using the Extensions of UiDevice in [EndToEndTestHelper.kt](https://github.com/oppia/oppia-android/blob/develop/instrumentation/src/java/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt)
 
-**Example:** 
+**Example:**
 To navigate from Profile screen to a Exploration page
 ```
     // device is a Instance of UiDevice.
@@ -118,4 +118,4 @@ To navigate from Profile screen to a Exploration page
     device.findObjectByText("First Story").click() // Click on the "First Story" tab.
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration") // Scroll to first exploration.
     device.findObjectByText("Chapter 1: Prototype Exploration").click() // Click on the first exploration.
-``` 
+```

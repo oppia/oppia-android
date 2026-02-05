@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -123,13 +122,12 @@ class PinSetupFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
   }
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
     Intents.release()
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -230,7 +228,7 @@ class PinSetupFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withMismatchedPins_showsMismatchError() {
+  fun testFragment_clickContinue_withMismatchedPins_showsMismatchError_continueButtonIsDisabled() {
     launch(PinSetupActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -243,14 +241,12 @@ class PinSetupFragmentTest {
         .performTextInput("54321")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
         .assertIsDisplayed()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
     }
   }
 
@@ -369,7 +365,6 @@ class PinSetupFragmentTest {
         .assertIsNotEnabled()
 
       composeRule.onNodeWithText(enterPinNode).performTextInput("345")
-      testCoroutineDispatchers.runCurrent()
 
       composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
@@ -396,9 +391,9 @@ class PinSetupFragmentTest {
 
       composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
         .performTextInput("12345")
-        .performImeAction()
 
-      testCoroutineDispatchers.runCurrent()
+      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .performImeAction()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -421,8 +416,6 @@ class PinSetupFragmentTest {
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .performClick()
 
-      testCoroutineDispatchers.runCurrent()
-
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -430,11 +423,11 @@ class PinSetupFragmentTest {
   @Test
   fun testFragment_onBackButtonClicked_currentScreenIsDestroyed() {
     launch(PinSetupActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
       scenario.onActivity { activity ->
         composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
           .performClick()
-
-        testCoroutineDispatchers.runCurrent()
 
         assertThat(activity.isFinishing).isTrue()
       }
@@ -450,8 +443,6 @@ class PinSetupFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
         .performTextInput("abc12def")
-
-      testCoroutineDispatchers.runCurrent()
 
       // Should only accept the digits.
       composeRule
@@ -470,8 +461,6 @@ class PinSetupFragmentTest {
         .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
         .performTextInput("abc12def")
 
-      testCoroutineDispatchers.runCurrent()
-
       // Should only accept the digits.
       composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
@@ -489,8 +478,6 @@ class PinSetupFragmentTest {
         .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
         .performTextInput("123456789")
 
-      testCoroutineDispatchers.runCurrent()
-
       // Should only accept the first 5 digits.
       composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
@@ -507,8 +494,6 @@ class PinSetupFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
         .performTextInput("123456789")
-
-      testCoroutineDispatchers.runCurrent()
 
       // Should only accept the first 5 digits.
       composeRule
@@ -588,7 +573,9 @@ class PinSetupFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
     fun inject(pinSetupFragmentTest: PinSetupFragmentTest)
   }

@@ -1,6 +1,6 @@
 """
 This library contains all android_binary and android_instrumentation_test targets to each
-test suite in instrumentation module as a oppia_instrumentation_test wrapper.
+test suite in the top-level instrumentation directory as a oppia_instrumentation_test wrapper.
 Note that:
  - All the oppia_instrumentation_test targets are named similar to the respective class name
  of the test suite.

@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalTextStyle
@@ -25,17 +27,24 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -47,10 +56,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.delay
 import org.oppia.android.app.databinding.databinding.PinSetupFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -59,6 +68,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [PinSetupFragment]. */
@@ -74,37 +84,78 @@ class PinSetupFragmentPresenter @Inject constructor(
   /** Creates and returns the view for the [PinSetupFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId
+    container: ViewGroup?
   ): View? {
     binding = PinSetupFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    createComposeView(profileId)
+    createComposeView()
     return binding.root
   }
 
-  private fun createComposeView(profileId: ProfileId) {
+  private fun createComposeView() {
     binding.pinSetupComposeView.apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
         MaterialTheme {
-          PinSetupScreen(profileId)
+          PinSetupScreen()
         }
       }
     }
   }
 
+  @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  fun PinSetupScreen(profileId: ProfileId) {
+  fun PinSetupScreen() {
     val focusManager = LocalFocusManager.current
-    var uiState by remember { mutableStateOf(PinSetupUiState()) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     val orientation = LocalConfiguration.current.orientation
-    val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
     val stepCountIsVisible by remember(orientation) {
-      derivedStateOf { isLandscape }
+      derivedStateOf { isPortrait }
     }
+
+    // PinSetupUiStateSaver uses Pascal case because it's a singleton functional object, and
+    // Kotlin’s naming conventions recommend PascalCase for anything that behaves like a singleton.
+    val PinSetupUiStateSaver = run {
+      Saver<PinSetupUiState, Map<String, String>>(
+        save = {
+          mapOf(
+            "pin" to it.pin,
+            "confirmPin" to it.confirmPin,
+            "showError" to it.showError.toString(),
+            "errorMessage" to it.errorMessage,
+            "pinError" to it.pinError,
+            "confirmPinError" to it.confirmPinError
+          )
+        },
+        restore = {
+          PinSetupUiState(
+            pin = it["pin"] ?: "",
+            confirmPin = it["confirmPin"] ?: "",
+            showError = it["showError"].toBoolean(),
+            errorMessage = it["errorMessage"] ?: "",
+            pinError = it["pinError"] ?: "",
+            confirmPinError = it["confirmPinError"] ?: ""
+          )
+        }
+      )
+    }
+
+    var uiState by rememberSaveable(stateSaver = PinSetupUiStateSaver) {
+      mutableStateOf(PinSetupUiState())
+    }
+
+    // Request focus when the screen first composes.
+    LaunchedEffect(Unit) {
+      focusRequester.requestFocus()
+      delay(100)
+      keyboardController?.show()
+    }
+
     Column(
       modifier = Modifier
         .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .padding(horizontal = 16.dp, vertical = 24.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -117,12 +168,12 @@ class PinSetupFragmentPresenter @Inject constructor(
       PinInputField(
         value = uiState.pin,
         onValueChange = { newValue ->
-          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH
+          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH.
           if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
             uiState = uiState.copy(
               pin = newValue,
               pinError = validatePinInput(newValue),
-              // Clear general error when user starts typing
+              // Clear general error when user starts typing.
               showError = if (newValue.isNotEmpty()) false else uiState.showError
             )
           }
@@ -132,19 +183,20 @@ class PinSetupFragmentPresenter @Inject constructor(
         error = uiState.pinError,
         isError = uiState.pinError.isNotEmpty(),
         focusManager = focusManager,
-        imeAction = ImeAction.Next
+        imeAction = ImeAction.Next,
+        focusRequester = focusRequester
       )
 
       PinInputField(
         value = uiState.confirmPin,
         onValueChange = { newValue ->
-          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH
+          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH.
           if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
             uiState = uiState.copy(
               confirmPin = newValue,
               confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty())
                 validateConfirmPinInput(uiState.pin, newValue) else "",
-              // Clear general error when user starts typing
+              // Clear general error when user starts typing.
               showError = if (newValue.isNotEmpty()) false else uiState.showError
             )
           }
@@ -158,7 +210,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         onDone = {
           val validationResult = validatePins(uiState.pin, uiState.confirmPin)
           if (validationResult.isValid) {
-            updatePin(profileId, uiState.pin)
+            updatePin(uiState.pin)
           } else {
             uiState = uiState.copy(
               showError = true,
@@ -175,7 +227,7 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       Spacer(modifier = Modifier.weight(1f))
 
-      if (!stepCountIsVisible) {
+      if (stepCountIsVisible) {
         StepCountText()
         Spacer(modifier = Modifier.height(8.dp))
       }
@@ -186,7 +238,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           val validationResult = validatePins(uiState.pin, uiState.confirmPin)
           if (validationResult.isValid) {
             uiState = uiState.copy(showError = false)
-            updatePin(profileId, uiState.pin)
+            updatePin(uiState.pin)
           } else {
             uiState = uiState.copy(
               showError = true,
@@ -235,6 +287,7 @@ class PinSetupFragmentPresenter @Inject constructor(
     isError: Boolean,
     focusManager: FocusManager,
     imeAction: ImeAction,
+    focusRequester: FocusRequester? = null,
     onDone: (() -> Unit)? = null
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -244,7 +297,11 @@ class PinSetupFragmentPresenter @Inject constructor(
         label = { Text(text = label) },
         modifier = Modifier
           .fillMaxWidth()
-          .padding(bottom = if (error.isEmpty()) 16.dp else 4.dp),
+          .padding(bottom = if (error.isEmpty()) 16.dp else 4.dp)
+          .then(
+            if (focusRequester != null) Modifier.focusRequester(focusRequester)
+            else Modifier
+          ),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
           keyboardType = KeyboardType.Number,
@@ -357,11 +414,12 @@ class PinSetupFragmentPresenter @Inject constructor(
   private fun validatePinInput(pin: String): String {
     return when {
       pin.isNotEmpty() && pin.length < ADMIN_PIN_LENGTH -> {
-        // Use existing length error string for real-time feedback
+        // Use the length error string for real-time feedback
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.pin_setup_activity_length_error
         )
       }
+
       else -> ""
     }
   }
@@ -369,11 +427,12 @@ class PinSetupFragmentPresenter @Inject constructor(
   private fun validateConfirmPinInput(pin: String, confirmPin: String): String {
     return when {
       confirmPin.isNotEmpty() && confirmPin != pin -> {
-        // Use existing mismatch error string for real-time feedback  
+        // Use the mismatch error string for real-time feedback
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.pin_setup_activity_mismatch_error
         )
       }
+
       else -> ""
     }
   }
@@ -391,6 +450,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           )
         )
       }
+
       pin.isNotEmpty() && confirmPin.isEmpty() -> {
         PinValidationResult(
           isValid = false,
@@ -399,6 +459,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           )
         )
       }
+
       !isValidPin || !isValidConfirmPin -> {
         PinValidationResult(
           isValid = false,
@@ -407,6 +468,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           )
         )
       }
+
       pin != confirmPin -> {
         PinValidationResult(
           isValid = false,
@@ -415,13 +477,18 @@ class PinSetupFragmentPresenter @Inject constructor(
           )
         )
       }
+
       else -> {
         PinValidationResult(isValid = true)
       }
     }
   }
 
-  private fun updatePin(profileId: ProfileId, pin: String) {
+  private fun updatePin(pin: String) {
+    val profileId = checkNotNull(fragment.arguments?.extractCurrentUserProfileId()) {
+      "Expected profileId to be included in the arguments for PinSetupFragment."
+    }
+
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity).also { intent ->

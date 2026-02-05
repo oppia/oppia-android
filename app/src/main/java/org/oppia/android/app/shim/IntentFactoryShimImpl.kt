@@ -13,9 +13,9 @@ import javax.inject.Inject
  * by adding all Intent functionality here.
  *
  * Please note that this file is temporary and all functionality will be returned to its respective
- * ViewModel once Gradle has been removed.
+ * ViewModel once Bazel modularization work has completed.
  */
-// TODO(#1619): Remove file post-Gradle
+// TODO(#1619): Remove this file.
 class IntentFactoryShimImpl @Inject constructor(
   private val topicActivityIntentFactory: TopicActivityIntentFactory,
   private val recentlyPlayedActivityIntentFactory: RecentlyPlayedActivityIntentFactory

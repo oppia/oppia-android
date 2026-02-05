@@ -94,7 +94,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -1006,7 +1005,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1034,7 +1033,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_configChange_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1061,7 +1060,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_orientationChange_languageSelectionIsRestored() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
