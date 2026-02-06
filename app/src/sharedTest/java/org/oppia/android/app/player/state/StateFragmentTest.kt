@@ -5942,6 +5942,45 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_dragAndDropInteraction_rotateScreen_answersArePersisted() {
+    // This test verifies that drag and drop answers persist when the device is rotated.
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Perform drag and drop action.
+      dragAndDropItem(fromPosition = 1, toPosition = 2)
+
+      // Verify the item was moved before rotation.
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
+
+      // Rotate the screen to landscape.
+      rotateToLandscape()
+
+      // Verify the drag drop interaction is still visible after rotation.
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(isDisplayed()))
+
+      // Verify the item is still at position 2 after rotation (order persisted).
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
