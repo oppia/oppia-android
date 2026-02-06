@@ -439,8 +439,19 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)
     shadowMediaPlayer.invokePreparedListener()
 
+    // After an error, the controller:
+    // 1. Emits Failure (to notify observers about the error)
+    // 2. Resets to Pending (to signal ready for recovery)
+    // 3. invokePreparedListener causes recovery to PREPARED state (Success)
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value).isFailure()
+    val allValues = audioPlayerResultCaptor.allValues
+
+    // Verify a Failure was emitted to notify observers about the error.
+    assertThat(allValues.any { it is AsyncResult.Failure }).isTrue()
+    // The final state is Success(PREPARED) because the player recovered after error.
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
   }
 
   @Test
@@ -466,13 +477,14 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testError_notPrepared_invokePlay_fails() {
+  fun testError_notPrepared_invokePlay_doesNotFail() {
     setUpMediaReadyApplication()
-    val exception = assertThrows<IllegalStateException>() {
-      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
-    }
 
-    assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
+    // This checks that no exception is thrown (which was the previous behavior).
+    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+
+    // Also verify that the media player is NOT playing (it should have been ignored).
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
   }
 
   @Test

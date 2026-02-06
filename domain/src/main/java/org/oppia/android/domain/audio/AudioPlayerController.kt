@@ -28,7 +28,7 @@ import kotlin.concurrent.withLock
  * See documentation for both to understand how to use them correctly.
  */
 @Singleton
-open class AudioPlayerController @Inject constructor(
+class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
@@ -93,8 +93,11 @@ open class AudioPlayerController @Inject constructor(
    * Loads audio source from a URL and return LiveData to send updates.
    * This controller cannot already be initialized.
    */
-  open fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
+  fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
+      if (mediaPlayerActive && !isReleased && playProgress != null) {
+        return playProgress!!
+      }
       mediaPlayerActive = true
       if (isReleased) {
         // Recreation is necessary since media player's resources have been released
@@ -112,7 +115,7 @@ open class AudioPlayerController @Inject constructor(
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  open fun changeDataSource(url: String, contentId: String?, languageCode: String) {
+  fun changeDataSource(url: String, contentId: String?, languageCode: String) {
     audioLock.withLock {
       prepared = false
       currentContentId = contentId
@@ -141,8 +144,15 @@ open class AudioPlayerController @Inject constructor(
         AsyncResult.Failure(
           AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
         )
-      releaseMediaPlayer()
-      initializeMediaPlayer()
+      // Reset the media player state without recreating the LiveData.
+      // Recreating LiveData would break existing observers (e.g., AudioViewModel).
+      audioLock.withLock {
+        prepared = false
+        stopUpdatingSeekBar()
+        mediaPlayer.reset()
+      }
+      // Signal that the player is ready to accept a new data source.
+      playProgress?.value = AsyncResult.Pending()
       // Indicates that error was handled and to not invoke completion listener.
       return@setOnErrorListener true
     }
@@ -163,7 +173,7 @@ open class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  open fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
+  fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
       if (!prepared) {
         oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
@@ -194,7 +204,7 @@ open class AudioPlayerController @Inject constructor(
    *     (like clicking a pause button) vs. an incidental one (like an autoplay transition or
    *     closing the audio bar)
    */
-  open fun pause(isFromExplicitUserAction: Boolean) {
+  fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
@@ -252,7 +262,7 @@ open class AudioPlayerController @Inject constructor(
    * Stop updating seek bar and removes all observers.
    * MediaPlayer must already be initialized.
    */
-  open fun releaseMediaPlayer() {
+  fun releaseMediaPlayer() {
     audioLock.withLock {
       if (!isReleased) {
         check(mediaPlayerActive) { "Media player has not been previously initialized" }
@@ -270,7 +280,7 @@ open class AudioPlayerController @Inject constructor(
    * Seek to specific position in MediaPlayer.
    * Controller must already have audio prepared.
    */
-  open fun seekTo(position: Int) {
+  fun seekTo(position: Int) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       mediaPlayer.seekTo(position)
