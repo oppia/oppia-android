@@ -68,7 +68,7 @@ class SolutionViewModel private constructor(
   val solutionBoxStrokeWidth: Int,
   private val consoleLogger: ConsoleLogger
 ) {
-
+  /** Lazily computes the accessibility content description for the solution summary HTML content. */
   val solutionSummaryContentDescription by lazy {
     CustomHtmlContentHandler.getContentDescription(
       solutionSummary,

@@ -11,10 +11,16 @@ import javax.inject.Inject
 
 /** The custom tag corresponding to [ConceptCardTagHandler]. */
 const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
+/** The attribute key used to extract the concept card skill ID from the custom tag. */
 const val CUSTOM_CONCEPT_CARD_SKILL_ID = "skill_id-with-value"
+/** The attribute key used to extract the visible concept card text from the custom tag. */
 const val CUSTOM_CONCEPT_CARD_TEXT_VALUE = "text-with-value"
 
 // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
+/**
+ * A custom tag handler responsible for converting concept card custom tags into clickable spans and
+ * generating the appropriate accessibility content description.
+ */
 class ConceptCardTagHandler(
   private val listener: ConceptCardLinkClickListener,
   private val consoleLogger: ConsoleLogger
