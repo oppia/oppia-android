@@ -5600,7 +5600,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
@@ -5652,7 +5652,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 

@@ -1317,8 +1317,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_summary)).check(
         matches(
           withContentDescription(
-            "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
+            "Start by dividing the cake into equal parts:" +
+              "\nThree of the four equal parts are red. So, the answer is 3/4."
           )
         )
       )
