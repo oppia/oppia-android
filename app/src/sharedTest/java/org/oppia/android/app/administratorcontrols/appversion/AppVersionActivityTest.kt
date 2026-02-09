@@ -284,7 +284,8 @@ class AppVersionActivityTest {
 
       // Verify clipboard contains the installation ID using ClipboardController
       val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
-      assertThat(currentClip).isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
+      assertThat(currentClip)
+        .isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
       val clipWithText = currentClip as ClipboardController.CurrentClip.SetWithAppText
       assertThat(clipWithText.label).isEqualTo("Oppia installation ID")
       assertThat(clipWithText.text).isNotEmpty()
@@ -367,7 +368,8 @@ class AppVersionActivityTest {
 
       // Verify clipboard contains the app version using ClipboardController
       val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
-      assertThat(currentClip).isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
+      assertThat(currentClip)
+        .isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
       val clipWithText = currentClip as ClipboardController.CurrentClip.SetWithAppText
       assertThat(clipWithText.text).isEqualTo(context.getVersionName())
     }
@@ -408,7 +410,6 @@ class AppVersionActivityTest {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return createAdministratorControlsActivityIntent(context, profileId)
   }
-
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
