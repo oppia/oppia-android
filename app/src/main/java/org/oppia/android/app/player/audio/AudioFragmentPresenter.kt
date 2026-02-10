@@ -1,6 +1,8 @@
 package org.oppia.android.app.player.audio
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkRequest
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -58,6 +61,19 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
+  private var isAudioFragmentVisible = false
+  private var lastConnectionStatus: ConnectionStatus? = null
+  private var isNetworkCallbackRegistered = false
+  private var connectivityManager: ConnectivityManager? = null
+  private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+    override fun onAvailable(network: android.net.Network) {
+      handleNetworkStatusChange()
+    }
+
+    override fun onLost(network: android.net.Network) {
+      handleNetworkStatusChange()
+    }
+  }
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -122,6 +138,10 @@ class AudioFragmentPresenter @Inject constructor(
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  fun handleOnStart() {
+    registerNetworkCallbackIfNeeded()
   }
 
   private fun startSpotlights() {
@@ -206,6 +226,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Pauses audio if in prepared state. */
   fun handleOnStop() {
+    unregisterNetworkCallback()
     if (!activity.isChangingConfigurations && prepared) {
       audioViewModel.pauseAudio()
     }
@@ -285,6 +306,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showAudioFragment() {
+    isAudioFragmentVisible = true
     val audioButtonListener = activity as AudioButtonListener
     audioButtonListener.setAudioBarVisibility(true)
     audioButtonListener.showAudioStreamingOn()
@@ -300,6 +322,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun hideAudioFragment() {
+    isAudioFragmentVisible = false
     (activity as AudioButtonListener).showAudioStreamingOff()
     (fragment as AudioUiManager).pauseAudio()
     val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
@@ -332,5 +355,58 @@ class AudioFragmentPresenter @Inject constructor(
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
+  }
+
+  private fun registerNetworkCallbackIfNeeded() {
+    if (isNetworkCallbackRegistered) {
+      return
+    }
+    val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val request = NetworkRequest.Builder().build()
+    manager.registerNetworkCallback(request, networkCallback)
+    connectivityManager = manager
+    lastConnectionStatus = networkConnectionUtil.getCurrentConnectionStatus()
+    isNetworkCallbackRegistered = true
+  }
+
+  private fun unregisterNetworkCallback() {
+    if (!isNetworkCallbackRegistered) {
+      return
+    }
+    connectivityManager?.unregisterNetworkCallback(networkCallback)
+    connectivityManager = null
+    isNetworkCallbackRegistered = false
+  }
+
+  private fun handleNetworkStatusChange() {
+    activity.runOnUiThread {
+      val status = networkConnectionUtil.getCurrentConnectionStatus()
+      if (status == lastConnectionStatus) {
+        return@runOnUiThread
+      }
+      lastConnectionStatus = status
+
+      if (!isAudioFragmentVisible) {
+        return@runOnUiThread
+      }
+
+      when (status) {
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> Unit
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+          when {
+            showCellularDataDialog -> {
+              setAudioFragmentVisible(false)
+              showCellularDataDialogFragment()
+            }
+            !useCellularData -> setAudioFragmentVisible(false)
+          }
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+          setAudioFragmentVisible(false)
+          showOfflineDialog()
+        }
+        else -> Unit
+      }
+    }
   }
 }
