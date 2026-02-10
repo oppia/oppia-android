@@ -63,6 +63,11 @@ class AudioFragment :
     audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 
+  override fun onStart() {
+    super.onStart()
+    audioFragmentPresenter.handleOnStart()
+  }
+
   override fun onStop() {
     super.onStop()
     audioFragmentPresenter.handleOnStop()
