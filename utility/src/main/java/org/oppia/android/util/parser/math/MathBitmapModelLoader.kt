@@ -107,7 +107,8 @@ class MathBitmapModelLoader private constructor(
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
       Log.d(
         "MathDebug",
-        "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth targetHeight=$targetHeight lineHeight=${model.lineHeight}"
+        "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth " +
+          "targetHeight=$targetHeight lineHeight=${model.lineHeight}"
       )
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
@@ -175,7 +176,8 @@ class MathBitmapModelLoader private constructor(
           }
         Log.d(
           "MathDebug",
-          "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}"
+          "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight " +
+            "SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}"
         )
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth

@@ -66,7 +66,8 @@ class MathTagHandler(
       is MathContent.MathAsLatex -> {
         Log.d(
           "MathDebug",
-          "Rendering using LATEX pipeline, cacheLatexRendering=$cacheLatexRendering rawLatex=${content.rawLatex}"
+          "Rendering using LATEX pipeline, cacheLatexRendering=$cacheLatexRendering " +
+            "rawLatex=${content.rawLatex}"
         )
         if (cacheLatexRendering) {
           LatexImageSpan(
