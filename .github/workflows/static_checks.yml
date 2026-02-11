@@ -168,6 +168,13 @@ jobs:
         run: |
           bazel run //scripts:check_textview_styles -- $(pwd)
 
+      - name: Fast Android Lint Check (XML/Resources)
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:android_lint_check -- $(pwd) --checks=HardcodedText,IconDensities --no-java-sources
+
       - name: Android Lint Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.

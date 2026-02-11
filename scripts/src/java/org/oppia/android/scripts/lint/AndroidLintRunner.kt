@@ -166,8 +166,15 @@ fun executeAndroidLintAnalysis(vararg args: String) {
       ?.substringAfter("=")
       ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
-    val temporaryDir = Files.createTempDirectory("").parent.toFile()
-    val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
+    val listChecks = args.contains("--list-checks")
+    val checks = args.find { it.startsWith("--checks=") }
+      ?.substringAfter("=")
+      ?.split(",")
+      ?: emptyList()
+
+    val includeSourceFiles = !args.contains("--no-java-sources")
+
+    val workingDirectory = Files.createTempDirectory("lint_analysis").toFile()
     val timer = if (showTimer) {
       ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
     } else {
@@ -192,7 +199,11 @@ fun executeAndroidLintAnalysis(vararg args: String) {
         commandExecutor = commandExecutor,
         exemptionProtoPath = exemptionProtoPath,
         groupByIssueSeverity = groupByIssueSeverity,
-        timer = timer
+        timer = timer,
+        reportUnusedEnum = checks.isEmpty(),
+        listChecks = listChecks,
+        checks = checks,
+        includeSourceFiles = includeSourceFiles
       )
 
       lintAnalyzer.runAnalysis()
@@ -221,7 +232,10 @@ class AndroidLintAnalyzer(
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
   private val timer: ElapsedTimeDisplayer? = null,
-  private val reportUnusedEnum: Boolean = true
+  private val reportUnusedEnum: Boolean = true,
+  private val listChecks: Boolean = false,
+  private val checks: List<String> = emptyList(),
+  private val includeSourceFiles: Boolean = true
 ) {
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
@@ -259,7 +273,8 @@ class AndroidLintAnalyzer(
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
       timer = timer,
-      reportUnusedEnum = reportUnusedEnum
+      reportUnusedEnum = reportUnusedEnum,
+      listChecks = listChecks
     )
     val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
@@ -271,7 +286,9 @@ class AndroidLintAnalyzer(
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
       kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion),
-      suppressLintIssues = suppressLintIssues
+      suppressLintIssues = suppressLintIssues,
+      listChecks = listChecks,
+      checks = checks
     )
 
     lintRunner.runLint(cliArgs)
@@ -282,7 +299,8 @@ class AndroidLintAnalyzer(
     val lintProjectDescription = LintProjectDescription(
       repoRoot = repoRoot,
       workingDirectory = workingDirectory,
-      commandExecutor = commandExecutor
+      commandExecutor = commandExecutor,
+      includeSourceFiles = includeSourceFiles
     )
     return lintProjectDescription.generateProjectDescriptionXml()
   }
@@ -382,7 +400,8 @@ class AndroidLintRunner(
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
   private val timer: ElapsedTimeDisplayer? = null,
-  private val reportUnusedEnum: Boolean = true
+  private val reportUnusedEnum: Boolean = true,
+  private val listChecks: Boolean = false
 ) {
   companion object {
     private const val LINT_CLIENT_ID = "cli"
@@ -425,7 +444,9 @@ class AndroidLintRunner(
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
 
-    reportLintIssues()
+    if (!listChecks) {
+      reportLintIssues()
+    }
   }
 
   /**
@@ -440,9 +461,19 @@ class AndroidLintRunner(
     javaVersion: String,
     buildSdkVersion: String,
     kotlinCompilerVersion: String,
-    suppressLintIssues: Set<String>
+    suppressLintIssues: Set<String>,
+    listChecks: Boolean,
+    checks: List<String>
   ): Array<String> {
     prepareJdkEnvironment(jdkHome)
+    if (listChecks) {
+      return arrayOf(
+        "--list",
+        "--sdk-home", getAndroidSdkPath(),
+        "--client-id", LINT_CLIENT_ID
+      )
+    }
+
     val arguments = mutableListOf(
       "-Wall",
       "--quiet",
@@ -462,6 +493,10 @@ class AndroidLintRunner(
     if (suppressLintIssues.isNotEmpty()) {
       arguments.add("--disable")
       arguments.add(suppressLintIssues.joinToString(","))
+    }
+    if (checks.isNotEmpty()) {
+      arguments.add("--check")
+      arguments.add(checks.joinToString(","))
     }
     return arguments.toTypedArray()
   }
@@ -483,10 +518,14 @@ class AndroidLintRunner(
       exemptions = exemptions.androidLintExemptionList
     )
 
-    val redundantExemptions = reporter.findRedundantExemptions(
-      issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList
-    )
+    val redundantExemptions = if (reportUnusedEnum) {
+      reporter.findRedundantExemptions(
+        issues = allIssues,
+        exemptions = exemptions.androidLintExemptionList
+      )
+    } else {
+      emptyMap()
+    }
 
     reporter.printLintReport(
       filteredIssues = filteredIssues,
