@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
@@ -44,6 +45,7 @@ class MathTagHandler(
     val content = MathContent.parseMathContent(
       attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
+    Log.d("MathDebug", "Parsed content = $content")
     val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
       "inline" -> true
       "block" -> false
@@ -52,6 +54,7 @@ class MathTagHandler(
     checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
+        Log.d("MathDebug", "Parsed content = $content")
         ImageSpan(
           imageRetriever.loadDrawable(
             content.svgFilename,
@@ -61,6 +64,7 @@ class MathTagHandler(
         )
       }
       is MathContent.MathAsLatex -> {
+          Log.d("MathDebug", "Rendering using LATEX pipeline, cacheLatexRendering=$cacheLatexRendering rawLatex=${content.rawLatex}")
         if (cacheLatexRendering) {
           LatexImageSpan(
             imageRetriever.loadMathDrawable(
@@ -85,6 +89,7 @@ class MathTagHandler(
         }
       }
       null -> {
+        Log.e("MathDebug", "Math content is NULL (parse failed)")
         consoleLogger.e("MathTagHandler", "Failed to parse math tag")
         return
       }
@@ -132,10 +137,11 @@ class MathTagHandler(
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
         // Kotlitex expects escaped backslashes.
         val rawLatex = obj?.getOptionalString("raw_latex")
-        val svgFilename = obj?.getOptionalString("svg_filename")
+        //  val svgFilename = obj?.getOptionalString("svg_filename")
         return when {
-          svgFilename != null -> MathAsSvg(svgFilename)
-          rawLatex != null -> MathAsLatex(rawLatex)
+          //  svgFilename != null -> MathAsSvg(svgFilename)
+          // rawLatex != null -> MathAsLatex(rawLatex)
+          !rawLatex.isNullOrBlank() -> MathAsLatex(rawLatex)
           else -> null
         }
       }

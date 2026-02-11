@@ -12,7 +12,8 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
-import androidx.core.content.res.ResourcesCompat
+import android.util.Log
+import android.util.TypedValue
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -76,6 +77,7 @@ class MathBitmapModelLoader private constructor(
     height: Int,
     options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
+      Log.d("MathDebug", "buildLoadData(): width=$width height=$height model=${model.rawLatex}")
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
@@ -101,7 +103,9 @@ class MathBitmapModelLoader private constructor(
     private val blockingDispatcher: CoroutineDispatcher,
     private val consoleLogger: ConsoleLogger
   ) : DataFetcher<ByteBuffer> {
+
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
+         Log.d("MathDebug", "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth targetHeight=$targetHeight lineHeight=${model.lineHeight}")
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
       CoroutineScope(backgroundDispatcher).launch {
@@ -109,18 +113,25 @@ class MathBitmapModelLoader private constructor(
         // conditions. This synchronizes span creation so that the race condition can't happen,
         // though it will likely slow down LaTeX loading a bit. Fortunately, rendering & PNG
         // creation can still happen in parallel, and those are the more expensive steps.
+        val typedValue = TypedValue()
+        application.theme.resolveAttribute(
+          android.R.attr.textColorPrimary,
+          typedValue,
+          true
+        )
         val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
           MathExpressionSpan(
             model.rawLatex,
             model.lineHeight,
             application.assets,
             !model.useInlineRendering,
+            typedValue.data
             // TODO(#1523): Test color parameter in MathBitmapModelLoader
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */null
-            )
+            //  ResourcesCompat.getColor(
+            //    application.resources,
+            //    R.color.component_color_shared_equation_color,
+            //   /* theme = */null
+            //  )
           ).also { it.ensureDrawable() }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
@@ -159,7 +170,7 @@ class MathBitmapModelLoader private constructor(
           renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
             staticTextLayout.draw(it)
           }
-
+         Log.d("MathDebug", "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}")
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
         val finalHeight =
