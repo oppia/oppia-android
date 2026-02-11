@@ -77,7 +77,7 @@ class MathBitmapModelLoader private constructor(
     height: Int,
     options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
-      Log.d("MathDebug", "buildLoadData(): width=$width height=$height model=${model.rawLatex}")
+    Log.d("MathDebug", "buildLoadData(): width=$width height=$height model=${model.rawLatex}")
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
@@ -105,7 +105,10 @@ class MathBitmapModelLoader private constructor(
   ) : DataFetcher<ByteBuffer> {
 
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
-         Log.d("MathDebug", "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth targetHeight=$targetHeight lineHeight=${model.lineHeight}")
+      Log.d(
+        "MathDebug",
+        "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth targetHeight=$targetHeight lineHeight=${model.lineHeight}"
+      )
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
       CoroutineScope(backgroundDispatcher).launch {
@@ -170,7 +173,10 @@ class MathBitmapModelLoader private constructor(
           renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
             staticTextLayout.draw(it)
           }
-         Log.d("MathDebug", "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}")
+        Log.d(
+          "MathDebug",
+          "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}"
+        )
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
         val finalHeight =

@@ -64,7 +64,10 @@ class MathTagHandler(
         )
       }
       is MathContent.MathAsLatex -> {
-          Log.d("MathDebug", "Rendering using LATEX pipeline, cacheLatexRendering=$cacheLatexRendering rawLatex=${content.rawLatex}")
+        Log.d(
+          "MathDebug",
+          "Rendering using LATEX pipeline, cacheLatexRendering=$cacheLatexRendering rawLatex=${content.rawLatex}"
+        )
         if (cacheLatexRendering) {
           LatexImageSpan(
             imageRetriever.loadMathDrawable(
