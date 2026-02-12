@@ -97,10 +97,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
-      if (!isReleased) {
-        playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
-        return playProgress
-      }
+
       mediaPlayerActive = true
       // Recreation is necessary since media player's resources have been released
       mediaPlayer = MediaPlayer()
@@ -169,10 +166,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
@@ -200,10 +194,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
         playProgress.value =
           AsyncResult.Success(
@@ -277,10 +268,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun seekTo(position: Int) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       mediaPlayer.seekTo(position)
     }
   }
