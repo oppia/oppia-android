@@ -234,7 +234,7 @@ class ProfileManagementController @Inject constructor(
       } else {
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "LegacyProfileId ${profileId.internalId} does" +
+            "Profile ID ${profileId.internalId} does" +
               " not match an existing Profile"
           )
         )

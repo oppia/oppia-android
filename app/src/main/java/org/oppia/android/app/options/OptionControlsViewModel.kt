@@ -62,7 +62,7 @@ class OptionControlsViewModel @Inject constructor(
     uiLiveData.value = isInitialized
   }
 
-  /** Sets the user's LegacyProfileId value in this ViewModel. */
+  /** Sets the user's profile ID value in this ViewModel. */
   fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }

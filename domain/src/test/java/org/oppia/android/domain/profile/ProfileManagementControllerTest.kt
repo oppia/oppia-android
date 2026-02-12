@@ -675,8 +675,7 @@ class ProfileManagementControllerTest {
     val updateProvider = profileManagementController.updateName(PROFILE_ID_6, "John")
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat()
-      .contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -719,8 +718,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat()
-      .contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -745,8 +743,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat()
-      .contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -759,8 +756,7 @@ class ProfileManagementControllerTest {
     )
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat()
-      .contains("LegacyProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -1141,7 +1137,7 @@ class ProfileManagementControllerTest {
       .hasMessageThat()
       .contains(
         "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
-          "LegacyProfileId 6 is not associated with an existing profile"
+          "Profile ID 6 is not associated with an existing profile"
       )
   }
 
@@ -1692,7 +1688,7 @@ class ProfileManagementControllerTest {
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
 
     assertThat(failure).hasMessageThat()
-      .contains("LegacyProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
+      .contains("Profile ID ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
   @Test

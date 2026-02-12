@@ -28,7 +28,7 @@ class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
-      // TODO(#5440): Ensure the LegacyProfileId is valid.
+      // TODO(#5440): Ensure the profile ID is valid.
       val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = AdminAuthActivityParams.newBuilder().apply {
         this.adminPin = adminPin
