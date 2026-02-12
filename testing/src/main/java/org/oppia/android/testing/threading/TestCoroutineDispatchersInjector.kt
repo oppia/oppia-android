@@ -1,27 +1,19 @@
 package org.oppia.android.testing.threading
 
 /**
- * A test-only injector to retrieve [TestCoroutineDispatchers] statically.
- *
- * This is used to avoid injecting [TestCoroutineDispatchers] into utility classes that should be
- * usage-site agnostic.
+ * A static injector for [TestCoroutineDispatchers] to allow them to be accessed in some static
+ * contexts (like [EditTextInputAction]).
  */
 object TestCoroutineDispatchersInjector {
-  private var testCoroutineDispatchers: TestCoroutineDispatchers? = null
+  private lateinit var dispatchers: TestCoroutineDispatchers
 
-  /**
-   * Initializes the static [TestCoroutineDispatchers] instance.
-   *
-   * This should only be called by [TestDispatcherModule].
-   */
+  /** Initializes the injector with the provided [dispatchers]. */
   fun initialize(dispatchers: TestCoroutineDispatchers) {
-    testCoroutineDispatchers = dispatchers
+    this.dispatchers = dispatchers
   }
 
-  /** Returns the current [TestCoroutineDispatchers]. */
+  /** Returns the injected [TestCoroutineDispatchers]. */
   fun getDispatcher(): TestCoroutineDispatchers {
-    return checkNotNull(testCoroutineDispatchers) {
-      "TestCoroutineDispatchers not initialized. Ensure the test environment is set up correctly."
-    }
+    return dispatchers
   }
 }

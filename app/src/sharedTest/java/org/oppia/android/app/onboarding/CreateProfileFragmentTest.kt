@@ -149,8 +149,6 @@ class CreateProfileFragmentTest {
   @Inject
   lateinit var context: Context
   @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-  @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper

@@ -114,9 +114,6 @@ class FractionInputInteractionViewTestActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

@@ -6658,7 +6658,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      EditTextInputAction.appendText(text),
+      EditTextInputAction.replaceText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()

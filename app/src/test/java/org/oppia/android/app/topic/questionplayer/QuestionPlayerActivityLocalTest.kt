@@ -142,9 +142,6 @@ class QuestionPlayerActivityLocalTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
   private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
   @Before
