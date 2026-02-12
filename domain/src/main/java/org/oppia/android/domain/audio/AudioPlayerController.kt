@@ -60,7 +60,9 @@ class AudioPlayerController @Inject constructor(
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
-    COMPLETED // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    COMPLETED, // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    PREPARING, // mediaPlayer in "Preparing" state.
+    CLOSED // mediaPlayer resources have been released.
   }
 
   /**
@@ -74,7 +76,7 @@ class AudioPlayerController @Inject constructor(
   class AudioPlayerException(message: String) : Exception(message)
 
   private var mediaPlayer: MediaPlayer = MediaPlayer()
-  private var playProgress: AudioMutableLiveData? = null
+  private val playProgress = AudioMutableLiveData()
   private var nextUpdateJob: Job? = null
   private val audioLock = ReentrantLock()
 
@@ -95,20 +97,18 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
-      if (mediaPlayerActive && !isReleased && playProgress != null) {
-        return playProgress!!
+      if (!isReleased) {
+        playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
+        return playProgress
       }
       mediaPlayerActive = true
-      if (isReleased) {
-        // Recreation is necessary since media player's resources have been released
-        mediaPlayer = MediaPlayer()
-        isReleased = false
-      }
+      // Recreation is necessary since media player's resources have been released
+      mediaPlayer = MediaPlayer()
+      isReleased = false
       setMediaPlayerListeners()
     }
-    val progressLiveData = AudioMutableLiveData()
-    playProgress = progressLiveData
-    return progressLiveData
+    playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
+    return playProgress
   }
 
   /**
@@ -130,35 +130,29 @@ class AudioPlayerController @Inject constructor(
     mediaPlayer.setOnCompletionListener {
       completed = true
       stopUpdatingSeekBar()
-      playProgress?.value =
+      playProgress.value =
         AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
       duration = it.duration
-      playProgress?.value =
+      playProgress.value =
         AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
     }
     mediaPlayer.setOnErrorListener { _, what, extra ->
-      playProgress?.value =
+      playProgress.value =
         AsyncResult.Failure(
           AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
         )
-      // Reset the media player state without recreating the LiveData.
-      // Recreating LiveData would break existing observers (e.g., AudioViewModel).
-      audioLock.withLock {
-        prepared = false
-        stopUpdatingSeekBar()
-        mediaPlayer.reset()
-      }
-      // Signal that the player is ready to accept a new data source.
-      playProgress?.value = AsyncResult.Pending()
+      releaseMediaPlayer()
+      initializeMediaPlayer()
       // Indicates that error was handled and to not invoke completion listener.
       return@setOnErrorListener true
     }
   }
 
   private fun prepareDataSource(url: String) {
+    setMediaPlayerListeners()
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
@@ -166,7 +160,7 @@ class AudioPlayerController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
-    playProgress?.value = AsyncResult.Pending()
+    playProgress.value = AsyncResult.Pending()
   }
 
   /**
@@ -206,9 +200,12 @@ class AudioPlayerController @Inject constructor(
    */
   fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       if (mediaPlayer.isPlaying) {
-        playProgress?.value =
+        playProgress.value =
           AsyncResult.Success(
             PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, duration)
           )
@@ -241,7 +238,7 @@ class AudioPlayerController @Inject constructor(
       if (mediaPlayer.isPlaying) {
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
-        playProgress?.postValue(
+        playProgress.postValue(
           AsyncResult.Success(
             PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
@@ -264,16 +261,14 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
-      if (!isReleased) {
-        check(mediaPlayerActive) { "Media player has not been previously initialized" }
+      if (mediaPlayerActive) {
         mediaPlayerActive = false
         isReleased = true
-        prepared = false
         mediaPlayer.release()
         stopUpdatingSeekBar()
-        playProgress = null
       }
     }
+    playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.CLOSED, 0, 0))
   }
 
   /**
@@ -282,7 +277,10 @@ class AudioPlayerController @Inject constructor(
    */
   fun seekTo(position: Int) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.e("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       mediaPlayer.seekTo(position)
     }
   }
