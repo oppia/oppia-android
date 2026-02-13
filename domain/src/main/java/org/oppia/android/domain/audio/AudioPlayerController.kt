@@ -14,7 +14,6 @@ import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
@@ -153,11 +152,37 @@ class AudioPlayerController @Inject constructor(
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
-    } catch (e: IOException) {
+      playProgress.value = AsyncResult.Pending()
+    } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
+      println("DEBUG: Failed to set data source for media player. URL: $url")
+      try {
+        println("DEBUG: Reflection - getting classloader")
+        val loader = mediaPlayer.javaClass.classLoader
+        val shadowItemClass = loader!!.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+
+        println("DEBUG: Listing fields of ShadowMediaPlayer:")
+        shadowItemClass.declaredFields.forEach { field ->
+          println(
+            "DEBUG: Field: ${field.name}, " +
+              "Static: ${java.lang.reflect.Modifier.isStatic(field.modifiers)}"
+          )
+          if (field.name == "mediaInfo" || field.name.contains("Info")) {
+            field.isAccessible = true
+            try {
+              val value = field.get(null)
+              println("DEBUG:   Value (static get): $value")
+            } catch (e: Exception) {
+              println("DEBUG:   Value (static get): Threw ${e.javaClass.simpleName}")
+            }
+          }
+        }
+      } catch (reflectionEx: Exception) {
+        println("DEBUG: Could not reflect ShadowMediaPlayer: $reflectionEx")
+      }
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
+      playProgress.value = AsyncResult.Failure(e)
     }
-    playProgress.value = AsyncResult.Pending()
   }
 
   /**

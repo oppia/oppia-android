@@ -837,7 +837,7 @@ class ExplorationActivityTest {
   @Test
   fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     markAllSpotlightsSeen()
-    setUpAudio()
+    addShadowMediaPlayerMediaInfo(RATIOS_EXPLORATION_ID_0, "content-en-057j51i2es.mp3")
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
@@ -1011,7 +1011,7 @@ class ExplorationActivityTest {
   @Test
   fun testExplorationActivity_loadingAudio_progressbarIsDisplayed() {
     markAllSpotlightsSeen()
-    setUpAudio()
+    addShadowMediaPlayerMediaInfo(RATIOS_EXPLORATION_ID_0, "content-en-057j51i2es.mp3")
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
@@ -2414,6 +2414,46 @@ class ExplorationActivityTest {
         IOException::class.java
       )
     addException.invoke(/* obj= */ null, dataSource, exception)
+  }
+
+  private fun addShadowMediaPlayerMediaInfo(explorationId: String, audioFileName: String) {
+    if (isOnRobolectric()) {
+      println("DEBUG: isOnRobolectric is TRUE. Adding media info.")
+      val dataSource = createAudioDataSource(explorationId, audioFileName)
+      println("DEBUG: Created dataSource: $dataSource")
+      val classLoader = ExplorationActivityTest::class.java.classLoader!!
+      val shadowMediaPlayerClass =
+        classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+      val mediaInfoClass =
+        classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+      val constructor =
+        mediaInfoClass.getConstructor(Int::class.javaPrimitiveType, Int::class.javaPrimitiveType)
+      val mediaInfo = constructor.newInstance(1000, 0)
+
+      val addMediaInfo = shadowMediaPlayerClass.getDeclaredMethod(
+        "addMediaInfo",
+        dataSource!!.javaClass,
+        mediaInfoClass
+      )
+      addMediaInfo.invoke(null, dataSource, mediaInfo)
+      println("DEBUG: Successfully invoked addMediaInfo.")
+
+      // Verify it was added
+      val getMediaInfo =
+        shadowMediaPlayerClass.getDeclaredMethod("getMediaInfo", dataSource.javaClass)
+      val result = getMediaInfo.invoke(null, dataSource)
+      println("DEBUG: Verification - getMediaInfo returned: $result")
+
+      val dataSource2 = createAudioDataSource(explorationId, audioFileName)
+      println("DEBUG: ds1 == ds2: ${dataSource == dataSource2}")
+      println("DEBUG: ds1.equals(ds2): ${dataSource.equals(dataSource2)}")
+
+      // Check createAudioUrl length
+      val url = createAudioUrl(explorationId, audioFileName)
+      println("DEBUG: Expected URL length: ${url.length}")
+    } else {
+      println("DEBUG: isOnRobolectric is FALSE.")
+    }
   }
 
   private fun isOnRobolectric(): Boolean {
