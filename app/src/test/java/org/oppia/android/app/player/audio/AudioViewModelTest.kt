@@ -13,6 +13,10 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Voiceover
@@ -100,6 +104,7 @@ class AudioViewModelTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    MockitoAnnotations.openMocks(this)
     ShadowMediaPlayer.setMediaInfoProvider {
       ShadowMediaPlayer.MediaInfo(
         /* duration= */ 1000,
@@ -136,6 +141,12 @@ class AudioViewModelTest {
   fun testSetStateAndExplorationId_initializesState() {
     val state = State.newBuilder().build()
     audioViewModel.setStateAndExplorationId(state, "exp_id")
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  @Test
+  fun testSetAudioLanguageCode_beforeExplorationIdInitialized_doesNotCrash() {
+    audioViewModel.setAudioLanguageCode("en")
     testCoroutineDispatchers.runCurrent()
   }
 

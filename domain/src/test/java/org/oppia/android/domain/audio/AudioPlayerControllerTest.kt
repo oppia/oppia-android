@@ -443,40 +443,45 @@ class AudioPlayerControllerTest {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
 
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)
+
+    // After an error, the controller emits:
+    // 3. Failure
+    // 4. CLOSED
+    // 5. PREPARING (ready for new data source)
+
+    // Now explicitly reload to prove recovery
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.invokePreparedListener()
     Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-    // After an error, the controller:
-    // 1. Emits PREPARING (initialization)
-    // 2. Emits Pending (changeDataSource)
-    // 3. Emits Failure (error)
-    // 4. Emits CLOSED (releaseMediaPlayer called by error)
-    // 5. Emits PREPARING (initializeMediaPlayer called by error)
-    // 6. Emits PREPARED (invokePreparedListener)
     @Suppress("UNCHECKED_CAST")
     val captor: ArgumentCaptor<AsyncResult<PlayProgress>> =
       ArgumentCaptor.forClass(AsyncResult::class.java) as ArgumentCaptor<AsyncResult<PlayProgress>>
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(captor.capture())
     val allValues = captor.allValues
-
-    assertThat(allValues.size).isEqualTo(7)
+    assertThat(allValues.size).isEqualTo(8)
     assertThat(allValues[0]).hasSuccessValueWhere {
       assertThat(type).isEqualTo(PlayStatus.PREPARING)
     }
-    assertThat(allValues.last()).hasSuccessValueWhere {
-      assertThat(type).isEqualTo(PlayStatus.PREPARED)
-    }
+
     assertThat(allValues[1]).isPending()
     assertThat(allValues[2]).isFailure()
     assertThat(allValues[3]).hasSuccessValueWhere {
       assertThat(type).isEqualTo(PlayStatus.CLOSED)
     }
+
     assertThat(allValues[4]).hasSuccessValueWhere {
       assertThat(type).isEqualTo(PlayStatus.PREPARING)
     }
-    assertThat(allValues[5]).hasSuccessValueWhere {
+
+    assertThat(allValues[5]).isPending()
+    assertThat(allValues[6]).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
+    assertThat(allValues[7]).hasSuccessValueWhere {
       assertThat(type).isEqualTo(PlayStatus.PREPARED)
     }
   }
@@ -510,13 +515,13 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testError_notPrepared_invokePause_fails() {
+  fun testError_notPrepared_invokePause_doesNotFail() {
     setUpMediaReadyApplication()
     audioPlayerController.pause(isFromExplicitUserAction = true)
   }
 
   @Test
-  fun testError_notPrepared_invokeSeekTo_fails() {
+  fun testError_notPrepared_invokeSeekTo_doesNotFail() {
     setUpMediaReadyApplication()
     audioPlayerController.seekTo(500)
   }

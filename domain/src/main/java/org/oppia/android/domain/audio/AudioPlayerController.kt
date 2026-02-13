@@ -166,11 +166,13 @@ class AudioPlayerController @Inject constructor(
    */
   fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
-
         // Log an auto play only if it's the one that initiates playing audio (since it more or less
         // corresponds to manually clicking the 'play' button). Note this will not log any play
         // events after the state completes (since there'll no longer be a state logger).
@@ -194,7 +196,10 @@ class AudioPlayerController @Inject constructor(
    */
   fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       if (mediaPlayer.isPlaying) {
         playProgress.value =
           AsyncResult.Success(
@@ -268,7 +273,10 @@ class AudioPlayerController @Inject constructor(
    */
   fun seekTo(position: Int) {
     audioLock.withLock {
-      check(prepared) { "Media Player not in a prepared state" }
+      if (!prepared) {
+        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
+        return
+      }
       mediaPlayer.seekTo(position)
     }
   }

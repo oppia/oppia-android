@@ -31,9 +31,9 @@ class AudioViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
-  private lateinit var state: State
+  private var state: State? = null
   private lateinit var explorationId: String
-  private lateinit var selectedLanguageCode: String
+  lateinit var selectedLanguageCode: String
 
   private var voiceoverMap = mapOf<String, Voiceover>()
   private var currentContentId: String? = null
@@ -100,7 +100,7 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun checkIfLoadingPossible() {
-    if (this::state.isInitialized &&
+    if (state != null &&
       this::explorationId.isInitialized &&
       this::selectedLanguageCode.isInitialized &&
       autoPlay != null &&
@@ -117,10 +117,11 @@ class AudioViewModel @Inject constructor(
    * @param contentId If contentId is null, then state.content.contentId is used as default.
    */
   private fun loadAudio(contentId: String?) {
-    val targetContentId = contentId?.takeIf(String::isNotEmpty) ?: state.content.contentId
+    val targetContentId =
+      contentId?.takeIf(String::isNotEmpty) ?: state?.content?.contentId ?: return
 
     val voiceoverMapping =
-      state.recordedVoiceoversMap[targetContentId] ?: VoiceoverMapping.getDefaultInstance()
+      state?.recordedVoiceoversMap?.get(targetContentId) ?: VoiceoverMapping.getDefaultInstance()
 
     voiceoverMap = voiceoverMapping.voiceoverMappingMap
     currentContentId = targetContentId
