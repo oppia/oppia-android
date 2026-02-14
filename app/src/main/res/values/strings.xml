@@ -22,6 +22,8 @@
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
   <string name="audio_dialog_offline_positive" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="audio_dialog_cellular_disallowed_title">Cellular Data Disabled</string>
+  <string name="audio_dialog_cellular_disallowed_message">Audio playback is disabled on cellular data. Turn on Wi-Fi or allow cellular data to play audio.</string>
   <string name="cellular_data_alert_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>

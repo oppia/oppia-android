@@ -57,7 +57,7 @@
         android:layout_marginStart="8dp"
         android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
         android:contentDescription="@{viewModel.playStatusLiveData.equals(UiAudioPlayStatus.PLAYING) ? @string/audio_pause_description : @string/audio_play_description}"
-        android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
+          android:onClick="@{(v) -> audioFragment.onPlayPauseClicked(viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING)}"
         android:visibility="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING ? View.VISIBLE : View.INVISIBLE}"
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"

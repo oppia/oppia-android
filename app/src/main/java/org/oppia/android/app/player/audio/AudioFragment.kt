@@ -63,11 +63,6 @@ class AudioFragment :
     audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 
-  override fun onStart() {
-    super.onStart()
-    audioFragmentPresenter.handleOnStart()
-  }
-
   override fun onStop() {
     super.onStop()
     audioFragmentPresenter.handleOnStop()
@@ -114,4 +109,8 @@ class AudioFragment :
 
   /** Used in data binding to know position of user's touch. */
   override fun getUserPosition() = audioFragmentPresenter.userProgress
+
+  override fun onPlayPauseClicked(isPlaying: Boolean) {
+    audioFragmentPresenter.handlePlayPauseClick(isPlaying)
+  }
 }

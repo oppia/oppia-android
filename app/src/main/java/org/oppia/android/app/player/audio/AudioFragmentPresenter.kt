@@ -1,8 +1,6 @@
 package org.oppia.android.app.player.audio
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkRequest
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +29,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -61,22 +58,25 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private var isAudioFragmentVisible = false
-  private var lastConnectionStatus: ConnectionStatus? = null
-  private var isNetworkCallbackRegistered = false
-  private var connectivityManager: ConnectivityManager? = null
-  private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-    override fun onAvailable(network: android.net.Network) {
-      handleNetworkStatusChange()
-    }
-
-    override fun onLost(network: android.net.Network) {
-      handleNetworkStatusChange()
-    }
-  }
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
+
+  private sealed class PendingAudioAction {
+    data class Load(
+      val contentId: String?,
+      val isFeedback: Boolean,
+      val allowAutoPlay: Boolean,
+      val reloadingContent: Boolean
+    ) : PendingAudioAction()
+
+    data class PlayPause(val isPlaying: Boolean) : PendingAudioAction()
+
+    object ShowAudioFragment : PendingAudioAction()
+  }
+
+  private var pendingAudioAction: PendingAudioAction? = null
+  private var allowCellularForNextLoad = false
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state. */
   fun handleCreateView(
@@ -138,10 +138,6 @@ class AudioFragmentPresenter @Inject constructor(
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
-  }
-
-  fun handleOnStart() {
-    registerNetworkCallbackIfNeeded()
   }
 
   private fun startSpotlights() {
@@ -226,7 +222,6 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Pauses audio if in prepared state. */
   fun handleOnStop() {
-    unregisterNetworkCallback()
     if (!activity.isChangingConfigurations && prepared) {
       audioViewModel.pauseAudio()
     }
@@ -243,10 +238,22 @@ class AudioFragmentPresenter @Inject constructor(
     audioViewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
-    audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+    requestAudioLoad(
+      contentId = null,
+      isFeedback = false,
+      allowAutoPlay = allowAutoPlay,
+      reloadingContent = reloadingContent,
+      shouldPromptForNetworkIssues = allowAutoPlay
+    )
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
-    audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+    requestAudioLoad(
+      contentId = contentId,
+      isFeedback = true,
+      allowAutoPlay = allowAutoPlay,
+      reloadingContent = false,
+      shouldPromptForNetworkIssues = allowAutoPlay
+    )
 
   fun pauseAudio() {
     isPauseAudioRequestPending = true
@@ -257,16 +264,31 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(true)
+    val action = pendingAudioAction
+    pendingAudioAction = null
     if (saveUserChoice) {
       cellularAudioDialogController.setAlwaysUseCellularDataPreference()
+    }
+
+    if (action != null) {
+      performPendingAction(action, assumeCellularAllowed = true)
+    } else {
+      setAudioFragmentVisible(true)
     }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(false)
     if (saveUserChoice) {
       cellularAudioDialogController.setNeverUseCellularDataPreference()
+    }
+
+    val action = pendingAudioAction
+    pendingAudioAction = null
+    if (action is PendingAudioAction.ShowAudioFragment || action == null) {
+      setAudioFragmentVisible(false)
+    }
+    if (action != null) {
+      showCellularDataDisallowedDialog()
     }
   }
 
@@ -277,23 +299,65 @@ class AudioFragmentPresenter @Inject constructor(
         NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
         NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
           if (showCellularDataDialog) {
+            pendingAudioAction = PendingAudioAction.ShowAudioFragment
             setAudioFragmentVisible(false)
             showCellularDataDialogFragment()
           } else {
             if (useCellularData) {
               setAudioFragmentVisible(true)
             } else {
+              pendingAudioAction = PendingAudioAction.ShowAudioFragment
+              showCellularDataDisallowedDialog()
               setAudioFragmentVisible(false)
             }
           }
         }
         NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+          pendingAudioAction = PendingAudioAction.ShowAudioFragment
           showOfflineDialog()
           setAudioFragmentVisible(false)
         }
       }
     } else {
       setAudioFragmentVisible(false)
+    }
+  }
+
+  fun handlePlayPauseClick(isPlaying: Boolean) {
+    if (isPlaying) {
+      audioViewModel.togglePlayPause(UiAudioPlayStatus.PLAYING)
+      return
+    }
+
+    val pendingLoad = pendingAudioAction as? PendingAudioAction.Load
+    if (pendingLoad != null) {
+      requestAudioLoad(
+        contentId = pendingLoad.contentId,
+        isFeedback = pendingLoad.isFeedback,
+        allowAutoPlay = true,
+        reloadingContent = pendingLoad.reloadingContent,
+        shouldPromptForNetworkIssues = true
+      )
+      return
+    }
+
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL ->
+        audioViewModel.togglePlayPause(null)
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+        if (showCellularDataDialog) {
+          pendingAudioAction = PendingAudioAction.PlayPause(isPlaying)
+          showCellularDataDialogFragment()
+        } else {
+          if (useCellularData) {
+            audioViewModel.togglePlayPause(null)
+          } else {
+            pendingAudioAction = PendingAudioAction.PlayPause(isPlaying)
+            showCellularDataDisallowedDialog()
+          }
+        }
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> showOfflineDialog()
     }
   }
 
@@ -306,23 +370,33 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showAudioFragment() {
-    isAudioFragmentVisible = true
     val audioButtonListener = activity as AudioButtonListener
     audioButtonListener.setAudioBarVisibility(true)
     audioButtonListener.showAudioStreamingOn()
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
       // This isn't reloading content since it's the first case of the content auto-playing.
-      loadMainContentAudio(allowAutoPlay = !enableSpotlightUi.value, reloadingContent = false)
+      requestAudioLoad(
+        contentId = null,
+        isFeedback = false,
+        allowAutoPlay = !enableSpotlightUi.value,
+        reloadingContent = false,
+        shouldPromptForNetworkIssues = true
+      )
     } else {
-      loadFeedbackAudio(feedbackId!!, !enableSpotlightUi.value)
+      requestAudioLoad(
+        contentId = feedbackId,
+        isFeedback = true,
+        allowAutoPlay = !enableSpotlightUi.value,
+        reloadingContent = false,
+        shouldPromptForNetworkIssues = true
+      )
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
     startSpotlights()
   }
 
   private fun hideAudioFragment() {
-    isAudioFragmentVisible = false
     (activity as AudioButtonListener).showAudioStreamingOff()
     (fragment as AudioUiManager).pauseAudio()
     val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
@@ -357,55 +431,139 @@ class AudioFragmentPresenter @Inject constructor(
       }.create().show()
   }
 
-  private fun registerNetworkCallbackIfNeeded() {
-    if (isNetworkCallbackRegistered) {
-      return
-    }
-    val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val request = NetworkRequest.Builder().build()
-    manager.registerNetworkCallback(request, networkCallback)
-    connectivityManager = manager
-    lastConnectionStatus = networkConnectionUtil.getCurrentConnectionStatus()
-    isNetworkCallbackRegistered = true
+  private fun showCellularDataDisallowedDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_cellular_disallowed_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_cellular_disallowed_message))
+      .setPositiveButton(
+        resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
+      ) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
   }
 
-  private fun unregisterNetworkCallback() {
-    if (!isNetworkCallbackRegistered) {
+  private fun requestAudioLoad(
+    contentId: String?,
+    isFeedback: Boolean,
+    allowAutoPlay: Boolean,
+    reloadingContent: Boolean,
+    shouldPromptForNetworkIssues: Boolean
+  ) {
+    if (allowCellularForNextLoad) {
+      allowCellularForNextLoad = false
+      performAudioLoad(contentId, isFeedback, allowAutoPlay, reloadingContent)
       return
     }
-    connectivityManager?.unregisterNetworkCallback(networkCallback)
-    connectivityManager = null
-    isNetworkCallbackRegistered = false
-  }
 
-  private fun handleNetworkStatusChange() {
-    activity.runOnUiThread {
-      val status = networkConnectionUtil.getCurrentConnectionStatus()
-      if (status == lastConnectionStatus) {
-        return@runOnUiThread
-      }
-      lastConnectionStatus = status
-
-      if (!isAudioFragmentVisible) {
-        return@runOnUiThread
-      }
-
-      when (status) {
-        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> Unit
-        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
-          when {
-            showCellularDataDialog -> {
-              setAudioFragmentVisible(false)
-              showCellularDataDialogFragment()
-            }
-            !useCellularData -> setAudioFragmentVisible(false)
-          }
-        }
-        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
-          setAudioFragmentVisible(false)
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL ->
+        performAudioLoad(contentId, isFeedback, allowAutoPlay, reloadingContent)
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR ->
+        handleCellularLoad(
+          contentId,
+          isFeedback,
+          allowAutoPlay,
+          reloadingContent,
+          shouldPromptForNetworkIssues
+        )
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+        if (shouldPromptForNetworkIssues) {
           showOfflineDialog()
         }
-        else -> Unit
+        pendingAudioAction = PendingAudioAction.Load(
+          contentId = contentId,
+          isFeedback = isFeedback,
+          allowAutoPlay = allowAutoPlay,
+          reloadingContent = reloadingContent
+        )
+      }
+    }
+  }
+
+  private fun handleCellularLoad(
+    contentId: String?,
+    isFeedback: Boolean,
+    allowAutoPlay: Boolean,
+    reloadingContent: Boolean,
+    shouldPromptForNetworkIssues: Boolean
+  ) {
+    when {
+      showCellularDataDialog && shouldPromptForNetworkIssues -> {
+        pendingAudioAction = PendingAudioAction.Load(
+          contentId = contentId,
+          isFeedback = isFeedback,
+          allowAutoPlay = allowAutoPlay,
+          reloadingContent = reloadingContent
+        )
+        showCellularDataDialogFragment()
+      }
+      useCellularData -> performAudioLoad(contentId, isFeedback, allowAutoPlay, reloadingContent)
+      shouldPromptForNetworkIssues -> {
+        pendingAudioAction = PendingAudioAction.Load(
+          contentId = contentId,
+          isFeedback = isFeedback,
+          allowAutoPlay = allowAutoPlay,
+          reloadingContent = reloadingContent
+        )
+        showCellularDataDisallowedDialog()
+      }
+      else -> {
+        pendingAudioAction = PendingAudioAction.Load(
+          contentId = contentId,
+          isFeedback = isFeedback,
+          allowAutoPlay = allowAutoPlay,
+          reloadingContent = reloadingContent
+        )
+      }
+    }
+  }
+
+  private fun performAudioLoad(
+    contentId: String?,
+    isFeedback: Boolean,
+    allowAutoPlay: Boolean,
+    reloadingContent: Boolean
+  ) {
+    pendingAudioAction = null
+    if (isFeedback) {
+      audioViewModel.loadFeedbackAudio(checkNotNull(contentId), allowAutoPlay)
+    } else {
+      audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+    }
+  }
+
+  private fun performPendingAction(action: PendingAudioAction, assumeCellularAllowed: Boolean) {
+    when (action) {
+      PendingAudioAction.ShowAudioFragment -> {
+        if (assumeCellularAllowed) {
+          allowCellularForNextLoad = true
+        }
+        setAudioFragmentVisible(true)
+      }
+      is PendingAudioAction.Load -> {
+        if (assumeCellularAllowed) {
+          performAudioLoad(
+            action.contentId,
+            action.isFeedback,
+            action.allowAutoPlay,
+            action.reloadingContent
+          )
+        } else {
+          requestAudioLoad(
+            action.contentId,
+            action.isFeedback,
+            action.allowAutoPlay,
+            action.reloadingContent,
+            shouldPromptForNetworkIssues = true
+          )
+        }
+      }
+      is PendingAudioAction.PlayPause -> {
+        if (assumeCellularAllowed) {
+          audioViewModel.togglePlayPause(null)
+        } else {
+          handlePlayPauseClick(action.isPlaying)
+        }
       }
     }
   }

@@ -16,4 +16,7 @@ interface LanguageInterface {
 
   /** Returns the position of the knob on the audio track. */
   fun getUserPosition(): Int
+
+  /** Handles play/pause clicks from the audio bar. */
+  fun onPlayPauseClicked(isPlaying: Boolean)
 }
