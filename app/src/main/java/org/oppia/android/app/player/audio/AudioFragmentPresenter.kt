@@ -434,7 +434,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun showCellularDataDisallowedDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_cellular_disallowed_title))
-      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_cellular_disallowed_message))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_cellular_disallowed))
       .setPositiveButton(
         resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
       ) { dialog, _ ->
