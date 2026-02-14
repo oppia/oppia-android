@@ -995,7 +995,7 @@ class ProfileManagementController @Inject constructor(
       }
       AsyncResult.Failure(
         ProfileNotFoundException(
-          "LegacyProfileId ${profileId.internalId} is" +
+          "Profile ID ${profileId.internalId} is" +
             " not associated with an existing profile"
         )
       )
@@ -1067,7 +1067,7 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  /** Returns the [LegacyProfileId] of the current profile, or null if one hasn't yet been logged into. */
+  /** Returns the [Profile ID] of the current profile, or null if one hasn't yet been logged into. */
   fun getCurrentProfileId(): LegacyProfileId? {
     return currentProfileId.takeIf { it != DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID }?.let {
       LegacyProfileId.newBuilder().setInternalId(it).build()
@@ -1232,13 +1232,13 @@ class ProfileManagementController @Inject constructor(
       ProfileActionStatus.PROFILE_NOT_FOUND ->
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "LegacyProfileId ${profileId?.internalId} does not match an existing Profile"
+            "Profile ID ${profileId?.internalId} does not match an existing Profile"
           )
         )
       ProfileActionStatus.PROFILE_NOT_ADMIN ->
         AsyncResult.Failure(
           ProfileNotAdminException(
-            "LegacyProfileId ${profileId?.internalId} does not match an existing admin"
+            "Profile ID ${profileId?.internalId} does not match an existing admin"
           )
         )
       ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN ->
