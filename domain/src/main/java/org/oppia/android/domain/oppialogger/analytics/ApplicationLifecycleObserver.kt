@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Activity
@@ -30,6 +31,7 @@ import javax.inject.Singleton
 
 /** Observer that observes application and activity lifecycle. */
 @Singleton
+@Suppress("DEPRECATION")
 class ApplicationLifecycleObserver @Inject constructor(
   private val application: Application,
   private val oppiaClock: OppiaClock,
