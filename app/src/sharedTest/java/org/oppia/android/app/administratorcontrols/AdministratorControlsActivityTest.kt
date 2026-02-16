@@ -825,6 +825,117 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControls_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_landscape_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_analyticsDisabled_profileNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tablet_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tablet_analyticsDisabled_profileNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()

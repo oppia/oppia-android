@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
+import org.oppia.android.app.administratorcontrols.LoadLearnerAnalyticsListener
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 import org.oppia.android.app.administratorcontrols.LoadProfileListListener
 import org.oppia.android.app.administratorcontrols.RouteToAppVersionListener
+import org.oppia.android.app.administratorcontrols.RouteToLearnerAnalyticsListener
 import org.oppia.android.app.administratorcontrols.RouteToProfileListListener
 import org.oppia.android.app.administratorcontrols.ShowLogoutDialogListener
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
@@ -23,8 +25,10 @@ class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
+  RouteToLearnerAnalyticsListener,
   LoadProfileListListener,
   LoadAppVersionListener,
+  LoadLearnerAnalyticsListener,
   LoadProfileEditListener,
   ShowLogoutDialogListener {
   @Inject
@@ -56,6 +60,8 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun showLogoutDialog() {}
 
+  override fun loadLearnerAnalyticsData() {}
+  override fun routeToLearnerAnalytics() {}
   companion object {
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsFragmentTestActivityIntent(
