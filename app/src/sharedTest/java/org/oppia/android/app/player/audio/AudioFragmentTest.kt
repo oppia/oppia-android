@@ -288,6 +288,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -340,6 +341,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -367,6 +369,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -395,6 +398,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
