@@ -1,9 +1,11 @@
 package org.oppia.android.scripts.xml
 
-import org.oppia.android.scripts.common.RepositoryFile
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
+import com.google.protobuf.MessageLite
+import org.oppia.android.app.model.LanguageDefinition
+import org.oppia.android.app.model.SupportedLanguages
+import org.w3c.dom.Element
 import java.io.File
+import java.io.FileInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
@@ -16,100 +18,120 @@ class StringResourceParser(private val repoRoot: File) {
   private val translations by lazy { parseTranslations() }
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
 
+  /**
+   * Retrieves all supported languages from the configuration file.
+   */
+  private fun retrieveAllLanguages(): List<LanguageDefinition> {
+    return loadProto(
+      "supported_languages.pb",
+      SupportedLanguages.getDefaultInstance()
+    ).languageDefinitionsList
+  }
+
   /** Returns the [StringFile] corresponding to the base (i.e. untranslated English) strings. */
-  fun retrieveBaseStringFile(): StringFile = translations.getValue(TranslationLanguage.ENGLISH)
+  fun retrieveBaseStringFile(): StringFile {
+    val englishDef = retrieveAllLanguages().find { it.language.name == "ENGLISH" }
+      ?: error("English language definition not found.")
+    return translations.getValue(englishDef.language.name)
+  }
 
   /** Returns the [Set] of all string keys contained within the base strings file. */
   fun retrieveBaseStringNames(): Set<String> = retrieveBaseStringFile().strings.keys
 
   /**
-   * Returns a map of all [StringFile]s (keyed by their [StringFile.language]) which represent
-   * actual translations (i.e. all non-base files--see [retrieveBaseStringFile] for the base
-   * strings).
+   * Returns a map of all [StringFile]s (keyed by their language ID) which represent
+   * actual translations (i.e. all non-base files).
    */
-  fun retrieveAllNonEnglishTranslations(): Map<TranslationLanguage, StringFile> =
-    translations.filter { (language, _) -> language != TranslationLanguage.ENGLISH }
+  fun retrieveAllNonEnglishTranslations(): Map<String, StringFile> {
+    return translations.filter { (langId, _) -> langId != "ENGLISH" }
+  }
 
-  private fun parseTranslations(): Map<TranslationLanguage, StringFile> {
-    // A list of all XML files in the repo to be analyzed.
-    val stringFiles = RepositoryFile.collectSearchFiles(
-      repoPath = repoRoot.absolutePath,
-      expectedExtension = ".xml"
-    ).filter {
-      it.toRelativeString(repoRoot).startsWith("app/") && it.nameWithoutExtension == "strings"
-    }.associateBy {
-      checkNotNull(it.parentFile?.name?.let(::findTranslationLanguage)) {
-        "Strings file '${it.toRelativeString(repoRoot)}' does not correspond to a known language:" +
-          " ${it.parentFile?.name}"
+  private fun parseTranslations(): Map<String, StringFile> {
+    val languageDefinitions = retrieveAllLanguages()
+    val directoryToLanguageMap = languageDefinitions.associateBy {
+      computeAndroidValuesDirectory(it)
+    }
+
+    val collectedFiles = collectedSearchFiles(repoRoot)
+
+    val stringFiles = collectedFiles.filter {
+      it.toRelativeString(repoRoot).startsWith("app/") && it.name == "strings.xml"
+    }.mapNotNull { file ->
+      val parentDirName = file.parentFile?.name
+      val languageDef = directoryToLanguageMap[parentDirName]
+
+      if (languageDef != null) {
+        languageDef.language.name to StringFile(languageDef, file, parseStrings(file))
+      } else {
+        null
       }
-    }.toSortedMap() // Sorted for consistent output.
-    val expectedLanguages = TranslationLanguage.values().toSet()
-    check(expectedLanguages == stringFiles.keys) {
-      "Missing translation strings for language(s):" +
-        " ${(expectedLanguages - stringFiles.keys).joinToString() }"
-    }
-    return stringFiles.map { (language, file) ->
-      language to StringFile(language, file, file.parseStrings())
-    }.toMap()
+    }.toMap().toSortedMap()
+
+    val foundLanguageIds = stringFiles.keys
+    val expectedLanguageIds = languageDefinitions.filter {
+      it.appStringId.hasAndroidResourcesLanguageId()
+    }.map { it.language.name }.toSet()
+    return stringFiles
   }
 
-  private fun File.parseStrings(): Map<String, String> {
-    val manifestDocument = documentBuilderFactory.parseXmlFile(this)
-    val stringsElem = manifestDocument.getChildSequence().single { it.nodeName == "resources" }
-    val stringElems = stringsElem.getChildSequence().filter { it.nodeName == "string" }
-    return stringElems.associate {
-      checkNotNull(it.attributes.getNamedItem("name")?.nodeValue) to checkNotNull(it.textContent)
+  private fun parseStrings(file: File): Map<String, String> {
+    val documentBuilder = documentBuilderFactory.newDocumentBuilder()
+    val manifestDocument = documentBuilder.parse(file)
+    val root = manifestDocument.documentElement
+
+    val stringElems = root.getElementsByTagName("string")
+
+    val results = mutableMapOf<String, String>()
+    for (i in 0 until stringElems.length) {
+      val node = stringElems.item(i) as Element
+      val name = node.getAttribute("name")
+      val value = node.textContent
+      if (name.isNotEmpty()) {
+        results[name] = value
+      }
     }
+    return results
   }
 
-  /**
-   * The language given strings have been translated to/are being represented in.
-   *
-   * @property valuesDirectoryName the name of the resource values directory that is expected to
-   *     contain a strings.xml file for strings related to this language
-   */
-  enum class TranslationLanguage(val valuesDirectoryName: String) {
-    /** Corresponds to Arabic (ar) translations. */
-    ARABIC(valuesDirectoryName = "values-ar"),
+  private fun computeAndroidValuesDirectory(definition: LanguageDefinition): String {
+    if (!definition.appStringId.hasAndroidResourcesLanguageId()) {
+      return "contents-only-${definition.language.name}"
+    }
 
-    /** Corresponds to Brazilian Portuguese (pt-rBR) translations. */
-    BRAZILIAN_PORTUGUESE(valuesDirectoryName = "values-pt-rBR"),
+    val androidId = definition.appStringId.androidResourcesLanguageId
+    val code = androidId.languageCode
+    val region = androidId.regionCode
 
-    /** Corresponds to English (en) translations. */
-    ENGLISH(valuesDirectoryName = "values"),
-
-    /** Corresponds to Swahili (sw) translations. */
-    SWAHILI(valuesDirectoryName = "values-sw"),
-
-    /** Corresponds to Nigerian Pidgin (pcm) translations. */
-    NIGERIAN_PIDGIN(valuesDirectoryName = "values-pcm-rNG"),
-
-    /** Corresponds to Hindi (hi) translations. */
-    HINDI(valuesDirectoryName = "values-hi")
+    return when {
+      code == "en" && region.isEmpty() -> "values"
+      region.isNotEmpty() -> "values-$code-r$region"
+      else -> "values-$code"
+    }
   }
 
   /**
    * A record of a specific set of translations corresponding to one language.
-   *
-   * @property language the language of this string file
-   * @property file the direct [File] to the strings.xml containing the translations
-   * @property strings a map with keys of string names and values of the actual strings retrieved
-   *     from the strings.xml file
    */
   data class StringFile(
-    val language: TranslationLanguage,
+    val languageDefinition: LanguageDefinition,
     val file: File,
     val strings: Map<String, String>
   )
 
+  private fun collectedSearchFiles(root: File): Sequence<File> {
+    return root.walk().filter { it.isFile }
+  }
+
   private companion object {
-    private fun DocumentBuilderFactory.parseXmlFile(file: File) = newDocumentBuilder().parse(file)
-
-    private fun Node.getChildSequence() = childNodes.asSequence()
-
-    private fun NodeList.asSequence() = (0 until length).asSequence().map(this::item)
-
-    private fun findTranslationLanguage(valuesDirectoryName: String) =
-      TranslationLanguage.values().find { it.valuesDirectoryName == valuesDirectoryName }
+    private fun <T : MessageLite> loadProto(fileName: String, defaultInstance: T): T {
+      val protoPath = "config/src/java/org/oppia/android/config/alllanguages/$fileName"
+      val protoFile = File(protoPath)
+      val builder = defaultInstance.newBuilderForType()
+      FileInputStream(protoFile).use { inputStream ->
+        builder.mergeFrom(inputStream)
+      }
+      @Suppress("UNCHECKED_CAST")
+      return builder.build() as T
+    }
   }
 }

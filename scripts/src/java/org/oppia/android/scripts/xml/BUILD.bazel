@@ -19,15 +19,15 @@ kt_jvm_library(
     name = "string_resource_parser",
     testonly = True,
     srcs = ["StringResourceParser.kt"],
+    resources = [
+        "//config/src/java/org/oppia/android/config:all_languages_config_assets",
+    ],
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//model/src/main/proto:languages_java_proto_lite",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//third_party:com_google_protobuf_protobuf_javalite",
     ],
-    resources = [
-        "//config/src/java/org/oppia/android/config:all_languages_config_assets",
-        ],
 )
 
 kt_jvm_library(
