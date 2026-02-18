@@ -102,6 +102,15 @@ filegroup(
     ],
 )
 
+filegroup(
+    name = "all_languages_config_assets",
+    srcs = _SUPPORTED_LANGUAGES_CONFIG_ASSETS["all"],
+    visibility = [
+        "//scripts:oppia_script_test_visibility",
+        "//scripts/src/java/org/oppia/android/scripts/xml:string_resource_parser",
+        ],
+)
+
 [
     android_library(
         name = "%s_languages_config" % support_level,

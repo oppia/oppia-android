@@ -23,6 +23,9 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
     ],
+    resources = [
+        "//config/src/java/org/oppia/android/config:all_languages_config_assets",
+        ],
 )
 
 kt_jvm_library(
