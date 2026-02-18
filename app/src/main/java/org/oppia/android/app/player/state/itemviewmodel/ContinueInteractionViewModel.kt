@@ -10,6 +10,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
 // For context:
@@ -23,15 +25,21 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
  * represents an actual interaction.
  */
 class ContinueInteractionViewModel private constructor(
+  interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   val hasConversationView: Boolean,
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController,
   val shouldAnimateContinueButton: Boolean,
   val continueButtonAnimationTimestampMs: Long
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
+
+  val buttonText: CharSequence = deriveButtonText(interaction)
+
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun isAutoNavigating(): Boolean = true
@@ -47,8 +55,35 @@ class ContinueInteractionViewModel private constructor(
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
   }
 
+  private fun deriveButtonText(interaction: Interaction): CharSequence {
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val buttonTextUnicodeOption1 =
+      interaction.customizationArgsMap["buttonText"]?.subtitledUnicode
+    val buttonTextUnicodeOption2 =
+      interaction.customizationArgsMap["buttonText"]?.customSchemaValue?.subtitledUnicode
+    val buttonText1 =
+      buttonTextUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val buttonText2 =
+      buttonTextUnicodeOption2?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    return when {
+      buttonText1.isNotEmpty() -> buttonText1
+      buttonText2.isNotEmpty() -> buttonText2
+      else -> resourceHandler.getStringInLocale(
+        org.oppia.android.app.R.string.state_continue_button
+      )
+    }
+  }
+
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(private val fragment: Fragment) : InteractionItemFactory {
+  class FactoryImpl @Inject constructor(
+    private val fragment: Fragment,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
+  ) : InteractionItemFactory {
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
@@ -62,12 +97,15 @@ class ContinueInteractionViewModel private constructor(
       userAnswerState: UserAnswerState
     ): StateItemViewModel {
       return ContinueInteractionViewModel(
+        interaction,
         interactionAnswerReceiver,
         hasConversationView,
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
         isSplitView,
         writtenTranslationContext,
+        resourceHandler,
+        translationController,
         shouldAnimateContinueButton = timeToStartNoticeAnimationMs != null,
         continueButtonAnimationTimestampMs = timeToStartNoticeAnimationMs ?: 0L
       )
