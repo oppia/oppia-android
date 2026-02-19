@@ -879,6 +879,11 @@ states {
       value {
       }
     }
+    recorded_voiceovers {
+      key: "ca_buttonText_0"
+      value {
+      }
+    }
     content {
       html: "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
       content_id: "content"
@@ -929,6 +934,29 @@ states {
         }
       }
     }
+    written_translations {
+      key: "ca_buttonText_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Come\303\247ar a explorar"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\330\250\330\257\330\243 \330\247\331\204\330\247\330\263\330\252\331\203\330\264\330\247\331\201"
+          }
+        }
+        translation_mapping {
+          key: "sw"
+          value {
+            html: "Anza kuchunguza"
+          }
+        }
+      }
+    }
     interaction {
       id: "Continue"
       default_outcome {
@@ -942,7 +970,12 @@ states {
       customization_args {
         key: "buttonText"
         value {
-          normalized_string: "Continue"
+          custom_schema_value {
+            subtitled_unicode {
+              unicode_str: "Start exploring"
+              content_id: "ca_buttonText_0"
+            }
+          }
         }
       }
     }

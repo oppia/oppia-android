@@ -2572,21 +2572,22 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Start exploring")))
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
+  fun testStateFragment_arabic_continueInteraction_buttonIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      // App strings aren't being translated, so the button label stays the same.
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      // The button label is translated using the exploration's written translations.
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("ابدأ الاستكشاف")))
     }
   }
 

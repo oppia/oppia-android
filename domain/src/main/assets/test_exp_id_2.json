@@ -673,7 +673,10 @@
           "id": "Continue",
           "customization_args": {
             "buttonText": {
-              "value": "Continue"
+              "value": {
+                "content_id": "ca_buttonText_0",
+                "unicode_str": "Start exploring"
+              }
             }
           },
           "answer_groups": [],
@@ -695,7 +698,8 @@
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {},
-            "default_outcome": {}
+            "default_outcome": {},
+            "ca_buttonText_0": {}
           }
         },
         "written_translations": {
@@ -731,6 +735,29 @@
               "sw": {
                 "data_format": "html",
                 "translation": {"translation" : "Kuendelea mbele."},
+                "needs_update": false
+              }
+            },
+            "ca_buttonText_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {
+                  "translation": "Começar a explorar"
+                },
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {
+                  "translation": "ابدأ الاستكشاف"
+                },
+                "needs_update": false
+              },
+              "sw": {
+                "data_format": "html",
+                "translation": {
+                  "translation": "Anza kuchunguza"
+                },
                 "needs_update": false
               }
             }
