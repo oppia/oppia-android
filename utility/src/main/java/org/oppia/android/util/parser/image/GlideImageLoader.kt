@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser.image
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -26,7 +27,7 @@ import javax.inject.Singleton
 /** An [ImageLoader] that uses Glide. */
 @Singleton
 class GlideImageLoader @Inject constructor(
-  context: Context,
+  private val context: Context,
   @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
@@ -76,9 +77,12 @@ class GlideImageLoader @Inject constructor(
     useInlineRendering: Boolean,
     target: ImageTarget<Bitmap>
   ) {
+    val isNightMode =
+      (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+        Configuration.UI_MODE_NIGHT_YES
     glide
       .asBitmap()
-      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering, isNightMode))
       .intoTarget(target)
   }
 

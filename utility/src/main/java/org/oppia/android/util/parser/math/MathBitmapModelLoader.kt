@@ -13,7 +13,6 @@ import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.Log
-import android.util.TypedValue
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -37,7 +36,7 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-
+import androidx.core.content.res.ResourcesCompat
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
  * [MathModel]s.
@@ -77,7 +76,6 @@ class MathBitmapModelLoader private constructor(
     height: Int,
     options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
-    Log.d("MathDebug", "buildLoadData(): width=$width height=$height model=${model.rawLatex}")
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
@@ -103,13 +101,7 @@ class MathBitmapModelLoader private constructor(
     private val blockingDispatcher: CoroutineDispatcher,
     private val consoleLogger: ConsoleLogger
   ) : DataFetcher<ByteBuffer> {
-
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
-      Log.d(
-        "MathDebug",
-        "LatexModelDataFetcher.loadData(): targetWidth=$targetWidth " +
-          "targetHeight=$targetHeight lineHeight=${model.lineHeight}"
-      )
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
       CoroutineScope(backgroundDispatcher).launch {
@@ -117,26 +109,20 @@ class MathBitmapModelLoader private constructor(
         // conditions. This synchronizes span creation so that the race condition can't happen,
         // though it will likely slow down LaTeX loading a bit. Fortunately, rendering & PNG
         // creation can still happen in parallel, and those are the more expensive steps.
-        val typedValue = TypedValue()
-        application.theme.resolveAttribute(
-          android.R.attr.textColorPrimary,
-          typedValue,
-          true
-        )
         val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
           MathExpressionSpan(
             model.rawLatex,
             model.lineHeight,
             application.assets,
             !model.useInlineRendering,
-            typedValue.data
             // TODO(#1523): Test color parameter in MathBitmapModelLoader
-            //  ResourcesCompat.getColor(
-            //    application.resources,
-            //    R.color.component_color_shared_equation_color,
-            //   /* theme = */null
-            //  )
-          ).also { it.ensureDrawable() }
+              ResourcesCompat.getColor(
+                application.resources,
+                R.color.component_color_shared_equation_color,
+               /* theme = */null
+              )
+          ).also { it.ensureDrawable()
+            }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
           setSpan(span, /* start= */ 0, /* end= */ 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -174,11 +160,6 @@ class MathBitmapModelLoader private constructor(
           renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
             staticTextLayout.draw(it)
           }
-        Log.d(
-          "MathDebug",
-          "Before scaling: targetWidth=$targetWidth targetHeight=$targetHeight " +
-            "SIZE_ORIGINAL=${Target.SIZE_ORIGINAL}"
-        )
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
         val finalHeight =
@@ -211,7 +192,8 @@ class MathBitmapModelLoader private constructor(
     override fun getDataClass(): Class<ByteBuffer> = ByteBuffer::class.java
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
-    override fun getDataSource(): DataSource = DataSource.REMOTE
+  //  override fun getDataSource(): DataSource = DataSource.REMOTE
+    override fun getDataSource(): DataSource = DataSource.LOCAL
 
     /**
      * A [DrawableSurface] which tracks the bounds necessary to draw each constituent part of LaTeX
@@ -424,7 +406,6 @@ class MathBitmapModelLoader private constructor(
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
       return MathBitmapModelLoader(application)
     }
-
     override fun teardown() {}
   }
 }
