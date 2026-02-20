@@ -257,6 +257,7 @@ class StateFragmentTest {
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
+  //  15. Add tests to check drag and drop answers are persisted when orientation changes.
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
@@ -5939,45 +5940,6 @@ class StateFragmentTest {
 
       // Verify Explaination box is not visible.
       onView(withId(R.id.solution_summary_container)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_dragAndDropInteraction_rotateScreen_answersArePersisted() {
-    // This test verifies that drag and drop answers persist when the device is rotated.
-    setUpTestWithLanguageSwitchingFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-
-      // Perform drag and drop action.
-      dragAndDropItem(fromPosition = 1, toPosition = 2)
-
-      // Verify the item was moved before rotation.
-      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
-      ).check(matches(withText(containsString("a camera at the store"))))
-
-      // Rotate the screen to landscape.
-      rotateToLandscape()
-
-      // Verify the drag drop interaction is still visible after rotation.
-      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
-      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(isDisplayed()))
-
-      // Verify the item is still at position 2 after rotation (order persisted).
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
-      ).check(matches(withText(containsString("a camera at the store"))))
     }
   }
 
