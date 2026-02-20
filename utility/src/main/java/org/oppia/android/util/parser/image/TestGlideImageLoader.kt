@@ -78,7 +78,7 @@ class TestGlideImageLoader @Inject constructor(
     useInlineRendering: Boolean,
     target: ImageTarget<Bitmap>
   ) {
-    loadedMathDrawables += MathModel(rawLatex, lineHeight, useInlineRendering)
+    loadedMathDrawables += MathModel(rawLatex, lineHeight, useInlineRendering, isNightMode = false)
     glideImageLoader.loadMathDrawable(rawLatex, lineHeight, useInlineRendering, target)
   }
 

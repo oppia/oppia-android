@@ -36,7 +36,7 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-
+import androidx.core.content.res.ResourcesCompat
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
  * [MathModel]s.
@@ -159,7 +159,6 @@ class MathBitmapModelLoader private constructor(
           renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
             staticTextLayout.draw(it)
           }
-
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
         val finalHeight =
@@ -192,7 +191,8 @@ class MathBitmapModelLoader private constructor(
     override fun getDataClass(): Class<ByteBuffer> = ByteBuffer::class.java
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
-    override fun getDataSource(): DataSource = DataSource.REMOTE
+  //  override fun getDataSource(): DataSource = DataSource.REMOTE
+    override fun getDataSource(): DataSource = DataSource.LOCAL
 
     /**
      * A [DrawableSurface] which tracks the bounds necessary to draw each constituent part of LaTeX
@@ -405,7 +405,6 @@ class MathBitmapModelLoader private constructor(
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
       return MathBitmapModelLoader(application)
     }
-
     override fun teardown() {}
   }
 }
