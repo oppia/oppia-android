@@ -132,11 +132,11 @@ class MathTagHandler(
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
         // Kotlitex expects escaped backslashes.
         val rawLatex = obj?.getOptionalString("raw_latex")
-          val svgFilename = obj?.getOptionalString("svg_filename")
+        val svgFilename = obj?.getOptionalString("svg_filename")
         return when {
-            svgFilename != null -> MathAsSvg(svgFilename)
-           rawLatex != null -> MathAsLatex(rawLatex)
-        //  !rawLatex.isNullOrBlank() -> MathAsLatex(rawLatex)
+          svgFilename != null -> MathAsSvg(svgFilename)
+          rawLatex != null -> MathAsLatex(rawLatex)
+          //  !rawLatex.isNullOrBlank() -> MathAsLatex(rawLatex)
           else -> null
         }
       }

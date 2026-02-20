@@ -12,7 +12,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.Log
+import androidx.core.content.res.ResourcesCompat
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -36,7 +36,6 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import androidx.core.content.res.ResourcesCompat
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
  * [MathModel]s.
@@ -116,13 +115,14 @@ class MathBitmapModelLoader private constructor(
             application.assets,
             !model.useInlineRendering,
             // TODO(#1523): Test color parameter in MathBitmapModelLoader
-              ResourcesCompat.getColor(
-                application.resources,
-                R.color.component_color_shared_equation_color,
-               /* theme = */null
-              )
-          ).also { it.ensureDrawable()
-            }
+            ResourcesCompat.getColor(
+              application.resources,
+              R.color.component_color_shared_equation_color,
+              /* theme = */null
+            )
+          ).also {
+            it.ensureDrawable()
+          }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
           setSpan(span, /* start= */ 0, /* end= */ 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -192,7 +192,7 @@ class MathBitmapModelLoader private constructor(
     override fun getDataClass(): Class<ByteBuffer> = ByteBuffer::class.java
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
-  //  override fun getDataSource(): DataSource = DataSource.REMOTE
+    //  override fun getDataSource(): DataSource = DataSource.REMOTE
     override fun getDataSource(): DataSource = DataSource.LOCAL
 
     /**
