@@ -1,0 +1,13 @@
+"""
+Libraries corresponding to lesson asset validation checks to ensure that exploration assets
+are compatible with dark mode and follow proper LaTeX/math usage standards.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "lesson_asset_validation_check_lib",
+    testonly = True,
+    srcs = ["LessonAssetValidationCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)

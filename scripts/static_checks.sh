@@ -89,6 +89,13 @@ echo "********************************"
 bazel run //scripts:string_resource_validation_check -- $(pwd)
 echo ""
 
+# Run Lesson asset validation check
+echo "********************************"
+echo "Running lesson asset validation checks"
+echo "********************************"
+bazel run //scripts:lesson_asset_validation_check -- $(pwd)
+echo ""
+
 
 # THIRD PARTY DEPENDENCY CHECKS
 # These are checks for third party dependencies

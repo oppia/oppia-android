@@ -32,3 +32,9 @@ fi
 
 # Populate new data inside assets folder
 rsync -r $source_assets_path $destination_assets_path
+
+# Run lesson asset validation check on newly copied assets.
+echo ""
+echo "Running lesson asset validation check on copied assets..."
+bazel run //scripts:lesson_asset_validation_check -- $(pwd)
+echo ""

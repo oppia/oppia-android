@@ -1,0 +1,16 @@
+"""
+Tests corresponding to lesson asset validation checks to ensure that exploration assets are
+compatible with dark mode and follow proper LaTeX/math usage standards.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "LessonAssetValidationCheckTest",
+    srcs = ["LessonAssetValidationCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/assets:lesson_asset_validation_check_lib",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
