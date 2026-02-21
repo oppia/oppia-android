@@ -1,0 +1,249 @@
+package org.oppia.android.domain.workmanager.debug
+
+import android.app.Application
+import android.content.Context
+import android.util.Log
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.work.Configuration
+import androidx.work.NetworkType
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.impl.WorkManagerImpl
+import androidx.work.impl.model.WorkSpec
+import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
+import dagger.Binds
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import java.util.UUID
+import java.util.concurrent.TimeUnit
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.guava.asDeferred
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.workmanager.OppiaWorker
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY
+import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
+import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.shadows.ShadowLog
+
+/** Tests for [DebugWorkerScheduler]. */
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = DebugWorkerSchedulerTest.TestApplication::class)
+@OptIn(ExperimentalCoroutinesApi::class)
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
+class DebugWorkerSchedulerTest {
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var configuration: Configuration
+  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
+  @Inject lateinit var debugWorkerScheduler: DebugWorkerScheduler
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+
+  private lateinit var workManager: WorkManager
+  private val testDriver by lazy { checkNotNull(WorkManagerTestInitHelper.getTestDriver(context)) }
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
+
+    WorkManagerTestInitHelper.initializeTestWorkManager(context, configuration)
+    workManager = WorkManager.getInstance(context)
+
+    // WorkManager and workers output most their issues issues to logcat, so this ensures those get
+    // printed to the test log. This leads to a noisier test run but it makes debugging failures
+    // significantly easier.
+    ShadowLog.stream = System.out
+  }
+
+  @Test
+  fun testDebugWorker_hasThreeOperationTypes() {
+    // A change detector test that, if failing, means that other tests in this suite need to be
+    // updated to ensure that the new operation type is properly verified.
+    assertThat(DebugWorker.Operation.values().toList()).containsExactly(
+      RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY,
+      RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY,
+      RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
+    )
+  }
+
+  @Test
+  fun testScheduleWork_schedulesDebugWorkerToRunEveryFifteenMinsWithConnectivity() {
+    debugWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
+    // minutes but only if there's internet connectivity.
+    val id = findUniqueId(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    val workInfo = lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(15))
+    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_schedulesDebugWorkerToRunEveryTwentyMinsWithOrWithoutConnectivity() {
+    debugWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
+    // minutes but only if there's internet connectivity.
+    val id = findUniqueId(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
+    val workInfo = lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(20))
+    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.NOT_REQUIRED)
+  }
+
+  @Test
+  fun testScheduleWork_schedulesDebugWorkerToRunEverySixHoursWithOrWithoutConnectivity() {
+    debugWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
+    // minutes but only if there's internet connectivity.
+    val id = findUniqueId(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
+    val workInfo = lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.NOT_REQUIRED)
+  }
+
+  @Test
+  fun testScheduleWork_constraintsMet_runsThreeJobs() {
+    debugWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    forceConstraintsMet(findUniqueId(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY))
+    forceConstraintsMet(findUniqueId(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY))
+    forceConstraintsMet(findUniqueId(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY))
+    testCoroutineDispatchers.runCurrent()
+
+    // Order cannot be easily checked here, so just verify that they ran.
+    assertThat(fetchDebugWorkerDebugLogs()).containsExactly(
+      "Debug worker ran with config: RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY.",
+      "Debug worker ran with config: RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY.",
+      "Debug worker ran with config: RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY."
+    )
+  }
+
+  // Must be called to ensure a worker is run when it has constraints, but won't override the
+  // time-based scheduling constraint (the clock still needs to be advanced).
+  private fun forceConstraintsMet(id: UUID) {
+    // There's no way to configure WorkManager to set specific constraints or to follow both
+    // constraints and fixed time.
+    testDriver.setAllConstraintsMet(id)
+  }
+
+  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID {
+    val workName = "${DebugWorker.WORKER_NAME}.${taskType.persistentName}"
+    return runInBackground {
+      workManager.getWorkInfosForUniqueWork(workName).asDeferred().await().single().id
+    }
+  }
+
+  private fun lookUpWorkInfo(id: UUID): WorkInfo? =
+    runInBackground { workManager.getWorkInfoById(id).asDeferred().await() }
+
+  private fun lookUpWorkSpec(id: UUID): WorkSpec? {
+    // This is a very hacky solution since it relies on WorkManagerImpl, but there's no other way to
+    // access some of the worker's properties (such as its scheduled period) without this. That
+    // could be observed behaviorally by leveraging clock management, but WorkManager already makes
+    // that challenging. See ... TODO: Link to new issue here to fix timing. Seems simply to just make this observational rather than using the database hack.
+    return runInBackground {
+      (workManager as WorkManagerImpl).workDatabase.workSpecDao().getWorkSpec(id.toString())
+    }
+  }
+
+  private fun fetchDebugWorkerDebugLogs(): List<String> {
+    // Extract all logs from the bootstrap worker and validate they are each errors before returning
+    // the logged message lines.
+    return ShadowLog.getLogs().filter { it.tag == DebugWorker.WORKER_NAME }.map {
+      assertThat(it.type).isEqualTo(Log.DEBUG)
+      return@map it.msg
+    }
+  }
+
+  private fun <T> runInBackground(func: suspend () -> T): T {
+    val resultDeferred = CoroutineScope(backgroundDispatcher).async { func() }
+    testCoroutineDispatchers.runCurrent()
+    assertThat(resultDeferred.isCompleted).isTrue()
+    return resultDeferred.getCompleted()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Module
+  interface TestModule {
+    @Binds fun bindApplicationContext(application: Application): Context
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestModule::class, RobolectricModule::class, TestDispatcherModule::class,
+      FakeOppiaClockModule::class,
+      DebugWorkerDebugModule::class,
+      WorkManagerConfigurationModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      TestPlatformParameterModule::class,
+      AssetModule::class,
+      DebugLogReportingModule::class
+    ]
+  )
+  interface TestApplicationComponent : DispatcherInjector, PlatformParameterControllerInjector {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(test: DebugWorkerSchedulerTest)
+  }
+
+  class TestApplication : Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerDebugWorkerSchedulerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: DebugWorkerSchedulerTest) {
+      component.inject(test)
+    }
+
+    override fun getDispatcherInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
+  }
+}

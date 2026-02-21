@@ -30,6 +30,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProcessState
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import javax.inject.Singleton
+import kotlinx.coroutines.CompletableDeferred
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module(
@@ -57,14 +58,28 @@ class TestPlatformParameterModule {
   ): PlatformParameterController {
     val prodController = factory.create(processState)
     return object : PlatformParameterController {
+      private var isLoaded = false
+
       override fun loadParametersAsync(): Deferred<Unit> {
         // Calling code can be blocking which means the returned deferred must run immediately,
-        // hence the use of the Unconfined dispatcher.
-        return CoroutineScope(Dispatchers.Unconfined).async {
+        // hence the use of the dispatcher. The Main dispatcher must be used due to the runCurrent()
+        // call, however, since otherwise it can contend with tests trying to synchronize state and
+        // then deadlock.
+        if (isLoaded) {
+          // This is a slight hack to allow the PlatformParameterProcessState injector to return
+          // immediately if parameters are already loaded. This is needed in more complex
+          // cross-thread initialization cases such as for background workers.
+          return CompletableDeferred(Unit)
+        }
+        // TODO: Validate this change in other tests--it could actually mean that there's a full
+        // main thread hop before parameters are loaded which isn't properly blocking and is likely
+        // to cause a moment of invalid state early in test execution.
+        return CoroutineScope(Dispatchers.Main).async {
           // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
           val loadResult = prodController.loadParametersAsync()
           testCoroutineDispatchers.runCurrent()
           check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+          isLoaded = true
         }
       }
 
@@ -86,9 +101,15 @@ class TestPlatformParameterModule {
     platformParameterController: PlatformParameterController,
     testCoroutineDispatchers: TestCoroutineDispatchers
   ): PlatformParameterProcessState {
-    // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
+    // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params. Make
+    //  sure to double check parameter loading in BootstrapOppiaWorker. Commenting out that line
+    //  should trigger test failures once this mechanism is cleaned up. If it doesn't then work will
+    //  be needed in BootstrapOppiaWorkerTest to ensure that line is properly tested (since removing
+    //  it can cause catastrophic problems in deployed apps--it MUST be tested).
     val loadDeferred = platformParameterController.loadParametersAsync()
-    testCoroutineDispatchers.runCurrent()
+    if (!loadDeferred.isCompleted) {
+      testCoroutineDispatchers.runCurrent()
+    }
     check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
     return processState
   }
