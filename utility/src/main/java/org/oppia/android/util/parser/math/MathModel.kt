@@ -15,7 +15,7 @@ data class MathModel(
   val rawLatex: String,
   val lineHeight: Float,
   val useInlineRendering: Boolean,
-  val isNightMode : Boolean
+  val isNightMode: Boolean = false
 ) {
   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */
   fun toKeySignature(): MathModelSignature =
