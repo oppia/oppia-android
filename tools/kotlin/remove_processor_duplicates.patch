@@ -15,3 +15,7 @@
      )
 
      compiler_plugins = [
+@@ -349,2 +349,2 @@
+     # Unwrap kotlinc_options/javac_options options or default to the ones being provided by the toolchain
+-    args.add_all("--kotlin_passthrough_flags", kotlinc_options_to_flags(kotlinc_options))
++    args.add_all("--kotlin_passthrough_flags", kotlinc_options_to_flags(kotlinc_options) + ["-Xskip-metadata-version-check"])
