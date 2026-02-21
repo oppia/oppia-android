@@ -129,6 +129,36 @@ abstract class TestCoroutineDispatcherTestBase(
   }
 
   @Test
+  fun testDispatcher_scheduleImmediateTaskWithDelegate_runCurrentOnce_doesNotRunSecondTask() {
+    scheduleImmediateTask {
+      mockRunnable1.run()
+      scheduleImmediateTask(mockRunnable2)
+    }
+
+    backgroundTestDispatcher.runCurrent()
+    stabilizeAfterDispatcherFlush()
+
+    verify(mockRunnable1).run()
+    verify(mockRunnable2, never()).run()
+  }
+
+  @Test
+  fun testDispatcher_scheduleImmediateTaskWithDelegate_runCurrentTwice_runsBothTasks() {
+    scheduleImmediateTask {
+      mockRunnable1.run()
+      scheduleImmediateTask(mockRunnable2)
+    }
+
+    // A second runCurrent() will chain the first and ensure the delegated runnable is also run.
+    backgroundTestDispatcher.runCurrent()
+    backgroundTestDispatcher.runCurrent()
+    stabilizeAfterDispatcherFlush()
+
+    verify(mockRunnable1).run()
+    verify(mockRunnable2).run()
+  }
+
+  @Test
   fun testDispatcher_scheduleImmediateTasks_runCurrentBetween_runsEachTask() {
     scheduleImmediateTask(mockRunnable1)
     backgroundTestDispatcher.runCurrent()

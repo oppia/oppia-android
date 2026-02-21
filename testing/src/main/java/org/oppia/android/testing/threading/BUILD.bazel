@@ -86,6 +86,7 @@ kt_android_library(
     ],
     visibility = [
         "//app:__subpackages__",
+        "//domain/src/test/java/org/oppia/android/domain/workmanager:__pkg__",
         "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
