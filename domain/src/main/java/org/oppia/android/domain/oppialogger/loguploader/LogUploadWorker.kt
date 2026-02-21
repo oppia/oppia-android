@@ -54,6 +54,9 @@ class LogUploadWorker private constructor(
       }
       OppiaWorker.Result.SUCCESS
     } catch (e: Exception) {
+      if (taskType == Operation.UPLOAD_EVENTS) {
+        syncStatusManager.reportUploadError()
+      }
       consoleLogger.e(WORKER_NAME, "Failed operation: ${taskType.persistentName}.", e)
       OppiaWorker.Result.FAILURE
     }

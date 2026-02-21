@@ -18,11 +18,7 @@ class WorkManagerScheduler @Inject constructor(context: Context) {
     taskType: OppiaWorker.TaskType,
     repeatInterval: Long,
     intervalUnit: TimeUnit,
-    constraints: Constraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build(),
-    existingPeriodicWorkPolicy: ExistingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP
+    requireNetworkConnectivity: Boolean = true
   ) {
     val workName = "$workerName.${taskType.persistentName}"
     val taskTypeKey = BootstrapOppiaWorker.constructTaskTypeKey(workerName)
@@ -30,12 +26,30 @@ class WorkManagerScheduler @Inject constructor(context: Context) {
       putString(BootstrapOppiaWorker.DELEGATED_WORKER_NAME_INPUT_KEY, workerName)
       putString(taskTypeKey, taskType.persistentName)
     }.build()
+    val repeatIntervalMs = intervalUnit.toMillis(repeatInterval)
+    val adjustedIntervalMs =
+      repeatIntervalMs.coerceIn(MINIMUM_JOB_INTERVAL_MILLIS..MAXIMUM_JOB_INTERVAL_MILLIS)
     val request = PeriodicWorkRequest.Builder(
-      BootstrapOppiaWorker::class.java, repeatInterval, intervalUnit
-    ).addTag(workName)
-      .setConstraints(constraints)
-      .setInputData(inputData)
-      .build()
-    workManager.enqueueUniquePeriodicWork(workName, existingPeriodicWorkPolicy, request)
+      BootstrapOppiaWorker::class.java, adjustedIntervalMs, TimeUnit.MILLISECONDS
+    ).apply {
+      addTag(workName)
+      setConstraints(
+        Constraints.Builder().apply {
+          if (requireNetworkConnectivity) {
+            setRequiredNetworkType(NetworkType.CONNECTED)
+          } else setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+          setRequiresBatteryNotLow(true)
+        }.build()
+      )
+      setInputData(inputData)
+    }.build()
+    // Note that UPDATE is used here so that new app versions or platform parameter configurations
+    // can update the constraints and timed period of jobs.
+    workManager.enqueueUniquePeriodicWork(workName, ExistingPeriodicWorkPolicy.UPDATE, request)
+  }
+
+  private companion object {
+    private val MINIMUM_JOB_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(15)
+    private val MAXIMUM_JOB_INTERVAL_MILLIS = TimeUnit.DAYS.toMillis(14)
   }
 }

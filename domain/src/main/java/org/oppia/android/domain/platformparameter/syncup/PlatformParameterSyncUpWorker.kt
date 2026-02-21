@@ -13,10 +13,10 @@ class PlatformParameterSyncUpWorker private constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController
 ) : OppiaWorker<PlatformParameterSyncUpWorker.Operation> {
-
   companion object {
     const val WORKER_NAME = "PlatformParameterSyncUpWorker"
   }
+
   enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
     REFRESH_PLATFORM_PARAMETERS("refresh_platform_parameters")
   }

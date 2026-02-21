@@ -47,8 +47,8 @@ interface WorkManagerConfigurationModule {
           // check to make sure the correct class is being requested before proceeding. However,
           // there's one set of counter cases: WorkManager's own internal workers route through this
           // factory. There's no reliable way to check for those other than validating the class is
-          // a real class loadable in the app and that it's a ListenableFuture. This combined with a
-          // regex content check should prevent any Oppia workers from being ListenableWorker
+          // a real class loadable in the app and that it's a ListenableWorker. This combined with a
+          // static regex content check should prevent any Oppia workers from being ListenableWorker
           // directly.
           val workerExistsInApk = try {
             ListenableWorker::class.java.isAssignableFrom(Class.forName(workerClassName))

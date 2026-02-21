@@ -8,6 +8,7 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "scheduler",
     srcs = ["DebugWorkerScheduler.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         ":worker",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:startup_worker_schedule_readiness_listener",
@@ -17,6 +18,7 @@ kt_android_library(
 kt_android_library(
     name = "worker",
     srcs = ["DebugWorker.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
         "//third_party:androidx_work_work-runtime-ktx",

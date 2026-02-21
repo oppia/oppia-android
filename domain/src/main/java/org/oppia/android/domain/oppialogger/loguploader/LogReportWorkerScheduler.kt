@@ -13,7 +13,7 @@ class LogReportWorkerScheduler @Inject constructor() : StartupWorkerScheduleRead
   override fun scheduleWork(workManagerScheduler: WorkManagerScheduler) {
     for (operation in LogUploadWorker.Operation.values()) {
       workManagerScheduler.schedulePeriodicWorker(
-        LogUploadWorker.WORKER_NAME, operation, 6, TimeUnit.HOURS
+        LogUploadWorker.WORKER_NAME, operation, repeatInterval = 6, intervalUnit = TimeUnit.HOURS
       )
     }
   }

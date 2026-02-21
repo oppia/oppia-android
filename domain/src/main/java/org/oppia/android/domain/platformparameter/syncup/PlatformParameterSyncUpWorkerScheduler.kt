@@ -21,11 +21,7 @@ class PlatformParameterSyncUpWorkerScheduler @Inject constructor(
       PlatformParameterSyncUpWorker.WORKER_NAME,
       PlatformParameterSyncUpWorker.Operation.REFRESH_PLATFORM_PARAMETERS,
       workRequestRepeatInterval.value.toLong(),
-      TimeUnit.HOURS,
-      constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
-        .setRequiresBatteryNotLow(true)
-        .build()
+      TimeUnit.HOURS
     )
   }
 }
