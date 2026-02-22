@@ -10,6 +10,7 @@ kt_android_library(
     srcs = ["OppiaWorkManagerTestDriver.kt"],
     visibility = ["//domain:domain_testing_visibility"],
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:bootstrap_oppia_worker",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//third_party:androidx_work_work-testing",
@@ -30,8 +31,10 @@ kt_android_library(
         ":test_job_scheduler_mixin",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:bootstrap_oppia_worker",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_work_work-testing",
         "//third_party:javax_inject_javax_inject",
+        "//third_party:org_robolectric_robolectric",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

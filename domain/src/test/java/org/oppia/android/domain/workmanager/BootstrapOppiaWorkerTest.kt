@@ -22,7 +22,6 @@ import dagger.Component
 import dagger.Module
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +40,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asDeferred
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.DELEGATED_WORKER_NAME_INPUT_KEY
@@ -58,7 +56,6 @@ import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockThrowin
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -80,7 +77,6 @@ import org.robolectric.shadows.ShadowLog
 class BootstrapOppiaWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -91,16 +87,7 @@ class BootstrapOppiaWorkerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    // Ensure OppiaClock is synchronized with FakeSystemClock since the latter is used when
-    // controlling time with dispatchers.
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
     oppiaWorkManagerTestInitializer.initializeWorkManager()
-
-    // WorkManager and workers output most their issues issues to logcat, so this ensures those get
-    // printed to the test log. This leads to a noisier test run but it makes debugging failures
-    // significantly easier.
-    ShadowLog.stream = System.out
 
     // Reset static state between tests.
     workerResults.clear()

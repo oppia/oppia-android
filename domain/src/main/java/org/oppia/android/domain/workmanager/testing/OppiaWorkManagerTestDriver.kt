@@ -1,6 +1,8 @@
 package org.oppia.android.domain.workmanager.testing
 
 import android.content.Context
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.impl.WorkManagerImpl
@@ -15,6 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.guava.asDeferred
+import org.oppia.android.domain.workmanager.BootstrapOppiaWorker
+import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.DELEGATED_WORKER_NAME_INPUT_KEY
+import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.constructTaskTypeKey
 import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -32,6 +37,7 @@ class OppiaWorkManagerTestDriver @Inject constructor(
   private val testDriver by lazy {
     checkNotNull(WorkManagerTestInitHelper.getTestDriver(context))
   }
+  private val autoForceConstraints = mutableSetOf<UUID>()
 
   fun initialize(workManager: WorkManager) {
     check(!this::workManager.isInitialized) { "Attempting to re-initialize test driver." }
@@ -40,11 +46,16 @@ class OppiaWorkManagerTestDriver @Inject constructor(
 
   // Must be called to ensure a worker is run when it has constraints, but won't override the
   // time-based scheduling constraint (the clock still needs to be advanced).
-  fun forceConstraintsMet(id: UUID) {
+  // TODO: Document that this persists for periodic tasks (so that constraints don't need to be re-set). Document auto runCurrent() call.
+  fun forceConstraintsMet(id: UUID, autoTrack: Boolean = true) {
     // There's no way to configure WorkManager to set specific constraints or to follow both
     // constraints and fixed time.
     testDriver.setAllConstraintsMet(id)
+    if (autoTrack) autoForceConstraints += id
+    testCoroutineDispatchers.runCurrent()
   }
+
+  fun isAutoForcingConstraints(id: UUID) = id in autoForceConstraints
 
   // Must be run on main thread.
   fun lookUpWorkInfo(id: UUID): WorkInfo? =
@@ -63,6 +74,22 @@ class OppiaWorkManagerTestDriver @Inject constructor(
     return runInBackground {
       workManager.getWorkInfosForUniqueWork(workName).asDeferred().await().single().id
     }
+  }
+
+  fun runOneOffWork(workerName: String, operation: OppiaWorker.TaskType): WorkInfo {
+    val id = runInBackground {
+      OneTimeWorkRequest.Builder(BootstrapOppiaWorker::class.java)
+        .setInputData(
+          Data.Builder()
+            .putString(DELEGATED_WORKER_NAME_INPUT_KEY, workerName)
+            .putString(constructTaskTypeKey(workerName), operation.persistentName)
+            .build()
+        )
+        .build()
+        .also(workManager::enqueue)
+        .id
+    }
+    return checkNotNull(lookUpWorkInfo(id)) { "Expected one-off job to run." }
   }
 
   private fun <T> runInBackground(func: suspend () -> T): T {

@@ -4,26 +4,22 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.Configuration
-import androidx.work.Data
-import androidx.work.PeriodicWorkRequest
+import androidx.work.NetworkType.CONNECTED
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
+import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import org.junit.Before
+import java.util.UUID
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -44,6 +40,28 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.After
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_UI_METRICS
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_STORAGE_USAGE_METRICS
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.workmanager.OppiaWorker
+import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /** Tests for [MetricLogSchedulingWorkerScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -52,113 +70,149 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerSchedulerTest.TestApplication::class)
 class MetricLogSchedulingWorkerSchedulerTest {
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
+  @Inject lateinit var metricLogSchedulingWorkerScheduler: MetricLogSchedulingWorkerScheduler
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var metricLogSchedulingWorkerScheduler: MetricLogSchedulingWorkerScheduler
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
-  @Inject
-  lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  private lateinit var workManager: WorkManager
-
-  private val workerCaseForSchedulingPeriodicBackgroundMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-    )
-    .build()
-
-  private val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-    )
-    .build()
-
-  private val workerCaseForSchedulingPeriodicUiMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-    )
-    .build()
-
-  @Before
-  fun setUp() {
+  @Test
+  fun testMetricLogSchedulingWorker_hasThreeOperationTypes() {
     setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(metricLogSchedulingWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+
+    // A change detector test that, if failing, means that other tests in this suite need to be
+    // updated to ensure that the new operation type is properly verified.
+    assertThat(MetricLogSchedulingWorker.Operation.values().toList()).containsExactly(
+      SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS,
+      SCHEDULE_LOG_PERIODIC_UI_METRICS,
+      SCHEDULE_LOG_STORAGE_USAGE_METRICS
+    )
   }
 
   @Test
-  fun testScheduler_enqueueRequestForPeriodicBackgroundMetrics_workRequestGetsEnqueued() {
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
-      .build()
+  fun testScheduleWork_schedulesMetricLogSchedulingWorkerForPeriodicBackgroundMetrics() {
+    forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(100)
+    forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(200)
+    setUpTestApplicationComponent()
+    initializeDependencies()
 
-    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
-      workManager,
-      request
-    )
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
+    metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.ENQUEUED)
+    // Verify that the job was scheduled correctly and uses the high-frequency time.
+    val id = testDriver.findUniqueId(WORKER_NAME, SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(100))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
-  fun testScheduler_enqueueRequestForPeriodicUiMetric_workRequestGetsEnqueued() {
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+  fun testScheduleWork_schedulesMetricLogSchedulingWorkerForPeriodicUiMetrics() {
+    forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(300)
+    forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(400)
+    setUpTestApplicationComponent()
+    initializeDependencies()
 
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
-      .build()
+    metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForPeriodicUiMetrics(
-      workManager,
-      request
-    )
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.ENQUEUED)
+    // Verify that the job was scheduled correctly and uses the high-frequency time.
+    val id = testDriver.findUniqueId(WORKER_NAME, SCHEDULE_LOG_PERIODIC_UI_METRICS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(300))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
-  fun testScheduler_enqueueRequestForStorageMetric_workRequestGetsEnqueued() {
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+  fun testScheduleWork_schedulesMetricLogSchedulingWorkerForStorageUsageMetrics() {
+    forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(500)
+    forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(600)
+    setUpTestApplicationComponent()
+    initializeDependencies()
 
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
-      .build()
+    metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    metricLogSchedulingWorkerScheduler.enqueueWorkRequestForStorageUsage(
-      workManager,
-      request
-    )
+    // Verify that the job was scheduled correctly and uses the low-frequency time.s
+    val id = testDriver.findUniqueId(WORKER_NAME, SCHEDULE_LOG_STORAGE_USAGE_METRICS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(600))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_constraintsMet_runsThreeJobs() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(100)
+    forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(150)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_PERIODIC_UI_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_STORAGE_USAGE_METRICS))
     testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
 
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.ENQUEUED)
+    // Order cannot be easily checked here, so just verify that they ran.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(logCount).isEqualTo(3)
+    val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+    assertThat(loggedEvents.map { it.loggableMetric.loggableMetricTypeCase })
+      .containsExactly(NETWORK_USAGE_METRIC, MEMORY_USAGE_METRIC, STORAGE_USAGE_METRIC)
+  }
+
+  @Test
+  fun testScheduleWork_constraintsMet_fifteenAndSixtyMinIncrements_wait35_runsSevenJobs() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(15)
+    forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(60)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_PERIODIC_UI_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(SCHEDULE_LOG_STORAGE_USAGE_METRICS))
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(35))
+
+    // Advancing 35 minutes means the high frequency jobs (2) each ran 3 times (they run immediately
+    // upon being scheduled), and the low frequency job (1) only ran 1 time since it was scheduled.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(logCount).isEqualTo(7)
+    val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(7)
+    assertThat(loggedEvents.map { it.loggableMetric.loggableMetricTypeCase })
+      .containsExactly(
+        NETWORK_USAGE_METRIC,
+        NETWORK_USAGE_METRIC,
+        NETWORK_USAGE_METRIC,
+        MEMORY_USAGE_METRIC,
+        MEMORY_USAGE_METRIC,
+        MEMORY_USAGE_METRIC,
+        STORAGE_USAGE_METRIC
+      )
+  }
+
+  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
+
+  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID =
+    testDriver.findUniqueId(WORKER_NAME, taskType)
+
+  private fun initializeDependencies() {
+    FirebaseApp.initializeApp(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMetricLogSchedulingWorkerSchedulerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -177,7 +231,6 @@ class MetricLogSchedulingWorkerSchedulerTest {
       CpuPerformanceSnapshotterModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,
-      LogReportWorkerModule::class,
       LogStorageModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
@@ -190,10 +243,11 @@ class MetricLogSchedulingWorkerSchedulerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
+      TestAuthenticationModule::class,
       TestPlatformParameterModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -205,7 +259,7 @@ class MetricLogSchedulingWorkerSchedulerTest {
     fun inject(metricLogSchedulingWorkerSchedulerTest: MetricLogSchedulingWorkerSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerMetricLogSchedulingWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -216,6 +270,8 @@ class MetricLogSchedulingWorkerSchedulerTest {
       component.inject(metricLogSchedulingWorkerSchedulerTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    override fun getDataProvidersInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
+    override fun getDispatcherInjector(): DispatcherInjector = component
   }
 }

@@ -71,11 +71,6 @@ class DebugWorkerSchedulerTest {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
     oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
-
-    // WorkManager and workers output most their issues issues to logcat, so this ensures those get
-    // printed to the test log. This leads to a noisier test run but it makes debugging failures
-    // significantly easier.
-    ShadowLog.stream = System.out
   }
 
   @Test

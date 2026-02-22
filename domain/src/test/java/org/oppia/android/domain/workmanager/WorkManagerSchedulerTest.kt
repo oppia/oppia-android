@@ -7,8 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.NOT_REQUIRED
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Binds
@@ -32,17 +30,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asDeferred
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerSchedulerTest.MockOppiaWorker1.TaskType.WORKER1_TASK1
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -50,40 +43,26 @@ import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
-import org.robolectric.shadows.ShadowLog
 
 /** Tests for [WorkManagerScheduler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = WorkManagerSchedulerTest.TestApplication::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class WorkManagerSchedulerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  private val workManager: WorkManager get() = oppiaWorkManagerTestInitializer.workManager
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    // Ensure OppiaClock is synchronized with FakeSystemClock since the latter is used when
-    // controlling time with dispatchers.
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-
     oppiaWorkManagerTestInitializer.initializeWorkManager()
-
-    // WorkManager and workers output most their issues issues to logcat, so this ensures those get
-    // printed to the test log. This leads to a noisier test run but it makes debugging failures
-    // significantly easier.
-    ShadowLog.stream = System.out
 
     // Reset static state between tests.
     workerResults.clear()
@@ -99,7 +78,6 @@ class WorkManagerSchedulerTest {
     )
 
     testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
 
     val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).isEmpty()
@@ -117,7 +95,6 @@ class WorkManagerSchedulerTest {
     )
 
     testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
 
     val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).isEmpty()
@@ -274,7 +251,6 @@ class WorkManagerSchedulerTest {
     )
 
     testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
 
     val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).hasSize(1)
@@ -291,8 +267,7 @@ class WorkManagerSchedulerTest {
       intervalUnit = TimeUnit.MINUTES
     )
 
-    testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
+    testDriver.forceConstraintsMet(id, autoTrack = false)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
 
     // If the constraints aren't met for the second run then the worker only runs once.
@@ -313,7 +288,6 @@ class WorkManagerSchedulerTest {
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
     testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
 
     // If the constraints are only met after a certain delay, the worker will run once rather than
     // multiple times to "catch up."
@@ -333,10 +307,7 @@ class WorkManagerSchedulerTest {
     )
 
     testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
-    testDriver.forceConstraintsMet(id)
-    testCoroutineDispatchers.runCurrent()
 
     // If time elapses sufficiently for the job to re-run and its constraints are satisfied at that
     // time, then it should run again.
@@ -368,15 +339,8 @@ class WorkManagerSchedulerTest {
     // each 18 minute step, but the 20 minute job will only run one more time.
     testDriver.forceConstraintsMet(id1)
     testDriver.forceConstraintsMet(id2)
-    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(18))
-    testDriver.forceConstraintsMet(id1)
-    testDriver.forceConstraintsMet(id2)
-    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(18))
-    testDriver.forceConstraintsMet(id1)
-    testDriver.forceConstraintsMet(id2)
-    testCoroutineDispatchers.runCurrent()
 
     // If time elapses sufficiently for the job to re-run and its constraints are satisfied at that
     // time, then it should run again.

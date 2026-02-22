@@ -55,7 +55,9 @@ class TestJobSchedulerMixin @Inject constructor(
       val intervalMs = workSpec.intervalDuration
       CoroutineScope(backgroundDispatcher).launch {
         delay(intervalMs)
-        checkNotNull(WorkManagerTestInitHelper.getTestDriver(context)).setPeriodDelayMet(id)
+        val wmTestDriver = checkNotNull(WorkManagerTestInitHelper.getTestDriver(context))
+        if (testDriver.isAutoForcingConstraints(id)) wmTestDriver.setAllConstraintsMet(id)
+        wmTestDriver.setPeriodDelayMet(id)
         maybeScheduleNextJob(id)
       }
     }

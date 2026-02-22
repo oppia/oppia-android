@@ -31,6 +31,9 @@ import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterC
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import javax.inject.Singleton
 import kotlinx.coroutines.CompletableDeferred
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module(
@@ -169,6 +172,18 @@ class TestPlatformParameterModule {
 
     fun forceEnableTopicPracticeTab(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
+    }
+
+    fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES, value
+      )
+    }
+
+    fun forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES, value
+      )
     }
 
     fun reset() {

@@ -16,22 +16,42 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.MetricLogScheduler
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.workmanager.OppiaWorker
+import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /** Tests for [MetricLogSchedulerModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = MetricLogSchedulerModuleTest.TestApplication::class)
 class MetricLogSchedulerModuleTest {
-
-  @Inject
-  lateinit var metricLogScheduler: MetricLogScheduler
+  @Inject lateinit var context: Context
+  @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
 
   @Before
   fun setUp() {
@@ -39,15 +59,22 @@ class MetricLogSchedulerModuleTest {
   }
 
   @Test
-  fun testModule_injectsProductionImplementationOfMetricLogScheduler() {
-    assertThat(metricLogScheduler).isInstanceOf(PerformanceMetricsLogScheduler::class.java)
+  fun testInjection_bindsDebugWorkerSchedulerIntoReadinessListenerSet() {
+    // The main test is that the test suite builds.
+    val debugWorkerSchedulers = readyLists.filterIsInstance<MetricLogSchedulingWorkerScheduler>()
+    assertThat(readyLists).isNotEmpty()
+    assertThat(debugWorkerSchedulers).hasSize(1)
+  }
+
+  @Test
+  fun testInjection_bindsDebugWorkerFactoryByWorkerName() {
+    assertThat(factories).containsKey(MetricLogSchedulingWorker.WORKER_NAME)
+    assertThat(factories[MetricLogSchedulingWorker.WORKER_NAME])
+      .isInstanceOf(MetricLogSchedulingWorker.Factory::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMetricLogSchedulerModuleTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -61,15 +88,28 @@ class MetricLogSchedulerModuleTest {
   @Singleton
   @Component(
     modules = [
-      FakeOppiaClockModule::class,
-      LocaleProdModule::class,
-      LoggerModule::class,
+      TestModule::class,
       MetricLogSchedulerModule::class,
+      LocaleProdModule::class,
+      FakeOppiaClockModule::class,
+      LoggerModule::class,
       RobolectricModule::class,
-      TestModule::class
+      TestDispatcherModule::class,
+      TestPlatformParameterModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterSingletonModule::class,
+      SyncStatusTestModule::class,
+      TestLogReportingModule::class,
+      TestAuthenticationModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -78,6 +118,22 @@ class MetricLogSchedulerModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(metricLogSchedulerModuleTest: MetricLogSchedulerModuleTest)
+    fun inject(test: MetricLogSchedulerModuleTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerMetricLogSchedulerModuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: MetricLogSchedulerModuleTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
+    override fun getDispatcherInjector(): DispatcherInjector = component
   }
 }

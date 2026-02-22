@@ -7,6 +7,7 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "scheduler",
     srcs = ["MetricLogSchedulingWorkerScheduler.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
     deps = [
         ":metric_log_scheduling_worker",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:startup_worker_schedule_readiness_listener",
