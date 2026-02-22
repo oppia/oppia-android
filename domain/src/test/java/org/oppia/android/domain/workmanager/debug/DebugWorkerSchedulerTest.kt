@@ -6,12 +6,10 @@ import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
-import androidx.work.NetworkType
+import androidx.work.NetworkType.CONNECTED
+import androidx.work.NetworkType.NOT_REQUIRED
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.impl.WorkManagerImpl
 import androidx.work.impl.model.WorkSpec
-import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Binds
@@ -32,10 +30,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asDeferred
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.OppiaWorker
@@ -44,6 +38,8 @@ import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -58,7 +54,6 @@ import org.robolectric.shadows.ShadowLog
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DebugWorkerSchedulerTest.TestApplication::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class DebugWorkerSchedulerTest {
@@ -67,18 +62,15 @@ class DebugWorkerSchedulerTest {
   @Inject lateinit var configuration: Configuration
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
   @Inject lateinit var debugWorkerScheduler: DebugWorkerScheduler
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  private lateinit var workManager: WorkManager
-  private val testDriver by lazy { checkNotNull(WorkManagerTestInitHelper.getTestDriver(context)) }
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, configuration)
-    workManager = WorkManager.getInstance(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
 
     // WorkManager and workers output most their issues issues to logcat, so this ensures those get
     // printed to the test log. This leads to a noisier test run but it makes debugging failures
@@ -104,10 +96,10 @@ class DebugWorkerSchedulerTest {
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
     val id = findUniqueId(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(15))
-    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -117,10 +109,10 @@ class DebugWorkerSchedulerTest {
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
     val id = findUniqueId(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(20))
-    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.NOT_REQUIRED)
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
@@ -130,10 +122,10 @@ class DebugWorkerSchedulerTest {
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
     val id = findUniqueId(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(workInfo?.constraints?.requiredNetworkType).isEqualTo(NetworkType.NOT_REQUIRED)
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
@@ -153,33 +145,12 @@ class DebugWorkerSchedulerTest {
     )
   }
 
-  // Must be called to ensure a worker is run when it has constraints, but won't override the
-  // time-based scheduling constraint (the clock still needs to be advanced).
-  private fun forceConstraintsMet(id: UUID) {
-    // There's no way to configure WorkManager to set specific constraints or to follow both
-    // constraints and fixed time.
-    testDriver.setAllConstraintsMet(id)
-  }
+  private fun forceConstraintsMet(id: UUID) = testDriver.forceConstraintsMet(id)
 
-  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID {
-    val workName = "${DebugWorker.WORKER_NAME}.${taskType.persistentName}"
-    return runInBackground {
-      workManager.getWorkInfosForUniqueWork(workName).asDeferred().await().single().id
-    }
-  }
+  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID =
+    testDriver.findUniqueId(DebugWorker.WORKER_NAME, taskType)
 
-  private fun lookUpWorkInfo(id: UUID): WorkInfo? =
-    runInBackground { workManager.getWorkInfoById(id).asDeferred().await() }
-
-  private fun lookUpWorkSpec(id: UUID): WorkSpec? {
-    // This is a very hacky solution since it relies on WorkManagerImpl, but there's no other way to
-    // access some of the worker's properties (such as its scheduled period) without this. That
-    // could be observed behaviorally by leveraging clock management, but WorkManager already makes
-    // that challenging. See ... TODO: Link to new issue here to fix timing. Seems simply to just make this observational rather than using the database hack.
-    return runInBackground {
-      (workManager as WorkManagerImpl).workDatabase.workSpecDao().getWorkSpec(id.toString())
-    }
-  }
+  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
 
   private fun fetchDebugWorkerDebugLogs(): List<String> {
     // Extract all logs from the bootstrap worker and validate they are each errors before returning
@@ -188,13 +159,6 @@ class DebugWorkerSchedulerTest {
       assertThat(it.type).isEqualTo(Log.DEBUG)
       return@map it.msg
     }
-  }
-
-  private fun <T> runInBackground(func: suspend () -> T): T {
-    val resultDeferred = CoroutineScope(backgroundDispatcher).async { func() }
-    testCoroutineDispatchers.runCurrent()
-    assertThat(resultDeferred.isCompleted).isTrue()
-    return resultDeferred.getCompleted()
   }
 
   private fun setUpTestApplicationComponent() {

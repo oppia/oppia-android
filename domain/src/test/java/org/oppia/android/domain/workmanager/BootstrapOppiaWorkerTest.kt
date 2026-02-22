@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
@@ -13,9 +12,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.firebase.FirebaseApp
@@ -27,7 +24,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executors
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,8 +55,9 @@ import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockOppiaWo
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockPlatformParamOppiaWorker.TaskType.FETCH_PLATFORM_PARAMETER
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockSuccessThenFailWorker.TaskType.MAYBE_SUCCEED_TASK
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockThrowingOppiaWorker.TaskType.FAILING_WORKER2_TASK1
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -83,11 +80,12 @@ import org.robolectric.shadows.ShadowLog
 class BootstrapOppiaWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var bootstrapOppiaWorkerFactory: BootstrapOppiaWorker.Factory
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  private lateinit var workManager: WorkManager
+  private val workManager: WorkManager get() = oppiaWorkManagerTestInitializer.workManager
 
   @Before
   fun setUp() {
@@ -97,20 +95,7 @@ class BootstrapOppiaWorkerTest {
     // controlling time with dispatchers.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    val coroutineExecutorService = CoroutineExecutorService(backgroundDispatcher)
-    val config = Configuration.Builder()
-      .setMinimumLoggingLevel(Log.VERBOSE)
-      .setExecutor(coroutineExecutorService)
-      .setTaskExecutor(coroutineExecutorService)
-      .setWorkerFactory(object: WorkerFactory() {
-        override fun createWorker(
-          appContext: Context, workerClassName: String, workerParameters: WorkerParameters
-        ) = bootstrapOppiaWorkerFactory.createBootstrapWorker(workerClassName, workerParameters)
-      })
-      .setClock(fakeOppiaClock::getCurrentTimeMs)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config, WorkManagerTestInitHelper.ExecutorsMode.USE_TIME_BASED_SCHEDULING)
-    workManager = WorkManager.getInstance(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager()
 
     // WorkManager and workers output most their issues issues to logcat, so this ensures those get
     // printed to the test log. This leads to a noisier test run but it makes debugging failures
@@ -478,7 +463,7 @@ class BootstrapOppiaWorkerTest {
     // The worker should have run twice. The first is a success, but the second simulates a code
     // change where the job may no longer accept the same task type that was previously periodically
     // scheduled. This should result in a hard stop and cancellation of the job, plus logged errors.
-    val workInfo = lookUpWorkInfo(initialWorkInfo?.id!!) // Look up the latest status.
+    val workInfo = testDriver.lookUpWorkInfo(initialWorkInfo?.id!!) // Look up the latest status.
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
@@ -498,8 +483,8 @@ class BootstrapOppiaWorkerTest {
     // Advance enough for job 1 to run once more.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(12))
 
-    val info1 = lookUpWorkInfo(initialInfo1?.id!!) // Look up the latest status.
-    val info3 = lookUpWorkInfo(initialInfo3?.id!!) // Look up the latest status.
+    val info1 = testDriver.lookUpWorkInfo(initialInfo1?.id!!) // Look up the latest status.
+    val info3 = testDriver.lookUpWorkInfo(initialInfo3?.id!!) // Look up the latest status.
     assertThat(info1?.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(info2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(info3?.state).isEqualTo(WorkInfo.State.ENQUEUED)
@@ -541,7 +526,7 @@ class BootstrapOppiaWorkerTest {
         .also(workManager::enqueue)
         .id
     }
-    return checkNotNull(lookUpWorkInfo(id)) { "Expected one-off job to run." }
+    return checkNotNull(testDriver.lookUpWorkInfo(id)) { "Expected one-off job to run." }
   }
 
   private inline fun <reified T: ListenableWorker> enqueuePeriodicWork(
@@ -556,11 +541,8 @@ class BootstrapOppiaWorkerTest {
           workManager.enqueueUniquePeriodicWork(workName, ExistingPeriodicWorkPolicy.KEEP, it)
         }.id
     }
-    return lookUpWorkInfo(id)
+    return testDriver.lookUpWorkInfo(id)
   }
-
-  private fun lookUpWorkInfo(id: UUID): WorkInfo? =
-    runInBackground { workManager.getWorkInfoById(id).asDeferred().await() }
 
   private fun newInputData(workerName: String): Data {
     return Data.Builder().putString(DELEGATED_WORKER_NAME_INPUT_KEY, workerName).build()

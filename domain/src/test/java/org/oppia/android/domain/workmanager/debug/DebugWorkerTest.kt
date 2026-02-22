@@ -41,6 +41,8 @@ import org.oppia.android.domain.workmanager.BootstrapOppiaWorker
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.DELEGATED_WORKER_NAME_INPUT_KEY
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.constructTaskTypeKey
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -62,17 +64,17 @@ class DebugWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var configuration: Configuration
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  private lateinit var workManager: WorkManager
+  private val workManager: WorkManager get() = oppiaWorkManagerTestInitializer.workManager
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, configuration)
-    workManager = WorkManager.getInstance(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
 
     // WorkManager and workers output most their issues issues to logcat, so this ensures those get
     // printed to the test log. This leads to a noisier test run but it makes debugging failures
@@ -132,11 +134,8 @@ class DebugWorkerTest {
         .also(workManager::enqueue)
         .id
     }
-    return checkNotNull(lookUpWorkInfo(id)) { "Expected one-off job to run." }
+    return checkNotNull(testDriver.lookUpWorkInfo(id)) { "Expected one-off job to run." }
   }
-
-  private fun lookUpWorkInfo(id: UUID): WorkInfo? =
-    runInBackground { workManager.getWorkInfoById(id).asDeferred().await() }
 
   private fun <T> runInBackground(func: suspend () -> T): T {
     val resultDeferred = CoroutineScope(backgroundDispatcher).async { func() }

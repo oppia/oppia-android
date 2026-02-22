@@ -31,7 +31,10 @@ kt_android_library(
 kt_android_library(
     name = "bootstrap_oppia_worker",
     srcs = ["BootstrapOppiaWorker.kt"],
-    visibility = ["//domain:domain_testing_visibility"],
+    visibility = [
+        "//domain:domain_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/testing:__pkg__",
+    ],
     deps = [
         ":oppia_worker",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:controller",

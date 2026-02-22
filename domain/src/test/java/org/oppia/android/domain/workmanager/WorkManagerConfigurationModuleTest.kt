@@ -8,6 +8,7 @@ import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import androidx.work.impl.utils.SerialExecutor
 import androidx.work.impl.utils.taskexecutor.TaskExecutor
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.ListenableFuture
@@ -18,6 +19,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import java.util.UUID
+import java.util.concurrent.Executor
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -138,8 +140,10 @@ class WorkManagerConfigurationModuleTest {
 
   private fun createWorkerParameters(): WorkerParameters {
     val taskExecutor = object: TaskExecutor {
+      override fun postToMainThread(runnable: Runnable?) = error("Not used.")
       override fun getMainThreadExecutor() = error("Not used.")
-      override fun getSerialTaskExecutor() = error("Not used.")
+      override fun executeOnBackgroundThread(runnable: Runnable?) = error("Not used.")
+      override fun getBackgroundExecutor() = error("Not used.")
     }
     return WorkerParameters(
       /* id= */ UUID.randomUUID(),
@@ -147,7 +151,6 @@ class WorkManagerConfigurationModuleTest {
       /* tags= */ emptyList(),
       /* runtimeExtras= */ WorkerParameters.RuntimeExtras(),
       /* runAttemptCount= */ 0,
-      /* generation= */ 0,
       /* backgroundExecutor= */ directExecutor(),
       /* workTaskExecutor= */ taskExecutor,
       /* workerFactory= */ configuration.workerFactory,

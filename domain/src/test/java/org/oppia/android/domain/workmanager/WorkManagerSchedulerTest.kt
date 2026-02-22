@@ -2,18 +2,13 @@ package org.oppia.android.domain.workmanager
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.Configuration
-import androidx.work.NetworkType
+import androidx.work.NetworkType.CONNECTED
+import androidx.work.NetworkType.NOT_REQUIRED
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkerFactory
-import androidx.work.WorkerParameters
-import androidx.work.impl.WorkManagerImpl
 import androidx.work.impl.model.WorkSpec
-import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Binds
@@ -43,8 +38,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.guava.asDeferred
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.workmanager.WorkManagerSchedulerTest.MockOppiaWorker1.TaskType.WORKER1_TASK1
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -65,13 +62,13 @@ import org.robolectric.shadows.ShadowLog
 class WorkManagerSchedulerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var bootstrapOppiaWorkerFactory: BootstrapOppiaWorker.Factory
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  private lateinit var workManager: WorkManager
-  private val testDriver by lazy { checkNotNull(WorkManagerTestInitHelper.getTestDriver(context)) }
+  private val workManager: WorkManager get() = oppiaWorkManagerTestInitializer.workManager
 
   @Before
   fun setUp() {
@@ -81,21 +78,7 @@ class WorkManagerSchedulerTest {
     // controlling time with dispatchers.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    val coroutineExecutorService = CoroutineExecutorService(backgroundDispatcher)
-    val config = Configuration.Builder()
-      .setMinimumLoggingLevel(Log.VERBOSE)
-      .setExecutor(coroutineExecutorService)
-      .setTaskExecutor(coroutineExecutorService)
-      .setWorkerFactory(object: WorkerFactory() {
-        override fun createWorker(
-          appContext: Context, workerClassName: String, workerParameters: WorkerParameters
-        ): BootstrapOppiaWorker =
-          bootstrapOppiaWorkerFactory.createBootstrapWorker(workerClassName, workerParameters)
-      })
-      .setClock(fakeOppiaClock::getCurrentTimeMs)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config, WorkManagerTestInitHelper.ExecutorsMode.USE_TIME_BASED_SCHEDULING)
-    workManager = WorkManager.getInstance(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager()
 
     // WorkManager and workers output most their issues issues to logcat, so this ensures those get
     // printed to the test log. This leads to a noisier test run but it makes debugging failures
@@ -110,15 +93,15 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_invalidWorkerName_cancelsWorker() {
     val id = schedulePeriodicWorker(
       "invalid_worker_name",
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
 
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).isEmpty()
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
   }
@@ -133,10 +116,10 @@ class WorkManagerSchedulerTest {
       intervalUnit = TimeUnit.MINUTES
     )
 
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
 
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).isEmpty()
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
   }
@@ -145,12 +128,12 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_hasWorkerNameInTag() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     val tagList = workInfo?.tags?.toList()
     assertThat(tagList).hasSize(2)
     assertThat(tagList?.get(0)).isEqualTo(BootstrapOppiaWorker::class.java.name)
@@ -161,12 +144,12 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_scheduledForOneSecondPeriod_isClampedToFifteenMinutes() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 1,
       intervalUnit = TimeUnit.SECONDS
     )
 
-    val intervalDuration = lookUpWorkSpec(id)?.intervalDuration
+    val intervalDuration = testDriver.lookUpWorkSpec(id)?.intervalDuration
     assertThat(intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(15))
   }
 
@@ -174,12 +157,12 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_scheduledForThreeHundredDays_isClampedToTwoWeeks() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 300,
       intervalUnit = TimeUnit.DAYS
     )
 
-    val intervalDuration = lookUpWorkSpec(id)?.intervalDuration
+    val intervalDuration = testDriver.lookUpWorkSpec(id)?.intervalDuration
     assertThat(intervalDuration).isEqualTo(TimeUnit.DAYS.toMillis(14))
   }
 
@@ -187,103 +170,96 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_hasNoLowBatteryConstraint() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    val workInfo = lookUpWorkInfo(id)
-    val constraints = workInfo?.constraints
-    assertThat(constraints?.requiresBatteryNotLow()).isTrue()
+    assertThat(testDriver.lookUpWorkSpec(id)?.constraints?.requiresBatteryNotLow()).isTrue()
   }
 
   @Test
   fun testSchedulePeriodicWorker_validWorker_defaultConnectivityArg_hasConnectedNetworkType() {
     workManagerScheduler.schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
     // The scheduler assumes network connectivity is required by default.
-    val id = findUniqueId(MockOppiaWorker1.WORKER_NAME, MockOppiaWorker1.TaskType.WORKER1_TASK1)
-    val workInfo = lookUpWorkInfo(id)
-    val constraints = workInfo?.constraints
-    assertThat(constraints?.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+    val id = testDriver.findUniqueId(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    assertThat(testDriver.lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
   fun testSchedulePeriodicWorker_validWorker_doNotRequireConnectivity_hasNotRequiredNetworkType() {
     workManagerScheduler.schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES,
       requireNetworkConnectivity = false
     )
 
-    val id = findUniqueId(MockOppiaWorker1.WORKER_NAME, MockOppiaWorker1.TaskType.WORKER1_TASK1)
-    val workInfo = lookUpWorkInfo(id)
-    val constraints = workInfo?.constraints
-    assertThat(constraints?.requiredNetworkType).isEqualTo(NetworkType.NOT_REQUIRED)
+    val id = testDriver.findUniqueId(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val jobSpec = testDriver.lookUpWorkSpec(id)
+    assertThat(jobSpec?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
   fun testSchedulePeriodicWorker_validWorker_requireConnectivity_hasConnectedNetworkType() {
     workManagerScheduler.schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES,
       requireNetworkConnectivity = true
     )
 
-    val id = findUniqueId(MockOppiaWorker1.WORKER_NAME, MockOppiaWorker1.TaskType.WORKER1_TASK1)
-    val workInfo = lookUpWorkInfo(id)
-    val constraints = workInfo?.constraints
-    assertThat(constraints?.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+    val id = testDriver.findUniqueId(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    assertThat(testDriver.lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
-  fun testSchedulePeriodicWorker_scheduledTwice_diffConstraints_keepsIdButChangesConstraints() {
+  fun testSchedulePeriodicWorker_scheduledTwice_diffConstraints_keepsIdAndConstraints() {
     workManagerScheduler.schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES,
       requireNetworkConnectivity = false
     )
-    val id1 = findUniqueId(MockOppiaWorker1.WORKER_NAME, MockOppiaWorker1.TaskType.WORKER1_TASK1)
+    val id1 = testDriver.findUniqueId(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
     workManagerScheduler.schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES,
       requireNetworkConnectivity = true
     )
-    val id2 = findUniqueId(MockOppiaWorker1.WORKER_NAME, MockOppiaWorker1.TaskType.WORKER1_TASK1)
+    val id2 = testDriver.findUniqueId(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
-    // Because the scheduler uses ExistingPeriodicWorkPolicy.UPDATE the existing worker should not
-    // be canceled, its UUID should remain unchanged, and its constraints should be updated.
-    val workInfo = lookUpWorkInfo(id1)
-    val constraints = workInfo?.constraints
+    // TODO: Update this to check for CONNECTED instead once UPDATE is used.
+    // Because the scheduler uses ExistingPeriodicWorkPolicy.KEEP the existing worker should not
+    // be canceled, its UUID should remain unchanged, and its constraints should be the same.
     assertThat(id1).isEqualTo(id2)
-    assertThat(constraints?.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+    val jobSpec = testDriver.lookUpWorkSpec(id1)
+    assertThat(jobSpec?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
   fun testSchedulePeriodicWorker_validWorker_withConstraintsUnmet_doesNotRun() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
     testCoroutineDispatchers.runCurrent()
 
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).isEmpty()
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
   }
@@ -292,15 +268,15 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_withConstraintsMet_isRunAndReEnqueued() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
 
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).hasSize(1)
     assertThat(workerResults.single()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
@@ -310,17 +286,17 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_withConstraintsMetThenUnmet_afterDelay_runsOnce() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
 
     // If the constraints aren't met for the second run then the worker only runs once.
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).hasSize(1)
     assertThat(workerResults.single()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
@@ -330,18 +306,18 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_withConstraintsUnmetThenMet_afterDelay_runsOnce() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
 
     // If the constraints are only met after a certain delay, the worker will run once rather than
     // multiple times to "catch up."
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).hasSize(1)
     assertThat(workerResults.single()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
     assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
@@ -351,20 +327,20 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_validWorker_withConstraintsMet_afterDelay_runsTwice() {
     val id = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
 
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(20))
-    forceConstraintsMet(id)
+    testDriver.forceConstraintsMet(id)
     testCoroutineDispatchers.runCurrent()
 
     // If time elapses sufficiently for the job to re-run and its constraints are satisfied at that
     // time, then it should run again.
-    val workInfo = lookUpWorkInfo(id)
+    val workInfo = testDriver.lookUpWorkInfo(id)
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
       "Ran MockOppiaWorker1 for task: worker1_task1"
@@ -376,7 +352,7 @@ class WorkManagerSchedulerTest {
   fun testSchedulePeriodicWorker_multipleWorkers_withDifferentTimes_constraintsMet_runsEach() {
     val id1 = schedulePeriodicWorker(
       MockOppiaWorker1.WORKER_NAME,
-      MockOppiaWorker1.TaskType.WORKER1_TASK1,
+      WORKER1_TASK1,
       repeatInterval = 15,
       intervalUnit = TimeUnit.MINUTES
     )
@@ -390,22 +366,22 @@ class WorkManagerSchedulerTest {
     // Simulate the constraints being continually met for both jobs, but note that the two 18 minute
     // steps will have different behaviors between the two. The 15 minute job will get one run at
     // each 18 minute step, but the 20 minute job will only run one more time.
-    forceConstraintsMet(id1)
-    forceConstraintsMet(id2)
+    testDriver.forceConstraintsMet(id1)
+    testDriver.forceConstraintsMet(id2)
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(18))
-    forceConstraintsMet(id1)
-    forceConstraintsMet(id2)
+    testDriver.forceConstraintsMet(id1)
+    testDriver.forceConstraintsMet(id2)
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(18))
-    forceConstraintsMet(id1)
-    forceConstraintsMet(id2)
+    testDriver.forceConstraintsMet(id1)
+    testDriver.forceConstraintsMet(id2)
     testCoroutineDispatchers.runCurrent()
 
     // If time elapses sufficiently for the job to re-run and its constraints are satisfied at that
     // time, then it should run again.
-    val workInfo1 = lookUpWorkInfo(id1)
-    val workInfo2 = lookUpWorkInfo(id2)
+    val workInfo1 = testDriver.lookUpWorkInfo(id1)
+    val workInfo2 = testDriver.lookUpWorkInfo(id2)
     // Note that order isn't checked here because exact execution order isn't guaranteed by
     // WorkManager when two workers are scheduled at the same time.
     assertThat(workerResults).containsExactly(
@@ -419,14 +395,6 @@ class WorkManagerSchedulerTest {
     assertThat(workInfo2?.state).isEqualTo(WorkInfo.State.ENQUEUED)
   }
 
-  // Must be called to ensure a worker is run when it has constraints, but won't override the
-  // time-based scheduling constraint (the clock still needs to be advanced).
-  private fun forceConstraintsMet(id: UUID) {
-    // There's no way to configure WorkManager to set specific constraints or to follow both
-    // constraints and fixed time.
-    testDriver.setAllConstraintsMet(id)
-  }
-
   private fun schedulePeriodicWorker(
     workerName: String,
     taskType: OppiaWorker.TaskType,
@@ -436,34 +404,7 @@ class WorkManagerSchedulerTest {
     workManagerScheduler.schedulePeriodicWorker(
       workerName, taskType, repeatInterval, intervalUnit
     )
-    return findUniqueId(workerName, taskType)
-  }
-
-  private fun findUniqueId(workerName: String, taskType: OppiaWorker.TaskType): UUID {
-    val workName = "${workerName}.${taskType.persistentName}"
-    return runInBackground {
-      workManager.getWorkInfosForUniqueWork(workName).asDeferred().await().single().id
-    }
-  }
-
-  private fun lookUpWorkInfo(id: UUID): WorkInfo? =
-    runInBackground { workManager.getWorkInfoById(id).asDeferred().await() }
-
-  private fun lookUpWorkSpec(id: UUID): WorkSpec? {
-    // This is a very hacky solution since it relies on WorkManagerImpl, but there's no other way to
-    // access some of the worker's properties (such as its scheduled period) without this. That
-    // could be observed behaviorally by leveraging clock management, but WorkManager already makes
-    // that challenging. See ... TODO: Link to new issue here to fix timing. Seems simply to just make this observational rather than using the database hack.
-    return runInBackground {
-      (workManager as WorkManagerImpl).workDatabase.workSpecDao().getWorkSpec(id.toString())
-    }
-  }
-
-  private fun <T> runInBackground(func: suspend () -> T): T {
-    val resultDeferred = CoroutineScope(backgroundDispatcher).async { func() }
-    testCoroutineDispatchers.runCurrent()
-    assertThat(resultDeferred.isCompleted).isTrue()
-    return resultDeferred.getCompleted()
+    return testDriver.findUniqueId(workerName, taskType)
   }
 
   private fun setUpTestApplicationComponent() {
