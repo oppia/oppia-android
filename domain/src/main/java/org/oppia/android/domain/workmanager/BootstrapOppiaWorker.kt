@@ -20,6 +20,24 @@ import javax.inject.Provider
 
 // TODO: Mention that the private constructor is intentional to prevent WM from trying to construct the class.
 // TODO: Mention that the strategy for periodic jobs should be just to reschedule since this aggressively cancels them when renamed or changed.
+/**
+ * The root and only [ListenableWorker] that the app uses for all [WorkManager]-manged work.
+ *
+ * This worker will automatically locate and find the [OppiaWorker] corresponding to the work
+ * request and delegate work to it in an Oppia-managed background executor. It also handles worker
+ * failures, refactors, and worker discontinuity across app releases.
+ *
+ * In order to make a new worker, the following needs to be done:
+ * - [OppiaWorker] must be properly implemented as a new class with a app-unique worker name.
+ * - The [OppiaWorker]'s [OppiaWorker.Factory] must be bound to the worker name.
+ *
+ * At that point, the worker can be scheduled. An optional worker-specific scheduler can be created
+ * as well by implementing [StartupWorkerScheduleReadinessListener] and set-binding it.
+ *
+ * There is a special debug worker setup that can be referenced to see how, exactly, to set up a new
+ * [OppiaWorker], its scheduler, its module, and its tests. This is a fully functioning,
+ * developer-available implementation of the [OppiaWorker] infrastructure.
+ */
 class BootstrapOppiaWorker private constructor(
   private val appContext: Context,
   private val requestedWorkerName: String,
@@ -109,16 +127,37 @@ class BootstrapOppiaWorker private constructor(
   }
 
   companion object {
+    /**
+     * The unique worker input key that is used to store the [OppiaWorker] name which will be
+     * delegated execution.
+     */
     const val DELEGATED_WORKER_NAME_INPUT_KEY = "BootstrapOppiaWorker.delegated_worker_name"
 
+    /**
+     * Returns the input key specific to the worker indicated by [workerName] that should be used to
+     * encode the specific operation to run for the worker.
+     */
     fun constructTaskTypeKey(workerName: String): String = "$workerName.TASK_TYPE_KEY"
   }
 
+  /**
+   * Factory to create new [BootstrapOppiaWorker]s.
+   *
+   * This should never need to be called directly since it's only used to wire the bootstrap worker
+   * to [WorkManager].
+   */
   class Factory @Inject constructor(
     private val context: Context,
     private val consoleLogger: ConsoleLogger,
     private val workerFactories: Map<String, @JvmSuppressWildcards Provider<OppiaWorker.Factory<*>>>
   ) {
+    /**
+     * Return a new [BootstrapOppiaWorker] for background execution.
+     *
+     * @param requestedWorkerName the name of the worker class [WorkManager] wants to run (which is
+     *     expected to be the bootstrap worker's class name)
+     * @param workerParams the [WorkerParameters] to use during worker execution
+     */
     fun createBootstrapWorker(
       requestedWorkerName: String,
       workerParams: WorkerParameters

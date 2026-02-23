@@ -1,6 +1,12 @@
 package org.oppia.android.domain.workmanager
 
-/** Listeners which will receive a prompt to start scheduling workers for periodic execution. */
+/**
+ * Application-bound listener which will receive a prompt to start scheduling workers for periodic
+ * execution.
+ *
+ * Note that implementation bindings should be multi-bound into a set of this listener type in order
+ * to automatically be included in application startup procedures.
+ */
 interface StartupWorkerScheduleReadinessListener {
   /**
    * Called early in application startup to allow periodic work to be scheduled.

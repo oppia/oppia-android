@@ -8,6 +8,7 @@ import dagger.multibindings.StringKey
 import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 
+/** Provides the necessary hook-ins for [DebugWorker] to be runnable. */
 @Module
 interface DebugWorkerDebugModule {
   @Binds

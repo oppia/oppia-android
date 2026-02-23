@@ -7,17 +7,23 @@ import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 
-/** Worker class that fetches and caches the latest platform parameters from the remote service. */
+/** Worker to fetch and cache the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
   private val platformParameterController: PlatformParameterController,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController
 ) : OppiaWorker<PlatformParameterSyncUpWorker.Operation> {
   companion object {
+    /** The unique name used to schedule this worker. */
     const val WORKER_NAME = "PlatformParameterSyncUpWorker"
   }
 
+  /** The operation types supported by [PlatformParameterSyncUpWorker]. */
   enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
+    /**
+     * Instructs the worker to refresh platform parameters by downloading the latest values from
+     * Oppia web.
+     */
     REFRESH_PLATFORM_PARAMETERS("refresh_platform_parameters")
   }
 

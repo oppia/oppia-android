@@ -8,6 +8,10 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Scheduler for [MetricLogSchedulingWorker] operations once startup-bound workers are allowed to
+ * initialize during application startup.
+ */
 class MetricLogSchedulingWorkerScheduler @Inject constructor(
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   private val performanceMetricsCollectionHighFrequencyTimeInterval: PlatformParameterValue<Int>,

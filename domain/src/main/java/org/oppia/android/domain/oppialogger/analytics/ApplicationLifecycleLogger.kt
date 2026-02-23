@@ -18,7 +18,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Observer that observes application and activity lifecycle. */
+/** Logger for major application and activity lifecycle changes. */
 @Singleton
 class ApplicationLifecycleLogger @Inject constructor(
   private val loggingIdentifierController: LoggingIdentifierController,
@@ -49,6 +49,15 @@ class ApplicationLifecycleLogger @Inject constructor(
    */
   fun getCurrentScreen(): ScreenName = currentScreen
 
+  /**
+   * Creates logs pertinent to when the application is first opened.
+   *
+   * Note that this should be called whenever the application opens including for background cases
+   * like workers.
+   *
+   * @param appStartTimeMillis the system time, in milliseconds, when the application finished
+   *     early initialization
+   */
   fun recordAppOpened(appStartTimeMillis: Long) {
     logApplicationStartupMetrics(appStartTimeMillis)
     logAllFeatureFlags(appStartTimeMillis)
@@ -59,6 +68,11 @@ class ApplicationLifecycleLogger @Inject constructor(
     analyticsController.listenForFailedNetworkCallLogs()
   }
 
+  /**
+   * Creates logs pertinent to when the app is made visible to the user.
+   *
+   * @param timestamp the system time, in milliseconds, when the app has been foregrounded
+   */
   fun recordAppInForeground(timestamp: Long) {
     val timeSpentInBackgroundMs = ForegroundBackgroundRecordKeeper.recordAppForegrounded(timestamp)
     if (timeSpentInBackgroundMs > inactivityLimitMillis) {
@@ -71,6 +85,14 @@ class ApplicationLifecycleLogger @Inject constructor(
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground, timestamp)
   }
 
+  /**
+   * Creates logs pertinent to when the app is made invisible to the user.
+   *
+   * Note that this should only be called after the app has been in the foreground (that is, it
+   * shouldn't ever be called for background-only instantiations of the app such as for workers).
+   *
+   * @param timestamp the system time, in milliseconds, when the app has been backgrounded
+   */
   fun recordAppInBackground(timestamp: Long) {
     val timeSpentInForegroundMs = ForegroundBackgroundRecordKeeper.recordAppBackgrounded(timestamp)
     if (enablePerformanceMetricsCollection.value) {
@@ -81,6 +103,15 @@ class ApplicationLifecycleLogger @Inject constructor(
     logAppInForegroundTime(timeSpentInForegroundMs, timestamp)
   }
 
+  /**
+   * Creates logs pertinent to when the user has resumed using the app after it has been briefly
+   * sent to the background or paused.
+   *
+   * @param currentActivityScreen the [ScreenName] corresponding to the current visible screen
+   * @param appStartTimeMillis the system time, in milliseconds, when the application finished
+   *     early initialization
+   * @param timestamp the system time, in milliseconds, when the app approximately was resumed
+   */
   fun recordActivityResumed(
     currentActivityScreen: ScreenName,
     appStartTimeMillis: Long,
@@ -98,6 +129,7 @@ class ApplicationLifecycleLogger @Inject constructor(
     performanceMetricsLogger.logMemoryUsage(currentScreen, timestamp)
   }
 
+  /** Records that the app is currently temporarily paused. */
   fun recordActivityPaused() {
     currentScreen = BACKGROUND_SCREEN
   }
@@ -181,6 +213,11 @@ class ApplicationLifecycleLogger @Inject constructor(
     private var timestampSinceLastChange: Long? = null
     private var currentState: State = State.BACKGROUND // Apps always begin in the background.
 
+    /**
+     * Records that the app is now in the foreground.
+     *
+     * @param timestamp the timestamp at which the app was foregrounded
+     */
     fun recordAppForegrounded(timestamp: Long): Long {
       val lastTimestamp = timestampSinceLastChange
       return when (currentState) {
@@ -194,6 +231,11 @@ class ApplicationLifecycleLogger @Inject constructor(
       }
     }
 
+    /**
+     * Records that the app is now in the background.
+     *
+     * @param timestamp the timestamp at which the app was backgrounded
+     */
     fun recordAppBackgrounded(timestamp: Long): Long {
       val lastTimestamp = timestampSinceLastChange
       return when (currentState) {
@@ -210,7 +252,9 @@ class ApplicationLifecycleLogger @Inject constructor(
     }
 
     private enum class State {
+      /** Corresponds to the app being in the foreground. */
       FOREGROUND,
+      /** Corresponds to the app being in the background. */
       BACKGROUND
     }
   }

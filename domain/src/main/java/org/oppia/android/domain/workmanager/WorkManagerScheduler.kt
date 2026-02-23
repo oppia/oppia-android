@@ -10,9 +10,32 @@ import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Helper utility for simplifying scheduling an [OppiaWorker] for background work.
+ *
+ * This is meant to only be used by implementations of [StartupWorkerScheduleReadinessListener].
+ */
 class WorkManagerScheduler @Inject constructor(context: Context) {
   private val workManager: WorkManager by lazy { WorkManager.getInstance(context) }
 
+  /**
+   * Schedule a recurring background run of an [OppiaWorker].
+   *
+   * Note that, per the contract of [WorkManager], the job may immediately run upon the first time
+   * it is scheduled. However, if it's been scheduled in a previous run of the app it may not re-run
+   * unless its time (interval) and other (e.g. requiring network connectivity) constraints are met.
+   *
+   * Scheduled workers always expect the device's battery to not be low.
+   *
+   * The provided repeat interval will be clamped to no more often than 15 minutes (per
+   * [WorkManager]'s own internal constraints) and no less often than every 2 weeks.
+   *
+   * @param workerName the unique worker name of the [OppiaWorker]
+   * @param taskType the specific operation to run for the [OppiaWorker]
+   * @param repeatInterval the time interval at which the worker should run
+   * @param intervalUnit the [TimeUnit] corresponding to the [repeatInterval]
+   * @param requireNetworkConnectivity whether the worker requires internet connectivity
+   */
   fun schedulePeriodicWorker(
     workerName: String,
     taskType: OppiaWorker.TaskType,

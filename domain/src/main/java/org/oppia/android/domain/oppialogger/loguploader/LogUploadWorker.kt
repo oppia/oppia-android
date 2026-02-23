@@ -14,9 +14,7 @@ import javax.inject.Inject
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 
-/**
- * Worker class that extracts log reports from the cache store and logs them to the remote service.
- */
+/** Worker to upload cached analytics (including events, exceptions, and performance metrics). */
 class LogUploadWorker private constructor(
   private val analyticsController: AnalyticsController,
   private val exceptionsController: ExceptionsController,
@@ -29,13 +27,19 @@ class LogUploadWorker private constructor(
   private val networkConnectionUtil: NetworkConnectionUtil
 ) : OppiaWorker<LogUploadWorker.Operation> {
   companion object {
+    /** The unique name used to schedule this worker. */
     const val WORKER_NAME = "LogUploadWorker"
   }
 
+  /** The operation types supported by [LogUploadWorker]. */
   enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
+    /** Instructs the worker to upload offline-cached logged analytics events. */
     UPLOAD_EVENTS("upload_events"),
+    /** Instructs the worker to upload offline-cached logged exceptions. */
     UPLOAD_EXCEPTIONS("upload_exceptions"),
+    /** Instructs the worker to upload offline-cached logged performance metrics. */
     UPLOAD_PERFORMANCE_METRICS("upload_performance_metrics"),
+    /** Instructs the worker to upload offline-cached logged Firestore-bound events. */
     UPLOAD_FIRESTORE_DATA("upload_firestore_data")
   }
 

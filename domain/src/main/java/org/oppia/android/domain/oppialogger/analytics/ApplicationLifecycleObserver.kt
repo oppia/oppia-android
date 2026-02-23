@@ -22,7 +22,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
-/** Observer that observes application and activity lifecycle. */
+/** Observer for major application and activity lifecycle changes. */
 @Singleton
 @OptIn(ObsoleteCoroutinesApi::class)
 class ApplicationLifecycleObserver @Inject constructor(
@@ -50,11 +50,13 @@ class ApplicationLifecycleObserver @Inject constructor(
     enqueueMessage(LifecycleChangeMessage::Initialize)
   }
 
+  /** Lifecycle callback for when the app is brought to the foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
     enqueueMessage(LifecycleChangeMessage::AppInForeground)
   }
 
+  /** Lifecycle callback for when the app is brought to the background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     enqueueMessage(LifecycleChangeMessage::AppInBackground)
@@ -129,15 +131,21 @@ class ApplicationLifecycleObserver @Inject constructor(
   }
 
   private sealed class LifecycleChangeMessage {
+    /** The timestamp representing when the lifecycle change occurred. */
     abstract val timestamp: Long
 
+    /** Indicates the application has initialized. */
     data class Initialize(override val timestamp: Long) : LifecycleChangeMessage()
+    /** Indicates the application has been foregrounded. */
     data class AppInForeground(override val timestamp: Long) : LifecycleChangeMessage()
+    /** Indicates the application has been backgrounded. */
     data class AppInBackground(override val timestamp: Long) : LifecycleChangeMessage()
+    /** Indicates the current open activity has been resumed. */
     data class ActivityResumed(
       override val timestamp: Long,
       val activityScreen: ScreenName
     ) : LifecycleChangeMessage()
+    /** Indicates the current open activity has been paused. */
     data class ActivityPaused(override val timestamp: Long) : LifecycleChangeMessage()
   }
 
@@ -146,6 +154,10 @@ class ApplicationLifecycleObserver @Inject constructor(
     val applicationLifecycleLogger: ApplicationLifecycleLogger,
     val applicationLifecycleListeners: Set<ApplicationLifecycleListener>
   ) {
+    /**
+     * Processes the specified [message] and notifies [applicationLifecycleLogger] of the
+     * corresponding lifecycle change to ensure that the change can be recorded.
+     */
     fun processMessage(message: LifecycleChangeMessage) {
       when (message) {
         is LifecycleChangeMessage.Initialize ->

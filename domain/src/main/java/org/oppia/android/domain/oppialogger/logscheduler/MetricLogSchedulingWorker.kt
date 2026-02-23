@@ -8,24 +8,25 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
-/**
- * Worker class that generates metric log reports regarding the performance of the application
- * and then stores it in in device cache.
- */
+/** Worker to log periodic performance metrics. */
 class MetricLogSchedulingWorker private constructor(
   private val consoleLogger: ConsoleLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val applicationLifecycleLogger: ApplicationLifecycleLogger,
   private val oppiaClock: OppiaClock
 ) : OppiaWorker<MetricLogSchedulingWorker.Operation> {
-
   companion object {
+    /** The unique name used to schedule this worker. */
     const val WORKER_NAME = "MetricLogSchedulingWorker"
   }
 
+  /** The operation types supported by [MetricLogSchedulingWorker]. */
   enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
+    /** Instructs the worker to log periodic background metrics. */
     SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS("schedule_log_periodic_background_metrics"),
+    /** Instructs the worker to log periodic UI metrics. */
     SCHEDULE_LOG_PERIODIC_UI_METRICS("schedule_log_periodic_ui_metrics"),
+    /** Instructs the worker to log application storage metrics. */
     SCHEDULE_LOG_STORAGE_USAGE_METRICS("schedule_log_storage_usage_metrics")
   }
 

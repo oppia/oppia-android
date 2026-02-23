@@ -5,6 +5,13 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
+/**
+ * An [ApplicationStartupListener] which monitors for when it's safe to perform `WorkManager` worker
+ * scheduling using [WorkManagerScheduler].
+ *
+ * This is an automated mechanism class and should never need to be interacted with directly, and
+ * likely rarely changed.
+ */
 @Singleton
 class StartupWorkerScheduleReadinessMonitor @Inject constructor(
   private val workManagerScheduler: WorkManagerScheduler,

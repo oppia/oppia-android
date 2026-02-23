@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Enqueues unique periodic work requests for uploading events and exceptions to the remote service
- * on application creation.
+ * Scheduler for [LogUploadWorker] operations once startup-bound workers are allowed to initialize
+ * during application startup.
  */
 class LogReportWorkerScheduler @Inject constructor() : StartupWorkerScheduleReadinessListener {
   override fun scheduleWork(workManagerScheduler: WorkManagerScheduler) {

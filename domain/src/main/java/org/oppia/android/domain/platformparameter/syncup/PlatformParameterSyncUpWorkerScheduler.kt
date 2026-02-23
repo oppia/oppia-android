@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Enqueues unique periodic work requests for fetching and caching latest platform parameter values
- * from the remote service on application creation.
+ * Scheduler for [PlatformParameterSyncUpWorker] operations once startup-bound workers are allowed
+ * to initialize during application startup.
  */
 class PlatformParameterSyncUpWorkerScheduler @Inject constructor(
   @SyncUpWorkerTimePeriodHours private val workRequestRepeatInterval: PlatformParameterValue<Int>
