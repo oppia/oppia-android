@@ -90,19 +90,6 @@ class BootstrapOppiaWorkerTest {
 
     // Reset static state between tests.
     workerResults.clear()
-
-    // TODO: Notes to self:
-    // - Use the tests for debug worker to update all the worker tests for log upload, platform params, and perf metrics.
-    // - Use the tests for debug initializer to update all the initializer tests for log upload, platform params, and perf metrics.
-    // - Finish up the rest of the documentation
-    // - Make all tests build & pass
-    // - Validate the work manager behavior on an alpha build
-    // - REEVALUTE: It may be worthwhile just to drop the WM upgrades because, while it's nice to test the clock this way, it's basically completely fake outside this test due to the poor way WorkManager handles constraint satisfaction.
-    // - Push and explain the following:
-    //   - The workaround to ignore metadata is not sustainable and only serves to validate the solution here.
-    //   - The solution here allows full control over scheduling (yay), though it requires a double Kotlin major upgrade (crap) and ideally a migration off of CoroutineExecutorService (double crap), but that could potentially wait since it seems to be working okay here.
-    // - Move the dispatcher and coroutine service changes. The UI task coordinator is actually wrong today and this branch has the fix for it.
-    // - Figure out if it's worth just renaming all of the workers to have clearer and consistent names.
   }
 
   @Test

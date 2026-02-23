@@ -34,6 +34,7 @@ import kotlinx.coroutines.CompletableDeferred
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module(
@@ -183,6 +184,12 @@ class TestPlatformParameterModule {
     fun forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(value: Int) {
       TestPlatformParameterConfigRetriever.setParameterOverride(
         PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES, value
+      )
+    }
+
+    fun forceSyncUpWorkerTimePeriodInHours(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS, value
       )
     }
 

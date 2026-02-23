@@ -60,7 +60,6 @@ import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitiali
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.threading.BackgroundDispatcher

@@ -16,7 +16,7 @@ import javax.inject.Singleton
 private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
 
 /** Controller for handling exception logging. */
-@Singleton // TODO: Document this in the PR. Relates to #5066.
+@Singleton
 class ExceptionsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,

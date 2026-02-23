@@ -1,7 +1,5 @@
 package org.oppia.android.domain.platformparameter.syncup
 
-import androidx.work.Constraints
-import androidx.work.NetworkType
 import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.util.platformparameter.PlatformParameterValue

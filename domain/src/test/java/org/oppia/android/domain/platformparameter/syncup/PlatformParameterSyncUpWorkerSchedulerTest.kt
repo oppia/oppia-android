@@ -4,19 +4,16 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.Configuration
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.NetworkType
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
+import androidx.work.NetworkType.CONNECTED
+import androidx.work.WorkInfo
+import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import dagger.Provides
-import org.junit.Before
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -34,133 +31,91 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.After
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker.Operation.REFRESH_PLATFORM_PARAMETERS
+import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /** Tests for [PlatformParameterSyncUpWorkerScheduler]. */
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = PlatformParameterSyncUpWorkerSchedulerTest.TestApplication::class)
 class PlatformParameterSyncUpWorkerSchedulerTest {
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
+  @Inject lateinit var scheduler: PlatformParameterSyncUpWorkerScheduler
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var platformParameterSyncUpWorkerScheduler: PlatformParameterSyncUpWorkerScheduler
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
-  @Inject
-  lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
+  // TODO(#5835): Finish the tests for this suite.
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Before
-  fun setup() {
+  @Test
+  fun testPlatformParameterSyncUpWorker_hasOneOperationType() {
     setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+
+    // A change detector test that, if failing, means that other tests in this suite need to be
+    // updated to ensure that the new operation type is properly verified.
+    val operations = PlatformParameterSyncUpWorker.Operation.values().toList()
+    assertThat(operations).containsExactly(REFRESH_PLATFORM_PARAMETERS)
   }
 
   @Test
-  fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    val workManager = WorkManager.getInstance(context)
-    platformParameterSyncUpWorkerScheduler.scheduleWork(workManager)
-    testCoroutineDispatchers.runCurrent()
+  fun testScheduleWork_schedulesPlatformParameterSyncUpWorkerForRefreshPlatformParameters() {
+    TestPlatformParameterModule.forceSyncUpWorkerTimePeriodInHours(2)
+    setUpTestApplicationComponent()
+    initializeDependencies()
 
-    val enqueuedSyncUpWorkRequestId =
-      platformParameterSyncUpWorkerScheduler.getSyncUpWorkRequestId()
+    scheduler.scheduleWork(workManagerScheduler)
 
-    // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
-    val workInfoList = workManager.getWorkInfosByTag(PlatformParameterSyncUpWorker.TAG).get()
-    // There should be only one such work request having "PlatformParameterSyncUpWorker.TAG" tag
-    assertThat(workInfoList.size).isEqualTo(1)
-    // Match the ID of this work request with the ID of another work request which was enqueued by
-    // PlatformParameterSyncUpWorkerScheduler.
-    assertThat(enqueuedSyncUpWorkRequestId).isEqualTo(workInfoList[0].id)
+    // Verify that the job was scheduled correctly and uses the high-frequency time.
+    val id = testDriver.findUniqueId(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(2))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkerConstraints() {
-    val workerConstraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build()
+  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
 
-    val syncUpWorkRequestConstraints =
-      platformParameterSyncUpWorkerScheduler.getSyncUpWorkerConstraints()
-    assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
-  }
-
-  @Test
-  fun testWorkRequest_verifyWorkRequestData() {
-    val workerTypeForSyncingUpParameters = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
-
-    val syncUpWorkRequestData = platformParameterSyncUpWorkerScheduler.getSyncUpWorkRequestData()
-
-    assertThat(syncUpWorkRequestData).isEqualTo(workerTypeForSyncingUpParameters)
-  }
-
-  @Test
-  fun testWorkRequest_verifyWorkRequestPeriodicity() {
-    platformParameterSyncUpWorkerScheduler.scheduleWork(WorkManager.getInstance(context))
-    testCoroutineDispatchers.runCurrent()
-
-    val syncUpWorkerTimePeriodInMs =
-      platformParameterSyncUpWorkerScheduler.getSyncUpWorkerTimePeriod()
-    val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
-
-    assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-    )
+  private fun initializeDependencies() {
+    oppiaWorkManagerTestInitializer.initializeWorkManager()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPlatformParameterSyncUpWorkerSchedulerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
   @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  interface TestModule {
+    @Binds
+    fun bindContext(application: Application): Context
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -184,10 +139,12 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
       SyncStatusModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class
+      TestModule::class,
+      LoggerModule::class,
+      PlatformParameterSyncUpWorkerModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -195,6 +152,22 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerSchedulerTest)
+    fun inject(test: PlatformParameterSyncUpWorkerSchedulerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerPlatformParameterSyncUpWorkerSchedulerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: PlatformParameterSyncUpWorkerSchedulerTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
+    override fun getDispatcherInjector(): DispatcherInjector = component
   }
 }
