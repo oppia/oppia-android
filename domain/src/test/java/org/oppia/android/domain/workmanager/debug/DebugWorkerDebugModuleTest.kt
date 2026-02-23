@@ -28,8 +28,7 @@ import org.oppia.android.util.logging.LoggerModule
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DebugWorkerDebugModuleTest.TestApplication::class)
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class DebugWorkerDebugModuleTest {
   @Inject lateinit var context: Context
   @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>

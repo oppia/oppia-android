@@ -48,8 +48,7 @@ import org.oppia.android.util.threading.DispatcherInjectorProvider
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = WorkManagerSchedulerTest.TestApplication::class)
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class WorkManagerSchedulerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

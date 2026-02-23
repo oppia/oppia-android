@@ -2,19 +2,13 @@ package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
-import dagger.Binds
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -22,608 +16,768 @@ import dagger.Provides
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.FakeFirestoreEventLogger
-import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.AnalyticsEventLogger
-import org.oppia.android.util.logging.ExceptionLogger
-import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPTIONAL_RESPONSE
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.Priority
+import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
+import org.oppia.android.app.model.OppiaMetricLog.Priority.LOW_PRIORITY
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_EVENTS
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_EXCEPTIONS
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_FIRESTORE_DATA
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_PERFORMANCE_METRICS
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
+import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.logging.TestSyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
-import org.oppia.android.util.logging.firebase.FirestoreEventLogger
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
-import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
+import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.shadows.ShadowLog
 
-private const val TEST_TIMESTAMP = 1556094120000
-private const val TEST_TOPIC_ID = "test_topicId"
-private const val TEST_APK_SIZE = Long.MAX_VALUE
+private const val TEST_TOPIC_ID1 = "test_topic_id1"
+private const val TEST_TOPIC_ID2 = "test_topic_id2"
 
 /** Tests for [LogUploadWorker]. */
 // FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var configuration: Configuration
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var firestoreDataController: FirestoreDataController
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var dataController: FirestoreDataController
-  @Inject lateinit var exceptionsController: ExceptionsController
-  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var dataProviders: DataProviders
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
-  @field:[Inject MockFirestoreEventLogger]
-  lateinit var mockFirestoreEventLogger: FirestoreEventLogger
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  private lateinit var context: Context
-
-  private val eventLogTopicContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenInfoTab(
-          EventLog.TopicContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .build()
-        )
-        .build()
-    )
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .setTimestamp(TEST_TIMESTAMP)
-    .build()
-
-  private val apkSizeTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setApkSizeMetric(
-      OppiaMetricLog.ApkSizeMetric.newBuilder()
-        .setApkSizeBytes(TEST_APK_SIZE)
-        .build()
-    ).build()
-
-  private val exception = Exception("TEST")
+  private val testException1 = Exception("Test 1")
+  private val testException2 = Exception("Test 2")
+  private val testException3 = Exception("Test 3")
 
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
   }
 
+  /* Tests for UPLOAD_EVENTS. */
+
   @Test
-  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {
+  fun testWorker_scheduleUploadEvents_sanityCheck_doNotRun_noLogsUploaded() {
     setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    testCoroutineDispatchers.runCurrent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
 
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+    logImportantEvent(oppiaLogger.createOpenHomeContext())
+    logLowPriorityEvent(oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID1))
+    logImportantEvent(oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID2))
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    // The enqueue should fail since the worker shouldn't be running when there's no network
-    // connectivity.
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    // Sanity check: ensure that logs do not automatically upload without the job running (otherwise
+    // the other tests in this test suite are moot).
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(0)
+    assertThat(getLatestSyncStatus()).isEqualTo(NO_CONNECTIVITY)
   }
 
   @Test
-  fun testWorker_logEvent_withNetwork_enqueueRequest_verifySuccess() {
+  fun testWorker_scheduleUploadEvents_noEvents_uploadsNothing() {
     setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
-    testCoroutineDispatchers.runCurrent()
+    initializeDependencies()
 
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+    // Verify that the job succeeded and there was nothing to upload. Sync status will also update
+    // since the attempt to upload finished.
+    val logCount = fakeAnalyticsEventLogger.getEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(getLatestSyncStatus()).isEqualTo(DATA_UPLOADED)
   }
 
   @Test
-  fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
+  fun testWorker_scheduleUploadEvents_severalEvents_uploadsAllEvents() {
     setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    testCoroutineDispatchers.runCurrent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logImportantEvent(oppiaLogger.createOpenHomeContext())
+    logLowPriorityEvent(oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID1))
+    logImportantEvent(oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID2))
 
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    setUpEventLoggerToFail()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
+    // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
+    val logCount = fakeAnalyticsEventLogger.getEventListCount()
+    val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(3)
+    assertThat(events[0]).hasOpenHomeContext()
+    assertThat(events[0]).isEssentialPriority()
+    assertThat(events[1]).hasOpenPracticeTabContextThat().hasTopicIdThat().isEqualTo(TEST_TOPIC_ID1)
+    assertThat(events[1]).isOptionalPriority()
+    assertThat(events[2]).hasOpenInfoTabContextThat().hasTopicIdThat().isEqualTo(TEST_TOPIC_ID2)
+    assertThat(events[2]).isEssentialPriority()
+    assertThat(getLatestSyncStatus()).isEqualTo(DATA_UPLOADED)
+    assertThat(testSyncStatusManager.getSyncStatuses())
+      .containsExactly(INITIAL_UNKNOWN, NO_CONNECTIVITY, DATA_UPLOADING, DATA_UPLOADED)
+      .inOrder()
   }
 
   @Test
-  fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
+  fun testWorker_scheduleUploadEvents_severalEvents_runAgain_uploadsNothing() {
     setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
-    testCoroutineDispatchers.runCurrent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logImportantEvent(oppiaLogger.createOpenHomeContext())
+    logLowPriorityEvent(oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID1))
+    logImportantEvent(oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID2))
+    forceNetworkConnectivityToCellular() // For the job to run.
+    testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    fakeAnalyticsEventLogger.clearAllEvents() // Reset for next job.
 
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+    // Run a second time.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EXCEPTION_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    val workInfo = workManager.getWorkInfoById(request.id)
-    val loggedException = fakeExceptionLogger.getMostRecentException()
-    val loggedExceptionStackTraceElems = loggedException.stackTrace.extractRelevantDetails()
-    val expectedExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(loggedException.message).isEqualTo("TEST")
-    assertThat(loggedException.cause).isEqualTo(null)
-    // The following can't be an exact match for the stack trace since new properties are added to
-    // stack trace elements in newer versions of Java (such as module name).
-    assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    // Verify nothing uploaded (since everything should've uploaded during the first job).
+    val logCount = fakeAnalyticsEventLogger.getEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
   }
 
   @Test
-  fun testWorker_logPerformanceMetric_withoutNetwork_enqueueRequest_verifySuccess() {
+  fun testWorker_scheduleUploadEvents_hasFailure_failsAndLogsErrorAndReportsSyncStatus() {
     setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logImportantEvent(oppiaLogger.createOpenHomeContext())
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeAnalyticsEventLogger.getEventListCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_events.")
+    assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
+    assertThat(getLatestSyncStatus()).isEqualTo(UPLOAD_ERROR)
+  }
+
+  @Test
+  fun testWorker_scheduleUploadEvents_losesConnectivity_failsAndLogsErrorAndReportsSyncStatus() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logImportantEvent(oppiaLogger.createOpenHomeContext())
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeAnalyticsEventLogger.getEventListCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_events.")
+    assertThat(failureLine).contains("Cannot upload events without internet connectivity.")
+    assertThat(getLatestSyncStatus()).isEqualTo(NO_CONNECTIVITY)
+  }
+
+  /* Tests for UPLOAD_EXCEPTIONS. */
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_sanityCheck_doNotRun_noExceptionsUploaded() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+
+    logNonFatalException(testException1)
+    logFatalException(testException2)
+    logNonFatalException(testException3)
+
+    // Sanity check: ensure that logs do not automatically upload without the job running (otherwise
+    // the other tests in this test suite are moot).
+    assertThat(fakeExceptionLogger.getExceptionCount()).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_noExceptions_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+
+    // Verify that the job succeeded and there was nothing to upload. Sync status will also update
+    // since the attempt to upload finished.
+    val logCount = fakeExceptionLogger.getExceptionCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_severalExceptions_uploadsAllExceptions() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logNonFatalException(testException1)
+    logFatalException(testException2)
+    logNonFatalException(testException3)
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+
+    // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
+    val logCount = fakeExceptionLogger.getExceptionCount()
+    val exceptions = fakeExceptionLogger.getMostRecentExceptions(3)
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(3)
+    assertThat(exceptions[0]).hasMessageThat().isEqualTo("Test 1")
+    assertThat(exceptions[1]).hasMessageThat().isEqualTo("Test 2")
+    assertThat(exceptions[2]).hasMessageThat().isEqualTo("Test 3")
+    assertThat(exceptions[0].toComparableTrace()).isEqualTo(testException1.toComparableTrace())
+    assertThat(exceptions[1].toComparableTrace()).isEqualTo(testException2.toComparableTrace())
+    assertThat(exceptions[2].toComparableTrace()).isEqualTo(testException3.toComparableTrace())
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_severalExceptions_runAgain_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logNonFatalException(testException1)
+    logFatalException(testException2)
+    logNonFatalException(testException3)
+    forceNetworkConnectivityToCellular() // For the job to run.
+    testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    fakeExceptionLogger.clearAllExceptions() // Reset for next job.
+
+    // Run a second time.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+
+    // Verify nothing uploaded (since everything should've uploaded during the first job).
+    val logCount = fakeExceptionLogger.getExceptionCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_hasFailure_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logNonFatalException(testException1)
+    fakeExceptionLogger.setFailure(Exception("Forced failure."))
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeExceptionLogger.getExceptionCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_exceptions.")
+    assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadExceptions_losesConnectivity_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logNonFatalException(testException1)
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeExceptionLogger.getExceptionCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_exceptions.")
+    assertThat(failureLine).contains("Cannot upload exceptions without internet connectivity.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  /* Tests for UPLOAD_PERFORMANCE_METRICS. */
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_sanityCheck_doNotRun_noMetricsUploaded() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+
+    logPerformanceMetric(createStartupLatencyMetric(startMs = 123), HOME_ACTIVITY, HIGH_PRIORITY)
+    logPerformanceMetric(createApkSizeMetric(sizeBytes = 456), BACKGROUND_SCREEN, LOW_PRIORITY)
+    logPerformanceMetric(createStorageSizeMetric(sizeBytes = 789), BACKGROUND_SCREEN, LOW_PRIORITY)
+
+    // Sanity check: ensure that logs do not automatically upload without the job running (otherwise
+    // the other tests in this test suite are moot).
+    assertThat(fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_noMetrics_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Verify that the job succeeded and there was nothing to upload. Sync status will also update
+    // since the attempt to upload finished.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_severalMetrics_uploadsAllMetrics() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logPerformanceMetric(createStartupLatencyMetric(startMs = 123), HOME_ACTIVITY, HIGH_PRIORITY)
+    logPerformanceMetric(createApkSizeMetric(sizeBytes = 456), BACKGROUND_SCREEN, LOW_PRIORITY)
+    logPerformanceMetric(createStorageSizeMetric(sizeBytes = 789), BACKGROUND_SCREEN, LOW_PRIORITY)
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(3)
+    val events = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+    val (event1, event2, event3) = events
+    assertThat(event1.loggableMetric.loggableMetricTypeCase).isEqualTo(STARTUP_LATENCY_METRIC)
+    assertThat(event1.currentScreen).isEqualTo(HOME_ACTIVITY)
+    assertThat(event1.priority).isEqualTo(HIGH_PRIORITY)
+    assertThat(event1.loggableMetric.startupLatencyMetric.startupLatencyMillis).isEqualTo(123)
+    assertThat(event2.loggableMetric.loggableMetricTypeCase).isEqualTo(APK_SIZE_METRIC)
+    assertThat(event2.currentScreen).isEqualTo(BACKGROUND_SCREEN)
+    assertThat(event2.priority).isEqualTo(LOW_PRIORITY)
+    assertThat(event2.loggableMetric.apkSizeMetric.apkSizeBytes).isEqualTo(456)
+    assertThat(event3.loggableMetric.loggableMetricTypeCase).isEqualTo(STORAGE_USAGE_METRIC)
+    assertThat(event3.currentScreen).isEqualTo(BACKGROUND_SCREEN)
+    assertThat(event3.priority).isEqualTo(LOW_PRIORITY)
+    assertThat(event3.loggableMetric.storageUsageMetric.storageUsageBytes).isEqualTo(789)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_severalMetrics_runAgain_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logPerformanceMetric(createStartupLatencyMetric(startMs = 123), HOME_ACTIVITY, HIGH_PRIORITY)
+    logPerformanceMetric(createApkSizeMetric(sizeBytes = 456), BACKGROUND_SCREEN, LOW_PRIORITY)
+    logPerformanceMetric(createStorageSizeMetric(sizeBytes = 789), BACKGROUND_SCREEN, LOW_PRIORITY)
+    forceNetworkConnectivityToCellular() // For the job to run.
+    testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents() // Reset for next job.
+
+    // Run a second time.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Verify nothing uploaded (since everything should've uploaded during the first job).
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_hasFailure_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logPerformanceMetric(createStartupLatencyMetric(startMs = 123), HOME_ACTIVITY, HIGH_PRIORITY)
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_performance_metrics.")
+    assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadPerfMetrics_losesConnectivity_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logPerformanceMetric(createStartupLatencyMetric(startMs = 123), HOME_ACTIVITY, HIGH_PRIORITY)
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val failure = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failure).contains("Failed operation: upload_performance_metrics.")
+    assertThat(failure).contains("Cannot upload performance metrics without internet connectivity.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  /* Tests for UPLOAD_FIRESTORE_DATA. */
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_sanityCheck_doNotRun_noEventsUploaded() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 2", "test_survey_id2"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 3", "test_survey_id3"))
+
+    // Sanity check: ensure that logs do not automatically upload without the job running (otherwise
+    // the other tests in this test suite are moot).
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_noEvents_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+
+    // Verify that the job succeeded and there was nothing to upload. Sync status will also update
+    // since the attempt to upload finished.
+    val logCount = fakeFirestoreEventLogger.getEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_severalEvents_uploadsAllEvents() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 2", "test_survey_id2"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 3", "test_survey_id3"))
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+
+    // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
+    val logCount = fakeFirestoreEventLogger.getEventListCount()
+    val events = fakeFirestoreEventLogger.getMostRecentEvents(3)
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(3)
+    val (event1, event2, event3) = events
+    assertThat(event1.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event1.context.activityContextCase).isEqualTo(OPTIONAL_RESPONSE)
+    assertThat(event1.context.optionalResponse.feedbackAnswer).isEqualTo("feedback 1")
+    assertThat(event1.context.optionalResponse.surveyDetails.surveyId).isEqualTo("test_survey_id1")
+    assertThat(event2.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event2.context.activityContextCase).isEqualTo(OPTIONAL_RESPONSE)
+    assertThat(event2.context.optionalResponse.feedbackAnswer).isEqualTo("feedback 2")
+    assertThat(event2.context.optionalResponse.surveyDetails.surveyId).isEqualTo("test_survey_id2")
+    assertThat(event3.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+    assertThat(event3.context.activityContextCase).isEqualTo(OPTIONAL_RESPONSE)
+    assertThat(event3.context.optionalResponse.feedbackAnswer).isEqualTo("feedback 3")
+    assertThat(event3.context.optionalResponse.surveyDetails.surveyId).isEqualTo("test_survey_id3")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_severalEvents_runAgain_uploadsNothing() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 2", "test_survey_id2"))
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 3", "test_survey_id3"))
+    forceNetworkConnectivityToCellular() // For the job to run.
+    testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    fakeFirestoreEventLogger.clearAllEvents() // Reset for next job.
+
+    // Run a second time.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+
+    // Verify nothing uploaded (since everything should've uploaded during the first job).
+    val logCount = fakeFirestoreEventLogger.getEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_hasFailure_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"))
+    fakeFirestoreEventLogger.setFailure(Exception("Forced failure."))
+
+    forceNetworkConnectivityToCellular() // For the job to run.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeFirestoreEventLogger.getEventListCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_firestore_data.")
+    assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  @Test
+  fun testWorker_scheduleUploadFirestoreData_losesConnectivity_failsAndLogsError() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    forceNetworkConnectivityOff() // For offline caching.
+    logFirestoreEvent(createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"))
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+
+    // Verify that the job failed and an error was logged due to an underlying failure.
+    val logCount = fakeFirestoreEventLogger.getEventListCount()
+    val failureLine = fetchSingleWorkerErrorLog()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(logCount).isEqualTo(0)
+    assertThat(failureLine).contains("Failed operation: upload_firestore_data.")
+    assertThat(failureLine).contains("Cannot upload Firestore events without internet connectivity.")
+    expectSyncStatusToBeUnchanged()
+  }
+
+  private fun forceNetworkConnectivityOff() {
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+  }
+
+  private fun forceNetworkConnectivityToCellular() {
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
+  }
+
+  private fun logImportantEvent(eventContext: EventLog.Context) {
+    analyticsController.logImportantEvent(eventContext, profileId = null)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logLowPriorityEvent(eventContext: EventLog.Context) {
+    analyticsController.logLowPriorityEvent(eventContext, profileId = null)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logFatalException(exception: Exception) {
+    exceptionsController.logFatalException(exception)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logNonFatalException(exception: Exception) {
+    exceptionsController.logNonFatalException(exception)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logPerformanceMetric(
+    loggableMetric: LoggableMetric, screenName: ScreenName, priority: Priority
+  ) {
     performanceMetricsController.logPerformanceMetricsEvent(
-      TEST_TIMESTAMP,
-      SCREEN_NAME_UNSPECIFIED,
-      apkSizeTestLoggableMetric,
-      OppiaMetricLog.Priority.LOW_PRIORITY
+      oppiaClock.getCurrentTimeMs(), screenName, loggableMetric, priority
     )
     testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.PERFORMANCE_METRICS_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    val workInfo = workManager.getWorkInfoById(request.id)
-    val loggedPerformanceMetric =
-      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(loggedPerformanceMetric.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
-    )
-    assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
-      SCREEN_NAME_UNSPECIFIED
-    )
-    assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
-    assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(loggedPerformanceMetric.loggableMetric.apkSizeMetric.apkSizeBytes).isEqualTo(
-      TEST_APK_SIZE
-    )
   }
 
-  @Test
-  fun testWorker_logEvent_withNetwork_enqueueRequest_studyOn_verifySyncStatusesHasSuccess() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+  private fun logFirestoreEvent(eventLogContext: EventLog.Context) {
+    firestoreDataController.logEvent(eventLogContext, profileId = null)
     testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    val currentStatus =
-      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
-    val statusList = testSyncStatusManager.getSyncStatuses()
-    assertThat(statusList)
-      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADED, DATA_UPLOADING, DATA_UPLOADED)
-      .inOrder()
-    assertThat(currentStatus).isEqualTo(DATA_UPLOADED)
   }
 
-  @Test
-  fun testWorker_logEvent_withoutNetwork_enqueueRequest_studyOn_verifySyncStatusesHasFailed() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    val currentStatus =
-      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
-    val statusList = testSyncStatusManager.getSyncStatuses()
-    // The operation should fail since there's no internet connectivity with which to upload the
-    // events. It's not valid to try.
-    assertThat(statusList)
-      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADING, UPLOAD_ERROR, NO_CONNECTIVITY)
-      .inOrder()
-    assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
+  private fun createStartupLatencyMetric(startMs: Long): LoggableMetric {
+    return LoggableMetric.newBuilder().apply {
+      startupLatencyMetric = OppiaMetricLog.StartupLatencyMetric.newBuilder().apply {
+        startupLatencyMillis = startMs
+      }.build()
+    }.build()
   }
 
-  @Test
-  fun testWorker_logEvent_noNetwork_enqueueRequest_writeFails_studyOn_verifyHasFailedSyncStatus() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
-      profileId = null,
-      eventLogTopicContext.timestamp
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    setUpEventLoggerToFail()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    // Note that "no connectivity" is the last item because it takes priority over an error.
-    val statusList = testSyncStatusManager.getSyncStatuses()
-    val currentStatus =
-      monitorFactory.waitForNextSuccessfulResult(testSyncStatusManager.getSyncStatus())
-    assertThat(statusList)
-      .containsAtLeast(INITIAL_UNKNOWN, DATA_UPLOADING, UPLOAD_ERROR, NO_CONNECTIVITY)
-      .inOrder()
-    assertThat(currentStatus).isEqualTo(NO_CONNECTIVITY)
+  private fun createApkSizeMetric(sizeBytes: Long): LoggableMetric {
+    return LoggableMetric.newBuilder().apply {
+      apkSizeMetric = OppiaMetricLog.ApkSizeMetric.newBuilder().apply {
+        apkSizeBytes = sizeBytes
+      }.build()
+    }.build()
   }
 
-  @Test
-  fun testWorker_logFirestoreEvent_withNetwork_enqueueRequest_verifySuccess() {
-    setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    dataController.logEvent(
-      createOptionalSurveyResponseContext(),
-      profileId = null,
-      1556094120000
-    )
-    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
-    testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeFirestoreEventLogger.getMostRecentEvent()).isEqualTo(
-      optionalSurveyResponseEventLog
-    )
+  private fun createStorageSizeMetric(sizeBytes: Long): LoggableMetric {
+    return LoggableMetric.newBuilder().apply {
+      storageUsageMetric = OppiaMetricLog.StorageUsageMetric.newBuilder().apply {
+        storageUsageBytes = sizeBytes
+      }.build()
+    }.build()
   }
 
-  @Test
-  fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
-    setUpTestApplicationComponent()
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    dataController.logEvent(
-      createOptionalSurveyResponseContext(),
-      profileId = null,
-      1556094120000
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    setUpFirestoreEventLoggerToFail()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
+  private fun createOptionalSurveyResponseContext(
+    feedback: String, surveyId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().apply {
+      optionalResponse = EventLog.OptionalSurveyResponseContext.newBuilder().apply {
+        feedbackAnswer = feedback
+        surveyDetails = EventLog.SurveyResponseContext.newBuilder().apply {
+          this.surveyId = surveyId
+        }.build()
+      }.build()
+    }.build()
   }
 
-  private val optionalSurveyResponseEventLog = EventLog.newBuilder().apply {
-    this.context = createOptionalSurveyResponseContext()
-    this.timestamp = TEST_TIMESTAMP
-    this.priority = EventLog.Priority.ESSENTIAL
-  }
-    .build()
-
-  private fun createOptionalSurveyResponseContext(): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOptionalResponse(
-        EventLog.OptionalSurveyResponseContext.newBuilder()
-          .setFeedbackAnswer("answer")
-          .setSurveyDetails(
-            createSurveyResponseContext()
-          )
-      )
-      .build()
+  private fun fetchSingleWorkerErrorLog(): String {
+    val errorLogs = fetchWorkerErrorLogs()
+    assertThat(errorLogs).hasSize(1)
+    return errorLogs.single()
   }
 
-  private fun createSurveyResponseContext(): EventLog.SurveyResponseContext {
-    return EventLog.SurveyResponseContext.newBuilder()
-      .setSurveyId("test_survey_id")
-      .build()
+  private fun fetchWorkerErrorLogs(): List<String> {
+    // Extract all logs from the bootstrap worker and validate they are each errors before returning
+    // the logged message lines.
+    return ShadowLog.getLogs().filter { it.tag == WORKER_NAME }.onEach {
+      assertThat(it.type).isEqualTo(Log.ERROR)
+    }.map(ShadowLog.LogItem::msg)
   }
 
-  private fun setUpEventLoggerToFail() {
-    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
-    // to remove the default stubbing for the mock so that it can properly trigger a failure.
-    reset(mockAnalyticsEventLogger)
-    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull()))
-      .thenThrow(IllegalStateException("Failure."))
+  private fun expectSyncStatusToBeUnchanged() {
+    // This is useful for tests that should never be changing sync status (basically everything
+    // except upload events).
+    assertThat(getLatestSyncStatus()).isEqualTo(INITIAL_UNKNOWN)
   }
 
-  private fun setUpFirestoreEventLoggerToFail() {
-    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
-    // to remove the default stubbing for the mock so that it can properly trigger a failure.
-    reset(mockFirestoreEventLogger)
-    `when`(mockFirestoreEventLogger.uploadEvent(anyOrNull()))
-      .thenThrow(IllegalStateException("Failure."))
-  }
+  private fun getLatestSyncStatus(): SyncStatus = testSyncStatusManager.getSyncStatuses().last()
 
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
    */
-  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> =
-    map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
-
-  private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    context = InstrumentationRegistry.getInstrumentation().targetContext
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+  private fun Exception.toComparableTrace(): List<StackTraceElement> {
+    return stackTrace.map {
+      StackTraceElement(
+        it.fileName ?: "", // Match ExceptionsController behavior when a null file name happens.
+        checkNotNull(it.methodName),
+        checkNotNull(it.lineNumber),
+        checkNotNull(it.className)
+      )
+    }
   }
 
-  @Qualifier
-  annotation class MockEventLogger
+  private fun initializeDependencies() {
+    FirebaseApp.initializeApp(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+  }
 
-  @Qualifier
-  annotation class MockFirestoreEventLogger
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private data class StackTraceElement(
+    val fileName: String, val methodName: String, val lineNumber: Int, val className: String
+  )
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     fun provideContext(application: Application): Context = application
-
-    @Provides
-    @Singleton
-    @MockEventLogger
-    fun bindMockEventLogger(fakeAnalyticsLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
-      return mock(AnalyticsEventLogger::class.java).also {
-        `when`(it.logEvent(anyOrNull())).then { answer ->
-          fakeAnalyticsLogger.logEvent(
-            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
-          )
-          return@then null
-        }
-      }
-    }
-
-    @Provides
-    @Singleton
-    @MockFirestoreEventLogger
-    fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
-      FirestoreEventLogger {
-        return mock(FirestoreEventLogger::class.java).also {
-          `when`(it.uploadEvent(anyOrNull())).then { answer ->
-            fakeFirestoreLogger.uploadEvent(
-              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
-            )
-            return@then null
-          }
-        }
-      }
-
-    @Provides
-    fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
-      AnalyticsEventLogger = delegate
-
-    @Provides
-    fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
-
-    @Provides
-    fun bindFakePerformanceMetricsLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-    ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
-
-    @Provides
-    fun bindFakeFirestoreEventLogger(
-      @MockFirestoreEventLogger delegate: FirestoreEventLogger
-    ): FirestoreEventLogger = delegate
-  }
-
-  @Module
-  class TestLogStorageModule {
-
-    @Provides
-    @EventLogStorageCacheSize
-    fun provideEventLogStorageCacheSize(): Int = 2
-
-    @Provides
-    @ExceptionLogStorageCacheSize
-    fun provideExceptionLogStorageSize(): Int = 2
-
-    @Provides
-    @PerformanceMetricsLogStorageCacheSize
-    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
-
-    @Provides
-    @FirestoreLogStorageCacheSize
-    fun provideFirestoreLogStorageCacheSize(): Int = 2
-  }
-
-  @Module
-  interface TestFirebaseLogUploaderModule {
-
-    @Binds
-    fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -638,20 +792,22 @@ class LogUploadWorkerTest {
       LoggerModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PerformanceMetricsAssessorModule::class,
       PerformanceMetricsConfigurationsModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
-      TestFirebaseLogUploaderModule::class,
-      TestLogStorageModule::class,
       TestModule::class,
-      TestPlatformParameterModule::class
+      TestPlatformParameterModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      LogStorageModule::class,
+      TestLogReportingModule::class,
+      WorkManagerConfigurationModule::class,
+      LogReportWorkerModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -662,7 +818,7 @@ class LogUploadWorkerTest {
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -673,6 +829,8 @@ class LogUploadWorkerTest {
       component.inject(logUploadWorkerTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    override fun getDataProvidersInjector() = component
+    override fun getDispatcherInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
   }
 }

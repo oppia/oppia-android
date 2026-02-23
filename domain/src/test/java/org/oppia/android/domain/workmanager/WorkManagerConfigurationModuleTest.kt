@@ -45,8 +45,7 @@ import org.oppia.android.util.threading.DispatcherInjectorProvider
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = WorkManagerConfigurationModuleTest.TestApplication::class)
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class WorkManagerConfigurationModuleTest {
   @Inject lateinit var context: Context
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>

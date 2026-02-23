@@ -1,10 +1,9 @@
-package org.oppia.android.domain.oppialogger.logscheduler
+package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -41,13 +40,14 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfi
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import com.google.common.truth.Truth.assertThat
 
-/** Tests for [MetricLogSchedulerModule]. */
+/** Tests for [LogReportWorkerModule]. */
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MetricLogSchedulerModuleTest.TestApplication::class)
-class MetricLogSchedulerModuleTest {
+@Config(application = LogReportWorkerModuleTest.TestApplication::class)
+class LogReportWorkerModuleTest {
   @Inject lateinit var context: Context
   @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
@@ -58,18 +58,18 @@ class MetricLogSchedulerModuleTest {
   }
 
   @Test
-  fun testInjection_bindsMetricLogWorkerSchedulerIntoReadinessListenerSet() {
+  fun testInjection_bindsLogUploadWorkerSchedulerIntoReadinessListenerSet() {
     // The main test is that the test suite builds.
-    val metricLogWorkerSchedulers = readyLists.filterIsInstance<MetricLogSchedulingWorkerScheduler>()
+    val logReportWorkerSchedulers = readyLists.filterIsInstance<LogReportWorkerScheduler>()
     assertThat(readyLists).isNotEmpty()
-    assertThat(metricLogWorkerSchedulers).hasSize(1)
+    assertThat(logReportWorkerSchedulers).hasSize(1)
   }
 
   @Test
-  fun testInjection_bindsMetricLogWorkerFactoryByWorkerName() {
-    assertThat(factories).containsKey(MetricLogSchedulingWorker.WORKER_NAME)
-    assertThat(factories[MetricLogSchedulingWorker.WORKER_NAME])
-      .isInstanceOf(MetricLogSchedulingWorker.Factory::class.java)
+  fun testInjection_bindsLogUploadWorkerFactoryByWorkerName() {
+    assertThat(factories).containsKey(LogUploadWorker.WORKER_NAME)
+    assertThat(factories[LogUploadWorker.WORKER_NAME])
+      .isInstanceOf(LogUploadWorker.Factory::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -88,7 +88,7 @@ class MetricLogSchedulerModuleTest {
   @Component(
     modules = [
       TestModule::class,
-      MetricLogSchedulerModule::class,
+      LogReportWorkerModule::class,
       LocaleProdModule::class,
       FakeOppiaClockModule::class,
       LoggerModule::class,
@@ -117,17 +117,17 @@ class MetricLogSchedulerModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MetricLogSchedulerModuleTest)
+    fun inject(test: LogReportWorkerModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMetricLogSchedulerModuleTest_TestApplicationComponent.builder()
+      DaggerLogReportWorkerModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: MetricLogSchedulerModuleTest) {
+    fun inject(test: LogReportWorkerModuleTest) {
       component.inject(test)
     }
 

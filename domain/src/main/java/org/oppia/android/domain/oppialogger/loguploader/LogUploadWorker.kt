@@ -11,17 +11,22 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import javax.inject.Inject
+import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 
-/** Worker class that extracts log reports from the cache store and logs them to the remote service. */
+/**
+ * Worker class that extracts log reports from the cache store and logs them to the remote service.
+ */
 class LogUploadWorker private constructor(
   private val analyticsController: AnalyticsController,
   private val exceptionsController: ExceptionsController,
   private val performanceMetricsController: PerformanceMetricsController,
   private val exceptionLogger: ExceptionLogger,
-  private val dataController: FirestoreDataController,
+  private val firestoreDataController: FirestoreDataController,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   private val consoleLogger: ConsoleLogger,
-  private val syncStatusManager: SyncStatusManager
+  private val syncStatusManager: SyncStatusManager,
+  private val networkConnectionUtil: NetworkConnectionUtil
 ) : OppiaWorker<LogUploadWorker.Operation> {
   companion object {
     const val WORKER_NAME = "LogUploadWorker"
@@ -38,19 +43,9 @@ class LogUploadWorker private constructor(
     return try {
       when (taskType) {
         Operation.UPLOAD_EVENTS -> analyticsController.uploadEventLogsAndWait()
-        Operation.UPLOAD_EXCEPTIONS -> {
-          for (exceptionLog in exceptionsController.getExceptionLogStoreList()) {
-            exceptionLogger.logException(exceptionLog.toException())
-            exceptionsController.removeFirstExceptionLogFromStore()
-          }
-        }
-        Operation.UPLOAD_PERFORMANCE_METRICS -> {
-          for (performanceMetricsLog in performanceMetricsController.getMetricLogStoreList()) {
-            performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
-            performanceMetricsController.removeFirstMetricLogFromStore()
-          }
-        }
-        Operation.UPLOAD_FIRESTORE_DATA -> dataController.uploadData()
+        Operation.UPLOAD_EXCEPTIONS -> uploadExceptions()
+        Operation.UPLOAD_PERFORMANCE_METRICS -> uploadPerformanceMetrics()
+        Operation.UPLOAD_FIRESTORE_DATA -> uploadFirestoreEvents()
       }
       OppiaWorker.Result.SUCCESS
     } catch (e: Exception) {
@@ -62,6 +57,33 @@ class LogUploadWorker private constructor(
     }
   }
 
+  private suspend fun uploadExceptions() {
+    check(networkConnectionUtil.getCurrentConnectionStatus() != NONE) {
+      "Cannot upload exceptions without internet connectivity."
+    }
+    for (exceptionLog in exceptionsController.getExceptionLogStoreList()) {
+      exceptionLogger.logException(exceptionLog.toException())
+      exceptionsController.removeFirstExceptionLogFromStore()
+    }
+  }
+
+  private suspend fun uploadPerformanceMetrics() {
+    check(networkConnectionUtil.getCurrentConnectionStatus() != NONE) {
+      "Cannot upload performance metrics without internet connectivity."
+    }
+    for (performanceMetricsLog in performanceMetricsController.getMetricLogStoreList()) {
+      performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
+      performanceMetricsController.removeFirstMetricLogFromStore()
+    }
+  }
+
+  private suspend fun uploadFirestoreEvents() {
+    check(networkConnectionUtil.getCurrentConnectionStatus() != NONE) {
+      "Cannot upload Firestore events without internet connectivity."
+    }
+    firestoreDataController.uploadData()
+  }
+
   /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val analyticsController: AnalyticsController,
@@ -71,7 +93,8 @@ class LogUploadWorker private constructor(
     private val dataController: FirestoreDataController,
     private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
     private val consoleLogger: ConsoleLogger,
-    private val syncStatusManager: SyncStatusManager
+    private val syncStatusManager: SyncStatusManager,
+    private val networkConnectionUtil: NetworkConnectionUtil
   ) : OppiaWorker.Factory<Operation> {
     override val supportedTaskTypes: List<Operation> = Operation.values().toList()
 
@@ -84,7 +107,8 @@ class LogUploadWorker private constructor(
         dataController,
         performanceMetricsEventLogger,
         consoleLogger,
-        syncStatusManager
+        syncStatusManager,
+        networkConnectionUtil
       )
     }
   }

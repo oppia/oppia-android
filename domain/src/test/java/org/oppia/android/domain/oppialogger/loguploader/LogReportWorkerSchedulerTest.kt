@@ -2,41 +2,26 @@ package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.work.Configuration
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.DelegatingWorkerFactory
-import androidx.work.NetworkType
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
+import androidx.work.NetworkType.CONNECTED
+import androidx.work.WorkInfo
+import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
-import dagger.Binds
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -45,228 +30,278 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.MetricLogScheduler
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.junit.After
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_EVENTS
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_EXCEPTIONS
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_FIRESTORE_DATA
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_PERFORMANCE_METRICS
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.workmanager.OppiaWorker
+import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
+import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeFirestoreEventLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.shadows.ShadowLog
 
+/** Tests for [LogReportWorkerScheduler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogReportWorkerSchedulerTest.TestApplication::class)
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 class LogReportWorkerSchedulerTest {
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
+  @Inject lateinit var logReportWorkerScheduler: LogReportWorkerScheduler
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var firestoreDataController: FirestoreDataController
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-
-  @Inject
-  lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
-
-  @Inject
-  lateinit var logReportWorkerScheduler: LogReportWorkerScheduler
-
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var fakeLogUploader: FakeLogUploader
-
-  @Inject
-  lateinit var fakeLogScheduler: FakeLogScheduler
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  private lateinit var context: Context
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    val delegatingWorkerFactory = DelegatingWorkerFactory()
-    delegatingWorkerFactory.addFactory(logUploadWorkerFactory)
-    delegatingWorkerFactory.addFactory(metricLogSchedulingWorkerFactory)
-
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(delegatingWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
-  fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logReportWorkerScheduler.scheduleWork(WorkManager.getInstance(context))
+  fun testLogUploadWorker_hasFourOperationTypes() {
+    setUpTestApplicationComponent()
+
+    // A change detector test that, if failing, means that other tests in this suite need to be
+    // updated to ensure that the new operation type is properly verified.
+    assertThat(LogUploadWorker.Operation.values().toList()).containsExactly(
+      UPLOAD_EVENTS, UPLOAD_EXCEPTIONS, UPLOAD_PERFORMANCE_METRICS, UPLOAD_FIRESTORE_DATA
+    )
+  }
+
+  @Test
+  fun testScheduleWork_schedulesLogUploadWorkerToUploadEvents() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Verify that the job was scheduled correctly.
+    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_EVENTS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_schedulesLogUploadWorkerToUploadExceptions() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Verify that the job was scheduled correctly.
+    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_schedulesLogUploadWorkerToUploadPerformanceMetrics() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Verify that the job was scheduled correctly.
+    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_schedulesLogUploadWorkerToUploadFirestoreData() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    // Verify that the job was scheduled correctly.
+    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val workInfo = testDriver.lookUpWorkInfo(id)
+    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+  }
+
+  @Test
+  fun testScheduleWork_constraintsMet_runsFourJobs() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    logOneEventPerType()
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
+
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EVENTS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EXCEPTIONS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_PERFORMANCE_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_FIRESTORE_DATA))
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedEventWorkRequestId = logReportWorkerScheduler.getWorkRequestForEventsId()
-    val enqueuedExceptionWorkRequestId =
-      logReportWorkerScheduler.getWorkRequestForExceptionsId()
-    val enqueuedPerformanceMetricsWorkRequestId =
-      logReportWorkerScheduler.getWorkRequestForPerformanceMetricsId()
-    val enqueuedSchedulingStorageUsageMetricWorkRequestId =
-      logReportWorkerScheduler.getWorkRequestForSchedulingStorageUsageMetricLogsId()
-    val enqueuedSchedulingPeriodicUiMetricWorkRequestId =
-      logReportWorkerScheduler.getWorkRequestForSchedulingPeriodicUiMetricLogsId()
-    val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
-      logReportWorkerScheduler
-        .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
-    val enqueuedFirestoreWorkRequestId =
-      logReportWorkerScheduler.getWorkRequestForFirestoreId()
-
-    assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
-    assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
-      enqueuedExceptionWorkRequestId
-    )
-    assertThat(fakeLogUploader.getMostRecentPerformanceMetricsRequestId()).isEqualTo(
-      enqueuedPerformanceMetricsWorkRequestId
-    )
-    assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingStorageUsageMetricWorkRequestId
-    )
-    assertThat(fakeLogScheduler.getMostRecentPeriodicUiMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingPeriodicUiMetricWorkRequestId
-    )
-    assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
-    )
-    assertThat(fakeLogUploader.getMostRecentFirestoreRequestId()).isEqualTo(
-      enqueuedFirestoreWorkRequestId
-    )
+    // All of the jobs should've run and uploading the logged metrics.
+    assertThat(fetchWorkerErrorLogs()).isEmpty() // No job failures should have occurred.
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(fakeExceptionLogger.getExceptionCount()).isEqualTo(1)
+    assertThat(fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()).isEqualTo(1)
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(1)
   }
 
   @Test
-  fun testWorkRequest_verifyWorkerConstraints() {
-    val workerConstraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build()
+  fun testScheduleWork_constraintsMet_tenHoursElapsed_runsEightJobs() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    logOneEventPerType() // Log events right away for the immediate job runs.
+    logOneEventEveryHourIsh()
+    logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    val logUploadingWorkRequestConstraints =
-      logReportWorkerScheduler.getLogReportWorkerConstraints()
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EVENTS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EXCEPTIONS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_PERFORMANCE_METRICS))
+    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_FIRESTORE_DATA))
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.HOURS.toMillis(10))
 
-    assertThat(logUploadingWorkRequestConstraints).isEqualTo(workerConstraints)
+    // There are initially 1 set of events logged per job type, then one every hour. However, the
+    // jobs are scheduled to run every 6 hours (with 1 running immediately). This means although 11
+    // total events will be cached for logging, only 7 will actually be uploaded across the 2 runs.
+    assertThat(fetchWorkerErrorLogs()).isEmpty() // No job failures should have occurred.
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(7)
+    assertThat(fakeExceptionLogger.getExceptionCount()).isEqualTo(7)
+    assertThat(fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()).isEqualTo(7)
+    assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(7)
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestDataForEvents() {
-    val workerCaseForUploadingEvents: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.EVENT_WORKER
-      )
-      .build()
+  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
 
-    assertThat(logReportWorkerScheduler.getWorkRequestDataForEvents()).isEqualTo(
-      workerCaseForUploadingEvents
+  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID =
+    testDriver.findUniqueId(WORKER_NAME, taskType)
+
+  private fun logOneEventPerType() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE) // For offline caching.
+    analyticsController.logImportantEvent(oppiaLogger.createOpenHomeContext(), profileId = null)
+    exceptionsController.logNonFatalException(Exception("test"))
+    performanceMetricsController.logPerformanceMetricsEvent(
+      oppiaClock.getCurrentTimeMs(),
+      HOME_ACTIVITY,
+      createStartupLatencyMetric(startMs = 123),
+      HIGH_PRIORITY
     )
-  }
-
-  @Test
-  fun testWorkRequest_verifyWorkRequestDataForExceptions() {
-    val workerCaseForUploadingExceptions: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.EXCEPTION_WORKER
-      )
-      .build()
-
-    assertThat(
-      logReportWorkerScheduler.getWorkRequestDataForExceptions()
-    ).isEqualTo(workerCaseForUploadingExceptions)
-  }
-
-  @Test
-  fun testWorkRequest_verifyWorkRequestDataForPerformanceMetrics() {
-    val workerCaseForUploadingPerformanceMetrics: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.PERFORMANCE_METRICS_WORKER
-      )
-      .build()
-
-    assertThat(logReportWorkerScheduler.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
-      workerCaseForUploadingPerformanceMetrics
+    firestoreDataController.logEvent(
+      createOptionalSurveyResponseContext("feedback 1", "test_survey_id1"), profileId = null
     )
+
+    // Note that the order is important here. Logs must be synchronized before restoring
+    // connectivity to ensure that they're cached and not immediately uploaded. This also means that
+    // this helper method cannot be called except on the main thread.
+    testCoroutineDispatchers.runCurrent()
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingStorageUsageMetricLogs() {
-    val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-      )
-      .build()
-
-    assertThat(
-      logReportWorkerScheduler.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
-    ).isEqualTo(workerCaseForSchedulingStorageUsageMetricLogs)
+  private fun logOneEventEveryHourIsh() {
+    CoroutineScope(backgroundDispatcher).launch {
+      // Note that the '- 1' here is very important. The logs need to be logged just shy of the hour
+      // mark to make sure that logOneEventPerType() can restore network connectivity BEFORE the
+      // job has time to run otherwise it will run in non-connectivity mode and fail.
+      delay(TimeUnit.HOURS.toMillis(1) - 1)
+      // Hop to main thread so that coroutines can be synchronized.
+      withContext(Dispatchers.Main) {
+        logOneEventPerType()
+        logOneEventEveryHourIsh()
+      }
+    }
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicBackgroundPerformanceMetricLogs() {
-    val workerCaseForSchedulingPeriodicPerformanceMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-      )
-      .build()
-
-    assertThat(
-      logReportWorkerScheduler
-        .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs()
-    ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
+  private fun createStartupLatencyMetric(startMs: Long): OppiaMetricLog.LoggableMetric {
+    return OppiaMetricLog.LoggableMetric.newBuilder().apply {
+      startupLatencyMetric = OppiaMetricLog.StartupLatencyMetric.newBuilder().apply {
+        startupLatencyMillis = startMs
+      }.build()
+    }.build()
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicUiMetricLogs() {
-    val workerCaseForSchedulingMemoryUsageMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-      )
-      .build()
-
-    assertThat(
-      logReportWorkerScheduler.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
-    ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
+  private fun createOptionalSurveyResponseContext(
+    feedback: String, surveyId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().apply {
+      optionalResponse = EventLog.OptionalSurveyResponseContext.newBuilder().apply {
+        feedbackAnswer = feedback
+        surveyDetails = EventLog.SurveyResponseContext.newBuilder().apply {
+          this.surveyId = surveyId
+        }.build()
+      }.build()
+    }.build()
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingFirestoreUpload() {
-    val workerCaseForUploadingFirestoreData: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.FIRESTORE_WORKER
-      )
-      .build()
+  private fun fetchWorkerErrorLogs(): List<String> {
+    // Extract all logs from the bootstrap worker and validate they are each errors before returning
+    // the logged message lines.
+    return ShadowLog.getLogs().filter { it.tag == WORKER_NAME }.onEach {
+      assertThat(it.type).isEqualTo(Log.ERROR)
+    }.map(ShadowLog.LogItem::msg)
+  }
 
-    assertThat(
-      logReportWorkerScheduler.getWorkRequestDataForFirestore()
-    ).isEqualTo(workerCaseForUploadingFirestoreData)
+  private fun initializeDependencies() {
+    FirebaseApp.initializeApp(context)
+    oppiaWorkManagerTestInitializer.initializeWorkManager()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -283,36 +318,6 @@ class LogReportWorkerSchedulerTest {
     }
   }
 
-  @Module
-  class TestLogStorageModule {
-
-    @Provides
-    @EventLogStorageCacheSize
-    fun provideEventLogStorageCacheSize(): Int = 2
-
-    @Provides
-    @ExceptionLogStorageCacheSize
-    fun provideExceptionLogStorageSize(): Int = 2
-
-    @Provides
-    @PerformanceMetricsLogStorageCacheSize
-    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
-
-    @Provides
-    @FirestoreLogStorageCacheSize
-    fun provideFirestoreLogStorageCacheSize(): Int = 2
-  }
-
-  @Module
-  interface TestFirebaseLogUploaderModule {
-
-    @Binds
-    fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
-
-    @Binds
-    fun bindsFakeLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -322,23 +327,22 @@ class LogReportWorkerSchedulerTest {
       CpuPerformanceSnapshotterModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,
-      LogReportWorkerModule::class,
+      LogStorageModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
+      LogReportWorkerModule::class,
       NetworkConnectionUtilDebugModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
-      SyncStatusModule::class,
-      TestAuthenticationModule::class,
+      SyncStatusTestModule::class,
       TestDispatcherModule::class,
-      TestFirebaseLogUploaderModule::class,
       TestLogReportingModule::class,
-      TestLogStorageModule::class,
       TestModule::class,
+      TestAuthenticationModule::class,
       TestPlatformParameterModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -349,7 +353,7 @@ class LogReportWorkerSchedulerTest {
     fun inject(logUploadWorkRequestTest: LogReportWorkerSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLogReportWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -361,5 +365,7 @@ class LogReportWorkerSchedulerTest {
     }
 
     override fun getDataProvidersInjector() = component
+    override fun getDispatcherInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
   }
 }

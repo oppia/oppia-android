@@ -72,8 +72,7 @@ import org.robolectric.shadows.ShadowLog
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = BootstrapOppiaWorkerTest.TestApplication::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class BootstrapOppiaWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -103,6 +102,7 @@ class BootstrapOppiaWorkerTest {
     //   - The workaround to ignore metadata is not sustainable and only serves to validate the solution here.
     //   - The solution here allows full control over scheduling (yay), though it requires a double Kotlin major upgrade (crap) and ideally a migration off of CoroutineExecutorService (double crap), but that could potentially wait since it seems to be working okay here.
     // - Move the dispatcher and coroutine service changes. The UI task coordinator is actually wrong today and this branch has the fix for it.
+    // - Figure out if it's worth just renaming all of the workers to have clearer and consistent names.
   }
 
   @Test

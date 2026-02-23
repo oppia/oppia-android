@@ -49,6 +49,9 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_UI_METRICS
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_STORAGE_USAGE_METRICS
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_PERFORMANCE_METRICS
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -56,14 +59,17 @@ import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
 import org.robolectric.shadows.ShadowLog
 
 /** Tests for [MetricLogSchedulingWorker]. */
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerTest.TestApplication::class)
@@ -75,12 +81,15 @@ class MetricLogSchedulingWorkerTest {
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var applicationLifecycleLogger: ApplicationLifecycleLogger
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
   }
+
+  /* Tests for SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS. */
 
   @Test
   fun testWorker_scheduleLogPeriodicBackgroundMetrics_logsNetworkUsageMetricsInBackground() {
@@ -130,6 +139,50 @@ class MetricLogSchedulingWorkerTest {
     assertThat(failureLine).contains("Failed operation: schedule_log_periodic_background_metrics.")
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
   }
+
+  @Test
+  fun testWorker_scheduleLogPeriodicBackgroundMetrics_loseConnectivity_succeedsButUploadsNone() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS)
+
+    // The job should success but it won't log anything because, due to lost connectivity, events
+    // should be cached for the next run.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+  }
+
+  // Cross-worker integration test validate a legitimate workflow.
+  @Test
+  fun testWorker_scheduleLogPeriodicBackgroundMetrics_thenRunUploadJob_uploadsLogs() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS)
+
+    forceNetworkConnectivityToCellular()
+    testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Running the upload worker after the previous worker cached its results should upload logs.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(logCount).isEqualTo(1)
+    assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(NETWORK_USAGE_METRIC)
+    assertThat(loggedEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
+  /* Tests for SCHEDULE_LOG_PERIODIC_UI_METRICS. */
 
   @Test
   fun testWorker_scheduleLogPeriodicUiMetrics_homeScreen_logsNetworkUsageMetricsInHomeScreen() {
@@ -184,6 +237,52 @@ class MetricLogSchedulingWorkerTest {
   }
 
   @Test
+  fun testWorker_scheduleLogPeriodicUiMetrics_homeScreen_loseConnectivity_succeedsButUploadsNone() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    simulateResumeHomeActivity()
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_PERIODIC_UI_METRICS)
+
+    // The job should success but it won't log anything because, due to lost connectivity, events
+    // should be cached for the next run.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+  }
+
+  // Cross-worker integration test validate a legitimate workflow.
+  @Test
+  fun testWorker_scheduleLogPeriodicUiMetrics_loseConnectivity_thenRunUploadJob_uploadsLogs() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    simulateResumeHomeActivity()
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_PERIODIC_UI_METRICS)
+
+    forceNetworkConnectivityToCellular()
+    testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Running the upload worker after the previous worker cached its results should upload logs.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(logCount).isEqualTo(1)
+    assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(MEMORY_USAGE_METRIC)
+    assertThat(loggedEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+  }
+
+  /* Tests for SCHEDULE_LOG_STORAGE_USAGE_METRICS. */
+
+  @Test
   fun testWorker_scheduleLogStorageUsageMetrics_logsStorageUsageMetricsInBackground() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
@@ -232,11 +331,61 @@ class MetricLogSchedulingWorkerTest {
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
   }
 
+  @Test
+  fun testWorker_scheduleLogStorageUsageMetrics_loseConnectivity_succeedsButUploadsNone() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    val workInfo = testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_STORAGE_USAGE_METRICS)
+
+    // The job should success but it won't log anything because, due to lost connectivity, events
+    // should be cached for the next run.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(logCount).isEqualTo(0)
+  }
+
+  // Cross-worker integration test validate a legitimate workflow.
+  @Test
+  fun testWorker_scheduleLogStorageUsageMetrics_thenRunUploadJob_uploadsLogs() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    // Run the job with connectivity disabled. This is slightly contrived because technically the
+    // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
+    // the job kicks off.
+    forceNetworkConnectivityOff()
+    testDriver.runOneOffWork(WORKER_NAME, SCHEDULE_LOG_STORAGE_USAGE_METRICS)
+
+    forceNetworkConnectivityToCellular()
+    testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+
+    // Running the upload worker after the previous worker cached its results should upload logs.
+    val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(logCount).isEqualTo(1)
+    assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(STORAGE_USAGE_METRIC)
+    assertThat(loggedEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
   private fun simulateResumeHomeActivity() {
     // Simulate being on a specific screen (though clear any logs from the lifecycle logger to avoid
     // interfering with validating the worker).
     applicationLifecycleLogger.recordActivityResumed(ScreenName.HOME_ACTIVITY, 0L, 0L)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
+  }
+
+  private fun forceNetworkConnectivityOff() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+  }
+
+  private fun forceNetworkConnectivityToCellular() {
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
   }
 
   private fun initializeDependencies() {
@@ -292,7 +441,8 @@ class MetricLogSchedulingWorkerTest {
       TestLogReportingModule::class,
       WorkManagerConfigurationModule::class,
       TestPlatformParameterModule::class,
-      MetricLogSchedulerModule::class
+      MetricLogSchedulerModule::class,
+      LogReportWorkerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {

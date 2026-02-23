@@ -94,6 +94,8 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:work_manager_configuration_module",

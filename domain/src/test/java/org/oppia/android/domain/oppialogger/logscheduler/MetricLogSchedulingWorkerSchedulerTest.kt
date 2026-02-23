@@ -64,8 +64,7 @@ import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /** Tests for [MetricLogSchedulingWorkerScheduler]. */
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerSchedulerTest.TestApplication::class)
