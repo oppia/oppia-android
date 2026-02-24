@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-		<com.google.android.material.appbar.AppBarLayout
-			android:id="@+id/reading_list_app_bar_layout"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent">
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/reading_list_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
-			<androidx.appcompat.widget.Toolbar
-				android:id="@+id/audio_language_toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:background="@color/component_color_shared_activity_toolbar_color"
-				android:fontFamily="sans-serif"
-				android:minHeight="?attr/actionBarSize"
-				app:navigationContentDescription="@string/navigate_up"
-				app:navigationIcon="?attr/homeAsUpIndicator">
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/audio_language_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_shared_activity_toolbar_color"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator">
 
-				<TextView
-					android:id="@+id/audio_language_toolbar_title"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:ellipsize="marquee"
-					android:focusable="true"
-					android:focusableInTouchMode="true"
-					android:marqueeRepeatLimit="marquee_forever"
-					android:singleLine="true"
-					android:text="@string/audio_language_activity_title"
-					android:textAppearance="@style/ToolbarTextAppearance" />
-			</androidx.appcompat.widget.Toolbar>
+        <TextView
+          android:id="@+id/audio_language_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="marquee"
+          android:focusable="true"
+          android:focusableInTouchMode="true"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:singleLine="true"
+          android:text="@string/audio_language_activity_title"
+          android:textAppearance="@style/ToolbarTextAppearance" />
+      </androidx.appcompat.widget.Toolbar>
 
-		</com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-		<FrameLayout
-			android:id="@+id/audio_language_fragment_container"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:background="@color/component_color_shared_screen_tertiary_background_color"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout" />
-	</androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+      android:id="@+id/audio_language_fragment_container"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@color/component_color_shared_screen_tertiary_background_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
