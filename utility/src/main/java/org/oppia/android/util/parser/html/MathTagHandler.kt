@@ -133,7 +133,7 @@ class MathTagHandler(
         // Kotlitex expects escaped backslashes.
         val rawLatex = obj?.getOptionalString("raw_latex")
         return when {
-          rawLatex != null -> MathAsLatex(rawLatex)
+          !rawLatex.isNullOrBlank() -> MathAsLatex(rawLatex)
           else -> null
         }
       }
