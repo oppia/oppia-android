@@ -1,9 +1,10 @@
 package org.oppia.android.testing.threading
 
 import android.os.Build
+import android.os.Looper
+import android.os.Message
 import android.os.SystemClock
 import androidx.annotation.RequiresApi
-import java.time.Duration
 import org.oppia.android.testing.time.FakeSystemClock
 import java.util.TreeSet
 import java.util.concurrent.TimeUnit
@@ -11,6 +12,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowLooper
 
 /**
  * Robolectric-specific implementation of [TestCoroutineDispatchers].
@@ -152,14 +155,9 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     return futureTimes.firstOrNull()
   }
 
+  @Suppress("UNUSED_PARAMETER")
   private class RobolectricUiTaskCoordinator {
-    private val shadowLooperClass by lazy { Class.forName("org.robolectric.shadows.ShadowLooper") }
-    private val shadowMainLooper by lazy { shadowLooperClass.getDeclaredMethod("shadowMainLooper") }
-    private val runOneTaskMethod by lazy { shadowLooperClass.getDeclaredMethod("runOneTask") }
-    private val nextScheduledTimeMethod by lazy {
-      shadowLooperClass.getDeclaredMethod("getNextScheduledTaskTime")
-    }
-    private val shadowUiLooper by lazy { shadowMainLooper.invoke(null) }
+    private val shadowUiLooper by lazy { ShadowLooper.shadowMainLooper() }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun hasPendingTasks(timeMillis: Long): Boolean {
@@ -181,15 +179,55 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       // are no others that can be run without advancing the clock. ShadowLooper.idle() basically
       // does this but the approach here has better symmetry with the managed dispatchers in that
       // it's consuming the task queue exactly for the current time duration.
+      // TODO: Continue investigating this, but fundamentally the gap is that Robolectric's runOneTask
+      //  doesn't correctly respect Android internal task barriers. Seems very hard to work around
+      //  this without reflection or just using idle(), unfortunately.
       while (hasPendingCompletableTasks(timeMillis)) {
-        runOneTaskMethod.invoke(shadowUiLooper)
+        emulateIdle()
+//        emulateRunOneTask()
+//        shadowUiLooper.idle()
+//        shadowUiLooper.runOneTask()
       }
+    }
+
+    private fun emulateRunOneTask() {
+      val msg = getNextExecutableMessage()
+//      val msg = oldPoll()
+      if (msg != null && msg.target != null) {
+//        SystemClock.setCurrentTimeMillis(msg.`when`);
+        msg.target.dispatchMessage(msg)
+        shadowOf(msg).recycleUnchecked()
+        triggerIdleHandlersIfNeeded(msg)
+      }
+    }
+
+    private fun emulateIdle() {
+      while (true) {
+        Looper.getMainLooper().queue.isIdle
+        val msg = getNextExecutableMessage() ?: break
+        msg.target.dispatchMessage(msg)
+        shadowOf(msg).recycleUnchecked()
+        triggerIdleHandlersIfNeeded(msg)
+      }
+    }
+
+    private fun oldPoll(): Message? {
+      val shadowQueue = shadowUiLooper.javaClass.getDeclaredMethod("shadowQueue").also { it.isAccessible = true }.invoke(shadowUiLooper)
+      return shadowQueue.javaClass.getDeclaredMethod("poll").also { it.isAccessible = true }.invoke(shadowQueue) as Message?
+    }
+
+    private fun getNextExecutableMessage(): Message? {
+      return shadowUiLooper.javaClass.getDeclaredMethod("getNextExecutableMessage").also { it.isAccessible = true }.invoke(shadowUiLooper) as Message?
+    }
+
+    private fun triggerIdleHandlersIfNeeded(lastMessageRead: Message) {
+      shadowUiLooper.javaClass.getDeclaredMethod("triggerIdleHandlersIfNeeded", Message::class.java).also { it.isAccessible = true }.invoke(shadowUiLooper, lastMessageRead)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? {
       val currentUptimeMs = SystemClock.uptimeMillis()
-      val nextScheduledTime = nextScheduledTimeMethod.invoke(shadowUiLooper) as Duration
+      val nextScheduledTime = shadowUiLooper.nextScheduledTaskTime
       val whenMs = nextScheduledTime.toMillis()
       if (whenMs == 0L) {
         // A timestamp of 0 indicates that there are no tasks left to run in the queue.
@@ -199,6 +237,5 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
       // Robolectric's (in case they get out of sync).
       return timeMillis + (whenMs - currentUptimeMs).coerceAtLeast(0)
     }
-
   }
 }
