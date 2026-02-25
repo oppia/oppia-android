@@ -123,4 +123,36 @@ class MathModelTest {
     assertThat(digest1.digest()).isNotEqualTo(digest2.digest())
     assertThat(model1).isNotEqualTo(model2)
   }
+
+  @Test
+  fun testToKeySignature_differenceModelByNightMode_returnsDifferentKeyWithDifferentDigest(){
+    val lightModel = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      isNightMode = false
+    )
+
+    val darkModel = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      isNightMode = true
+    )
+
+    val digest1 = MessageDigest.getInstance("SHA-256")
+    val digest2 = MessageDigest.getInstance("SHA-256")
+
+    val key1 = lightModel.toKeySignature()
+    val key2 = darkModel.toKeySignature()
+
+    key1.updateDiskCacheKey(digest1)
+    key2.updateDiskCacheKey(digest2)
+
+    // Since theme differs, cache keys must differ.
+    assertThat(key1).isNotEqualTo(key2)
+    assertThat(key1.hashCode()).isNotEqualTo(key2.hashCode())
+    assertThat(digest1.digest()).isNotEqualTo(digest2.digest())
+    assertThat(lightModel).isNotEqualTo(darkModel)
+  }
 }
