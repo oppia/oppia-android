@@ -17,8 +17,8 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
@@ -59,7 +59,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     outState: Bundle?,
     parentScreen: ParentScreen
   ): View {
@@ -167,7 +167,10 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
   }
 
-  private fun updateSelectedAudioLanguage(selectedLanguage: OppiaLanguage, profileId: ProfileId) {
+  private fun updateSelectedAudioLanguage(
+    selectedLanguage: OppiaLanguage,
+    profileId: LegacyProfileId
+  ) {
     val audioLanguageSelection =
       AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
     translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
@@ -210,7 +213,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logInToProfile(profileId: ProfileId) {
+  private fun logInToProfile(profileId: LegacyProfileId) {
     profileManagementController.loginToProfile(profileId).toLiveData().observe(
       fragment,
       { result ->
@@ -221,7 +224,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun navigateToHomeScreen(profileId: ProfileId) {
+  private fun navigateToHomeScreen(profileId: LegacyProfileId) {
     val intent = if (enableMultipleClassrooms.value) {
       ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
     } else {

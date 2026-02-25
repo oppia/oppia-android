@@ -77,8 +77,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -226,7 +226,7 @@ class StateFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var oppiaClock: FakeOppiaClock
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @After
   fun tearDown() {
@@ -5600,7 +5600,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
@@ -5652,7 +5652,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
@@ -6710,7 +6710,7 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

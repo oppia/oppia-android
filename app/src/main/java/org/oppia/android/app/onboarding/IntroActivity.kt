@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -45,7 +45,7 @@ class IntroActivity : InjectableSystemLocalizedAppCompatActivity() {
     fun createIntroActivity(
       context: Context,
       introActivityParams: IntroActivityParams,
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): Intent {
       return Intent(context, IntroActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, introActivityParams)

@@ -10,7 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
@@ -96,7 +96,7 @@ class QuestionPlayerActivity :
     fun createQuestionPlayerActivityIntent(
       context: Context,
       skillIdList: ArrayList<String>,
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): Intent {
 
       val args = QuestionPlayerActivityParams.newBuilder().apply {
