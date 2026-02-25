@@ -1,5 +1,6 @@
 package org.oppia.android.testing.platformparameter
 
+import android.os.Looper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
@@ -68,29 +69,32 @@ class TestPlatformParameterModule {
         // Calling code can be blocking which means the returned deferred must run immediately,
         // hence the use of the dispatcher. The Main dispatcher must be used due to the runCurrent()
         // call, however, since otherwise it can contend with tests trying to synchronize state and
-        // then deadlock.
+        // then deadlock. Additional work must be done to ensure that the thread hop *doesn't*
+        // happen if the main thread is already being used (since that could then cause a deadlock).
         if (isLoaded) {
           // This is a slight hack to allow the PlatformParameterProcessState injector to return
           // immediately if parameters are already loaded. This is needed in more complex
           // cross-thread initialization cases such as for background workers.
           return CompletableDeferred(Unit)
         }
-        // TODO: Validate this change in other tests--it could actually mean that there's a full
-        // main thread hop before parameters are loaded which isn't properly blocking and is likely
-        // to cause a moment of invalid state early in test execution.
-        return CoroutineScope(Dispatchers.Main).async {
-          // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
-          val loadResult = prodController.loadParametersAsync()
-          testCoroutineDispatchers.runCurrent()
-          check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
-          isLoaded = true
-        }
+        val dispatcher = if (Looper.getMainLooper().isCurrentThread) {
+          Dispatchers.Unconfined // Run immediately on the current (main) thread.
+        } else Dispatchers.Main // Defer to the main thread.
+        return CoroutineScope(dispatcher).async { loadParamsAndRunTestDispatchersOnMainThread() }
       }
 
       override fun getParameterInitializationStatus() =
         prodController.getParameterInitializationStatus()
 
       override fun downloadRemoteParameters() = prodController.downloadRemoteParameters()
+
+      private fun loadParamsAndRunTestDispatchersOnMainThread() {
+        // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
+        val loadResult = prodController.loadParametersAsync()
+        testCoroutineDispatchers.runCurrent()
+        check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+        isLoaded = true
+      }
     }
   }
 
