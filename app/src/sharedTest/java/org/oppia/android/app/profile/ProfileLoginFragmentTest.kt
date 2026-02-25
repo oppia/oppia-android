@@ -51,7 +51,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -109,7 +109,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -705,7 +704,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_enterCorrectAdminPin_opensPinResetDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )
@@ -736,7 +735,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_enterAndSubmitNewPin_opensSuccessDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )
@@ -778,7 +777,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_resetPin_canLogInWithNewPin() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )
@@ -863,7 +862,6 @@ class ProfileLoginFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

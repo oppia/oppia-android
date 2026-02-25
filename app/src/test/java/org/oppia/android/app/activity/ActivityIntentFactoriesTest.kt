@@ -24,7 +24,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -79,7 +79,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -114,7 +113,7 @@ class ActivityIntentFactoriesTest {
       onActivity { activity ->
         val intent =
           activity.topicActivityIntentFactory.createIntent(
-            ProfileId.getDefaultInstance(),
+            LegacyProfileId.getDefaultInstance(),
             classroomId = "test_classroom_id",
             topicId = "test_topic_id"
           )
@@ -137,7 +136,7 @@ class ActivityIntentFactoriesTest {
       onActivity { activity ->
         val intent =
           activity.topicActivityIntentFactory.createIntent(
-            ProfileId.getDefaultInstance(),
+            LegacyProfileId.getDefaultInstance(),
             classroomId = "test_classroom_id",
             topicId = "test_topic_id",
             storyId = "test_story_id"
@@ -203,7 +202,6 @@ class ActivityIntentFactoriesTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

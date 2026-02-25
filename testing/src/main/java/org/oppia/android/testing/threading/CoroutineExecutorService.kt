@@ -169,7 +169,7 @@ class CoroutineExecutorService(
         // timeout due to cooperation.
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
-          onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
+//          onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }
         afterSelectionSetupCallback?.invoke()

@@ -47,7 +47,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -125,7 +125,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -186,7 +185,7 @@ class TopicFragmentTest {
   @field:[Inject EnableTopicPracticeTab]
   lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
   private val TOPIC_NAME = "Fractions"
 
   @Before
@@ -1127,7 +1126,7 @@ class TopicFragmentTest {
   }
 
   private fun runWithLaunchedActivityAndAddedFragment(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?,
@@ -1150,7 +1149,7 @@ class TopicFragmentTest {
   }
 
   private fun createTopicFragment(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?
@@ -1176,7 +1175,7 @@ class TopicFragmentTest {
     RouteToResumeLessonListener,
     RouteToRevisionCardListener {
     override fun routeToExploration(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -1190,7 +1189,7 @@ class TopicFragmentTest {
     }
 
     override fun routeToResumeLesson(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -1201,7 +1200,7 @@ class TopicFragmentTest {
     }
 
     override fun routeToRevisionCard(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       topicId: String,
       subtopicId: Int,
       subtopicListSize: Int
@@ -1239,7 +1238,6 @@ class TopicFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

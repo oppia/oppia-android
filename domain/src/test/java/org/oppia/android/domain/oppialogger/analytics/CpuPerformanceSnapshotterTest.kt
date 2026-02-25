@@ -86,6 +86,7 @@ class CpuPerformanceSnapshotterTest {
   fun setUp() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
+    simulateOnCreationFlow()
   }
 
   @After
@@ -267,7 +268,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_onCreate_moveToForegroundBeforeCutOff_logsCpuUsageInForegroundAfterDelay() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -285,7 +285,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToFgBeforeCutOff_moveToBgBeforeDelayEnds_logsInFg_logsInBgAfterDelay() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -307,7 +306,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToFgBeforeCutOff_moveToBgAfterFirstDelay_logsCpuWithCorrectIcon() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -331,7 +329,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_onCreate_setsIconificationToBgAfterCutOff_logsCpuInBgAfterCorrectDelay() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -348,7 +345,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_onCreate_setsIconToBgAfterCutOff_moveToFgAndLogsCpuInBg_logsCpuInFg() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -367,7 +363,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_setsIconToBgAfterCutOff_logsCpuInBg_moveToFgAndLogsCpuInBg_logsCpuInFg() {
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -438,6 +433,11 @@ class CpuPerformanceSnapshotterTest {
 
     assertThat(exception).hasMessageThat()
       .contains("CpuPerformanceSnapshotter: Class has already been initialized.")
+  }
+
+  private fun simulateOnCreationFlow() {
+    applicationLifecycleObserver.onCreateStarted()
+    applicationLifecycleObserver.onCompletedInitialization()
   }
 
   private fun setUpTestApplicationComponent() {

@@ -10,9 +10,20 @@ import javax.inject.Singleton
 @Singleton
 class FakePerformanceMetricsEventLogger @Inject constructor() : PerformanceMetricsEventLogger {
   private val performanceMetricsEventList = CopyOnWriteArrayList<OppiaMetricLog>()
+  private var failureToThrow: Exception? = null
 
   override fun logPerformanceMetric(oppiaMetricLog: OppiaMetricLog) {
+    val possibleFailure = failureToThrow
+    if (possibleFailure != null) throw possibleFailure
     performanceMetricsEventList.add(oppiaMetricLog)
+  }
+
+  /**
+   * Sets an [Exception] to throw the next time(s) [logPerformanceMetric] are called, or `null` if
+   * failure mode should be cleared.
+   */
+  fun setFailure(failure: Exception?) {
+    failureToThrow = failure
   }
 
   /** Returns the oldest event that's been logged. */

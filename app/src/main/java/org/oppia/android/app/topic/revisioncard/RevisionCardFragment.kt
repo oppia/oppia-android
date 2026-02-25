@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardFragmentArguments
 import org.oppia.android.util.extensions.getProto
@@ -29,7 +29,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
     fun newInstance(
       topicId: String,
       subtopicId: Int,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       subtopicListSize: Int,
       readingTextSize: ReadingTextSize
     ):

@@ -57,6 +57,38 @@ class FakeExceptionLoggerTest {
   }
 
   @Test
+  fun testFakeExceptionLogger_logExceptionTwice_withFailureSet_throwsExceptionForBoth() {
+    fakeExceptionLogger.setFailure(Exception("Forced failure."))
+
+    assertThrows<Exception> { exceptionLogger.logException(exception1) }
+    val exception2 = assertThrows<Exception> { exceptionLogger.logException(exception2) }
+
+    assertThat(exception2).hasMessageThat().isEqualTo("Forced failure.")
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logExceptionTwice_withNewFailureSet_throwsLatestException() {
+    fakeExceptionLogger.setFailure(Exception("Forced failure."))
+    fakeExceptionLogger.setFailure(Exception("Forced failure2."))
+
+    val exception = assertThrows<Exception> { exceptionLogger.logException(exception1) }
+
+    assertThat(exception).hasMessageThat().isEqualTo("Forced failure2.")
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logExceptionTwice_withFailureSetToNull_doesNotThrowException() {
+    fakeExceptionLogger.setFailure(Exception("Forced failure."))
+    fakeExceptionLogger.setFailure(null) // Reset.
+
+    exceptionLogger.logException(exception1)
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("First Exception")
+  }
+
+  @Test
   fun testFakeExceptionLogger_logException_clearList_logExceptionAgain_returnsLatestException() {
     exceptionLogger.logException(exception1)
     fakeExceptionLogger.clearAllExceptions()
@@ -138,6 +170,136 @@ class FakeExceptionLoggerTest {
     assertThat(exceptionListStatus).isFalse()
     assertThat(exceptionLogStatus1).isTrue()
     assertThat(exceptionLogStatus2).isTrue()
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_two_noExceptionsLogged_returnsEmptyList() {
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 2)
+
+    assertThat(mostRecentExceptions).isEmpty()
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_two_oneExceptionLogged_returnsOneItemList() {
+    exceptionLogger.logException(exception1)
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 2)
+
+    assertThat(mostRecentExceptions).hasSize(1)
+    assertThat(mostRecentExceptions.single()).hasMessageThat().isEqualTo("First Exception")
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_two_twoExceptionsLogged_returnsInOrder() {
+    exceptionLogger.logException(exception2)
+    exceptionLogger.logException(exception1)
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 2)
+
+    val messages = mostRecentExceptions.map { it.message }
+    assertThat(messages).containsExactly("Second Exception", "First Exception").inOrder()
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_one_twoExceptionsLogged_returnsLatest() {
+    exceptionLogger.logException(exception2)
+    exceptionLogger.logException(exception1)
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 1)
+
+    assertThat(mostRecentExceptions).hasSize(1)
+    assertThat(mostRecentExceptions.single()).hasMessageThat().isEqualTo("First Exception")
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_zero_twoExceptionsLogged_returnsEmptyList() {
+    exceptionLogger.logException(exception2)
+    exceptionLogger.logException(exception1)
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 0)
+
+    assertThat(mostRecentExceptions).isEmpty()
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_negative_twoExceptionsLogged_throws() {
+    exceptionLogger.logException(exception2)
+    exceptionLogger.logException(exception1)
+
+    assertThrows<IllegalArgumentException> {
+      fakeExceptionLogger.getMostRecentExceptions(count = -1)
+    }
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_two_twoLogged_cleared_returnsEmpty() {
+    exceptionLogger.logException(exception2)
+    exceptionLogger.logException(exception1)
+    fakeExceptionLogger.clearAllExceptions()
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 2)
+
+    assertThat(mostRecentExceptions).isEmpty()
+  }
+
+  @Test
+  fun testFakeExceptionLogger_getMostRecentExceptions_two_logged_cleared_logged_returnsLatest() {
+    exceptionLogger.logException(exception1)
+    fakeExceptionLogger.clearAllExceptions()
+    exceptionLogger.logException(exception2)
+
+    val mostRecentExceptions = fakeExceptionLogger.getMostRecentExceptions(count = 2)
+
+    assertThat(mostRecentExceptions).hasSize(1)
+    assertThat(mostRecentExceptions.single()).hasMessageThat().isEqualTo("Second Exception")
+  }
+
+  @Test
+  fun testFakeExceptionLogger_nothingLogged_countReturnsZero() {
+    val count = fakeExceptionLogger.getExceptionCount()
+
+    assertThat(count).isEqualTo(0)
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logException_countReturnsOne() {
+    exceptionLogger.logException(exception1)
+
+    val count = fakeExceptionLogger.getExceptionCount()
+
+    assertThat(count).isEqualTo(1)
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logExceptionTwice_countReturnsTwo() {
+    exceptionLogger.logException(exception1)
+    exceptionLogger.logException(exception2)
+
+    val count = fakeExceptionLogger.getExceptionCount()
+
+    assertThat(count).isEqualTo(2)
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logExceptionTwice_clear_countReturnsZero() {
+    exceptionLogger.logException(exception1)
+    exceptionLogger.logException(exception2)
+    fakeExceptionLogger.clearAllExceptions()
+
+    val count = fakeExceptionLogger.getExceptionCount()
+
+    assertThat(count).isEqualTo(0)
+  }
+
+  @Test
+  fun testFakeExceptionLogger_logException_clear_logOneMore_countReturnsOne() {
+    exceptionLogger.logException(exception1)
+    fakeExceptionLogger.clearAllExceptions()
+    exceptionLogger.logException(exception2)
+
+    val count = fakeExceptionLogger.getExceptionCount()
+
+    assertThat(count).isEqualTo(1)
   }
 
   private fun setUpTestApplicationComponent() {

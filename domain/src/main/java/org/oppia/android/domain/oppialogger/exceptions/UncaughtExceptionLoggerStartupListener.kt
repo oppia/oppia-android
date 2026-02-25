@@ -3,25 +3,39 @@ package org.oppia.android.domain.oppialogger.exceptions
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
+import javax.inject.Provider
 
 /** Handler for catching fatal exceptions before the defaultUncaughtExceptionHandler. */
 class UncaughtExceptionLoggerStartupListener @Inject constructor(
-  private val exceptionsController: ExceptionsController,
-  private val consoleLogger: ConsoleLogger
+  private val exceptionsControllerProvider: Provider<ExceptionsController>,
+  private val consoleLogger: ConsoleLogger // Should be safe for early app access.
 ) : Thread.UncaughtExceptionHandler, ApplicationStartupListener {
 
   private var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
+  private var canLogExceptions: Boolean = false
 
-  /** Sets up the uncaught exception handler to [UncaughtExceptionLoggerStartupListener]. */
-  override fun onCreate() {
+  override fun onCreateStarted() {
+    // This should be set up immediately to try and capture exceptions that occur early, but it may
+    // not be safe to log them until after app initialization completes.
     existingUncaughtExceptionHandler = Thread.currentThread().uncaughtExceptionHandler
     Thread.currentThread().uncaughtExceptionHandler = this
   }
 
-  /** Logs an uncaught exception to the [exceptionsController]. */
+  override fun onCompletedInitialization() {
+    canLogExceptions = true
+  }
+
   override fun uncaughtException(thread: Thread, throwable: Throwable) {
     try {
-      exceptionsController.logFatalException(Exception(throwable))
+      if (canLogExceptions) {
+        exceptionsControllerProvider.get().logFatalException(Exception(throwable))
+      } else {
+        consoleLogger.e(
+          "OPPIA_EXCEPTION_HANDLER",
+          "Skipped logging exception due to app not being fully initialized yet.",
+          throwable
+        )
+      }
     } catch (e: Exception) {
       consoleLogger.e("OPPIA_EXCEPTION_HANDLER", "Problem in logging exception", e)
     } finally {

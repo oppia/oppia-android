@@ -204,7 +204,6 @@
 /.github/actions/ @oppia/android-dev-workflow-reviewers
 /.github/workflows/ @oppia/android-dev-workflow-reviewers
 /.github/stale.yml @oppia/android-dev-workflow-reviewers
-/.devbots/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
 #              Third-party dependencies & licenses configurations              #

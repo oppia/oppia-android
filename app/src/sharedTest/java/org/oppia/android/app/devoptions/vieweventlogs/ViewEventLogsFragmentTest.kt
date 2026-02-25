@@ -38,7 +38,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -105,7 +105,6 @@ import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
@@ -616,7 +615,7 @@ class ViewEventLogsFragmentTest {
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -751,7 +750,6 @@ class ViewEventLogsFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

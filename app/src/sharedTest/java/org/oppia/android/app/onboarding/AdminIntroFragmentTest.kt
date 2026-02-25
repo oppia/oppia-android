@@ -34,8 +34,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -93,7 +93,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -230,7 +229,7 @@ class AdminIntroFragmentTest {
 
   @Test
   fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
-    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     launch(AdminIntroActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -243,7 +242,7 @@ class AdminIntroFragmentTest {
   }
 
   private fun launchAdminIntroActivity(): ActivityScenario<AdminIntroActivity> {
-    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val scenario = launch<AdminIntroActivity>(
       AdminIntroActivity.createAdminIntroActivityIntent(
@@ -285,7 +284,6 @@ class AdminIntroFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

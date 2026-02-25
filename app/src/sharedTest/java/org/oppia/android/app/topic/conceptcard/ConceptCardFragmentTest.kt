@@ -56,8 +56,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ConceptCardFragmentArguments
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -121,7 +121,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -159,7 +158,7 @@ class ConceptCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -376,14 +375,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragment =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         assertThat(activity.supportFragmentManager.fragments).hasSize(1)
@@ -398,14 +397,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -424,14 +423,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -456,14 +455,14 @@ class ConceptCardFragmentTest {
         // Show two ConceptCards
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -533,7 +532,7 @@ class ConceptCardFragmentTest {
     return scenario
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -612,7 +611,6 @@ class ConceptCardFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

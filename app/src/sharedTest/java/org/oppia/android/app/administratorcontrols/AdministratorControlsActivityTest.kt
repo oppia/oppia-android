@@ -57,7 +57,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -122,7 +122,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -149,7 +148,7 @@ class AdministratorControlsActivityTest {
   @Inject lateinit var context: Context
 
   private val internalProfileId = 0
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val administratorControlsListRecyclerViewId: Int = R.id.administrator_controls_list
 
   @Test
@@ -742,7 +741,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -770,7 +769,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -799,7 +798,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -825,10 +824,121 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControls_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_landscape_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_analyticsDisabled_profileNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tablet_analyticsEnabled_profileAndDeviceIdIsDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.profile_and_device_id_text_view,
+        stringIdToMatch = R.string.profile_and_device_id_activity_title
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tablet_analyticsDisabled_profileNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = profileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItemDoesNotExist(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.learner_analytics_text_view
+      )
+    }
+  }
+
+  @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     val screenName = createAdministratorControlsActivityIntent(profileId)
       .extractCurrentAppScreenName()
@@ -887,7 +997,7 @@ class AdministratorControlsActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: ProfileId): Intent {
+  private fun createAdministratorControlsActivityIntent(profileId: LegacyProfileId): Intent {
 
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context = context,
@@ -971,7 +1081,6 @@ class AdministratorControlsActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

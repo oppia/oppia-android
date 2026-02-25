@@ -40,7 +40,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -64,6 +64,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.clipboard.ClipboardController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
@@ -80,6 +81,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -97,7 +99,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -121,6 +122,8 @@ class AppVersionActivityTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var clipboardController: ClipboardController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -164,14 +167,8 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
     launchAppVersionActivityIntent().use { scenario ->
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_version_name),
-            context.getVersionName()
-          )
-        )
-      ).check(matches(isDisplayed()))
+      onView(withId(R.id.app_version_text_view))
+        .check(matches(withText(context.getVersionName())))
       onView(
         withText(
           String.format(
@@ -190,20 +187,8 @@ class AppVersionActivityTest {
     launchAppVersionActivityIntent().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withId(
-          R.id.app_version_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_version_name),
-              context.getVersionName()
-            )
-          )
-        )
-      )
+      onView(withId(R.id.app_version_text_view))
+        .check(matches(withText(context.getVersionName())))
       onView(
         withId(
           R.id.app_last_update_date_text_view
@@ -241,6 +226,171 @@ class AppVersionActivityTest {
     }
   }
 
+  @Test
+  fun testAppVersionActivity_installationIdIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_text)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_installationIdLabelIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.installation_id_label))
+        .check(matches(withText(R.string.installation_id_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_copyButton_isDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickCopyButton_showsCopiedState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickCopyButton_copiesInstallationIdToClipboard() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+      val currentClipProvider = clipboardController.getCurrentClip()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify the button shows "Copied" state, indicating successful copy
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+
+      // Verify clipboard contains the installation ID using ClipboardController
+      val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
+      assertThat(currentClip)
+        .isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
+      val clipWithText = currentClip as ClipboardController.CurrentClip.SetWithAppText
+      assertThat(clipWithText.label).isEqualTo("Oppia installation ID")
+      assertThat(clipWithText.text).isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickCopyButton_afterDelay_resetsState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceTimeBy(2001)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_installation_id_button))
+        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_configurationChange_installationIdIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.copy_installation_id_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_installationIdExplanationIsDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.installation_id_explanation)).check(matches(isDisplayed()))
+      onView(withId(R.id.installation_id_explanation))
+        .check(matches(withText(R.string.installation_id_explanation)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_appVersionCopyButton_isDisplayed() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_showsCopiedState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_copiesVersionToClipboard() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+      val currentClipProvider = clipboardController.getCurrentClip()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify the button shows "Copied" state, indicating successful copy
+      onView(withId(R.id.copy_app_version_button))
+        .check(matches(withText(R.string.learner_analytics_copied_to_clipboard_label)))
+
+      // Verify clipboard contains the app version using ClipboardController
+      val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
+      assertThat(currentClip)
+        .isInstanceOf(ClipboardController.CurrentClip.SetWithAppText::class.java)
+      val clipWithText = currentClip as ClipboardController.CurrentClip.SetWithAppText
+      assertThat(clipWithText.text).isEqualTo(context.getVersionName())
+    }
+  }
+
+  @Test
+  fun testAppVersionActivity_clickAppVersionCopyButton_afterDelay_resetsState() {
+    launchAppVersionActivityIntent().use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Advance time past the 2000ms reset delay.
+      testCoroutineDispatchers.advanceTimeBy(2001)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.copy_app_version_button))
+        .check(matches(withText(R.string.learner_analytics_copy_to_clipboard_label)))
+    }
+  }
+
   private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
     timestampMillis: Long
   ): String {
@@ -256,7 +406,7 @@ class AppVersionActivityTest {
     ActivityScenario.launch(AppVersionActivity.createAppVersionActivityIntent(context))
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return createAdministratorControlsActivityIntent(context, profileId)
   }
 
@@ -282,7 +432,6 @@ class AppVersionActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

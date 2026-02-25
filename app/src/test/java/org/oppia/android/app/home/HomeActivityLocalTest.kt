@@ -30,7 +30,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -86,7 +86,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -124,7 +123,8 @@ class HomeActivityLocalTest {
 
   private val internalProfileId: Int = 0
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId =
+    LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -191,7 +191,7 @@ class HomeActivityLocalTest {
     setUpTestWithOnboardingV2Enabled(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(1)
-    val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
     profileTestHelper.updateProfileType(
       profileId = profileId1,
       profileType = ProfileType.ADDITIONAL_LEARNER
@@ -349,7 +349,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
+  private fun createHomeActivityIntent(profileId: LegacyProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
@@ -379,7 +379,6 @@ class HomeActivityLocalTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

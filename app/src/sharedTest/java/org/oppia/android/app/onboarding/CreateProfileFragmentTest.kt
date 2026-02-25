@@ -56,7 +56,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -117,7 +117,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -721,7 +720,7 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
     ActivityScenario<CreateProfileActivity> {
-      val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+      val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
       val intent =
         CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
       intent.decorateWithUserProfileId(testProfileId)
@@ -762,7 +761,6 @@ class CreateProfileFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

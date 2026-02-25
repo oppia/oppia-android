@@ -448,9 +448,17 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: "WorkManager.getInstance"
-  failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
-  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
+  failure_message: "Generally WorkManager never needs to be retrieved directly. Use WorkManagerScheduler to schedule new work."
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/workmanager/BootstrapOppiaWorker.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/workmanager/WorkManagerScheduler.kt"
   exempted_file_patterns: ".+?Test\\.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt$"
+  prohibited_content_regex: "androidx.work.ListenableWorker"
+  failure_message: "Never use ListenableWorker directly. Instead, create a new OppiaWorker and rely on BootstrapOppiaWorker for direct interaction with WorkManager. See WorkManager wiki page for more."
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/workmanager/BootstrapOppiaWorker.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/workmanager/WorkManagerConfigurationModule.kt"
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt$"

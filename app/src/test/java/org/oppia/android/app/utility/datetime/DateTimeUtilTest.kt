@@ -54,11 +54,11 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -206,9 +206,9 @@ class DateTimeUtilTest {
   }
 
   @Module
-  interface AnalyticsStartupListenerTestModule {
+  interface StartupWorkerScheduleReadinessListenerTestModule {
     @Multibinds
-    fun provideAnalyticsListenerSet(): Set<AnalyticsStartupListener>
+    fun provideAnalyticsListenerSet(): Set<StartupWorkerScheduleReadinessListener>
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -219,7 +219,7 @@ class DateTimeUtilTest {
       ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
       AlgebraicExpressionInputModule::class,
-      AnalyticsStartupListenerTestModule::class,
+      StartupWorkerScheduleReadinessListenerTestModule::class,
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,

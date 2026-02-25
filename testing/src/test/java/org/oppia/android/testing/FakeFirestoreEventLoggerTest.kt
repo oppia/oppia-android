@@ -47,7 +47,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logEvent_returnsEvent() {
+  fun testFakeEventLogger_logEvent_returnsEvent() {
     eventLogger.uploadEvent(eventLog1)
     val event = fakeEventLogger.getMostRecentEvent()
 
@@ -56,7 +56,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logEventTwice_returnsLatestEvent() {
+  fun testFakeEventLogger_logEventTwice_returnsLatestEvent() {
     eventLogger.uploadEvent(eventLog1)
     eventLogger.uploadEvent(eventLog2)
     val event = fakeEventLogger.getMostRecentEvent()
@@ -66,7 +66,39 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
+  fun testFakeEventLogger_logEventTwice_withFailureSet_throwsExceptionForBoth() {
+    fakeEventLogger.setFailure(Exception("Forced failure."))
+
+    assertThrows<Exception> { eventLogger.uploadEvent(eventLog1) }
+    val exception2 = assertThrows<Exception> { eventLogger.uploadEvent(eventLog2)}
+
+    assertThat(exception2).hasMessageThat().isEqualTo("Forced failure.")
+  }
+
+  @Test
+  fun testFakeEventLogger_logEventTwice_withNewFailureSet_throwsLatestException() {
+    fakeEventLogger.setFailure(Exception("Forced failure."))
+    fakeEventLogger.setFailure(Exception("Forced failure2."))
+
+    val exception = assertThrows<Exception> { eventLogger.uploadEvent(eventLog1) }
+
+    assertThat(exception).hasMessageThat().isEqualTo("Forced failure2.")
+  }
+
+  @Test
+  fun testFakeEventLogger_logEventTwice_withFailureSetToNull_doesNotThrowException() {
+    fakeEventLogger.setFailure(Exception("Forced failure."))
+    fakeEventLogger.setFailure(null) // Reset.
+
+    eventLogger.uploadEvent(eventLog1)
+
+    val event = fakeEventLogger.getMostRecentEvent()
+    assertThat(event).isEqualTo(eventLog1)
+    assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
+  }
+
+  @Test
+  fun testFakeEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
     eventLogger.uploadEvent(eventLog2)
@@ -77,12 +109,12 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logNothing_getMostRecent_returnsFailure() {
+  fun testFakeEventLogger_logNothing_getMostRecent_returnsFailure() {
     assertThrows<NoSuchElementException>() { fakeEventLogger.getMostRecentEvent() }
   }
 
   @Test
-  fun testfakeEventLogger_logEvent_clearAllEvents_getMostRecent_returnsFailure() {
+  fun testFakeEventLogger_logEvent_clearAllEvents_getMostRecent_returnsFailure() {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
 
@@ -94,7 +126,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_clearAllEvents_returnsEmptyList() {
+  fun testFakeEventLogger_clearAllEvents_returnsEmptyList() {
     fakeEventLogger.clearAllEvents()
     val isListEmpty = fakeEventLogger.noEventsPresent()
 
@@ -102,7 +134,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logEvent_clearAllEvents_returnsEmptyList() {
+  fun testFakeEventLogger_logEvent_clearAllEvents_returnsEmptyList() {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
     val isListEmpty = fakeEventLogger.noEventsPresent()
@@ -111,7 +143,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logMultipleEvents_clearAllEvents_returnsEmptyList() {
+  fun testFakeEventLogger_logMultipleEvents_clearAllEvents_returnsEmptyList() {
     eventLogger.uploadEvent(eventLog1)
     eventLogger.uploadEvent(eventLog2)
     fakeEventLogger.clearAllEvents()
@@ -121,7 +153,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logEvent_returnsNonEmptyList() {
+  fun testFakeEventLogger_logEvent_returnsNonEmptyList() {
     eventLogger.uploadEvent(eventLog1)
     val isListEmpty = fakeEventLogger.noEventsPresent()
 
@@ -129,7 +161,7 @@ class FakeFirestoreEventLoggerTest {
   }
 
   @Test
-  fun testfakeEventLogger_logMultipleEvents_returnsNonEmptyList() {
+  fun testFakeEventLogger_logMultipleEvents_returnsNonEmptyList() {
     eventLogger.uploadEvent(eventLog1)
     eventLogger.uploadEvent(eventLog2)
 

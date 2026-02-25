@@ -30,12 +30,12 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -90,7 +90,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -280,7 +279,7 @@ class ActivityLanguageLocaleHandlerTest {
   private fun setAppLanguage(language: OppiaLanguage) {
     val updateProvider =
       translationController.updateAppLanguage(
-        ProfileId.getDefaultInstance(),
+        LegacyProfileId.getDefaultInstance(),
         AppLanguageSelection.newBuilder().apply {
           selectedLanguage = language
         }.build()
@@ -294,7 +293,8 @@ class ActivityLanguageLocaleHandlerTest {
    * hasn't been explicitly set (since it then defaults to the system's language).
    */
   private fun retrieveAppLanguageLocale(): OppiaLocale.DisplayLocale {
-    val localeProvider = translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
+    val localeProvider =
+      translationController.getAppLanguageLocale(LegacyProfileId.getDefaultInstance())
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 
@@ -347,7 +347,6 @@ class ActivityLanguageLocaleHandlerTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

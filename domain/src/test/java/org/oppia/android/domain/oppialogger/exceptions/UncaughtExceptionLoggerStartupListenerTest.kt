@@ -50,6 +50,8 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    uncaughtExceptionStartupListener.onCreateStarted()
+    uncaughtExceptionStartupListener.onCompletedInitialization()
   }
 
   @Test

@@ -10,9 +10,20 @@ import javax.inject.Singleton
 @Singleton
 class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
   private val eventList = CopyOnWriteArrayList<EventLog>()
+  private var failureToThrow: Exception? = null
 
   override fun logEvent(eventLog: EventLog) {
+    val possibleFailure = failureToThrow
+    if (possibleFailure != null) throw possibleFailure
     eventList.add(eventLog)
+  }
+
+  /**
+   * Sets an [Exception] to throw the next time(s) [logPerformanceMetric] are called, or `null` if
+   * failure mode should be cleared.
+   */
+  fun setFailure(failure: Exception?) {
+    failureToThrow = failure
   }
 
   /** Returns the oldest event that's been logged. */

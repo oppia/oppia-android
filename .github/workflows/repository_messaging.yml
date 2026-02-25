@@ -8,17 +8,58 @@ on:
 
 jobs:
   holiday_message:
-    runs-on: ubuntu-24.04
-    # NOTE TO DEVELOPERS: Update the body text and set this to 'true' to enable automatic messaging on all new PRs.
-    if: false
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - name: Add holiday comment
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
+    - name: Check current date
+      id: check_current_date
+      uses: actions/github-script@v8
+      env:
+        START_DATE_UTC: ${{ vars.HOLIDAY_REMINDER_START_DATE }}
+        END_DATE_UTC: ${{ vars.HOLIDAY_REMINDER_END_DATE }}
+      with:
+        script: |
+          const fs = require('fs');
+
+          const startDateTimestamp = Date.parse(process.env.START_DATE_UTC);
+          const endDateTimestamp = Date.parse(process.env.END_DATE_UTC);
+          const currentDateTimestamp = Date.now();
+
+          console.log('Start date:', startDateTimestamp);
+          console.log('End date:', endDateTimestamp);
+          console.log('Current date:', currentDateTimestamp);
+
+          if (isNaN(startDateTimestamp) || isNaN(endDateTimestamp)) {
+            core.setFailed("Start or end date is configured incorrectly. Please use an ISO 8601 timestamp for both.");
+            return;
+          }
+
+          const holidayIsActive = currentDateTimestamp >= startDateTimestamp && currentDateTimestamp < endDateTimestamp;
+          const formattedEndDate = new Intl.DateTimeFormat('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            timeZone: 'UTC'
+          }).format(new Date(endDateTimestamp));
+
+          console.log('Holiday is active:', holidayIsActive);
+          console.log('End date (formatted):', formattedEndDate);
+
+          const issueCommentText = `
             Thanks for submitting this pull request! Some main reviewers
             have taken time off for the next few weeks, so it may take a
             little while before we can look at this PR. We appreciate your
             patience while some of our team members recharge. We'll be fully
-            returning on 10 January 2022.
+            returning on ${formattedEndDate}.
+          `.replace(/\s+/g, ' ').trim();
+          fs.writeFileSync('holiday_message_body.txt', issueCommentText);
+
+          core.setOutput('HOLIDAY_IS_ACTIVE', holidayIsActive);
+
+    - name: Add holiday comment
+      if: ${{ fromJSON(steps.check_current_date.outputs.HOLIDAY_IS_ACTIVE) }}
+      uses: peter-evans/create-or-update-comment@v5
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-path: holiday_message_body.txt

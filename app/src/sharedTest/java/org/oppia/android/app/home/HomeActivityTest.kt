@@ -56,6 +56,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -64,7 +65,6 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
@@ -147,7 +147,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -220,8 +219,8 @@ class HomeActivityTest {
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
-  private lateinit var profileId: ProfileId
-  private lateinit var profileId1: ProfileId
+  private lateinit var profileId: LegacyProfileId
+  private lateinit var profileId1: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -238,8 +237,8 @@ class HomeActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId1 = LegacyProfileId.newBuilder().setInternalId(internalProfileId1).build()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -2074,13 +2073,13 @@ class HomeActivityTest {
     profileTestHelper.initializeProfiles()
   }
 
-  private fun markSpotlightSeen(profileId: ProfileId) {
+  private fun markSpotlightSeen(profileId: LegacyProfileId) {
     spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -2186,8 +2185,8 @@ class HomeActivityTest {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
   }
 
-  private fun createProfileId(internalProfileId: Int): ProfileId {
-    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private fun createProfileId(internalProfileId: Int): LegacyProfileId {
+    return LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   private fun logIntoAdminTwice() {
@@ -2222,7 +2221,6 @@ class HomeActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

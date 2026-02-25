@@ -122,6 +122,7 @@ android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:work_manager_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",

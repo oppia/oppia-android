@@ -23,7 +23,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -77,7 +77,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -108,7 +107,7 @@ class OptionsActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val intent = OptionsActivity.createOptionsActivity(
       context,
-      profileId = ProfileId.newBuilder().setInternalId(0).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(0).build(),
       isFromNavigationDrawer = false
     )
 
@@ -136,7 +135,7 @@ class OptionsActivityTest {
   private fun runWithLaunchedActivity(testBlock: ActivityScenario<OptionsActivity>.() -> Unit) {
     val intent = OptionsActivity.createOptionsActivity(
       context,
-      profileId = ProfileId.newBuilder().setInternalId(0).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(0).build(),
       isFromNavigationDrawer = false
     )
     ActivityScenario.launch<OptionsActivity>(intent).use { scenario ->
@@ -167,7 +166,6 @@ class OptionsActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

@@ -1,0 +1,58 @@
+"""
+Test-only utilities for using WorkManager in tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "oppia_work_manager_test_driver",
+    testonly = True,
+    srcs = ["OppiaWorkManagerTestDriver.kt"],
+    visibility = [
+        "//app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics:__pkg__",
+        "//domain:domain_testing_visibility",
+    ],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:bootstrap_oppia_worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_worker_manager_test_initializer",
+    testonly = True,
+    srcs = ["OppiaWorkManagerTestInitializer.kt"],
+    visibility = [
+        "//app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics:__pkg__",
+        "//domain:domain_testing_visibility",
+    ],
+    deps = [
+        ":oppia_work_manager_test_driver",
+        ":test_job_scheduler_mixin",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:bootstrap_oppia_worker",
+        "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_robolectric_robolectric",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "test_job_scheduler_mixin",
+    testonly = True,
+    srcs = ["TestJobSchedulerMixin.kt"],
+    deps = [
+        ":oppia_work_manager_test_driver",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)

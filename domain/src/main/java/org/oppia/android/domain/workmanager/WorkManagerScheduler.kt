@@ -1,0 +1,79 @@
+package org.oppia.android.domain.workmanager
+
+import android.content.Context
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
+/**
+ * Helper utility for simplifying scheduling an [OppiaWorker] for background work.
+ *
+ * This is meant to only be used by implementations of [StartupWorkerScheduleReadinessListener].
+ */
+class WorkManagerScheduler @Inject constructor(context: Context) {
+  private val workManager: WorkManager by lazy { WorkManager.getInstance(context) }
+
+  /**
+   * Schedule a recurring background run of an [OppiaWorker].
+   *
+   * Note that, per the contract of [WorkManager], the job may immediately run upon the first time
+   * it is scheduled. However, if it's been scheduled in a previous run of the app it may not re-run
+   * unless its time (interval) and other (e.g. requiring network connectivity) constraints are met.
+   *
+   * Scheduled workers always expect the device's battery to not be low.
+   *
+   * The provided repeat interval will be clamped to no more often than 15 minutes (per
+   * [WorkManager]'s own internal constraints) and no less often than every 2 weeks.
+   *
+   * @param workerName the unique worker name of the [OppiaWorker]
+   * @param taskType the specific operation to run for the [OppiaWorker]
+   * @param repeatInterval the time interval at which the worker should run
+   * @param intervalUnit the [TimeUnit] corresponding to the [repeatInterval]
+   * @param requireNetworkConnectivity whether the worker requires internet connectivity
+   */
+  fun schedulePeriodicWorker(
+    workerName: String,
+    taskType: OppiaWorker.TaskType,
+    repeatInterval: Long,
+    intervalUnit: TimeUnit,
+    requireNetworkConnectivity: Boolean = true
+  ) {
+    val workName = "$workerName.${taskType.persistentName}"
+    val taskTypeKey = BootstrapOppiaWorker.constructTaskTypeKey(workerName)
+    val inputData = Data.Builder().apply {
+      putString(BootstrapOppiaWorker.DELEGATED_WORKER_NAME_INPUT_KEY, workerName)
+      putString(taskTypeKey, taskType.persistentName)
+    }.build()
+    val repeatIntervalMs = intervalUnit.toMillis(repeatInterval)
+    val adjustedIntervalMs =
+      repeatIntervalMs.coerceIn(MINIMUM_JOB_INTERVAL_MILLIS..MAXIMUM_JOB_INTERVAL_MILLIS)
+    val request = PeriodicWorkRequest.Builder(
+      BootstrapOppiaWorker::class.java, adjustedIntervalMs, TimeUnit.MILLISECONDS
+    ).apply {
+      addTag(workName)
+      setConstraints(
+        Constraints.Builder().apply {
+          if (requireNetworkConnectivity) {
+            setRequiredNetworkType(NetworkType.CONNECTED)
+          } else setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+          setRequiresBatteryNotLow(true)
+        }.build()
+      )
+      setInputData(inputData)
+    }.build()
+    // Note that UPDATE is used here so that new app versions or platform parameter configurations
+    // can update the constraints and timed period of jobs.
+    // TODO: File issue to use UPDATE here instead of KEEP (need 2.9.0).
+    workManager.enqueueUniquePeriodicWork(workName, ExistingPeriodicWorkPolicy.KEEP, request)
+  }
+
+  private companion object {
+    private val MINIMUM_JOB_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(15)
+    private val MAXIMUM_JOB_INTERVAL_MILLIS = TimeUnit.DAYS.toMillis(14)
+  }
+}

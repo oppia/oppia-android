@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.UserAnswer
@@ -120,7 +120,7 @@ class QuestionPlayerFragment :
      * @param profileId the profile in which the question play session will be played
      * @return a new [QuestionPlayerFragment] to start a question play session
      */
-    fun newInstance(profileId: ProfileId, readingTextSize: ReadingTextSize):
+    fun newInstance(profileId: LegacyProfileId, readingTextSize: ReadingTextSize):
       QuestionPlayerFragment {
         val args = QuestionPlayerFragmentArguments.newBuilder().apply {
           this.profileId = profileId

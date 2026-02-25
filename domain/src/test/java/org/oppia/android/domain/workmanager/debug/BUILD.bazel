@@ -1,0 +1,94 @@
+"""
+Tests for the debug work manager worker that can be used for validating the work manager
+configuration in the app.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "DebugWorkerDebugModuleTest",
+    srcs = ["DebugWorkerDebugModuleTest.kt"],
+    custom_package = "org.oppia.android.domain.debug",
+    test_class = "org.oppia.android.domain.workmanager.debug.DebugWorkerDebugModuleTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:debug_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "DebugWorkerSchedulerTest",
+    srcs = ["DebugWorkerSchedulerTest.kt"],
+    custom_package = "org.oppia.android.domain.debug",
+    test_class = "org.oppia.android.domain.workmanager.debug.DebugWorkerSchedulerTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:work_manager_configuration_module",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:work_manager_scheduler",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:debug_module",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:scheduler",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/testing:oppia_worker_manager_test_initializer",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+    ],
+)
+
+oppia_android_test(
+    name = "DebugWorkerTest",
+    srcs = ["DebugWorkerTest.kt"],
+    custom_package = "org.oppia.android.domain.debug",
+    test_class = "org.oppia.android.domain.workmanager.debug.DebugWorkerTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager:work_manager_configuration_module",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:debug_module",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/debug:worker",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/testing:oppia_worker_manager_test_initializer",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+    ],
+)
