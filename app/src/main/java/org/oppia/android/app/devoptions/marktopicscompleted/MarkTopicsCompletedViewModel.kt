@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -25,7 +25,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   private val translationController: TranslationController
 ) : ObservableViewModel() {
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   private val itemList = mutableListOf<TopicViewModel>()
 
@@ -71,7 +71,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
     return itemList
   }
 
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

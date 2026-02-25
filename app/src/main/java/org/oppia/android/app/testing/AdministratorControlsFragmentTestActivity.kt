@@ -13,7 +13,7 @@ import org.oppia.android.app.administratorcontrols.RouteToLearnerAnalyticsListen
 import org.oppia.android.app.administratorcontrols.RouteToProfileListListener
 import org.oppia.android.app.administratorcontrols.ShowLogoutDialogListener
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -56,7 +56,7 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun loadAppVersion() {}
 
-  override fun loadProfileEdit(profileId: ProfileId, profileName: String) {}
+  override fun loadProfileEdit(profileId: LegacyProfileId, profileName: String) {}
 
   override fun showLogoutDialog() {}
 
@@ -68,7 +68,8 @@ class AdministratorControlsFragmentTestActivity :
       context: Context,
       profileId: Int?
     ): Intent {
-      val profileIdBuilder = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileIdBuilder =
+        profileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)
       if (profileIdBuilder != null) {
         intent.decorateWithUserProfileId(profileIdBuilder)

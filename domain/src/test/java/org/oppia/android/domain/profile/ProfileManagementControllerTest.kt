@@ -25,9 +25,9 @@ import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -100,13 +100,13 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
-    private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
-    private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
-    private val PROFILE_ID_4 = ProfileId.newBuilder().setInternalId(4).build()
-    private val PROFILE_ID_6 = ProfileId.newBuilder().setInternalId(6).build()
+    private val ADMIN_PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_2 = LegacyProfileId.newBuilder().setInternalId(2).build()
+    private val PROFILE_ID_3 = LegacyProfileId.newBuilder().setInternalId(3).build()
+    private val PROFILE_ID_4 = LegacyProfileId.newBuilder().setInternalId(4).build()
+    private val PROFILE_ID_6 = LegacyProfileId.newBuilder().setInternalId(6).build()
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
@@ -408,7 +408,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -424,7 +424,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -675,7 +675,7 @@ class ProfileManagementControllerTest {
     val updateProvider = profileManagementController.updateName(PROFILE_ID_6, "John")
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -718,7 +718,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -743,7 +743,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -756,7 +756,7 @@ class ProfileManagementControllerTest {
     )
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -1137,7 +1137,7 @@ class ProfileManagementControllerTest {
       .hasMessageThat()
       .contains(
         "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
-          "ProfileId 6 is not associated with an existing profile"
+          "Profile ID 6 is not associated with an existing profile"
       )
   }
 
@@ -1688,7 +1688,7 @@ class ProfileManagementControllerTest {
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
 
     assertThat(failure).hasMessageThat()
-      .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
+      .contains("Profile ID ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
   @Test
@@ -1984,7 +1984,7 @@ class ProfileManagementControllerTest {
     )
   }
 
-  private fun retrieveProfile(profileId: ProfileId) =
+  private fun retrieveProfile(profileId: LegacyProfileId) =
     monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
 
   private fun retrieveCurrentSessionId() =
@@ -2071,8 +2071,8 @@ class ProfileManagementControllerTest {
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
-    block: suspend (profileId: ProfileId) -> T,
-    profileId: ProfileId
+    block: suspend (profileId: LegacyProfileId) -> T,
+    profileId: LegacyProfileId
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {

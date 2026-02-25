@@ -18,7 +18,7 @@ import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
@@ -68,7 +68,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Handles the [Fragment.onAttach] portion of [QuestionPlayerFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -78,7 +78,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     userAnswerState: UserAnswerState
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(

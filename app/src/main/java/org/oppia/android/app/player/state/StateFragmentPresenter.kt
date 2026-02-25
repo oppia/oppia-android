@@ -23,7 +23,7 @@ import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.SurveyQuestionName
@@ -91,7 +91,7 @@ class StateFragmentPresenter @Inject constructor(
   private val hasConversationView = true
 
   private lateinit var currentState: State
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -117,7 +117,7 @@ class StateFragmentPresenter @Inject constructor(
     explorationId: String,
     userAnswerState: UserAnswerState
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -575,7 +575,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
+  private fun maybeShowSurveyDialog(profileId: LegacyProfileId, topicId: String) {
     val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
     liveData.observe(
       activity,

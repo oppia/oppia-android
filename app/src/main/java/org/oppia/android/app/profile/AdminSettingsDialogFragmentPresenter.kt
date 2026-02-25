@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminSettingsDialogBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -26,7 +26,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
     adminPin: String?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     profileName: String
   ): Dialog {
     val binding: AdminSettingsDialogBinding =

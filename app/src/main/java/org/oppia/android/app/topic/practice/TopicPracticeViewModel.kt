@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
@@ -26,7 +26,7 @@ class TopicPracticeViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private lateinit var topicId: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(profileId, topicId).toLiveData()
@@ -46,7 +46,7 @@ class TopicPracticeViewModel @Inject constructor(
     this.topicId = topicId
   }
 
-  fun setInternalProfileId(profileId: ProfileId) {
+  fun setInternalProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 
