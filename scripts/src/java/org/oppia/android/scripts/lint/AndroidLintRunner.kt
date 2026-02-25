@@ -462,8 +462,8 @@ class AndroidLintRunner(
     buildSdkVersion: String,
     kotlinCompilerVersion: String,
     suppressLintIssues: Set<String>,
-    listChecks: Boolean,
-    checks: List<String>
+    listChecks: Boolean = false,
+    checks: List<String> = emptyList()
   ): Array<String> {
     prepareJdkEnvironment(jdkHome)
     if (listChecks) {
