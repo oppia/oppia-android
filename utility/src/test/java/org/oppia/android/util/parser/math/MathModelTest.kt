@@ -125,7 +125,7 @@ class MathModelTest {
   }
 
   @Test
-  fun testToKeySignature_differenceModelByNightMode_returnsDifferentKeyWithDifferentDigest(){
+  fun testToKeySignature_differenceModelByNightMode_returnsDifferentKeyWithDifferentDigest() {
     val lightModel = MathModel(
       rawLatex = "\\frac{2}{6}",
       lineHeight = 21.5f,
