@@ -27,11 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import androidx.work.Configuration
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
+import androidx.work.WorkInfo
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -96,7 +92,6 @@ import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -125,7 +120,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
@@ -141,6 +135,8 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -162,11 +158,13 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
   @Inject lateinit var syncStatusManager: TestSyncStatusManager
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject lateinit var configuration: Configuration
+  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
 
   private val clipboardManager by lazy {
     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -181,12 +179,7 @@ class ProfileAndDeviceIdFragmentTest {
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
   }
 
   @After
@@ -1015,7 +1008,7 @@ class ProfileAndDeviceIdFragmentTest {
 
   private fun logAnalyticsEvent(profileId: LegacyProfileId? = null) {
     learnerAnalyticsLogger.logAppInForeground(
-      installationId = TEST_INSTALLATION_ID, profileId, learnerId = TEST_LEARNER_ID
+      TEST_INSTALLATION_ID, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -1031,15 +1024,10 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   private fun flushEventWorkerQueue() {
-    val workManager = WorkManager.getInstance(context)
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY, LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request = OneTimeWorkRequestBuilder<LogUploadWorker>().setInputData(inputData).build()
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
+    val workInfo =
+      testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, LogUploadWorker.Operation.UPLOAD_EVENTS)
+    // Sanity check to make sure the job succeeded.
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
   }
 
   private fun disconnectNetwork() {
@@ -1136,7 +1124,6 @@ class ProfileAndDeviceIdFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

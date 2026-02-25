@@ -521,8 +521,9 @@ class ExplorationActiveTimeControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    applicationLifecycleObserver.onCreateStarted()
+    applicationLifecycleObserver.onCompletedInitialization()
   }
 
   // TODO(#89): Move this to a common test application component.

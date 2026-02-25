@@ -803,8 +803,7 @@ class LogUploadWorkerTest {
       CpuPerformanceSnapshotterModule::class,
       LogStorageModule::class,
       TestLogReportingModule::class,
-      WorkManagerConfigurationModule::class,
-      LogReportWorkerModule::class
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {

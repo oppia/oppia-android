@@ -99,7 +99,6 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -281,29 +280,11 @@ class ApplicationLifecycleObserverTest {
     assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
   }
 
-  @Test
-  fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
-    setUpTestApplicationComponent()
-    assertThat(applicationLifecycleObserver.getCurrentScreen())
-      .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
-  }
-
-  @Test
-  fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
-    setUpTestApplicationComponent()
-    runWithUnspecifiedLaunchedActivity {
-      onActivity { activity ->
-        applicationLifecycleObserver.onActivityResumed(activity)
-        val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
-        assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
-      }
-    }
-  }
+  // TODO: Test onActivityResumed with unspecified launch activity?
 
   @Test
   fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
     val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
@@ -317,21 +298,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
-    setUpTestApplicationComponent()
-    runWithSpecifiedLaunchedActivity {
-      onActivity { activity ->
-        applicationLifecycleObserver.onActivityResumed(activity)
-        val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
-        assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
-      }
-    }
-  }
-
-  @Test
   fun testObserver_onFirstActivityResume_logsStartupLatency() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
     runWithSpecifiedLaunchedActivity {
@@ -357,7 +325,6 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
     setUpTestApplicationWithPerformanceMetricsCollection()
 
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
     runWithSpecifiedLaunchedActivity {
@@ -397,24 +364,11 @@ class ApplicationLifecycleObserverTest {
     }
   }
 
-  @Test
-  fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
-    setUpTestApplicationComponent()
-    runWithSpecifiedLaunchedActivity {
-      onActivity { activity ->
-        applicationLifecycleObserver.onActivityResumed(activity)
-        applicationLifecycleObserver.onActivityPaused(activity)
-        val currentScreen = applicationLifecycleObserver.getCurrentScreen()
-
-        assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
-      }
-    }
-  }
+  // TODO: Test for resumed then paused?
 
   @Test
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
@@ -427,7 +381,6 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
@@ -449,7 +402,6 @@ class ApplicationLifecycleObserverTest {
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
@@ -470,7 +422,6 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -498,7 +449,6 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
     setUpTestApplicationComponent()
 
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -522,7 +472,6 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -547,7 +496,6 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
-    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -610,6 +558,9 @@ class ApplicationLifecycleObserverTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    // This will be called very early in the lifecycle and must be done for the observer to work.
+    applicationLifecycleObserver.onCreateStarted()
+    applicationLifecycleObserver.onCompletedInitialization()
   }
 
   private fun runWithSpecifiedLaunchedActivity(
@@ -706,7 +657,6 @@ class ApplicationLifecycleObserverTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

@@ -8,7 +8,10 @@ kt_android_library(
     name = "oppia_work_manager_test_driver",
     testonly = True,
     srcs = ["OppiaWorkManagerTestDriver.kt"],
-    visibility = ["//domain:domain_testing_visibility"],
+    visibility = [
+        "//app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics:__pkg__",
+        "//domain:domain_testing_visibility",
+    ],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/workmanager:bootstrap_oppia_worker",
         "//domain/src/main/java/org/oppia/android/domain/workmanager:oppia_worker",
@@ -25,7 +28,10 @@ kt_android_library(
     name = "oppia_worker_manager_test_initializer",
     testonly = True,
     srcs = ["OppiaWorkManagerTestInitializer.kt"],
-    visibility = ["//domain:domain_testing_visibility"],
+    visibility = [
+        "//app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics:__pkg__",
+        "//domain:domain_testing_visibility",
+    ],
     deps = [
         ":oppia_work_manager_test_driver",
         ":test_job_scheduler_mixin",

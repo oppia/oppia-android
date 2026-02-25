@@ -115,6 +115,7 @@ kt_android_library(
     srcs = [
         "EventTypeToHumanReadableNameConverter.kt",
     ],
+    visibility = ["//utility:utility_testing_visibility"],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",

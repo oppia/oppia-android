@@ -47,6 +47,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.time.FakeOppiaClock
 
 /** Tests for [FeatureFlagsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -62,6 +63,7 @@ class FeatureFlagsLoggerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @field:[Inject EnableDownloadsSupport]
   lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
@@ -81,7 +83,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logFeatureFlags_hasEmptyUserUuid() {
     // TODO(#5341): The user UUID is not set in this test context and is expected to be empty.
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -92,7 +94,7 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_logFeatureFlags_hasCorrectSessionId() {
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -106,7 +108,7 @@ class FeatureFlagsLoggerTest {
     featureFlagsLogger.setFeatureFlagItemMap(
       mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
 
     testCoroutineDispatchers.runCurrent()
 
@@ -125,7 +127,7 @@ class FeatureFlagsLoggerTest {
     featureFlagsLogger.setFeatureFlagItemMap(
       mapOf(FeatureFlagId.NPS_SURVEY to testFeatureFlagWithEnabledDefault)
     )
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
 
     testCoroutineDispatchers.runCurrent()
 
@@ -143,7 +145,7 @@ class FeatureFlagsLoggerTest {
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
     val expectedFeatureFlagCount = 15
 
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -169,7 +171,7 @@ class FeatureFlagsLoggerTest {
   @Iteration("topic_info_tab", "index=13", "flagId=TOPIC_INFO_TAB")
   @Iteration("topic_practice_tab", "index=14", "flagId=TOPIC_PRACTICE_TAB")
   fun testLogFeatureFlags_allFeatureFlagIdsAreLogged() {
-    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
+    featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID, fakeOppiaClock.getCurrentTimeMs())
 
     testCoroutineDispatchers.runCurrent()
 
