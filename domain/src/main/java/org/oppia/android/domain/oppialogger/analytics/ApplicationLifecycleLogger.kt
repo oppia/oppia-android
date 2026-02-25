@@ -3,7 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
@@ -135,7 +135,7 @@ class ApplicationLifecycleLogger @Inject constructor(
   }
 
   private fun logAppLifecycleEventInBackground(
-    logMethod: (String?, ProfileId?, String?, Long) -> Unit,
+    logMethod: (String?, LegacyProfileId?, String?, Long) -> Unit,
     timestamp: Long
   ) {
     CoroutineScope(backgroundDispatcher).launch {
