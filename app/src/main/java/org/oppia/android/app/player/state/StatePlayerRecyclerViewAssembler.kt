@@ -295,7 +295,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           hasPreviousState,
           gcsEntityId,
           ephemeralState.writtenTranslationContext,
-          timeToStartNoticeAnimationMs
+          timeToStartNoticeAnimationMs,
+          ephemeralState.pendingState.wrongAnswerList
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
@@ -408,8 +409,31 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousButton: Boolean,
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext,
-    timeToStartNoticeAnimationMs: Long?
+    timeToStartNoticeAnimationMs: Long?,
+    wrongAnswerList: List<AnswerAndResponse> = emptyList()
   ) {
+    // Compute the effective user answer state.
+    // 1. The saved userAnswerState survives rotation with the user's current selection.
+    // 2. The most recent wrong answer's order (etains order after a wrong submission.
+    // 3. Default no previous context.
+    val effectiveUserAnswerState = if (
+      userAnswerState.hasListOfSetsOfTranslatableHtmlContentIds()
+    ) {
+      userAnswerState
+    } else {
+      val latestWrongAnswer = wrongAnswerList.lastOrNull()?.userAnswer
+      if (latestWrongAnswer != null &&
+        latestWrongAnswer.answer.hasListOfSetsOfTranslatableHtmlContentIds()
+      ) {
+        UserAnswerState.newBuilder().apply {
+          listOfSetsOfTranslatableHtmlContentIds =
+            latestWrongAnswer.answer.listOfSetsOfTranslatableHtmlContentIds
+          answerErrorCategory = userAnswerState.answerErrorCategory
+        }.build()
+      } else {
+        userAnswerState
+      }
+    }
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory.create(
       gcsEntityId,
@@ -421,7 +445,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       isSplitView.get()!!,
       writtenTranslationContext,
       timeToStartNoticeAnimationMs,
-      userAnswerState
+      effectiveUserAnswerState
     )
   }
 
