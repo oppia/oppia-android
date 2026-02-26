@@ -5830,6 +5830,34 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
+    // Start with feature flag disabled
+    executeInPreviousAppInstance {
+      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+    }
+    
+    // Enable feature flag and continue exploration
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      
+      // Submit wrong answer.
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      typeRatioExpression("4:8")
+      clickSubmitAnswerButton()
+      
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_submitMultipleChoiceAnswer_verifyMultipleChoiceSubmittedAnswer() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -7074,6 +7102,27 @@ class StateFragmentTest {
     fun isOnRobolectric(): Boolean
   }
 
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before setUpTestApplicationComponent to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
+  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
+    val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
+    testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
+    block(
+      DaggerStateFragmentTest_TestApplicationComponent.builder()
+        .setApplication(testApplication)
+        .build()
+    )
+  }
+
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentTest_TestApplicationComponent.builder()
@@ -7087,6 +7136,10 @@ class StateFragmentTest {
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
