@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -33,7 +33,7 @@ class ProfileLoginActivity :
     /** Creates and returns an Intent to open a new [ProfileLoginActivity]. */
     fun createProfileLoginActivityIntent(
       context: Context,
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): Intent {
       return Intent(context, ProfileLoginActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
@@ -42,7 +42,7 @@ class ProfileLoginActivity :
     }
   }
 
-  override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
+  override fun routeToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
     profileLoginActivityPresenter.handleRouteToResetPinDialog(profileId, profileName)
   }
 

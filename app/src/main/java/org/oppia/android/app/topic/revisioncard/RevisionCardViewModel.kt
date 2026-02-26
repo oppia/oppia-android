@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -37,7 +37,7 @@ class RevisionCardViewModel private constructor(
   private val translationController: TranslationController,
   val topicId: String,
   val subtopicId: Int,
-  val profileId: ProfileId,
+  val profileId: LegacyProfileId,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   val subtopicListSize: Int
 ) : ObservableViewModel() {
@@ -182,7 +182,7 @@ class RevisionCardViewModel private constructor(
     fun create(
       topicId: String,
       subtopicId: Int,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       subtopicListSize: Int
     ): RevisionCardViewModel {
       return RevisionCardViewModel(

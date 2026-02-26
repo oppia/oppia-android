@@ -11,7 +11,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.onboarding.AudioLanguageFragmentPresenter
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -96,7 +96,7 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
      */
     fun newInstance(
       audioLanguage: AudioLanguage,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       parentScreen: AudioLanguageActivityParams.ParentScreen
     ): AudioLanguageFragment {
       return AudioLanguageFragment().apply {

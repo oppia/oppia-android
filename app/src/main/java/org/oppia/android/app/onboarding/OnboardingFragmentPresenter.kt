@@ -14,10 +14,10 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -45,7 +45,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val appLanguageViewModel: AppLanguageViewModel
 ) {
   private lateinit var binding: AppLanguageSelectionFragmentBinding
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
   private lateinit var selectedLanguage: OppiaLanguage
   private lateinit var supportedLanguages: List<OppiaLanguage>
 

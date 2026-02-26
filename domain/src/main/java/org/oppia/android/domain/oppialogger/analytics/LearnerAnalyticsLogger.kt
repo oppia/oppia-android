@@ -14,8 +14,8 @@ import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -73,7 +73,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    */
   fun beginExploration(
     installationId: String?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     learnerId: String?,
     exploration: Exploration,
     classroomId: String,
@@ -127,7 +127,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logAppInBackground(installationId: String?, profileId: ProfileId?, learnerId: String?) {
+  fun logAppInBackground(installationId: String?, profileId: LegacyProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     analyticsController.maybeLogEvent(
       installationId,
@@ -146,7 +146,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logAppInForeground(installationId: String?, profileId: ProfileId?, learnerId: String?) {
+  fun logAppInForeground(installationId: String?, profileId: LegacyProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     analyticsController.maybeLogEvent(
       installationId,
@@ -167,7 +167,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
    *     null if not known (which may impact whether the event is logged)
    */
-  fun logDeleteProfile(installationId: String?, profileId: ProfileId?, learnerId: String?) {
+  fun logDeleteProfile(installationId: String?, profileId: LegacyProfileId?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     analyticsController.maybeLogEvent(
       installationId,
@@ -186,7 +186,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    */
   class ExplorationAnalyticsLogger internal constructor(
     installationId: String?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     learnerId: String?,
     classroomId: String,
     topicId: String,
@@ -617,7 +617,7 @@ class LearnerAnalyticsLogger @Inject constructor(
   internal class BaseLogger internal constructor(
     private val oppiaLogger: OppiaLogger,
     private val analyticsController: AnalyticsController,
-    private val profileId: ProfileId,
+    private val profileId: LegacyProfileId,
     private val installationId: String?
   ) {
     /**
@@ -652,7 +652,7 @@ class LearnerAnalyticsLogger @Inject constructor(
       internal fun AnalyticsController.maybeLogEvent(
         installId: String?,
         context: EventContext?,
-        profileId: ProfileId?,
+        profileId: LegacyProfileId?,
         oppiaLogger: OppiaLogger
       ) {
         if (context != null) {

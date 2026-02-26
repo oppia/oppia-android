@@ -11,8 +11,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.RevisionCardActivityBinding
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
@@ -45,13 +45,13 @@ class RevisionCardActivityPresenter @Inject constructor(
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private var subtopicId: Int = 0
   private var subtopicListSize: Int = 0
 
   fun handleOnCreate(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int

@@ -1,6 +1,6 @@
 package org.oppia.android.domain.exploration
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 
 /**
  * Listener for when an exploration has started or ended.
@@ -12,7 +12,7 @@ import org.oppia.android.app.model.ProfileId
  */
 interface ExplorationProgressListener {
   /** Called when an exploration has started. */
-  fun onExplorationStarted(profileId: ProfileId, topicId: String)
+  fun onExplorationStarted(profileId: LegacyProfileId, topicId: String)
 
   /** Called when an exploration has ended. */
   fun onExplorationEnded()

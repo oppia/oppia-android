@@ -44,7 +44,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.model.SurveyQuestionName
@@ -140,7 +140,7 @@ class SurveyFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var surveyController: SurveyController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setup() {
@@ -614,7 +614,7 @@ class SurveyFragmentTest {
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     surveyController.startSurveySession(questions, profileId = profileId)
     testCoroutineDispatchers.runCurrent()
   }

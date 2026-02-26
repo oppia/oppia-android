@@ -2,7 +2,7 @@ package org.oppia.android.app.completedstorylist
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class CompletedStoryListActivityPresenter @Inject constructor(
 ) {
 
   /** Initializes views for [CompletedStoryListActivity] and binds [CompletedStoryListFragment]. */
-  fun handleOnCreate(profileId: ProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId) {
     activity.setContentView(R.layout.completed_story_list_activity)
     if (getCompletedStoryListFragment() == null) {
       activity

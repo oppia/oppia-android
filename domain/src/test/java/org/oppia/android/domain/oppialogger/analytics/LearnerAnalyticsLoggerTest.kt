@@ -14,8 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -116,7 +116,7 @@ class LearnerAnalyticsLoggerTest {
   private val expectedLearnerIdParameter: String get() = elid
   private val expectedInstallIdParameter: String get() = eid
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { LegacyProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Before
   fun setUp() {
@@ -2152,7 +2152,7 @@ class LearnerAnalyticsLoggerTest {
   private fun LearnerAnalyticsLogger.beginExploration(
     exploration: Exploration,
     installationId: String? = TEST_INSTALL_ID,
-    profileId: ProfileId = this@LearnerAnalyticsLoggerTest.profileId,
+    profileId: LegacyProfileId = this@LearnerAnalyticsLoggerTest.profileId,
     learnerId: String? = TEST_LEARNER_ID,
     classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
