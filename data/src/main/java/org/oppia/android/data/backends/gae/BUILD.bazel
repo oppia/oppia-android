@@ -77,12 +77,11 @@ kt_android_library(
     name = "retrofit_module",
     srcs = ["RetrofitModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
-    #        "retrofit_prod_module",  # TODO: Remove this.
     deps = [
-        "retrofit_debug_module",  # TODO: Remove this.
         ":network_config_annotations",
         ":network_interceptors",
         ":oppia_retrofit",
+        ":retrofit_prod_module",  # TODO: Direct depend on this.
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//third_party:com_google_guava_guava",
@@ -98,16 +97,6 @@ kt_android_library(
         ":oppia_retrofit",
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
-    ],
-)
-
-kt_android_library(
-    name = "retrofit_debug_module",
-    srcs = ["RetrofitServiceDebugModule.kt"],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":oppia_retrofit",
-        "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api:debug_api",
     ],
 )

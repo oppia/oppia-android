@@ -13,7 +13,6 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
-import org.oppia.android.data.backends.gae.RetrofitServiceDebugModule
 import org.oppia.android.domain.auth.AuthenticationModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -89,7 +88,7 @@ import org.oppia.android.util.properties.CustomPropertyRetrieverDebugModule
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
-    RetrofitModule::class, RetrofitServiceDebugModule::class, RetrofitServiceModule::class,
+    RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterSingletonModule::class, PlatformParameterDebugModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,

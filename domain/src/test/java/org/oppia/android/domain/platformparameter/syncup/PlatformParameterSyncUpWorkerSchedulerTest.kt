@@ -18,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -135,6 +136,7 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
       PlatformParameterSingletonModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
+      CustomPropertyRetrieverProdModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,
       TestDispatcherModule::class,

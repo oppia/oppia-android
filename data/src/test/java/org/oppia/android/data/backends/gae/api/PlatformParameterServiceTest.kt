@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.BooleanValue
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.IntValue
@@ -58,7 +59,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_responseIsSuccess() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
     assertThat(response.isSuccessful).isTrue()
   }
@@ -67,7 +68,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToEmpty_returnsEmptyMap() {
     serviceOrchestrator.setNextResponseAsSuccess(parameterValues = emptyMap())
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
     val params = response.body()
     assertThat(params).isNotNull()
@@ -78,7 +79,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_returnsMapOfParameterValues() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
     val params = response.body()
     assertThat(params).isNotNull()
@@ -89,9 +90,9 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_returnsStringParameterValue() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
-    val param = response.body()?.get(TEST_STRING_PARAM_NAME) as? StringValue
+    val param = response.body()?.find { it.name == TEST_STRING_PARAM_NAME }?.value as? StringValue
     assertThat(param?.value).isEqualTo("test_string_param_value")
   }
 
@@ -99,9 +100,9 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_returnsIntegerParameterValue() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
-    val param = response.body()?.get(TEST_INTEGER_PARAM_NAME) as? IntValue
+    val param = response.body()?.find { it.name == TEST_INTEGER_PARAM_NAME }?.value as? IntValue
     assertThat(param?.value).isEqualTo(1)
   }
 
@@ -109,9 +110,9 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_returnsBooleanParameterValue() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
-    val param = response.body()?.get(TEST_BOOLEAN_PARAM_NAME) as? BooleanValue
+    val param = response.body()?.find { it.name == TEST_BOOLEAN_PARAM_NAME }?.value as? BooleanValue
     assertThat(param?.value).isTrue()
   }
 
@@ -119,10 +120,10 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToSuccess_containsInvalidValue_returnsUnknownValue() {
     serviceOrchestrator.setNextResponseAsSuccess(REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE)
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
     // Invalid/unsupported parameter types should be correctly processed.
-    val param = response.body()?.get(TEST_UNKNOWN_PARAM_NAME)
+    val param = response.body()?.find { it.name == TEST_UNKNOWN_PARAM_NAME }
     assertThat(param).isEqualTo(GaePlatformParameterValue.UnsupportedValue)
   }
 
@@ -130,7 +131,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_withResponseSetToFail_responseIsFailure() {
     serviceOrchestrator.setNextResponseAsServerError()
 
-    val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
+    val response = parameterService.getPlatformParameters().execute()
 
     assertThat(response.isSuccessful).isFalse()
     assertThat(response.raw().code).isEqualTo(500)
@@ -140,7 +141,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_sendsToCorrectUrl() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    parameterService.getPlatformParametersByVersion(version = "1.2").execute()
+    parameterService.getPlatformParameters().execute()
 
     val capturedRequest = mockWebServer.takeRequest()
     val requestUrl = capturedRequest.requestUrl?.toUrl()
@@ -151,7 +152,7 @@ class PlatformParameterServiceTest {
   fun testService_postRequest_sendsVersionAndAndroidAppType() {
     serviceOrchestrator.setNextResponseAsSuccess()
 
-    parameterService.getPlatformParametersByVersion(version = "1.2").execute()
+    parameterService.getPlatformParameters().execute()
 
     val capturedRequest = mockWebServer.takeRequest()
     assertThat(capturedRequest.requestUrl?.queryParameter("app_version")).isEqualTo("1.2")
@@ -179,6 +180,7 @@ class PlatformParameterServiceTest {
       NetworkConfigTestModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
+      CustomPropertyRetrieverProdModule::class,
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestModule::class

@@ -6,8 +6,8 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import retrofit2.Retrofit
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.api.PlatformParameterDebugService
 
-// TODO: Rename this.
 /** Module which provides Retrofit services. */
 @Module
 class RetrofitServiceModule {
@@ -15,6 +15,13 @@ class RetrofitServiceModule {
   @Singleton
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService =
     retrofit.create(FeedbackReportingService::class.java)
+
+  // TODO: Move this to a separate RetrofitServiceDebugModule once debug deps don't affect all tests.
+  @Provides
+  @Singleton
+  fun providePlatformParameterDebugService(
+    @OppiaRetrofit retrofit: Retrofit
+  ): PlatformParameterDebugService = retrofit.create(PlatformParameterDebugService::class.java)
 
   @Provides
   @Singleton

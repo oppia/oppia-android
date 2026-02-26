@@ -79,6 +79,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/properties:prod_module",
     ],
 )
 
@@ -128,5 +129,6 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/properties:prod_module",
     ],
 )

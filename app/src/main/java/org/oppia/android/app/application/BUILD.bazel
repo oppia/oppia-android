@@ -135,5 +135,6 @@ android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
+        "//utility/src/main/java/org/oppia/android/util/properties:prod_module",
     ],
 )

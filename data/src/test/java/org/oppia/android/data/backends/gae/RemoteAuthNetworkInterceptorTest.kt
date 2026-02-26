@@ -67,7 +67,7 @@ class RemoteAuthNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutAnyHeaders_addsCorrectHeaders() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-    val call = platformParameterService.getPlatformParametersByVersion(testVersionName)
+    val call = platformParameterService.getPlatformParameters()
     val serviceRequest = call.request()
     assertThat(serviceRequest.header("api_key")).isNull()
     assertThat(serviceRequest.header("app_package_name")).isNull()

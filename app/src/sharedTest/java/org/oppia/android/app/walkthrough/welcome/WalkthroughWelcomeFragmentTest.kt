@@ -43,6 +43,7 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -247,6 +248,7 @@ class WalkthroughWelcomeFragmentTest {
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
+      CustomPropertyRetrieverProdModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
       SyncStatusModule::class,

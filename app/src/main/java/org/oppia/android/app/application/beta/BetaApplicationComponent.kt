@@ -63,6 +63,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 
 /**
  * Root Dagger component for beta versions of the application.
@@ -98,7 +99,8 @@ import javax.inject.Singleton
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
     ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
-    ExplorationProgressModule::class, AuthenticationModule::class
+    ExplorationProgressModule::class, AuthenticationModule::class,
+    CustomPropertyRetrieverProdModule::class
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {

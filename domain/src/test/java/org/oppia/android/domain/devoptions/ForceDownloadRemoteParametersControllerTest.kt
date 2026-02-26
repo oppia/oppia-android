@@ -35,6 +35,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 
 /** Tests for [ForceDownloadRemoteParametersController]. */
 @RunWith(AndroidJUnit4::class)
@@ -108,6 +112,10 @@ class ForceDownloadRemoteParametersControllerTest {
       TestLogReportingModule::class,
       TestModule::class,
       LoggerModule::class,
+      CustomPropertyRetrieverProdModule::class,
+      RetrofitServiceModule::class,
+      RetrofitModule::class,
+      NetworkConfigProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
