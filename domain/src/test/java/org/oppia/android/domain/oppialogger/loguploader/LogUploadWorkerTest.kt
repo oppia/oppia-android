@@ -67,7 +67,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerInj
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
@@ -103,7 +102,6 @@ class LogUploadWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var configuration: Configuration
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var oppiaClock: OppiaClock
@@ -762,7 +760,7 @@ class LogUploadWorkerTest {
 
   private fun initializeDependencies() {
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+    testDriver.initializeWorkManager(configuration)
   }
 
   private fun setUpTestApplicationComponent() {

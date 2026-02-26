@@ -33,7 +33,6 @@ import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVER
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -53,7 +52,6 @@ class DebugWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var configuration: Configuration
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -61,7 +59,7 @@ class DebugWorkerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+    testDriver.initializeWorkManager(configuration)
   }
 
   @Test

@@ -54,7 +54,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerInj
 import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
@@ -73,7 +72,6 @@ class MetricLogSchedulingWorkerSchedulerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
   @Inject lateinit var metricLogSchedulingWorkerScheduler: MetricLogSchedulingWorkerScheduler
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -207,7 +205,7 @@ class MetricLogSchedulingWorkerSchedulerTest {
 
   private fun initializeDependencies() {
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager()
+    testDriver.initializeWorkManager()
   }
 
   private fun setUpTestApplicationComponent() {

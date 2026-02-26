@@ -46,7 +46,6 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker.Operation.REFRESH_PLATFORM_PARAMETERS
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
@@ -64,7 +63,6 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
   @Inject lateinit var scheduler: PlatformParameterSyncUpWorkerScheduler
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -104,7 +102,7 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
   private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
 
   private fun initializeDependencies() {
-    oppiaWorkManagerTestInitializer.initializeWorkManager()
+    testDriver.initializeWorkManager()
   }
 
   private fun setUpTestApplicationComponent() {

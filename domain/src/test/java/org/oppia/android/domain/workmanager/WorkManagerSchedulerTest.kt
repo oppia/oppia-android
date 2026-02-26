@@ -34,7 +34,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerInj
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerSchedulerTest.MockOppiaWorker1.TaskType.WORKER1_TASK1
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -53,7 +52,6 @@ class WorkManagerSchedulerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var workManagerScheduler: WorkManagerScheduler
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -61,7 +59,7 @@ class WorkManagerSchedulerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager()
+    testDriver.initializeWorkManager()
 
     // Reset static state between tests.
     workerResults.clear()

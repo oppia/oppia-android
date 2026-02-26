@@ -136,7 +136,6 @@ import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -163,7 +162,6 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @Inject lateinit var configuration: Configuration
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
 
   private val clipboardManager by lazy {
@@ -179,7 +177,7 @@ class ProfileAndDeviceIdFragmentTest {
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+    testDriver.initializeWorkManager(configuration)
   }
 
   @After
