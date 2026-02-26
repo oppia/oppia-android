@@ -749,6 +749,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
     "//config/src/java/org/oppia/android/config:all_languages_config",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:platform_parameter_service_test_orchestrator",
     "//domain",
@@ -801,7 +802,6 @@ TEST_DEPS = [
     "//third_party:androidx_test_espresso_espresso-intents",
     "//third_party:androidx_test_ext_junit",
     "//third_party:androidx_test_runner",
-    "//third_party:androidx_work_work-testing",
     "//third_party:com_github_bumptech_glide_mocks",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
@@ -828,6 +828,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
     "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
     "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
+    "//utility/src/main/java/org/oppia/android/util/properties:prod_module",
 ]
 
 # App layer tests.
