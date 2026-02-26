@@ -4504,6 +4504,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/extensions/ListExtensions.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/gcsresource/GcsResourceAnnotations.kt"
   test_file_not_required: true
 }
@@ -4885,17 +4889,5 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ReturnToQuestionButtonListener.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/compose/LocalSpacing.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/compose/OppiaComposeTheme.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/compose/Spacing.kt"
   test_file_not_required: true
 }
