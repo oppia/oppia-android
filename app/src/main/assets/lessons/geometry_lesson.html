@@ -1,0 +1,399 @@
+<!--
+    geometry_lesson.html
+
+    PURPOSE: Interactive geometry lesson demonstrating animations and visual learning.
+    Shows how to use JavaScript for interactive diagrams and explanations.
+    
+    HOW IT WORKS:
+    1. Displays interactive geometry concepts
+    2. User can manipulate shapes and see results
+    3. Real-time feedback from JavaScript validation
+    4. Communicates progress back to Android
+    
+    PLACEMENT: Copy to app/src/main/assets/lessons/geometry_lesson.html
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry Lesson - Oppia Android</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #f5576c;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #f093fb;
+            padding-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Canvas styling */
+        .canvas-container {
+            background: #f9f9f9;
+            border: 2px solid #f093fb;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #f093fb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .info-box strong {
+            color: #f5576c;
+        }
+
+        .lesson-complete {
+            text-align: center;
+            color: #4caf50;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            background: #f1f8f4;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .lesson-complete.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📐 Geometry Fundamentals</h1>
+
+        <div class="section">
+            <h2>Triangle Area Calculation</h2>
+            <p class="description">
+                The area of a triangle is calculated using the formula: 
+                <strong>Area = (base × height) / 2</strong>
+            </p>
+            
+            <div class="info-box">
+                <strong>How it works:</strong> Move the slider below to change the triangle's height. 
+                Observe how the area changes in real-time!
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="triangleCanvas" width="500" height="300"></canvas>
+            </div>
+
+            <label for="heightSlider">Height: <span id="heightValue">100</span>px</label>
+            <input 
+                type="range" 
+                id="heightSlider" 
+                min="20" 
+                max="200" 
+                value="100" 
+                style="width: 100%; cursor: pointer;"
+            >
+
+            <div class="controls">
+                <button onclick="resetTriangle()">Reset</button>
+                <button onclick="calculateAndReport('triangle')">Submit Understanding</button>
+            </div>
+
+            <div id="triangleArea" style="text-align: center; font-size: 18px; color: #f5576c; font-weight: bold; margin-top: 15px;">
+                Area: 0 px²
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Circle Circumference</h2>
+            <p class="description">
+                The circumference of a circle is: <strong>C = 2πr</strong> where r is the radius.
+            </p>
+
+            <div class="info-box">
+                <strong>Interactive Demo:</strong> Drag the slider to change the radius and watch the 
+                circumference update instantly!
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="circleCanvas" width="500" height="300"></canvas>
+            </div>
+
+            <label for="radiusSlider">Radius: <span id="radiusValue">50</span>px</label>
+            <input 
+                type="range" 
+                id="radiusSlider" 
+                min="20" 
+                max="120" 
+                value="50" 
+                style="width: 100%; cursor: pointer;"
+            >
+
+            <div class="controls">
+                <button onclick="resetCircle()">Reset</button>
+                <button onclick="calculateAndReport('circle')">Submit Understanding</button>
+            </div>
+
+            <div id="circleInfo" style="text-align: center; font-size: 18px; color: #f5576c; font-weight: bold; margin-top: 15px;">
+                Circumference: 0 px
+            </div>
+        </div>
+
+        <div class="lesson-complete" id="lessonComplete">
+            ✓ Great! You've completed the geometry lesson!
+        </div>
+    </div>
+
+    <script>
+        /*
+         * === GEOMETRY LESSON JAVASCRIPT ===
+         * Demonstrates interactive learning with real-time calculations
+         * and communication with Android via the bridge
+         */
+
+        // Track completion
+        let lessonProgress = 0;
+        const totalConcepts = 2;
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            if (typeof Android !== 'undefined') {
+                Android.logDebug('Geometry Lesson loaded');
+                Android.updateProgress(10);
+            }
+            setupTriangleDemo();
+            setupCircleDemo();
+        });
+
+        // === TRIANGLE DEMO ===
+        const triangleBase = 300;
+        let triangleHeight = 100;
+
+        function setupTriangleDemo() {
+            const slider = document.getElementById('heightSlider');
+            slider.addEventListener('input', (e) => {
+                triangleHeight = parseInt(e.target.value);
+                document.getElementById('heightValue').textContent = triangleHeight;
+                drawTriangle();
+                updateTriangleArea();
+            });
+            drawTriangle();
+            updateTriangleArea();
+        }
+
+        function drawTriangle() {
+            const canvas = document.getElementById('triangleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw triangle
+            ctx.fillStyle = '#f093fb';
+            ctx.beginPath();
+            ctx.moveTo(100, 250);           // Left point
+            ctx.lineTo(400, 250);           // Right point (base)
+            ctx.lineTo(250, 250 - triangleHeight);  // Top point (height varies)
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw outline
+            ctx.strokeStyle = '#f5576c';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw height line (dashed)
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#999';
+            ctx.beginPath();
+            ctx.moveTo(250, 250 - triangleHeight);
+            ctx.lineTo(250, 250);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw labels
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('Base = ' + triangleBase + 'px', 150, 270);
+            ctx.fillText('Height = ' + triangleHeight + 'px', 260, 250 - triangleHeight / 2);
+        }
+
+        function updateTriangleArea() {
+            const area = (triangleBase * triangleHeight) / 2;
+            document.getElementById('triangleArea').textContent = `Area: ${area.toFixed(0)} px²`;
+        }
+
+        function resetTriangle() {
+            triangleHeight = 100;
+            document.getElementById('heightSlider').value = 100;
+            document.getElementById('heightValue').textContent = 100;
+            drawTriangle();
+            updateTriangleArea();
+        }
+
+        // === CIRCLE DEMO ===
+        let circleRadius = 50;
+
+        function setupCircleDemo() {
+            const slider = document.getElementById('radiusSlider');
+            slider.addEventListener('input', (e) => {
+                circleRadius = parseInt(e.target.value);
+                document.getElementById('radiusValue').textContent = circleRadius;
+                drawCircle();
+                updateCircleInfo();
+            });
+            drawCircle();
+            updateCircleInfo();
+        }
+
+        function drawCircle() {
+            const canvas = document.getElementById('circleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Draw circle
+            ctx.fillStyle = '#f5576c';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, circleRadius, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Draw outline
+            ctx.strokeStyle = '#f093fb';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Draw radius line
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + circleRadius, centerY);
+            ctx.stroke();
+
+            // Draw radius label
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('r = ' + circleRadius + 'px', centerX + circleRadius / 2 - 20, centerY - 10);
+        }
+
+        function updateCircleInfo() {
+            const circumference = 2 * Math.PI * circleRadius;
+            const area = Math.PI * circleRadius * circleRadius;
+            document.getElementById('circleInfo').innerHTML = `
+                Circumference: ${circumference.toFixed(2)} px<br>
+                Area: ${area.toFixed(2)} px²
+            `;
+        }
+
+        function resetCircle() {
+            circleRadius = 50;
+            document.getElementById('radiusSlider').value = 50;
+            document.getElementById('radiusValue').textContent = 50;
+            drawCircle();
+            updateCircleInfo();
+        }
+
+        // === COMPLETION TRACKING ===
+        function calculateAndReport(concept) {
+            // Track completion
+            const completedConcepts = new Set();
+            completedConcepts.add(concept);
+
+            if (completedConcepts.size >= 1) {
+                lessonProgress += 50;
+            }
+
+            // Show completion message
+            document.getElementById('lessonComplete').classList.add('show');
+
+            // Notify Android
+            if (typeof Android !== 'undefined') {
+                Android.updateProgress(Math.min(lessonProgress, 100));
+                Android.submitAnswer(concept + '_completed', true);
+                Android.logDebug('User completed understanding of: ' + concept);
+            }
+        }
+    </script>
+</body>
+</html>

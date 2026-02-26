@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    progress_bar_style.xml
+    
+    PURPOSE: Custom styling for the progress bar in the lesson.
+    
+    COMPONENTS:
+    - background: Gray track that the progress fills
+    - progress: Gradient color that indicates completion (blue to purple)
+    
+    USAGE: Referenced in activity_interactive_lesson.xml for the ProgressBar
+-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background (gray track) -->
+    <item
+        android:id="@android:id/background">
+        <shape android:shape="rectangle"
+            android:tint="#E0E0E0">
+            <corners android:radius="4dp" />
+            <solid android:color="#E0E0E0" />
+        </shape>
+    </item>
+
+    <!-- Progress (colored fill) -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp" />
+                <gradient
+                    android:type="linear"
+                    android:angle="90"
+                    android:startColor="#667EEA"
+                    android:endColor="#764BA2" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

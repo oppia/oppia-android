@@ -1,0 +1,129 @@
+<!--
+    simple_quiz.html
+    
+    PURPOSE: Simple interactive quiz that communicates with Android.
+    Shows how JavaScript calls Android methods through the bridge.
+    
+    KEY CONCEPTS:
+    1. User answers a question
+    2. JavaScript checks if correct
+    3. JavaScript calls Android.submitScore() 
+    4. Android receives the score and updates UI
+    
+    PLACEMENT: app/src/main/assets/simple_quiz.html
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Quiz</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+        }
+        
+        input {
+            padding: 10px;
+            width: 80%;
+            font-size: 16px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            padding: 10px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background: #764ba2;
+        }
+        
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .correct {
+            color: green;
+        }
+        
+        .incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Math Quiz</h1>
+        
+        <!-- Question -->
+        <p><strong>What is 5 × 8?</strong></p>
+        
+        <!-- Input for answer -->
+        <input type="text" id="userAnswer" placeholder="Enter your answer">
+        
+        <!-- Submit button -->
+        <button onclick="checkAnswer()">Submit Answer</button>
+        
+        <!-- Result display -->
+        <div id="result"></div>
+    </div>
+
+    <script>
+        /**
+         * Called when user clicks "Submit Answer" button
+         */
+        function checkAnswer() {
+            // Get user's answer
+            const userAnswer = document.getElementById('userAnswer').value;
+            const correctAnswer = '40';
+            
+            // Check if correct
+            const isCorrect = userAnswer === correctAnswer;
+            
+            // Calculate score
+            const score = isCorrect ? 100 : 0;
+            
+            // Show feedback on screen
+            const result = document.getElementById('result');
+            if (isCorrect) {
+                result.innerHTML = '<div class="result correct">✓ Correct! Score: 100%</div>';
+            } else {
+                result.innerHTML = '<div class="result incorrect">✗ Wrong! Correct answer is 40</div>';
+            }
+            
+            // === SEND DATA TO ANDROID ===
+            // These methods are defined in SimpleJavaScriptBridge.kt
+            Android.showMessage('Your answer: ' + userAnswer);
+            Android.submitScore(score);
+        }
+    </script>
+</body>
+</html>

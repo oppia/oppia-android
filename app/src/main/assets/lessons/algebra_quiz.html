@@ -1,0 +1,467 @@
+<!--
+    algebra_quiz.html
+
+    PURPOSE: Interactive algebra quiz lesson that runs inside WebView.
+    Demonstrates JavaScript-Android communication for real-time feedback.
+    
+    HOW IT WORKS:
+    1. User answers math questions
+    2. JavaScript validates answers
+    3. Communicates with Android via the "Android" bridge
+    4. Android updates progress and stores results
+    
+    PLACEMENT: Copy to app/src/main/assets/lessons/algebra_quiz.html
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Quiz - Oppia Android</title>
+    <style>
+        /* === STYLING === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .question-section {
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin: 20px 0;
+        }
+
+        .input-section label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-section input.correct {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .input-section input.incorrect {
+            border-color: #f44336;
+            background: #fef1f0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-next {
+            background: #f0f0f0;
+            color: #333;
+            display: none;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .completion-screen.show {
+            display: block;
+        }
+
+        .completion-screen h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .score-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 Algebra Quiz</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="progressText">0%</span>
+            </div>
+        </div>
+
+        <div id="quizContent">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <h2>Quiz Complete! 🎉</h2>
+            <p style="color: #666; margin: 15px 0;">Thanks for completing the lesson!</p>
+            <div class="score-circle" id="finalScore">0%</div>
+            <div class="score-label">Your Score</div>
+        </div>
+    </div>
+
+    <script>
+        /*
+         * === QUIZ LOGIC in JavaScript ===
+         * This entire quiz engine runs on the client side (in the browser)
+         * and communicates with Android through the bridge
+         */
+
+        // Question database
+        const questions = [
+            {
+                id: 'q1',
+                text: 'Solve for x: 2x + 5 = 13',
+                answer: '4',
+                explanation: 'Subtract 5 from both sides: 2x = 8, then divide by 2: x = 4'
+            },
+            {
+                id: 'q2',
+                text: 'Solve for x: 3x - 7 = 20',
+                answer: '9',
+                explanation: 'Add 7 to both sides: 3x = 27, then divide by 3: x = 9'
+            },
+            {
+                id: 'q3',
+                text: 'Expand: (x + 3)(x - 2)',
+                answer: 'x^2 + x - 6',
+                explanation: 'Use FOIL: x² - 2x + 3x - 6 = x² + x - 6'
+            }
+        ];
+
+        // Quiz state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answersSubmitted = 0;
+
+        // Initialize quiz
+        function initializeQuiz() {
+            // Notify Android that quiz started
+            if (typeof Android !== 'undefined') {
+                Android.logDebug('Quiz initialized with ' + questions.length + ' questions');
+            }
+            renderQuestion();
+        }
+
+        /**
+         * Renders the current question on screen
+         */
+        function renderQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                completeQuiz();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const quizContent = document.getElementById('quizContent');
+
+            // Update progress
+            updateProgress();
+
+            // Render HTML for current question
+            quizContent.innerHTML = `
+                <div class="question-section">
+                    <div class="question-number">Question ${currentQuestionIndex + 1} of ${questions.length}</div>
+                    <div class="question-text">${question.text}</div>
+                    
+                    <div class="input-section">
+                        <label for="answerInput">Your Answer:</label>
+                        <input 
+                            type="text" 
+                            id="answerInput" 
+                            placeholder="Enter your answer..."
+                            onkeypress="handleKeyPress(event)"
+                        >
+                    </div>
+                    
+                    <div class="feedback" id="feedback"></div>
+                    
+                    <div class="button-group">
+                        <button class="btn-submit" onclick="submitAnswer()">Submit Answer</button>
+                        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+                    </div>
+                </div>
+            `;
+
+            // Focus on input field
+            setTimeout(() => {
+                document.getElementById('answerInput').focus();
+            }, 100);
+        }
+
+        /**
+         * Updates the progress bar and text based on current position
+         */
+        function updateProgress() {
+            const progress = Math.round((currentQuestionIndex / questions.length) * 100);
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressFill.style.width = progress + '%';
+            progressText.textContent = progress + '%';
+
+            // Notify Android of progress update
+            if (typeof Android !== 'undefined') {
+                Android.updateProgress(progress);
+                Android.onQuestionChanged('q' + (currentQuestionIndex + 1));
+            }
+        }
+
+        /**
+         * Validates user answer and provides feedback
+         */
+        function submitAnswer() {
+            const input = document.getElementById('answerInput');
+            const userAnswer = input.value.trim();
+
+            if (!userAnswer) {
+                alert('Please enter an answer');
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
+
+            // Update score if correct
+            if (isCorrect) {
+                score++;
+            }
+
+            answersSubmitted++;
+
+            // Update UI
+            const feedback = document.getElementById('feedback');
+            if (isCorrect) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✓ Correct! ' + question.explanation;
+            } else {
+                input.classList.add('incorrect');
+                input.classList.remove('correct');
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '✗ Incorrect. The correct answer is: ' + question.answer;
+            }
+
+            // Disable submit button and show next button
+            document.querySelector('.btn-submit').disabled = true;
+            document.getElementById('nextBtn').style.display = 'flex';
+
+            // Notify Android of submission
+            if (typeof Android !== 'undefined') {
+                Android.submitAnswer(userAnswer, isCorrect);
+                Android.logDebug('Answer: ' + userAnswer + ', Correct: ' + isCorrect);
+            }
+        }
+
+        /**
+         * Normalizes answer for comparison (removes spaces, converts to lowercase)
+         */
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().replace(/\s+/g, '');
+        }
+
+        /**
+         * Advances to the next question
+         */
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+
+        /**
+         * Handles Enter key press to submit answer
+         */
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !document.querySelector('.btn-submit').disabled) {
+                submitAnswer();
+            }
+        }
+
+        /**
+         * Completes the quiz and displays results
+         */
+        function completeQuiz() {
+            const finalScore = Math.round((score / questions.length) * 100);
+
+            // Show completion screen
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('completionScreen').classList.add('show');
+            document.getElementById('finalScore').textContent = finalScore + '%';
+
+            // Notify Android that quiz is completed
+            if (typeof Android !== 'undefined') {
+                Android.finishLesson(finalScore);
+                Android.updateProgress(100);
+                Android.logDebug('Quiz completed. Score: ' + finalScore + '%, Answers submitted: ' + answersSubmitted);
+            }
+        }
+
+        // Start the quiz when page loads
+        window.addEventListener('load', initializeQuiz);
+    </script>
+</body>
+</html>

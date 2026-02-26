@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    lesson_header_background.xml
+    
+    PURPOSE: Drawable that defines the background for the lesson header section.
+    Creates a nice gradient background to highlight the progress area.
+    
+    USAGE: Referenced in activity_interactive_lesson.xml as the background
+-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="90"
+                android:startColor="#F5F5F5"
+                android:endColor="#EEEEEE" />
+        </shape>
+    </item>
+
+    <!-- Bottom divider line -->
+    <item
+        android:bottom="0dp"
+        android:top="-1dp"
+        android:right="-1dp"
+        android:left="-1dp">
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="1dp"
+                android:color="#E0E0E0" />
+        </shape>
+    </item>
+</layer-list>

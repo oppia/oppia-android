@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_interactive_lesson.xml
+    
+    PURPOSE: Layout file for InteractiveLessonActivity.
+    Defines the UI hierarchy and positioning of components.
+    
+    STRUCTURE:
+    - Top bar: Title and progress indicators
+    - Main content: WebView for lesson content
+    - Status bar: Feedback and progress display
+    
+    BINDING: Components here are referenced in the Activity using findViewById()
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lesson_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- 
+        Top Section: Progress and Status Bar
+        Displays current progress and feedback to user
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/lesson_header_background">
+
+        <!-- Current Status Text -->
+        <TextView
+            android:id="@+id/lesson_status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading lesson..."
+            android:textSize="14sp"
+            android:textColor="@color/gray_600"
+            android:gravity="center"
+            android:paddingBottom="8dp" />
+
+        <!-- Progress Bar Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:spacing="12dp">
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/lesson_progress_bar"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_bar_style"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+
+            <!-- Progress Text (e.g., "50%") -->
+            <TextView
+                android:id="@+id/lesson_progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="12sp"
+                android:textColor="@color/gray_700"
+                android:paddingStart="12dp"
+                android:paddingEnd="0dp"
+                android:minWidth="40dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 
+        Main Content: WebView
+        This is where the HTML/JavaScript lesson content will be displayed.
+        The WebView is the heart of the interactive lesson experience.
+        
+        Why use a WebView here:
+        - Can display complex interactive HTML/CSS/JavaScript
+        - Allows offline content
+        - Consistent rendering across devices
+        - Easy to update content without app updates
+    -->
+    <WebView
+        android:id="@+id/lesson_webview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white" />
+
+    <!-- 
+        Bottom Section: Action Bar (Optional)
+        Can be used for buttons like "Next Lesson", "Finish", etc.
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/light_gray"
+        android:gravity="end"
+        android:spacing="12dp">
+
+        <!-- Hint Button (Optional) -->
+        <Button
+            android:id="@+id/hint_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hint"
+            android:textColor="@color/primary"
+            android:background="?attr/selectableItemBackground"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+        <!-- Help Button (Optional) -->
+        <Button
+            android:id="@+id/help_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textColor="@color/primary"
+            android:background="?attr/selectableItemBackground"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+    </LinearLayout>
+
+</LinearLayout>
