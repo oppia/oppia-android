@@ -150,12 +150,12 @@ class LogUploadWorkerTest {
     initializeDependencies()
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
     // Verify that the job succeeded and there was nothing to upload. Sync status will also update
     // since the attempt to upload finished.
     val logCount = fakeAnalyticsEventLogger.getEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     assertThat(getLatestSyncStatus()).isEqualTo(DATA_UPLOADED)
   }
@@ -170,12 +170,12 @@ class LogUploadWorkerTest {
     logImportantEvent(oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID2))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
     // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
     val logCount = fakeAnalyticsEventLogger.getEventListCount()
     val events = fakeAnalyticsEventLogger.getMostRecentEvents(3)
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(3)
     assertThat(events[0]).hasOpenHomeContext()
     assertThat(events[0]).isEssentialPriority()
@@ -202,11 +202,11 @@ class LogUploadWorkerTest {
     fakeAnalyticsEventLogger.clearAllEvents() // Reset for next job.
 
     // Run a second time.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
     // Verify nothing uploaded (since everything should've uploaded during the first job).
     val logCount = fakeAnalyticsEventLogger.getEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
   }
 
@@ -219,12 +219,12 @@ class LogUploadWorkerTest {
     fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeAnalyticsEventLogger.getEventListCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_events.")
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
@@ -241,12 +241,12 @@ class LogUploadWorkerTest {
     // Run the job with connectivity disabled. This is slightly contrived because technically the
     // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
     // the job kicks off.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EVENTS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeAnalyticsEventLogger.getEventListCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_events.")
     assertThat(failureLine).contains("Cannot upload events without internet connectivity.")
@@ -277,12 +277,12 @@ class LogUploadWorkerTest {
     initializeDependencies()
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
 
     // Verify that the job succeeded and there was nothing to upload. Sync status will also update
     // since the attempt to upload finished.
     val logCount = fakeExceptionLogger.getExceptionCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -297,12 +297,12 @@ class LogUploadWorkerTest {
     logNonFatalException(testException3)
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
 
     // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
     val logCount = fakeExceptionLogger.getExceptionCount()
     val exceptions = fakeExceptionLogger.getMostRecentExceptions(3)
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(3)
     assertThat(exceptions[0]).hasMessageThat().isEqualTo("Test 1")
     assertThat(exceptions[1]).hasMessageThat().isEqualTo("Test 2")
@@ -326,11 +326,11 @@ class LogUploadWorkerTest {
     fakeExceptionLogger.clearAllExceptions() // Reset for next job.
 
     // Run a second time.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
 
     // Verify nothing uploaded (since everything should've uploaded during the first job).
     val logCount = fakeExceptionLogger.getExceptionCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -344,12 +344,12 @@ class LogUploadWorkerTest {
     fakeExceptionLogger.setFailure(Exception("Forced failure."))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeExceptionLogger.getExceptionCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_exceptions.")
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
@@ -366,12 +366,12 @@ class LogUploadWorkerTest {
     // Run the job with connectivity disabled. This is slightly contrived because technically the
     // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
     // the job kicks off.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_EXCEPTIONS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeExceptionLogger.getExceptionCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_exceptions.")
     assertThat(failureLine).contains("Cannot upload exceptions without internet connectivity.")
@@ -402,12 +402,12 @@ class LogUploadWorkerTest {
     initializeDependencies()
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
 
     // Verify that the job succeeded and there was nothing to upload. Sync status will also update
     // since the attempt to upload finished.
     val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -422,11 +422,11 @@ class LogUploadWorkerTest {
     logPerformanceMetric(createStorageSizeMetric(sizeBytes = 789), BACKGROUND_SCREEN, LOW_PRIORITY)
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
 
     // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
     val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(3)
     val events = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
     val (event1, event2, event3) = events
@@ -458,11 +458,11 @@ class LogUploadWorkerTest {
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents() // Reset for next job.
 
     // Run a second time.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
 
     // Verify nothing uploaded (since everything should've uploaded during the first job).
     val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -476,12 +476,12 @@ class LogUploadWorkerTest {
     fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_performance_metrics.")
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
@@ -498,12 +498,12 @@ class LogUploadWorkerTest {
     // Run the job with connectivity disabled. This is slightly contrived because technically the
     // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
     // the job kicks off.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     val failure = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failure).contains("Failed operation: upload_performance_metrics.")
     assertThat(failure).contains("Cannot upload performance metrics without internet connectivity.")
@@ -534,12 +534,12 @@ class LogUploadWorkerTest {
     initializeDependencies()
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
 
     // Verify that the job succeeded and there was nothing to upload. Sync status will also update
     // since the attempt to upload finished.
     val logCount = fakeFirestoreEventLogger.getEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -554,12 +554,12 @@ class LogUploadWorkerTest {
     logFirestoreEvent(createOptionalSurveyResponseContext("feedback 3", "test_survey_id3"))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
 
     // Verify that the job succeeded, was the only job to upload something, and uploaded correctly.
     val logCount = fakeFirestoreEventLogger.getEventListCount()
     val events = fakeFirestoreEventLogger.getMostRecentEvents(3)
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(3)
     val (event1, event2, event3) = events
     assertThat(event1.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
@@ -590,11 +590,11 @@ class LogUploadWorkerTest {
     fakeFirestoreEventLogger.clearAllEvents() // Reset for next job.
 
     // Run a second time.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
 
     // Verify nothing uploaded (since everything should've uploaded during the first job).
     val logCount = fakeFirestoreEventLogger.getEventListCount()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(logCount).isEqualTo(0)
     expectSyncStatusToBeUnchanged()
   }
@@ -608,12 +608,12 @@ class LogUploadWorkerTest {
     fakeFirestoreEventLogger.setFailure(Exception("Forced failure."))
 
     forceNetworkConnectivityToCellular() // For the job to run.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeFirestoreEventLogger.getEventListCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_firestore_data.")
     assertThat(failureLine).contains("java.lang.Exception: Forced failure.")
@@ -630,12 +630,12 @@ class LogUploadWorkerTest {
     // Run the job with connectivity disabled. This is slightly contrived because technically the
     // job wouldn't start, but it has the rough effect of simulating connectivity being lost after
     // the job kicks off.
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
 
     // Verify that the job failed and an error was logged due to an underlying failure.
     val logCount = fakeFirestoreEventLogger.getEventListCount()
     val failureLine = fetchSingleWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(logCount).isEqualTo(0)
     assertThat(failureLine).contains("Failed operation: upload_firestore_data.")
     assertThat(failureLine).contains("Cannot upload Firestore events without internet connectivity.")

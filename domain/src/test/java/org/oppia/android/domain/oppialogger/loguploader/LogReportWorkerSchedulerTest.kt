@@ -7,14 +7,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.WorkInfo
-import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,7 +61,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operatio
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker.Operation.UPLOAD_PERFORMANCE_METRICS
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
-import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -72,7 +69,6 @@ import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.system.OppiaClock
@@ -131,11 +127,10 @@ class LogReportWorkerSchedulerTest {
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly.
-    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_EVENTS)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, UPLOAD_EVENTS)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -146,11 +141,10 @@ class LogReportWorkerSchedulerTest {
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly.
-    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_EXCEPTIONS)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, UPLOAD_EXCEPTIONS)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -161,11 +155,10 @@ class LogReportWorkerSchedulerTest {
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly.
-    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, UPLOAD_PERFORMANCE_METRICS)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -176,11 +169,10 @@ class LogReportWorkerSchedulerTest {
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly.
-    val id = testDriver.findUniqueId(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, UPLOAD_FIRESTORE_DATA)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -190,10 +182,10 @@ class LogReportWorkerSchedulerTest {
     logOneEventPerType()
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EVENTS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EXCEPTIONS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_PERFORMANCE_METRICS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_FIRESTORE_DATA))
+    forceConstraintsMet(UPLOAD_EVENTS)
+    forceConstraintsMet(UPLOAD_EXCEPTIONS)
+    forceConstraintsMet(UPLOAD_PERFORMANCE_METRICS)
+    forceConstraintsMet(UPLOAD_FIRESTORE_DATA)
     testCoroutineDispatchers.runCurrent()
 
     // All of the jobs should've run and uploading the logged metrics.
@@ -212,10 +204,10 @@ class LogReportWorkerSchedulerTest {
     logOneEventEveryHourIsh()
     logReportWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EVENTS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_EXCEPTIONS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_PERFORMANCE_METRICS))
-    testDriver.forceConstraintsMet(findUniqueId(UPLOAD_FIRESTORE_DATA))
+    forceConstraintsMet(UPLOAD_EVENTS)
+    forceConstraintsMet(UPLOAD_EXCEPTIONS)
+    forceConstraintsMet(UPLOAD_PERFORMANCE_METRICS)
+    forceConstraintsMet(UPLOAD_FIRESTORE_DATA)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.HOURS.toMillis(10))
 
     // There are initially 1 set of events logged per job type, then one every hour. However, the
@@ -227,11 +219,6 @@ class LogReportWorkerSchedulerTest {
     assertThat(fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()).isEqualTo(7)
     assertThat(fakeFirestoreEventLogger.getEventListCount()).isEqualTo(7)
   }
-
-  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
-
-  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID =
-    testDriver.findUniqueId(WORKER_NAME, taskType)
 
   private fun logOneEventPerType() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE) // For offline caching.
@@ -266,6 +253,10 @@ class LogReportWorkerSchedulerTest {
         logOneEventEveryHourIsh()
       }
     }
+  }
+
+  private fun forceConstraintsMet(taskType: LogUploadWorker.Operation) {
+    testDriver.lookUpPeriodicMonitor(WORKER_NAME, taskType).forceConstraintsMet()
   }
 
   private fun createStartupLatencyMetric(startMs: Long): OppiaMetricLog.LoggableMetric {

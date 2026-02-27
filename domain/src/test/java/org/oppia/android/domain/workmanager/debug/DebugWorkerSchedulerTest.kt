@@ -9,14 +9,12 @@ import androidx.work.Configuration
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.NOT_REQUIRED
 import androidx.work.WorkInfo
-import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import org.junit.Before
 import org.junit.Test
@@ -32,7 +30,6 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
-import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY
@@ -55,13 +52,26 @@ import org.robolectric.shadows.ShadowLog
 @Config(application = DebugWorkerSchedulerTest.TestApplication::class)
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class DebugWorkerSchedulerTest {
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var configuration: Configuration
-  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
-  @Inject lateinit var debugWorkerScheduler: DebugWorkerScheduler
-  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var configuration: Configuration
+
+  @Inject
+  lateinit var workManagerScheduler: WorkManagerScheduler
+
+  @Inject
+  lateinit var debugWorkerScheduler: DebugWorkerScheduler
+
+  @Inject
+  lateinit var testDriver: OppiaWorkManagerTestDriver
+
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -87,11 +97,10 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val id = findUniqueId(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(15))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.MINUTES.toMillis(15))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
 
   @Test
@@ -100,11 +109,10 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val id = findUniqueId(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.MINUTES.toMillis(20))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
+    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.MINUTES.toMillis(20))
+    assertThat(monitor.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
@@ -113,20 +121,19 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val id = findUniqueId(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(6))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(NOT_REQUIRED)
+    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
+    assertThat(monitor.requiredNetworkType).isEqualTo(NOT_REQUIRED)
   }
 
   @Test
   fun testScheduleWork_constraintsMet_runsThreeJobs() {
     debugWorkerScheduler.scheduleWork(workManagerScheduler)
 
-    forceConstraintsMet(findUniqueId(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY))
-    forceConstraintsMet(findUniqueId(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY))
-    forceConstraintsMet(findUniqueId(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY))
+    forceConstraintsMet(RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    forceConstraintsMet(RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
+    forceConstraintsMet(RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
     testCoroutineDispatchers.runCurrent()
 
     // Order cannot be easily checked here, so just verify that they ran.
@@ -137,12 +144,9 @@ class DebugWorkerSchedulerTest {
     )
   }
 
-  private fun forceConstraintsMet(id: UUID) = testDriver.forceConstraintsMet(id)
-
-  private fun findUniqueId(taskType: OppiaWorker.TaskType): UUID =
-    testDriver.findUniqueId(DebugWorker.WORKER_NAME, taskType)
-
-  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
+  private fun forceConstraintsMet(taskType: DebugWorker.Operation) {
+    testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, taskType).forceConstraintsMet()
+  }
 
   private fun fetchDebugWorkerDebugLogs(): List<String> {
     // Extract all logs from the bootstrap worker and validate they are each errors before returning
@@ -152,14 +156,14 @@ class DebugWorkerSchedulerTest {
       return@map it.msg
     }
   }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Module
   interface TestModule {
-    @Binds fun bindApplicationContext(application: Application): Context
+    @Binds
+    fun bindApplicationContext(application: Application): Context
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -64,22 +64,21 @@ class DebugWorkerTest {
 
   @Test
   fun testWorker_runEveryFifteenMinsWithConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
-      testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
       .isEqualTo("Debug worker ran with config: RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY.")
   }
 
   @Test
   fun testWorker_runEveryTwentyMinsMinsWithOrWithoutConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
       .isEqualTo("Debug worker ran with config:" +
         " RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY.")
@@ -87,11 +86,11 @@ class DebugWorkerTest {
 
   @Test
   fun testWorker_runEverySixHoursWithOrWithoutConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
       .isEqualTo("Debug worker ran with config: RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY.")
   }

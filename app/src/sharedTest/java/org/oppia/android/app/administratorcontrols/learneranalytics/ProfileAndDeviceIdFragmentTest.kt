@@ -1022,10 +1022,10 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   private fun flushEventWorkerQueue() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, LogUploadWorker.Operation.UPLOAD_EVENTS)
     // Sanity check to make sure the job succeeded.
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
   }
 
   private fun disconnectNetwork() {

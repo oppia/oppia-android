@@ -80,12 +80,12 @@ class PlatformParameterSyncUpWorkerTest {
     initializeDependencies()
     serviceOrchestrator.setNextResponseAsServerError()
 
-    val workInfo = testDriver.runOneOffWork(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
 
     // Verify that running the job succeeds even though it doesn't actually have an effect yet. Note
     // that this is specifically verifiable because the orchestrator setup above should trigger a
     // failure in the job if it actually made an attempt to call through to the server for syncing.
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
   }
 
   private fun initializeDependencies() {

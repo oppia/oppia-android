@@ -6,13 +6,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.WorkInfo
-import androidx.work.impl.model.WorkSpec
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -92,14 +90,11 @@ class PlatformParameterSyncUpWorkerSchedulerTest {
     scheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly and uses the high-frequency time.
-    val id = testDriver.findUniqueId(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
-    val workInfo = testDriver.lookUpWorkInfo(id)
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(lookUpWorkSpec(id)?.intervalDuration).isEqualTo(TimeUnit.HOURS.toMillis(2))
-    assertThat(lookUpWorkSpec(id)?.constraints?.requiredNetworkType).isEqualTo(CONNECTED)
+    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(2))
+    assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
   }
-
-  private fun lookUpWorkSpec(id: UUID): WorkSpec? = testDriver.lookUpWorkSpec(id)
 
   private fun initializeDependencies() {
     testDriver.initializeWorkManager()
