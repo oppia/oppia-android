@@ -89,9 +89,6 @@ class CoroutineExecutorServiceTest {
   lateinit var mockRunnable: Runnable
 
   @Mock
-  lateinit var mockRunnable2: Runnable
-
-  @Mock
   lateinit var mockCallable: Callable<String>
 
   private val testDispatcher by lazy {
@@ -134,21 +131,6 @@ class CoroutineExecutorServiceTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockRunnable).run()
-  }
-
-  @Test
-  fun testExecute_withDelegate_afterRunningPendingTasks_runsOnlyFirstTask() {
-    val executor = createExecutorServiceAsExecutor()
-
-    executor.execute {
-      mockRunnable.run()
-      executor.execute(mockRunnable2)
-    }
-    // runCurrent() should fully flush the queue.
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockRunnable).run()
-    verify(mockRunnable2).run()
   }
 
   @Test

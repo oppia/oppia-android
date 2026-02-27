@@ -13,18 +13,10 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -33,8 +25,11 @@ import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVER
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -42,7 +37,11 @@ import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [DebugWorker]. */
 @RunWith(AndroidJUnit4::class)
@@ -53,7 +52,6 @@ class DebugWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var configuration: Configuration
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -61,39 +59,40 @@ class DebugWorkerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+    testDriver.initializeWorkManager(configuration)
   }
 
   @Test
   fun testWorker_runEveryFifteenMinsWithConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
-      testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
       .isEqualTo("Debug worker ran with config: RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY.")
   }
 
   @Test
   fun testWorker_runEveryTwentyMinsMinsWithOrWithoutConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
-      .isEqualTo("Debug worker ran with config:" +
-        " RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY.")
+      .isEqualTo(
+        "Debug worker ran with config:" +
+          " RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY."
+      )
   }
 
   @Test
   fun testWorker_runEverySixHoursWithOrWithoutConnectivity_oneOff_printsLogAndSucceeds() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(WORKER_NAME, RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
 
     val debugLine = fetchSingleDebugWorkerDebugLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(debugLine)
       .isEqualTo("Debug worker ran with config: RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY.")
   }
@@ -148,7 +147,8 @@ class DebugWorkerTest {
     fun inject(test: DebugWorkerTest)
   }
 
-  class TestApplication : Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+  class TestApplication :
+    Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerDebugWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)

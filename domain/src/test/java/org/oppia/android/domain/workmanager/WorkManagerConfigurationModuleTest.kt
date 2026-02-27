@@ -8,7 +8,6 @@ import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import androidx.work.impl.utils.SerialExecutor
 import androidx.work.impl.utils.taskexecutor.TaskExecutor
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.ListenableFuture
@@ -18,28 +17,27 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import java.util.UUID
-import java.util.concurrent.Executor
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [WorkManagerConfigurationModule]. */
 @RunWith(AndroidJUnit4::class)
@@ -138,7 +136,7 @@ class WorkManagerConfigurationModuleTest {
   }
 
   private fun createWorkerParameters(): WorkerParameters {
-    val taskExecutor = object: TaskExecutor {
+    val taskExecutor = object : TaskExecutor {
       override fun postToMainThread(runnable: Runnable?) = error("Not used.")
       override fun getMainThreadExecutor() = error("Not used.")
       override fun executeOnBackgroundThread(runnable: Runnable?) = error("Not used.")
@@ -192,7 +190,8 @@ class WorkManagerConfigurationModuleTest {
     fun inject(test: WorkManagerConfigurationModuleTest)
   }
 
-  class TestApplication : Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+  class TestApplication :
+    Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerWorkManagerConfigurationModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -208,7 +207,8 @@ class WorkManagerConfigurationModuleTest {
   }
 
   private class RealListenableWorker(
-    appContext: Context, workerParams: WorkerParameters
+    appContext: Context,
+    workerParams: WorkerParameters
   ) : ListenableWorker(appContext, workerParams) {
     override fun startWork(): ListenableFuture<Result> {
       error("Not implemented for test.")

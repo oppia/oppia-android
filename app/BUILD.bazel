@@ -802,7 +802,6 @@ TEST_DEPS = [
     "//third_party:androidx_test_espresso_espresso-intents",
     "//third_party:androidx_test_ext_junit",
     "//third_party:androidx_test_runner",
-    "//third_party:androidx_work_work-testing",
     "//third_party:com_github_bumptech_glide_mocks",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",

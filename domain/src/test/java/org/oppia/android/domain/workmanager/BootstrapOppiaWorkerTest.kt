@@ -5,13 +5,8 @@ import android.content.Context
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.Data
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.ListenableFuture
@@ -22,28 +17,12 @@ import dagger.Component
 import dagger.Module
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import java.util.concurrent.CopyOnWriteArrayList
+import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Provider
-import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
-import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.DELEGATED_WORKER_NAME_INPUT_KEY
-import org.oppia.android.domain.workmanager.BootstrapOppiaWorker.Companion.constructTaskTypeKey
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockAlternatingFailingWorker.TaskType.ALTERNATING_TASK
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockFailingOppiaWorker.TaskType.FAILING_WORKER1_TASK1
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockOppiaWorker1.TaskType.WORKER1_TASK1
@@ -54,8 +33,11 @@ import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockPlatfor
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockSuccessThenFailWorker.TaskType.MAYBE_SUCCEED_TASK
 import org.oppia.android.domain.workmanager.BootstrapOppiaWorkerTest.MockThrowingOppiaWorker.TaskType.FAILING_WORKER2_TASK1
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -65,28 +47,31 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
 /** Tests for [BootstrapOppiaWorker]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = BootstrapOppiaWorkerTest.TestApplication::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class BootstrapOppiaWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  private val workManager: WorkManager get() = oppiaWorkManagerTestInitializer.workManager
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
-    oppiaWorkManagerTestInitializer.initializeWorkManager()
+    testDriver.initializeWorkManager()
 
     // Reset static state between tests.
     workerResults.clear()
@@ -94,10 +79,13 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_oneOff_differentWorkerClass_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<RealListenableWorker>()
+    val monitor =
+      testDriver.runOneOffWork(
+        workerName = null, operation = null, RealListenableWorker::class.java
+      )
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap old or invalid worker class")
     assertThat(errorLogLine).contains("BootstrapOppiaWorkerTest\$RealListenableWorker")
   }
@@ -105,88 +93,94 @@ class BootstrapOppiaWorkerTest {
   @Test
   fun testWorker_oneOff_missingWorkerName_cancelsAndLogsError() {
     // Run BootstrapOppiaWorker with no input data (which means no worker name).
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>()
+    val monitor = testDriver.runOneOffWork(workerName = null, operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap for an invalid worker delegate")
     assertThat(errorLogLine).contains("null (no provider found)")
   }
 
   @Test
   fun testWorker_oneOff_missingTaskTypeKey_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>(newInputData(MockOppiaWorker1.WORKER_NAME))
+    val monitor =
+      testDriver.runOneOffWork(workerName = MockOppiaWorker1.WORKER_NAME, operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
     assertThat(errorLogLine).contains("MockOppiaWorker1: null")
   }
 
   @Test
   fun testWorker_oneOff_invalidWorkerName_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>(newInputData("invalid_worker_name"))
+    val monitor = testDriver.runOneOffWork(workerName = "invalid_worker_name", operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap for an invalid worker delegate")
     assertThat(errorLogLine).contains("invalid_worker_name (no provider found)")
   }
 
   @Test
   fun testWorker_oneOff_invalidTaskType_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>(
-      newInputData(MockOppiaWorker1.WORKER_NAME, taskTypeName = "invalid_task_type_name")
-    )
+    val monitor =
+      testDriver.runOneOffWork(
+        workerName = MockOppiaWorker1.WORKER_NAME,
+        operation = MockOppiaWorker2.TaskType.WORKER2_TASK1
+      )
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
-    assertThat(errorLogLine).contains("MockOppiaWorker1: invalid_task_type_name")
+    assertThat(errorLogLine).contains("MockOppiaWorker1: worker2_task1")
   }
 
   @Test
   fun testWorker_oneOff_worker1_taskType1_succeedsWithNoLoggedErrors() {
-    val workInfo = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
   }
 
   @Test
   fun testWorker_oneOff_worker1_taskType2_succeedsWithNoLoggedErrors() {
-    val workInfo = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
+    val monitor = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task2")
   }
 
   @Test
   fun testWorker_oneOff_worker2_taskType1_succeedsWithNoLoggedErrors() {
-    val workInfo = runOneOffWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
+    val monitor = testDriver.runOneOffWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker2 for task: worker2_task1")
   }
 
   @Test
   fun testWorker_oneOff_failingWorker_failsWithNoLoggedErrors() {
-    val workInfo = runOneOffWork(MockFailingOppiaWorker.WORKER_NAME, FAILING_WORKER1_TASK1)
+    val monitor =
+      testDriver.runOneOffWork(MockFailingOppiaWorker.WORKER_NAME, FAILING_WORKER1_TASK1)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     // A standard job failure shouldn't log bootstrap worker errors.
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
-    assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockFailingOppiaWorker for task: failing_worker1_task1")
+    assertThat(fetchSingleWorkerResult())
+      .isEqualTo("Ran MockFailingOppiaWorker for task: failing_worker1_task1")
   }
 
   @Test
   fun testWorker_oneOff_throwingWorker_failsWithNoLoggedErrors() {
-    val workInfo = runOneOffWork(MockThrowingOppiaWorker.WORKER_NAME, FAILING_WORKER2_TASK1)
+    val monitor =
+      testDriver.runOneOffWork(MockThrowingOppiaWorker.WORKER_NAME, FAILING_WORKER2_TASK1)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.FAILED)
     // A standard job failure shouldn't log bootstrap worker errors.
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Pre-throw in MockThrowingOppiaWorker")
@@ -194,20 +188,21 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_oneOff_workerWithPlatformParameters_canInjectParametersSuccessfully() {
-    val workInfo = runOneOffWork(MockPlatformParamOppiaWorker.WORKER_NAME, FETCH_PLATFORM_PARAMETER)
+    val monitor =
+      testDriver.runOneOffWork(MockPlatformParamOppiaWorker.WORKER_NAME, FETCH_PLATFORM_PARAMETER)
 
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Fetched platform parameter value: 'false'")
   }
 
   @Test
   fun testWorker_oneOff_sameWorkerTwice_sameParameters_bothSucceed() {
-    val workInfo1 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor1 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
-    assertThat(workInfo1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(workInfo2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -217,11 +212,11 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_oneOff_sameWorkerTwice_differentParameters_bothSucceed() {
-    val workInfo1 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
+    val monitor1 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
 
-    assertThat(workInfo1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(workInfo2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -231,11 +226,11 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_oneOff_differentWorkers_sameTime_bothSucceed() {
-    val workInfo1 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runOneOffWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
+    val monitor1 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runOneOffWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
 
-    assertThat(workInfo1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(workInfo2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -245,10 +240,14 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_periodic_differentWorkerClass_cancelsAndLogsError() {
-    val workInfo = enqueuePeriodicWork<RealListenableWorker>()
+    val monitor =
+      testDriver.runPeriodicWork(
+        workerName = null, operation = null, repeatIntervalMins = 15,
+        RealListenableWorker::class.java
+      )
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap old or invalid worker class")
     assertThat(errorLogLine).contains("BootstrapOppiaWorkerTest\$RealListenableWorker")
   }
@@ -256,122 +255,133 @@ class BootstrapOppiaWorkerTest {
   @Test
   fun testWorker_periodic_missingWorkerName_cancelsAndLogsError() {
     // Run BootstrapOppiaWorker with no input data (which means no worker name).
-    val workInfo = enqueuePeriodicWork<BootstrapOppiaWorker>()
+    val monitor = testDriver.runPeriodicWork(workerName = null, operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap for an invalid worker delegate")
     assertThat(errorLogLine).contains("null (no provider found)")
   }
 
   @Test
   fun testWorker_periodic_missingTaskTypeKey_cancelsAndLogsError() {
-    val workInfo = enqueuePeriodicWork<BootstrapOppiaWorker>(newInputData(MockOppiaWorker1.WORKER_NAME))
+    val monitor =
+      testDriver.runPeriodicWork(workerName = MockOppiaWorker1.WORKER_NAME, operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
     assertThat(errorLogLine).contains("MockOppiaWorker1: null")
   }
 
   @Test
   fun testWorker_periodic_invalidWorkerName_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>(newInputData("invalid_worker_name"))
+    val monitor = testDriver.runOneOffWork(workerName = "invalid_worker_name", operation = null)
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Attempting to bootstrap for an invalid worker delegate")
     assertThat(errorLogLine).contains("invalid_worker_name (no provider found)")
   }
 
   @Test
   fun testWorker_periodic_invalidTaskType_cancelsAndLogsError() {
-    val workInfo = enqueueOneOffWork<BootstrapOppiaWorker>(
-      newInputData(MockOppiaWorker1.WORKER_NAME, taskTypeName = "invalid_task_type_name")
-    )
+    val monitor =
+      testDriver.runOneOffWork(
+        workerName = MockOppiaWorker1.WORKER_NAME,
+        operation = MockOppiaWorker2.TaskType.WORKER2_TASK1
+      )
 
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
-    assertThat(errorLogLine).contains("MockOppiaWorker1: invalid_task_type_name")
+    assertThat(errorLogLine).contains("MockOppiaWorker1: worker2_task1")
   }
 
   @Test
   fun testWorker_periodic_worker1_taskType1_succeedsWithNoLoggedErrorsAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
   }
 
   @Test
   fun testWorker_periodic_worker1_taskType2_succeedsWithNoLoggedErrorsAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
+    val monitor = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
 
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task2")
   }
 
   @Test
   fun testWorker_periodic_worker2_taskType1_succeedsWithNoLoggedErrorsAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
+    val monitor = testDriver.runPeriodicWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
 
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker2 for task: worker2_task1")
   }
 
   @Test
   fun testWorker_periodic_failingWorker_failsWithNoLoggedErrorsAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockFailingOppiaWorker.WORKER_NAME, FAILING_WORKER1_TASK1)
+    val monitor =
+      testDriver.runPeriodicWork(MockFailingOppiaWorker.WORKER_NAME, FAILING_WORKER1_TASK1)
 
     // Standard job failures should re-enqueue and result in no bootstrap worker errors.
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
-    assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockFailingOppiaWorker for task: failing_worker1_task1")
+    assertThat(fetchSingleWorkerResult())
+      .isEqualTo("Ran MockFailingOppiaWorker for task: failing_worker1_task1")
   }
 
   @Test
   fun testWorker_periodic_throwingWorker_failsWithNoLoggedErrorsAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockThrowingOppiaWorker.WORKER_NAME, FAILING_WORKER2_TASK1)
+    val monitor =
+      testDriver.runPeriodicWork(MockThrowingOppiaWorker.WORKER_NAME, FAILING_WORKER2_TASK1)
 
     // Standard job failures should re-enqueue and result in no bootstrap worker errors.
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Pre-throw in MockThrowingOppiaWorker")
   }
 
   @Test
   fun testWorker_periodic_workerWithPlatformParameters_canInjectParametersSuccessfully() {
-    val workInfo = runPeriodicWork(MockPlatformParamOppiaWorker.WORKER_NAME, FETCH_PLATFORM_PARAMETER)
+    val monitor =
+      testDriver.runPeriodicWork(MockPlatformParamOppiaWorker.WORKER_NAME, FETCH_PLATFORM_PARAMETER)
 
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Fetched platform parameter value: 'false'")
   }
 
   @Test
   fun testWorker_periodic_sameWorkerTwice_sameParameters_onlyFirstRunsAndIsReEnqueued() {
-    val workInfo1 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor1 = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
     // Since the work name is based on the worker and task type, attempting to schedule the same job
-    // twice will only result in the first one being scheduled.
-    assertThat(workInfo1?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(workInfo2).isNull() // Not scheduled.
+    // twice will only result in the first one being scheduled. Both work infos will actually
+    // represent the same work request (actualId) but will differ in requestedId due to the
+    // redundant schedule.
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor1.isRedundant).isFalse() // Request went through.
+    assertThat(monitor2.isRedundant).isTrue() // Request failed.
+    assertThat(monitor2.id).isEqualTo(monitor1.id) // Both requests are the same.
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockOppiaWorker1 for task: worker1_task1")
   }
 
   @Test
   fun testWorker_periodic_sameWorkerTwice_differentParameters_bothSucceedAndReEnqueue() {
-    val workInfo1 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
+    val monitor1 = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
 
-    assertThat(workInfo1?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(workInfo2?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -381,11 +391,11 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_periodic_differentWorkers_sameTime_bothSucceedAndReEnqueue() {
-    val workInfo1 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
-    val workInfo2 = runPeriodicWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
+    val monitor1 = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor2 = testDriver.runPeriodicWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1)
 
-    assertThat(workInfo1?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(workInfo2?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -395,13 +405,13 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_periodic_waitTwoPeriods_workerRunsThreeTimesAndReEnqueues() {
-    val workInfo = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
+    val monitor = testDriver.runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(35))
 
     // The worker should have run 3 times since it's scheduled to run every 15 minutes and it will
     // run immediately when scheduled since constraints are met.
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1",
@@ -412,13 +422,14 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_periodic_intermittentSuccessesAndThrownErrors_keepsWorkerEnqueued() {
-    val workInfo = runPeriodicWork(MockAlternatingFailingWorker.WORKER_NAME, ALTERNATING_TASK)
+    val monitor =
+      testDriver.runPeriodicWork(MockAlternatingFailingWorker.WORKER_NAME, ALTERNATING_TASK)
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(35))
 
     // The worker should have run 3 times and alternated between successes and failures, but
     // continue to run and be enqueued.
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockAlternatingFailingWorker. Fail this time: false",
@@ -429,7 +440,8 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_periodic_successfulThenIncompatibleWorker_logsErrorAndCancelsJob() {
-    val initialWorkInfo = runPeriodicWork(MockSuccessThenFailWorker.WORKER_NAME, MAYBE_SUCCEED_TASK)
+    val monitor =
+      testDriver.runPeriodicWork(MockSuccessThenFailWorker.WORKER_NAME, MAYBE_SUCCEED_TASK)
 
     // Advance the clock enough for the job to run 4 times.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(55))
@@ -437,9 +449,8 @@ class BootstrapOppiaWorkerTest {
     // The worker should have run twice. The first is a success, but the second simulates a code
     // change where the job may no longer accept the same task type that was previously periodically
     // scheduled. This should result in a hard stop and cancellation of the job, plus logged errors.
-    val workInfo = testDriver.lookUpWorkInfo(initialWorkInfo?.id!!) // Look up the latest status.
     val errorLogLine = fetchSingleBootstrapWorkerErrorLog()
-    assertThat(workInfo?.state).isEqualTo(WorkInfo.State.CANCELLED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.CANCELLED)
     assertThat(errorLogLine).contains("Encountered invalid task type when trying to prepare worker")
     assertThat(errorLogLine).contains("MockSuccessThenFailWorker: maybe_succeed_task")
     assertThat(fetchSingleWorkerResult()).isEqualTo("Ran MockSuccessThenFailWorker")
@@ -447,22 +458,26 @@ class BootstrapOppiaWorkerTest {
 
   @Test
   fun testWorker_multiplePeriodicAndOneOffWorkers_differentRates_allRunInOrderWithNoErrors() {
-    val initialInfo1 = runPeriodicWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1, repeatMins = 15)
-    val info2 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
-    val initialInfo3 = runPeriodicWork(MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1, repeatMins = 31)
+    val monitor1 =
+      testDriver.runPeriodicWork(
+        MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1, repeatIntervalMins = 15
+      )
+    val monitor2 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK2)
+    val monitor3 =
+      testDriver.runPeriodicWork(
+        MockOppiaWorker2.WORKER_NAME, WORKER2_TASK1, repeatIntervalMins = 31
+      )
     // Advance the clock enough to run job 1 three times and job 2 twice.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(35))
-    val info4 = runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK3)
+    val monitor4 = testDriver.runOneOffWork(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK3)
 
     // Advance enough for job 1 to run once more.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(12))
 
-    val info1 = testDriver.lookUpWorkInfo(initialInfo1?.id!!) // Look up the latest status.
-    val info3 = testDriver.lookUpWorkInfo(initialInfo3?.id!!) // Look up the latest status.
-    assertThat(info1?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(info2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(info3?.state).isEqualTo(WorkInfo.State.ENQUEUED)
-    assertThat(info4.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor1.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor2.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor3.state).isEqualTo(WorkInfo.State.ENQUEUED)
+    assertThat(monitor4.state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fetchBootstrapWorkerErrorLogs()).isEmpty()
     assertThat(workerResults).containsExactly(
       "Ran MockOppiaWorker1 for task: worker1_task1", // Repeat worker 1 run 1.
@@ -474,72 +489,6 @@ class BootstrapOppiaWorkerTest {
       "Ran MockOppiaWorker1 for task: worker1_task3", // One-off worker 2.
       "Ran MockOppiaWorker1 for task: worker1_task1", // Repeat worker 1 run 4.
     ).inOrder()
-  }
-
-  private fun <T: OppiaWorker.TaskType> runOneOffWork(workerName: String, taskType: T): WorkInfo {
-    return enqueueOneOffWork<BootstrapOppiaWorker>(
-      newInputData(workerName, taskTypeName = taskType.persistentName)
-    )
-  }
-
-  private fun <T: OppiaWorker.TaskType> runPeriodicWork(
-    workerName: String, taskType: T, repeatMins: Long = 15
-  ): WorkInfo? {
-    return enqueuePeriodicWork<BootstrapOppiaWorker>(
-      newInputData(workerName, taskType.persistentName), repeatMins
-    )
-  }
-
-  private inline fun <reified T: ListenableWorker> enqueueOneOffWork(
-    inputData: Data = Data.Builder().build()
-  ): WorkInfo {
-    val id = runInBackground {
-      OneTimeWorkRequest.Builder(T::class.java)
-        .setInputData(inputData)
-        .build()
-        .also(workManager::enqueue)
-        .id
-    }
-    return checkNotNull(testDriver.lookUpWorkInfo(id)) { "Expected one-off job to run." }
-  }
-
-  private inline fun <reified T: ListenableWorker> enqueuePeriodicWork(
-    inputData: Data = Data.Builder().build(),
-    repeatIntervalMins: Long = 15
-  ): WorkInfo? {
-    val id = runInBackground {
-      PeriodicWorkRequest.Builder(T::class.java, repeatIntervalMins, TimeUnit.MINUTES)
-        .setInputData(inputData)
-        .build().also {
-          val workName = computeWorkNameFromInputData(inputData)
-          workManager.enqueueUniquePeriodicWork(workName, ExistingPeriodicWorkPolicy.KEEP, it)
-        }.id
-    }
-    return testDriver.lookUpWorkInfo(id)
-  }
-
-  private fun newInputData(workerName: String): Data {
-    return Data.Builder().putString(DELEGATED_WORKER_NAME_INPUT_KEY, workerName).build()
-  }
-
-  private fun newInputData(workerName: String, taskTypeName: String): Data {
-    return Data.Builder()
-      .putString(DELEGATED_WORKER_NAME_INPUT_KEY, workerName)
-      .putString(constructTaskTypeKey(workerName), taskTypeName)
-      .build()
-  }
-
-  private fun computeWorkNameFromInputData(inputData: Data): String {
-    val workerName = inputData.getString(DELEGATED_WORKER_NAME_INPUT_KEY)
-    val taskTypeName = workerName?.let { inputData.getString(constructTaskTypeKey(workerName)) }
-    return "$workerName.$taskTypeName"
-  }
-
-  private fun <T> runInBackground(func: suspend () -> T): T {
-    val resultDeferred = CoroutineScope(backgroundDispatcher).async { func() }
-    testCoroutineDispatchers.runCurrent()
-    assertThat(resultDeferred.isCompleted).isTrue()
-    return resultDeferred.getCompleted()
   }
 
   private fun fetchBootstrapWorkerErrorLogs(): List<String> {
@@ -651,7 +600,8 @@ class BootstrapOppiaWorkerTest {
     fun inject(test: BootstrapOppiaWorkerTest)
   }
 
-  class TestApplication : Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+  class TestApplication :
+    Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerBootstrapOppiaWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -743,7 +693,8 @@ class BootstrapOppiaWorkerTest {
     }
   }
 
-  class MockFailingOppiaWorker private constructor() : OppiaWorker<MockFailingOppiaWorker.TaskType> {
+  class MockFailingOppiaWorker private constructor() :
+    OppiaWorker<MockFailingOppiaWorker.TaskType> {
     enum class TaskType(override val persistentName: String) : OppiaWorker.TaskType {
       FAILING_WORKER1_TASK1("failing_worker1_task1")
     }
@@ -766,7 +717,8 @@ class BootstrapOppiaWorkerTest {
     }
   }
 
-  class MockThrowingOppiaWorker private constructor() : OppiaWorker<MockThrowingOppiaWorker.TaskType> {
+  class MockThrowingOppiaWorker private constructor() :
+    OppiaWorker<MockThrowingOppiaWorker.TaskType> {
     enum class TaskType(override val persistentName: String) : OppiaWorker.TaskType {
       FAILING_WORKER2_TASK1("failing_worker2_task1")
     }
@@ -789,7 +741,8 @@ class BootstrapOppiaWorkerTest {
     }
   }
 
-  class MockAlternatingFailingWorker private constructor() : OppiaWorker<MockAlternatingFailingWorker.TaskType> {
+  class MockAlternatingFailingWorker private constructor() :
+    OppiaWorker<MockAlternatingFailingWorker.TaskType> {
     enum class TaskType(override val persistentName: String) : OppiaWorker.TaskType {
       ALTERNATING_TASK("alternating_tasks")
     }
@@ -817,7 +770,8 @@ class BootstrapOppiaWorkerTest {
     }
   }
 
-  class MockSuccessThenFailWorker private constructor() : OppiaWorker<MockSuccessThenFailWorker.TaskType> {
+  class MockSuccessThenFailWorker private constructor() :
+    OppiaWorker<MockSuccessThenFailWorker.TaskType> {
     enum class TaskType(override val persistentName: String) : OppiaWorker.TaskType {
       MAYBE_SUCCEED_TASK("maybe_succeed_task")
     }
@@ -851,7 +805,8 @@ class BootstrapOppiaWorkerTest {
   }
 
   private class RealListenableWorker(
-    appContext: Context, workerParams: WorkerParameters
+    appContext: Context,
+    workerParams: WorkerParameters
   ) : ListenableWorker(appContext, workerParams) {
     override fun startWork(): ListenableFuture<Result> {
       error("Not implemented for test.")

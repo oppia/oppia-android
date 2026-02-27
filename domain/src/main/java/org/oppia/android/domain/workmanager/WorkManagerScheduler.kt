@@ -68,7 +68,7 @@ class WorkManagerScheduler @Inject constructor(context: Context) {
     }.build()
     // Note that UPDATE is used here so that new app versions or platform parameter configurations
     // can update the constraints and timed period of jobs.
-    // TODO: File issue to use UPDATE here instead of KEEP (need 2.9.0).
+    // TODO(#6115): Use UPDATE here rather than KEEP.
     workManager.enqueueUniquePeriodicWork(workName, ExistingPeriodicWorkPolicy.KEEP, request)
   }
 

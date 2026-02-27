@@ -96,6 +96,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -136,8 +137,6 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestInitializer
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -164,7 +163,6 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @Inject lateinit var configuration: Configuration
-  @Inject lateinit var oppiaWorkManagerTestInitializer: OppiaWorkManagerTestInitializer
   @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
 
   private val clipboardManager by lazy {
@@ -180,7 +178,7 @@ class ProfileAndDeviceIdFragmentTest {
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-    oppiaWorkManagerTestInitializer.initializeWorkManager(configuration)
+    testDriver.initializeWorkManager(configuration)
   }
 
   @After
@@ -1025,10 +1023,10 @@ class ProfileAndDeviceIdFragmentTest {
   }
 
   private fun flushEventWorkerQueue() {
-    val workInfo =
+    val monitor =
       testDriver.runOneOffWork(LogUploadWorker.WORKER_NAME, LogUploadWorker.Operation.UPLOAD_EVENTS)
     // Sanity check to make sure the job succeeded.
-    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
   }
 
   private fun disconnectNetwork() {

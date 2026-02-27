@@ -70,7 +70,7 @@ class FakeFirestoreEventLoggerTest {
     fakeEventLogger.setFailure(Exception("Forced failure."))
 
     assertThrows<Exception> { eventLogger.uploadEvent(eventLog1) }
-    val exception2 = assertThrows<Exception> { eventLogger.uploadEvent(eventLog2)}
+    val exception2 = assertThrows<Exception> { eventLogger.uploadEvent(eventLog2) }
 
     assertThat(exception2).hasMessageThat().isEqualTo("Forced failure.")
   }
