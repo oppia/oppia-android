@@ -56,23 +56,12 @@ class ContinueInteractionViewModel private constructor(
   }
 
   private fun deriveButtonText(interaction: Interaction): CharSequence {
-    // The subtitled unicode can apparently exist in the structure in two different formats.
-    val buttonTextUnicodeOption1 =
-      interaction.customizationArgsMap["buttonText"]?.subtitledUnicode
-    val buttonTextUnicodeOption2 =
-      interaction.customizationArgsMap["buttonText"]?.customSchemaValue?.subtitledUnicode
-    val buttonText1 =
-      buttonTextUnicodeOption1?.let { unicode ->
+    val buttonText =
+      interaction.customizationArgsMap["buttonText"]?.subtitledUnicode?.let { unicode ->
         translationController.extractString(unicode, writtenTranslationContext)
       } ?: ""
-    val buttonText2 =
-      buttonTextUnicodeOption2?.let { unicode ->
-        translationController.extractString(unicode, writtenTranslationContext)
-      } ?: ""
-    return when {
-      buttonText1.isNotEmpty() -> buttonText1
-      buttonText2.isNotEmpty() -> buttonText2
-      else -> resourceHandler.getStringInLocale(
+    return buttonText.ifEmpty {
+      resourceHandler.getStringInLocale(
         org.oppia.android.app.R.string.state_continue_button
       )
     }

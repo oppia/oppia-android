@@ -970,11 +970,9 @@ states {
       customization_args {
         key: "buttonText"
         value {
-          custom_schema_value {
-            subtitled_unicode {
-              unicode_str: "Start exploring"
-              content_id: "ca_buttonText_0"
-            }
+          subtitled_unicode {
+            unicode_str: "Start exploring"
+            content_id: "ca_buttonText_0"
           }
         }
       }
