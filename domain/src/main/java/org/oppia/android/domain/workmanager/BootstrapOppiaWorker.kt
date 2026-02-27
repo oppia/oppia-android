@@ -18,8 +18,6 @@ import org.oppia.android.util.threading.DispatcherInjectorProvider
 import javax.inject.Inject
 import javax.inject.Provider
 
-// TODO: Mention that the private constructor is intentional to prevent WM from trying to construct the class.
-// TODO: Mention that the strategy for periodic jobs should be just to reschedule since this aggressively cancels them when renamed or changed.
 /**
  * The root and only [ListenableWorker] that the app uses for all [WorkManager]-manged work.
  *
@@ -31,12 +29,22 @@ import javax.inject.Provider
  * - [OppiaWorker] must be properly implemented as a new class with a app-unique worker name.
  * - The [OppiaWorker]'s [OppiaWorker.Factory] must be bound to the worker name.
  *
- * At that point, the worker can be scheduled. An optional worker-specific scheduler can be created
- * as well by implementing [StartupWorkerScheduleReadinessListener] and set-binding it.
+ * At that point, the worker can be scheduled using [WorkManagerScheduler]. An optional
+ * worker-specific schedule-time callback listener can be created as well by implementing
+ * [StartupWorkerScheduleReadinessListener] and set-binding it.
  *
  * There is a special debug worker setup that can be referenced to see how, exactly, to set up a new
  * [OppiaWorker], its scheduler, its module, and its tests. This is a fully functioning,
  * developer-available implementation of the [OppiaWorker] infrastructure.
+ *
+ * One implementation detail: this worker has a private constructor intentionally to prevent
+ * [WorkManager] from trying to directly construct it (which it will do in some circumstances). That
+ * failure will encourage the corresponding job to be cancelled.
+ *
+ * Implementers of [OppiaWorker] should generally err on the side of rescheduling periodic jobs that
+ * may get into a bad state since this worker is designed to aggressively self-cancel itself if it
+ * encounters an unexpected situation (such as an invalid [OppiaWorker.TaskType] which is expected
+ * if a worker's supported task types change).
  */
 class BootstrapOppiaWorker private constructor(
   private val appContext: Context,

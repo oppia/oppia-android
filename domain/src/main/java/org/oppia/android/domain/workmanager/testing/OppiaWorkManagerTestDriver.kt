@@ -44,9 +44,6 @@ import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MI
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.shadows.ShadowLog
 
-// TODO: Ban TestDriver interactions?
-// TODO: Ban WorkManager.getInstance and WorkManagerTestInitHelper interactions.
-// TODO: Just ban WorkManager entirely? Probably best way to go...
 /**
  * A general-purpose, all-in-one test utility when interacting with [WorkManager] in Oppia tests.
  *
@@ -118,7 +115,8 @@ class OppiaWorkManagerTestDriver @Inject constructor(
   ) {
     check(!this::workManager.isInitialized) { "Cannot initialize WorkManager more than once." }
     val config = configurationOverride ?: createTestOnlyConfiguration()
-    // TODO: Use USE_TIME_BASED_SCHEDULING here & set Configuration clock to sync with FakeOppiaClock.getCurrentTimeMs.
+    // TODO(#6115): Use USE_TIME_BASED_SCHEDULING and update Configuration below to sync with
+    //  FakeOppiaClock.getCurrentTimeMs to make TestJobSchedulerMixin redundant.
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
     workManager = WorkManager.getInstance(context)
     mixin.startWatchingForWorkers()
@@ -230,7 +228,7 @@ class OppiaWorkManagerTestDriver @Inject constructor(
   private fun lookUpMonitor(requestedId: UUID, actualId: UUID = requestedId): WorkerMonitor {
     // Use the requested ID so that a new implementation is created for periodic requests that may
     // actually be redundant.
-    return memoizedMonitors.computeIfAbsent(requestedId) {
+    return memoizedMonitors.getOrPut(requestedId) {
       // Initialize properties that shouldn't change without a new job being scheduled.
       val workInfo = runInBackground { lookUpLatestWorkInfoInBackground(actualId) }
       val workSpec = lookUpWorkSpec(actualId)
@@ -380,7 +378,8 @@ class OppiaWorkManagerTestDriver @Inject constructor(
     }
   }
 
-  // TODO: Add issue to remove.
+  // TODO(#6115): Remove this utility (see the note in initializeWorkManager above for how the
+  //  configuration must change in order for this utility to become obsolete.
   /**
    * Custom mixin to bridge the gap with older [WorkManager] test libraries to emulate periodic jobs
    * by scheduling requests to re-run them at their periodic intervals using background dispatchers

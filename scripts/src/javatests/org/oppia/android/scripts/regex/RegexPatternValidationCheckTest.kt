@@ -24,8 +24,6 @@ class RegexPatternValidationCheckTest {
       "aren't supported by the project configuration)."
   private val supportLibraryUsageErrorMessage =
     "AndroidX should be used instead of the support library"
-  private val coroutineWorkerUsageErrorMessage =
-    "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   private val announceForAccessibilityUsageErrorMessage =
     "Please use AccessibilityService instead."
   private val announceForAccessibilityForViewUsageErrorMessage =
@@ -179,13 +177,27 @@ class RegexPatternValidationCheckTest {
   private val doesNotReferenceColorFromComponentColorInKotlinFiles =
     "Only colors from component_colors.xml may be used in Kotlin Files (Activities, Fragments, " +
       "Views and Presenters)."
-  private val doNotUseWorkManagerGetInstance =
-    "Generally WorkManager never needs to be retrieved directly. Use WorkManagerScheduler to" +
-      " schedule new work."
+  private val coroutineWorkerUsageErrorMessage =
+    "Never use implement a CoroutineWorker directly. Instead, create a new OppiaWorker and rely " +
+      "on BootstrapOppiaWorker for direct interaction with WorkManager. See the WorkManager wiki " +
+      "page for more."
   private val doNotUseListenableWorker =
-    "Never use ListenableWorker directly. Instead, create a new OppiaWorker and rely on" +
-      " BootstrapOppiaWorker for direct interaction with WorkManager. See WorkManager wiki page" +
-      " for more."
+    "Never use implement a ListenableWorker directly. Instead, create a new OppiaWorker and rely " +
+      "on BootstrapOppiaWorker for direct interaction with WorkManager. See the WorkManager wiki " +
+      "page for more."
+  private val doNotUseWorkManagerTestDriver =
+    "Never use WorkManager's TestDriver directly. Instead, use OppiaWorkManagerTestDriver. See " +
+      "the WorkManager wiki page for more."
+  private val doNotUseWorkManagerGetTestDriver =
+    "Never use WorkManager's TestDriver directly. Instead, use OppiaWorkManagerTestDriver. See " +
+      "the WorkManager wiki page for more."
+  private val doNotUseWorkManagerTestInitHelper =
+    "Never use WorkManagerTestInitHelper directly. Instead, use OppiaWorkManagerTestDriver. See " +
+      "the WorkManager wiki page for more."
+  private val doNotUseWorkManager =
+    "Never use WorkManager directly. For production code use OppiaWorker and " +
+      "WorkManagerScheduler. For tests use OppiaWorkManagerTestDriver. See the WorkManager wiki " +
+      "page for more."
   private val doesNotUsePostOrPostDelayed =
     "Prefer avoiding post() and postDelayed() methods as they can can lead to subtle and " +
       "difficult-to-debug crashes. Prefer using LifecycleSafeTimerFactory for most cases when " +
@@ -354,24 +366,6 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         TestFile.kt:1: $supportLibraryUsageErrorMessage
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
-  fun testFileContent_coroutineWorker_fileContentIsNotCorrect() {
-    val prohibitedContent = ") : CoroutineWorker(context, params) {"
-    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
-    fileContainsSupportLibraryImport.writeText(prohibitedContent)
-
-    val exception = assertThrows<Exception>() { runScript() }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        TestFile.kt:1: $coroutineWorkerUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2394,23 +2388,18 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_referenceWorkManagerGetInstance_fileContentIsNotCorrect() {
-    val prohibitedContent =
-      """
-        val workManager = WorkManager.getInstance(context)
-      """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
-    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+  fun testFileContent_coroutineWorker_fileContentIsNotCorrect() {
+    val prohibitedContent = ") : CoroutineWorker(context, params) {"
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception> { runScript() }
+    val exception = assertThrows<Exception>() { runScript() }
 
-    // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $doNotUseWorkManagerGetInstance
+        TestFile.kt:1: $coroutineWorkerUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2435,6 +2424,98 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doNotUseListenableWorker
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referenceTestDriver_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        import androidx.work.testing.TestDriver
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception> { runScript() }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseWorkManagerTestDriver
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referenceGetTestDriver_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        WorkManagerTestInitHelper.getTestDriver(context)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception> { runScript() }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseWorkManagerGetTestDriver
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referenceWorkManagerTestInitHelper_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        import androidx.work.testing.WorkManagerTestInitHelper
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception> { runScript() }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseWorkManagerTestInitHelper
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_referenceWorkManager_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        import androidx.work.WorkManager
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception> { runScript() }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseWorkManager
         $wikiReferenceNote
         """.trimIndent()
       )

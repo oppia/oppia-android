@@ -206,7 +206,8 @@ class WorkManagerSchedulerTest {
     )
     val monitor2 = testDriver.lookUpPeriodicMonitor(MockOppiaWorker1.WORKER_NAME, WORKER1_TASK1)
 
-    // TODO: Update this to check for CONNECTED instead once UPDATE is used.
+    // TODO(#6115): Update this to check for CONNECTED rather than NOT_REQUIRED once the scheduler
+    //  can use UPDATE as its replacement policy.
     // Because the scheduler uses ExistingPeriodicWorkPolicy.KEEP the existing worker should not
     // be canceled, its UUID should remain unchanged, and its constraints should be the same.
     assertThat(monitor1.id).isEqualTo(monitor2.id)
