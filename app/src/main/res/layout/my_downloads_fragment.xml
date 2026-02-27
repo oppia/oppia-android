@@ -10,6 +10,7 @@
       android:id="@+id/my_downloads_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:fitsSystemWindows="true"
       android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
       app:layout_constraintBottom_toTopOf="@+id/my_downloads_tabs_viewpager_container"
       app:layout_constraintEnd_toEndOf="parent"

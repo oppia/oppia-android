@@ -15,17 +15,24 @@
     android:layout_height="match_parent"
     android:background="@color/component_color_shared_screen_secondary_background_color">
 
-    <androidx.appcompat.widget.Toolbar
-      android:id="@+id/concept_card_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/concept_card_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/component_color_concept_card_fragment_toolbar_color"
+      android:fitsSystemWindows="true"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:title="@string/concept_card_toolbar_title"
-      app:titleTextAppearance="@style/ToolbarTextAppearance"
-      app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color" />
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/concept_card_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/component_color_concept_card_fragment_toolbar_color"
+        app:title="@string/concept_card_toolbar_title"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
       android:layout_width="0dp"
@@ -33,7 +40,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar">
+      app:layout_constraintTop_toBottomOf="@+id/concept_card_app_bar_layout">
 
       <ScrollView
         android:layout_width="match_parent"
