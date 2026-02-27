@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.ConceptCardFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -30,7 +30,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.CustomOppiaTagActionListener {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /**
    * Sets up data binding and toolbar.
@@ -40,7 +40,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     skillId: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View? {
     this.profileId = profileId
     val binding = ConceptCardFragmentBinding.inflate(

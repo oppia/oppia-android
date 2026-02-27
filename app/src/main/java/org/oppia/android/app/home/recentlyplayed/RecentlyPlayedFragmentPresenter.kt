@@ -16,7 +16,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
@@ -43,7 +43,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var binding: RecentlyPlayedFragmentBinding
 
   fun handleCreateView(
@@ -51,7 +51,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     val recentlyPlayedViewModel = recentlyPlayedViewModelFactory.create(
       fragment as PromotedStoryClickListener,
       this.profileId

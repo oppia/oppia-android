@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.databinding.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.app.databinding.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToRevisionCardListener
@@ -26,7 +26,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
   private var subtopicListSize: Int? = null
@@ -34,7 +34,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ): View? {
     this.profileId = profileId

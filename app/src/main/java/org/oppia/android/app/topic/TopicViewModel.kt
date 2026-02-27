@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -26,7 +26,7 @@ class TopicViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
@@ -84,7 +84,7 @@ class TopicViewModel @Inject constructor(
     }
   }
 
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

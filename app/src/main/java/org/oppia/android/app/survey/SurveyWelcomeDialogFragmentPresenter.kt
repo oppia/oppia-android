@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -36,7 +36,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     explorationId: String,
     questionNames: List<SurveyQuestionName>,
@@ -63,7 +63,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   }
 
   private fun startSurveySession(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     questions: List<SurveyQuestionName>
   ) {
@@ -99,7 +99,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private fun logSurveyPopUpShownEvent(
     explorationId: String,
     topicId: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ) {
     analyticsController.logImportantEvent(
       oppiaLogger.createShowSurveyPopupContext(

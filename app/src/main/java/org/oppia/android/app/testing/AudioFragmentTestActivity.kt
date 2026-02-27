@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -39,7 +39,8 @@ class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity(), Au
 
   companion object {
     fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId =
+        internalProfileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)

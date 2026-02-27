@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
@@ -79,7 +79,7 @@ class RevisionCardActivity :
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       topicId: String,
       subtopicId: Int,
       subtopicListSize: Int
@@ -98,7 +98,7 @@ class RevisionCardActivity :
   }
 
   override fun routeToRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int

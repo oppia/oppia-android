@@ -12,7 +12,7 @@ import org.oppia.android.app.databinding.databinding.WalkthroughTopicHeaderViewB
 import org.oppia.android.app.databinding.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.android.app.databinding.databinding.WalkthroughTopicSummaryViewBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
@@ -35,7 +35,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId =
+      activity.intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
     viewModel.initialize(profileId)
     binding =
       WalkthroughTopicListFragmentBinding.inflate(

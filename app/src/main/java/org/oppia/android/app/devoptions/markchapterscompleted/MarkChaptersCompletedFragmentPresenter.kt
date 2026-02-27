@@ -12,7 +12,7 @@ import org.oppia.android.app.databinding.databinding.MarkChaptersCompletedChapte
 import org.oppia.android.app.databinding.databinding.MarkChaptersCompletedFragmentBinding
 import org.oppia.android.app.databinding.databinding.MarkChaptersCompletedStorySummaryViewBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -32,7 +32,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<MarkChaptersCompletedItemViewModel>
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var alertDialog: AlertDialog
   private val selectedExplorationIds = mutableListOf<String>()
   private val selectedExplorationTitles = mutableListOf<String>()
@@ -68,7 +68,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     this.selectedExplorationIds += selectedExplorationIds
     this.selectedExplorationTitles += selectedExplorationTitles
 
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
