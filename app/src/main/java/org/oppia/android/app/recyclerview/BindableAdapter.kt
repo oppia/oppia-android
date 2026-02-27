@@ -3,6 +3,7 @@ package org.oppia.android.app.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -161,6 +162,12 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(inflatedView) {
           override fun bind(data: T) {
             bindView(inflatedView, data)
+            // Force immediate binding execution after bindView completes. Some views registered
+            // via registerViewBinder use data binding internally (e.g. via DataBindingUtil) and
+            // set properties like htmlContent that are deferred by the binding framework. Without
+            // this call, RecyclerView may briefly display stale content from a recycled view
+            // before the binding framework flushes updates on the next frame. See: #5935.
+            DataBindingUtil.findBinding<ViewDataBinding>(inflatedView)?.executePendingBindings()
           }
         }
       }
@@ -280,6 +287,12 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(inflatedView) {
           override fun bind(data: T) {
             bindView(inflatedView, data)
+            // Force immediate binding execution after bindView completes. Some views registered
+            // via registerViewBinder use data binding internally (e.g. via DataBindingUtil) and
+            // set properties like htmlContent that are deferred by the binding framework. Without
+            // this call, RecyclerView may briefly display stale content from a recycled view
+            // before the binding framework flushes updates on the next frame. See: #5935.
+            DataBindingUtil.findBinding<ViewDataBinding>(inflatedView)?.executePendingBindings()
           }
         }
       }

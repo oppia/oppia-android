@@ -5942,6 +5942,60 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_moveFromState2ToState3_submittedAnswerShowsState3Answer() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // State 2: submit "1/2" (fraction answer).
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+      clickContinueNavigationButton()
+
+      // State 3: RecyclerView recycles State 2's submitted answer view.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Regression test for #5935: submitted answer must show State 3's answer, not "1/2" from
+      // State 2's recycled view.
+      scrollToViewType(SUBMITTED_ANSWER)
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitFractionAnswerInState2_moveToState3_feedbackShowsState3Feedback() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // State 2: submit "1/2" and verify feedback is shown.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      clickContinueNavigationButton()
+
+      // State 3: RecyclerView recycles State 2's feedback view.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Regression test for #5935: feedback must be visible and correspond to State 3, not carry
+      // over stale content from State 2's recycled feedback view.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
