@@ -33,8 +33,8 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -579,7 +579,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = ProfileId.getDefaultInstance()
+    val rootProfileId = LegacyProfileId.getDefaultInstance()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",

@@ -79,7 +79,7 @@ message SpotlightStateDatabase {
 The new spotlight feature also needs to be added to the [SpotlightStateController](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L3). In the [retrieveSpotlightViewState](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L80) and the [recordSpotlightStateAsync](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/domain/src/main/java/org/oppia/android/domain/spotlight/SpotlightStateController.kt#L110) methods, add the feature to the switch case as so:
 ```kotlin
 fun retrieveSpotlightViewState(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     feature: Spotlight.FeatureCase,
   ): DataProvider<SpotlightViewState> {
     return retrieveCacheStore(profileId)
@@ -137,7 +137,7 @@ In order to bypass a spotlight without any UI interaction, the ``SpotlightStateC
 	
 ```kotlin
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)  
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB) 
     spotlightStateController.markSpotlightViewed(profileId, YOUR_FEATURE_NAME)

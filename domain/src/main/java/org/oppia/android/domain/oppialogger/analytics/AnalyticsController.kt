@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
@@ -98,7 +98,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logImportantEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long = oppiaClock.getCurrentTimeMs()
   ) {
     logEvent(eventContext, profileId, priority = Priority.ESSENTIAL, timestamp)
@@ -119,7 +119,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logLowPriorityEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long = oppiaClock.getCurrentTimeMs()
   ) {
     logEvent(eventContext, profileId, priority = Priority.OPTIONAL, timestamp)
@@ -127,7 +127,7 @@ class AnalyticsController @Inject constructor(
 
   private fun logEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     priority: Priority,
     timestamp: Long
   ) {
@@ -146,7 +146,7 @@ class AnalyticsController @Inject constructor(
 
   /** Returns an event log containing relevant data for event reporting. */
   private suspend fun createEventLog(
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long,
     context: EventLog.Context,
     priority: Priority
@@ -376,24 +376,24 @@ class AnalyticsController @Inject constructor(
     }
   }
 
-  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId]. */
-  fun logAppOnboardedEvent(profileId: ProfileId?) {
+  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logAppOnboardedEvent(profileId: LegacyProfileId?) {
     logLowPriorityEvent(
       oppiaLogger.createAppOnBoardingContext(),
       profileId = profileId
     )
   }
 
-  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
-  fun logProfileOnboardingStartedContext(profileId: ProfileId) {
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logProfileOnboardingStartedContext(profileId: LegacyProfileId) {
     logLowPriorityEvent(
       oppiaLogger.createProfileOnboardingStartedContext(profileId),
       profileId = profileId
     )
   }
 
-  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
-  fun logProfileOnboardingEndedContext(profileId: ProfileId) {
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logProfileOnboardingEndedContext(profileId: LegacyProfileId) {
     logLowPriorityEvent(
       oppiaLogger.createProfileOnboardingEndedContext(profileId),
       profileId = profileId
@@ -402,8 +402,8 @@ class AnalyticsController @Inject constructor(
 
   private companion object {
     private suspend fun <T> resolveProfileOperation(
-      profileId: ProfileId?,
-      createProvider: (ProfileId) -> DataProvider<T>
+      profileId: LegacyProfileId?,
+      createProvider: (LegacyProfileId) -> DataProvider<T>
     ): T? = profileId?.let { (createProvider(it).retrieveData() as? AsyncResult.Success<T>)?.value }
   }
 }

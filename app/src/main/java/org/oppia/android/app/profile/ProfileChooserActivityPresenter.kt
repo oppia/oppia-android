@@ -3,9 +3,9 @@ package org.oppia.android.app.profile
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -27,7 +27,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   /** Adds [ProfileChooserFragment] to view. */
-  fun handleOnCreate(profileId: ProfileId, parentScreen: ParentScreen) {
+  fun handleOnCreate(profileId: LegacyProfileId, parentScreen: ParentScreen) {
     if (!enableOnboardingFlowV2.value) {
       // In the legacy flow, the default admin account is created here.
       profileManagementController.addProfile(

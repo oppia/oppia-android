@@ -32,7 +32,7 @@ message DeviceSettings{
 // Structure for a single profile.
 message Profile {
   // Unique ID given to each profile.
-  ProfileId id = 1;
+  LegacyProfileId id = 1;
 
   // Name of the user.
   string name = 2;
@@ -128,7 +128,7 @@ message ProfileAvatar {
 }
 
 // Opaque data structure to pass ID.
-message ProfileId {
+message LegacyProfileId {
   /**
    * Unique ID used to identify a single profile.
    * Should not be used directory outside of the profile system.

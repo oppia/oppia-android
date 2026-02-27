@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.StateFragmentTestActivityBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
@@ -87,7 +87,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(profileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(profileId).build(),
       explorationId
     )
     stopExploration(isCompletion)

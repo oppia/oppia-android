@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
      * @return [ExitSurveyConfirmationDialogFragment]: DialogFragment
      */
     fun newInstance(
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): ExitSurveyConfirmationDialogFragment {
       return ExitSurveyConfirmationDialogFragment().apply {
         arguments = Bundle().apply {

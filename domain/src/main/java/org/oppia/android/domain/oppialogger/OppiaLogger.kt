@@ -2,7 +2,7 @@ package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -263,7 +263,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   }
 
   /** Returns the context of the event indicating that a profile started onboarding. */
-  fun createProfileOnboardingStartedContext(profileId: ProfileId): EventLog.Context {
+  fun createProfileOnboardingStartedContext(profileId: LegacyProfileId): EventLog.Context {
     return EventLog.Context.newBuilder().setStartProfileOnboardingEvent(
       EventLog.ProfileOnboardingContext.newBuilder()
         .setProfileId(profileId)
@@ -272,7 +272,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   }
 
   /** Returns the context of the event indicating that a profile completed onboarding. */
-  fun createProfileOnboardingEndedContext(profileId: ProfileId): EventLog.Context {
+  fun createProfileOnboardingEndedContext(profileId: LegacyProfileId): EventLog.Context {
     return EventLog.Context.newBuilder().setEndProfileOnboardingEvent(
       EventLog.ProfileOnboardingContext.newBuilder()
         .setProfileId(profileId)

@@ -13,7 +13,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -46,7 +46,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
   private lateinit var binding: ResumeLessonFragmentBinding
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -69,7 +69,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -188,7 +188,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

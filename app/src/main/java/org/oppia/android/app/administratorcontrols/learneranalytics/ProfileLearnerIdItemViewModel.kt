@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.clipboard.ClipboardController
@@ -180,9 +180,9 @@ class ProfileLearnerIdItemViewModel private constructor(
        */
       fun createFrom(
         resourceHandler: AppLanguageResourceHandler,
-        profileId: ProfileId?,
-        logsToUploadMap: Map<ProfileId?, List<EventLog>>,
-        uploadedLogsMap: Map<ProfileId?, List<EventLog>>
+        profileId: LegacyProfileId?,
+        logsToUploadMap: Map<LegacyProfileId?, List<EventLog>>,
+        uploadedLogsMap: Map<LegacyProfileId?, List<EventLog>>
       ): CategorizedEventStats {
         val logsToUpload = logsToUploadMap[profileId] ?: emptyList()
         val uploadedLogs = uploadedLogsMap[profileId] ?: emptyList()
@@ -239,7 +239,7 @@ class ProfileLearnerIdItemViewModel private constructor(
   }
 
   private companion object {
-    private fun List<EventLog>.associateByProfileId(): Map<ProfileId?, List<EventLog>> =
+    private fun List<EventLog>.associateByProfileId(): Map<LegacyProfileId?, List<EventLog>> =
       groupBy { log -> log.profileId.takeIf { log.hasProfileId() } }
   }
 }

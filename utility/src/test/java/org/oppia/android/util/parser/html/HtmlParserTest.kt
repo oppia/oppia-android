@@ -895,7 +895,7 @@ class HtmlParserTest {
         textView.text = htmlResult
 
         assertThat(textView.contentDescription.toString()).isEqualTo(
-          "Visit refresher lesson to learn more."
+          "Visit skill_id_1 concept card to learn more."
         )
       }
     }

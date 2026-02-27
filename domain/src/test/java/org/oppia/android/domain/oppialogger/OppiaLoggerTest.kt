@@ -34,7 +34,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -108,7 +108,7 @@ class OppiaLoggerTest {
     private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
 
-    private val TEST_PROFILE_ID = ProfileId.newBuilder().setInternalId(0).build()
+    private val TEST_PROFILE_ID = LegacyProfileId.newBuilder().setInternalId(0).build()
   }
 
   @Inject
