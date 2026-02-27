@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -50,7 +51,8 @@ class DragAndDropSortInteractionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
+  wrongAnswerList: List<AnswerAndResponse>
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
@@ -85,7 +87,8 @@ class DragAndDropSortInteractionViewModel private constructor(
       contentIdHtmlMap,
       this,
       resourceHandler,
-      userAnswerState
+      userAnswerState,
+      wrongAnswerList
     )
 
   private var pendingAnswerError: String? = null
@@ -279,7 +282,8 @@ class DragAndDropSortInteractionViewModel private constructor(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
+      userAnswerState: UserAnswerState,
+      wrongAnswerList: List<AnswerAndResponse>
     ): StateItemViewModel {
       return DragAndDropSortInteractionViewModel(
         entityId,
@@ -290,7 +294,8 @@ class DragAndDropSortInteractionViewModel private constructor(
         writtenTranslationContext,
         resourceHandler,
         translationController,
-        userAnswerState
+        userAnswerState,
+        wrongAnswerList
       )
     }
   }
@@ -338,24 +343,34 @@ class DragAndDropSortInteractionViewModel private constructor(
   }
 
   /**
-   * Computes the selected choice items based on the provided [userAnswerState].
+   * Computes the selected choice items based on the provided [userAnswerState] and
+   * [wrongAnswerList].
    *
-   * If [userAnswerState] contains a saved drag-and-drop ordering (from a previous user interaction
-   * or a prior wrong answer), that ordering is used. Otherwise, the default ordering from the
-   * interaction's customization args is used.
+   * If [userAnswerState] contains a saved drag-and-drop ordering from a previous user interaction
+   * that ordering is used. Otherwise, if there is a most recent wrong answer, its ordering is used
+   * If neither is available, the default ordering from the interaction's customization args is used.
    */
   private fun computeSelectedChoiceItems(
     contentIdHtmlMap: Map<String, String>,
     dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
     resourceHandler: AppLanguageResourceHandler,
-    userAnswerState: UserAnswerState
+    userAnswerState: UserAnswerState,
+    wrongAnswerList: List<AnswerAndResponse>
   ): MutableList<DragDropInteractionContentViewModel> {
-    val savedContentIdLists =
-      if (userAnswerState.hasListOfSetsOfTranslatableHtmlContentIds()) {
+    val savedContentIdLists = when {
+      userAnswerState.hasListOfSetsOfTranslatableHtmlContentIds() -> {
         userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
-      } else {
-        null
       }
+      wrongAnswerList.isNotEmpty() -> {
+        val latestWrongAnswer = wrongAnswerList.last().userAnswer
+        if (latestWrongAnswer.answer.hasListOfSetsOfTranslatableHtmlContentIds()) {
+          latestWrongAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+        } else {
+          null
+        }
+      }
+      else -> null
+    }
 
     val items = if (savedContentIdLists != null && savedContentIdLists.isNotEmpty()) {
       savedContentIdLists.mapIndexed { index, setOfTranslatableHtmlContentIds ->
