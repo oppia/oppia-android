@@ -41,9 +41,3 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
 )
-
-kt_android_library(
-    name = "list_extensions",
-    srcs = ["ListExtensions.kt"],
-    visibility = ["//:oppia_api_visibility"],
-)

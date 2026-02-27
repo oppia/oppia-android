@@ -3,7 +3,6 @@ package org.oppia.android.domain.audio
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import android.os.Looper
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -133,7 +132,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
 
     shadowMediaPlayer.invokePreparedListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(shadowMediaPlayer.isPrepared).isTrue()
     assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
@@ -171,7 +170,6 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @org.junit.Ignore("ShadowMediaPlayer state update is unreliable in this context")
   fun testController_preparePlayer_releaseMediaPlayer_hasEndState() {
     setUpMediaReadyApplication()
     arrangeMediaPlayer()
@@ -211,7 +209,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     shadowMediaPlayer.invokeCompletionListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
@@ -266,7 +264,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.advanceTimeBy(1000)
     shadowMediaPlayer.invokeCompletionListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     val results = audioPlayerResultCaptor.allValues
@@ -344,7 +342,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.seekTo(500)
     audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
     shadowMediaPlayer.invokePreparedListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -360,7 +358,7 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.releaseMediaPlayer()
     audioPlayerController.initializeMediaPlayer()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     // If the observer was still getting updates, the result would be pending
@@ -394,7 +392,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.advanceTimeBy(2000)
     shadowMediaPlayer.invokeCompletionListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(2000)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -455,7 +453,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.invokePreparedListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
 
     @Suppress("UNCHECKED_CAST")
     val captor: ArgumentCaptor<AsyncResult<PlayProgress>> =
@@ -533,7 +531,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
 
     shadowMediaPlayer.invokePreparedListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
+    testCoroutineDispatchers.runCurrent()
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IOException::class.java)
@@ -855,7 +853,6 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     audioPlayerController.changeDataSource(TEST_URL, contentId, languageCode)
     shadowMediaPlayer.invokePreparedListener()
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
     testCoroutineDispatchers.runCurrent()
   }
 

@@ -165,8 +165,6 @@ class AudioViewModel @Inject constructor(
       when (type) {
         UiAudioPlayStatus.PLAYING ->
           audioPlayerController.pause(isFromExplicitUserAction = true)
-        UiAudioPlayStatus.LOADING,
-        UiAudioPlayStatus.FAILED,
         UiAudioPlayStatus.PREPARED,
         UiAudioPlayStatus.PAUSED,
         UiAudioPlayStatus.COMPLETED -> {

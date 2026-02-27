@@ -60,10 +60,7 @@ class AppLanguageResourceHandler @Inject constructor(
    * See [OppiaLocale.DisplayLocale.getStringInLocaleWithWrapping] for specifics. This returns a
    * string corresponding to the current activity's resources.
    */
-  fun getStringInLocaleWithWrapping(
-    @StringRes id: Int,
-    vararg formatArgs: CharSequence
-  ): String {
+  fun getStringInLocaleWithWrapping(@StringRes id: Int, vararg formatArgs: CharSequence): String {
     return getDisplayLocale().run { resources.getStringInLocaleWithWrapping(id, *formatArgs) }
   }
 
