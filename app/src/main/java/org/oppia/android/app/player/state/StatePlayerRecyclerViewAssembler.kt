@@ -1350,8 +1350,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
           val feedbackViewModel = viewModel as FeedbackViewModel
           binding.viewModel = feedbackViewModel
-          binding.htmlContent = ""
-          binding.executePendingBindings()
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
@@ -1455,7 +1453,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
           val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
           binding.viewModel = submittedAnswerViewModel
-          binding.executePendingBindings()
           val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER -> {
