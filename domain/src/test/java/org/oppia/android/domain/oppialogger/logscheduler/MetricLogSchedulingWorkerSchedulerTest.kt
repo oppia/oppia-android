@@ -12,16 +12,33 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_UI_METRICS
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_STORAGE_USAGE_METRICS
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -33,31 +50,14 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import org.junit.After
-import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
-import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
-import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Companion.WORKER_NAME
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_PERIODIC_UI_METRICS
-import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker.Operation.SCHEDULE_LOG_STORAGE_USAGE_METRICS
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
-import org.oppia.android.domain.workmanager.WorkManagerScheduler
-import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
-import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule.Companion.forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
-import org.oppia.android.util.threading.BackgroundDispatcher
-import org.oppia.android.util.threading.DispatcherInjector
-import org.oppia.android.util.threading.DispatcherInjectorProvider
 
 /** Tests for [MetricLogSchedulingWorkerScheduler]. */
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
@@ -101,7 +101,8 @@ class MetricLogSchedulingWorkerSchedulerTest {
     metricLogSchedulingWorkerScheduler.scheduleWork(workManagerScheduler)
 
     // Verify that the job was scheduled correctly and uses the high-frequency time.
-    val monitor = testDriver.lookUpPeriodicMonitor(WORKER_NAME, SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS)
+    val monitor =
+      testDriver.lookUpPeriodicMonitor(WORKER_NAME, SCHEDULE_LOG_PERIODIC_BACKGROUND_METRICS)
     assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.MINUTES.toMillis(100))
     assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
@@ -237,7 +238,8 @@ class MetricLogSchedulingWorkerSchedulerTest {
       TestPlatformParameterModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -249,7 +251,11 @@ class MetricLogSchedulingWorkerSchedulerTest {
     fun inject(metricLogSchedulingWorkerSchedulerTest: MetricLogSchedulingWorkerSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider, DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    DispatcherInjectorProvider,
+    PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerMetricLogSchedulingWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)

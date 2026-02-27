@@ -1,7 +1,6 @@
 package org.oppia.android.domain.workmanager.testing
 
 import android.content.Context
-import android.os.Looper
 import android.util.Log
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
@@ -19,11 +18,6 @@ import androidx.work.impl.WorkManagerImpl
 import androidx.work.impl.model.WorkSpec
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
-import java.util.UUID
-import java.util.concurrent.CopyOnWriteArraySet
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +37,11 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.shadows.ShadowLog
+import java.util.UUID
+import java.util.concurrent.CopyOnWriteArraySet
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * A general-purpose, all-in-one test utility when interacting with [WorkManager] in Oppia tests.
@@ -277,7 +276,9 @@ class OppiaWorkManagerTestDriver @Inject constructor(
       .setTaskExecutor(coroutineExecutorService)
       .setWorkerFactory(object : WorkerFactory() {
         override fun createWorker(
-          appContext: Context, workerClassName: String, workerParameters: WorkerParameters
+          appContext: Context,
+          workerClassName: String,
+          workerParameters: WorkerParameters
         ) = bootstrapOppiaWorkerFactory.createBootstrapWorker(workerClassName, workerParameters)
       })
       .build()
@@ -336,7 +337,7 @@ class OppiaWorkManagerTestDriver @Inject constructor(
      */
     var autoTrackConstraints: Boolean = false
       set(value) {
-        check(isPeriodic) { "It doesn't make sense to set auto-constraints for a one-off job. "}
+        check(isPeriodic) { "It doesn't make sense to set auto-constraints for a one-off job. " }
         check(!isRedundant) { "Cannot override auto-tracking on a redundant monitor." }
         field = value
         hasAutoTrackOverride = true

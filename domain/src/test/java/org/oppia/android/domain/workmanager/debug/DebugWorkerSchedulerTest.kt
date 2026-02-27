@@ -15,28 +15,24 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.domain.workmanager.WorkManagerScheduler
+import org.oppia.android.domain.workmanager.debug.DebugWorker.Companion.WORKER_NAME
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.debug.DebugWorker.Operation.RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -44,7 +40,12 @@ import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [DebugWorkerScheduler]. */
 @RunWith(AndroidJUnit4::class)
@@ -97,7 +98,8 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
+    val monitor =
+      testDriver.lookUpPeriodicMonitor(WORKER_NAME, RUN_EVERY_FIFTEEN_MINUTES_WITH_CONNECTIVITY)
     assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.MINUTES.toMillis(15))
     assertThat(monitor.requiredNetworkType).isEqualTo(CONNECTED)
@@ -109,7 +111,10 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY)
+    val monitor =
+      testDriver.lookUpPeriodicMonitor(
+        WORKER_NAME, RUN_EVERY_TWENTY_MINUTES_WITH_OR_WITHOUT_CONNECTIVITY
+      )
     assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.MINUTES.toMillis(20))
     assertThat(monitor.requiredNetworkType).isEqualTo(NOT_REQUIRED)
@@ -121,7 +126,10 @@ class DebugWorkerSchedulerTest {
 
     // Check what's been scheduled. One of the workers should be a DebugWorker that runs every 15
     // minutes but only if there's internet connectivity.
-    val monitor = testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY)
+    val monitor =
+      testDriver.lookUpPeriodicMonitor(
+        WORKER_NAME, RUN_EVERY_SIX_HOURS_WITH_OR_WITHOUT_CONNECTIVITY
+      )
     assertThat(monitor.state).isEqualTo(WorkInfo.State.ENQUEUED)
     assertThat(monitor.intervalDurationMs).isEqualTo(TimeUnit.HOURS.toMillis(6))
     assertThat(monitor.requiredNetworkType).isEqualTo(NOT_REQUIRED)
@@ -145,13 +153,13 @@ class DebugWorkerSchedulerTest {
   }
 
   private fun forceConstraintsMet(taskType: DebugWorker.Operation) {
-    testDriver.lookUpPeriodicMonitor(DebugWorker.WORKER_NAME, taskType).forceConstraintsMet()
+    testDriver.lookUpPeriodicMonitor(WORKER_NAME, taskType).forceConstraintsMet()
   }
 
   private fun fetchDebugWorkerDebugLogs(): List<String> {
     // Extract all logs from the bootstrap worker and validate they are each errors before returning
     // the logged message lines.
-    return ShadowLog.getLogs().filter { it.tag == DebugWorker.WORKER_NAME }.map {
+    return ShadowLog.getLogs().filter { it.tag == WORKER_NAME }.map {
       assertThat(it.type).isEqualTo(Log.DEBUG)
       return@map it.msg
     }
@@ -192,7 +200,8 @@ class DebugWorkerSchedulerTest {
     fun inject(test: DebugWorkerSchedulerTest)
   }
 
-  class TestApplication : Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
+  class TestApplication :
+    Application(), DispatcherInjectorProvider, PlatformParameterControllerInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerDebugWorkerSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)

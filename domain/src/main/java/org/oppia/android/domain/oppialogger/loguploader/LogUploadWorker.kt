@@ -10,9 +10,9 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
-import javax.inject.Inject
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import javax.inject.Inject
 
 /** Worker to upload cached analytics (including events, exceptions, and performance metrics). */
 class LogUploadWorker private constructor(

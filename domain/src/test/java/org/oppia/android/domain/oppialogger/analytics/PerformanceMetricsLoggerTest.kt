@@ -107,7 +107,9 @@ class PerformanceMetricsLoggerTest {
       logNetworkUsage(SCREEN_NAME_UNSPECIFIED, fakeOppiaClock.getCurrentTimeMs())
       logCpuUsage(SCREEN_NAME_UNSPECIFIED, TEST_CPU_USAGE, fakeOppiaClock.getCurrentTimeMs())
       logStartupLatency(
-        TEST_STARTUP_LATENCY_IN_MILLISECONDS, SCREEN_NAME_UNSPECIFIED, fakeOppiaClock.getCurrentTimeMs()
+        TEST_STARTUP_LATENCY_IN_MILLISECONDS,
+        SCREEN_NAME_UNSPECIFIED,
+        fakeOppiaClock.getCurrentTimeMs()
       )
     }
 
