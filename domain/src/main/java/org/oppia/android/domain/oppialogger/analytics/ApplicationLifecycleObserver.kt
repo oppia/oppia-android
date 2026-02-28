@@ -125,8 +125,13 @@ class ApplicationLifecycleObserver @Inject constructor(
     // Failures to enqueue lifecycle changes could be catastrophic to internal app state so it's
     // almost certainly better to crash than try to recover. It's also expected that such a failure
     // should be impossible since the queue is configured to be unlimited.
-    check(commandQueue.trySend(factory(oppiaClock.getCurrentTimeMs())).isSuccess) {
-      "Failed to enqueue command to capture lifecycle change."
+    val message = factory(oppiaClock.getCurrentTimeMs())
+    val sendResult = commandQueue.trySend(message)
+    if (!sendResult.isSuccess) {
+      throw IllegalStateException(
+        "Failed to enqueue command to capture lifecycle change: $message.",
+        sendResult.exceptionOrNull()
+      )
     }
   }
 
