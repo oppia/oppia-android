@@ -50,16 +50,6 @@ class ImageRepairer {
     return areImagesEqual(image1, image2)
   }
 
-  /**
-   * Checks whether the given image data contains any transparent pixels (alpha < 255).
-   *
-   * Transparent images cause poor visibility when dark mode is enabled. SVG images are skipped
-   * since they are vector-based and handled separately.
-   *
-   * @param imageData the raw bytes of the image file.
-   * @param extension the file extension (e.g., "png", "svg").
-   * @return true if the image contains at least one pixel with alpha < 255, false otherwise.
-   */
   fun hasTransparentPixels(imageData: ByteArray, extension: String): Boolean {
     if (extension.equals("svg", ignoreCase = true)) return false
     val image = imageData.inputStream().use { ImageIO.read(it) } ?: return false
