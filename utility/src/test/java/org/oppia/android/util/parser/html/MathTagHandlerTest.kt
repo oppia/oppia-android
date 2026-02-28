@@ -263,7 +263,7 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_missingRawLatex_includesImageSpan() {
+  fun testParseHtml_withMathMarkup_missingRawLatex_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_RAW_LATEX_MARKUP,
@@ -273,7 +273,7 @@ class MathTagHandlerTest {
 
     // There is an image span since the filename is still present.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
-    assertThat(imageSpans).hasLength(1)
+    assertThat(imageSpans).hasLength(0)
   }
 
   @Test
@@ -444,20 +444,20 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_loadsInlineImageForFilename() {
+  fun testParseHtml_withMathMarkup_loadsInlineLatexDrawable() {
     CustomHtmlContentHandler.fromHtml(
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithCachedMathSupport
     )
 
-    verify(mockImageRetriever)!!.loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
-    assertThat(stringCaptor.value).isEqualTo("math_image1.svg")
+    verify(mockImageRetriever)!!.loadMathDrawable(capture(stringCaptor), capture(floatCaptor),capture(retrieverTypeCaptor))
+    assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
   }
 
   @Test
-  fun testParseHtml_withMultipleMathTags_loadsInlineImagesForBoth() {
+  fun testParseHtml_withMultipleMathTags_loadsLatexDrawablesForBoth() {
     CustomHtmlContentHandler.fromHtml(
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
@@ -466,9 +466,9 @@ class MathTagHandlerTest {
 
     // Verify that both images are loaded in order.
     verify(mockImageRetriever, times(2))!!
-      .loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
+      .loadMathDrawable(capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor))
     assertThat(stringCaptor.allValues)
-      .containsExactly("math_image2.svg", "math_image1.svg")
+      .containsExactly("\\frac{3}{8}", "\\frac{2}{5}")
       .inOrder()
     assertThat(retrieverTypeCaptor.allValues)
       .containsExactly(ImageRetriever.Type.INLINE_TEXT_IMAGE, ImageRetriever.Type.INLINE_TEXT_IMAGE)
