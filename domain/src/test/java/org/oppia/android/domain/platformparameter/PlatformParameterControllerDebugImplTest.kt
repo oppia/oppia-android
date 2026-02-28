@@ -28,6 +28,9 @@ import org.oppia.android.app.model.RemoteFeatureFlag
 import org.oppia.android.app.model.RemotePlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterAndFeatureFlagDatabase
 import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.TestLogReportingModule
@@ -43,15 +46,12 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.RetrofitModule
-import org.oppia.android.data.backends.gae.RetrofitServiceModule
-import org.oppia.android.util.properties.CustomPropertyRetrieverDebugModule
 
 /** Tests for [PlatformParameterControllerDebugImpl]. */
 @RunWith(AndroidJUnit4::class)

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class CustomPropertyRetrieverDebugImpl @Inject constructor(
   private val context: Context
-): CustomPropertyRetriever {
+) : CustomPropertyRetriever {
   private val packageName = "org.oppia.android"
   private val contentResolver by lazy { context.contentResolver }
 

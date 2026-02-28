@@ -3,39 +3,39 @@ package org.oppia.android.domain.platformparameter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.FeatureFlagDefinition
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.OverriddenPlatformParameter
+import org.oppia.android.app.model.PlatformParameterDefinition
 import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.RemoteFeatureFlag
+import org.oppia.android.app.model.RemotePlatformParameter
 import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.data.backends.gae.api.PlatformParameterDebugService
+import org.oppia.android.data.backends.gae.model.GaeFeatureFlag
+import org.oppia.android.data.backends.gae.model.GaePlatformParameter
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.extensions.safeForEach
-import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.oppia.android.app.model.FeatureFlagDefinition
-import org.oppia.android.app.model.PlatformParameterDefinition
-import org.oppia.android.app.model.PlatformParameterValue
-import org.oppia.android.app.model.RemoteFeatureFlag
-import org.oppia.android.app.model.RemotePlatformParameter
-import org.oppia.android.data.backends.gae.api.PlatformParameterDebugService
-import org.oppia.android.data.backends.gae.model.GaeFeatureFlag
-import org.oppia.android.data.backends.gae.model.GaePlatformParameter
-import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.properties.CustomPropertyRetriever
+import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.HttpException
 import retrofit2.await
+import javax.inject.Inject
 
 /**
  * Debug implementation for the controller to manage and synchronize platform parameters and
@@ -349,12 +349,18 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  private fun convertAndFilterPlatformParameters(gaeParameters: List<GaePlatformParameter>, supportedParameters: List<PlatformParameterDefinition>): List<RemotePlatformParameter> {
+  private fun convertAndFilterPlatformParameters(
+    gaeParameters: List<GaePlatformParameter>,
+    supportedParameters: List<PlatformParameterDefinition>
+  ): List<RemotePlatformParameter> {
     return gaeParameters.mapNotNull { convertAndFilterPlatformParameter(it, supportedParameters) }
   }
 
   // TODO: Optimize definitions by compiling a map by remote server name.
-  private fun convertAndFilterPlatformParameter(gaeParameter: GaePlatformParameter, supportedParameters: List<PlatformParameterDefinition>): RemotePlatformParameter? {
+  private fun convertAndFilterPlatformParameter(
+    gaeParameter: GaePlatformParameter,
+    supportedParameters: List<PlatformParameterDefinition>
+  ): RemotePlatformParameter? {
     val parameterId = supportedParameters.find { it.remoteServerName == gaeParameter.name }?.id ?: return null
     val paramValue = gaeParameter.value.convertToProto() ?: return null
     return RemotePlatformParameter.newBuilder().apply {
@@ -373,11 +379,17 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  private fun convertAndFilterFeatureFlags(gaeFlags: List<GaeFeatureFlag>, supportedFlags: List<FeatureFlagDefinition>): List<RemoteFeatureFlag> {
+  private fun convertAndFilterFeatureFlags(
+    gaeFlags: List<GaeFeatureFlag>,
+    supportedFlags: List<FeatureFlagDefinition>
+  ): List<RemoteFeatureFlag> {
     return gaeFlags.mapNotNull { convertAndFilterFeatureFlag(it, supportedFlags) }
   }
 
-  private fun convertAndFilterFeatureFlag(gaeFlag: GaeFeatureFlag, supportedFlags: List<FeatureFlagDefinition>): RemoteFeatureFlag? {
+  private fun convertAndFilterFeatureFlag(
+    gaeFlag: GaeFeatureFlag,
+    supportedFlags: List<FeatureFlagDefinition>
+  ): RemoteFeatureFlag? {
     val flagId = supportedFlags.find { it.remoteServerName == gaeFlag.name }?.id ?: return null
     return RemoteFeatureFlag.newBuilder().apply {
       this.id = flagId
@@ -386,13 +398,19 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }.build()
   }
 
-  private fun computeNewPlatformParametersList(currentRemote: List<RemotePlatformParameter>, incomingRemote: List<RemotePlatformParameter>): List<RemotePlatformParameter> {
+  private fun computeNewPlatformParametersList(
+    currentRemote: List<RemotePlatformParameter>,
+    incomingRemote: List<RemotePlatformParameter>
+  ): List<RemotePlatformParameter> {
     val currentById = currentRemote.associateBy { it.id }
     val incomingById = incomingRemote.associateBy { it.id }
     return (currentById + incomingById).values.toList()
   }
 
-  private fun computeNewFeatureFlagsList(currentRemote: List<RemoteFeatureFlag>, incomingRemote: List<RemoteFeatureFlag>): List<RemoteFeatureFlag> {
+  private fun computeNewFeatureFlagsList(
+    currentRemote: List<RemoteFeatureFlag>,
+    incomingRemote: List<RemoteFeatureFlag>
+  ): List<RemoteFeatureFlag> {
     val currentById = currentRemote.associateBy { it.id }
     val incomingById = incomingRemote.associateBy { it.id }
     return (currentById + incomingById).values.toList()

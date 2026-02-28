@@ -15,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
-import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.BooleanValue
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.IntValue
@@ -29,6 +28,7 @@ import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestO
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

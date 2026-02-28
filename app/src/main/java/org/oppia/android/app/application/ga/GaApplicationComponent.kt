@@ -60,10 +60,10 @@ import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
-import org.oppia.android.util.properties.CustomPropertyRetrieverProdModule
 
 /**
  * Root Dagger component for general availability versions of the application.
