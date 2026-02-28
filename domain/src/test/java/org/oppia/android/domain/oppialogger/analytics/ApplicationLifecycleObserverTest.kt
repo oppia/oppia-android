@@ -2,7 +2,11 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwnerInitializer
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,6 +39,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_F
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -110,6 +115,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -138,6 +145,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+  @Inject lateinit var applicationLifecycleLogger: ApplicationLifecycleLogger
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
@@ -166,40 +174,50 @@ class ApplicationLifecycleObserverTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+    resetProcessLifecycleOwner()
   }
 
   @Test
   fun testObserver_withDisabledMetricsCollection_doesNotLogAnyEvent() {
     setUpTestApplicationComponent()
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
+
+    runInActivity {}
+
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    runInActivity {
+      val sessionIdProvider = loggingIdentifierController.getSessionId()
+      val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    waitInBackgroundFor(TimeUnit.MINUTES.toMillis(45))
+      ensureAppIsInBackground()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(45))
+      ensureAppIsInForeground()
 
-    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(firstSessionId).isNotEqualTo(latestSessionId)
+      val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+      assertThat(firstSessionId).isNotEqualTo(latestSessionId)
+    }
   }
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    runInActivity {
+      val sessionIdProvider = loggingIdentifierController.getSessionId()
+      val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    waitInBackgroundFor(TimeUnit.MINUTES.toMillis(15))
+      ensureAppIsInBackground()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(15))
+      ensureAppIsInForeground()
 
-    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(firstSessionId).isEqualTo(latestSessionId)
+      val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+      assertThat(firstSessionId).isEqualTo(latestSessionId)
+    }
   }
 
   @Test
@@ -207,14 +225,13 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAppInForegroundContextThat {
-      hasLearnerIdThat().isNotEmpty()
-      hasInstallationIdThat().isNotEmpty()
+    runInActivity {
+      val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(eventLog).isEssentialPriority()
+      assertThat(eventLog).hasAppInForegroundContextThat {
+        hasLearnerIdThat().isNotEmpty()
+        hasInstallationIdThat().isNotEmpty()
+      }
     }
   }
 
@@ -222,14 +239,13 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_onAppInForeground_notLoggedIn_studyOn_logsForegroundEventWithoutLearnerId() {
     setUpTestApplicationWithLearnerStudy()
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAppInForegroundContextThat {
-      hasLearnerIdThat().isEmpty()
-      hasInstallationIdThat().isNotEmpty()
+    runInActivity {
+      val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(eventLog).isEssentialPriority()
+      assertThat(eventLog).hasAppInForegroundContextThat {
+        hasLearnerIdThat().isEmpty()
+        hasInstallationIdThat().isNotEmpty()
+      }
     }
   }
 
@@ -238,14 +254,15 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
-    applicationLifecycleObserver.onAppInBackground()
-    testCoroutineDispatchers.runCurrent()
+    runInActivity {
+      ensureAppIsInBackground()
 
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAppInBackgroundContextThat {
-      hasLearnerIdThat().isNotEmpty()
-      hasInstallationIdThat().isNotEmpty()
+      val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+      assertThat(eventLog).isEssentialPriority()
+      assertThat(eventLog).hasAppInBackgroundContextThat {
+        hasLearnerIdThat().isNotEmpty()
+        hasInstallationIdThat().isNotEmpty()
+      }
     }
   }
 
@@ -253,35 +270,55 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_onAppInBackground_notLoggedIn_studyOn_logsBackgroundEventWithoutLearnerId() {
     setUpTestApplicationWithLearnerStudy()
 
-    applicationLifecycleObserver.onAppInBackground()
-    testCoroutineDispatchers.runCurrent()
+    runInActivity {
+      ensureAppIsInBackground()
 
-    val eventLog = getOneOfLastTwoEventsLogged(ActivityContextCase.APP_IN_BACKGROUND_CONTEXT)
-
-    assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasAppInBackgroundContextThat {
-      hasLearnerIdThat().isEmpty()
-      hasInstallationIdThat().isNotEmpty()
+      val eventLog = expectAnalyticsEvent { it.context.hasAppInBackgroundContext() }
+      assertThat(eventLog).isEssentialPriority()
+      assertThat(eventLog).hasAppInBackgroundContextThat {
+        hasLearnerIdThat().isEmpty()
+        hasInstallationIdThat().isNotEmpty()
+      }
     }
   }
 
   @Test
   fun testObserver_onAppInForeground_setsAppInForeground() {
     setUpTestApplicationComponent()
-    applicationLifecycleObserver.onAppInForeground()
 
-    assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
+    runInActivity {
+      assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
+    }
   }
 
   @Test
   fun testObserver_onAppInBackground_setsAppInBackground() {
     setUpTestApplicationComponent()
-    applicationLifecycleObserver.onAppInBackground()
 
-    assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
+    runInActivity {
+      ensureAppIsInBackground()
+
+      assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
+    }
   }
 
-  // TODO: Test onActivityResumed with unspecified launch activity?
+  @Test
+  fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
+    setUpTestApplicationComponent()
+
+    assertThat(applicationLifecycleLogger.getCurrentScreen())
+      .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+  }
+
+  @Test
+  fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
+    setUpTestApplicationComponent()
+
+    runInActivity {
+      val currentScreenValue = applicationLifecycleLogger.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+    }
+  }
 
   @Test
   fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
@@ -290,130 +327,134 @@ class ApplicationLifecycleObserverTest {
 
     val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
     assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase)
-      .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+      .isEqualTo(LoggableMetricTypeCase.APK_SIZE_METRIC)
     assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
-      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+      LoggableMetricTypeCase.STORAGE_USAGE_METRIC
     )
     assertThat(loggedMetrics[0].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
     assertThat(loggedMetrics[1].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
 
   @Test
+  fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
+    setUpTestApplicationComponent()
+
+    runInActivityWithScreenName(ScreenName.POLICIES_ACTIVITY) {
+      val currentScreenValue = applicationLifecycleLogger.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.POLICIES_ACTIVITY)
+    }
+  }
+
+  @Test
   fun testObserver_onFirstActivityResume_logsStartupLatency() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    runWithSpecifiedLaunchedActivity {
-      onActivity { activity ->
-        val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
-        applicationLifecycleObserver.onActivityResumed(activity)
-        val startupLatencyEvents =
-          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
-        val startupLatencyEvent = startupLatencyEvents[0]
 
-        assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-          OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
-        )
-        assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
-        assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
-        assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
-          .isEqualTo(expectedStartupLatency)
-      }
+    runInActivityWithScreenName(ScreenName.HOME_ACTIVITY) {
+      val latencyEvent = expectPerformanceEvent { it.loggableMetric.hasStartupLatencyMetric() }
+      assertThat(latencyEvent.loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(LoggableMetricTypeCase.STARTUP_LATENCY_METRIC)
+      assertThat(latencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
+      assertThat(latencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+      assertThat(latencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
+        .isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE)
     }
   }
 
   @Test
   fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-
-    testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    runWithSpecifiedLaunchedActivity {
-      onActivity { activity ->
-        applicationLifecycleObserver.onActivityResumed(activity)
-        applicationLifecycleObserver.onActivityResumed(activity)
 
-        val loggedStartupLatencyEvents =
-          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-            fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-          ).filter {
-            it.loggableMetric.hasStartupLatencyMetric()
-          }
+    // Start up an activity twice so that it's resumed twice.
+    runInActivity {}
+    runInActivity {}
 
-        assertThat(loggedStartupLatencyEvents.size).isEqualTo(1)
-      }
-    }
+    // The startup latency metric should only be logged once.
+    val startupEvents = collectAllPerformanceEvents { it.loggableMetric.hasStartupLatencyMetric() }
+    assertThat(startupEvents).hasSize(1)
   }
 
   @Test
   fun testObserver_activityResumed_logsMemoryUsage() {
     setUpTestApplicationWithPerformanceMetricsCollection()
 
-    runWithSpecifiedLaunchedActivity {
-      onActivity { activity ->
-        applicationLifecycleObserver.onActivityResumed(activity)
-
-        val memoryUsageEvent =
-          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
-
-        assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-          OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
-        )
-        assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
-        assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
-      }
+    runInActivityWithScreenName(ScreenName.HOME_ACTIVITY) {
+      val memoryUsageEvent = expectPerformanceEvent { it.loggableMetric.hasMemoryUsageMetric() }
+      assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(LoggableMetricTypeCase.MEMORY_USAGE_METRIC)
+      assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+      assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
     }
   }
 
-  // TODO: Test for resumed then paused?
+  @Test
+  fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
+    setUpTestApplicationComponent()
+
+    runInActivity {
+      ensureActivityIsPaused()
+
+      // The logger should currently be tracking that the background is the current screen.
+      val currentScreen = applicationLifecycleLogger.getCurrentScreen()
+      assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    }
+  }
 
   @Test
-  fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
+  fun testObserver_onAppInForeground_doesNotLogCpuUsage() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
-    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
-    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    runInActivity {
+      val cpuUsageEvents = collectAllPerformanceEvents { it.loggableMetric.hasCpuUsageMetric() }
+      assertThat(cpuUsageEvents).isEmpty()
+    }
+  }
 
-    assertThat(event.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+  @Test
+  fun testObserver_onAppInForeground_waitLongEnough_logsCpuUsageWithCurrentScreenForeground() {
+    setUpTestApplicationWithPerformanceMetricsCollection()
+
+    runInActivity {
+      testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+
+      val cpuUsageEvent = expectPerformanceEvent { it.loggableMetric.hasCpuUsageMetric() }
+      assertThat(cpuUsageEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+    }
   }
 
   @Test
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    applicationLifecycleObserver.onAppInBackground()
-    testCoroutineDispatchers.runCurrent()
-    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
+    runInActivity {
+      ensureAppIsInBackground()
 
-    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+      testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
 
-    assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+      val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+      assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    }
   }
 
   @Test
   fun testObserver_onAppInForeground_logsAllFeatureFlags() {
     setUpTestApplicationComponent()
-
     featureFlagsLogger.setFeatureFlagItemMap(
       mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
-
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    testCoroutineDispatchers.runCurrent()
-    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-    assertThat(eventLog).hasFeatureFlagContextThat {
-      hasSessionIdThat().isEqualTo(sessionId)
-      hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
-        hasFeatureFlagEnabledStateThat().isEqualTo(false)
-        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+    runInActivity {
+      val eventLog = expectAnalyticsEvent { it.context.hasFeatureFlagListContext() }
+      assertThat(eventLog).hasFeatureFlagContextThat {
+        hasSessionIdThat().isEqualTo(sessionId)
+        hasFeatureFlagItemContextThatAtIndex(0) {
+          hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
+          hasFeatureFlagEnabledStateThat().isEqualTo(false)
+          hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+        }
       }
     }
   }
@@ -422,111 +463,88 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    runInActivity {
+      val sessionIdProvider = loggingIdentifierController.getSessionId()
+      val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+      val installationIdProvider = loggingIdentifierController.getInstallationId()
+      val installationId = monitorFactory.waitForNextSuccessfulResult(installationIdProvider)
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceTimeBy(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
+      ensureAppIsInBackground()
 
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    val installationIdProvider = loggingIdentifierController.getInstallationId()
-    val installationId = monitorFactory.waitForNextSuccessfulResult(installationIdProvider)
-
-    testCoroutineDispatchers.advanceTimeBy(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
-    applicationLifecycleObserver.onAppInBackground()
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = getOneOfLastTwoEventsLogged(APP_IN_FOREGROUND_TIME)
-    val eventLogContext = eventLog.context
-
-    assertThat(eventLogContext.activityContextCase)
-      .isEqualTo(APP_IN_FOREGROUND_TIME)
-    assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong())
-      .isEqualTo(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
-    assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
-    assertThat(eventLogContext.appInForegroundTime.installationId).isEqualTo(installationId)
+      val eventLog = expectAnalyticsEvent { it.context.hasAppInForegroundTime() }
+      val eventLogContext = eventLog.context
+      assertThat(eventLogContext.activityContextCase).isEqualTo(APP_IN_FOREGROUND_TIME)
+      // Note that this will actually potentially be bigger because of additional waiting that
+      // happens for background detection.
+      assertThat(eventLogContext.appInForegroundTime.foregroundTime.toLong())
+        .isGreaterThan(TEST_TIMESTAMP_APP_IN_FOREGROUND_MILLIS)
+      assertThat(eventLogContext.appInForegroundTime.appSessionId).isEqualTo(sessionId)
+      assertThat(eventLogContext.appInForegroundTime.installationId).isEqualTo(installationId)
+    }
   }
 
   @Test
   fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
     setUpTestApplicationComponent()
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
+    runInActivity {
+      val testTag = "TestObserver"
+      val testMessage = "Test error message"
+      fakeConsoleLogger.e(testTag, testMessage)
+      testCoroutineDispatchers.runCurrent()
 
-    val testTag = "TestObserver"
-    val testMessage = "Test error message"
-
-    fakeConsoleLogger.e(testTag, testMessage)
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    val eventLogContext = eventLog.context
-
-    assertThat(eventLogContext.activityContextCase).isEqualTo(ActivityContextCase.CONSOLE_LOG)
-    assertThat(eventLogContext.consoleLog.fullErrorLog).isEqualTo(testMessage)
-    assertThat(eventLogContext.consoleLog.logLevel).isEqualTo(LogLevel.ERROR.toString())
-    assertThat(eventLogContext.consoleLog.logTag).isEqualTo(testTag)
+      val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+      val eventLogContext = eventLog.context
+      assertThat(eventLogContext.activityContextCase).isEqualTo(ActivityContextCase.CONSOLE_LOG)
+      assertThat(eventLogContext.consoleLog.fullErrorLog).isEqualTo(testMessage)
+      assertThat(eventLogContext.consoleLog.logLevel).isEqualTo(LogLevel.ERROR.toString())
+      assertThat(eventLogContext.consoleLog.logTag).isEqualTo(testTag)
+    }
   }
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsNetworkCalls() {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
+    runInActivity {
+      mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
+      client.newCall(request).execute()
+      testCoroutineDispatchers.runCurrent()
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
-
-    mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
-    client.newCall(request).execute()
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
-    val eventLogContext = eventLog.context
-    val retrofitCallContext = eventLogContext.retrofitCallContext
-
-    assertThat(eventLogContext.activityContextCase)
-      .isEqualTo(ActivityContextCase.RETROFIT_CALL_CONTEXT)
-    assertThat(retrofitCallContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
-    assertThat(retrofitCallContext.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-    assertThat(retrofitCallContext.headers).contains(headerString)
-    assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
+      val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+      val eventLogContext = eventLog.context
+      val retrofitCallContext = eventLogContext.retrofitCallContext
+      assertThat(eventLogContext.activityContextCase)
+        .isEqualTo(ActivityContextCase.RETROFIT_CALL_CONTEXT)
+      assertThat(retrofitCallContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
+      assertThat(retrofitCallContext.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
+      assertThat(retrofitCallContext.headers).contains(headerString)
+      assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
+    }
   }
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsFailedNetworkCalls() {
     setUpTestApplicationComponent()
     setUpRetrofitApiCall()
+    runInActivity {
+      val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
+      val mockResponse = MockResponse()
+        .setResponseCode(pageNotFound)
+        .setBody(testResponseBody)
+      mockWebServer.enqueue(mockResponse)
+      client.newCall(request).execute()
+      testCoroutineDispatchers.runCurrent()
 
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
-
-    val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
-    val mockResponse = MockResponse()
-      .setResponseCode(pageNotFound)
-      .setBody(testResponseBody)
-
-    mockWebServer.enqueue(mockResponse)
-    client.newCall(request).execute()
-    testCoroutineDispatchers.runCurrent()
-
-    val eventLog = getOneOfLastTwoEventsLogged(ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT)
-    val eventLogContext = eventLog.context
-    val retrofitCallFailedContext = eventLogContext.retrofitCallFailedContext
-
-    assertThat(eventLogContext.activityContextCase)
-      .isEqualTo(ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT)
-    assertThat(retrofitCallFailedContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
-    assertThat(retrofitCallFailedContext.responseStatusCode).isEqualTo(pageNotFound)
-  }
-
-  private fun waitInBackgroundFor(millis: Long) {
-    applicationLifecycleObserver.onAppInBackground()
-    testCoroutineDispatchers.runCurrent()
-    fakeOppiaClock.setCurrentTimeMs(fakeOppiaClock.getCurrentTimeMs() + millis)
-    testCoroutineDispatchers.advanceTimeBy(millis)
-
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.runCurrent()
+      val eventLog = expectAnalyticsEvent { it.context.hasRetrofitCallFailedContext() }
+      val eventLogContext = eventLog.context
+      val retrofitCallFailedContext = eventLogContext.retrofitCallFailedContext
+      assertThat(eventLogContext.activityContextCase)
+        .isEqualTo(ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT)
+      assertThat(retrofitCallFailedContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
+      assertThat(retrofitCallFailedContext.responseStatusCode).isEqualTo(pageNotFound)
+    }
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
@@ -559,30 +577,91 @@ class ApplicationLifecycleObserverTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
+
     // This will be called very early in the lifecycle and must be done for the observer to work.
+    initializeProcessLifecycleOwner()
     applicationLifecycleObserver.onCreateStarted()
     applicationLifecycleObserver.onCompletedInitialization()
   }
 
-  private fun runWithSpecifiedLaunchedActivity(
+  private fun initializeProcessLifecycleOwner() {
+    // Hacky way to force ProcessLifecycleOwner to initialize itself and start listening for events.
+    ProcessLifecycleOwnerInitializer().also { it.attachInfo(context, /* info= */ null) }.onCreate()
+  }
+
+  private fun resetProcessLifecycleOwner() {
+    // A *VERY* hacky way to force ProcessLifecycleOwner to reset state by recreating its internal
+    // (static) singleton that would otherwise share and leak state across test boundaries. Upgrades
+    // to the Java version may make the 'final' override fail, but if that happens then the
+    // lifecycle package can be updated to a version that has a non-final instance (or an alternate
+    // utility could be used, instead).
+    val lifecycleOwnerClass = ProcessLifecycleOwner::class.java
+    val constructor = lifecycleOwnerClass.getDeclaredConstructor().also { it.isAccessible = true }
+    val fieldModifiers =
+      Field::class.java.getDeclaredField("modifiers").also { it.isAccessible = true }
+    val instanceField = lifecycleOwnerClass.getDeclaredField("sInstance").also {
+      it.isAccessible = true
+      fieldModifiers.set(it, it.modifiers and Modifier.FINAL.inv())
+    }
+    instanceField.set(null, constructor.newInstance())
+  }
+
+  private fun runInActivityWithScreenName(
+    screenName: ScreenName,
     testBlock: ActivityScenario<TestActivity>.() -> Unit
   ) {
-    val intent = TestActivity.createIntent(context).apply {
-      decorateWithScreenName(ScreenName.HOME_ACTIVITY)
-    }
+    runInActivity(
+      TestActivity.createIntent(context).apply { decorateWithScreenName(screenName) }, testBlock
+    )
+  }
+
+  private fun runInActivity(
+    intent: Intent = TestActivity.createIntent(context),
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
     ActivityScenario.launch<TestActivity>(intent).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.testBlock()
     }
   }
 
-  private fun runWithUnspecifiedLaunchedActivity(
-    testBlock: ActivityScenario<TestActivity>.() -> Unit
-  ) {
-    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.testBlock()
-    }
+  private fun ActivityScenario<TestActivity>.ensureAppIsInForeground() {
+    updateStateAndWait(Lifecycle.State.RESUMED)
+  }
+
+  private fun ActivityScenario<TestActivity>.ensureAppIsInBackground() {
+    updateStateAndWait(Lifecycle.State.CREATED)
+  }
+
+  private fun ActivityScenario<TestActivity>.ensureActivityIsPaused() {
+    updateStateAndWait(Lifecycle.State.STARTED)
+  }
+
+  private fun ActivityScenario<TestActivity>.updateStateAndWait(state: Lifecycle.State) {
+    moveToState(state)
+
+    // ProcessLifecycleOwner uses a timer before firing the background event and that must be
+    // fully processed before time can be advanced (otherwise time will be advanced before the app
+    // is fully in the background). Wait for a little bit for that to process. This is a timing
+    // quirk with how the coroutine dispatcher time synchronization behaves.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+  }
+
+  private fun expectAnalyticsEvent(predicate: (EventLog) -> Boolean): EventLog {
+    val eventCount = fakeAnalyticsEventLogger.getEventListCount()
+    val events = fakeAnalyticsEventLogger.getMostRecentEvents(eventCount)
+    return events.firstOrNull(predicate) ?: error("Expected to find event.")
+  }
+
+  private fun expectPerformanceEvent(predicate: (OppiaMetricLog) -> Boolean): OppiaMetricLog =
+    collectAllPerformanceEvents(predicate).firstOrNull() ?: error("Expected to find event.")
+
+  private fun collectAllPerformanceEvents(
+    predicate: (OppiaMetricLog) -> Boolean
+  ): List<OppiaMetricLog> {
+    val eventCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val events = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(eventCount)
+    return events.filter(predicate)
   }
 
   private fun setUpRetrofitApiCall() {
@@ -599,13 +678,6 @@ class ApplicationLifecycleObserverTest {
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client)
       .build()
-  }
-
-  private fun getOneOfLastTwoEventsLogged(
-    wantedContext: ActivityContextCase
-  ): EventLog {
-    val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
-    return if (events[0].context.activityContextCase == wantedContext) events[0] else events[1]
   }
 
   // TODO(#89): Move this to a common test application component.

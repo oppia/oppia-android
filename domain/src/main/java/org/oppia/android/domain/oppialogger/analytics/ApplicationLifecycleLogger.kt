@@ -37,6 +37,7 @@ class ApplicationLifecycleLogger @Inject constructor(
 ) {
   private var isStartupLatencyLogged: Boolean = false
   private var currentScreen: ScreenName = ScreenName.SCREEN_NAME_UNSPECIFIED
+  private val foregroundBackgroundRecordKeeper by lazy { ForegroundBackgroundRecordKeeper() }
 
   /**
    * Returns the current active UI screen that's visible to the user.
@@ -61,7 +62,9 @@ class ApplicationLifecycleLogger @Inject constructor(
   fun recordAppOpened(appStartTimeMillis: Long) {
     logApplicationStartupMetrics(appStartTimeMillis)
     logAllFeatureFlags(appStartTimeMillis)
-    cpuPerformanceSnapshotter.initialiseSnapshotter()
+    if (enablePerformanceMetricsCollection.value) {
+      cpuPerformanceSnapshotter.initialiseSnapshotter()
+    }
 
     analyticsController.listenForConsoleErrorLogs()
     analyticsController.listenForNetworkCallLogs()
@@ -74,7 +77,7 @@ class ApplicationLifecycleLogger @Inject constructor(
    * @param timestamp the system time, in milliseconds, when the app has been foregrounded
    */
   fun recordAppInForeground(timestamp: Long) {
-    val timeSpentInBackgroundMs = ForegroundBackgroundRecordKeeper.recordAppForegrounded(timestamp)
+    val timeSpentInBackgroundMs = foregroundBackgroundRecordKeeper.recordAppForegrounded(timestamp)
     if (timeSpentInBackgroundMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
@@ -94,7 +97,7 @@ class ApplicationLifecycleLogger @Inject constructor(
    * @param timestamp the system time, in milliseconds, when the app has been backgrounded
    */
   fun recordAppInBackground(timestamp: Long) {
-    val timeSpentInForegroundMs = ForegroundBackgroundRecordKeeper.recordAppBackgrounded(timestamp)
+    val timeSpentInForegroundMs = foregroundBackgroundRecordKeeper.recordAppBackgrounded(timestamp)
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     }
@@ -209,7 +212,7 @@ class ApplicationLifecycleLogger @Inject constructor(
     }
   }
 
-  private object ForegroundBackgroundRecordKeeper {
+  private class ForegroundBackgroundRecordKeeper {
     private var timestampSinceLastChange: Long? = null
     private var currentState: State = State.BACKGROUND // Apps always begin in the background.
 
