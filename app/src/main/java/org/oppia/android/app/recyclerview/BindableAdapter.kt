@@ -211,6 +211,7 @@ class BindableAdapter<T : Any> internal constructor(
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = lifecycleOwner
+            binding.executePendingBindings()
           }
         }
       }
@@ -337,6 +338,7 @@ class BindableAdapter<T : Any> internal constructor(
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = lifecycleOwner
+            binding.executePendingBindings()
           }
         }
       }
