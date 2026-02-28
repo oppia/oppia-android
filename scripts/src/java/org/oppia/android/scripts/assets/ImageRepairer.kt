@@ -50,6 +50,29 @@ class ImageRepairer {
     return areImagesEqual(image1, image2)
   }
 
+  /**
+   * Checks whether the given image data contains any transparent pixels (alpha < 255).
+   *
+   * Transparent images cause poor visibility when dark mode is enabled. SVG images are skipped
+   * since they are vector-based and handled separately.
+   *
+   * @param imageData the raw bytes of the image file.
+   * @param extension the file extension (e.g., "png", "svg").
+   * @return true if the image contains at least one pixel with alpha < 255, false otherwise.
+   */
+  fun hasTransparentPixels(imageData: ByteArray, extension: String): Boolean {
+    if (extension.equals("svg", ignoreCase = true)) return false
+    val image = imageData.inputStream().use { ImageIO.read(it) } ?: return false
+    if (!image.colorModel.hasAlpha()) return false
+    for (y in 0 until image.height) {
+      for (x in 0 until image.width) {
+        val alpha = (image.getRGB(x, y) shr 24) and 0xff
+        if (alpha < FULLY_OPAQUE_ALPHA) return true
+      }
+    }
+    return false
+  }
+
   sealed class RepairedImage {
     data class RenderedSvg(
       val pngContents: List<Byte>,
@@ -75,6 +98,7 @@ class ImageRepairer {
     private val WIDTH_REGEX by lazy { "width_(\\d+)".toRegex() }
     private val HEIGHT_REGEX by lazy { "height_(\\d+)".toRegex() }
     private val TRANSPARENT = Color(/* r = */ 0, /* g = */ 0, /* b = */ 0, /* a = */ 0)
+    private const val FULLY_OPAQUE_ALPHA = 255
 
     private const val REFERENCE_MONITOR_PPI = 81.589f
     private const val RELATIVE_SIZE_ADJUSTMENT_FACTOR = 0.15f
