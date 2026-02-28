@@ -301,18 +301,14 @@ class DragAndDropSortInteractionViewModel private constructor(
   }
 
   override fun getUserAnswerState(): UserAnswerState {
-    if (_choiceItems == _originalChoiceItems) {
-      return UserAnswerState.newBuilder().apply {
-        this.answerErrorCategory = answerErrorCategory
-      }.build()
-    }
     return UserAnswerState.newBuilder().apply {
       val htmlContentIds = _choiceItems.map { it.htmlContent }
       listOfSetsOfTranslatableHtmlContentIds =
         ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIdLists(htmlContentIds)
         }.build()
-      answerErrorCategory = answerErrorCategory
+      this.answerErrorCategory =
+        this@DragAndDropSortInteractionViewModel.answerErrorCategory
     }.build()
   }
 
@@ -346,8 +342,8 @@ class DragAndDropSortInteractionViewModel private constructor(
    * Computes the selected choice items based on the provided [userAnswerState] and
    * [wrongAnswerList].
    *
-   * If [userAnswerState] contains a saved drag-and-drop ordering from a previous user interaction
-   * that ordering is used. Otherwise, if there is a most recent wrong answer, its ordering is used
+   * If [userAnswerState] contains a saved drag-and-drop ordering (from a previous user interaction),
+   * that ordering is used. Otherwise, if there is a most recent wrong answer, its ordering is used.
    * If neither is available, the default ordering from the interaction's customization args is used.
    */
   private fun computeSelectedChoiceItems(
@@ -394,7 +390,7 @@ class DragAndDropSortInteractionViewModel private constructor(
     } else {
       _originalChoiceItems.toMutableList()
     }
-
+    _originalChoiceItems = items.toMutableList()
     choiceItems = items
     return items
   }
