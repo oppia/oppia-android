@@ -96,8 +96,6 @@ class OppiaLoggerTest {
     private const val TEST_ERROR_LOG_EXCEPTION = "test_error_log_exception"
 
     private const val TEST_URL = "test_url"
-    private const val TEST_HEADERS = "test_headers"
-    private const val TEST_BODY = "test_body"
     private const val TEST_RESPONSE_CODE = 200
 
     private const val TEST_INSTALLATION_ID = "test_installation_id"
@@ -379,15 +377,11 @@ class OppiaLoggerTest {
   fun testController_createRetrofitCallContext_returnsCorrectRetrofitCallContext() {
     val eventContext = oppiaLogger.createRetrofitCallContext(
       url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
       responseCode = TEST_RESPONSE_CODE,
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_CONTEXT)
     assertThat(eventContext.retrofitCallContext.requestUrl).matches(TEST_URL)
-    assertThat(eventContext.retrofitCallContext.headers).matches(TEST_HEADERS)
-    assertThat(eventContext.retrofitCallContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallContext.responseStatusCode).isEqualTo(TEST_RESPONSE_CODE)
   }
 
@@ -395,16 +389,12 @@ class OppiaLoggerTest {
   fun testController_createRetrofitCallFailedContext_returnsCorrectRetrofitCallFailedContext() {
     val eventContext = oppiaLogger.createRetrofitCallFailedContext(
       url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
       responseCode = TEST_RESPONSE_CODE,
       errorMessage = TEST_ERROR_LOG_MSG,
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_FAILED_CONTEXT)
     assertThat(eventContext.retrofitCallFailedContext.requestUrl).matches(TEST_URL)
-    assertThat(eventContext.retrofitCallFailedContext.headers).matches(TEST_HEADERS)
-    assertThat(eventContext.retrofitCallFailedContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallFailedContext.responseStatusCode)
       .isEqualTo(TEST_RESPONSE_CODE)
     assertThat(eventContext.retrofitCallFailedContext.errorMessage).matches(TEST_ERROR_LOG_MSG)

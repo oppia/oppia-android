@@ -670,8 +670,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallEventContext>(activityName, value) {
       override fun RetrofitCallEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
       }
     }
@@ -683,8 +681,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallFailedEventContext>(activityName, value) {
       override fun RetrofitCallFailedEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
         store.putNonSensitiveValue("error_message", errorMessage)
       }
