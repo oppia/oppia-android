@@ -36,7 +36,6 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import androidx.core.content.res.ResourcesCompat
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
  * [MathModel]s.
