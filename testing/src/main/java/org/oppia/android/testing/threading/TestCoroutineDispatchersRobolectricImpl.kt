@@ -1,9 +1,10 @@
 package org.oppia.android.testing.threading
 
 import android.os.Build
+import android.os.Looper
 import androidx.annotation.RequiresApi
 import org.oppia.android.testing.time.FakeSystemClock
-import java.lang.reflect.Method
+import org.robolectric.shadows.ShadowLooper
 import java.time.Duration
 import java.util.TreeSet
 import javax.inject.Inject
@@ -31,6 +32,9 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   override fun runCurrent() {
+    check(Looper.getMainLooper().isCurrentThread) {
+      "Attempting to call runCurrent() off the main thread--this has a high chance to deadlock."
+    }
     do {
       flushNextTasks()
     } while (hasPendingCompletableTasks())
@@ -118,7 +122,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     val nextBackgroundFutureTaskTimeMills =
       backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
     val nextBlockingFutureTaskTimeMills =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
+      blockingTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
     val nextUiFutureTaskTimeMills = getNextUiThreadFutureTaskTimeMillis(timeMillis)
     val futureTimes: TreeSet<Long> = sortedSetOf()
     nextBackgroundFutureTaskTimeMills?.let { futureTimes.add(it) }
@@ -133,49 +137,23 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   private class RobolectricUiTaskCoordinator {
-    private val shadowLooperClass by lazy { loadShadowLooperClass() }
-    private val shadowUiLooper by lazy { loadMainShadowLooper() }
-    private val isIdleMethod by lazy { loadIsIdleMethod() }
-    private val idleMethod by lazy { loadIdleMethod() }
-    private val nextScheduledTimeMethod by lazy { loadGetNextScheduledTaskTimeMethod() }
-
     fun isIdle(): Boolean {
-      return isIdleMethod.invoke(shadowUiLooper) as Boolean
+      return ShadowLooper.shadowMainLooper().isIdle
     }
 
     fun idle() {
-      idleMethod.invoke(shadowUiLooper)
+      ShadowLooper.shadowMainLooper().idle()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
-      val nextScheduledTime = nextScheduledTimeMethod.invoke(shadowUiLooper) as Duration
+      val nextScheduledTime = ShadowLooper.shadowMainLooper().nextScheduledTaskTime
       val delayMs = nextScheduledTime.toMillis()
       if (delayMs == 0L && isIdle()) {
         // If there's no delay and the looper is idle, that means there are no scheduled tasks.
         return null
       }
       return timeMillis + delayMs
-    }
-
-    private fun loadShadowLooperClass(): Class<*> {
-      val classLoader = TestCoroutineDispatchers::class.java.classLoader!!
-      return classLoader.loadClass("org.robolectric.shadows.ShadowLooper")
-    }
-
-    private fun loadMainShadowLooper(): Any? =
-      shadowLooperClass.getDeclaredMethod("shadowMainLooper").invoke(/* obj = */ null)
-
-    private fun loadIsIdleMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("isIdle")
-    }
-
-    private fun loadIdleMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("idle")
-    }
-
-    private fun loadGetNextScheduledTaskTimeMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("getNextScheduledTaskTime")
     }
   }
 }
