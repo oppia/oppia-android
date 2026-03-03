@@ -80,7 +80,10 @@ class TestGlideImageLoader @Inject constructor(
     target: ImageTarget<Bitmap>
   ) {
     loadedMathDrawables += MathModel(rawLatex, lineHeight, useInlineRendering, equationColor)
-    glideImageLoader.loadMathDrawable(rawLatex, lineHeight, useInlineRendering, equationColor, target)
+    glideImageLoader.loadMathDrawable(
+      rawLatex, lineHeight,
+      useInlineRendering, equationColor, target
+    )
   }
 
   /**

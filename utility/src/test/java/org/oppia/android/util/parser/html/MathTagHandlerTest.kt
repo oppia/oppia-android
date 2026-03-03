@@ -318,7 +318,8 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor),
+      capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
@@ -337,7 +338,8 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor),
+      capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
@@ -356,7 +358,8 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor),
+      capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
@@ -470,8 +473,10 @@ class MathTagHandlerTest {
 
     // Verify that both images are loaded in order.
     verify(mockImageRetriever, times(2))!!
-      .loadMathDrawable(capture(stringCaptor), capture(floatCaptor),
-        capture(colorCaptor), capture(retrieverTypeCaptor))
+      .loadMathDrawable(
+        capture(stringCaptor), capture(floatCaptor),
+        capture(colorCaptor), capture(retrieverTypeCaptor)
+      )
     assertThat(stringCaptor.allValues)
       .containsExactly("\\frac{3}{8}", "\\frac{2}{5}")
       .inOrder()
