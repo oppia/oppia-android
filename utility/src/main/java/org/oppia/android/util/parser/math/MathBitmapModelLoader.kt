@@ -12,7 +12,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
-import androidx.core.content.res.ResourcesCompat
+import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
 import org.oppia.android.util.threading.DispatcherInjectorProvider
@@ -75,6 +74,7 @@ class MathBitmapModelLoader private constructor(
     height: Int,
     options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
+    Log.d("MathDebug", "buildLoadData called for latex=${model.rawLatex.take(10)}")
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
@@ -114,12 +114,7 @@ class MathBitmapModelLoader private constructor(
             model.lineHeight,
             application.assets,
             !model.useInlineRendering,
-            // TODO(#1523): Test color parameter in MathBitmapModelLoader
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */null
-            )
+            model.equationColor
           ).also { it.ensureDrawable() }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
@@ -190,7 +185,7 @@ class MathBitmapModelLoader private constructor(
     override fun getDataClass(): Class<ByteBuffer> = ByteBuffer::class.java
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
-  //  override fun getDataSource(): DataSource = DataSource.REMOTE
+    //  override fun getDataSource(): DataSource = DataSource.REMOTE
     override fun getDataSource(): DataSource = DataSource.LOCAL
 
     /**

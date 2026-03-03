@@ -75,14 +75,12 @@ class GlideImageLoader @Inject constructor(
     rawLatex: String,
     lineHeight: Float,
     useInlineRendering: Boolean,
+    equationColor: Int,
     target: ImageTarget<Bitmap>
   ) {
-    val isNightMode =
-      (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-        Configuration.UI_MODE_NIGHT_YES
     glide
       .asBitmap()
-      .load(MathModel(rawLatex, lineHeight, useInlineRendering, isNightMode))
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering, equationColor))
       .intoTarget(target)
   }
 

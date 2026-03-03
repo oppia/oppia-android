@@ -15,11 +15,11 @@ data class MathModel(
   val rawLatex: String,
   val lineHeight: Float,
   val useInlineRendering: Boolean,
-  val isNightMode: Boolean = false
+  val equationColor: Int
 ) {
   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */
   fun toKeySignature(): MathModelSignature =
-    MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering,isNightMode)
+    MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering, equationColor)
 
   /**
    * Glide [Key] that provides caching support by allowing individual renderable math scenarios to
@@ -35,18 +35,18 @@ data class MathModel(
     val rawLatex: String,
     val lineHeightHundredX: Int,
     val useInlineRendering: Boolean,
-    val isNightMode: Boolean
+    val equationColor: Int
   ) : Key {
     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       val rawLatexBytes = rawLatex.encodeToByteArray()
       messageDigest.update(
-        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 2).apply {
+        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1 + Int.SIZE_BYTES).apply {
           put(rawLatexBytes)
           putInt(lineHeightHundredX)
           put(if (useInlineRendering) 1 else 0)
-          put(if (isNightMode) 1 else 0)
+          putInt(equationColor)
         }.array()
       )
     }
@@ -57,10 +57,10 @@ data class MathModel(
         rawLatex: String,
         lineHeight: Float,
         useInlineRendering: Boolean,
-        isNightMode: Boolean
+        equationColor: Int
       ): MathModelSignature {
         val lineHeightHundredX = (lineHeight * 100f).toInt()
-        return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering, isNightMode)
+        return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering, equationColor)
       }
     }
   }

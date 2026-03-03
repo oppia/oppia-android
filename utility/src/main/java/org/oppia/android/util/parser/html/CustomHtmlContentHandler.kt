@@ -270,7 +270,7 @@ class CustomHtmlContentHandler private constructor(
      * Returns a new [Drawable] representing a cached render of the specified [rawLatex] for the
      * given [lineHeight] and for the rendering [type].
      */
-    fun loadMathDrawable(rawLatex: String, lineHeight: Float, type: Type): Drawable
+    fun loadMathDrawable(rawLatex: String, lineHeight: Float, equationColor: Int,  type: Type): Drawable
 
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {

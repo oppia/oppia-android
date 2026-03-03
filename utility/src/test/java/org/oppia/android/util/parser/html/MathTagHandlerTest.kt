@@ -451,7 +451,10 @@ class MathTagHandlerTest {
       customTagHandlers = tagHandlersWithCachedMathSupport
     )
 
-    verify(mockImageRetriever)!!.loadMathDrawable(capture(stringCaptor), capture(floatCaptor),capture(retrieverTypeCaptor))
+    verify(mockImageRetriever)!!.loadMathDrawable(
+      capture(stringCaptor), capture(floatCaptor),
+      capture(retrieverTypeCaptor)
+    )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
   }
