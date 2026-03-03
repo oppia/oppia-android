@@ -1,7 +1,6 @@
 package org.oppia.android.util.parser.image
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri

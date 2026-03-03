@@ -1,9 +1,9 @@
 package org.oppia.android.util.parser.math
 
+import android.graphics.Color
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.security.MessageDigest
-import android.graphics.Color
 
 /** Tests for [MathModel]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -11,8 +11,19 @@ import android.graphics.Color
 class MathModelTest {
   @Test
   fun testToKeySignature_sameModelByValues_returnsSameKeyWithSameDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
-    val model2 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}", lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
+    val model2 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -29,8 +40,20 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_differentModelByLatex_returnsDifferentKeyWithDifferentDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
-    val model2 = MathModel(rawLatex = "\\frac{3}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
+    val model2 = MathModel(
+      rawLatex = "\\frac{3}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -48,8 +71,20 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_differentModelByLineHeight_returnsDifferentKeyWithDifferentDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
-    val model2 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 20.5f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
+    val model2 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -67,9 +102,21 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_diffModelByLineHeight_withinTwoDecimals_returnsSameKeyWithSameDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val model2 =
-      MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.501f, useInlineRendering = true, equationColor = Color.BLACK)
+      MathModel(
+        rawLatex = "\\frac{2}{6}",
+        lineHeight = 21.501f,
+        useInlineRendering = true,
+        equationColor = Color.BLACK
+      )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -88,8 +135,20 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_diffModelByLineHeight_outsideTwoDecimals_returnsDiffKeyWithDiffDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
-    val model2 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.6f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
+    val model2 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.6f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -107,9 +166,21 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_differentModelByInlineRendering_returnsDifferentKeyWithDifferentDigest() {
-    val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true, equationColor = Color.BLACK)
+    val model1 = MathModel(
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.5f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
     val model2 =
-      MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = false, equationColor = Color.BLACK)
+      MathModel(
+        rawLatex = "\\frac{2}{6}",
+        lineHeight = 21.5f,
+        useInlineRendering = false,
+        equationColor = Color.BLACK
+      )
+
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
@@ -156,5 +227,4 @@ class MathModelTest {
     assertThat(digest1.digest()).isNotEqualTo(digest2.digest())
     assertThat(Model1).isNotEqualTo(Model2)
   }
-
 }

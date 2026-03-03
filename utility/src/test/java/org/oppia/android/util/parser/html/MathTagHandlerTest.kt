@@ -91,6 +91,7 @@ class MathTagHandlerTest {
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
   @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
   @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
+  @Captor lateinit var colorCaptor: ArgumentCaptor<Int>
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
@@ -317,7 +318,7 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
@@ -336,7 +337,7 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
@@ -355,7 +356,7 @@ class MathTagHandlerTest {
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
-      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+      capture(stringCaptor), capture(floatCaptor), capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
@@ -453,7 +454,7 @@ class MathTagHandlerTest {
 
     verify(mockImageRetriever)!!.loadMathDrawable(
       capture(stringCaptor), capture(floatCaptor),
-      capture(retrieverTypeCaptor)
+      capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
@@ -469,7 +470,8 @@ class MathTagHandlerTest {
 
     // Verify that both images are loaded in order.
     verify(mockImageRetriever, times(2))!!
-      .loadMathDrawable(capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor))
+      .loadMathDrawable(capture(stringCaptor), capture(floatCaptor),
+        capture(colorCaptor), capture(retrieverTypeCaptor))
     assertThat(stringCaptor.allValues)
       .containsExactly("\\frac{3}{8}", "\\frac{2}{5}")
       .inOrder()
