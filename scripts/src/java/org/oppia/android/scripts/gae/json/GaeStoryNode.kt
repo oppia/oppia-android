@@ -16,7 +16,12 @@ data class GaeStoryNode(
   @Json(name = "prerequisite_skill_ids") val prerequisiteSkillIds: List<String>,
   @Json(name = "outline") val outline: String,
   @Json(name = "outline_is_finalized") val outlineIsFinalized: Boolean,
-  @Json(name = "exploration_id") val explorationId: String?
+  @Json(name = "exploration_id") val explorationId: String?,
+  @Json(name = "status") val status: String?,
+  @Json(name = "planned_publication_date_msecs") val plannedPublicationDateMsecs: Float?,
+  @Json(name = "last_modified_msecs") val lastModifiedMsecs: Float?,
+  @Json(name = "first_publication_date_msecs") val firstPublicationDateMsecs: Float?,
+  @Json(name = "unpublishing_reason") val unpublishingReason: String?
 ) {
   val expectedExplorationId: String by lazy {
     checkNotNull(explorationId) { "Expected node to have exploration ID: $this." }

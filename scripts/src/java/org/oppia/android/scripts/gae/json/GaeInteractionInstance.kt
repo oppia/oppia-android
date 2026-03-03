@@ -28,9 +28,18 @@ data class GaeInteractionInstance(
     @FromJson
     fun parseFromJson(
       jsonReader: JsonReader,
-      parsableInteractionInstanceAdapter: JsonAdapter<ParsableInteractionInstance>
-    ): GaeInteractionInstance {
-      typeResolutionContext.currentInteractionType = jsonReader.peekInteractionId()
+      parsableInteractionInstanceAdapter: JsonAdapter<ParsableInteractionInstance>,
+      peekableInteractionAdapter: JsonAdapter<PeekableInteractionInstance>
+    ): GaeInteractionInstance? {
+      val interactionId = jsonReader.peekInteractionId(peekableInteractionAdapter)
+      typeResolutionContext.currentInteractionType = interactionId
+      if (interactionId == null) {
+        // Read the empty interaction object, but don't actually return it (since it isn't valid).
+        // It does need to be read, however, to ensure that strict mode doesn't choke on the skipped
+        // object.
+        jsonReader.nextCustomValue(parsableInteractionInstanceAdapter)
+        return null
+      }
       return jsonReader.nextCustomValue(parsableInteractionInstanceAdapter).also {
         // Reset the interaction type now that parsing has completed.
         typeResolutionContext.currentInteractionType = null
@@ -76,13 +85,25 @@ data class GaeInteractionInstance(
     }
   }
 
+  @JsonClass(generateAdapter = true)
+  data class PeekableInteractionInstance(
+    @Json(name = "id") val id: String?,
+    @Json(name = "customization_args") val customizationArgs: Any,
+    @Json(name = "answer_groups") val answerGroups: Any,
+    @Json(name = "default_outcome") val defaultOutcome: Any?,
+    @Json(name = "confirmed_unclassified_answers") val confirmedUnclassifiedAnswers: Any,
+    @Json(name = "hints") val hints: Any,
+    @Json(name = "solution") val solution: Any?
+  )
+
   private companion object {
-    private fun JsonReader.peekInteractionId(): InteractionTypeCase {
+    private fun JsonReader.peekInteractionId(
+      peekableInteractionAdapter: JsonAdapter<PeekableInteractionInstance>
+    ): InteractionTypeCase? {
+      // Note that older versions of explorations may contain null interaction IDs.
       return peekJson().use { jsonReader ->
-        jsonReader.nextObject {
-          if (it == "id") jsonReader.nextString() else null
-        }["id"]?.let(::parseInteractionId) ?: error("Missing ID in interaction JSON object.")
-      }
+        jsonReader.nextCustomValue(peekableInteractionAdapter)
+      }.id?.let(::parseInteractionId)
     }
 
     private fun parseInteractionId(id: String): InteractionTypeCase {
@@ -99,6 +120,7 @@ data class GaeInteractionInstance(
         "NumericExpressionInput" -> InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
         "AlgebraicExpressionInput" -> InteractionTypeCase.ALGEBRAIC_EXPRESSION_INPUT
         "MathEquationInput" -> InteractionTypeCase.MATH_EQUATION_INPUT
+        "NumberWithUnits" -> InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
         "EndExploration" -> InteractionTypeCase.END_EXPLORATION
         else -> error("Unsupported interaction ID: $id.")
       }
