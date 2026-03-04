@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -23,7 +23,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
     /** Creates new instance of the fragment [ProfileEditFragment]. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)

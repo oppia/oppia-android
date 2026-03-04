@@ -52,7 +52,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -188,7 +188,7 @@ class ClassroomListFragmentTest {
   private lateinit var scenario: ActivityScenario<ClassroomListActivity>
 
   private val internalProfileId: Int = 0
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @After
   fun tearDown() {

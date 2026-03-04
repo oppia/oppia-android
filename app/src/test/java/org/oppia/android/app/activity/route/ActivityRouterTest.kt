@@ -31,7 +31,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -130,7 +130,7 @@ class ActivityRouterTest {
         val recentlyPlayedActivityParams =
           RecentlyPlayedActivityParams
             .newBuilder()
-            .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+            .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
             .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
         activityRouter.routeToScreen(
           DestinationScreen

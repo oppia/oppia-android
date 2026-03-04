@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -20,7 +20,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
 
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return RecentlyPlayedFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
