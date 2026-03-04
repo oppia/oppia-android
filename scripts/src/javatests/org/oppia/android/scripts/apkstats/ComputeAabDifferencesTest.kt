@@ -67,33 +67,21 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
-  fun testComputeBuildStats_forZeroProfiles_returnsEmptyStats() {
-    val differencesUtility = createComputeAabDifferences()
-
-    val stats = differencesUtility.computeBuildStats()
-
-    assertThat(stats.aabStats).isEmpty()
-  }
-
-  @Test
-  fun testComputeBuildStats_forProfileWithMissingFiles_throwsException() {
-    val differencesUtility = createComputeAabDifferences()
-    val profile = createProfile(oldAabFilePath = "fake.apk", newAabFilePath = "fake.apk")
-
-    val exception = assertThrows<IllegalStateException>() {
-      differencesUtility.computeBuildStats(profile)
-    }
-
-    assertThat(exception).hasMessageThat().contains("was not found")
-  }
-
-  @Test
   fun testMain_noArguments_failsWithError() {
     val exception = assertThrows<ArrayIndexOutOfBoundsException> {
       main()
     }
 
     assertThat(exception).hasMessageThat().contains("Index 0 out of bounds for length 0")
+  }
+
+  @Test
+  fun testMain_oneArgument_failsWithError() {
+    val exception = assertThrows<ArrayIndexOutOfBoundsException> {
+      main(briefSummaryFile.absolutePath)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Index 1 out of bounds for length 1")
   }
 
   @Test
@@ -191,8 +179,7 @@ class ComputeAabDifferencesTest {
       )
     }
 
-    assertThat(exception).hasMessageThat()
-      .contains("The file does not seem to be a valid zip file")
+    assertThat(exception).hasMessageThat().contains("The file does not seem to be a valid zip file")
   }
 
   @Test
@@ -212,8 +199,7 @@ class ComputeAabDifferencesTest {
       )
     }
 
-    assertThat(exception).hasMessageThat()
-      .contains("The file does not seem to be a valid zip file")
+    assertThat(exception).hasMessageThat().contains("The file does not seem to be a valid zip file")
   }
 
   @Test
@@ -233,8 +219,65 @@ class ComputeAabDifferencesTest {
       )
     }
 
-    assertThat(exception).hasMessageThat()
-      .contains("The file does not seem to be a valid zip file")
+    assertThat(exception).hasMessageThat().contains("The file does not seem to be a valid zip file")
+  }
+
+  @Test
+  fun testMain_fiveArguments_validAabs_generatesShortAndLongSummariesForOneConfig() {
+    val aabFile = createValidAabFile("valid.aab")
+    setUpFakeBundleToolAndAapt2()
+    val differencesUtility = createComputeAabDifferencesWithFake()
+
+    val profile = createProfile(
+      oldAabFilePath = aabFile.absolutePath, newAabFilePath = aabFile.absolutePath
+    )
+    val stats = differencesUtility.computeBuildStats(profile)
+    PrintStream(briefSummaryFile).use { stats.writeSummariesTo(it, longSummary = false) }
+    PrintStream(fullSummaryFile).use { stats.writeSummariesTo(it, longSummary = true) }
+
+    assertThat(briefSummaryFile.exists()).isTrue()
+    assertThat(fullSummaryFile.exists()).isTrue()
+    val briefOutput = briefSummaryFile.readText()
+    val fullOutput = fullSummaryFile.readText()
+    assertThat(briefOutput).contains("# APK & AAB differences analysis")
+    assertThat(briefOutput).contains("## Dev")
+    assertThat(briefOutput).contains("Note that this is a summarized snapshot")
+    assertThat(fullOutput).contains("# APK & AAB differences analysis")
+    assertThat(fullOutput).contains("## Dev")
+    assertThat(fullOutput).doesNotContain("Note that this is a summarized snapshot")
+  }
+
+  @Test
+  fun testMain_eightArguments_validAabs_generatesShortAndLongSummariesForTwoConfigs() {
+    val aabFile1 = createValidAabFile("dev.aab")
+    val aabFile2 = createValidAabFile("alpha.aab")
+    setUpFakeBundleToolAndAapt2()
+    val differencesUtility = createComputeAabDifferencesWithFake()
+
+    val devProfile = createProfile(
+      oldAabFilePath = aabFile1.absolutePath,
+      newAabFilePath = aabFile1.absolutePath,
+      buildFlavor = "dev"
+    )
+    val alphaProfile = createProfile(
+      oldAabFilePath = aabFile2.absolutePath,
+      newAabFilePath = aabFile2.absolutePath,
+      buildFlavor = "alpha"
+    )
+    val stats = differencesUtility.computeBuildStats(devProfile, alphaProfile)
+    PrintStream(briefSummaryFile).use { stats.writeSummariesTo(it, longSummary = false) }
+    PrintStream(fullSummaryFile).use { stats.writeSummariesTo(it, longSummary = true) }
+
+    assertThat(briefSummaryFile.exists()).isTrue()
+    assertThat(fullSummaryFile.exists()).isTrue()
+    val briefOutput = briefSummaryFile.readText()
+    val fullOutput = fullSummaryFile.readText()
+    assertThat(briefOutput).contains("# APK & AAB differences analysis")
+    assertThat(briefOutput).contains("## Dev")
+    assertThat(briefOutput).contains("## Alpha")
+    assertThat(fullOutput).contains("# APK & AAB differences analysis")
+    assertThat(fullOutput).contains("## Dev")
+    assertThat(fullOutput).contains("## Alpha")
   }
 
   @Test
@@ -274,14 +317,13 @@ class ComputeAabDifferencesTest {
       differencesUtility.computeBuildStats(profile)
     }
 
-    assertThat(exception).hasMessageThat()
-      .contains("The file does not seem to be a valid zip file")
+    assertThat(exception).hasMessageThat().contains("The file does not seem to be a valid zip file")
   }
 
   @Test
   fun testComputeBuildStats_oneProfile_sameAab_returnsCorrectAabStatsWithNoDiffs() {
     val aabFile = createValidAabFile("same_aab.aab")
-    setupFakeBundleToolAndAapt2()
+    setUpFakeBundleToolAndAapt2()
     val differencesUtility = createComputeAabDifferencesWithFake()
 
     val profile = createProfile(
@@ -299,6 +341,13 @@ class ComputeAabDifferencesTest {
     assertThat(aabStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
     assertThat(aabStats.universalApkStats.manifestStats.permissions.hasDifference()).isFalse()
     assertThat(aabStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(aabStats.configurationsList.hasDifference()).isFalse()
   }
 
   @Test
@@ -308,7 +357,7 @@ class ComputeAabDifferencesTest {
       "new.aab",
       additionalAssets = listOf("assets/new_lesson.json")
     )
-    setupFakeBundleToolAndAapt2(
+    setUpFakeBundleToolAndAapt2(
       oldPermissions = listOf("android.permission.INTERNET"),
       newPermissions = listOf("android.permission.INTERNET", "android.permission.CAMERA")
     )
@@ -322,16 +371,26 @@ class ComputeAabDifferencesTest {
     assertThat(stats.aabStats).hasSize(1)
     assertThat(stats.aabStats).containsKey("dev")
     val aabStats = stats.aabStats.getValue("dev")
-    assertThat(
-      aabStats.universalApkStats.manifestStats.permissions.hasDifference()
-    ).isTrue()
+    assertThat(aabStats.universalApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(aabStats.universalApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(aabStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(aabStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(aabStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(aabStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(aabStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(aabStats.mainSplitApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(aabStats.configurationsList.hasDifference()).isFalse()
   }
 
   @Test
   fun testComputeBuildStats_twoProfiles_sameAabs_returnsCorrectAabStatsWithNoDiffsForEach() {
     val aabFile1 = createValidAabFile("dev.aab")
     val aabFile2 = createValidAabFile("alpha.aab")
-    setupFakeBundleToolAndAapt2()
+    setUpFakeBundleToolAndAapt2()
     val differencesUtility = createComputeAabDifferencesWithFake()
 
     val devProfile = createProfile(
@@ -352,7 +411,23 @@ class ComputeAabDifferencesTest {
     val devStats = stats.aabStats.getValue("dev")
     val alphaStats = stats.aabStats.getValue("alpha")
     assertThat(devStats.universalApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.manifestStats.permissions.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(devStats.mainSplitApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(devStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isFalse()
+    assertThat(devStats.configurationsList.hasDifference()).isFalse()
     assertThat(alphaStats.universalApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.manifestStats.permissions.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(alphaStats.mainSplitApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(alphaStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isFalse()
+    assertThat(alphaStats.configurationsList.hasDifference()).isFalse()
   }
 
   @Test
@@ -361,11 +436,11 @@ class ComputeAabDifferencesTest {
     val devNew = createValidAabFile("dev_new.aab")
     val alphaOld = createValidAabFile("alpha_old.aab")
     val alphaNew = createValidAabFile("alpha_new.aab")
-    setupFakeBundleToolAndAapt2(
+    setUpFakeBundleToolAndAapt2(
       oldPermissions = listOf("android.permission.INTERNET"),
       newPermissions = listOf("android.permission.INTERNET", "android.permission.CAMERA")
     )
-    setupFakeBundleToolAndAapt2(
+    setUpFakeBundleToolAndAapt2(
       oldPermissions = listOf("android.permission.INTERNET"),
       newPermissions = listOf("android.permission.INTERNET", "android.permission.WRITE_STORAGE")
     )
@@ -384,14 +459,26 @@ class ComputeAabDifferencesTest {
     val stats = differencesUtility.computeBuildStats(devProfile, alphaProfile)
 
     assertThat(stats.aabStats).hasSize(2)
+    assertThat(stats.aabStats).containsKey("dev")
+    assertThat(stats.aabStats).containsKey("alpha")
     val devStats = stats.aabStats.getValue("dev")
     val alphaStats = stats.aabStats.getValue("alpha")
-    assertThat(
-      devStats.universalApkStats.manifestStats.permissions.hasDifference()
-    ).isTrue()
-    assertThat(
-      alphaStats.universalApkStats.manifestStats.permissions.hasDifference()
-    ).isTrue()
+    assertThat(devStats.universalApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(devStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(devStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(devStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(devStats.configurationsList.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
+    assertThat(alphaStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(alphaStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
+    assertThat(alphaStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(alphaStats.configurationsList.hasDifference()).isFalse()
   }
 
   @Test
@@ -407,6 +494,7 @@ class ComputeAabDifferencesTest {
     assertThat(output).contains("### Universal APK")
     assertThat(output).contains("### AAB differences")
     assertThat(output).contains("#### Base APK")
+    assertThat(output).doesNotContain("*Detailed file differences:*")
   }
 
   @Test
@@ -421,6 +509,8 @@ class ComputeAabDifferencesTest {
     assertThat(output).contains("## Dev")
     assertThat(output).contains("### Universal APK")
     assertThat(output).contains("And")
+    assertThat(output).doesNotContain("<details>")
+    assertThat(output).contains("*Detailed file differences:*")
   }
 
   @Test
@@ -440,7 +530,7 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
-  fun testAabStats_writeSummaryTo_statsWithDiffs_longSummaryOn_lowLimit_printsLimited() {
+  fun testAabStats_writeSummaryTo_statsAndDiffs_longSummaryOn_withItemLimit_printsLimitedDetails() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -451,12 +541,13 @@ class ComputeAabDifferencesTest {
     assertThat(output).contains("## Alpha")
     assertThat(output).contains("*Detailed file differences:*")
     assertThat(output).doesNotContain("<details>")
+    assertThat(output).doesNotContain("</details></details>")
     assertThat(output).contains("### Universal APK")
     assertThat(output).contains("### AAB differences")
   }
 
   @Test
-  fun testAabStats_writeSummaryTo_statsWithDiffs_longSummaryOn_highLimit_printsExtensive() {
+  fun testAabStats_writeSummaryTo_statsAndDiffs_longSummaryOn_withLimit_printsExtensiveDetails() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -469,13 +560,14 @@ class ComputeAabDifferencesTest {
     assertThat(output).contains("## Dev")
     assertThat(output).contains("*Detailed file differences:*")
     assertThat(output).doesNotContain("<details>")
+    assertThat(output).doesNotContain("</details></details>")
     assertThat(output).contains("### Universal APK")
     assertThat(output).contains("#### Base APK")
     assertThat(output).doesNotContain("And")
   }
 
   @Test
-  fun testBuildStats_writeSummariesTo_oneProfile_shortSummary_generatesCorrectOutput() {
+  fun testEntireScript_usingMain_forOneProfile_generatesCorrectShortSummary() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -492,7 +584,7 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
-  fun testBuildStats_writeSummariesTo_oneProfile_longSummary_generatesCorrectOutput() {
+  fun testEntireScript_usingMain_forOneProfile_generatesCorrectLongSummary() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -510,7 +602,7 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
-  fun testBuildStats_writeSummariesTo_twoProfiles_shortSummary_generatesCorrectOutput() {
+  fun testEntireScript_usingMain_forTwoProfiles_generatesCorrectShortSummary() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -530,7 +622,7 @@ class ComputeAabDifferencesTest {
   }
 
   @Test
-  fun testBuildStats_writeSummariesTo_twoProfiles_longSummary_generatesCorrectOutput() {
+  fun testEntireScript_usingMain_forTwoProfiles_generatesCorrectLongSummary() {
     val outputStream = ByteArrayOutputStream()
     val printStream = PrintStream(outputStream)
 
@@ -663,6 +755,10 @@ class ComputeAabDifferencesTest {
   ): File {
     val aabFile = File(tempFolder.root, fileName)
     ZipOutputStream(FileOutputStream(aabFile)).use { zipOut ->
+      zipOut.putNextEntry(ZipEntry("BundleConfig.pb"))
+      zipOut.write(ByteArray(0))
+      zipOut.closeEntry()
+
       zipOut.putNextEntry(ZipEntry("base/manifest/AndroidManifest.xml"))
       zipOut.write("<manifest/>".toByteArray())
       zipOut.closeEntry()
@@ -684,7 +780,7 @@ class ComputeAabDifferencesTest {
    * Registers fake command handlers for bundletool (java) and aapt2 commands that produce
    * deterministic test output.
    */
-  private fun setupFakeBundleToolAndAapt2(
+  private fun setUpFakeBundleToolAndAapt2(
     oldPermissions: List<String> = listOf(),
     newPermissions: List<String> = listOf()
   ) {
