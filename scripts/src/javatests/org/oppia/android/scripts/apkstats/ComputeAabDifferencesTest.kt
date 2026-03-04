@@ -278,8 +278,6 @@ class ComputeAabDifferencesTest {
       .contains("The file does not seem to be a valid zip file")
   }
 
-  // Tests 1-4: computeBuildStats with valid AABs via FakeCommandExecutor.
-
   @Test
   fun testComputeBuildStats_oneProfile_sameAab_returnsCorrectAabStatsWithNoDiffs() {
     val aabFile = createValidAabFile("same_aab.aab")
@@ -396,8 +394,6 @@ class ComputeAabDifferencesTest {
     ).isTrue()
   }
 
-  // Tests 5-9: writeSummaryTo tests.
-
   @Test
   fun testAabStats_writeSummaryTo_emptyStats_printsMinimalOutput() {
     val outputStream = ByteArrayOutputStream()
@@ -478,8 +474,6 @@ class ComputeAabDifferencesTest {
     assertThat(output).doesNotContain("And")
   }
 
-  // Tests 10-13: BuildStats.writeSummariesTo tests.
-
   @Test
   fun testBuildStats_writeSummariesTo_oneProfile_shortSummary_generatesCorrectOutput() {
     val outputStream = ByteArrayOutputStream()
@@ -555,8 +549,6 @@ class ComputeAabDifferencesTest {
     assertThat(output).contains("## Alpha")
     assertThat(output).doesNotContain("<details>")
   }
-
-  // Helper methods.
 
   private fun createComputeAabDifferences(): ComputeAabDifferences {
     return ComputeAabDifferences(
