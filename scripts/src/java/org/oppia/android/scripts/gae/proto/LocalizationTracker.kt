@@ -3,9 +3,9 @@ package org.oppia.android.scripts.gae.proto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.awaitAll
 import org.oppia.android.scripts.gae.gcs.GcsService
+import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
@@ -25,6 +25,7 @@ import org.oppia.android.scripts.gae.json.SubtitledText
 import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor.TranslatableActivityId
 import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
+import org.oppia.proto.v1.structure.ImageWithRegionsDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.LocalizableTextDto
 import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
@@ -177,13 +178,22 @@ class LocalizationTracker private constructor(
     }
   }
 
+  fun trackImageRegion(id: ContainerId, imageWithRegions: ImageWithRegionsDto) {
+    val container = getExpectedContainer(id)
+    container.recordImageRegion(imageWithRegions)
+  }
+
   fun isLanguageSupported(id: ContainerId, language: LanguageType): Boolean =
     language in getExpectedContainer(id).getSupportedLanguages()
 
   suspend fun computeSpecificContentLocalization(
     id: ContainerId,
     language: LanguageType
-  ): ContentLocalizationDto = getExpectedContainer(id).computeSpecificContentLocalization(language)
+  ): ContentLocalizationDto {
+    return getExpectedContainer(id).also {
+      checkForNoErrors()
+    }.computeSpecificContentLocalization(language)
+  }
 
   // TODO: Document that 'defaultLanguage' can redefine the default language of the container based
   //  on available languages.
@@ -191,6 +201,7 @@ class LocalizationTracker private constructor(
     id: ContainerId,
     defaultLanguage: LanguageType
   ): ContentLocalizationsDto {
+    checkForNoErrors()
     return getExpectedContainer(id).computeCompleteLocalizationPack(defaultLanguage)
   }
 
@@ -209,6 +220,17 @@ class LocalizationTracker private constructor(
   private fun getExpectedContainer(id: ContainerId): Container {
     require(id in containers) { "Expected container to be initialized with ID: $id." }
     return containers.getValue(id)
+  }
+
+  private fun checkForNoErrors() {
+    val allErrors = containers.values.flatMapTo(mutableSetOf()) { it.allErrors }
+    if (allErrors.isNotEmpty()) {
+      println("${allErrors.size} errors found:")
+      allErrors.forEach {
+        println("- $it")
+      }
+      error("Errors found.")
+    }
   }
 
   sealed class ContainerId {
@@ -245,6 +267,12 @@ class LocalizationTracker private constructor(
       override val gcsEntityId: String = subtopicPageIdDto.topicId
     }
 
+    data class Classroom(val id: String) : ContainerId() {
+      override val webTranslatableActivityId by lazy { TranslatableActivityId.Classroom(id) }
+      override val gcsImageContainerType = GcsService.ImageContainerType.CLASSROOM
+      override val gcsEntityId = id
+    }
+
     data class Topic(val id: String) : ContainerId() {
       override val webTranslatableActivityId by lazy { TranslatableActivityId.Topic(id) }
       override val gcsImageContainerType = GcsService.ImageContainerType.TOPIC
@@ -276,6 +304,8 @@ class LocalizationTracker private constructor(
     }
 
     companion object {
+      fun createFrom(gaeClassroom: GaeClassroom): ContainerId = Classroom(gaeClassroom.id)
+
       fun createFrom(gaeTopic: GaeTopic): ContainerId = Topic(gaeTopic.id)
 
       fun createFrom(topicId: String, gaeSubtopic: GaeSubtopic): ContainerId {
@@ -341,6 +371,8 @@ class LocalizationTracker private constructor(
     private val defaultAssets: TrackedAssets get() = languages.getValue(defaultLanguage)
     private val defaultContentIds: Set<String> get() = defaultAssets.allContentIds
     private val contextsToDownloadFromOppiaWeb = mutableSetOf<ContentContext>()
+    private val errors = mutableSetOf<String>()
+    val allErrors: Set<String> get() = errors + languages.values.flatMap { it.errors }
 
     fun recordDefaultThumbnail(thumbnail: ThumbnailDto) =
       defaultAssets.recordThumbnail(id, thumbnail)
@@ -384,6 +416,9 @@ class LocalizationTracker private constructor(
       ensureDefaultLanguageHasContent(contentId)
       retrieveAssetsForLanguage(language).recordVoiceover(id, contentId, voiceover)
     }
+
+    fun recordImageRegion(imageWithRegions: ImageWithRegionsDto) =
+      defaultAssets.recordImageRegion(imageWithRegions)
 
     fun getSupportedLanguages(): Set<LanguageType> = languages.keys
 
@@ -430,7 +465,47 @@ class LocalizationTracker private constructor(
       languages.getOrPut(language) { TrackedAssets(language) }
 
     private fun ensureDefaultLanguageHasContent(contentId: String) {
-      check(contentId in defaultContentIds) {
+      // TODO: Remove these specific exemptions once they're fixed on upstream web.
+      val expectedExemptionCase = when {
+        id !is ContainerId.Exploration -> 0
+        id.id == "bWHHbghtVQKU" && contentId == "hint_46" -> 10
+        id.id == "W50hotX4h_Up" -> when (contentId) {
+          "hint_22" -> 20
+          "hint_23" -> 21
+          else -> 0
+        }
+        id.id == "C8QUgzIETvRv" -> when (contentId) {
+          "content_220" -> 30
+          "feedback_161" -> 31
+          "feedback_222" -> 32
+          "default_outcome_160" -> 33
+          "default_outcome_221" -> 34
+          "ca_choices_223" -> 35
+          "ca_choices_224" -> 36
+          "ca_choices_225" -> 37
+          "ca_choices_226" -> 38
+          "feedback_14" -> 45
+          else -> 0
+        }
+        id.id == "OKxYhsWONHZV" && contentId == "ca_choices_128" -> 39
+        id.id == "W0xq3jW5GzDF" && contentId == "feedback_2" -> 40
+        id.id == "53Ka3mQ6ra5A" -> when (contentId) {
+          "content_91" -> 41
+          "default_outcome_92" -> 42
+          "feedback_93" -> 43
+          "ca_buttonText_23" -> 44
+          else -> 0
+        }
+        else -> 0
+      }
+      if (contentId !in defaultContentIds && expectedExemptionCase > 0) return
+      check(expectedExemptionCase == 0) { "Exemption $expectedExemptionCase should be removed." }
+      if (contentId !in defaultContentIds) {
+        errors +=
+          "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
+          " $id, content ID: $contentId."
+      }
+      require(contentId in defaultContentIds) {
         "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
           " $id, content ID: $contentId."
       }
@@ -440,11 +515,18 @@ class LocalizationTracker private constructor(
   private data class TrackedAssets(
     val language: LanguageType,
     val textTranslations: MutableMap<String, LocalizableTextDto> = mutableMapOf(),
-    val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf()
+    val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf(),
+    val imageRegionPaths: MutableSet<String> = mutableSetOf(),
   ) {
+    val errors = mutableSetOf<String>()
+
     var thumbnail: ThumbnailDto? = null
 
     val allContentIds: Set<String> get() = textTranslations.keys + voiceovers.keys
+
+    fun recordImageRegion(imageWithRegions: ImageWithRegionsDto) {
+      imageRegionPaths += imageWithRegions.imageFilePath
+    }
 
     fun recordThumbnail(id: ContainerId, thumbnail: ThumbnailDto) {
       require(this.thumbnail == null) {
@@ -496,7 +578,7 @@ class LocalizationTracker private constructor(
         }
       }.distinct()
       val referencedImageFilenames =
-        htmlTexts.flatMapTo(mutableSetOf(), ::collectAllImageSourcesFromHtml)
+        htmlTexts.flatMapTo(mutableSetOf(), ::collectAllImageSourcesFromHtml) + imageRegionPaths
 
       // Batch all of the image requests together so that they can run in parallel.
       val imageSizes = referencedImageFilenames.map { filename ->
@@ -529,6 +611,36 @@ class LocalizationTracker private constructor(
       contentId: String,
       localization: LocalizableTextDto
     ) {
+      // TODO: Remove these exemptions once they're fixed in web.
+      val expectedExemption = when {
+        id !is ContainerId.Exploration -> false
+        id.id == "xtbP46LKl1uj" && contentId == "solution_137" -> true
+        id.id == "ua7FTOXRaRjb" && contentId == "solution_139" -> true
+        id.id == "sRqParMOyWWB" && contentId == "solution_121" -> true
+        id.id == "Sl4TGJQhSjmk" && contentId == "solution_85" -> true
+        id.id == "rDJojPOc0KgJ" && contentId == "solution_148" -> true
+        id.id == "rwN3YPG9XWZa" && contentId == "solution_91" -> true
+        id.id == "ibeLZqbbjbKF" && contentId == "solution_141" -> true
+        id.id == "m1nvGABWeUoh" -> when (contentId) {
+          "solution_168" -> true
+          "solution_167" -> true
+          else -> false
+        }
+        id.id == "2EOuIfQHljkN" -> when (contentId) {
+          "solution_127" -> true
+          "solution_130" -> true
+          else -> false
+        }
+        id.id == "BJd7yHIxpqkq" && contentId == "solution_110" -> true
+        else -> false
+      }
+      if (contentId in textTranslations && expectedExemption) return
+      if (contentId in textTranslations) {
+        errors +=
+          "Translation already recorded for content ID: $contentId, for language: $language, in" +
+          " container: $id."
+        return
+      }
       require(contentId !in textTranslations) {
         "Translation already recorded for content ID: $contentId, for language: $language, in" +
           " container: $id."
@@ -543,8 +655,7 @@ class LocalizationTracker private constructor(
     @Json(name = "svg_filename") val svgFilename: String
   ) {
     companion object {
-      // TODO: Remove KotlinJsonAdapterFactory so that it can be done without reflection.
-      private val moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
+      private val moshi by lazy { Moshi.Builder().build() }
       private val adapter by lazy { moshi.adapter(MathContentValue::class.java) }
 
       internal fun parseFromHtmlValue(htmlValue: String): MathContentValue {

@@ -55,15 +55,22 @@ data class GaeWrittenTranslation(
       GaeWrittenTranslation(dataFormat, translation, needsUpdate)
   }
 
+  @JsonClass(generateAdapter = true)
+  data class PeekableWrittenTranslation(
+    @Json(name = "data_format") val dataFormat: GaeTranslatableContentFormat,
+    @Json(name = "translation") val translation: Any,
+    @Json(name = "needs_update") val needsUpdate: Any
+  )
+
   class Adapter(private val typeResolutionContext: TypeResolutionContext) {
     @FromJson
     fun parseFromJson(
       jsonReader: JsonReader,
-      gaeTranslatableContentFormatAdapter: JsonAdapter<GaeTranslatableContentFormat>,
-      parsableWrittenTranslationAdapter: JsonAdapter<ParsableWrittenTranslation>
+      parsableWrittenTranslationAdapter: JsonAdapter<ParsableWrittenTranslation>,
+      peekableWrittenTranslationAdapter: JsonAdapter<PeekableWrittenTranslation>
     ): GaeWrittenTranslation {
       typeResolutionContext.currentContentFormat =
-        jsonReader.peekTranslatableContentFormat(gaeTranslatableContentFormatAdapter)
+        jsonReader.peekTranslatableContentFormat(peekableWrittenTranslationAdapter)
       return jsonReader.nextCustomValue(
         parsableWrittenTranslationAdapter
       ).convertToGaeObject().also { typeResolutionContext.currentContentFormat = null }
@@ -86,13 +93,11 @@ data class GaeWrittenTranslation(
 
   private companion object {
     private fun JsonReader.peekTranslatableContentFormat(
-      contentFormatAdapter: JsonAdapter<GaeTranslatableContentFormat>
+      peekableWrittenTranslationAdapter: JsonAdapter<PeekableWrittenTranslation>
     ): GaeTranslatableContentFormat {
       return peekJson().use { jsonReader ->
-        jsonReader.nextObject {
-          if (it == "data_format") contentFormatAdapter.fromJson(jsonReader) else null
-        }["data_format"] ?: error("Missing translatable content format in translation JSON object.")
-      }
+        jsonReader.nextCustomValue(peekableWrittenTranslationAdapter)
+      }.dataFormat
     }
   }
 }

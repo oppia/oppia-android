@@ -16,6 +16,12 @@ sealed class AndroidActivityRequests {
     override val requests = listOf(latestVersion)
   }
 
+  data class SingleNonLocalized(
+    val singleVersion: ActivityRequest.NonLocalized
+  ) : AndroidActivityRequests() {
+    override val requests = listOf(singleVersion)
+  }
+
   data class NonLocalized(
     override val requests: List<ActivityRequest.NonLocalized>
   ) : AndroidActivityRequests()
