@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.IntroFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -72,7 +72,7 @@ class IntroFragment : InjectableFragment() {
      */
     fun newInstance(
       profileNickname: String,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       parentScreen: IntroActivityParams.ParentScreen
     ): IntroFragment {
       val argumentsProto =

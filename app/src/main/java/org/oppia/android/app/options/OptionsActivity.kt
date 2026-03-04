@@ -11,10 +11,10 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
 import org.oppia.android.app.model.OptionsActivityStateBundle
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
@@ -56,7 +56,7 @@ class OptionsActivity :
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var internalProfileId: Int = -1
   private lateinit var readingTextSizeLauncher: ActivityResultLauncher<Intent>
   private lateinit var audioLanguageLauncher: ActivityResultLauncher<Intent>
@@ -72,7 +72,7 @@ class OptionsActivity :
     /** Returns an [Intent] to start this activity. */
     fun createOptionsActivity(
       context: Context,
-      profileId: ProfileId?,
+      profileId: LegacyProfileId?,
       isFromNavigationDrawer: Boolean
     ): Intent {
       val args =

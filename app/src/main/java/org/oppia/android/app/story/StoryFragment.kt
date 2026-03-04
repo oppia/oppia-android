@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StoryFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -31,7 +31,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       storyId: String
     ): StoryFragment {
 
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryFragmentArguments.newBuilder().apply {
         this.classroomId = classroomId
         this.topicId = topicId
@@ -89,7 +89,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
   }
 
   override fun selectExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.databinding.databinding.CreateProfileActivityBinding
 import org.oppia.android.app.model.CreateProfileFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
@@ -24,7 +24,7 @@ class CreateProfileActivityPresenter @Inject constructor(
   private lateinit var binding: CreateProfileActivityBinding
 
   /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
+  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType) {
     binding = DataBindingUtil.setContentView(activity, R.layout.create_profile_activity)
     binding.apply {
       lifecycleOwner = activity

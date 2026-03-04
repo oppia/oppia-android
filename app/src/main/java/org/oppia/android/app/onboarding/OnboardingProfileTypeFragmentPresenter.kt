@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeFragmentBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View {
     binding = OnboardingProfileTypeFragmentBinding.inflate(
       inflater,

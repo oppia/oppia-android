@@ -15,7 +15,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.AudioFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
@@ -53,7 +53,7 @@ class AudioFragmentPresenter @Inject constructor(
 ) {
   var userIsSeeking = false
   var userProgress = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var feedbackId: String? = null
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -68,7 +68,7 @@ class AudioFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
@@ -232,6 +232,37 @@ class AudioFragmentPresenter @Inject constructor(
     if (prepared && isPauseAudioRequestPending) {
       audioViewModel.pauseAudio()
       isPauseAudioRequestPending = false
+    }
+  }
+
+  /**
+   * Handles play/pause button click with network status check.
+   * Checks if network is available before attempting to play audio.
+   * Shows offline dialog if no network is available.
+   */
+  fun handlePlayPauseButtonClick() {
+    val playStatus = audioViewModel.playStatusLiveData.value
+
+    if (playStatus == UiAudioPlayStatus.PLAYING) {
+      audioViewModel.togglePlayPause(playStatus)
+      return
+    }
+
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+        audioViewModel.togglePlayPause(playStatus)
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+        if (useCellularData) {
+          audioViewModel.togglePlayPause(playStatus)
+        } else {
+          showOfflineDialog()
+        }
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+        showOfflineDialog()
+        setAudioFragmentVisible(false)
+      }
     }
   }
 

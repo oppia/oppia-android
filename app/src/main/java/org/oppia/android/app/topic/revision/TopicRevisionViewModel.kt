@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -25,7 +25,7 @@ class TopicRevisionViewModel @Inject constructor(
   private val translationController: TranslationController,
   @TopicHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private val subtopicList: MutableList<TopicRevisionItemViewModel> = ArrayList()
   private val revisionSubtopicSelector: RevisionSubtopicSelector =
@@ -72,7 +72,7 @@ class TopicRevisionViewModel @Inject constructor(
     this.topicId = topicId
   }
 
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 }

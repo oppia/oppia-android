@@ -9,7 +9,7 @@ import org.oppia.android.app.databinding.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -31,7 +31,7 @@ class IntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileNickname: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     parentScreen: IntroActivityParams.ParentScreen
   ): View {
     binding = LearnerIntroFragmentBinding.inflate(

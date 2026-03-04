@@ -4,7 +4,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
@@ -18,7 +18,7 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
  * instances, but calling code is responsible for ensuring it is properly reset.
  */
 internal class ExplorationProgress {
-  internal lateinit var currentProfileId: ProfileId
+  internal lateinit var currentProfileId: LegacyProfileId
   internal lateinit var currentClassroomId: String
   internal lateinit var currentTopicId: String
   internal lateinit var currentStoryId: String
