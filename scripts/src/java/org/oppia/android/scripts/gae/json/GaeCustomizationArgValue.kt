@@ -18,6 +18,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
@@ -181,7 +182,8 @@ sealed class GaeCustomizationArgValue {
           "recommendedExplorationIds" -> jsonReader.nextStringList()
           else -> null
         }
-        INTERACTIONTYPE_NOT_SET -> error("Interaction has no customization args: $interactionType.")
+        NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
+          error("Interaction has no customization args: $interactionType.")
       } ?: error(
         "${typeResolutionContext.currentInteractionType} interaction doesn't expect" +
           " customization arg with key: $key."

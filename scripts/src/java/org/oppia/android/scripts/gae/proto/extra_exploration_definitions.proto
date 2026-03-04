@@ -23,6 +23,7 @@ message AnswerGroup {
     org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.AnswerGroupDto numeric_expression_input_instance_answer_group = 9;
     org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.AnswerGroupDto algebraic_expression_input_instance_answer_group = 10;
     org.oppia.proto.v1.structure.MathEquationInputInstanceDto.AnswerGroupDto math_equation_input_instance_answer_group = 11;
+    org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.AnswerGroupDto number_with_units_input_instance_answer_group = 12;
   }
 }
 
@@ -40,6 +41,7 @@ message RuleSpec {
     org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto numeric_expression_input_instance_rule_spec = 9;
     org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpecDto algebraic_expression_input_instance_rule_spec = 10;
     org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto math_equation_input_instance_rule_spec = 11;
+    org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto number_with_units_input_instance_rule_spec = 12;
   }
 }
 
@@ -55,6 +57,7 @@ message Solution {
     org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.SolutionDto numeric_expression_input_instance_solution = 6;
     org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.SolutionDto algebraic_expression_input_instance_solution = 7;
     org.oppia.proto.v1.structure.MathEquationInputInstanceDto.SolutionDto math_equation_input_instance_solution = 8;
+    org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.SolutionDto number_with_units_input_instance_solution = 9;
   }
 }
 
@@ -69,6 +72,7 @@ message SolutionAnswer {
     org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto list_of_sets_of_translatable_html_content_ids = 6;
     org.oppia.proto.v1.structure.RatioExpressionDto ratio_expression = 7;
     string math_expression = 8;
+    org.oppia.proto.v1.structure.NumberWithUnitsDto number_with_units = 9;
   }
 }
 
@@ -87,6 +91,7 @@ message RuleInputType {
     org.oppia.proto.v1.structure.TranslatableHtmlContentIdDto translatable_html_content_id = 9;
     org.oppia.proto.v1.structure.RatioExpressionDto ratio_expression = 10;
     string math_expression = 11;
+    org.oppia.proto.v1.structure.NumberWithUnitsDto number_with_units = 12;
   }
 }
 
