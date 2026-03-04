@@ -1,6 +1,6 @@
 package org.oppia.android.domain.question
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.topic.TopicController
@@ -45,7 +45,7 @@ class QuestionTrainingController @Inject constructor(
    *     requests, succeeded
    */
   fun startQuestionTrainingSession(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     skillIdsList: List<String>
   ): DataProvider<Any?> {
     return try {

@@ -1,5 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
+import android.view.View
 import androidx.databinding.ObservableBoolean
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -29,6 +30,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.app.view.models.R
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
@@ -38,6 +40,8 @@ import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toAnswerString
 import org.oppia.android.util.math.toPlainString
 import org.oppia.android.util.math.toRawLatex
+import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import javax.inject.Inject
 
@@ -61,18 +65,24 @@ class SolutionViewModel private constructor(
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
   val isFlashback: Boolean,
-  val solutionBoxStrokeWidth: Int
+  val solutionBoxStrokeWidth: Int,
+  private val consoleLogger: ConsoleLogger
 ) {
-  /**
-   * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
-   * of the original summary.
-   */
+  /** Lazily computes the accessibility content description for the solution summary HTML content. */
   val solutionSummaryContentDescription by lazy {
-    CustomHtmlContentHandler.fromHtml(
+    CustomHtmlContentHandler.getContentDescription(
       solutionSummary,
-      imageRetriever = null,
-      customTagHandlers = mapOf()
-    ).toString()
+      customTagHandlers = mapOf(
+        CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+          listener = object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+            override fun onConceptCardLinkClicked(view: View, skillId: String) {
+              // No action for TalkBack readout
+            }
+          },
+          consoleLogger = consoleLogger
+        )
+      )
+    )
   }
 
   /** A displayable HTML representation of the correct answer presented by this model's solution. */
@@ -239,7 +249,8 @@ class SolutionViewModel private constructor(
   /** Application-injectable factory to create [SolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val appLanguageResourceHandler: AppLanguageResourceHandler,
-    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+    private val consoleLogger: ConsoleLogger
   ) {
     /**
      * Returns a new [SolutionViewModel] with the specified summary HTML text, correct answer,
@@ -269,7 +280,8 @@ class SolutionViewModel private constructor(
         mathExpressionAccessibilityUtil,
         explorationId,
         isFlashback,
-        solutionBoxStrokeWidth
+        solutionBoxStrokeWidth,
+        consoleLogger
       )
     }
 

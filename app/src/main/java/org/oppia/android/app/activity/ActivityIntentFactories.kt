@@ -1,7 +1,7 @@
 package org.oppia.android.app.activity
 
 import android.content.Intent
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 // TODO(#59): Split this up into separate interfaces & move them to the corresponding activities.
@@ -20,7 +20,7 @@ interface ActivityIntentFactories {
      * Returns a new [Intent] to start the topic activity for the specified profile, classroom
      * and topic.
      */
-    fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent
+    fun createIntent(profileId: LegacyProfileId, classroomId: String, topicId: String): Intent
 
     /**
      * Returns a new [Intent] to start the topic activity for the specified profile, classroom,
@@ -28,7 +28,7 @@ interface ActivityIntentFactories {
      * story in the topic).
      */
     fun createIntent(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String

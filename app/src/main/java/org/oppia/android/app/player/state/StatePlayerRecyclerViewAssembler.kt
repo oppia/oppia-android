@@ -52,7 +52,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
@@ -158,7 +158,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
-  private val profileId: ProfileId,
+  private val profileId: LegacyProfileId,
   private val context: Context,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
@@ -1259,7 +1259,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceBucketName: String,
     private val entityType: String,
     private val fragment: Fragment,
-    private val profileId: ProfileId,
+    private val profileId: LegacyProfileId,
     private val context: Context,
     private val interactionViewModelFactoryMap: Map<String, InteractionItemFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
@@ -1939,12 +1939,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
-       * assets, and the current logged in [ProfileId].
+       * assets, and the current logged in [LegacyProfileId].
        */
       fun create(
         resourceBucketName: String,
         entityType: String,
-        profileId: ProfileId,
+        profileId: LegacyProfileId,
         userAnswerState: UserAnswerState
       ): Builder {
         return Builder(

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.PROFILE_RENAME_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -21,7 +21,7 @@ class ProfileRenameActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     /** Returns an [Intent] for opening [ProfileRenameActivity]. */
     fun createProfileRenameActivity(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, ProfileRenameActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_RENAME_ACTIVITY)
