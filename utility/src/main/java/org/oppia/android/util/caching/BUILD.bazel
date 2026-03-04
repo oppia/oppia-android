@@ -19,7 +19,6 @@ kt_android_library(
     name = "annotations",
     srcs = [
         "LoadImagesFromAssets.kt",
-        "LoadLessonProtosFromAssets.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

@@ -3,7 +3,6 @@ package org.oppia.android.util.caching.testing
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 
 /**
  * Provides test dependencies corresponding to the app's caching policies. In particular, this
@@ -11,10 +10,6 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
  */
 @Module
 class CachingTestModule {
-  @Provides
-  @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = false
-
   @Provides
   @LoadImagesFromAssets
   fun provideLoadImagesFromAssets(): Boolean = false

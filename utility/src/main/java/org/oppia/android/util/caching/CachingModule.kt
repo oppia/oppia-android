@@ -7,10 +7,6 @@ import dagger.Provides
 @Module
 class CachingModule {
   @Provides
-  @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = false
-
-  @Provides
   @LoadImagesFromAssets
   fun provideLoadImagesFromAssets(): Boolean = false
 }
