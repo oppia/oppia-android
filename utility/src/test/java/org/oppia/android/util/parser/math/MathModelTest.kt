@@ -110,11 +110,11 @@ class MathModelTest {
     )
 
     val model2 = MathModel(
-        rawLatex = "\\frac{2}{6}",
-        lineHeight = 21.501f,
-        useInlineRendering = true,
-        equationColor = Color.BLACK
-      )
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 21.501f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
 
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")

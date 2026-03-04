@@ -398,7 +398,7 @@ class MathBitmapModelLoader private constructor(
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
       return MathBitmapModelLoader(application)
     }
-    
+
     override fun teardown() {}
   }
 }
