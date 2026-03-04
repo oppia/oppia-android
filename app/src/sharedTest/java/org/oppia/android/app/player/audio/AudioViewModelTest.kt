@@ -1,31 +1,18 @@
-package org.oppia.android.app.walkthrough.topiclist
+package org.oppia.android.app.player.audio
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import org.hamcrest.CoreMatchers.containsString
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -37,18 +24,19 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.test.R
+import org.oppia.android.app.testing.AudioFragmentTestActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -78,9 +66,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.GenericViewMatchers.Companion.withOpaqueBackground
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -90,29 +76,32 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [WalkthroughTopicListFragment]. */
+/** Tests for [AudioViewModel]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = WalkthroughTopicListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  application = AudioViewModelTest.TestApplication::class,
+  manifest = Config.NONE
 )
-class WalkthroughTopicListFragmentTest {
+class AudioViewModelTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -121,164 +110,103 @@ class WalkthroughTopicListFragmentTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  @DefaultResourceBucketName
+  lateinit var gcsResource: String
+
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
-  @After
-  fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
+  @Test
+  fun testAudioViewModel_withUnsupportedLanguage_selectedLanguageUnavailableIsTrue() {
+    ActivityScenario.launch<AudioFragmentTestActivity>(
+      AudioFragmentTestActivity.createAudioFragmentTestActivity(context, profileId = 1)
+    ).use { activityScenario ->
+      activityScenario.onActivity { activity ->
+        val audioViewModel = createAudioViewModel()
+        val state = State.newBuilder()
+          .putRecordedVoiceovers("content", VoiceoverMapping.newBuilder()
+            .putVoiceoverMapping("en", Voiceover.newBuilder().setFileName("en.mp3").build())
+            .build())
+          .build()
+        audioViewModel.setStateAndExplorationId(state, "exp_id")
+        audioViewModel.selectedLanguageCode = "hi" // Not in voiceovers
+
+        audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
+
+        assertThat(audioViewModel.selectedLanguageUnavailable.get()).isTrue()
+      }
+    }
   }
 
-  private fun createWalkthroughActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    return WalkthroughActivity.createWalkthroughActivityIntent(
-      context,
-      profileId
+  @Test
+  fun testAudioViewModel_withSupportedLanguage_selectedLanguageUnavailableIsFalse() {
+    ActivityScenario.launch<AudioFragmentTestActivity>(
+      AudioFragmentTestActivity.createAudioFragmentTestActivity(context, profileId = 1)
+    ).use { activityScenario ->
+      activityScenario.onActivity { activity ->
+        val audioViewModel = createAudioViewModel()
+        val state = State.newBuilder()
+          .putRecordedVoiceovers("content", VoiceoverMapping.newBuilder()
+            .putVoiceoverMapping("en", Voiceover.newBuilder().setFileName("en.mp3").build())
+            .build())
+          .build()
+        audioViewModel.setStateAndExplorationId(state, "exp_id")
+        audioViewModel.selectedLanguageCode = "en"
+
+        audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
+
+        assertThat(audioViewModel.selectedLanguageUnavailable.get()).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testAudioViewModel_withDifferentLocale_displaysLocalizedLanguageName() {
+    ActivityScenario.launch<AudioFragmentTestActivity>(
+      AudioFragmentTestActivity.createAudioFragmentTestActivity(context, profileId = 1)
+    ).use { activityScenario ->
+      activityScenario.onActivity { activity ->
+        val audioViewModel = createAudioViewModel()
+        val state = State.newBuilder()
+          .putRecordedVoiceovers("content", VoiceoverMapping.newBuilder()
+            .putVoiceoverMapping("hi", Voiceover.newBuilder().setFileName("hi.mp3").build())
+            .build())
+          .build()
+        audioViewModel.setStateAndExplorationId(state, "exp_id")
+        audioViewModel.selectedLanguageCode = "hi"
+
+        audioViewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
+
+        // Locale("hi").getDisplayLanguage(Locale("hi")) should give the localized name "हिन्दी".
+        assertThat(audioViewModel.selectedLanguageName.get()).isEqualTo("हिन्दी")
+      }
+    }
+  }
+
+  private fun createAudioViewModel(): AudioViewModel {
+    return AudioViewModel(
+      mock(AudioPlayerController::class.java),
+      gcsResource,
+      machineLocale,
+      resourceHandler
     )
-  }
-
-  @Test
-  fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.walkthrough_topic_recycler_view,
-          position = 0,
-          targetViewId = R.id.walkthrough_topic_header_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.what_do_you_want_to_learn)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 1
-        )
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.walkthrough_topic_recycler_view,
-          position = 1,
-          targetViewId = R.id.walkthrough_topic_name_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("First Test Topic"))
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testWalkthroughTopicListFragment_topicCard_configChange_topicNameIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 1
-        )
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.walkthrough_topic_recycler_view,
-          position = 1,
-          targetViewId = R.id.walkthrough_topic_name_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("First Test Topic"))
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
-    // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
-    //  thumbnail is being loaded through Glide.
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 4
-        )
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.walkthrough_topic_recycler_view,
-          position = 4,
-          targetViewId = R.id.walkthrough_topic_thumbnail_image_view
-        )
-      ).check(
-        matches(
-          withDrawable(
-            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 4
-        )
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.walkthrough_topic_recycler_view,
-          position = 4,
-          targetViewId = R.id.walkthrough_topic_container
-        )
-      ).check(matches(withOpaqueBackground()))
-    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Module
-  class TestModule {
-    @Provides
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -293,6 +221,7 @@ class WalkthroughTopicListFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
+      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -305,11 +234,13 @@ class WalkthroughTopicListFragmentTest {
       FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
+      GlideImageLoaderModule::class,
       HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
       ImageParsingModule::class,
+      IntentFactoryShimModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,
       LocaleProdModule::class,
@@ -326,6 +257,7 @@ class WalkthroughTopicListFragmentTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
+      TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,
@@ -336,10 +268,7 @@ class WalkthroughTopicListFragmentTest {
       SyncStatusModule::class,
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
-      TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
-      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
@@ -352,18 +281,18 @@ class WalkthroughTopicListFragmentTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(walkthroughTopicListFragmentTest: WalkthroughTopicListFragmentTest)
+    fun inject(audioViewModelTest: AudioViewModelTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWalkthroughTopicListFragmentTest_TestApplicationComponent.builder()
+      DaggerAudioViewModelTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(walkthroughTopicListFragmentTest: WalkthroughTopicListFragmentTest) {
-      component.inject(walkthroughTopicListFragmentTest)
+    fun inject(audioViewModelTest: AudioViewModelTest) {
+      component.inject(audioViewModelTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -36,7 +36,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.testing.FakeAssetRepository
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -916,8 +915,6 @@ class TopicListControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
 
     @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl

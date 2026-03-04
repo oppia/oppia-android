@@ -122,7 +122,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -905,8 +904,6 @@ class RevisionCardFragmentTest {
   @Module
   class TestModule {
     @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets

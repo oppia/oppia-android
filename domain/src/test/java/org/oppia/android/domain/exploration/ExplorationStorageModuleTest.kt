@@ -26,7 +26,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -96,8 +95,6 @@ class ExplorationStorageModuleTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
 
     @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

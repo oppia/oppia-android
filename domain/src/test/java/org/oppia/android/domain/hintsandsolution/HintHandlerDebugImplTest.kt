@@ -39,7 +39,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -418,8 +417,6 @@ class HintHandlerDebugImplTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   @Singleton

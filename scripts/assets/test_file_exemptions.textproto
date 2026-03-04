@@ -4464,7 +4464,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/LoadLessonProtosFromAssets.kt"
   test_file_not_required: true
 }
 test_file_exemption {
