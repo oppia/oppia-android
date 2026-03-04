@@ -109,8 +109,7 @@ class MathModelTest {
       equationColor = Color.BLACK
     )
 
-    val model2 =
-      MathModel(
+    val model2 = MathModel(
         rawLatex = "\\frac{2}{6}",
         lineHeight = 21.501f,
         useInlineRendering = true,

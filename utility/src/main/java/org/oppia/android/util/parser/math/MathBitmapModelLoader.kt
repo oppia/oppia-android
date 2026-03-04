@@ -12,7 +12,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options
@@ -35,6 +34,7 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
  * [MathModel]s.
@@ -74,7 +74,6 @@ class MathBitmapModelLoader private constructor(
     height: Int,
     options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
-    Log.d("MathDebug", "buildLoadData called for latex=${model.rawLatex.take(10)}")
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
@@ -153,6 +152,7 @@ class MathBitmapModelLoader private constructor(
           renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
             staticTextLayout.draw(it)
           }
+
         val finalWidth =
           if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
         val finalHeight =
@@ -185,7 +185,6 @@ class MathBitmapModelLoader private constructor(
     override fun getDataClass(): Class<ByteBuffer> = ByteBuffer::class.java
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
-    //  override fun getDataSource(): DataSource = DataSource.REMOTE
     override fun getDataSource(): DataSource = DataSource.LOCAL
 
     /**
@@ -399,6 +398,7 @@ class MathBitmapModelLoader private constructor(
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
       return MathBitmapModelLoader(application)
     }
+    
     override fun teardown() {}
   }
 }
