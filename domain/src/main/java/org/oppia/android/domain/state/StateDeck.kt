@@ -149,7 +149,7 @@ class StateDeck constructor(
       .setHasPreviousState(!isCurrentStateInitial())
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
       .setContinueButtonAnimationTimestampMs(timestamp)
-      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
+      .setShowContinueButtonAnimation(false)
       .build()
     currentDialogInteractions.clear()
     pendingTopState = state
