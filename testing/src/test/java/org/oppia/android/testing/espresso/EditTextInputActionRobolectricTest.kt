@@ -46,6 +46,62 @@ class EditTextInputActionRobolectricTest {
   }
 
   @Test
+  fun testAppendText_withEmptyInitialText_setsTextCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("")
+
+        EditTextInputAction.appendText("hello").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEqualTo("hello")
+      }
+    }
+  }
+
+  @Test
+  fun testAppendText_withEmptyAppendedText_keepsOriginalText() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("123")
+
+        EditTextInputAction.appendText("").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEqualTo("123")
+      }
+    }
+  }
+
+  @Test
+  fun testAppendText_withSpecialCharacters_appendsCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("abc")
+
+        EditTextInputAction.appendText("@#$").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEqualTo("abc@#$")
+      }
+    }
+  }
+
+  @Test
+  fun testAppendText_withUnicodeText_appendsCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("Hello ")
+
+        EditTextInputAction.appendText("\uD83C\uDF0D").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEqualTo("Hello \uD83C\uDF0D")
+      }
+    }
+  }
+
+  @Test
   fun testReplaceText_replaces_value_in_robolectric() {
     runWithLaunchedActivity {
       onActivity { activity ->
@@ -55,6 +111,34 @@ class EditTextInputActionRobolectricTest {
         EditTextInputAction.replaceText("9").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("9")
+      }
+    }
+  }
+
+  @Test
+  fun testReplaceText_withEmptyString_clearsText() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("old text")
+
+        EditTextInputAction.replaceText("").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEmpty()
+      }
+    }
+  }
+
+  @Test
+  fun testReplaceText_withUnicodeText_replacesCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val editText = EditText(activity)
+        editText.setText("old text")
+
+        EditTextInputAction.replaceText("\u0645\u0631\u062D\u0628\u0627").perform(null, editText)
+
+        assertThat(editText.text.toString()).isEqualTo("\u0645\u0631\u062D\u0628\u0627")
       }
     }
   }
