@@ -38,6 +38,11 @@ class ContinueInteractionViewModel private constructor(
   val continueButtonAnimationTimestampMs: Long
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
+  /**
+   * The text to display on the continue interaction button. This uses the exploration's custom
+   * button text (translated per [writtenTranslationContext]) if available, otherwise falls back to
+   * the default localized 'Continue' string from app resources.
+   */
   val buttonText: CharSequence = deriveButtonText(interaction)
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false

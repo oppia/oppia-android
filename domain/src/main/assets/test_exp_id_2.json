@@ -1290,7 +1290,7 @@
               }
             }],
             "outcome": {
-              "dest": "DragDropNoGroup",
+              "dest": "ContinueDefault",
               "feedback": {
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
@@ -1644,6 +1644,47 @@
         "solicit_answer_details": false,
         "next_content_id_index": -1,
         "linked_skill_id": "test_skill_id_1"
+      },
+      "ContinueDefault": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>You are almost done! Click continue to finish.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "Continue",
+          "customization_args": {},
+          "answer_groups": [],
+          "default_outcome": {
+            "dest": "DragDropNoGroup",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "Moving forward."
+            },
+            "labelled_as_correct": true,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
       },
       "DragDropNoGroup": {
         "content": {

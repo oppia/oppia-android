@@ -78,6 +78,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -167,6 +168,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -198,6 +200,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -1251,6 +1254,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
@@ -1353,6 +1357,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
@@ -1383,6 +1388,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
@@ -1421,6 +1427,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
@@ -2409,6 +2416,7 @@ class StateFragmentTest {
 
       // Text input interaction.
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Verify that the user is now on the ninth state.
       verifyViewTypeIsPresent(DRAG_DROP_SORT_INTERACTION)
@@ -2430,6 +2438,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       playThroughPrototypeState9()
@@ -2454,6 +2463,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       playThroughPrototypeState9()
 
       // Drag and drop interaction with grouping.
@@ -2588,6 +2598,61 @@ class StateFragmentTest {
       // The button label is translated using the exploration's written translations.
       onView(withId(R.id.continue_interaction_button))
         .check(matches(withText("ابدأ الاستكشاف")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_defaultContinueInteraction_buttonShowsDefaultText() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // After state 8 (Text), the exploration reaches a Continue interaction without custom button
+      // text. The button should display the default "Continue" text from app string resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText(R.string.state_continue_button)))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_arabicAppLang_defaultContinueInteraction_buttonShowsTranslatedDefault() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    forceDefaultLocale(Locale("ar", "EG"))
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // After state 8 (Text), the exploration reaches a Continue interaction without custom button
+      // text. With Arabic app language, the button should display the Arabic translation of the
+      // default "Continue" text from the app's string resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("استمرار")))
     }
   }
 
@@ -3212,6 +3277,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
@@ -3241,6 +3307,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
       dragAndDropItem(fromPosition = 0, toPosition = 3)
@@ -3272,6 +3339,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
@@ -3301,6 +3369,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
 
       dragAndDropItem(fromPosition = 0, toPosition = 3)
@@ -3332,6 +3401,7 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
+      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
       dragAndDropItem(fromPosition = 0, toPosition = 3)
       clickSubmitAnswerButton()
@@ -6384,6 +6454,11 @@ class StateFragmentTest {
     clickContinueNavigationButton()
   }
 
+  private fun playThroughPrototypeDefaultContinueState() {
+    // Continue interaction without custom button text (default "Continue").
+    clickContinueInteractionButton()
+  }
+
   private fun playThroughPrototypeExploration() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
@@ -6393,6 +6468,7 @@ class StateFragmentTest {
     playThroughPrototypeState6()
     playThroughPrototypeState7()
     playThroughPrototypeState8()
+    playThroughPrototypeDefaultContinueState()
     playThroughPrototypeState9()
     playThroughPrototypeState10()
   }
@@ -6406,6 +6482,7 @@ class StateFragmentTest {
     playThroughPrototypeState6()
     playThroughPrototypeState7()
     playThroughPrototypeState8InArabic()
+    playThroughPrototypeDefaultContinueState()
     playThroughPrototypeState9()
     playThroughPrototypeState10()
   }
@@ -6726,6 +6803,11 @@ class StateFragmentTest {
       profileId, allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
   }
 
   private fun verifyContentContains(expectedHtml: String) {
