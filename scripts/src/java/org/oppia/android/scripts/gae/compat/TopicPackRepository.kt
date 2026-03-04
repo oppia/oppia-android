@@ -130,7 +130,7 @@ class TopicPackRepository(
     gaeTopic: GaeTopic,
     metricCallbacks: MetricCallbacks
   ): List<LoadResult<TopicPackFragment>> {
-    // TODO: Batch different results?
+    // TODO: Batch results from different types of requests? Should be *much* more efficient.
     val subtopicsResult =
       tryLoadSubtopics(gaeTopic.id, gaeTopic.computeContainedSubtopicMap(), metricCallbacks)
     val storiesResult = tryLoadStories(gaeTopic.computeReferencedStoryIds(), metricCallbacks)
@@ -350,12 +350,18 @@ class TopicPackRepository(
   ): GenericLoadResult {
     return when (val result = versionStructureMapManager.lookUp(structureId, reference)) {
       is LoadResult.Pending -> {
+        val nextVersions = versionStructureMapManager.computeNextBatchOfVersionsToCheck(structureId)
+        check(nextVersions.isNotEmpty()) {
+          "At least one reference should be pending for: $reference."
+        }
         versionStructureMapManager.update(
-          structureId, reference.loadVersioned(androidService, compatibilityChecker)
+          structureId, reference.loadVersioned(androidService, compatibilityChecker, nextVersions)
         )
         // This should be present now.
         versionStructureMapManager.lookUp(structureId, reference).also {
-          check(it !is LoadResult.Pending) { "Expected reference to be loaded: $it." }
+          check(it !is LoadResult.Pending) {
+            "Expected reference to be loaded: $reference (found: $it)."
+          }
         }
       }
       is LoadResult.Success, is LoadResult.Failure -> result
@@ -541,18 +547,22 @@ private interface VersionedStructureFetcher<I : StructureId, S> {
   fun fetchLatestFromRemoteAsync(
     id: I,
     service: AndroidActivityHandlerService
-  ): Deferred<VersionedStructure<S>>
+  ): Deferred<VersionedStructure<S>?>
+
+  fun fetchSingleFromRemoteAsync(
+    id: I,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ): Deferred<VersionedStructure<S>?>
 
   fun fetchMultiFromRemoteAsync(
     id: I,
     versions: List<Int>,
     service: AndroidActivityHandlerService
-  ): Deferred<List<VersionedStructure<S>>>
+  ): Deferred<List<VersionedStructure<S>?>>
 }
 
 private sealed class VersionedStructureReference<I : StructureId, S> {
-  // TODO: Try 50 or a higher number once multi-version fetching works on Oppia web (see https://github.com/oppia/oppia/issues/18241).
-  val defaultVersionFetchCount: Int = 1
   abstract val structureId: I
   abstract val version: Int
   abstract val fetcher: VersionedStructureFetcher<I, S>
@@ -570,42 +580,57 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
   suspend fun loadLatest(
     service: AndroidActivityHandlerService,
     checker: StructureCompatibilityChecker
-  ): Pair<S, LoadResult<S>> {
+  ): Pair<S?, LoadResult<S>> {
     val result = fetcher.fetchLatestFromRemoteAsync(structureId, service)
-    return result.await().payload to result.toLoadResult(checker)
+    return result.await()?.payload to result.toLoadResult(checker)
+  }
+
+  suspend fun loadVersion(
+    service: AndroidActivityHandlerService,
+    checker: StructureCompatibilityChecker
+  ): Pair<S?, LoadResult<S>> {
+    val result = fetcher.fetchSingleFromRemoteAsync(structureId, version, service)
+    return result.await()?.payload to result.toLoadResult(checker)
   }
 
   suspend fun loadVersioned(
     service: AndroidActivityHandlerService,
-    checker: StructureCompatibilityChecker
+    checker: StructureCompatibilityChecker,
+    versionsToRequest: List<Int>
   ): Map<VersionedStructureReference<I, S>, LoadResult<S>> {
-    val oldestVersionToRequest = (version - defaultVersionFetchCount).coerceAtLeast(1)
-    val versionsToRequest = (oldestVersionToRequest until version).toList()
     val structures = fetcher.fetchMultiFromRemoteAsync(
       structureId, versionsToRequest, service
     ).toLoadResult(checker)
-    return versionsToRequest.zip(structures).toMap().mapKeys { (version, _) ->
-      toNewVersion(version)
-    }
+    return versionsToRequest.zip(structures).mapNotNull { (version, result) ->
+      if (result != null) toNewVersion(version) to result else null
+    }.toMap()
   }
 
-  private suspend fun Deferred<VersionedStructure<S>>.toLoadResult(
+  private suspend fun Deferred<VersionedStructure<S>?>.toLoadResult(
     checker: StructureCompatibilityChecker
   ): LoadResult<S> = await().toLoadResult(checker)
 
   @JvmName("listToLoadResult")
-  private suspend fun Deferred<List<VersionedStructure<S>>>.toLoadResult(
+  private suspend fun Deferred<List<VersionedStructure<S>?>>.toLoadResult(
     checker: StructureCompatibilityChecker
-  ): List<LoadResult<S>> = await().map { it.toLoadResult(checker) }
+  ): List<LoadResult<S>?> = await().map { it.toLoadResult(checker) }
 
-  private fun VersionedStructure<S>.toLoadResult(
+  private fun VersionedStructure<S>?.toLoadResult(
     checker: StructureCompatibilityChecker
   ): LoadResult<S> {
+    if (this == null) return LoadResult.Pending<S>() // Failed to download.
     return when (val compatibilityResult = checkCompatibility(checker, payload)) {
       Compatible -> LoadResult.Success(payload)
-      is Incompatible -> LoadResult.Failure<S>(compatibilityResult.failures).also {
-        // TODO: Remove.
-        error("Failed to load: $it.")
+      is Incompatible -> {
+        // TODO: Remove this once Oppia web supports pulling structures without schema migrations (see https://github.com/oppia/oppia/issues/21253).
+        val irrecoverableFailure = compatibilityResult.failures.firstOrNull {
+          it is CompatibilityFailure.StateSchemaVersionTooNew
+        }
+        check(irrecoverableFailure == null) {
+          "Oppia web introduced a state schema upgrade. Cannot recover--this " +
+            "script needs to be updated: $irrecoverableFailure"
+        }
+        LoadResult.Failure<S>(compatibilityResult.failures)
       }
     }
   }
@@ -679,6 +704,9 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
 
   companion object {
     const val INVALID_VERSION = 0
+
+    // TODO: Try 50 or a higher number once multi-version fetching doesn't cause Redis to overflow (see https://github.com/oppia/oppia/issues/21253).
+    val defaultVersionFetchCount: Int = 5
   }
 }
 
@@ -687,6 +715,12 @@ private class TopicFetcher : VersionedStructureFetcher<StructureId.Topic, GaeTop
     id: StructureId.Topic,
     service: AndroidActivityHandlerService
   ) = service.fetchLatestTopicAsync(id.id)
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Topic,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleTopicAsync(id.id, version)
 
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Topic,
@@ -701,6 +735,12 @@ private class StoryFetcher : VersionedStructureFetcher<StructureId.Story, GaeSto
     service: AndroidActivityHandlerService
   ) = service.fetchLatestStoryAsync(id.id)
 
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Story,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleStoryAsync(id.id, version)
+
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Story,
     versions: List<Int>,
@@ -713,6 +753,12 @@ private class SubtopicFetcher : VersionedStructureFetcher<StructureId.Subtopic, 
     id: StructureId.Subtopic,
     service: AndroidActivityHandlerService
   ) = service.fetchLatestRevisionCardAsync(id.topicId, id.subtopicIndex)
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Subtopic,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleRevisionCardAsync(id.topicId, id.subtopicIndex, version)
 
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Subtopic,
@@ -727,6 +773,12 @@ private class SkillFetcher : VersionedStructureFetcher<StructureId.Skill, GaeSki
     service: AndroidActivityHandlerService
   ) = service.fetchLatestConceptCardAsync(id.id)
 
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Skill,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleConceptCardAsync(id.id, version)
+
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Skill,
     versions: List<Int>,
@@ -740,10 +792,25 @@ private class ExplorationFetcher(
   override fun fetchLatestFromRemoteAsync(
     id: StructureId.Exploration,
     service: AndroidActivityHandlerService
-  ): Deferred<VersionedStructure<CompleteExploration>> {
+  ): Deferred<VersionedStructure<CompleteExploration>?> {
     return CoroutineScope(coroutineDispatcher).async {
       val latestExp = service.fetchLatestExplorationAsync(id.id).await()
-      return@async latestExp.copyWithNewPayload(service.downloadExploration(id, latestExp.payload))
+      return@async latestExp?.let {
+        it.copyWithNewPayload(service.downloadExploration(id, it.payload))
+      }
+    }
+  }
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Exploration,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ): Deferred<VersionedStructure<CompleteExploration>?> {
+    return CoroutineScope(coroutineDispatcher).async {
+      val latestExp = service.fetchSingleExplorationAsync(id.id, version).await()
+      return@async latestExp?.let {
+        it.copyWithNewPayload(service.downloadExploration(id, it.payload))
+      }
     }
   }
 
@@ -751,10 +818,10 @@ private class ExplorationFetcher(
     id: StructureId.Exploration,
     versions: List<Int>,
     service: AndroidActivityHandlerService
-  ): Deferred<List<VersionedStructure<CompleteExploration>>> {
+  ): Deferred<List<VersionedStructure<CompleteExploration>?>> {
     return CoroutineScope(coroutineDispatcher).async {
-      service.fetchExplorationByVersionsAsync(id.id, versions).await().map {
-        it.copyWithNewPayload(service.downloadExploration(id, it.payload))
+      service.fetchExplorationByVersionsAsync(id.id, versions).await().map { expResult ->
+        expResult?.let { it.copyWithNewPayload(service.downloadExploration(id, it.payload)) }
       }
     }
   }
@@ -769,9 +836,16 @@ private class ExplorationFetcher(
           id.id, exploration.version, languageType.toContentLanguageCode()
         )
       }.awaitAll()
+      val receivedTranslations = translations.filterNotNull()
+      val missingTranslations = translations.mapIndexedNotNull { index, value ->
+        index.takeIf { value == null } // Take only indexes corresponding to missing values.
+      }.map { VALID_LANGUAGE_TYPES[it] }
+      check(missingTranslations.isEmpty()) {
+        "Failed to fetch translations for exploration $id: $missingTranslations."
+      }
       return CompleteExploration(
         exploration,
-        translations.associateBy {
+        receivedTranslations.associateBy {
           it.languageCode?.resolveLanguageCode() ?: LANGUAGE_CODE_UNSPECIFIED
         }
       )
@@ -822,6 +896,8 @@ private interface VersionStructureMapManager {
 
   fun findMostRecent(structureId: StructureId): GenericStructureReference
 
+  fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int>
+
   fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference)
 
   fun update(
@@ -858,7 +934,12 @@ private class VersionStructureMapManagerTakeLatestImpl(
       // If no version of this structure has been loaded yet, preload the latest version and pending
       // results for all previous versions.
       val versionedRef = createReference(structureId, VersionedStructureReference.INVALID_VERSION)
-      val (structure, result) = versionedRef.loadLatest(androidService, compatibilityChecker)
+      val (structure, result) = try {
+        versionedRef.loadLatest(androidService, compatibilityChecker)
+      } catch (e: Exception) {
+        throw IllegalStateException("Failed to download latest structure for ID: $structureId.", e)
+      }
+      checkNotNull(structure) { "Failed to download latest structure for ID: $structureId." }
       val latestVersion = versionedRef.toNewVersion(retrieveStructureVersion(structure))
       val structureMap = mutableMapOf<GenericStructureReference, GenericLoadResult>()
       structureMap[latestVersion] = result
@@ -876,6 +957,14 @@ private class VersionStructureMapManagerTakeLatestImpl(
     return checkNotNull(references.maxByOrNull { it.version }) {
       "Failed to find most recent structure reference in map: $this for ID: $structureId."
     }
+  }
+
+  override fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int> {
+    return lock.withLock {
+      cachedStructures.getValue(structureId).filter { (_, result) ->
+        result is LoadResult.Pending
+      }.map { (reference, _) -> reference.version }
+    }.sortedDescending().take(VersionedStructureReference.defaultVersionFetchCount)
   }
 
   override fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference) {
@@ -936,7 +1025,13 @@ private class VersionStructureMapManagerFixVersionsImpl(
     if (structureId !in lock.withLock { cachedStructures }) {
       // If the fixed version hasn't been loaded yet, ensure it's loaded.
       val versionedRef = createReference(structureId, fixedVersion)
-      val (_, result) = versionedRef.loadLatest(androidService, compatibilityChecker)
+      val (_, result) = try {
+        versionedRef.loadVersion(androidService, compatibilityChecker)
+      } catch (e: Exception) {
+        throw IllegalStateException(
+          "Expected loading structure by ID $structureId for version $fixedVersion to succeed.", e
+        )
+      }
       check(result is LoadResult.Success) {
         "Expected loading structure by ID $structureId for version $fixedVersion to succeed."
       }
@@ -946,6 +1041,14 @@ private class VersionStructureMapManagerFixVersionsImpl(
 
   // There's only at most one version per ID, so that's always the 'latest'.
   override fun findMostRecent(structureId: StructureId) = lookUp(structureId).first
+
+  override fun computeNextBatchOfVersionsToCheck(structureId: StructureId): List<Int> {
+    return lock.withLock {
+      // There's only at most one version per ID, and it's either loaded or isn't.
+      val (reference, result) = lookUp(structureId)
+      return@withLock if (result is LoadResult.Pending) listOf(reference.version) else listOf()
+    }
+  }
 
   override fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference) {
     error("Cannot invalidate versions when versions are fixed, for reference:\n$reference")

@@ -19,7 +19,6 @@ import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
 import org.oppia.android.scripts.gae.json.GaeTopic
 import org.oppia.android.scripts.gae.json.GaeTranslatedContent
-import org.oppia.android.scripts.gae.json.GaeWorkedExample
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
@@ -98,7 +97,7 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
   }
 
   private fun GaeState.collectSubtitles(): Set<SubtitledText> =
-    setOf(content.toSubtitle()) + interaction.collectSubtitles()
+    setOf(content.toSubtitle()) + (interaction?.collectSubtitles() ?: emptyList())
 
   private fun GaeInteractionInstance.collectSubtitles(): Set<SubtitledText> {
     val argTexts = customizationArgs.collectSubtitles()
@@ -143,13 +142,9 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
 
   private fun GaeSkillContents.collectSubtitles(): Set<SubtitledText> {
     val explanationText = setOf(explanation.toSubtitle())
-    val workedExampleTexts = workedExamples.flatSet { it.collectSubtitles() }
     val translations = writtenTranslations.collectSubtitles()
-    return explanationText + workedExampleTexts + translations
+    return explanationText + translations
   }
-
-  private fun GaeWorkedExample.collectSubtitles(): Set<SubtitledText> =
-    setOf(question.toSubtitle(), explanation.toSubtitle())
 
   private fun GaeWrittenTranslations.collectSubtitles(): Set<SubtitledText> {
     return translationsMapping.values.flatSet {
