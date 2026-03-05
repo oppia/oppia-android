@@ -693,6 +693,8 @@
   <string name="create_profile_activity_pin_checkbox_label">Create a 3-Digit PIN for the learner (Optional)</string>
   <string name="create_profile_activity_success_dialog_title">You have successfully created a profile for %s!</string>
   <string name="create_profile_activity_success_dialog_message">Give this device to %s for them to begin learning, or continue creating profiles for more learners.</string>
+  <string name="create_profile_activity_ok_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="create_profile_activity_close_button_description">Close</string>
   <string name="onboarding_step_count_three">STEP 3 OF 5</string>
 
   <!-- Onboarding Learner Intro Activity -->

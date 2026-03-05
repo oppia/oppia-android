@@ -905,7 +905,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      //Uncheck the checkbox.
+      // Uncheck the checkbox.
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -989,20 +989,20 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
     ActivityScenario<CreateProfileActivity> {
-    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
-    val intent =
-      CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
-    intent.decorateWithUserProfileId(testProfileId)
-    intent.putProtoExtra(
-      CREATE_PROFILE_PARAMS_KEY,
-      CreateProfileActivityParams.newBuilder()
-        .setProfileType(profileType)
-        .build()
-    )
-    val scenario = launch<CreateProfileActivity>(intent)
-    testCoroutineDispatchers.runCurrent()
-    return scenario
-  }
+      val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+      val intent =
+        CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
+      intent.decorateWithUserProfileId(testProfileId)
+      intent.putProtoExtra(
+        CREATE_PROFILE_PARAMS_KEY,
+        CreateProfileActivityParams.newBuilder()
+          .setProfileType(profileType)
+          .build()
+      )
+      val scenario = launch<CreateProfileActivity>(intent)
+      testCoroutineDispatchers.runCurrent()
+      return scenario
+    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

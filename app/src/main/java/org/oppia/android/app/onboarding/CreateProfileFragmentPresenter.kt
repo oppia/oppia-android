@@ -397,6 +397,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
       setContent {
         HandOverNoticeDialog(
+          appLanguageResourceHandler = appLanguageResourceHandler,
           learnerNickname = learnerNickname,
           onDismiss = {
             dialog.dismiss()
