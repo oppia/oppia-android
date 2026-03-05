@@ -683,11 +683,16 @@
   <!-- Onboarding Create New Profile Activity -->
   <string name="create_profile_activity_title">Create Profile</string>
   <string name="create_profile_activity_header">What should we call you?</string>
+  <string name="create_profile_activity_new_learner_header">What should we call the learner?</string>
   <string name="create_profile_activity_nickname_label">Nickname</string>
   <string name="create_profile_activity_profile_picture_prompt">Tap here to add a picture</string>
-  <string name="create_profile_activity_nickname_error">Click in the box above to type your nickname.</string>
+  <string name="create_profile_activity_nickname_error">Click in the box above to type a nickname.</string>
   <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
   <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
+  <string name="create_profile_activity_pin_info">If you choose to create a PIN, the learner will have to enter it to access their account.</string>
+  <string name="create_profile_activity_pin_checkbox_label">Create a 3-Digit PIN for the learner (Optional)</string>
+  <string name="create_profile_activity_success_dialog_title">You have successfully created a profile for %s!</string>
+  <string name="create_profile_activity_success_dialog_message">Give this device to %s for them to begin learning, or continue creating profiles for more learners.</string>
   <string name="onboarding_step_count_three">STEP 3 OF 5</string>
 
   <!-- Onboarding Learner Intro Activity -->

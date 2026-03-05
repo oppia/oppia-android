@@ -84,7 +84,7 @@
       android:layout_marginStart="@dimen/phone_shared_margin_xl"
       android:layout_marginTop="@dimen/phone_shared_margin_medium"
       android:layout_marginEnd="@dimen/phone_shared_margin_xl"
-      android:text="@string/create_profile_activity_header"
+      android:text="@{viewModel.screenHeader}"
       android:textColor="@color/component_color_onboarding_shared_black_color"
       android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"
@@ -114,8 +114,7 @@
       android:textSize="@dimen/onboarding_shared_text_size_medium"
       app:layout_constraintStart_toStartOf="parent"
       app:disableAutofill="@{true}"
-      app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_label"
-      tools:text="John" />
+      app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_label" />
 
     <TextView
       android:id="@+id/create_profile_nickname_error"
@@ -134,29 +133,35 @@
       android:id="@+id/create_profile_pin_check_box"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/phone_shared_margin_large"
+      android:layout_marginTop="@dimen/phone_shared_margin_small"
       android:buttonTint="@color/component_color_shared_checkbox_selector"
-      android:text="Create a 3-Digit PIN for the learner (Optional)"
+      android:text="@string/create_profile_activity_pin_checkbox_label"
       android:checked="@={viewModel.showPinFields}"
       android:visibility="@{viewModel.showPinUi ? View.VISIBLE : View.GONE}"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_error"/>
 
     <TextView
       android:id="@+id/create_profile_pin_info"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="If you choose to create a PIN, the learner will have to insert it to access their account."
+      android:layout_marginStart="@dimen/phone_shared_margin_large"
+      android:text="@string/create_profile_activity_pin_info"
       android:drawableStart="@drawable/ic_info_icon"
       android:drawableTint="@color/component_color_onboarding_shared_green_color"
-      android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
-      app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
-      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      android:drawablePadding="@dimen/onboarding_shared_padding_medium"
+      android:layout_marginTop="@dimen/phone_shared_margin_small"
+      android:textColor="@color/component_color_onboarding_shared_green_color"
+      android:visibility="@{viewModel.showPinUi ? View.VISIBLE : View.GONE}"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_pin_check_box"/>
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/create_profile_pin_constraint_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="18dp"
+      android:layout_marginStart="@dimen/phone_shared_margin_medium"
       android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
       app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
@@ -165,10 +170,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/create_profile_pin"
         style="@style/TextInputLayout"
+        android:background="@color/component_color_shared_transparent_background_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/phone_shared_margin_medium"
         android:hint="@string/add_profile_input_pin"
+        app:errorTextColor="@color/component_color_shared_error_color"
         app:errorMessage="@{viewModel.pinErrorMsg}"
         app:helperText="@string/add_profile_required"
         app:helperTextEnabled="true"
@@ -177,7 +184,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
       <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/add_profile_activity_pin_edit_text"
+          android:id="@+id/create_profile_pin_edit_text"
           style="@style/TextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -190,10 +197,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/create_profile_confirm_pin"
         style="@style/TextInputLayout"
+        android:background="@color/component_color_shared_transparent_background_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
+        android:layout_marginTop="@dimen/phone_shared_margin_medium"
         android:hint="@string/add_profile_input_confirm_pin"
+        app:errorTextColor="@color/component_color_shared_error_color"
         app:errorMessage="@{viewModel.confirmPinErrorMsg}"
         app:helperText="@string/add_profile_required"
         app:helperTextEnabled="true"
@@ -202,7 +211,7 @@
         app:layout_constraintTop_toBottomOf="@id/create_profile_pin">
 
       <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/create_profile_activity_confirm_pin_edit_text"
+          android:id="@+id/create_profile_confirm_pin_edit_text"
           style="@style/TextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

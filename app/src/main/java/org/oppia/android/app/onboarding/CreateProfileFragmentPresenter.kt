@@ -80,8 +80,21 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView = binding.createProfileUserImageView
 
-    // Only show the PIN creation UI when a supervisor is adding an additional learner.
-    createProfileViewModel.showPinUi.set(profileType == ProfileType.ADDITIONAL_LEARNER)
+    if (profileType == ProfileType.ADDITIONAL_LEARNER) {
+      createProfileViewModel.showPinUi.set(true)
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_new_learner_header
+        )
+      )
+      binding.onboardingStepsCount?.visibility = View.GONE
+    } else {
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_header
+        )
+      )
+    }
 
     uploadImageView.apply {
       setColorFilter(
@@ -109,40 +122,55 @@ class CreateProfileFragmentPresenter @Inject constructor(
           // First-profile flow: update the existing admin/sole learner profile details.
           updateProfileDetails(nickname, profileType)
         }
+
         ProfileType.ADDITIONAL_LEARNER -> {
           // Supervisor adding a new learner profile: create a new profile entry.
           val pin = if (createProfileViewModel.showPinFields.get() == true) {
             createProfileViewModel.inputPin.get().orEmpty()
           } else ""
-          val confirm = if (createProfileViewModel.showPinFields.get() == true) {
+          val confirmPin = if (createProfileViewModel.showPinFields.get() == true) {
             createProfileViewModel.inputConfirmPin.get().orEmpty()
           } else ""
 
-          // Mirror AddProfileActivityPresenter validations.
-          var failed = false
+          var pinError = false
+          if (pin.isBlank() && confirmPin.isBlank()) {
+            createProfileViewModel.pinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length
+              )
+            )
+            pinError = true
+          }
+
+          if (createProfileViewModel.showPinFields.get() == false) {
+            createProfileViewModel.inputPin.set(null)
+            createProfileViewModel.inputConfirmPin.set(null)
+            createProfileViewModel.pinErrorMsg.set(null)
+            pinError = false
+          }
+
           if (pin.isNotEmpty() && pin.length < 3) {
             createProfileViewModel.pinErrorMsg.set(
               appLanguageResourceHandler.getStringInLocale(
                 R.string.add_profile_error_pin_length
               )
             )
-            failed = true
+            pinError = true
           }
-          if (pin != confirm) {
+          if (pin != confirmPin) {
             createProfileViewModel.confirmPinErrorMsg.set(
               appLanguageResourceHandler.getStringInLocale(
                 R.string.add_profile_error_pin_confirm_wrong
               )
             )
-            failed = true
+            pinError = true
           }
-          createProfileViewModel.hasErrorMessage.set(failed)
-          if (failed) return@setOnClickListener
+          if (pinError) return@setOnClickListener
 
           createLearnerProfile(profileName = nickname, pin = pin)
         }
+
         else -> {
-          // Defensive fallback for unexpected/unspecified profile type.
           createProfileViewModel.hasErrorMessage.set(true)
           createProfileViewModel.errorMessage.set(
             appLanguageResourceHandler.getStringInLocale(
@@ -158,6 +186,22 @@ class CreateProfileFragmentPresenter @Inject constructor(
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         createProfileViewModel.hasErrorMessage.set(false)
+      }
+    })
+
+    binding.createProfilePinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.pinErrorMsg.set(null)
+      }
+    })
+
+    binding.createProfileConfirmPinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.confirmPinErrorMsg.set(null)
       }
     })
 

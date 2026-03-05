@@ -25,16 +25,25 @@ class CreateProfileViewModel @Inject constructor(
   /** [ObservableField] that tracks the error message to be displayed to the user. */
   val errorMessage = ObservableField("")
 
-  // PIN inputs & error messages (bound from create_profile_fragment layouts).
+  /** [ObservableField] that tracks the screen header to be displayed to the user. */
+  val screenHeader = ObservableField("")
+
+  /** The learner's PIN updated as the user types in the PIN input field. */
   val inputPin = ObservableField("")
+
+  /** Used to validate that the confirmation matches the original PIN. */
   val inputConfirmPin = ObservableField("")
+
+  /** Error message containing validation feedback related to the input PIN. */
   val pinErrorMsg = ObservableField("")
+
+  /** Error message containing validation feedback related to the input confirm PIN. */
   val confirmPinErrorMsg = ObservableField("")
 
-  // Whether to show PIN fields in the UI (two-way bound to the checkbox).
+  /** Whether to show PIN fields in the UI. */
   val showPinFields = ObservableField(false)
 
-  // Whether the PIN section should be available at all (only for supervisor adding a learner).
+  /** Whether the PIN section should be available at all, only for supervisor adding a learner). */
   val showPinUi = ObservableField(false)
 
   /** List of RGB colors that have already been assigned to a profile. */
