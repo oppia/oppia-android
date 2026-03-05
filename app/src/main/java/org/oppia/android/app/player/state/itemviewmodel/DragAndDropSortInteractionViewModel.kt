@@ -390,7 +390,35 @@ class DragAndDropSortInteractionViewModel private constructor(
     } else {
       _originalChoiceItems.toMutableList()
     }
-    _originalChoiceItems = items.toMutableList()
+
+    // Set _originalChoiceItems based on the last submitted wrong answer so that
+    // getSubmitTimeError() correctly detects whether the user has made changes since then.
+    // If no answer has been submitted, keep the default ordering from interaction choices.
+    if (wrongAnswerList.isNotEmpty()) {
+      val latestWrongAnswer = wrongAnswerList.last().userAnswer
+      if (latestWrongAnswer.answer.hasListOfSetsOfTranslatableHtmlContentIds()) {
+        val lastSubmittedContentIdLists =
+          latestWrongAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+        _originalChoiceItems = lastSubmittedContentIdLists.mapIndexed { index, set ->
+          DragDropInteractionContentViewModel(
+            contentIdHtmlMap = contentIdHtmlMap,
+            htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+              for (contentIds in set.contentIdsList) {
+                addContentIds(
+                  TranslatableHtmlContentId.newBuilder().apply {
+                    contentId = contentIds.contentId
+                  }
+                )
+              }
+            }.build(),
+            itemIndex = index,
+            listSize = lastSubmittedContentIdLists.size,
+            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+            resourceHandler = resourceHandler
+          )
+        }.toMutableList()
+      }
+    }
     choiceItems = items
     return items
   }
