@@ -1060,7 +1060,8 @@ class ProfileManagementController @Inject constructor(
         directoryManagementUtil.deleteDir(internalProfileId.toString())
         learnerAnalyticsLogger.logDeleteProfile(installationId, profileId = null, profile.learnerId)
       }
-      Pair(ProfileDatabase.getDefaultInstance(), ProfileActionStatus.SUCCESS)
+      val clearedDatabase = it.toBuilder().clearProfiles().build()
+      Pair(clearedDatabase, ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       getDeferredResult(profileId = null, name = null, deferred)
