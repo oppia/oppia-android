@@ -66,7 +66,7 @@ fun HandOverNoticeDialog(
 
           Text(
             text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
-              R.string.create_profile_activity_success_dialog_title
+              R.string.create_profile_activity_success_dialog_title, learnerNickname
             ),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -82,7 +82,7 @@ fun HandOverNoticeDialog(
 
           Text(
             text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
-              R.string.create_profile_activity_success_dialog_message
+              R.string.create_profile_activity_success_dialog_message, learnerNickname
             ),
             fontSize = 18.sp,
             color = colorResource(R.color.component_color_shared_primary_text_color),
