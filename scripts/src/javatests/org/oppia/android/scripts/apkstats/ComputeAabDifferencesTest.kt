@@ -7,6 +7,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.apkstats.ComputeAabDifferences.DiffList
+import org.oppia.android.scripts.apkstats.ComputeAabDifferences.DiffList.DiffType
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
@@ -376,12 +377,35 @@ class ComputeAabDifferencesTest {
     assertThat(aabStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
     assertThat(aabStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
     assertThat(aabStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(aabStats.universalApkStats.manifestStats.permissions).hasSize(2)
+    val permEntries = aabStats.universalApkStats.manifestStats.permissions
+    assertThat(
+      permEntries.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      permEntries.any {
+        it.value == "android.permission.CAMERA" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
     assertThat(aabStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
     assertThat(aabStats.mainSplitApkStats.fileSizeStats.fileSize.hasDifference()).isFalse()
     assertThat(aabStats.mainSplitApkStats.fileSizeStats.downloadSize.hasDifference()).isFalse()
     assertThat(aabStats.mainSplitApkStats.dexStats.methodCount.hasDifference()).isFalse()
     assertThat(aabStats.mainSplitApkStats.manifestStats.features.hasDifference()).isFalse()
     assertThat(aabStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    val mainPermEntries = aabStats.mainSplitApkStats.manifestStats.permissions
+    assertThat(
+      mainPermEntries.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      mainPermEntries.any {
+        it.value == "android.permission.CAMERA" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
     assertThat(aabStats.mainSplitApkStats.assetStats.assets.hasDifference()).isFalse()
     assertThat(aabStats.configurationsList.hasDifference()).isFalse()
   }
@@ -468,6 +492,17 @@ class ComputeAabDifferencesTest {
     assertThat(devStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
     assertThat(devStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
     assertThat(devStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(devStats.universalApkStats.manifestStats.permissions).hasSize(2)
+    assertThat(
+      devStats.universalApkStats.manifestStats.permissions.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      devStats.universalApkStats.manifestStats.permissions.any {
+        it.value == "android.permission.WRITE_STORAGE" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
     assertThat(devStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
     assertThat(devStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
     assertThat(devStats.configurationsList.hasDifference()).isFalse()
@@ -476,6 +511,17 @@ class ComputeAabDifferencesTest {
     assertThat(alphaStats.universalApkStats.dexStats.methodCount.hasDifference()).isFalse()
     assertThat(alphaStats.universalApkStats.manifestStats.features.hasDifference()).isFalse()
     assertThat(alphaStats.universalApkStats.manifestStats.permissions.hasDifference()).isTrue()
+    assertThat(alphaStats.universalApkStats.manifestStats.permissions).hasSize(2)
+    assertThat(
+      alphaStats.universalApkStats.manifestStats.permissions.any {
+        it.value == "android.permission.INTERNET" && it.type == DiffType.SAME_ENTRY
+      }
+    ).isTrue()
+    assertThat(
+      alphaStats.universalApkStats.manifestStats.permissions.any {
+        it.value == "android.permission.WRITE_STORAGE" && it.type == DiffType.NEW_ENTRY
+      }
+    ).isTrue()
     assertThat(alphaStats.universalApkStats.assetStats.assets.hasDifference()).isFalse()
     assertThat(alphaStats.mainSplitApkStats.manifestStats.permissions.hasDifference()).isTrue()
     assertThat(alphaStats.configurationsList.hasDifference()).isFalse()
@@ -779,6 +825,8 @@ class ComputeAabDifferencesTest {
   /**
    * Registers fake command handlers for bundletool (java) and aapt2 commands that produce
    * deterministic test output.
+   *
+   * TODO(#4971): Replace with real AAB analysis using actual bundletool and aapt2 commands.
    */
   private fun setUpFakeBundleToolAndAapt2(
     oldPermissions: List<String> = listOf(),
