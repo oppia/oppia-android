@@ -410,7 +410,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext,
     timeToStartNoticeAnimationMs: Long?,
-    wrongAnswerList: List<AnswerAndResponse> = emptyList()
+    wrongAnswerList: List<AnswerAndResponse>
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory.create(
