@@ -245,6 +245,7 @@ kt_android_library(
         "//:oppia_api_visibility",
     ],
     deps = [
+        ":peekable_iterator",
         "//utility/src/main/java/org/oppia/android/util/extensions:string_extensions",
     ],
 )

@@ -1,7 +1,77 @@
 package org.oppia.android.util.math
 
+import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
+import java.lang.StringBuilder
+
 class NumberWithUnitsTokenizer private constructor() {
   companion object {
+    fun tokenize(input: String): Sequence<Token> = tokenize(input.toCharArray().asSequence())
+
+    private fun tokenize(input: Sequence<Char>): Sequence<Token> {
+      val chars = input.toPeekableIterator()
+      return generateSequence {
+        // Consume any whitespace that might precede a valid token.
+        chars.consumeWhitespace()
+
+        when (chars.peek()) {
+          in '0'..'9' -> tokenizeIntegerOrRealNumber(chars)
+          '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.MinusSymbol(startIndex, endIndex)
+          }
+          null -> null
+          else -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.InvalidToken(startIndex, endIndex)
+          }
+        }
+      }
+    }
+
+    private fun tokenizeIntegerOrRealNumber(chars: PeekableIterator<Char>): Token {
+      val startIndex = chars.getRetrievalCount()
+      val integerPart1 =
+        parseInteger(chars)
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+      val integerEndIndex = chars.getRetrievalCount() // The end index for integers.
+      chars.consumeWhitespace() // Whitespace is allowed between digits and the '.'.
+      return if (chars.peek() == '.') {
+        chars.next() // Parse the "." since it will be re-added later.
+        chars.consumeWhitespace() // Whitespace is allowed between the '.' and following digits.
+
+        // Another integer must follow the ".".
+        val integerPart2 = parseInteger(chars)
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+
+        val doubleValue = "$integerPart1.$integerPart2".toValidDoubleOrNull()
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        Token.PositiveRealNumber(doubleValue, startIndex, endIndex = chars.getRetrievalCount())
+      } else {
+        Token.PositiveInteger(
+          integerPart1.toIntOrNull()
+            ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount()),
+          startIndex,
+          integerEndIndex
+        )
+      }
+    }
+
+    private fun parseInteger(chars: PeekableIterator<Char>): String? {
+      val integerBuilder = StringBuilder()
+      while (chars.peek() in '0'..'9') {
+        integerBuilder.append(chars.next())
+        chars.consumeWhitespace() // Whitespace is allowed between digits.
+      }
+      return if (integerBuilder.isNotEmpty()) {
+        integerBuilder.toString()
+      } else null // Failed to parse; no digits.
+    }
+
+    private fun tokenizeSymbol(chars: PeekableIterator<Char>, factory: (Int, Int) -> Token): Token {
+      val startIndex = chars.getRetrievalCount()
+      chars.next() // Parse the symbol.
+      val endIndex = chars.getRetrievalCount()
+      return factory(startIndex, endIndex)
+    }
+
     /** Represents a token that may be encountered during tokenization. */
     sealed class Token {
       /** The (inclusive) index in the input stream at which point this token begins. */
@@ -275,6 +345,19 @@ class NumberWithUnitsTokenizer private constructor() {
 
       /** Represents an invalid character that doesn't fit any of the other [Token] types. */
       class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
+    }
+
+    private fun String.toValidDoubleOrNull(): Double? {
+      return toDoubleOrNull()?.takeIf { it.isFinite() }
+    }
+
+    private fun Char.isWhitespace(): Boolean = when (this) {
+      ' ', '\t', '\n', '\r' -> true
+      else -> false
+    }
+
+    private fun PeekableIterator<Char>.consumeWhitespace() {
+      while (peek()?.isWhitespace() == true) next()
     }
   }
 }
