@@ -699,8 +699,6 @@ class LessonDownloader(
     )
     println("- ${translationIssues.size}/${issues.size} correspond to missing translations")
     println()
-    println("Note: Transparent image detection and math tag validation are performed separately.")
-    println()
     println("Images with invalid extensions:")
     imageInvalidExtIssues.groupBy { it.container }.forEach { (container, issues) ->
       println("- Within ${container.referenceString}:")
@@ -775,8 +773,11 @@ class LessonDownloader(
     val transparentImages = memoizedLoadedImageData.filter { (file, data) ->
       imageRepairer.hasTransparentPixels(data, file.extension)
     }.keys.toList()
+    println()
+    println(
+      "Transparent image check: ${transparentImages.size} image(s) found with transparency."
+    )
     if (transparentImages.isNotEmpty()) {
-      println()
       println("Images with transparent pixels (may cause dark mode visibility issues):")
       transparentImages.forEach { file ->
         println("- ${file.name}")
