@@ -3,7 +3,6 @@ package org.oppia.android.app.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -139,6 +138,10 @@ class BindableAdapter<T : Any> internal constructor(
     /**
      * Registers a [View] inflater and bind function for views in the recycler view.
      *
+     * Note that callers which use data binding internally (e.g. via [DataBindingUtil]) should use
+     * [registerViewDataBinderWithSameModelType] instead. Using this method with data binding will
+     * result in flickering due to deferred binding execution. See #5935.
+     *
      * The inflateView and bindView functions passed in here must not hold any references to UI
      * objects except those that own the RecyclerView.
      *
@@ -162,19 +165,16 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(inflatedView) {
           override fun bind(data: T) {
             bindView(inflatedView, data)
-            // Force immediate binding execution after bindView completes. Some views registered
-            // via registerViewBinder use data binding internally (e.g. via DataBindingUtil) and
-            // set properties like htmlContent that are deferred by the binding framework. Without
-            // this call, RecyclerView may briefly display stale content from a recycled view
-            // before the binding framework flushes updates on the next frame. See: #5935.
-            DataBindingUtil.findBinding<ViewDataBinding>(inflatedView)?.executePendingBindings()
           }
         }
       }
       return this
     }
 
-    /** See [registerViewDataBinder]. */
+    /**
+     * See [registerViewDataBinder]. Binding changes are automatically synchronized after each
+     * rebind to prevent flickering from deferred data binding execution (see #5935 and #6093).
+     */
     fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
       setViewModel: (DB, T) -> Unit
@@ -188,6 +188,9 @@ class BindableAdapter<T : Any> internal constructor(
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods
      * correspond to a [View] data-binding typed [DB].
+     *
+     * Binding changes are automatically synchronized after each rebind to prevent flickering from
+     * deferred data binding execution (see #5935 and #6093).
      *
      * @param inflateDataBinding a function that inflates the root view of a data-bound layout (e.g.
      *     MyDataBinding::inflate). This may also be a function that initializes the data-binding
@@ -218,6 +221,7 @@ class BindableAdapter<T : Any> internal constructor(
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = lifecycleOwner
+            synchronizeBindingWithRebind(binding)
           }
         }
       }
@@ -261,6 +265,11 @@ class BindableAdapter<T : Any> internal constructor(
      * specified here must be properly returned in the [ComputeViewType] function passed into
      * [Factory.create].
      *
+     * Note that callers which use data binding internally (e.g. via [DataBindingUtil]) should use
+     * [registerViewDataBinder] or [registerViewDataBinderWithSameModelType] instead. Using this
+     * method with data binding will result in flickering due to deferred binding execution. See
+     * #5935.
+     *
      * The inflateView and bindView functions passed in here must not hold any references to UI
      * objects except those that own the RecyclerView.
      *
@@ -287,12 +296,6 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(inflatedView) {
           override fun bind(data: T) {
             bindView(inflatedView, data)
-            // Force immediate binding execution after bindView completes. Some views registered
-            // via registerViewBinder use data binding internally (e.g. via DataBindingUtil) and
-            // set properties like htmlContent that are deferred by the binding framework. Without
-            // this call, RecyclerView may briefly display stale content from a recycled view
-            // before the binding framework flushes updates on the next frame. See: #5935.
-            DataBindingUtil.findBinding<ViewDataBinding>(inflatedView)?.executePendingBindings()
           }
         }
       }
@@ -300,7 +303,10 @@ class BindableAdapter<T : Any> internal constructor(
       return this
     }
 
-    /** See [registerViewDataBinder]. */
+    /**
+     * See [registerViewDataBinder]. Binding changes are automatically synchronized after each
+     * rebind to prevent flickering from deferred data binding execution (see #5935 and #6093).
+     */
     fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
       viewType: E,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
@@ -315,6 +321,9 @@ class BindableAdapter<T : Any> internal constructor(
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods
      * correspond to a [View] data-binding typed [DB].
+     *
+     * Binding changes are automatically synchronized after each rebind to prevent flickering from
+     * deferred data binding execution (see #5935 and #6093).
      *
      * @param viewType the type of the view being bound
      * @param inflateDataBinding a function that inflates the root view of a data-bound layout (e.g.
@@ -350,6 +359,7 @@ class BindableAdapter<T : Any> internal constructor(
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = lifecycleOwner
+            synchronizeBindingWithRebind(binding)
           }
         }
       }
@@ -382,4 +392,17 @@ class BindableAdapter<T : Any> internal constructor(
       ): MultiTypeBuilder<T, E> = MultiTypeBuilder(T::class, computeViewType, fragment)
     }
   }
+}
+
+/**
+ * Forces the specified [ViewDataBinding] to immediately execute any pending binding changes.
+ *
+ * This is necessary because the data binding framework defers property updates (such as setting
+ * text via binding adapters) until the next animation frame. When a [RecyclerView] recycles a view
+ * holder, the old bound values remain visible until the deferred update runs, causing a brief flash
+ * of stale content. Calling [ViewDataBinding.executePendingBindings] after rebinding ensures the new
+ * values are applied synchronously. See #5935 and #6093.
+ */
+private fun synchronizeBindingWithRebind(binding: ViewDataBinding) {
+  binding.executePendingBindings()
 }
