@@ -23,6 +23,14 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.MinusSymbol>()
   }
 
+  fun isDivideSymbol() {
+    actual.asVerifiedType<Token.DivideSymbol>()
+  }
+
+  fun isInvalidToken() {
+    actual.asVerifiedType<Token.InvalidToken>()
+  }
+
   companion object {
     /** Returns a new [UnitTokenSubject] to verify aspects of the specified [Token] value. */
     fun assertThat(actual: Token): UnitTokenSubject =

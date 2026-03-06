@@ -18,6 +18,9 @@ class NumberWithUnitsTokenizer private constructor() {
           '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MinusSymbol(startIndex, endIndex)
           }
+          '/' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.DivideSymbol(startIndex, endIndex)
+          }
           null -> null
           else -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.InvalidToken(startIndex, endIndex)
