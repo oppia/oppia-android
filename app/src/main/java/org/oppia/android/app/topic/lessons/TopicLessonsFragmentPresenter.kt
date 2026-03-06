@@ -121,16 +121,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
     }
-      .registerViewBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = ViewType.VIEW_TYPE_TITLE_TEXT,
-        inflateView = { parent ->
-          TopicLessonsTitleBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { _, _ -> }
+        inflateDataBinding = TopicLessonsTitleBinding::inflate,
+        setViewModel = { _, _ -> }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_STORY_ITEM,
