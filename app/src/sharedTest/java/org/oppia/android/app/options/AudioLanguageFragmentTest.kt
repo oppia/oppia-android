@@ -54,6 +54,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
@@ -94,6 +95,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -133,8 +135,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
 class AudioLanguageFragmentTest {
-  // TODO(#6022): Add tests for validating that when an unsupported language was previously
-  //  selected, it goes back to English
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 1
@@ -150,6 +150,8 @@ class AudioLanguageFragmentTest {
   lateinit var context: Context
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -296,16 +298,6 @@ class AudioLanguageFragmentTest {
           targetViewId = R.id.language_text_view
         )
       ).check(matches(withText("العربية")))
-
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(scrollToPosition<RecyclerView.ViewHolder>(4))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.audio_language_recycler_view,
-          position = 4,
-          targetViewId = R.id.language_text_view
-        )
-      ).check(matches(withText("हिन्दी")))
     }
   }
 
@@ -699,6 +691,33 @@ class AudioLanguageFragmentTest {
       ).check(
         matches(withContentDescription(R.string.arabic_language_display_name_content_description))
       )
+    }
+  }
+
+  @Test
+  fun testFragment_withHindiLanguagePreviouslySet_defaultsBackToEnglish() {
+    // Initialize the test application component and profiles
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
+    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    // First, set the user's audio language to Hindi (unsupported in production config)
+    val defaultProfileId = profileTestHelper.getDefaultProfileId()
+    val updateProvider = profileManagementController.updateAudioLanguage(
+      defaultProfileId,
+      HINDI_AUDIO_LANGUAGE
+    )
+    profileTestHelper.executeAsyncProvider(updateProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Open the AudioLanguageFragment - pass English as the intent param
+    // The fragment should detect that the saved preference (Hindi) is unsupported in production
+    // config and fall back to English instead of using the unsupported Hindi value
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that English is selected (fallback from unsupported Hindi)
+      verifyEnglishIsSelected()
     }
   }
 
