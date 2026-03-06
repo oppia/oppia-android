@@ -56,6 +56,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -64,7 +65,6 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
@@ -123,7 +123,6 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -221,8 +220,8 @@ class HomeActivityTest {
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
-  private lateinit var profileId: ProfileId
-  private lateinit var profileId1: ProfileId
+  private lateinit var profileId: LegacyProfileId
+  private lateinit var profileId1: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -239,8 +238,8 @@ class HomeActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId1 = LegacyProfileId.newBuilder().setInternalId(internalProfileId1).build()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -1742,7 +1741,7 @@ class HomeActivityTest {
 
   // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1850,7 +1849,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
@@ -1925,7 +1924,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
@@ -1973,7 +1972,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pcm",
     appStringAndroidRegionId = "NG"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
@@ -2075,7 +2074,7 @@ class HomeActivityTest {
     profileTestHelper.initializeProfiles()
   }
 
-  private fun markSpotlightSeen(profileId: ProfileId) {
+  private fun markSpotlightSeen(profileId: LegacyProfileId) {
     spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
     testCoroutineDispatchers.runCurrent()
   }
@@ -2113,7 +2112,7 @@ class HomeActivityTest {
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -2219,8 +2218,8 @@ class HomeActivityTest {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
   }
 
-  private fun createProfileId(internalProfileId: Int): ProfileId {
-    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private fun createProfileId(internalProfileId: Int): LegacyProfileId {
+    return LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   private fun logIntoAdminTwice() {

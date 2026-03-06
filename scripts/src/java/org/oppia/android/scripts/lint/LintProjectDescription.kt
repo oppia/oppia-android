@@ -257,23 +257,23 @@ class LintProjectDescription(
       File(workingDirectory, PARTIAL_RESULTS_DIRECTORY)
     )
 
-    val moduleConfigBuilder = ModuleConfigurationBuilder(
+    val layerConfigBuilder = LayerConfigurationBuilder(
       repoRoot, bazelClient, extractedAarsDirectory,
       modelsDirectory, partialResultsDirectory,
       cacheManager,
       logger
     )
-    val initialModuleConfigs = moduleConfigBuilder.buildAllModuleConfigurations()
-    val moduleConfigs = moduleConfigBuilder.buildModelDirectory(initialModuleConfigs)
+    val initialLayerConfigs = layerConfigBuilder.buildAllLayerConfigurations()
+    val layerConfigs = layerConfigBuilder.buildModelDirectory(initialLayerConfigs)
 
-    val xmlContent = generateProjectXmlContent(cacheDirectory, moduleConfigs)
+    val xmlContent = generateProjectXmlContent(cacheDirectory, layerConfigs)
 
     return writeProjectDescriptionFile(projectDescriptionFile, xmlContent)
   }
 
   private fun generateProjectXmlContent(
     cacheDirectory: File,
-    moduleConfigs: List<ModuleConfig>
+    layerConfigs: List<LayerConfig>
   ): String = buildString {
     appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
     appendLine("<project>")
@@ -281,7 +281,7 @@ class LintProjectDescription(
     appendLine("  <cache dir='${cacheDirectory.absolutePath}'/>")
     appendLine()
 
-    moduleConfigs.forEach { config ->
+    layerConfigs.forEach { config ->
       append(generateModuleXml(config))
       appendLine()
     }
@@ -289,7 +289,7 @@ class LintProjectDescription(
     appendLine("</project>")
   }
 
-  private fun generateModuleXml(config: ModuleConfig): String = buildString {
+  private fun generateModuleXml(config: LayerConfig): String = buildString {
     appendLine("  <module")
     appendLine("""    name="${config.name}"""")
     appendLine("""    android="${config.isAndroid}"""")
@@ -359,8 +359,8 @@ class LintProjectDescription(
     }
 }
 
-/** Builds module configurations for all modules in the project. */
-private class ModuleConfigurationBuilder(
+/** Builds layer configurations for all layers in the project. */
+private class LayerConfigurationBuilder(
   private val repoRoot: File,
   bazelClient: BazelClient,
   extractedAarsDirectory: File,
@@ -371,13 +371,12 @@ private class ModuleConfigurationBuilder(
 ) {
 
   companion object {
-    // These dependencies are referenced from Gradle build files
-    // replicating the module-module dependencies
-    private val MODULE_DEPENDENCIES = mapOf(
-      ModuleName.APP to ModuleName.LIBRARY_MODULES,
-      ModuleName.TESTING to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
-      ModuleName.DOMAIN to listOf(ModuleName.UTILITY),
-      ModuleName.DATA to listOf(ModuleName.UTILITY)
+    // These dependencies are defined at a project level for approximate correspondence.
+    private val LAYER_DEPENDENCIES = mapOf(
+      LayerName.APP to LayerName.LIBRARY_LAYERS,
+      LayerName.TESTING to listOf(LayerName.UTILITY, LayerName.DOMAIN),
+      LayerName.DOMAIN to listOf(LayerName.UTILITY),
+      LayerName.DATA to listOf(LayerName.UTILITY)
     )
     private const val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
   }
@@ -389,28 +388,25 @@ private class ModuleConfigurationBuilder(
   )
   private val bazelInfo = bazelClient.retrieveBazelInfo()
 
-  /** Builds configurations for all modules in the project. */
-  fun buildAllModuleConfigurations(): List<ModuleConfig> = buildList {
-    add(buildModuleConfiguration(ModuleName.APPLICATION_MODULE, isLibrary = false))
+  /** Builds configurations for all layers in the project. */
+  fun buildAllLayerConfigurations(): List<LayerConfig> = buildList {
+    add(buildLayerConfiguration(LayerName.APPLICATION_LAYER, isLibrary = false))
 
-    ModuleName.LIBRARY_MODULES.forEach { module ->
-      add(buildModuleConfiguration(module, isLibrary = true))
+    LayerName.LIBRARY_LAYERS.forEach { layer ->
+      add(buildLayerConfiguration(layer, isLibrary = true))
     }
   }
 
-  /** Builds configuration for a single module. */
-  private fun buildModuleConfiguration(
-    module: ModuleName,
-    isLibrary: Boolean
-  ): ModuleConfig {
-    val sourceCollector = SourceFileCollector(repoRoot, module)
+  /** Builds configuration for a single code layer. */
+  private fun buildLayerConfiguration(layer: LayerName, isLibrary: Boolean): LayerConfig {
+    val sourceCollector = SourceFileCollector(repoRoot, layer)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
       .partition { path ->
         path.contains("/test/") ||
           path.contains("/sharedTest/")
       }
     val partialResultDir = File(
-      partialResultsDirectory, "${module.moduleName}-partial-results"
+      partialResultsDirectory, "${layer.layerName}-partial-results"
     ).apply {
       if (!exists() && !mkdirs()) {
         throw IllegalStateException("Failed to create partial results directory: $absolutePath")
@@ -418,37 +414,37 @@ private class ModuleConfigurationBuilder(
     }
     val annotationZips = try {
       dependencyResolver.extractAnnotationZips(
-        dependencyResolver.resolveAarFiles(module)
+        dependencyResolver.resolveAarFiles(layer)
       )
     } catch (e: Exception) {
       logger.logError("Failed to extract annotation zips: ${e.message}")
       emptyList()
     }
-    return ModuleConfig(
-      name = module.moduleName,
+    return LayerConfig(
+      name = layer.layerName,
       isAndroid = true,
       isLibrary = isLibrary,
-      isTest = module == ModuleName.TESTING,
+      isTest = layer == LayerName.TESTING,
       srcFiles = srcFiles,
       testFiles = testFiles,
       resourceDirs = sourceCollector.collectResourceDirectories(),
-      manifestFile = findManifestFile(module),
-      dependencies = MODULE_DEPENDENCIES[module]?.map { it.moduleName }.orEmpty(),
-      aarFiles = dependencyResolver.resolveAarFiles(module),
-      jarFiles = dependencyResolver.resolveJarFiles(module),
+      manifestFile = findManifestFile(layer),
+      dependencies = LAYER_DEPENDENCIES[layer]?.map { it.layerName }.orEmpty(),
+      aarFiles = dependencyResolver.resolveAarFiles(layer),
+      jarFiles = dependencyResolver.resolveJarFiles(layer),
       lintCheckJars = dependencyResolver.extractLintCheckJars(
-        dependencyResolver.resolveAarFiles(module)
+        dependencyResolver.resolveAarFiles(layer)
       ),
       partialResultsDir = partialResultDir,
       annotationZips = annotationZips,
-      proGuardFiles = sourceCollector.collectProGuardFiles(module.moduleName)
+      proGuardFiles = sourceCollector.collectProGuardFiles(layer.layerName)
     )
   }
 
-  /** Builds the model directory for each module configuration. */
-  fun buildModelDirectory(moduleConfigs: List<ModuleConfig>): List<ModuleConfig> {
-    return moduleConfigs.map { moduleConfig ->
-      val modelDirectory = File(modelsDirectory, moduleConfig.name)
+  /** Builds the model directory for each layer configuration. */
+  fun buildModelDirectory(layerConfigs: List<LayerConfig>): List<LayerConfig> {
+    return layerConfigs.map { layerConfig ->
+      val modelDirectory = File(modelsDirectory, layerConfig.name)
 
       if (!modelDirectory.exists() && !modelDirectory.mkdirs()) {
         throw IllegalStateException(
@@ -457,25 +453,25 @@ private class ModuleConfigurationBuilder(
       }
 
       val modelCreator = LintModelCreator(modelDirectory, repoRoot, bazelInfo)
-      val generatedModelDir = modelCreator.generateModelFiles(moduleConfig)
+      val generatedModelDir = modelCreator.generateModelFiles(layerConfig)
 
-      moduleConfig.copy(lintModelDir = generatedModelDir)
+      layerConfig.copy(lintModelDir = generatedModelDir)
     }
   }
 
-  private fun findManifestFile(module: ModuleName): String {
-    val manifestPath = File(repoRoot, "${module.moduleName}/$ANDROID_MANIFEST_PATH")
+  private fun findManifestFile(layer: LayerName): String {
+    val manifestPath = File(repoRoot, "${layer.layerName}/$ANDROID_MANIFEST_PATH")
     require(manifestPath.exists()) {
-      "Manifest file not found for module: ${module.moduleName} at ${manifestPath.absolutePath}"
+      "Manifest file not found for layer: ${layer.layerName} at ${manifestPath.absolutePath}"
     }
     return manifestPath.absolutePath
   }
 }
 
-/** Helper class for collecting source files and resources for a module. */
+/** Helper class for collecting source files and resources for a layer. */
 private class SourceFileCollector(
   private val repoRoot: File,
-  module: ModuleName
+  layer: LayerName
 ) {
   companion object {
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
@@ -488,13 +484,13 @@ private class SourceFileCollector(
     private const val EXCLUDED_SOURCE_FILE = "DataBinderMapperImpl.java"
   }
 
-  private val moduleName = module.moduleName
-  private val sourceDir = File(repoRoot, "$moduleName/${SdkConstants.FD_SOURCES}")
+  private val layerName = layer.layerName
+  private val sourceDir = File(repoRoot, "$layerName/${SdkConstants.FD_SOURCES}")
 
-  /** Collects the source files for the module. */
+  /** Collects the source files for the layer. */
   fun collectSourceFiles(): List<String> = collectFilesFromDirectory(sourceDir)
 
-  /** Collects the resource directories for the module. */
+  /** Collects the resource directories for the layer. */
   fun collectResourceDirectories(): List<String> = buildList {
     if (sourceDir.exists()) {
       sourceDir.walkTopDown()
@@ -503,9 +499,9 @@ private class SourceFileCollector(
     }
   }
 
-  /** Collects the proguard files for the module. */
-  fun collectProGuardFiles(moduleName: String): List<String> {
-    if (moduleName != ModuleName.APP.moduleName) return emptyList()
+  /** Collects the proguard files for the layer. */
+  fun collectProGuardFiles(layerName: String): List<String> {
+    if (layerName != LayerName.APP.layerName) return emptyList()
 
     val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
 
@@ -531,7 +527,7 @@ private class SourceFileCollector(
   }
 }
 
-/** Helper class for resolving module dependencies. */
+/** Helper class for resolving layer dependencies. */
 private class DependencyResolver(
   private val bazelClient: BazelClient,
   repoRoot: File,
@@ -542,25 +538,25 @@ private class DependencyResolver(
   private val pathResolver = PathResolver(repoRoot, bazelClient, cacheManager, logger)
   private val aarExtractor = AarExtractor(cacheManager)
 
-  /** Resolves the AAR files for the given module. */
-  fun resolveAarFiles(module: ModuleName): List<AarFileInfo> {
-    val allDependencies = getDependenciesWithCache(module.moduleName)
+  /** Resolves the AAR files for the given layer. */
+  fun resolveAarFiles(layer: LayerName): List<AarFileInfo> {
+    val allDependencies = getDependenciesWithCache(layer.layerName)
     val aarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
 
     if (aarFiles.isEmpty()) {
       return emptyList()
     }
 
-    val moduleAarsDirectory = ensureDirectoryExists(File(extractedAarsDirectory, module.moduleName))
+    val layerAarsDirectory = ensureDirectoryExists(File(extractedAarsDirectory, layer.layerName))
 
     return aarFiles.mapNotNull { aarFile ->
-      processAarFile(aarFile, moduleAarsDirectory)
+      processAarFile(aarFile, layerAarsDirectory)
     }
   }
 
-  /** Resolves the JAR files for the given module. */
-  fun resolveJarFiles(module: ModuleName): List<String> {
-    val allDependencies = getDependenciesWithCache(module.moduleName)
+  /** Resolves the JAR files for the given layer. */
+  fun resolveJarFiles(layer: LayerName): List<String> {
+    val allDependencies = getDependenciesWithCache(layer.layerName)
     return allDependencies
       .filter { it.endsWith(".${SdkConstants.EXT_JAR}") }
       .mapNotNull { jarFile ->
@@ -590,12 +586,12 @@ private class DependencyResolver(
       if (annotationZip.exists()) annotationZip.absolutePath else null
     }
 
-  private fun getDependenciesWithCache(moduleName: String): List<String> =
-    cacheManager.getDependencies(moduleName) {
-      bazelClient.retrieveTargetModuleDependencies("//$moduleName:*")
+  private fun getDependenciesWithCache(layerName: String): List<String> =
+    cacheManager.getDependencies(layerName) {
+      bazelClient.retrieveTargetModuleDependencies("//$layerName:*")
     }
 
-  private fun processAarFile(aarFile: String, moduleAarsDirectory: File): AarFileInfo? {
+  private fun processAarFile(aarFile: String, layerAarsDirectory: File): AarFileInfo? {
     val resolvedAarPath = pathResolver.resolveBazelPath(aarFile)
       ?: return null
 
@@ -605,7 +601,7 @@ private class DependencyResolver(
     }
 
     return try {
-      val extractedPath = aarExtractor.extractAar(resolvedAarPath, moduleAarsDirectory)
+      val extractedPath = aarExtractor.extractAar(resolvedAarPath, layerAarsDirectory)
       AarFileInfo(resolvedAarPath, extractedPath)
     } catch (e: ZipException) {
       throw ZipException("Invalid AAR file format: $aarFile")
@@ -675,19 +671,19 @@ private class AarExtractor(private val cacheManager: CacheManager) {
   }
 
   /** Extracts the contents of an AAR file to a specified directory. */
-  fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String =
+  fun extractAar(aarFilePath: String, layerAarsDirectory: File): String =
     cacheManager.getAarExtraction(aarFilePath) {
-      performAarExtraction(aarFilePath, moduleAarsDirectory)
+      performAarExtraction(aarFilePath, layerAarsDirectory)
     }
 
-  private fun performAarExtraction(aarFilePath: String, moduleAarsDirectory: File): String {
+  private fun performAarExtraction(aarFilePath: String, layerAarsDirectory: File): String {
     val aarFile = File(aarFilePath)
     require(aarFile.exists()) {
       "AAR file does not exist: $aarFilePath"
     }
 
     val safeName = createSafeDirectoryName(aarFile.nameWithoutExtension)
-    val extractedDir = File(moduleAarsDirectory, safeName)
+    val extractedDir = File(layerAarsDirectory, safeName)
 
     if (extractedDir.exists()) {
       return extractedDir.absolutePath

@@ -25,9 +25,9 @@ import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -37,10 +37,8 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -102,13 +100,13 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
-    private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
-    private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
-    private val PROFILE_ID_4 = ProfileId.newBuilder().setInternalId(4).build()
-    private val PROFILE_ID_6 = ProfileId.newBuilder().setInternalId(6).build()
+    private val ADMIN_PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_2 = LegacyProfileId.newBuilder().setInternalId(2).build()
+    private val PROFILE_ID_3 = LegacyProfileId.newBuilder().setInternalId(3).build()
+    private val PROFILE_ID_4 = LegacyProfileId.newBuilder().setInternalId(4).build()
+    private val PROFILE_ID_6 = LegacyProfileId.newBuilder().setInternalId(6).build()
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
@@ -121,6 +119,72 @@ class ProfileManagementControllerTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testCreateDefaultProfile_ifProfileExists_checkResultIsFailure() {
+    setUpTestApplicationComponent()
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_ifProfileExists_onBoardingV2Enabled_checkResultIsFailure() {
+    setUpTestWithOnboardingV2Enabled(true)
+    // Ensure a profile already exists.
+    createDefaultProfile()
+    // Attempt to create another default profile.
+    val dataProvider = createDefaultProfile()
+
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+
+    assertThat(failure).hasMessageThat()
+      .contains("Failed to create a default profile because profiles already exist.")
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
+    setUpTestApplicationComponent()
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
+  }
+
+  @Test
+  fun testCreateDefaultProfile_createDefaultProfile_onBoardingV2Enabled_checkProfileIsAdded() {
+    setUpTestWithOnboardingV2Enabled(true)
+    val dataProvider = createDefaultProfile()
+
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val profileDatabase = readProfileDatabase()
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.allowInLessonQuickLanguageSwitching).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.isAdmin).isEqualTo(true)
+    assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
   }
 
   @Test
@@ -344,7 +408,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -360,7 +424,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -611,7 +675,7 @@ class ProfileManagementControllerTest {
     val updateProvider = profileManagementController.updateName(PROFILE_ID_6, "John")
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -654,7 +718,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -679,7 +743,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -692,7 +756,7 @@ class ProfileManagementControllerTest {
     )
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
-    assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
+    assertThat(error).hasMessageThat().contains("Profile ID 6 does not match an existing Profile")
   }
 
   @Test
@@ -823,9 +887,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testGetAudioLanguage_initialProfileCreation_defaultsToEnglish() {
     setUpTestApplicationComponent()
 
@@ -888,9 +950,7 @@ class ProfileManagementControllerTest {
     monitor.ensureNextResultIsSuccess()
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToHindi_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -904,9 +964,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(HINDI_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -920,9 +978,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabic_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -936,9 +992,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ARABIC_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToNigerianPidgin_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -952,9 +1006,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(NIGERIAN_PIDGIN_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabicThenEnglish_updateChangesAudioLanguageToEnglish() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -971,9 +1023,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateProfile1ToArabic_profile2IsUnchanged() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -1087,7 +1137,7 @@ class ProfileManagementControllerTest {
       .hasMessageThat()
       .contains(
         "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
-          "ProfileId 6 is not associated with an existing profile"
+          "Profile ID 6 is not associated with an existing profile"
       )
   }
 
@@ -1248,6 +1298,62 @@ class ProfileManagementControllerTest {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
     }
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllProfiles_profilesListIsEmpty() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+    // Restart the application to reload from disk, verifying on-disk state is correct.
+    setUpTestApplicationComponent()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllProfiles_inMemoryCacheUpdated() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+
+    // Verify that the in-memory data provider reflects the deletion without restarting.
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllProfiles_preservesNonProfileData() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+    // Update device settings to non-default values before deletion.
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateWifiPermissionDeviceSettings(
+        ADMIN_PROFILE_ID_0, downloadAndUpdateOnWifiOnly = true
+      )
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
+        ADMIN_PROFILE_ID_0, automaticallyUpdateTopics = true
+      )
+    )
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+    // Restart to verify on-disk state preserves non-profile data.
+    setUpTestApplicationComponent()
+
+    val deviceSettings = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getDeviceSettings()
+    )
+    assertThat(deviceSettings.allowDownloadAndUpdateOnlyOnWifi).isTrue()
+    assertThat(deviceSettings.automaticallyUpdateTopics).isTrue()
   }
 
   @Test
@@ -1638,7 +1744,7 @@ class ProfileManagementControllerTest {
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
 
     assertThat(failure).hasMessageThat()
-      .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
+      .contains("Profile ID ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
   @Test
@@ -1934,7 +2040,7 @@ class ProfileManagementControllerTest {
     )
   }
 
-  private fun retrieveProfile(profileId: ProfileId) =
+  private fun retrieveProfile(profileId: LegacyProfileId) =
     monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
 
   private fun retrieveCurrentSessionId() =
@@ -1952,6 +2058,10 @@ class ProfileManagementControllerTest {
     return FileInputStream(
       File(context.filesDir, "profile_database.cache")
     ).use(ProfileDatabase::parseFrom)
+  }
+
+  private fun createDefaultProfile(): DataProvider<Any?> {
+    return profileManagementController.createDefaultProfile()
   }
 
   private fun addAdminProfile(name: String, pin: String = DEFAULT_PIN): DataProvider<Any?> =
@@ -2017,8 +2127,8 @@ class ProfileManagementControllerTest {
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
-    block: suspend (profileId: ProfileId) -> T,
-    profileId: ProfileId
+    block: suspend (profileId: LegacyProfileId) -> T,
+    profileId: LegacyProfileId
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {

@@ -11,7 +11,7 @@ import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
@@ -61,7 +61,7 @@ class ProfileProgressActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
@@ -92,10 +92,10 @@ class ProfileProgressActivity :
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, ProfileProgressActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)

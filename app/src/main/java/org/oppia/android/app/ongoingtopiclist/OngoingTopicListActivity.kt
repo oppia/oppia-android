@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.ONGOING_TOPIC_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -25,10 +25,10 @@ class OngoingTopicListActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
     fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, OngoingTopicListActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ONGOING_TOPIC_LIST_ACTIVITY)

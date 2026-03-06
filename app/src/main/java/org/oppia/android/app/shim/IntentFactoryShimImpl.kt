@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
 import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import javax.inject.Inject
 
 /**
@@ -13,9 +13,9 @@ import javax.inject.Inject
  * by adding all Intent functionality here.
  *
  * Please note that this file is temporary and all functionality will be returned to its respective
- * ViewModel once Gradle has been removed.
+ * ViewModel once Bazel modularization work has completed.
  */
-// TODO(#1619): Remove file post-Gradle
+// TODO(#1619): Remove this file.
 class IntentFactoryShimImpl @Inject constructor(
   private val topicActivityIntentFactory: TopicActivityIntentFactory,
   private val recentlyPlayedActivityIntentFactory: RecentlyPlayedActivityIntentFactory
@@ -33,7 +33,7 @@ class IntentFactoryShimImpl @Inject constructor(
     storyId: String
   ): Intent {
     return topicActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
+      LegacyProfileId.newBuilder().apply {
         internalId = internalProfileId
       }.build(),
       classroomId,
@@ -52,7 +52,7 @@ class IntentFactoryShimImpl @Inject constructor(
     topicId: String
   ): Intent {
     return topicActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
+      LegacyProfileId.newBuilder().apply {
         internalId = internalProfileId
       }.build(),
       classroomId,

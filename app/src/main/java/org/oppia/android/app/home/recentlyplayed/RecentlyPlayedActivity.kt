@@ -10,7 +10,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -41,7 +41,7 @@ class RecentlyPlayedActivity :
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY =
       "RecentlyPlayedActivity.intent_extras"
 
@@ -61,7 +61,7 @@ class RecentlyPlayedActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -84,7 +84,7 @@ class RecentlyPlayedActivity :
   }
 
   override fun routeToResumeLesson(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

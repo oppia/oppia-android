@@ -42,7 +42,7 @@ import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN
 import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN
 import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -131,7 +131,8 @@ class IntroFragmentTest {
 
   private val testProfileNickname = "John"
   private val testInternalProfileId = 0
-  private val testProfileId = ProfileId.newBuilder().setInternalId(testInternalProfileId).build()
+  private val testProfileId =
+    LegacyProfileId.newBuilder().setInternalId(testInternalProfileId).build()
 
   @Before
   fun setUp() {

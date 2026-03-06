@@ -535,7 +535,7 @@ class ComputeAffectedTestsTest {
       maxTestCountPerSmallShard = 1
     )
 
-    // App module tests partition eagerly, so there should be 3 groups. Also, the code below
+    // App layer tests partition eagerly, so there should be 3 groups. Also, the code below
     // verifies duplicates by ensuring no shards are empty and there are no duplicate tests. Note
     // that it's done in this way to be resilient against potential randomness from the script.
     val allTests = reportedTargets.flatMap { it.affectedTestTargetsList }
@@ -618,7 +618,7 @@ class ComputeAffectedTestsTest {
       maxTestCountPerSmallShard = 1
     )
 
-    // See app module test above for specifics. Scripts tests are medium partitioned which means 3
+    // See app layer test above for specifics. Scripts tests are medium partitioned which means 3
     // tests will be split into two partitions.
     val allTests = reportedTargets.flatMap { it.affectedTestTargetsList }
     assertThat(reportedTargets).hasSize(2)

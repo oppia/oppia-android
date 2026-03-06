@@ -24,7 +24,7 @@ import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.databinding.databinding.CreateProfileFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -51,8 +51,9 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
+  private var avatarColor: Int = 0
   private var selectedImageUri: Uri? = null
 
   /** Launcher for picking an image from device gallery. */
@@ -62,8 +63,9 @@ class CreateProfileFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
-    profileType: ProfileType
+    profileId: LegacyProfileId,
+    profileType: ProfileType,
+    avatarColor: Int = 0
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
@@ -72,6 +74,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     )
     this.profileId = profileId
     this.profileType = profileType
+    this.avatarColor = avatarColor
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -80,12 +83,25 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView = binding.createProfileUserImageView
 
-    // Only show the PIN creation UI when a supervisor is adding an additional learner.
-    createProfileViewModel.showPinUi.set(profileType == ProfileType.ADDITIONAL_LEARNER)
+    if (profileType == ProfileType.ADDITIONAL_LEARNER) {
+      createProfileViewModel.showPinUi.set(true)
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_new_learner_header
+        )
+      )
+      binding.onboardingStepsCount?.visibility = View.GONE
+    } else {
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_header
+        )
+      )
+    }
 
     uploadImageView.apply {
       setColorFilter(
-        ResourcesCompat.getColor(
+        if (avatarColor != 0) avatarColor else ResourcesCompat.getColor(
           activity.resources,
           R.color.component_color_avatar_background_25_color,
           null
@@ -109,40 +125,55 @@ class CreateProfileFragmentPresenter @Inject constructor(
           // First-profile flow: update the existing admin/sole learner profile details.
           updateProfileDetails(nickname, profileType)
         }
+
         ProfileType.ADDITIONAL_LEARNER -> {
           // Supervisor adding a new learner profile: create a new profile entry.
           val pin = if (createProfileViewModel.showPinFields.get() == true) {
             createProfileViewModel.inputPin.get().orEmpty()
           } else ""
-          val confirm = if (createProfileViewModel.showPinFields.get() == true) {
+          val confirmPin = if (createProfileViewModel.showPinFields.get() == true) {
             createProfileViewModel.inputConfirmPin.get().orEmpty()
           } else ""
 
-          // Mirror AddProfileActivityPresenter validations.
-          var failed = false
+          var pinError = false
+          if (pin.isBlank() && confirmPin.isBlank()) {
+            createProfileViewModel.pinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length
+              )
+            )
+            pinError = true
+          }
+
+          if (createProfileViewModel.showPinFields.get() == false) {
+            createProfileViewModel.inputPin.set(null)
+            createProfileViewModel.inputConfirmPin.set(null)
+            createProfileViewModel.pinErrorMsg.set(null)
+            pinError = false
+          }
+
           if (pin.isNotEmpty() && pin.length < 3) {
             createProfileViewModel.pinErrorMsg.set(
               appLanguageResourceHandler.getStringInLocale(
                 R.string.add_profile_error_pin_length
               )
             )
-            failed = true
+            pinError = true
           }
-          if (pin != confirm) {
+          if (pin != confirmPin) {
             createProfileViewModel.confirmPinErrorMsg.set(
               appLanguageResourceHandler.getStringInLocale(
                 R.string.add_profile_error_pin_confirm_wrong
               )
             )
-            failed = true
+            pinError = true
           }
-          createProfileViewModel.hasErrorMessage.set(failed)
-          if (failed) return@setOnClickListener
+          if (pinError) return@setOnClickListener
 
           createLearnerProfile(profileName = nickname, pin = pin)
         }
+
         else -> {
-          // Defensive fallback for unexpected/unspecified profile type.
           createProfileViewModel.hasErrorMessage.set(true)
           createProfileViewModel.errorMessage.set(
             appLanguageResourceHandler.getStringInLocale(
@@ -158,6 +189,22 @@ class CreateProfileFragmentPresenter @Inject constructor(
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         createProfileViewModel.hasErrorMessage.set(false)
+      }
+    })
+
+    binding.createProfilePinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.pinErrorMsg.set(null)
+      }
+    })
+
+    binding.createProfileConfirmPinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.confirmPinErrorMsg.set(null)
       }
     })
 
@@ -211,7 +258,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       profileId = profileId,
       profileType = profileType,
       avatarImagePath = selectedImageUri,
-      colorRgb = selectUniqueRandomColor(),
+      colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
@@ -287,7 +334,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
         pin = pin,
         avatarImagePath = selectedImageUri,
         allowDownloadAccess = true,
-        colorRgb = selectUniqueRandomColor(),
+        colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
         isAdmin = false
       ).toLiveData()
       .observe(activity) { handleAddProfileResult(it, profileName) }
@@ -353,6 +400,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
       setContent {
         HandOverNoticeDialog(
+          appLanguageResourceHandler = appLanguageResourceHandler,
           learnerNickname = learnerNickname,
           onDismiss = {
             dialog.dismiss()

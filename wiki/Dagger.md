@@ -39,7 +39,7 @@ Dagger modules are defined in separate classes annotated with the @Module tag
  - Dagger object lifetimes need to be compatible with Android object lifecycles
  - Prefer constructor injection over field injection to encourage encapsulation
  - Result are activity/fragment/view presenter classes that are field-injected into their corresponding Android objects, but themselves support constructor injection
- 
+
  <table>
   <tr>
     <td>
@@ -57,10 +57,10 @@ Dagger modules are defined in separate classes annotated with the @Module tag
     <td>
     <img src="https://user-images.githubusercontent.com/64064110/148971626-5bacdbb2-45db-49ab-a11a-2a1bf7164768.png" width="550"/>
     </td>
-  </tr> 
+  </tr>
 </table>
 
-You can understand it with this example : 
+You can understand it with this example :
 
 This is a Singleton-scoped object with dependency. Note that because Factory is `@Singleton` scoped, it can inject everything in the Singleton component including blocking dispatcher.
 ```
@@ -139,5 +139,4 @@ class InMemoryBlockingCacheTest {
 Dagger compile-time errors can be hard to understand
 - When you encounter one: scan the error for the dependency name (it's likely a dependency you just imported into the file failing to compile)
 - Search for the Dagger module you want to use to provide that dependency
-- Make sure your Gradle module or Bazel build file depends on the library that contains the module you need
-- Note that Gradle modules cannot depend on the app module, which means any Dagger modules in the app Gradle module are inaccessible outside of the app module
+- Make sure your Bazel build file depends on the library that contains the module you need

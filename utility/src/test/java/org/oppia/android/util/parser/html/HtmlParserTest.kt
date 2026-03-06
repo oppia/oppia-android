@@ -94,7 +94,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -505,7 +504,7 @@ class HtmlParserTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
@@ -896,7 +895,7 @@ class HtmlParserTest {
         textView.text = htmlResult
 
         assertThat(textView.contentDescription.toString()).isEqualTo(
-          "Visit refresher lesson to learn more."
+          "Visit skill_id_1 concept card to learn more."
         )
       }
     }

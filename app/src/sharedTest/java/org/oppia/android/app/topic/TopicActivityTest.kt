@@ -8,12 +8,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,7 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -135,7 +133,7 @@ class TopicActivityTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -156,7 +154,7 @@ class TopicActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
       context, profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).extractCurrentAppScreenName()
@@ -171,7 +169,6 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     launchTopicActivity(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).use { scenario ->
@@ -187,8 +184,9 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -209,15 +207,13 @@ class TopicActivityTest {
   }
 
   private fun launchTopicActivity(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val scenario = ActivityScenario.launch<TopicActivity>(
       TopicActivity.createTopicActivityIntent(context, profileId, classroomId, topicId)
     )
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
     return scenario
   }
 

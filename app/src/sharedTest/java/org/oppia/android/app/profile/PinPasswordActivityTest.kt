@@ -48,7 +48,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -1421,7 +1421,7 @@ class PinPasswordActivityTest {
   fun testActivity_onboardingV2Enabled_nonAdminUser_onboardingIncomplete_opensIntroActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(userId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(userId).build()
     profileTestHelper.markProfileOnboardingStarted(profileId)
     launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1444,7 +1444,7 @@ class PinPasswordActivityTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponent()
     profileTestHelper.markProfileOnboardingEnded(
-      ProfileId.newBuilder().setInternalId(userId).build()
+      LegacyProfileId.newBuilder().setInternalId(userId).build()
     )
     launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(

@@ -32,6 +32,11 @@ class TransformAndroidManifestTest {
 
   private val TEST_MANIFEST_FILE_NAME = "AndroidManifest.xml"
   private val TRANSFORMED_MANIFEST_FILE_NAME = "TransformedAndroidManifest.xml"
+  private val TEST_MANIFEST_CONTENT_WITHOUT_MANIFEST =
+    """
+    <?xml version="1.0" encoding="utf-8"?>
+    <otherelement xmlns:android="http://schemas.android.com/apk/res/android" />
+    """.trimIndent()
   private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION =
     """
     <?xml version="1.0" encoding="utf-8"?>
@@ -42,6 +47,7 @@ class TransformAndroidManifestTest {
   private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS =
     """
     <?xml version="1.0" encoding="utf-8"?>
+    <!-- Comment that should be ignored. -->
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       package="org.oppia.android">
@@ -325,7 +331,33 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_allArgsCorrect_manifestMissingApplicationTag_throwsException() {
+  fun testUtility_allArgsCorrect_manifestMissingManifestElement_throwsException() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_MANIFEST)
+    }
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "develop"
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Failed to find top-level 'manifest' element in manifest file")
+  }
+
+  @Test
+  fun testUtility_allArgsCorrect_manifestMissingApplicationElement_throwsException() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION)
@@ -347,7 +379,7 @@ class TransformAndroidManifestTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Failed to find an 'application' tag in manifest")
+      .contains("Failed to find an 'application' element in manifest")
   }
 
   @Test

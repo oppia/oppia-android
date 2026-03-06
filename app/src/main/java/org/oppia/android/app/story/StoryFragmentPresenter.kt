@@ -25,7 +25,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -63,7 +63,7 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var binding: StoryFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Inject lateinit var accessibilityService: AccessibilityService
 
@@ -82,7 +82,7 @@ class StoryFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+    profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     storyViewModel.setInternalProfileId(internalProfileId)
     storyViewModel.setClassroomId(classroomId)
     storyViewModel.setTopicId(topicId)
@@ -114,7 +114,7 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   fun handleSelectExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -268,7 +268,7 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

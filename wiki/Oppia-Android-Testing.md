@@ -77,7 +77,7 @@ assertThat(logicalCondition).isTrue()
 assertThat(logicalCondition).isFalse()
 ```
 Hence assertThat should be the preferred method over the other methods.
- 
+
 ## Testing private methods/functions
 Tests should only be written to verify the behaviour of public methods/functions. Private functions should not be used in behavioural tests. Here are some suggestions for what to do in specific cases (if this doesn't help for your particular case and you're not sure what to do, please talk to @BenHenning):
 * If you want to test code execution of a private method/function, test it through the public interface, or move it to a utility (if it's general-purpose) where it becomes public. Avoid testing private APIs since that may lead to brittle test in unexpected situations (such as when the implementation of the API changes, but the behaviour remains the same).
@@ -120,7 +120,7 @@ public class MyActivityTest {
 
 3. Enter following information:
    - a) Name of test. Example: In my case "SplashActivityTest"
-   - b) Make sure select "java 11" and oppia-android.app [**Note:** For "app module test" select `oppia-android.app` similarly for "utility tests" select `oppia-android.utility`, for "domain test" select `oppia-android.domain`, for "model test" select `oppia-android.model`, for "testing" select `oppia-android.testing`]
+   - b) Make sure select "java 11" and oppia-android.app [**Note:** For "app layer test" select `oppia-android.app` similarly for "utility tests" select `oppia-android.utility`, for "domain test" select `oppia-android.domain`, for "model test" select `oppia-android.model`, for "testing" select `oppia-android.testing`]
    - c) Class path of Test class. Example: In my case "org.oppia.android.app.splash.
    SplashActivityTest"
    - d) Press `OK` to select the test.
@@ -169,7 +169,7 @@ class PinPasswordActivityTest {
 **Important note:** When running the Espresso tests, ensure that you are using the **API 28** emulator. If you use e.g. API 30, you may get a message saying "0 tests passed" when trying to run the tests.
 
 ### How to use View Matchers, View Actions and View Assertions in Espresso?
-Espresso has many ViewMatcher options which are very effective in uniquely locate UI element. You can also combine and create a combination of View Matchers to find element uniquely. 
+Espresso has many ViewMatcher options which are very effective in uniquely locate UI element. You can also combine and create a combination of View Matchers to find element uniquely.
 
 The View Matcher is written like `onView(ViewMatcher)` which are commonly used. There are two types of actions that can be performed on View those are -
 
@@ -189,7 +189,7 @@ onView(withHint("Sample_text"))
 //return TextView with links
 onView(hasLinks())
 
-// UI property matchers are mostly used in combination 
+// UI property matchers are mostly used in combination
 // withId(R.id.my_view) is a ViewMatcher
 // click() is a ViewAction
 // matches(isDisplayed()) is a ViewAssertion
@@ -214,7 +214,7 @@ A test case can never be called complete without assertions and hence it is impo
 
 ### Using isCompletelyDisplayed and isDisplayed
 
-* **isCompletelyDisplayed** : Returns a matcher which only accepts a view whose height and width fit perfectly within the currently displayed region of this view. 
+* **isCompletelyDisplayed** : Returns a matcher which only accepts a view whose height and width fit perfectly within the currently displayed region of this view.
 * There exist views (such as ScrollViews) whose height and width are larger than the physical device screen by design. Such views will _never_ be completely displayed.
 * **isDisplayed** : Returns a matcher that matches {@link View}s that are currently displayed on the screen to the user.
 * Note: isDisplayed will select views that are partially displayed (eg: the full height/width of the view is greater than the height/width of the visible rectangle). If you wish to ensure the entire rectangle this view draws is displayed to the user use isCompletelyDisplayed
@@ -272,17 +272,17 @@ fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
 # Tips to run test cases in both Espresso and Robolectric
 The project contains two kinds of tests, unit tests using Robolectric and instrumentation tests using Espresso.
 
-Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
+Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run.
 
 Espresso test might execute some checks while the app is doing some operations in the background threads, due to which the test may have no much content to interact with, therefore it throws an exception.
 
 While writing espresso test cases we should never use `Thread.sleep(period)` as this approach, we might end up having inflexible and slow tests.
 
-Sometimes it may happen that test cases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
+Sometimes it may happen that test cases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso.
 
-In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.  
-1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines. 
-2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way. 
+In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.
+1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines.
+2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way.
 
 Following are the different ways you can try to pass the test cases.
 
@@ -296,18 +296,18 @@ at least 90 percent of the view's area is displayed to the user.
 ```
 1. Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
 
-   **Example:** 
+   **Example:**
 `onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
 
-2. Sometimes the test is rejected on small screen devices. Use Robolectric `qualifiers` property that sets up the Android simulation environment with a corresponding configuration. The system’s Configuration, Display and DisplayMetrics objects will all reflect the specified configuration, the locale will be set, and appropriate resources will be selected. 
+2. Sometimes the test is rejected on small screen devices. Use Robolectric `qualifiers` property that sets up the Android simulation environment with a corresponding configuration. The system’s Configuration, Display and DisplayMetrics objects will all reflect the specified configuration, the locale will be set, and appropriate resources will be selected.
 
    Apply the `@Config(qualifiers = "port-xxhdpi")` annotation to your test package/class/method [reference](http://robolectric.org/device-configuration/).
 
-3. Along with the qualifiers, we are using our own application class rather than depending on the main application class which in our codebase is `OppiaApplication`. 
+3. Along with the qualifiers, we are using our own application class rather than depending on the main application class which in our codebase is `OppiaApplication`.
 
    `@Config(application = ExplorationActivityTest.TestApplication::class)`
 
-4. We can inject `TestCoroutineDispatchers` and provide a delay as per the requirement. 
+4. We can inject `TestCoroutineDispatchers` and provide a delay as per the requirement.
 ```kotlin
  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -336,7 +336,7 @@ at least 90 percent of the view's area is displayed to the user.
 ```
 
 ### Assertion Failure :
-1. Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
+1. Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device.
 
 - Robolectric’s default behavior is to process posted code synchronously and immediately, so the assertion fails with **[before, after, between]**, which is clearly incorrect.
 

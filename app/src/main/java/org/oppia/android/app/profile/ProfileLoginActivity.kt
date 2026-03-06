@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileLoginActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
@@ -33,8 +33,8 @@ class ProfileLoginActivity :
   }
 
   companion object {
-    private const val EXTRA_LOGIN_FLOW = "ProfileLoginActivity.login_flow"
-    const val EXTRA_LOGIN_PARAMS = "ProfileLoginActivity.params"
+    private const val LOGIN_FLOW_EXTRA = "ProfileLoginActivity.login_flow"
+    const val LOGIN_PARAMS_EXTRA = "ProfileLoginActivity.params"
 
     enum class LoginFlow(val value: Int) {
       OPEN_EXISTING_PROFILE(0),
@@ -49,30 +49,32 @@ class ProfileLoginActivity :
     /** Creates and returns an Intent to open a new [ProfileLoginActivity]. */
     fun createProfileLoginActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       loginFlow: LoginFlow = LoginFlow.OPEN_EXISTING_PROFILE
     ): Intent {
       return Intent(context, ProfileLoginActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ScreenName.PROFILE_LOGIN_ACTIVITY)
-        putExtra(EXTRA_LOGIN_FLOW, loginFlow.value)
+        putExtra(LOGIN_FLOW_EXTRA, loginFlow.value)
       }
     }
 
     /** Convenience intent for launching login as part of the add-profile flow. */
     fun createProfileLoginForAddProfileIntent(
       context: Context,
-      profileId: ProfileId,
-      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
+      profileId: LegacyProfileId,
+      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER,
+      avatarColor: Int = 0
     ): Intent = createProfileLoginActivityIntent(
       context,
       profileId,
       LoginFlow.ADD_NEW_LEARNER
     ).apply {
       putProtoExtra(
-        EXTRA_LOGIN_PARAMS,
+        LOGIN_PARAMS_EXTRA,
         ProfileLoginActivityParams.newBuilder()
           .setNewProfileType(newProfileType)
+          .setAvatarColor(avatarColor)
           .build()
       )
     }
@@ -80,13 +82,13 @@ class ProfileLoginActivity :
     fun extractLoginFlowFromIntent(intent: Intent): LoginFlow =
       LoginFlow.fromValue(
         intent.getIntExtra(
-          EXTRA_LOGIN_FLOW,
+          LOGIN_FLOW_EXTRA,
           LoginFlow.OPEN_EXISTING_PROFILE.value
         )
       )
   }
 
-  override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
+  override fun routeToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
     profileLoginActivityPresenter.handleRouteToResetPinDialog(profileId, profileName)
   }
 

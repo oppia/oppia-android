@@ -41,10 +41,10 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -90,15 +90,12 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -165,7 +162,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -270,7 +267,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId2 = LegacyProfileId.newBuilder().setInternalId(1).build()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
@@ -2136,7 +2133,6 @@ class ExplorationProgressControllerTest {
   /* Localization-based tests. */
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     startPlayingNewExploration(
@@ -2154,7 +2150,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     startPlayingNewExploration(
@@ -2182,9 +2177,8 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2204,9 +2198,8 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2228,10 +2221,9 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3144,7 +3136,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_englishToSwahili_updatesProfilesContentLanguage() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
@@ -3194,10 +3185,9 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
-    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3225,7 +3215,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateLanguageMidLesson_swahiliToEnglish_updatesProfilesContentLanguage() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
@@ -3698,7 +3687,7 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: ProfileId = this.profileId
+    profileId: LegacyProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
@@ -3713,7 +3702,7 @@ class ExplorationProgressControllerTest {
     storyId: String,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint,
-    profileId: ProfileId = this.profileId
+    profileId: LegacyProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
@@ -3727,7 +3716,7 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: ProfileId = this.profileId
+    profileId: LegacyProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
@@ -3741,7 +3730,7 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: ProfileId = this.profileId
+    profileId: LegacyProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
@@ -3752,7 +3741,7 @@ class ExplorationProgressControllerTest {
 
   private fun retrieveExplorationCheckpoint(
     explorationId: String,
-    profileId: ProfileId = this.profileId
+    profileId: LegacyProfileId = this.profileId
   ): ExplorationCheckpoint {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -4153,7 +4142,7 @@ class ExplorationProgressControllerTest {
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -4215,7 +4204,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = ProfileId.getDefaultInstance()
+    val rootProfileId = LegacyProfileId.getDefaultInstance()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -4270,8 +4259,7 @@ class ExplorationProgressControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

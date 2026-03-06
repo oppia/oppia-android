@@ -70,10 +70,10 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -136,13 +136,10 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
@@ -208,7 +205,7 @@ class StateFragmentLocalTest {
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -1320,8 +1317,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_summary)).check(
         matches(
           withContentDescription(
-            "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
+            "Start by dividing the cake into equal parts:" +
+              "\nThree of the four equal parts are red. So, the answer is 3/4."
           )
         )
       )
@@ -1706,7 +1703,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlContentDesc() {
     launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
       // Play through the first three states.
@@ -1733,7 +1729,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1760,7 +1755,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1786,7 +1780,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1841,7 +1834,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -1868,7 +1860,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1896,7 +1887,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -2891,7 +2881,7 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -3002,8 +2992,7 @@ class StateFragmentLocalTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets

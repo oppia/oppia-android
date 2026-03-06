@@ -9,7 +9,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
@@ -53,7 +53,7 @@ class ResumeLessonActivity :
     )
   }
 
-  // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+  // TODO(#1655): Re-restrict access to fields in tests.
   companion object {
     private const val PARAMS_KEY = "ResumeLessonActivity.params"
 
@@ -63,7 +63,7 @@ class ResumeLessonActivity :
      */
     fun createResumeLessonActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -96,7 +96,7 @@ class ResumeLessonActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

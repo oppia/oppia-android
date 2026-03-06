@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This package contains all third-party dependencies that the project depends on. Each maven artifact
 should correspond to a single wrapper android_library, and versions should go in versions.bzl.

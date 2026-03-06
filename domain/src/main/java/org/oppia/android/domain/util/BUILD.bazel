@@ -1,5 +1,5 @@
 """
-General utilities for domain module.
+General utilities for domain layer.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")

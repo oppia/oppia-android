@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -16,14 +16,14 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     /** Argument key for pop up of Profile Deletion Dialog in [ProfileEditActivity]. */
     const val PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY =
       "ProfileEditDeletionDialogFragment.profile_deletion_dialog_internal_profile_id"
 
     /** Creates new instance of the fragment [ProfileEditFragment]. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
       args.decorateWithUserProfileId(profileId)

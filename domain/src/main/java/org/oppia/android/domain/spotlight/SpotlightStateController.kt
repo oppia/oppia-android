@@ -1,7 +1,7 @@
 package org.oppia.android.domain.spotlight
 
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FEATURE_NOT_SET
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
@@ -45,7 +45,7 @@ class SpotlightStateController @Inject constructor(
   class SpotlightFeatureNotFoundException(message: String) : IllegalArgumentException(message)
 
   private val cacheStoreMap =
-    mutableMapOf<ProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
+    mutableMapOf<LegacyProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
 
   /**
    * Marks the [SpotlightViewState] of a spotlit feature for a given profile as seen.
@@ -54,7 +54,7 @@ class SpotlightStateController @Inject constructor(
    * @throws SpotlightFeatureNotFoundException when feature is not set correctly
    */
   fun markSpotlightViewed(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     feature: Spotlight.FeatureCase,
   ): DataProvider<Any?> {
     val deferred = recordSpotlightStateAsync(
@@ -81,7 +81,7 @@ class SpotlightStateController @Inject constructor(
    * @return DataProvider containing the current [SpotlightViewState] corresponding to the specified [feature]
    */
   fun retrieveSpotlightViewState(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     feature: Spotlight.FeatureCase,
   ): DataProvider<SpotlightViewState> {
     return retrieveCacheStore(profileId)
@@ -114,7 +114,7 @@ class SpotlightStateController @Inject constructor(
     if (this == SPOTLIGHT_VIEW_STATE_UNSPECIFIED) SPOTLIGHT_NOT_SEEN else this
 
   private fun recordSpotlightStateAsync(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     feature: Spotlight.FeatureCase,
     viewState: SpotlightViewState
   ): Deferred<Any> {
@@ -143,7 +143,7 @@ class SpotlightStateController @Inject constructor(
   }
 
   private fun retrieveCacheStore(
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): PersistentCacheStore<SpotlightStateDatabase> {
     val cacheStore = cacheStoreMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
