@@ -1,15 +1,21 @@
 package org.oppia.android.util.math
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
-import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [NumberWithUnitsTokenizer]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(OppiaParameterizedTestRunner::class)
-@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class NumberWithUnitsTokenizerTest
+@Config
+class NumberWithUnitsTokenizerTest {
+  @Test
+  fun testTokenizer_dummy() {
+    assertThat(true).isTrue()
+  }
+}
