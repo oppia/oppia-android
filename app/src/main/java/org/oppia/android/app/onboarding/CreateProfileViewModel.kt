@@ -43,7 +43,7 @@ class CreateProfileViewModel @Inject constructor(
   /** Whether to show PIN fields in the UI. */
   val showPinFields = ObservableField(false)
 
-  /** Whether the PIN section should be available at all, only for supervisor adding a learner). */
+  /** Whether the PIN section should be available at all, only for supervisor adding a learner. */
   val showPinUi = ObservableField(false)
 
   /** List of RGB colors that have already been assigned to a profile. */

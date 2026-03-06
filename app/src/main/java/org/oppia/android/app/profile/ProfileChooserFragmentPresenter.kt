@@ -272,7 +272,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         ProfileLoginActivity.createProfileLoginForAddProfileIntent(
           activity,
           chooserViewModel.adminProfileId,
-          ProfileType.ADDITIONAL_LEARNER
+          ProfileType.ADDITIONAL_LEARNER,
+          selectUniqueRandomColor()
         )
       )
     }

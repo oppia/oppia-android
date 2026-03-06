@@ -53,6 +53,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var selectedImage: String
   private lateinit var profileId: ProfileId
   private lateinit var profileType: ProfileType
+  private var avatarColor: Int = 0
   private var selectedImageUri: Uri? = null
 
   /** Launcher for picking an image from device gallery. */
@@ -63,7 +64,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
-    profileType: ProfileType
+    profileType: ProfileType,
+    avatarColor: Int = 0
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
@@ -72,6 +74,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     )
     this.profileId = profileId
     this.profileType = profileType
+    this.avatarColor = avatarColor
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -98,7 +101,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView.apply {
       setColorFilter(
-        ResourcesCompat.getColor(
+        if (avatarColor != 0) avatarColor else ResourcesCompat.getColor(
           activity.resources,
           R.color.component_color_avatar_background_25_color,
           null
@@ -255,7 +258,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       profileId = profileId,
       profileType = profileType,
       avatarImagePath = selectedImageUri,
-      colorRgb = selectUniqueRandomColor(),
+      colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
@@ -331,7 +334,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
         pin = pin,
         avatarImagePath = selectedImageUri,
         allowDownloadAccess = true,
-        colorRgb = selectUniqueRandomColor(),
+        colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
         isAdmin = false
       ).toLiveData()
       .observe(activity) { handleAddProfileResult(it, profileName) }

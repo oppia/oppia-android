@@ -33,8 +33,8 @@ class ProfileLoginActivity :
   }
 
   companion object {
-    private const val EXTRA_LOGIN_FLOW = "ProfileLoginActivity.login_flow"
-    const val EXTRA_LOGIN_PARAMS = "ProfileLoginActivity.params"
+    private const val LOGIN_FLOW_EXTRA = "ProfileLoginActivity.login_flow"
+    const val LOGIN_PARAMS_EXTRA = "ProfileLoginActivity.params"
 
     enum class LoginFlow(val value: Int) {
       OPEN_EXISTING_PROFILE(0),
@@ -55,7 +55,7 @@ class ProfileLoginActivity :
       return Intent(context, ProfileLoginActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ScreenName.PROFILE_LOGIN_ACTIVITY)
-        putExtra(EXTRA_LOGIN_FLOW, loginFlow.value)
+        putExtra(LOGIN_FLOW_EXTRA, loginFlow.value)
       }
     }
 
@@ -63,16 +63,18 @@ class ProfileLoginActivity :
     fun createProfileLoginForAddProfileIntent(
       context: Context,
       profileId: ProfileId,
-      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
+      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER,
+      avatarColor: Int = 0
     ): Intent = createProfileLoginActivityIntent(
       context,
       profileId,
       LoginFlow.ADD_NEW_LEARNER
     ).apply {
       putProtoExtra(
-        EXTRA_LOGIN_PARAMS,
+        LOGIN_PARAMS_EXTRA,
         ProfileLoginActivityParams.newBuilder()
           .setNewProfileType(newProfileType)
+          .setAvatarColor(avatarColor)
           .build()
       )
     }
@@ -80,7 +82,7 @@ class ProfileLoginActivity :
     fun extractLoginFlowFromIntent(intent: Intent): LoginFlow =
       LoginFlow.fromValue(
         intent.getIntExtra(
-          EXTRA_LOGIN_FLOW,
+          LOGIN_FLOW_EXTRA,
           LoginFlow.OPEN_EXISTING_PROFILE.value
         )
       )

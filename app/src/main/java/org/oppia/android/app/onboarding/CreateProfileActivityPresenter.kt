@@ -2,8 +2,6 @@ package org.oppia.android.app.onboarding
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import org.oppia.android.app.databinding.databinding.CreateProfileActivityBinding
 import org.oppia.android.app.model.CreateProfileFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
@@ -21,36 +19,29 @@ private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 class CreateProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private lateinit var binding: CreateProfileActivityBinding
-
   /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
-    binding = DataBindingUtil.setContentView(activity, R.layout.create_profile_activity)
-    binding.apply {
-      lifecycleOwner = activity
-    }
-
-    if (getNewLearnerProfileFragment() == null) {
-      val createLearnerProfileFragment = CreateProfileFragment()
-
-      val args = Bundle().apply {
-        val fragmentArgs =
-          CreateProfileFragmentArguments.newBuilder().setProfileType(profileType).build()
-        putProto(CREATE_PROFILE_FRAGMENT_ARGS, fragmentArgs)
-        decorateWithUserProfileId(profileId)
+  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType, avatarColor: Int = 0) {
+    activity.setContentView(R.layout.create_profile_activity)
+    if (getCreateProfileFragment() == null) {
+      val createProfileFragment = CreateProfileFragment().apply {
+        arguments = Bundle().also {
+          it.decorateWithUserProfileId(profileId)
+          it.putProto(
+            CREATE_PROFILE_ARGUMENTS_KEY,
+            CreateProfileFragmentArguments.newBuilder()
+              .setProfileType(profileType)
+              .setAvatarColor(avatarColor)
+              .build()
+          )
+        }
       }
-
-      createLearnerProfileFragment.arguments = args
-
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.profile_fragment_placeholder,
-        createLearnerProfileFragment,
-        TAG_CREATE_PROFILE_FRAGMENT
-      ).commitNow()
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.profile_fragment_placeholder, createProfileFragment)
+        .commitNow()
     }
   }
 
-  private fun getNewLearnerProfileFragment(): CreateProfileFragment? {
+  private fun getCreateProfileFragment(): CreateProfileFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_CREATE_PROFILE_FRAGMENT
     ) as? CreateProfileFragment

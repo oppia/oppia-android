@@ -12,6 +12,9 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
+/** Params key for PinSetupActivity. */
+const val PIN_SETUP_PARAMS_KEY = "PinSetupActivityParams.params"
+
 /** Activity for displaying the PIN setup screen. */
 class PinSetupActivity : InjectableAutoLocalizedAppCompatActivity() {
 

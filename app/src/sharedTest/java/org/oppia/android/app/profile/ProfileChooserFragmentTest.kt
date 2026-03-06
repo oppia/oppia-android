@@ -449,7 +449,6 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      // Click add profile item/button.
       onView(withText(context.getString(R.string.profile_chooser_add)))
         .perform(click())
 
@@ -490,9 +489,6 @@ class ProfileChooserFragmentTest {
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
-
-  // The add button should open ProfileLoginActivity (admin auth) rather than CreateProfileActivity
-  // directly; CreateProfileActivity is opened after successful admin login in ProfileLogin flow.
 
   @Test
   fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkIntroActivityHasNoStepCount() {

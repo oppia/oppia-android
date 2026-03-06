@@ -29,12 +29,13 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent.extractCurrentUserProfileId()
-    val profileType = intent.getProtoExtra(
+    val params = intent.getProtoExtra(
       CREATE_PROFILE_PARAMS_KEY,
       CreateProfileActivityParams.getDefaultInstance()
-    ).profileType
+    )
 
-    learnerProfileActivityPresenter.handleOnCreate(profileId, profileType)
+    learnerProfileActivityPresenter
+      .handleOnCreate(profileId, params.profileType, params.avatarColor)
   }
 
   companion object {
@@ -42,7 +43,8 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
     fun createProfileActivityIntent(
       context: Context,
       profileId: ProfileId,
-      profileType: ProfileType
+      profileType: ProfileType,
+      avatarColor: Int = 0
     ): Intent {
       return Intent(context, CreateProfileActivity::class.java).apply {
         decorateWithScreenName(CREATE_PROFILE_ACTIVITY)
@@ -51,6 +53,7 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
           CREATE_PROFILE_PARAMS_KEY,
           CreateProfileActivityParams.newBuilder()
             .setProfileType(profileType)
+            .setAvatarColor(avatarColor)
             .build()
         )
       }

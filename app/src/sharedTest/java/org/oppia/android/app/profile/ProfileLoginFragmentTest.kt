@@ -52,6 +52,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -325,7 +326,6 @@ class ProfileLoginFragmentTest {
     ActivityScenario.launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Enter the correct admin PIN (default in tests is 12345 for admin).
       composeRule
         .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
         .performClick()
@@ -338,7 +338,7 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
-  fun testFragment_adminLogin_withOpenExistingProfileFlow_routesToHome() {
+  fun testFragment_adminLogin_classroomsDisabled_openExistingProfileFlow_routesToHomeActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponentWithoutFeatureFlags()
@@ -361,6 +361,33 @@ class ProfileLoginFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_adminLogin_classroomsEnabled_openExistingProfileFlow_opensClassroomActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponentWithoutFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+      context,
+      adminProfileId,
+      ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+    )
+    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ClassroomListActivity::class.java.name))
     }
   }
 
