@@ -2,7 +2,6 @@ package org.oppia.android.app.survey
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -59,17 +58,15 @@ class SurveyNpsItemOptionView @JvmOverloads constructor(
 
   private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
     return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = { inflater, parent, attachToParent ->
           bindingInterface.provideNpsItemsInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
+            inflater, parent, attachToParent
           )
         },
-        bindView = { view, viewModel ->
+        setViewModel = { binding, viewModel ->
           bindingInterface.provideNpsItemsViewModel(
-            view,
+            binding,
             viewModel
           )
         }

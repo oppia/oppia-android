@@ -2,7 +2,6 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -91,17 +90,15 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
     return singleTypeBuilderFactory.create<PromotedStoryViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = { inflater, parent, attachToParent ->
           bindingInterface.providePromotedStoryCardInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            attachToParent = false
+            inflater, parent, attachToParent
           )
         },
-        bindView = { view, viewModel ->
+        setViewModel = { binding, viewModel ->
           bindingInterface.providePromotedStoryViewModel(
-            view,
+            binding,
             viewModel
           )
         }
