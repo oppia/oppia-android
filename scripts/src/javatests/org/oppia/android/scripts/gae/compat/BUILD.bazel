@@ -1,0 +1,17 @@
+"""
+Tests corresponding to structure compatibility checking scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "StructureCompatibilityCheckerTest",
+    srcs = ["StructureCompatibilityCheckerTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/compat",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_mockito_kotlin_mockito-kotlin",
+    ],
+)

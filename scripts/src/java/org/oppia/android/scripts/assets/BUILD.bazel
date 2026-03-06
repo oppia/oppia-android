@@ -51,5 +51,9 @@ kt_jvm_library(
     name = "image_repairer",
     testonly = True,
     srcs = ["ImageRepairer.kt"],
+    visibility = [
+        "//scripts/src/java/org/oppia/android/scripts/assets:__pkg__",
+        "//scripts/src/javatests/org/oppia/android/scripts/assets:__pkg__",
+    ],
     deps = ["//third_party:com_github_weisj_jsvg"],
 )
