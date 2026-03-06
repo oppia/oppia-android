@@ -92,16 +92,10 @@ message DestinationScreen {
   }
 }
 
-// Intent extras for ProfileLoginActivity.
-message ProfileLoginActivityParams {
-  // The type of new profile to create after successful admin login in add-profile flow.
-  ProfileType new_profile_type = 1;
-}
-
 // Intent extras for RecentlyPlayedActivity.
 message RecentlyPlayedActivityParams {
   // The ID of current profile.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The title which should be displayed for the activity.
   RecentlyPlayedActivityTitle activity_title = 2;
@@ -128,7 +122,7 @@ enum RecentlyPlayedActivityTitle {
 // Params required when creating a new ExplorationActivity.
 message ExplorationActivityParams {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;
@@ -164,7 +158,7 @@ message ExplorationActivityParams {
 // Arguments that must be passed to a new ExplorationFragment.
 message ExplorationFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 6;
@@ -185,7 +179,7 @@ message ExplorationFragmentArguments {
 // Params required when creating a new ResumeLessonActivity.
 message ResumeLessonActivityParams {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;
@@ -209,7 +203,7 @@ message ResumeLessonActivityParams {
 // Arguments that must be passed to a new ResumeLessonFragment.
 message ResumeLessonFragmentArguments {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;
@@ -365,7 +359,7 @@ message AppLanguageActivityStateBundle {
 // Represents the parameters needed to create SurveyActivity.
 message SurveyActivityParams {
   // The ID of the profile for which the survey is to be shown.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the topic to which the triggering exploration belongs.
   string topic_id = 2;
@@ -377,7 +371,7 @@ message SurveyActivityParams {
 // Arguments required when creating a QuestionPlayerFragment.
 message QuestionPlayerFragmentArguments{
   // The ID of current profile.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ReadingTextSize previously selected by the user (upon opening the fragment).
   ReadingTextSize reading_text_size = 2;
@@ -952,12 +946,18 @@ message IntroFragmentArguments {
 message CreateProfileActivityParams {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
+
+  // The RGB color of the profile avatar.
+  int32 avatar_color = 2;
 }
 
 // Arguments required when creating a new CreateProfileFragment.
 message CreateProfileFragmentArguments {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
+
+  // The RGB color of the profile avatar.
+  int32 avatar_color = 2;
 }
 
 // The bundle of properties that are saved on configuration change in OnboardingFragment.
@@ -1039,4 +1039,25 @@ message AdminIntroFragmentArguments {
 
   // The nickname associated with a newly created profile.
   string profile_nickname = 2;
+}
+
+// Params required when creating a new ProfileLoginActivity.
+message ProfileLoginActivityParams {
+  // The ProfileType of new the profile to be created by the admin.
+  ProfileType new_profile_type = 1;
+
+  // The RGB color of the profile avatar.
+  int32 avatar_color = 2;
+}
+
+// Params required when creating a new PinSetupActivity.
+message PinSetupActivityParams {
+  // The RGB color of the profile avatar.
+  int32 avatar_color = 1;
+}
+
+// Arguments required when creating a new PinSetupFragment.
+message PinSetupFragmentArguments {
+  // The RGB color of the profile avatar.
+  int32 avatar_color = 1;
 }

@@ -60,7 +60,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -235,6 +235,40 @@ class NavigationDrawerActivityDebugTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
+  fun testNavDrawer_selectOptions_pressBack_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_selectOptions_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
   fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -330,7 +364,7 @@ class NavigationDrawerActivityDebugTest {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
       intended(
         hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId)

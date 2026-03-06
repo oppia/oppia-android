@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Package for test-only utilities for coordinating time, particularly in simulated Android
 environments (i.e. Robolectric).

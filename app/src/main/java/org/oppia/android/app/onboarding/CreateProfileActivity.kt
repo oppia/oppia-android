@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.CreateProfileActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName.CREATE_PROFILE_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
@@ -29,20 +29,22 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent.extractCurrentUserProfileId()
-    val profileType = intent.getProtoExtra(
+    val params = intent.getProtoExtra(
       CREATE_PROFILE_PARAMS_KEY,
       CreateProfileActivityParams.getDefaultInstance()
-    ).profileType
+    )
 
-    learnerProfileActivityPresenter.handleOnCreate(profileId, profileType)
+    learnerProfileActivityPresenter
+      .handleOnCreate(profileId, params.profileType, params.avatarColor)
   }
 
   companion object {
     /** Returns a new [Intent] open a [CreateProfileActivity] with the specified params. */
     fun createProfileActivityIntent(
       context: Context,
-      profileId: ProfileId,
-      profileType: ProfileType
+      profileId: LegacyProfileId,
+      profileType: ProfileType,
+      avatarColor: Int = 0
     ): Intent {
       return Intent(context, CreateProfileActivity::class.java).apply {
         decorateWithScreenName(CREATE_PROFILE_ACTIVITY)
@@ -51,6 +53,7 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
           CREATE_PROFILE_PARAMS_KEY,
           CreateProfileActivityParams.newBuilder()
             .setProfileType(profileType)
+            .setAvatarColor(avatarColor)
             .build()
         )
       }

@@ -18,7 +18,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
@@ -78,8 +77,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -159,7 +158,6 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -167,7 +165,6 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -229,7 +226,7 @@ class StateFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var oppiaClock: FakeOppiaClock
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @After
   fun tearDown() {
@@ -2541,7 +2538,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabicContentLang_content_isInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2554,7 +2551,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabicContentLang_thenEnglish_content_isInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2581,7 +2578,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2627,7 +2624,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_fractionInput_placeholderIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2642,7 +2639,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2679,7 +2676,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabicContentLang_feedback_isInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2698,7 +2695,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
@@ -2762,7 +2759,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_multipleChoice_optionsAreInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2785,7 +2782,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2808,7 +2805,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -2881,7 +2878,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_itemSelection_optionsAreInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2906,7 +2903,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2932,7 +2929,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2980,7 +2977,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_numericInput_submitAnswer_answerMatchesSubmission() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3044,7 +3041,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_ratioInput_placeholderIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3064,7 +3061,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3131,7 +3128,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_textInput_placeholderIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3152,7 +3149,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3176,7 +3173,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3230,7 +3227,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3261,7 +3258,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3290,7 +3287,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_answerIsInPortuguese() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3321,7 +3318,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_switchToEnglish_answerIsInPt() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -3354,7 +3351,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_playWholeLesson_inArabic_hasReturnToTopicButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3371,7 +3368,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOff_inEnglish_doesNotHaveSwitchToSwahiliButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3384,7 +3380,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_inEnglish_lessonWithoutSwahili_doesNotHaveSwitchToSwahiliButton() {
     setUpTestWithLanguageSwitchingFeatureOn()
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
@@ -3398,7 +3393,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_inEnglish_notEnabledForProfile_doesNotHaveSwitchToSwahiliButton() {
     setUpTestWithLanguageSwitchingFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3412,7 +3406,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_enabledForProfile_inEnglish_hasSwitchToSwahiliButton() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3429,7 +3422,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_studyOn_enabledForProfile_inSwahili_hasSwitchToEnglishButton() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3447,7 +3439,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_inEnglish_clickSwitchToSwahili_contentIsInSwahili() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3466,7 +3458,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_inSwahili_clickSwitchToEnglish_contentIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3486,7 +3478,7 @@ class StateFragmentTest {
 
   // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_inEnglish_clickSwitchToSwahili_thenBackToEnglish_contentIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3507,7 +3499,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inEnglish_clickSwitchToSwahili_logsSwitchLanguageEvent() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3529,7 +3520,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_inSwahili_clickSwitchToEnglish_logsSwitchLanguageEvent() {
     setUpTestWithLanguageSwitchingFeatureOn()
     enableInLessonLanguageSwitching()
@@ -3832,7 +3822,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_numericExp_validAns_english_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -3850,7 +3839,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -3867,7 +3855,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_mathInteractions_numericExp_validAns_arabic_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -4212,7 +4200,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_algExp_validAns_english_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4234,7 +4221,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4257,7 +4243,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_mathInteractions_algExp_validAns_arabic_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -4718,7 +4704,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_mathEq_validAns_english_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4741,7 +4726,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4766,7 +4750,7 @@ class StateFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_mathInteractions_mathEq_validAns_arabic_submissionHasA11yAnswer() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -5616,7 +5600,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
@@ -5668,7 +5652,7 @@ class StateFragmentTest {
       onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
-        " every two parts in the denominator."
+        " every two parts in the denominator.\n\n"
       onView(withId(R.id.solution_summary))
         .check(matches(withText(containsString(expectedSolutionSummary))))
 
@@ -6662,10 +6646,13 @@ class StateFragmentTest {
 
   private fun waitForImageViewInteractionToFullyLoad() {
     // TODO(#1523): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-    waitForTheView(
-      allOf(
-        withId(R.id.image_click_interaction_image_view),
-        WithNonZeroDimensionsMatcher()
+    onView(isRoot()).perform(
+      waitForMatch(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        ),
+        30000L
       )
     )
   }
@@ -6723,7 +6710,7 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -6804,10 +6791,6 @@ class StateFragmentTest {
     verifySubmitAnswerButtonIsDisabled()
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
@@ -6882,12 +6865,6 @@ class StateFragmentTest {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
 
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
@@ -7011,8 +6988,7 @@ class StateFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets

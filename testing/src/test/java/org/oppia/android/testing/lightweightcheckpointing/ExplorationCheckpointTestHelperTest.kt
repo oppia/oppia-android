@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -40,7 +40,6 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -76,7 +75,7 @@ class ExplorationCheckpointTestHelperTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -206,7 +205,7 @@ class ExplorationCheckpointTestHelperTest {
   }
 
   private fun retrieveCheckpoint(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     explorationId: String
   ): ExplorationCheckpoint {
     val retrieveCheckpointProvider =
@@ -239,8 +238,7 @@ class ExplorationCheckpointTestHelperTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

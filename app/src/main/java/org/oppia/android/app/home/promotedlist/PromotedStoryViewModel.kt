@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -63,7 +63,7 @@ class PromotedStoryViewModel(
 
   fun clickOnStoryTile() {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       promotedStory.classroomId,
       promotedStory.topicId,
       promotedStory.storyId

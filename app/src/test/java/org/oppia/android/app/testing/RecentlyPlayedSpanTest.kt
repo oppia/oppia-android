@@ -27,7 +27,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
@@ -114,13 +114,13 @@ class RecentlyPlayedSpanTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
@@ -285,7 +285,7 @@ class RecentlyPlayedSpanTest {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(profileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(profileId).build())
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,

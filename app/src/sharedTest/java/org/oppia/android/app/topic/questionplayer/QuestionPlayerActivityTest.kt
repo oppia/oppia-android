@@ -59,8 +59,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -122,7 +122,6 @@ import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -183,7 +182,7 @@ class QuestionPlayerActivityTest {
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -386,7 +385,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -475,7 +474,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -669,7 +668,7 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

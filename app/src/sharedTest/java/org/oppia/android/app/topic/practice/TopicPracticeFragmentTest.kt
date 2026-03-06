@@ -41,7 +41,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -116,7 +116,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -139,7 +140,7 @@ class TopicPracticeFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   private var skillIdList = ArrayList<String>()
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -147,13 +148,16 @@ class TopicPracticeFragmentTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
@@ -438,6 +442,7 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 1)
       onView(
@@ -459,7 +464,7 @@ class TopicPracticeFragmentTest {
   }
 
   private fun launchTopicActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
@@ -477,7 +482,13 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue.value).name),
+        withText(
+          TopicTab.getTabForPosition(
+            position = 1,
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
+          ).name
+        ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

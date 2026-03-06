@@ -14,10 +14,10 @@ import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
@@ -123,7 +123,7 @@ class TopicController @Inject constructor(
    * @param topicId the ID corresponding to the topic which needs to be returned.
    * @return a [DataProvider] for [EphemeralTopic] combined with [TopicProgress].
    */
-  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<EphemeralTopic> {
+  fun getTopic(profileId: LegacyProfileId, topicId: String): DataProvider<EphemeralTopic> {
     return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
   }
 
@@ -136,7 +136,10 @@ class TopicController @Inject constructor(
    *
    * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
    */
-  fun getTopics(profileId: ProfileId, topicIds: List<String>): DataProvider<List<EphemeralTopic>> {
+  fun getTopics(
+    profileId: LegacyProfileId,
+    topicIds: List<String>
+  ): DataProvider<List<EphemeralTopic>> {
     val topicsDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPICS_PROVIDER_ID) {
         val topics = topicIds.map { topicId ->
@@ -173,7 +176,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralStorySummary] combined with [StoryProgress].
    */
   fun getStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String
   ): DataProvider<EphemeralStorySummary> {
@@ -205,7 +208,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralChapterSummary]
    */
   fun retrieveChapter(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -238,7 +241,10 @@ class TopicController @Inject constructor(
    * Returns the [EphemeralConceptCard] corresponding to the specified skill ID, or a failed result
    * if there is none.
    */
-  fun getConceptCard(profileId: ProfileId, skillId: String): DataProvider<EphemeralConceptCard> {
+  fun getConceptCard(
+    profileId: LegacyProfileId,
+    skillId: String
+  ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
       profileId
     ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->
@@ -257,7 +263,7 @@ class TopicController @Inject constructor(
    * a failed result if there is none.
    */
   fun getRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
@@ -278,7 +284,7 @@ class TopicController @Inject constructor(
    * Returns the list of all completed stories in the form of [CompletedStoryList] for a specific
    * profile.
    */
-  fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
+  fun getCompletedStoryList(profileId: LegacyProfileId): DataProvider<CompletedStoryList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
@@ -303,7 +309,7 @@ class TopicController @Inject constructor(
   /**
    * Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile.
    */
-  fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
+  fun getOngoingTopicList(profileId: LegacyProfileId): DataProvider<OngoingTopicList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
@@ -486,6 +492,7 @@ class TopicController @Inject constructor(
               availableToPlayNow = true
             } else availableToPlayInFuture = true
           }.build()
+          hasPracticeQuestions = topicRecord.hasPracticeQuestions
         }.build()
       }
     } else createTopicFromJson(topicId)
@@ -563,6 +570,7 @@ class TopicController @Inject constructor(
       html = topicData.getStringFromObject("topic_description")
     }.build()
     val classroomId = classroomController.getClassroomIdByTopicId(topicId)
+    val hasPracticeQuestions = topicData.getBoolean("has_practice_questions")
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -574,6 +582,7 @@ class TopicController @Inject constructor(
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
+      .setHasPracticeQuestions(hasPracticeQuestions)
       .build()
   }
 

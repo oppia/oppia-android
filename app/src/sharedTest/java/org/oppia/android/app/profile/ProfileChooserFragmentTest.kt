@@ -51,8 +51,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -149,8 +149,8 @@ class ProfileChooserFragmentTest {
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
-  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
-  private val testProfileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  private val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val testProfileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -449,7 +449,6 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      // Click add profile item/button.
       onView(withText(context.getString(R.string.profile_chooser_add)))
         .perform(click())
 
@@ -490,9 +489,6 @@ class ProfileChooserFragmentTest {
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
-
-  // The add button should open ProfileLoginActivity (admin auth) rather than CreateProfileActivity
-  // directly; CreateProfileActivity is opened after successful admin login in ProfileLogin flow.
 
   @Test
   fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkIntroActivityHasNoStepCount() {

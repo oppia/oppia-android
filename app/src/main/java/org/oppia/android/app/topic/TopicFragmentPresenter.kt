@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.app.databinding.databinding.TopicFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -21,7 +21,8 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -33,22 +34,29 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
+  @EnableTopicInfoTab private val enableTopicInfoTabFlag: PlatformParameterValue<Boolean>,
+  @EnableTopicPracticeTab private val enableTopicPracticeTabFlag: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   @Inject
   lateinit var accessibilityService: AccessibilityService
 
   private lateinit var tabLayout: TabLayout
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
 
+  private var enableTopicInfoTab: Boolean = enableTopicInfoTabFlag.value
+  private var enableTopicPracticeTab: Boolean = false
+    set(hasPracticeQuestions) {
+      field = enableTopicPracticeTabFlag.value && hasPracticeQuestions
+    }
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -76,7 +84,17 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, classroomId, topicId, isConfigChanged)
+    viewModel.hasPracticeQuestions.observe(fragment) { hasPracticeQuestions ->
+      enableTopicPracticeTab = hasPracticeQuestions
+
+      setUpViewPager(
+        viewPager,
+        classroomId,
+        topicId,
+        isConfigChanged
+      )
+    }
+
     return binding.root
   }
 
@@ -120,7 +138,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-    return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
+    return tab.getPosition(enableTopicInfoTab, enableTopicPracticeTab)
   }
 
   private fun setUpViewPager(
@@ -136,17 +154,22 @@ class TopicFragmentPresenter @Inject constructor(
         classroomId,
         topicId,
         storyId,
-        enableExtraTopicTabsUi.value
+        enableTopicInfoTab,
+        enableTopicPracticeTab
       )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
+      val topicTab = TopicTab.getTabForPosition(
+        position,
+        enableTopicInfoTab,
+        enableTopicPracticeTab
+      )
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      if (enableExtraTopicTabsUi.value) {
+      if (enableTopicInfoTab) {
         setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LEARN else TopicTab.INFO)
       } else {
         setCurrentTab(TopicTab.LEARN)
@@ -154,7 +177,13 @@ class TopicFragmentPresenter @Inject constructor(
     }
     viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
       override fun onPageSelected(position: Int) {
-        logTopicEvents(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value))
+        logTopicEvents(
+          TopicTab.getTabForPosition(
+            position,
+            enableTopicInfoTab,
+            enableTopicPracticeTab
+          )
+        )
       }
     })
   }

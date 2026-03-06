@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicRecord
@@ -26,12 +26,9 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -76,11 +73,11 @@ class TopicListControllerTest {
   @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var fakeAssetRepository: FakeAssetRepository
 
-  private lateinit var profileId0: ProfileId
+  private lateinit var profileId0: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
     setUpTestApplicationComponent()
 
     // Use uptime millis for time tracking since that allows proper time management for recorded
@@ -269,7 +266,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Only uses protos, so restrict to Bazel.
   fun testGetPromotedActivityList_startFractions_thenUnpublish_doesNotIncludeFractionsInList() {
     storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
       profileId0,
@@ -686,7 +682,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // The failure is specific to loading protos.
   fun testGetPromotedActivityList_missingTopicsWithProgress_doesNotIncludeThoseTopics() {
     // This is a slightly hacky way to simulate a previous topic's progress that works because
     // StoryProgressController doesn't verify whether the IDs passed to it correspond to locally
@@ -922,8 +917,7 @@ class TopicListControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl

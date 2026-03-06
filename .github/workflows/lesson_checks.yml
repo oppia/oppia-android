@@ -55,4 +55,5 @@ jobs:
             cache_mode=none \
             $(pwd)/release_assets/cache \
             $(pwd)/release_assets/pinned_versions.textproto \
+            false \
             -Werror

@@ -141,7 +141,7 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedFeatureFlagCount = 14
+    val expectedFeatureFlagCount = 15
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
@@ -157,16 +157,17 @@ class FeatureFlagsLoggerTest {
   @Iteration("performance_metrics_collection", "index=1", "flagId=PERFORMANCE_METRICS_COLLECTION")
   @Iteration("edit_accounts_options_ui", "index=2", "flagId=EDIT_ACCOUNTS_OPTIONS_UI")
   @Iteration("spotlight_ui", "index=3", "flagId=SPOTLIGHT_UI")
-  @Iteration("extra_topic_tabs_ui", "index=4", "flagId=EXTRA_TOPIC_TABS_UI")
-  @Iteration("downloads_support", "index=5", "flagId=DOWNLOADS_SUPPORT")
-  @Iteration("config_change_state", "index=6", "flagId=INTERACTION_CONFIG_CHANGE_STATE_RETENTION")
-  @Iteration("app_and_os_deprecation", "index=7", "flagId=APP_AND_OS_DEPRECATION")
-  @Iteration("fast_lang_switching_in_lesson", "index=8", "flagId=FAST_LANGUAGE_SWITCHING_IN_LESSON")
-  @Iteration("logging_learner_study_ids", "index=9", "flagId=LOGGING_LEARNER_STUDY_IDS")
-  @Iteration("nps_survey", "index=10", "flagId=NPS_SURVEY")
-  @Iteration("onboarding_flow_v2", "index=11", "flagId=ONBOARDING_FLOW_V2")
-  @Iteration("multiple_classrooms", "index=12", "flagId=MULTIPLE_CLASSROOMS")
-  @Iteration("flashback_support", "index=13", "flagId=FLASHBACK_SUPPORT")
+  @Iteration("downloads_support", "index=4", "flagId=DOWNLOADS_SUPPORT")
+  @Iteration("config_change_state", "index=5", "flagId=INTERACTION_CONFIG_CHANGE_STATE_RETENTION")
+  @Iteration("app_and_os_deprecation", "index=6", "flagId=APP_AND_OS_DEPRECATION")
+  @Iteration("fast_lang_switching_in_lesson", "index=7", "flagId=FAST_LANGUAGE_SWITCHING_IN_LESSON")
+  @Iteration("logging_learner_study_ids", "index=8", "flagId=LOGGING_LEARNER_STUDY_IDS")
+  @Iteration("nps_survey", "index=9", "flagId=NPS_SURVEY")
+  @Iteration("onboarding_flow_v2", "index=10", "flagId=ONBOARDING_FLOW_V2")
+  @Iteration("multiple_classrooms", "index=11", "flagId=MULTIPLE_CLASSROOMS")
+  @Iteration("flashback_support", "index=12", "flagId=FLASHBACK_SUPPORT")
+  @Iteration("topic_info_tab", "index=13", "flagId=TOPIC_INFO_TAB")
+  @Iteration("topic_practice_tab", "index=14", "flagId=TOPIC_PRACTICE_TAB")
   fun testLogFeatureFlags_allFeatureFlagIdsAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 

@@ -261,7 +261,7 @@
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize manage profiles on the device.</string>
-  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_pin_description">Do &lt;b&gt;not&lt;/b&gt; use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
@@ -418,9 +418,14 @@
   <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
-  <string name="app_version_name">App Version %s</string>
-  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="app_version_label">App Version</string>
+  <string name="app_version_name">%s</string>
+  <string name="app_last_update_date">The last update was installed on %s. Please share the above version when sending feedback about bugs.</string>
   <string name="app_version_activity_title">App Version</string>
+  <string name="copy_app_version">Copy app version</string>
+  <string name="installation_id_label">Installation ID</string>
+  <string name="installation_id_explanation">This ID uniquely identifies this app installation. You may be asked to provide this when filing feedback about the app or using certain features.</string>
+  <string name="copy_installation_id">Copy installation ID</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Preferred Audio Language</string>
@@ -683,11 +688,18 @@
   <!-- Onboarding Create New Profile Activity -->
   <string name="create_profile_activity_title">Create Profile</string>
   <string name="create_profile_activity_header">What should we call you?</string>
+  <string name="create_profile_activity_new_learner_header">What should we call the learner?</string>
   <string name="create_profile_activity_nickname_label">Nickname</string>
   <string name="create_profile_activity_profile_picture_prompt">Tap here to add a picture</string>
-  <string name="create_profile_activity_nickname_error">Click in the box above to type your nickname.</string>
+  <string name="create_profile_activity_nickname_error">Click in the box above to type a nickname.</string>
   <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
   <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
+  <string name="create_profile_activity_pin_info">If you choose to create a PIN, the learner will have to enter it to access their account.</string>
+  <string name="create_profile_activity_pin_checkbox_label">Create a 3-Digit PIN for the learner (Optional)</string>
+  <string name="create_profile_activity_success_dialog_title">You have successfully created a profile for %s!</string>
+  <string name="create_profile_activity_success_dialog_message">Give this device to %s for them to begin learning, or continue creating profiles for more learners.</string>
+  <string name="create_profile_activity_ok_button_text" tools:ignore="ButtonCase,Typos">Ok</string>
+  <string name="create_profile_activity_close_button_description">Close</string>
   <string name="onboarding_step_count_three">STEP 3 OF 5</string>
 
   <!-- Onboarding Learner Intro Activity -->

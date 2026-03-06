@@ -144,7 +144,6 @@ file_content_checks {
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/WorkDataExtensions.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
-  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/BundleExtensions.kt"
@@ -220,7 +219,7 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?AndroidManifest\\.xml"
+  file_path_regex: ".*?AndroidManifest\\.xml"
   prohibited_content_regex: "android:configChanges"
   failure_message: "Never explicitly handle configuration changes. Instead, use saved instance states for retaining state across rotations. For other types of configuration changes, follow up with the developer mailing list with how to proceed if you think this is a legitimate case."
 }
@@ -468,12 +467,12 @@ file_content_checks {
   exempted_file_name: "data/src/test/java/org/oppia/android/data/backends/gae/testing/PlatformParameterServiceTestOrchestratorTest.kt"
 }
 file_content_checks {
-  file_path_regex: "app/src/main/AndroidManifest.xml"
+  file_path_regex: "^AndroidManifest.xml$"
   required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_analytics_collection_deactivated\"\\s*android:value\\s*=\\s*\"true\"\\s*/>\\s*"
   failure_message: "Firebase analytics collection should always be explicitly deactivated in develop."
 }
 file_content_checks {
-  file_path_regex: "app/src/main/AndroidManifest.xml"
+  file_path_regex: "^AndroidManifest.xml$"
   required_content_regex: "\\s*<meta-data\\s*android:name\\s*=\\s*\"firebase_crashlytics_collection_enabled\"\\s*android:value\\s*=\\s*\"false\"\\s*/>\\s*"
   failure_message: "Firebase crashlytics collection should always be explicitly deactivated in develop."
 }

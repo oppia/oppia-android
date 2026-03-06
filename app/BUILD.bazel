@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains the app's core source files and functionality.
 Note that:
@@ -20,6 +19,7 @@ package(default_visibility = [
     "//utility:__subpackages__",
 ])
 
+# TODO(#1607): Ensure app libraries don't require directly depending on AndroidManifest.xml.
 exports_files(["src/main/AndroidManifest.xml"])
 
 # Corresponds to being accessible to all app layer targets.
@@ -52,7 +52,7 @@ filegroup(
 )
 
 # Source files for the annotations library. The files inside the annotations library are dependencies
-# for all other libraries in app module, except the listeners library.
+# for all other libraries in app layer, except the listeners library.
 # Place your file here if:
 #  - A view, view model, or layout file depends on it
 #  - It is an annotation or helper file of some kind
@@ -65,7 +65,7 @@ ANNOTATIONS = [
 ]
 
 # Source files for the listeners library. The files inside the listeners library are dependencies for
-# all other libraries in app module, except the annotations library.
+# all other libraries in app layer, except the annotations library.
 # Place your file here if:
 #  - A view, view model, or layout file depends on it
 #  - It is either a listener, an interface, or a direct dependency of one in this list
@@ -544,6 +544,7 @@ kt_android_library(
         ":resources",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+        "//app/src/main/java/org/oppia/android/app/utility/lifecycle:lifecycle_safe_timer_factory",
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -827,7 +828,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
 ]
 
-# App module tests.
+# App layer tests.
 
 [oppia_android_test(
     name = test_file_path[:test_file_path.find(".kt")],

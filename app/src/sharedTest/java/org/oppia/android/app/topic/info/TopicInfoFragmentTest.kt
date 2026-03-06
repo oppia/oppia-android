@@ -47,7 +47,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicInfoFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -117,7 +117,8 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -154,17 +155,21 @@ class TopicInfoFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
+
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -443,6 +448,7 @@ class TopicInfoFragmentTest {
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickInfoTab()
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -471,7 +477,7 @@ class TopicInfoFragmentTest {
   }
 
   private fun launchTopicActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
@@ -491,7 +497,8 @@ class TopicInfoFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 0,
-            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
           ).name
         ),
         ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))

@@ -23,10 +23,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 
 @Composable
 fun HandOverNoticeDialog(
+  appLanguageResourceHandler: AppLanguageResourceHandler,
   learnerNickname: String,
   onDismiss: () -> Unit
 ) {
@@ -48,7 +50,9 @@ fun HandOverNoticeDialog(
         ) {
           Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Close",
+            contentDescription = appLanguageResourceHandler.getStringInLocale(
+              R.string.create_profile_activity_close_button_description
+            ),
             tint = colorResource(R.color.component_color_shared_black_background_color)
           )
         }
@@ -61,7 +65,9 @@ fun HandOverNoticeDialog(
         ) {
 
           Text(
-            text = "You have successfully created a profile for $learnerNickname!",
+            text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+              R.string.create_profile_activity_success_dialog_title, learnerNickname
+            ),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.component_color_onboarding_shared_green_color),
@@ -75,8 +81,9 @@ fun HandOverNoticeDialog(
           )
 
           Text(
-            text = "Give this device to $learnerNickname for them to begin learning, " +
-              "or continue creating profiles for more learners.",
+            text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+              R.string.create_profile_activity_success_dialog_message, learnerNickname
+            ),
             fontSize = 18.sp,
             color = colorResource(R.color.component_color_shared_primary_text_color),
             textAlign = TextAlign.Center,
@@ -96,7 +103,8 @@ fun HandOverNoticeDialog(
             shape = RoundedCornerShape(6.dp)
           ) {
             Text(
-              text = "OK",
+              text = appLanguageResourceHandler
+                .getStringInLocale(R.string.create_profile_activity_ok_button_text),
               fontSize = 16.sp,
               fontWeight = FontWeight.Bold,
               color = Color.White

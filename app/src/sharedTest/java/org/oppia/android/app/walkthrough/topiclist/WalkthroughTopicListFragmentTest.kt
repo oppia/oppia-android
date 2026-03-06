@@ -37,7 +37,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -80,7 +80,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.GenericViewMatchers.Companion.withOpaqueBackground
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -125,8 +124,6 @@ class WalkthroughTopicListFragmentTest {
   lateinit var context: Context
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
   @Before
   fun setUp() {
@@ -142,7 +139,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   private fun createWalkthroughActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return WalkthroughActivity.createWalkthroughActivityIntent(
       context,
       profileId
@@ -224,33 +221,30 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
-    // TODO(#59): Remove if-check & disable test.
-    if (!testEnvironmentConfig.isUsingBazel()) {
-      // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
-      //  thumbnail is being loaded through Glide.
-      launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-          scrollToPosition<RecyclerView.ViewHolder>(
-            /* position= */ 4
+    // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
+    //  thumbnail is being loaded through Glide.
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          /* position= */ 4
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 4,
+          targetViewId = R.id.walkthrough_topic_thumbnail_image_view
+        )
+      ).check(
+        matches(
+          withDrawable(
+            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
           )
         )
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.walkthrough_topic_recycler_view,
-            position = 4,
-            targetViewId = R.id.walkthrough_topic_thumbnail_image_view
-          )
-        ).check(
-          matches(
-            withDrawable(
-              R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-            )
-          )
-        )
-      }
+      )
     }
   }
 
@@ -283,8 +277,8 @@ class WalkthroughTopicListFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    // TODO(#5663): Use proto assets in this test once thumbnails load correctly.
+    fun provideLoadLessonProtosFromAssets(): Boolean = false
 
     @Provides
     @LoadImagesFromAssets

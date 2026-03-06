@@ -3,7 +3,7 @@ package org.oppia.android.domain.exploration
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.translation.TranslationController
@@ -35,7 +35,10 @@ class ExplorationDataController @Inject constructor(
   private val translationController: TranslationController
 ) {
   /** Returns an [EphemeralExploration] given an ID. */
-  fun getExplorationById(profileId: ProfileId, id: String): DataProvider<EphemeralExploration> {
+  fun getExplorationById(
+    profileId: LegacyProfileId,
+    id: String
+  ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     val explorationProvider = dataProviders.createInMemoryDataProviderAsync(
@@ -223,7 +226,7 @@ class ExplorationDataController @Inject constructor(
     isRestart: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       classroomId,
       topicId,
       storyId,
@@ -257,7 +260,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @return a [DataProvider] that indicates the success or failure of the retrieve operation
    */
-  fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =
+  fun getOldestExplorationDetailsDataProvider(profileId: LegacyProfileId) =
     explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(profileId)
 
   /**
@@ -268,7 +271,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @param explorationId the ID of the exploration whose checkpoint has to be deleted
    */
-  fun deleteExplorationProgressById(profileId: ProfileId, explorationId: String) {
+  fun deleteExplorationProgressById(profileId: LegacyProfileId, explorationId: String) {
     explorationCheckpointController.deleteSavedExplorationCheckpoint(
       profileId,
       explorationId

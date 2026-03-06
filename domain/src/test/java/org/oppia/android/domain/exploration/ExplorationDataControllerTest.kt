@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -52,7 +52,6 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -89,7 +88,7 @@ class ExplorationDataControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -455,8 +454,7 @@ class ExplorationDataControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

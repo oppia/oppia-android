@@ -24,7 +24,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
@@ -102,7 +102,7 @@ class TopicInfoFragmentLocalTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -111,7 +111,7 @@ class TopicInfoFragmentLocalTest {
 
   @Test
   fun testTopicInfoFragment_onLaunch_logsEvent() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
     launchTopicActivityIntent(profileId = profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -123,7 +123,7 @@ class TopicInfoFragmentLocalTest {
   }
 
   private fun launchTopicActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {

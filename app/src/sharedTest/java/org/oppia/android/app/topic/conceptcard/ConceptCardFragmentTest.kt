@@ -56,8 +56,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ConceptCardFragmentArguments
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -99,14 +99,12 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -161,7 +159,7 @@ class ConceptCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -340,7 +338,7 @@ class ConceptCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -359,7 +357,7 @@ class ConceptCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {
@@ -378,14 +376,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragment =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         assertThat(activity.supportFragmentManager.fragments).hasSize(1)
@@ -400,14 +398,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -426,14 +424,14 @@ class ConceptCardFragmentTest {
       scenario.onActivity { activity ->
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -458,14 +456,14 @@ class ConceptCardFragmentTest {
         // Show two ConceptCards
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill0 =
           activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
-          ProfileId.getDefaultInstance(),
+          LegacyProfileId.getDefaultInstance(),
           activity.supportFragmentManager
         )
         val fragmentSkill1 =
@@ -535,7 +533,7 @@ class ConceptCardFragmentTest {
     return scenario
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -586,8 +584,7 @@ class ConceptCardFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets

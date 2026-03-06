@@ -50,7 +50,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -140,7 +140,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -183,18 +184,22 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
 
-  private lateinit var profileId: ProfileId
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
+
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
@@ -1068,6 +1073,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
@@ -1089,6 +1095,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
@@ -1111,6 +1118,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       orientationLandscape()
@@ -1264,6 +1272,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()
 
@@ -1271,6 +1280,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 2)
       onView(
@@ -1293,7 +1303,7 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): Intent {
@@ -1306,7 +1316,7 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicPlayStoryActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -1324,7 +1334,13 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue.value).name),
+        withText(
+          TopicTab.getTabForPosition(
+            position = 1,
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
+          ).name
+        ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

@@ -53,9 +53,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardActivityParams
 import org.oppia.android.app.model.RevisionCardFragmentArguments
@@ -106,14 +106,12 @@ import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -174,7 +172,7 @@ class RevisionCardFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   private val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
 
@@ -770,7 +768,7 @@ class RevisionCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launch<RevisionCardActivity>(
@@ -795,7 +793,7 @@ class RevisionCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_withArabicContentLang_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launch<RevisionCardActivity>(
@@ -894,7 +892,7 @@ class RevisionCardFragmentTest {
     text: String
   ): ClickableSpan? = find { text in it.first }?.second
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -908,8 +906,7 @@ class RevisionCardFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets

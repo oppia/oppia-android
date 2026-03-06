@@ -6,7 +6,6 @@ import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
@@ -17,6 +16,8 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -59,11 +60,6 @@ class FeatureFlagBindingModule {
     processState.retrieveFeatureFlag(FeatureFlagId.SPOTLIGHT_UI)
 
   @Provides
-  @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(processState: PlatformParameterProcessState) =
-    processState.retrieveFeatureFlag(FeatureFlagId.EXTRA_TOPIC_TABS_UI)
-
-  @Provides
   @EnableInteractionConfigChangeStateRetention
   fun provideEnableInteractionConfigChangeStateRetention(
     processState: PlatformParameterProcessState
@@ -94,6 +90,16 @@ class FeatureFlagBindingModule {
   @EnableFlashbackSupport
   fun provideEnableFlashbackSupport(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.FLASHBACK_SUPPORT)
+
+  @Provides
+  @EnableTopicInfoTab
+  fun provideEnableTopicInfoTab(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_INFO_TAB)
+
+  @Provides
+  @EnableTopicPracticeTab
+  fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
