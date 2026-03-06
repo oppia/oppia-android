@@ -88,10 +88,6 @@ class DragAndDropSortInteractionViewModel private constructor(
       contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler, wrongAnswerList
     )
 
-  /**
-   * The current list of choice items displayed to the user. Only its contents should be mutated,
-   * not the reference itself.
-   */
   private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
     computeSelectedChoiceItems(
       contentIdHtmlMap,
@@ -100,7 +96,6 @@ class DragAndDropSortInteractionViewModel private constructor(
       userAnswerState
     )
 
-  /** The publicly visible (immutable) view of [_choiceItems]. */
   val choiceItems: List<DragDropInteractionContentViewModel> get() = _choiceItems
 
   private var pendingAnswerError: String? = null
