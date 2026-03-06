@@ -362,3 +362,20 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
     ],
 )
+
+oppia_android_test(
+     name = "NumberWithUnitsParserTest",
+     srcs = ["NumberWithUnitsParserTest.kt"],
+     custom_package = "org.oppia.android.util.math",
+     test_class = "org.oppia.android.util.math.NumberWithUnitsParserTest",
+     test_manifest = "//utility:test_manifest",
+     deps = [
+         "//testing",
+         "//third_party:androidx_test_ext_junit",
+         "//third_party:com_google_truth_truth",
+         "//third_party:junit_junit",
+         "//third_party:org_robolectric_robolectric",
+         "//third_party:robolectric_android-all",
+         "//utility/src/main/java/org/oppia/android/util/math:number_with_units_parser",
+     ],
+ )
