@@ -1,0 +1,96 @@
+{
+  "exploration_id": "test_exp_id_6",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 0,
+  "record_playthrough_probability": 0.0,
+  "exploration": {
+    "init_state_name": "NumberWithUnits",
+    "param_changes": [],
+    "param_specs": {},
+    "states": {
+      "End": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>This is the end&nbsp;</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "EndExploration",
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {}
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
+      },
+      "NumberWithUnits": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Convert 4.1 m to cm.</p>"
+        },
+        "interaction": {
+          "customization_args": {},
+          "hints": [],
+          "id": "NumberWithUnits",
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEqualTo",
+              "inputs": {
+                "f": {
+                  "fraction": {
+                    "denominator": 1,
+                    "isNegative": false,
+                    "numerator": 0,
+                    "wholeNumber": 0
+                  },
+                  "real": 410.0,
+                  "type": "real",
+                  "units": [{
+                    "exponent": 1,
+                    "unit": "cm"
+                  }]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yay.This is correct</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "solution": []
+        }
+      }
+    },
+    "objective": "learn how to arrange the sentence",
+    "language_code": "en",
+    "correctness_feedback_enabled": false,
+    "title": "Drag and Drop Test Exploration"
+  }
+}

@@ -421,6 +421,11 @@ class StateRetriever @Inject constructor() {
           mathExpression = inputJson.getStringFromObject("math_expression")
         }.build()
       }
+      "NumberWithUnits" -> {
+        InteractionObject.newBuilder().apply {
+          numberWithUnits = parseNumberWithUnitsObject(inputJson)
+        }.build()
+      }
       else -> error("Encountered unsupported interaction ID for solutions: $interactionId")
     }
   }
