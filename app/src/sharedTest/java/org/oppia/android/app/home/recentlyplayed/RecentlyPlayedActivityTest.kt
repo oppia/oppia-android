@@ -42,7 +42,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
@@ -147,7 +147,7 @@ class RecentlyPlayedActivityTest {
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -155,7 +155,7 @@ class RecentlyPlayedActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
@@ -170,7 +170,7 @@ class RecentlyPlayedActivityTest {
     val intent = RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
       recentlyPlayedActivityParams = RecentlyPlayedActivityParams.newBuilder().apply {
-        this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        this.profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
         this.activityTitle = RECENTLY_PLAYED_STORIES
       }.build()
     )
@@ -315,7 +315,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -368,7 +368,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -403,7 +403,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -443,7 +443,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -467,7 +467,7 @@ class RecentlyPlayedActivityTest {
   ) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams.newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
     val intent =

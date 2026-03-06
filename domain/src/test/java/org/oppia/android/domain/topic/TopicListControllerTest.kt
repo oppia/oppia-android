@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicRecord
@@ -73,11 +73,11 @@ class TopicListControllerTest {
   @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var fakeAssetRepository: FakeAssetRepository
 
-  private lateinit var profileId0: ProfileId
+  private lateinit var profileId0: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
     setUpTestApplicationComponent()
 
     // Use uptime millis for time tracking since that allows proper time management for recorded

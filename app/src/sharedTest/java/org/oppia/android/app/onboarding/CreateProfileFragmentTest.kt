@@ -56,7 +56,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -737,7 +737,7 @@ class CreateProfileFragmentTest {
 
   private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
     ActivityScenario<CreateProfileActivity> {
-      val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+      val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
       val intent =
         CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
       intent.decorateWithUserProfileId(testProfileId)

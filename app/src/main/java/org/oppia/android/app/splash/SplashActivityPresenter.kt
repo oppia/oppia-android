@@ -18,9 +18,9 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
@@ -473,7 +473,7 @@ class SplashActivityPresenter @Inject constructor(
       }
     }
 
-    private fun resumeLearnerOnboarding(profileId: ProfileId, profileName: String) {
+    private fun resumeLearnerOnboarding(profileId: LegacyProfileId, profileName: String) {
       val introActivityParams = IntroActivityParams.newBuilder()
         .setProfileNickname(profileName)
         .build()
@@ -484,7 +484,7 @@ class SplashActivityPresenter @Inject constructor(
       activity.finish()
     }
 
-    private fun resumeSupervisorOnboarding(profileId: ProfileId, profileName: String) {
+    private fun resumeSupervisorOnboarding(profileId: LegacyProfileId, profileName: String) {
       val intent = AdminIntroActivity.createAdminIntroActivityIntent(
         activity,
         profileId,
@@ -496,7 +496,7 @@ class SplashActivityPresenter @Inject constructor(
       activity.finish()
     }
 
-    private fun launchProfileChooserScreen(profileId: ProfileId) {
+    private fun launchProfileChooserScreen(profileId: LegacyProfileId) {
       val intentParams = ProfileChooserActivityParams.newBuilder()
         .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
         .build()
@@ -510,7 +510,7 @@ class SplashActivityPresenter @Inject constructor(
       activity.finish()
     }
 
-    private fun logInToProfile(profileId: ProfileId) {
+    private fun logInToProfile(profileId: LegacyProfileId) {
       profileManagementController.loginToProfile(profileId)
         .toLiveData()
         .observe(activity) { result ->
@@ -520,7 +520,7 @@ class SplashActivityPresenter @Inject constructor(
         }
     }
 
-    private fun launchHomeScreen(profileId: ProfileId) {
+    private fun launchHomeScreen(profileId: LegacyProfileId) {
       val intent = if (enableMultipleClassroomsProvider.value) {
         ClassroomListActivity.createClassroomListActivity(activity, profileId)
       } else {

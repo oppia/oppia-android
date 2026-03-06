@@ -5,7 +5,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.IntroActivityBinding
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class IntroActivityPresenter @Inject constructor(
   /** Handle creation and binding of the [IntroActivity] layout. */
   fun handleOnCreate(
     profileNickname: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     parentScreen: IntroActivityParams.ParentScreen
   ) {
     binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)

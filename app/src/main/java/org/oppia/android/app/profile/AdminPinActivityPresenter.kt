@@ -10,7 +10,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.databinding.databinding.AdminPinActivityBinding
 import org.oppia.android.app.model.AdminPinActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -117,7 +117,7 @@ class AdminPinActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       val profileId =
-        ProfileId.newBuilder()
+        LegacyProfileId.newBuilder()
           .setInternalId(args?.internalProfileId ?: -1)
           .build()
 

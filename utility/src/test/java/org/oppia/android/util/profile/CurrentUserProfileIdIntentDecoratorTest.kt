@@ -7,7 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.LooperMode
@@ -23,7 +23,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
   fun testDecorator_decorateWithProfileId_returnsIntentWithCorrectProfileId() {
     val intent = Intent().apply {
       decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
+        LegacyProfileId.newBuilder().apply {
           internalId = 1
         }.build()
       )
@@ -40,7 +40,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
 
   @Test
   fun testDecorateIntentWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
-    val profileId = ProfileId.newBuilder().apply {}.build()
+    val profileId = LegacyProfileId.newBuilder().apply {}.build()
 
     val extractedProfileId = Intent().apply {
       decorateWithUserProfileId(profileId)
@@ -50,7 +50,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
 
   @Test
   fun testDecorator_decorateBundleWithProfileId_returnsBundleWithCorrectProfileId() {
-    val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
     val bundle = Bundle().apply {
       decorateWithUserProfileId(profileId)
     }
@@ -67,7 +67,7 @@ class CurrentUserProfileIdIntentDecoratorTest {
 
   @Test
   fun testDecorateBundleWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
-    val profileId = ProfileId.newBuilder().apply {}.build()
+    val profileId = LegacyProfileId.newBuilder().apply {}.build()
     val extractedProfileId = Bundle().apply {
       decorateWithUserProfileId(profileId)
     }.extractCurrentUserProfileId()
