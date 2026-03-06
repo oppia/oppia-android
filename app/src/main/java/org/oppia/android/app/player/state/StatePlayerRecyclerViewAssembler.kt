@@ -3,7 +3,6 @@ package org.oppia.android.app.player.state
 import android.app.Application
 import android.content.Context
 import android.graphics.Typeface
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
@@ -11,7 +10,6 @@ import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
@@ -1302,34 +1300,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
-      adapterBuilder.registerViewBinder(
+      adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTENT,
-        inflateView = { parent ->
-          ContentItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          val contentViewModel = viewModel as ContentViewModel
-          binding.viewModel = contentViewModel
+        inflateDataBinding = ContentItemBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
               entityType,
-              contentViewModel.gcsEntityId,
+              viewModel.gcsEntityId,
               imageCenterAlign = true,
               customOppiaTagActionListener = customTagListener,
               displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(),
+              viewModel.htmlContent.toString(),
               binding.contentTextView,
               supportsLinks = true,
-              supportsConceptCards = contentViewModel.supportsConceptCards
+              supportsConceptCards = viewModel.supportsConceptCards
             )
-        }
+        },
+        transformViewModel = { it as ContentViewModel }
       )
       featureSets += PlayerFeatureSet(contentSupport = true)
       return this
@@ -1337,34 +1328,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying feedback to the user when they submit an answer. */
     fun addFeedbackSupport(): Builder {
-      adapterBuilder.registerViewBinder(
+      adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.FEEDBACK,
-        inflateView = { parent ->
-          FeedbackItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          val feedbackViewModel = viewModel as FeedbackViewModel
-          binding.viewModel = feedbackViewModel
+        inflateDataBinding = FeedbackItemBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
               entityType,
-              feedbackViewModel.gcsEntityId,
+              viewModel.gcsEntityId,
               imageCenterAlign = true,
               customOppiaTagActionListener = customTagListener,
               displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
-              feedbackViewModel.htmlContent.toString(),
+              viewModel.htmlContent.toString(),
               binding.feedbackTextView,
               supportsLinks = true,
-              supportsConceptCards = feedbackViewModel.supportsConceptCards
+              supportsConceptCards = viewModel.supportsConceptCards
             )
-        }
+        },
+        transformViewModel = { it as FeedbackViewModel }
       )
       featureSets += PlayerFeatureSet(feedbackSupport = true)
       return this
@@ -1442,18 +1426,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying previously submitted answers. */
     fun addPastAnswersSupport(): Builder {
-      adapterBuilder.registerViewBinder(
+      adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-        inflateView = { parent ->
-          SubmittedAnswerItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
-          val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-          binding.viewModel = submittedAnswerViewModel
-          val userAnswer = submittedAnswerViewModel.submittedUserAnswer
+        inflateDataBinding = SubmittedAnswerItemBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
+          val userAnswer = viewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER -> {
               showSelectionSubmittedAnswer(binding)
@@ -1469,16 +1447,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
               val htmlParser = htmlParserFactory.create(
                 resourceBucketName,
                 entityType,
-                submittedAnswerViewModel.gcsEntityId,
+                viewModel.gcsEntityId,
                 imageCenterAlign = false,
                 customOppiaTagActionListener = customTagListener,
                 displayLocale = resourceHandler.getDisplayLocale()
               )
-              submittedAnswerViewModel.setSubmittedAnswer(
+              viewModel.setSubmittedAnswer(
                 htmlParser.parseOppiaHtml(
                   userAnswer.htmlAnswer,
                   binding.submittedAnswerTextView,
-                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+                  supportsConceptCards = viewModel.supportsConceptCards
                 ),
                 accessibleAnswer
               )
@@ -1488,18 +1466,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
               binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
               binding.submittedAnswerRecyclerView.adapter =
                 createListAnswerAdapter(
-                  submittedAnswerViewModel.gcsEntityId,
-                  submittedAnswerViewModel.supportsConceptCards
+                  viewModel.gcsEntityId,
+                  viewModel.supportsConceptCards
                 )
             }
             else -> {
               showSingleAnswer(binding)
-              submittedAnswerViewModel.setSubmittedAnswer(
+              viewModel.setSubmittedAnswer(
                 userAnswer.plainAnswer, accessibleAnswer = userAnswer.contentDescription
               )
             }
           }
-        }
+        },
+        transformViewModel = { it as SubmittedAnswerViewModel }
       )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
@@ -1566,14 +1545,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
       return singleTypeBuilderFactory.create<StringList>()
-        .registerViewBinder(
-          inflateView = { parent ->
-            SubmittedAnswerListItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<SubmittedAnswerListItemBinding>(view)!!
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = SubmittedAnswerListItemBinding::inflate,
+          setViewModel = { binding, viewModel ->
             binding.answerItem = viewModel
             binding.submittedHtmlAnswerRecyclerView.adapter =
               createNestedAdapter(gcsEntityId, supportsConceptCards)
@@ -1587,14 +1561,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
       return singleTypeBuilderFactory.create<String>()
-        .registerViewBinder(
-          inflateView = { parent ->
-            SubmittedHtmlAnswerItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<SubmittedHtmlAnswerItemBinding>(view)!!
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = SubmittedHtmlAnswerItemBinding::inflate,
+          setViewModel = { binding, viewModel ->
             binding.htmlContent =
               htmlParserFactory.create(
                 resourceBucketName,
@@ -1619,15 +1588,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return when (selectionItemInputType) {
         SelectionItemInputType.CHECKBOXES -> {
           singleTypeBuilderFactory.create<SelectionSubmittedItemViewModel>()
-            .registerViewBinder(
-              inflateView = { parent ->
-                ItemSelectionSubmittedAnswerItemsBinding.inflate(
-                  LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-                ).root
-              },
-              bindView = { view, viewModel ->
-                val binding = DataBindingUtil
-                  .findBinding<ItemSelectionSubmittedAnswerItemsBinding>(view)!!
+            .registerViewDataBinderWithSameModelType(
+              inflateDataBinding = ItemSelectionSubmittedAnswerItemsBinding::inflate,
+              setViewModel = { binding, viewModel ->
                 binding.htmlContent =
                   htmlParserFactory.create(
                     resourceBucketName,
@@ -1654,15 +1617,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
         SelectionItemInputType.RADIO_BUTTONS -> {
           singleTypeBuilderFactory.create<SelectionSubmittedItemViewModel>()
-            .registerViewBinder(
-              inflateView = { parent ->
-                MultipleChoiceSubmittedAnswerItemsBinding.inflate(
-                  LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-                ).root
-              },
-              bindView = { view, viewModel ->
-                val binding = DataBindingUtil
-                  .findBinding<MultipleChoiceSubmittedAnswerItemsBinding>(view)!!
+            .registerViewDataBinderWithSameModelType(
+              inflateDataBinding = MultipleChoiceSubmittedAnswerItemsBinding::inflate,
+              setViewModel = { binding, viewModel ->
                 binding.htmlContent =
                   htmlParserFactory.create(
                     resourceBucketName,
