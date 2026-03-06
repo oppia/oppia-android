@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.CreateProfileActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName.CREATE_PROFILE_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
@@ -42,7 +42,7 @@ class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
     /** Returns a new [Intent] open a [CreateProfileActivity] with the specified params. */
     fun createProfileActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       profileType: ProfileType,
       avatarColor: Int = 0
     ): Intent {

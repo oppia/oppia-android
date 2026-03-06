@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileLoginActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
@@ -49,7 +49,7 @@ class ProfileLoginActivity :
     /** Creates and returns an Intent to open a new [ProfileLoginActivity]. */
     fun createProfileLoginActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       loginFlow: LoginFlow = LoginFlow.OPEN_EXISTING_PROFILE
     ): Intent {
       return Intent(context, ProfileLoginActivity::class.java).apply {
@@ -62,7 +62,7 @@ class ProfileLoginActivity :
     /** Convenience intent for launching login as part of the add-profile flow. */
     fun createProfileLoginForAddProfileIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER,
       avatarColor: Int = 0
     ): Intent = createProfileLoginActivityIntent(
@@ -88,7 +88,7 @@ class ProfileLoginActivity :
       )
   }
 
-  override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
+  override fun routeToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
     profileLoginActivityPresenter.handleRouteToResetPinDialog(profileId, profileName)
   }
 

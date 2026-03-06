@@ -38,7 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -130,7 +130,7 @@ class CompletedStoryListActivityTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {

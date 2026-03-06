@@ -51,7 +51,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -786,7 +786,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_enterCorrectAdminPin_opensPinResetDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )
@@ -817,7 +817,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_enterAndSubmitNewPin_opensSuccessDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )
@@ -859,7 +859,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_nonAdminUser_resetPin_canLogInWithNewPin() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
-    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    val currentUserProfileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
       ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
     )

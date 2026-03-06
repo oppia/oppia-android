@@ -3,7 +3,7 @@ package org.oppia.android.app.profile
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class PinSetupActivityPresenter @Inject constructor(
   }
 
   /** Creates the view for [PinSetupActivity]. */
-  fun handleOnCreate(profileId: ProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId) {
     activity.setContentView(R.layout.pin_setup_activity)
 
     if (getPinSetupFragment() == null) {

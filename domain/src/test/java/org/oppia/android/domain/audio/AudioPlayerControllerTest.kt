@@ -25,7 +25,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Exploration
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.domain.classify.InteractionsModule
@@ -113,7 +113,7 @@ class AudioPlayerControllerTest {
   private val TEST_URL2 = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
-  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val profileId by lazy { LegacyProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Before
   fun setUp() {
@@ -843,7 +843,7 @@ class AudioPlayerControllerTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = ProfileId.getDefaultInstance()
+    val rootProfileId = LegacyProfileId.getDefaultInstance()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",

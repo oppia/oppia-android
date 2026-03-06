@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -27,7 +27,7 @@ class WalkthroughTopicViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -46,7 +46,7 @@ class WalkthroughTopicViewModel @Inject constructor(
    *
    * This MUST be called before the view model is interacted with.
    */
-  fun initialize(profileId: ProfileId) {
+  fun initialize(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

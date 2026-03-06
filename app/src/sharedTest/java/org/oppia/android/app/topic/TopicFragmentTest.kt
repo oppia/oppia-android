@@ -47,7 +47,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -186,7 +186,7 @@ class TopicFragmentTest {
   @field:[Inject EnableTopicPracticeTab]
   lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
   private val TOPIC_NAME = "Fractions"
 
   @Before
@@ -1127,7 +1127,7 @@ class TopicFragmentTest {
   }
 
   private fun runWithLaunchedActivityAndAddedFragment(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?,
@@ -1150,7 +1150,7 @@ class TopicFragmentTest {
   }
 
   private fun createTopicFragment(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?
@@ -1176,7 +1176,7 @@ class TopicFragmentTest {
     RouteToResumeLessonListener,
     RouteToRevisionCardListener {
     override fun routeToExploration(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -1190,7 +1190,7 @@ class TopicFragmentTest {
     }
 
     override fun routeToResumeLesson(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -1201,7 +1201,7 @@ class TopicFragmentTest {
     }
 
     override fun routeToRevisionCard(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       topicId: String,
       subtopicId: Int,
       subtopicListSize: Int

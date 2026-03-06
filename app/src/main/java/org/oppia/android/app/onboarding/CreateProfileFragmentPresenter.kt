@@ -24,7 +24,7 @@ import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.databinding.databinding.CreateProfileFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -51,7 +51,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
   private lateinit var selectedImage: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
   private var avatarColor: Int = 0
   private var selectedImageUri: Uri? = null
@@ -63,7 +63,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     profileType: ProfileType,
     avatarColor: Int = 0
   ): View {

@@ -70,10 +70,10 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -205,7 +205,7 @@ class StateFragmentLocalTest {
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -1317,8 +1317,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_summary)).check(
         matches(
           withContentDescription(
-            "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
+            "Start by dividing the cake into equal parts:" +
+              "\nThree of the four equal parts are red. So, the answer is 3/4."
           )
         )
       )
@@ -2881,7 +2881,7 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.TopicRevisionFragmentArguments
 import org.oppia.android.util.extensions.getProto
@@ -26,7 +26,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
 
     /** Returns a new [TopicRevisionFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicRevisionFragment {
+    fun newInstance(profileId: LegacyProfileId, topicId: String): TopicRevisionFragment {
       val args = TopicRevisionFragmentArguments.newBuilder().setTopicId(topicId).build()
       return TopicRevisionFragment().apply {
         arguments = Bundle().apply {
@@ -50,7 +50,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId = arguments?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     val args = arguments?.getProto(
       TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,

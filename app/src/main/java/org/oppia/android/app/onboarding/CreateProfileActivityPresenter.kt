@@ -3,7 +3,7 @@ package org.oppia.android.app.onboarding
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.CreateProfileFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
@@ -20,7 +20,7 @@ class CreateProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType, avatarColor: Int = 0) {
+  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, avatarColor: Int = 0) {
     activity.setContentView(R.layout.create_profile_activity)
     if (getCreateProfileFragment() == null) {
       val createProfileFragment = CreateProfileFragment().apply {

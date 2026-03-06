@@ -68,9 +68,9 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -232,7 +232,7 @@ class ExplorationActivityTest {
     val screenName =
       ExplorationActivity.createExplorationActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+        LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -1079,7 +1079,7 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1095,7 +1095,7 @@ class ExplorationActivityTest {
         .perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         RATIOS_EXPLORATION_ID_0
       )
     }
@@ -1106,11 +1106,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1126,7 +1126,7 @@ class ExplorationActivityTest {
         .perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         RATIOS_EXPLORATION_ID_0
       )
     }
@@ -1174,7 +1174,7 @@ class ExplorationActivityTest {
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1188,11 +1188,11 @@ class ExplorationActivityTest {
       pressBack()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         RATIOS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
     }
@@ -1201,11 +1201,11 @@ class ExplorationActivityTest {
   @Test
   fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1227,11 +1227,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1254,11 +1254,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
     markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1283,11 +1283,11 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1313,11 +1313,11 @@ class ExplorationActivityTest {
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1342,11 +1342,11 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1365,15 +1365,15 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         RATIOS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_1
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
     }
@@ -1383,11 +1383,11 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1406,16 +1406,16 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_1
       )
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       RATIOS_EXPLORATION_ID_0
     )
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1424,11 +1424,11 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
@@ -1445,16 +1445,16 @@ class ExplorationActivityTest {
         .inRoot(isDialog()).perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_1
       )
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       RATIOS_EXPLORATION_ID_0
     )
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1592,7 +1592,7 @@ class ExplorationActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ENGLISH
     )
     runWithLaunchedActivityAndStartedExploration(
@@ -1612,7 +1612,7 @@ class ExplorationActivityTest {
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ARABIC
     )
     runWithLaunchedActivityAndStartedExploration(
@@ -1632,7 +1632,7 @@ class ExplorationActivityTest {
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
     markAllSpotlightsSeen()
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ENGLISH
     )
     runWithLaunchedActivityAndStartedExploration(
@@ -1682,8 +1682,8 @@ class ExplorationActivityTest {
         .check(
           matches(
             withContentDescription(
-              "Remember that two halves, when added together, make one whole." +
-                "\nClick on this test_skill_id_1 concept card."
+              "Remember that two halves, when added together, make one whole.\n" +
+                "Click on this test_skill_id_1 concept card."
             )
           )
         )
@@ -1751,7 +1751,7 @@ class ExplorationActivityTest {
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
     markAllSpotlightsSeen()
     updateContentLanguage(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ARABIC
     )
     runWithLaunchedActivityAndStartedExploration(
@@ -2282,7 +2282,7 @@ class ExplorationActivityTest {
     val intent =
       ExplorationActivity.createExplorationActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+        LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
         classroomId,
         topicId,
         storyId,
@@ -2353,7 +2353,7 @@ class ExplorationActivityTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
@@ -2439,7 +2439,7 @@ class ExplorationActivityTest {
       "exploration/$explorationId/assets/audio/$audioFileName"
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
