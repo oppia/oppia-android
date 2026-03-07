@@ -27,6 +27,7 @@
 
         <TextView
           android:id="@+id/audio_language_toolbar_title"
+          style="@style/ToolbarTitle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:ellipsize="marquee"
