@@ -27,6 +27,30 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.DivideSymbol>()
   }
 
+  fun isDollarPrefixUnit() {
+    actual.asVerifiedType<Token.DollarPrefixUnit>()
+  }
+
+  fun isDollarSuffixUnit() {
+    actual.asVerifiedType<Token.DollarSuffixUnit>()
+  }
+
+  fun isCentSuffixUnit() {
+    actual.asVerifiedType<Token.CentSuffixUnit>()
+  }
+
+  fun isRupeePrefixUnit() {
+    actual.asVerifiedType<Token.RupeePrefixUnit>()
+  }
+
+  fun isRupeeSuffixUnit() {
+    actual.asVerifiedType<Token.RupeeSuffixUnit>()
+  }
+
+  fun isPaisaSuffixUnit() {
+    actual.asVerifiedType<Token.PaisaSuffixUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

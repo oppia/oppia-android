@@ -15,11 +15,21 @@ class NumberWithUnitsTokenizer private constructor() {
 
         when (chars.peek()) {
           in '0'..'9' -> tokenizeIntegerOrRealNumber(chars)
+          in 'a'..'z', in 'A'..'Z' -> tokenizeUnit(chars)
           '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MinusSymbol(startIndex, endIndex)
           }
           '/' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.DivideSymbol(startIndex, endIndex)
+          }
+          '₹' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.RupeePrefixUnit(startIndex, endIndex)
+          }
+          '$' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.DollarPrefixUnit(startIndex, endIndex)
+          }
+          '¢' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.CentSuffixUnit(startIndex, endIndex)
           }
           null -> null
           else -> tokenizeSymbol(chars) { startIndex, endIndex ->
@@ -73,6 +83,140 @@ class NumberWithUnitsTokenizer private constructor() {
       chars.next() // Parse the symbol.
       val endIndex = chars.getRetrievalCount()
       return factory(startIndex, endIndex)
+    }
+
+    private fun tokenizeUnit(chars: PeekableIterator<Char>): Token {
+      val startIndex = chars.getRetrievalCount()
+
+      return when (chars.next()) {
+        'c' -> {
+          val token = tokenizeExpectedUnit(
+            "cent",
+            startIndex,
+            chars
+          ) { start, end -> Token.CentSuffixUnit(start, end) }
+          if (chars.peek() == 's') chars.next() // Allow for plural suffix (cents).
+
+          token
+        }
+        'd' -> {
+          val token = tokenizeExpectedUnit(
+            "dollar",
+            startIndex,
+            chars
+          ) { start, end -> Token.DollarSuffixUnit(start, end) }
+          if (chars.peek() == 's') chars.next() // Allow for plural suffix (dollars).
+
+          token
+        }
+        'p' -> {
+          val paisaToken = tokenizeExpectedUnit(
+            "pais",
+            startIndex,
+            chars
+          ) { start, end -> Token.PaisaSuffixUnit(start, end) }
+
+          when (chars.peek()) {
+            'a', 'e'-> {
+              chars.next() // Allow for "paisa" & "paise" suffix only.
+              paisaToken
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'r' -> {
+          val token = tokenizeExpectedUnit(
+            "rupee",
+            startIndex,
+            chars
+          ) { start, end -> Token.RupeeSuffixUnit(start, end) }
+          if (chars.peek() == 's') chars.next() // Allow for plural suffix (rupees).
+
+          token
+        }
+        'C' -> {
+          val token = tokenizeExpectedUnit(
+            "Cent",
+            startIndex,
+            chars
+          ) { start, end -> Token.CentSuffixUnit(start, end) }
+          if (chars.peek() == 's') chars.next() // Allow for plural suffix (Cents).
+
+          token
+        }
+        'D' -> {
+          val token = tokenizeExpectedUnit(
+            "Dollar",
+            startIndex,
+            chars
+          ) { start, end -> Token.DollarSuffixUnit(start, end) }
+          if (chars.peek() == 's') chars.next() // Allow for plural suffix (Dollars).
+
+          token
+        }
+        'P' -> {
+          val paisaToken = tokenizeExpectedUnit(
+            "Pais",
+            startIndex,
+            chars
+          ) { start, end -> Token.PaisaSuffixUnit(start, end) }
+
+          when (chars.peek()) {
+            'a', 'e'-> {
+              chars.next() // Allow for "Paisa" & "Paise" suffix only.
+              paisaToken
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'R' -> {
+          when (chars.next()) {
+            's' -> {
+              Token.RupeePrefixUnit(startIndex, chars.getRetrievalCount())
+            }
+            'u' -> {
+              val token = tokenizeExpectedUnit(
+                "Rupee",
+                startIndex,
+                chars
+              ) { start, end -> Token.RupeeSuffixUnit(start, end) }
+              if (chars.peek() == 's') chars.next() // Allow for plural suffix (Rupees).
+
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'U' -> {
+          when (chars.next()) {
+            'S' -> {
+              when (chars.next()) {
+                'D' -> Token.DollarSuffixUnit(startIndex, chars.getRetrievalCount())
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        else -> {
+          Token.InvalidToken(startIndex, chars.getRetrievalCount())
+        }
+      }
+    }
+
+    private fun tokenizeExpectedUnit(
+      name: String,
+      startIndex: Int,
+      chars: PeekableIterator<Char>,
+      factory: (Int, Int) -> Token
+    ): Token {
+      // Only check the remaining characters in the unit name, since the first few characters has already been scanned.
+      val remainingUnit = name.substring(chars.getRetrievalCount() - startIndex)
+      return if (chars.expectNextCharsForUnit(remainingUnit)) {
+        factory(startIndex, chars.getRetrievalCount())
+      } else {
+        Token.InvalidToken(startIndex, chars.getRetrievalCount())
+      }
     }
 
     /** Represents a token that may be encountered during tokenization. */
@@ -141,32 +285,32 @@ class NumberWithUnitsTokenizer private constructor() {
         override val endIndex: Int
       ) : Token()
 
-      class DollarPrefix(
+      class DollarPrefixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      class RupeePrefix(
+      class RupeePrefixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      class DollarSuffix(
+      class DollarSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      class CentSuffix(
+      class CentSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      class RupeeSuffix(
+      class RupeeSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      class PaisaSuffix(
+      class PaisaSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
@@ -361,6 +505,15 @@ class NumberWithUnitsTokenizer private constructor() {
 
     private fun PeekableIterator<Char>.consumeWhitespace() {
       while (peek()?.isWhitespace() == true) next()
+    }
+
+    private fun PeekableIterator<Char>.expectNextCharsForUnit(
+      chars: String
+    ): Boolean {
+      for (c in chars) {
+        expectNextValue { c } ?: return false
+      }
+      return true
     }
   }
 }

@@ -205,4 +205,78 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[1]).isDivideSymbol()
     assertThat(tokens[2]).isPositiveRealNumberWhoseValue().isEqualTo(3.7)
   }
+
+  @Test
+  @Iteration("₹ 10", "input=₹ 10", "expected=10")
+  @Iteration("Rs 10", "input=Rs 10", "expected=10")
+  fun testTokenize_rupeePrefixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(expected.toInt())
+  }
+
+  @Test
+  @Iteration("10 rupee", "input=10 rupee")
+  @Iteration("10 rupees", "input=10 rupees")
+  @Iteration("10 Rupee", "input=10 Rupee")
+  @Iteration("10 Rupees", "input=10 Rupees")
+  fun testTokenize_rupeeSuffixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isRupeeSuffixUnit()
+  }
+
+  @Test
+  @Iteration("10 paise", "input=10 paise")
+  @Iteration("10 paisa", "input=10 paisa")
+  @Iteration("10 Paise", "input=10 Paise")
+  @Iteration("10 Paisa", "input=10 Paisa")
+  fun testTokenize_paisaSuffixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isPaisaSuffixUnit()
+  }
+
+  @Test
+  fun testTokenize_dollarPrefixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("$12.5").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isDollarPrefixUnit()
+    assertThat(tokens[1]).isPositiveRealNumberWhoseValue().isEqualTo(12.5)
+  }
+
+  @Test
+  @Iteration("10 USD", "input=10 USD")
+  @Iteration("10 dollars", "input=10 dollars")
+  @Iteration("10 dollar", "input=10 dollar")
+  @Iteration("10 Dollars", "input=10 Dollars")
+  @Iteration("10 Dollar", "input=10 Dollar")
+  fun testTokenize_dollarSuffixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isDollarSuffixUnit()
+  }
+
+  @Test
+  @Iteration("10 ¢", "input=10 ¢")
+  @Iteration("10 cents", "input=10 cents")
+  @Iteration("10 cent", "input=10 cent")
+  @Iteration("10 Cents", "input=10 Cents")
+  @Iteration("10 Cent", "input=10 Cent")
+  fun testTokenize_centSuffixUnit_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCentSuffixUnit()
+  }
 }
