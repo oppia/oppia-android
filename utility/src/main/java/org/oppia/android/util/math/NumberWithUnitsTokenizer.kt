@@ -117,7 +117,7 @@ class NumberWithUnitsTokenizer private constructor() {
           ) { start, end -> Token.PaisaSuffixUnit(start, end) }
 
           when (chars.peek()) {
-            'a', 'e'-> {
+            'a', 'e' -> {
               chars.next() // Allow for "paisa" & "paise" suffix only.
               paisaToken
             }
@@ -162,7 +162,7 @@ class NumberWithUnitsTokenizer private constructor() {
           ) { start, end -> Token.PaisaSuffixUnit(start, end) }
 
           when (chars.peek()) {
-            'a', 'e'-> {
+            'a', 'e' -> {
               chars.next() // Allow for "Paisa" & "Paise" suffix only.
               paisaToken
             }
