@@ -487,7 +487,8 @@ class NumberWithUnitsTokenizer private constructor() {
         }
         'K' -> {
           when (chars.peek()) {
-            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount()) // Kelvin must be lowercase
+            // Kelvin must be lowercase
+            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
             else -> Token.KelvinUnit(startIndex, chars.getRetrievalCount()) // K
           }
         }
