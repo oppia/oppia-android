@@ -279,4 +279,112 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isCentSuffixUnit()
   }
+
+  @Test
+  @Iteration("20 m", "input=20 m")
+  @Iteration("20 meter", "input=20 meter")
+  @Iteration("20 meters", "input=20 meters")
+  fun testTokenize_correctMeterUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isMeterUnit()
+  }
+
+  @Test
+  @Iteration("20 M", "input=20 M")
+  @Iteration("20 Meter", "input=20 Meter")
+  @Iteration("20 Meters", "input=20 Meters")
+  fun testTokenize_incorrectMeterUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).isNotEmpty()
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  @Iteration("20 in", "input=20 in")
+  @Iteration("20 inch", "input=20 inch")
+  @Iteration("20 inches", "input=20 inches")
+  fun testTokenize_correctInchUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isInchUnit()
+  }
+
+  @Test
+  @Iteration("20 In", "input=20 In")
+  @Iteration("20 Inch", "input=20 Inch")
+  @Iteration("20 Inches", "input=20 Inches")
+  fun testTokenize_incorrectInchUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).isNotEmpty()
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  @Iteration("20 ft", "input=20 ft")
+  @Iteration("20 foot", "input=20 foot")
+  @Iteration("20 feet", "input=20 feet")
+  fun testTokenize_correctFootUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isFootUnit()
+  }
+
+  @Test
+  @Iteration("20 Ft", "input=20 Ft")
+  @Iteration("20 Foot", "input=20 Foot")
+  @Iteration("20 Feet", "input=20 Feet")
+  fun testTokenize_incorrectFootUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).isNotEmpty()
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  @Iteration("20 yd", "input=20 yd")
+  @Iteration("20 yard", "input=20 yard")
+  @Iteration("20 yards", "input=20 yards")
+  fun testTokenize_correctYardUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isYardUnit()
+  }
+
+  @Test
+  @Iteration("20 Yd", "input=20 Yd")
+  @Iteration("20 Yard", "input=20 Yard")
+  @Iteration("20 Yards", "input=20 Yards")
+  fun testTokenize_incorrectYardUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).isNotEmpty()
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
 }

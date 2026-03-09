@@ -51,6 +51,22 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.PaisaSuffixUnit>()
   }
 
+  fun isMeterUnit() {
+    actual.asVerifiedType<Token.MeterUnit>()
+  }
+
+  fun isInchUnit() {
+    actual.asVerifiedType<Token.InchUnit>()
+  }
+
+  fun isFootUnit() {
+    actual.asVerifiedType<Token.FootUnit>()
+  }
+
+  fun isYardUnit() {
+    actual.asVerifiedType<Token.YardUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

@@ -109,6 +109,74 @@ class NumberWithUnitsTokenizer private constructor() {
 
           token
         }
+        'f' -> {
+          when (chars.peek()) {
+            'e' -> {
+              val token = tokenizeExpectedUnit(
+                "feet",
+                startIndex,
+                chars
+              ) { start, end -> Token.FootUnit(start, end) }
+
+              token
+            }
+            'o' -> {
+              val token = tokenizeExpectedUnit(
+                "foot",
+                startIndex,
+                chars
+              ) { start, end -> Token.FootUnit(start, end) }
+
+              token
+            }
+            't' -> {
+              chars.next()
+              Token.FootUnit(startIndex, chars.getRetrievalCount()) // "ft"
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'i' -> {
+          when (chars.peek()) {
+            'n' -> {
+              chars.next() // consume 'n'
+
+              when (chars.peek()) {
+                'c' -> {
+                  val token = tokenizeExpectedUnit(
+                    "inch",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.InchUnit(start, end) }
+
+                  if (chars.peek() == 'e') { // inches
+                    chars.next()
+                    if (chars.peek() == 's') chars.next()
+                  }
+
+                  token
+                }
+                else -> Token.InchUnit(startIndex, chars.getRetrievalCount()) // "in"
+              }
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'm' -> {
+          when (chars.peek()) {
+            'e' -> {
+              val token = tokenizeExpectedUnit(
+                "meter",
+                startIndex,
+                chars
+              ) { start, end -> Token.MeterUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // meters
+              token
+            }
+            else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
+          }
+        }
         'p' -> {
           val paisaToken = tokenizeExpectedUnit(
             "pais",
@@ -133,6 +201,25 @@ class NumberWithUnitsTokenizer private constructor() {
           if (chars.peek() == 's') chars.next() // Allow for plural suffix (rupees).
 
           token
+        }
+        'y' -> {
+          when (chars.peek()) {
+            'a' -> {
+              val token = tokenizeExpectedUnit(
+                "yard",
+                startIndex,
+                chars
+              ) { start, end -> Token.YardUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // yards
+              token
+            }
+            'd' -> {
+              chars.next()
+              Token.YardUnit(startIndex, chars.getRetrievalCount()) // "yd"
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
         }
         'C' -> {
           val token = tokenizeExpectedUnit(
