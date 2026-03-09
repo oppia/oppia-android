@@ -163,6 +163,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.NewtonUnit>()
   }
 
+  fun isJouleUnit() {
+    actual.asVerifiedType<Token.JouleUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

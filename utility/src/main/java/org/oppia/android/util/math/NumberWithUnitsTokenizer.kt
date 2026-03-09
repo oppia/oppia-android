@@ -334,6 +334,21 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
+        'j' -> {
+          when (chars.peek()) {
+            'o' -> {
+              val token = tokenizeExpectedUnit(
+                "joule",
+                startIndex,
+                chars
+              ) { start, end -> Token.JouleUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // joules
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
         'k' -> {
           tokenizeExpectedUnit(
             "kelvin",
@@ -674,6 +689,13 @@ class NumberWithUnitsTokenizer private constructor() {
               Token.HertzUnit(startIndex, chars.getRetrievalCount()) // Hz
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'J' -> {
+          when (chars.peek()) {
+            // Joule must be lowercase
+            'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            else -> Token.JouleUnit(startIndex, chars.getRetrievalCount()) // J
           }
         }
         'K' -> {
