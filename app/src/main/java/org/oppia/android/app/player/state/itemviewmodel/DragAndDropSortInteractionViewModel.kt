@@ -83,7 +83,7 @@ class DragAndDropSortInteractionViewModel private constructor(
    * answer has been submitted, the interaction's default ordering. This is used to determine
    * whether the user has changed anything since their last submission (or the initial state).
    */
-  private val lastCheckedOrDefaultChoiceItems: MutableList<DragDropInteractionContentViewModel> =
+  private val lastCheckedOrDefaultChoiceItems: List<DragDropInteractionContentViewModel> =
     computeLastCheckedOrDefaultChoiceItems(
       contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler, wrongAnswerList
     )
@@ -321,6 +321,28 @@ class DragAndDropSortInteractionViewModel private constructor(
 
   companion object {
     /**
+     * Creates a list of [DragDropInteractionContentViewModel]s from the given
+     * [contentIdLists].
+     */
+    private fun createChoiceItemViewModels(
+      contentIdHtmlMap: Map<String, String>,
+      contentIdLists: List<SetOfTranslatableHtmlContentIds>,
+      dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+      resourceHandler: AppLanguageResourceHandler
+    ): List<DragDropInteractionContentViewModel> {
+      return contentIdLists.mapIndexed { index, setOfIds ->
+        DragDropInteractionContentViewModel(
+          contentIdHtmlMap = contentIdHtmlMap,
+          htmlContent = setOfIds,
+          itemIndex = index,
+          listSize = contentIdLists.size,
+          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+          resourceHandler = resourceHandler
+        )
+      }
+    }
+
+    /**
      * Returns the choice items based on the most recent wrong answer's ordering, or falls back to
      * the interaction's default ordering if no wrong answer has been submitted.
      */
@@ -330,48 +352,33 @@ class DragAndDropSortInteractionViewModel private constructor(
       dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
       resourceHandler: AppLanguageResourceHandler,
       wrongAnswerList: List<AnswerAndResponse>
-    ): MutableList<DragDropInteractionContentViewModel> {
+    ): List<DragDropInteractionContentViewModel> {
       if (wrongAnswerList.isNotEmpty()) {
         val latestWrongAnswer = wrongAnswerList.last().userAnswer
         if (latestWrongAnswer.answer.hasListOfSetsOfTranslatableHtmlContentIds()) {
-          val contentIdLists =
-            latestWrongAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
-          return contentIdLists.mapIndexed { index, set ->
-            DragDropInteractionContentViewModel(
-              contentIdHtmlMap = contentIdHtmlMap,
-              htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                for (contentIds in set.contentIdsList) {
-                  addContentIds(
-                    TranslatableHtmlContentId.newBuilder().apply {
-                      contentId = contentIds.contentId
-                    }
-                  )
-                }
-              }.build(),
-              itemIndex = index,
-              listSize = contentIdLists.size,
-              dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-              resourceHandler = resourceHandler
-            )
-          }.toMutableList()
+          return createChoiceItemViewModels(
+            contentIdHtmlMap,
+            latestWrongAnswer.answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList,
+            dragAndDropSortInteractionViewModel,
+            resourceHandler
+          )
         }
       }
-      return choiceStrings.mapIndexed { index, subtitledHtml ->
-        DragDropInteractionContentViewModel(
-          contentIdHtmlMap = contentIdHtmlMap,
-          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-            addContentIds(
-              TranslatableHtmlContentId.newBuilder().apply {
-                contentId = subtitledHtml.contentId
-              }
-            )
-          }.build(),
-          itemIndex = index,
-          listSize = choiceStrings.size,
-          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-          resourceHandler = resourceHandler
-        )
-      }.toMutableList()
+      val defaultContentIdLists = choiceStrings.map { subtitledHtml ->
+        SetOfTranslatableHtmlContentIds.newBuilder().apply {
+          addContentIds(
+            TranslatableHtmlContentId.newBuilder().apply {
+              contentId = subtitledHtml.contentId
+            }
+          )
+        }.build()
+      }
+      return createChoiceItemViewModels(
+        contentIdHtmlMap,
+        defaultContentIdLists,
+        dragAndDropSortInteractionViewModel,
+        resourceHandler
+      )
     }
   }
 
@@ -392,24 +399,12 @@ class DragAndDropSortInteractionViewModel private constructor(
       val savedContentIdLists =
         userAnswerState.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
       if (savedContentIdLists.isNotEmpty()) {
-        return savedContentIdLists.mapIndexed { index, setOfTranslatableHtmlContentIds ->
-          DragDropInteractionContentViewModel(
-            contentIdHtmlMap = contentIdHtmlMap,
-            htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-              for (contentIds in setOfTranslatableHtmlContentIds.contentIdsList) {
-                addContentIds(
-                  TranslatableHtmlContentId.newBuilder().apply {
-                    contentId = contentIds.contentId
-                  }
-                )
-              }
-            }.build(),
-            itemIndex = index,
-            listSize = savedContentIdLists.size,
-            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-            resourceHandler = resourceHandler
-          )
-        }.toMutableList()
+        return createChoiceItemViewModels(
+          contentIdHtmlMap,
+          savedContentIdLists,
+          dragAndDropSortInteractionViewModel,
+          resourceHandler
+        ).toMutableList()
       }
     }
     return lastCheckedOrDefaultChoiceItems.toMutableList()
