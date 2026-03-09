@@ -183,6 +183,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.LoadThumbnailsFromGcs
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -6993,6 +6994,10 @@ class StateFragmentTest {
     @Provides
     @LoadImagesFromAssets
     fun provideLoadImagesFromAssets(): Boolean = false
+
+    @Provides
+    @LoadThumbnailsFromGcs
+    fun provideLoadThumbnailsFromGcs(): Boolean = false
   }
 
   @Singleton

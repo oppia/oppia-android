@@ -20,10 +20,24 @@ kt_android_library(
     srcs = [
         "LoadImagesFromAssets.kt",
         "LoadLessonProtosFromAssets.kt",
+        "LoadThumbnailsFromGcs.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "dev_caching_module",
+    srcs = [
+        "DevCachingModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":annotations",
+        ":asset_repository",
+        "//:dagger",
     ],
 )
 

@@ -48,7 +48,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CachingModule
+import org.oppia.android.util.caching.DevCachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -79,7 +79,7 @@ import javax.inject.Singleton
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
     NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
     InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
-    ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class,
+    ImageParsingModule::class, HtmlParserEntityTypeModule::class, DevCachingModule::class,
     QuestionModule::class, DebugLogReportingModule::class, AccessibilityProdModule::class,
     ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class,

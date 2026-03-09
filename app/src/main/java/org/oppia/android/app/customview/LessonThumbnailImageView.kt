@@ -11,6 +11,7 @@ import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.app.views.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.caching.LoadThumbnailsFromGcs
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
@@ -55,6 +56,10 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  @field:LoadThumbnailsFromGcs
+  var loadThumbnailsFromGcs: Boolean = true
 
   /** Sets the entityId of the current [LessonThumbnailImageView] being displayed. */
   fun setEntityId(entityId: String) {
@@ -101,7 +106,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     } else {
       listOf()
     }
-    if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
+    if (lessonThumbnail.thumbnailFilename.isNotEmpty() && loadThumbnailsFromGcs) {
       loadImage(lessonThumbnail.thumbnailFilename, transformations)
     } else {
       imageLoader.loadDrawable(

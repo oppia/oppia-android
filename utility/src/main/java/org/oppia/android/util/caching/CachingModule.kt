@@ -13,4 +13,8 @@ class CachingModule {
   @Provides
   @LoadImagesFromAssets
   fun provideLoadImagesFromAssets(): Boolean = false
+
+  @Provides
+  @LoadThumbnailsFromGcs
+  fun provideLoadThumbnailsFromGcs(): Boolean = true
 }
