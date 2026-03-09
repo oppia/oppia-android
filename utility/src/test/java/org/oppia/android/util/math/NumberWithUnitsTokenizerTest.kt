@@ -801,4 +801,33 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("10 Hz", "input=10 Hz")
+  @Iteration("10 hertz", "input=10 hertz")
+  fun testTokenize_correctHertzUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isHertzUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectHertzUnits_hz_parsesHourAndInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 hz").toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isHourUnit()
+    assertThat(tokens[2]).isInvalidToken()
+  }
+
+  @Test
+  fun testTokenize_incorrectHertzUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 Hertz").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

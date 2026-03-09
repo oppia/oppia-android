@@ -147,6 +147,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.HourUnit>()
   }
 
+  fun isHertzUnit() {
+    actual.asVerifiedType<Token.HertzUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

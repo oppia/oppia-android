@@ -265,15 +265,12 @@ class NumberWithUnitsTokenizer private constructor() {
         }
         'h' -> {
           when (chars.peek()) {
-            'r' -> {
-              chars.next()
-              when (chars.peek()) {
-                's' -> {
-                  chars.next()
-                  Token.HourUnit(startIndex, chars.getRetrievalCount()) // hrs
-                }
-                else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // hr
-              }
+            'e' -> {
+              tokenizeExpectedUnit(
+                "hertz",
+                startIndex,
+                chars
+              ) { start, end -> Token.HertzUnit(start, end) }
             }
             'o' -> {
               val token = tokenizeExpectedUnit(
@@ -284,6 +281,16 @@ class NumberWithUnitsTokenizer private constructor() {
 
               if (chars.peek() == 's') chars.next() // hours
               token
+            }
+            'r' -> {
+              chars.next()
+              when (chars.peek()) {
+                's' -> {
+                  chars.next()
+                  Token.HourUnit(startIndex, chars.getRetrievalCount()) // hrs
+                }
+                else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // hr
+              }
             }
             else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // h
           }
@@ -610,6 +617,15 @@ class NumberWithUnitsTokenizer private constructor() {
           if (chars.peek() == 's') chars.next() // Allow for plural suffix (Dollars).
 
           token
+        }
+        'H' -> {
+          when (chars.peek()) {
+            'z' -> {
+              chars.next()
+              Token.HertzUnit(startIndex, chars.getRetrievalCount()) // Hz
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
         }
         'K' -> {
           when (chars.peek()) {
