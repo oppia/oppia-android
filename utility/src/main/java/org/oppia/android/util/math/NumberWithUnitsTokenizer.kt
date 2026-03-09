@@ -91,9 +91,22 @@ class NumberWithUnitsTokenizer private constructor() {
       return when (chars.next()) {
         'c' -> {
           when (chars.peek()) {
+            'a' -> {
+              val token = tokenizeExpectedUnit(
+                "candela",
+                startIndex,
+                chars
+              ) { start, end -> Token.CandelaUnit(start, end) }
+
+              token
+            }
             'c' -> {
               chars.next()
               Token.CcUnit(startIndex, chars.getRetrievalCount()) // cc
+            }
+            'd' -> {
+              chars.next()
+              Token.CandelaUnit(startIndex, chars.getRetrievalCount()) // cd
             }
             'e' -> {
               chars.next()

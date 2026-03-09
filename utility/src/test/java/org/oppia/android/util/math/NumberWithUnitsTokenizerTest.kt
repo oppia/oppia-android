@@ -853,4 +853,26 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("10 cd", "input=10 cd")
+  @Iteration("10 candela", "input=10 candela")
+  fun testTokenize_correctCandelaUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCandelaUnit()
+  }
+
+  @Test
+  @Iteration("10 Cd", "input=10 Cd")
+  @Iteration("10 CD", "input=10 CD")
+  @Iteration("10 Candela", "input=10 Candela")
+  fun testTokenize_incorrectCandelaUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

@@ -155,6 +155,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.MoleUnit>()
   }
 
+  fun isCandelaUnit() {
+    actual.asVerifiedType<Token.CandelaUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }
