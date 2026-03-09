@@ -463,4 +463,65 @@ class NumberWithUnitsTokenizerTest {
       assertThat(it).isInvalidToken()
     }
   }
+
+  @Test
+  fun testTokenize_correctSquareMeterUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 m2").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSquareMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectSquareMeterUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 M2").toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  @Iteration("10 sqft", "input=10 sqft")
+  @Iteration("10 sqfeet", "input=10 sqfeet")
+  fun testTokenize_correctSquareFootUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSquareFootUnit()
+  }
+
+  @Test
+  @Iteration("10 Sqft", "input=10 Sqft")
+  @Iteration("10 Sqfeet", "input=10 Sqfeet")
+  fun testTokenize_incorrectSquareFootUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 sqyd", "input=10 sqyd")
+  @Iteration("10 sqyard", "input=10 sqyard")
+  fun testTokenize_correctSquareYardUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSquareYardUnit()
+  }
+
+  @Test
+  @Iteration("10 Sqyd", "input=10 Sqyd")
+  @Iteration("10 Sqyard", "input=10 Sqyard")
+  fun testTokenize_incorrectSquareYardUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

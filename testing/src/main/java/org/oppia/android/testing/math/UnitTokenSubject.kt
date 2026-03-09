@@ -79,6 +79,22 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.OunceUnit>()
   }
 
+  fun isSquareMeterUnit() {
+    actual.asVerifiedType<Token.SquareMeterUnit>()
+  }
+
+  fun isSquareInchUnit() {
+    actual.asVerifiedType<Token.SquareInchUnit>()
+  }
+
+  fun isSquareFootUnit() {
+    actual.asVerifiedType<Token.SquareFootUnit>()
+  }
+
+  fun isSquareYardUnit() {
+    actual.asVerifiedType<Token.SquareYardUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

@@ -205,6 +205,10 @@ class NumberWithUnitsTokenizer private constructor() {
         }
         'm' -> {
           when (chars.peek()) {
+            '2' -> {
+              chars.next()
+              Token.SquareMeterUnit(startIndex, chars.getRetrievalCount()) // m2
+            }
             'e' -> {
               val token = tokenizeExpectedUnit(
                 "meter",
@@ -263,6 +267,58 @@ class NumberWithUnitsTokenizer private constructor() {
           if (chars.peek() == 's') chars.next() // Allow for plural suffix (rupees).
 
           token
+        }
+        's' -> {
+          when (chars.peek()) {
+            'q' -> {
+              chars.next()
+              when (chars.peek()) {
+                'f' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    't' -> {
+                      chars.next()
+                      Token.SquareFootUnit(startIndex, chars.getRetrievalCount()) // sqft
+                    }
+                    'e' -> {
+                      tokenizeExpectedUnit(
+                        "sqfeet",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.SquareFootUnit(start, end) }
+                    }
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                'i' -> {
+                  tokenizeExpectedUnit(
+                    "sqinch",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.SquareInchUnit(start, end) }
+                }
+                'y' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'd' -> {
+                      chars.next()
+                      Token.SquareYardUnit(startIndex, chars.getRetrievalCount()) // sqyd
+                    }
+                    'a' -> {
+                      tokenizeExpectedUnit(
+                        "sqyard",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.SquareYardUnit(start, end) }
+                    }
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
         }
         'y' -> {
           when (chars.peek()) {
