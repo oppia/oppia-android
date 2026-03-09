@@ -453,6 +453,20 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
           }
         }
+        'n' -> {
+          when (chars.peek()) {
+            'e' -> {
+              val token = tokenizeExpectedUnit(
+                "newton",
+                startIndex,
+                chars
+              ) { start, end -> Token.NewtonUnit(start, end) }
+
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
         'o' -> {
           when (chars.peek()) {
             'z' -> {
@@ -673,6 +687,12 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             'i', 't' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
             else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'N' -> {
+          when (chars.peek()) {
+            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount()) // Newton must be lowercase
+            else -> Token.NewtonUnit(startIndex, chars.getRetrievalCount()) // N
           }
         }
         'P' -> {

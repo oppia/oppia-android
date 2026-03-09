@@ -159,6 +159,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.CandelaUnit>()
   }
 
+  fun isNewtonUnit() {
+    actual.asVerifiedType<Token.NewtonUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }
