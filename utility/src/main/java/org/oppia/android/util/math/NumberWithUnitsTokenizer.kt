@@ -90,14 +90,50 @@ class NumberWithUnitsTokenizer private constructor() {
 
       return when (chars.next()) {
         'c' -> {
-          val token = tokenizeExpectedUnit(
-            "cent",
-            startIndex,
-            chars
-          ) { start, end -> Token.CentSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next() // Allow for plural suffix (cents).
+          when (chars.peek()) {
+            'c' -> {
+              chars.next()
+              Token.CcUnit(startIndex, chars.getRetrievalCount()) // cc
+            }
+            'u' -> {
+              chars.next()
+              when (chars.peek()) {
+                'i' -> {
+                  tokenizeExpectedUnit(
+                    "cuin",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.CubicInchUnit(start, end) }
+                }
+                'f' -> {
+                  tokenizeExpectedUnit(
+                    "cuft",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.CubicFootUnit(start, end) }
+                }
+                'y' -> {
+                  tokenizeExpectedUnit(
+                    "cuyd",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.CubicYardUnit(start, end) }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            'e' -> {
+              val token = tokenizeExpectedUnit(
+                "cent",
+                startIndex,
+                chars
+              ) { start, end -> Token.CentSuffixUnit(start, end) }
 
-          token
+              if (chars.peek() == 's') chars.next()
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
         }
         'd' -> {
           val token = tokenizeExpectedUnit(
@@ -203,11 +239,56 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
+        'l' -> {
+          when (chars.peek()) {
+            't' -> {
+              chars.next()
+              Token.LiterUnit(startIndex, chars.getRetrievalCount()) // lt
+            }
+            'i' -> {
+              chars.next()
+              when (chars.peek()) {
+                't' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'e' -> {
+                      val token = tokenizeExpectedUnit(
+                        "liter",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.LiterUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // liters
+                      token
+                    }
+                    'r' -> {
+                      val token = tokenizeExpectedUnit(
+                        "litre",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.LiterUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // litres
+                      token
+                    }
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount()) // l
+          }
+        }
         'm' -> {
           when (chars.peek()) {
             '2' -> {
               chars.next()
               Token.SquareMeterUnit(startIndex, chars.getRetrievalCount()) // m2
+            }
+            '3' -> {
+              chars.next()
+              Token.CubicMeterUnit(startIndex, chars.getRetrievalCount()) // m3
             }
             'e' -> {
               val token = tokenizeExpectedUnit(
@@ -358,6 +439,12 @@ class NumberWithUnitsTokenizer private constructor() {
           if (chars.peek() == 's') chars.next() // Allow for plural suffix (Dollars).
 
           token
+        }
+        'L' -> {
+          when (chars.peek()) {
+            'i', 't' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
+          }
         }
         'P' -> {
           val paisaToken = tokenizeExpectedUnit(

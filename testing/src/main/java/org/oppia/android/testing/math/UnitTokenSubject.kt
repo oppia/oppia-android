@@ -95,6 +95,30 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.SquareYardUnit>()
   }
 
+  fun isCubicMeterUnit() {
+    actual.asVerifiedType<Token.CubicMeterUnit>()
+  }
+
+  fun isLiterUnit() {
+    actual.asVerifiedType<Token.LiterUnit>()
+  }
+
+  fun isCubicCentimeterUnit() {
+    actual.asVerifiedType<Token.CcUnit>()
+  }
+
+  fun isCubicInchUnit() {
+    actual.asVerifiedType<Token.CubicInchUnit>()
+  }
+
+  fun isCubicFootUnit() {
+    actual.asVerifiedType<Token.CubicFootUnit>()
+  }
+
+  fun isCubicYardUnit() {
+    actual.asVerifiedType<Token.CubicYardUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

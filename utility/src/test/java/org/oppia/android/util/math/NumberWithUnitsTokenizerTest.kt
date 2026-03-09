@@ -524,4 +524,129 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  fun testTokenize_correctCubicMeterUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 m3").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCubicMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectCubicMeterUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 M3").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(3)
+  }
+
+  @Test
+  @Iteration("10 litre", "input=10 litre")
+  @Iteration("10 liter", "input=10 liter")
+  @Iteration("10 litres", "input=10 litres")
+  @Iteration("10 liters", "input=10 liters")
+  @Iteration("10 L", "input=10 L")
+  @Iteration("10 l", "input=10 l")
+  @Iteration("10 lt", "input=10 lt")
+  fun testTokenize_correctLiterUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isLiterUnit()
+  }
+
+  @Test
+  @Iteration("10 Litre", "input=10 Litre")
+  @Iteration("10 Litres", "input=10 Litres")
+  @Iteration("10 Liter", "input=10 Liter")
+  @Iteration("10 Liters", "input=10 Liters")
+  @Iteration("10 Lt", "input=10 Lt")
+  fun testTokenize_incorrectLiterUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  fun testTokenize_correctCubicCentimeterUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 cc").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCubicCentimeterUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectCubicCentimeterUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 CC").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  fun testTokenize_correctCubicInchUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 cuin").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCubicInchUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectCubicInchUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuin").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken() // C
+    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[3]).isInchUnit() // in
+  }
+
+  @Test
+  fun testTokenize_correctCubicFootUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 cuft").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCubicFootUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectCubicFootUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuft").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken() // C
+    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[3]).isFootUnit() // ft
+  }
+
+  @Test
+  fun testTokenize_correctCubicYardUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 cuyd").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isCubicYardUnit()
+  }
+
+  @Test
+  fun testTokenize_incorrectCubicYardUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuyd").toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken() // C
+    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[3]).isYardUnit() // yd
+  }
 }
