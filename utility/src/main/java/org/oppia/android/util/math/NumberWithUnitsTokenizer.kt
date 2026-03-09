@@ -691,7 +691,8 @@ class NumberWithUnitsTokenizer private constructor() {
         }
         'N' -> {
           when (chars.peek()) {
-            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount()) // Newton must be lowercase
+            // Newton must be lowercase
+            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
             else -> Token.NewtonUnit(startIndex, chars.getRetrievalCount()) // N
           }
         }
