@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -15,9 +14,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -214,9 +212,8 @@ class ImageViewBindingAdaptersTest {
         val color = 0xFF0000
         val avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(color).build()
         setProfileImage(imageView, avatar)
-        onView(withId(R.id.image_view_for_data_binding)).check(
-          matches(withColorFilter(color, PorterDuff.Mode.DST_OVER))
-        )
+        val expected = PorterDuffColorFilter(color, PorterDuff.Mode.DST_OVER)
+        assertThat(imageView.colorFilter).isEqualTo(expected)
       }
     }
   }
@@ -231,9 +228,8 @@ class ImageViewBindingAdaptersTest {
         val secondColor = 0x00FF00
         val secondAvatar = ProfileAvatar.newBuilder().setAvatarColorRgb(secondColor).build()
         setProfileImage(imageView, secondAvatar)
-        onView(withId(R.id.image_view_for_data_binding)).check(
-          matches(withColorFilter(secondColor, PorterDuff.Mode.DST_OVER))
-        )
+        val expected = PorterDuffColorFilter(secondColor, PorterDuff.Mode.DST_OVER)
+        assertThat(imageView.colorFilter).isEqualTo(expected)
       }
     }
   }
@@ -255,23 +251,6 @@ class ImageViewBindingAdaptersTest {
     ActivityScenario.launch<ImageViewBindingAdaptersTestActivity>(intent).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.testBlock()
-    }
-  }
-
-  private fun withColorFilter(
-    color: Int,
-    mode: PorterDuff.Mode
-  ): TypeSafeMatcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun describeTo(description: Description) {
-        description.appendText("with color filter: color=$color, mode=$mode")
-      }
-
-      override fun matchesSafely(view: View): Boolean {
-        val imageView = view as? ImageView ?: return false
-        val expected = PorterDuffColorFilter(color, mode)
-        return imageView.colorFilter == expected
-      }
     }
   }
 
