@@ -830,4 +830,27 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("10 mol", "input=10 mol")
+  @Iteration("10 mole", "input=10 mole")
+  @Iteration("10 moles", "input=10 moles")
+  fun testTokenize_correctMoleUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isMoleUnit()
+  }
+
+  @Test
+  @Iteration("10 Mol", "input=10 Mol")
+  @Iteration("10 Mole", "input=10 Mole")
+  @Iteration("10 Moles", "input=10 Moles")
+  fun testTokenize_incorrectMoleUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

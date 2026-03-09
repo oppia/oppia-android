@@ -151,6 +151,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.HertzUnit>()
   }
 
+  fun isMoleUnit() {
+    actual.asVerifiedType<Token.MoleUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

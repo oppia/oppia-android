@@ -415,6 +415,28 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
+            'o' -> {
+              chars.next()
+              when (chars.peek()) {
+                'l' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'e' -> {
+                      val token = tokenizeExpectedUnit(
+                        "mole",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.MoleUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // moles
+                      token
+                    }
+                    else -> Token.MoleUnit(startIndex, chars.getRetrievalCount()) // mol
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
             else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
           }
         }
