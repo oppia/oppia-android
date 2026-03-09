@@ -136,6 +136,47 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
+        'g' -> {
+          when (chars.peek()) {
+            'r' -> {
+              chars.next()
+
+              when (chars.peek()) {
+                'a' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'i' -> {
+
+                      val token = tokenizeExpectedUnit(
+                        "grain",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.GrainUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // grains
+                      token
+                    }
+
+                    'm' -> {
+                      val token = tokenizeExpectedUnit(
+                        "gram",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.GramUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // grams
+                      token
+                    }
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                else -> Token.GrainUnit(startIndex, chars.getRetrievalCount())
+              }
+            }
+
+            else -> Token.GramUnit(startIndex, chars.getRetrievalCount()) // g
+          }
+        }
         'i' -> {
           when (chars.peek()) {
             'n' -> {
@@ -175,6 +216,27 @@ class NumberWithUnitsTokenizer private constructor() {
               token
             }
             else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
+          }
+        }
+        'o' -> {
+          when (chars.peek()) {
+            'z' -> {
+              chars.next()
+              Token.OunceUnit(startIndex, chars.getRetrievalCount()) // oz
+            }
+
+            'u' -> {
+              val token = tokenizeExpectedUnit(
+                "ounce",
+                startIndex,
+                chars
+              ) { start, end -> Token.OunceUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // ounces
+              token
+            }
+
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
         'p' -> {

@@ -387,4 +387,80 @@ class NumberWithUnitsTokenizerTest {
       assertThat(it).isInvalidToken()
     }
   }
+
+  @Test
+  @Iteration("20 g", "input=20 g")
+  @Iteration("20 gram", "input=20 gram")
+  @Iteration("20 grams", "input=20 grams")
+  fun testTokenize_correctGramUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isGramUnit()
+  }
+
+  @Test
+  @Iteration("20 G", "input=20 G")
+  @Iteration("20 Gram", "input=20 Gram")
+  @Iteration("20 Grams", "input=20 Grams")
+  fun testTokenize_incorrectGramUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+
+    // First invalid token; later tokens can map to other valid units.
+    // Here 'm' of "Gram(s)" is a valid meter unit
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("20 gr", "input=20 gr")
+  @Iteration("20 grain", "input=20 grain")
+  @Iteration("20 grains", "input=20 grains")
+  fun testTokenize_correctGrainUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isGrainUnit()
+  }
+
+  @Test
+  @Iteration("20 Gr", "input=20 Gr")
+  @Iteration("20 Grain", "input=20 Grain")
+  @Iteration("20 Grains", "input=20 Grains")
+  fun testTokenize_incorrectGrainUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    // First invalid token; later tokens can map to other valid units.
+    // Here 'in' of "Grain(s)" is a valid inch unit
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("20 oz", "input=20 oz")
+  @Iteration("20 ounce", "input=20 ounce")
+  @Iteration("20 ounces", "input=20 ounces")
+  fun testTokenize_correctOunceUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isOunceUnit()
+  }
+
+  @Test
+  @Iteration("20 Oz", "input=20 Oz")
+  @Iteration("20 Ounce", "input=20 Ounce")
+  @Iteration("20 Ounces", "input=20 Ounces")
+  fun testTokenize_incorrectOunceUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
 }

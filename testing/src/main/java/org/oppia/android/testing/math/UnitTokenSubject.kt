@@ -67,6 +67,18 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.YardUnit>()
   }
 
+  fun isGramUnit() {
+    actual.asVerifiedType<Token.GramUnit>()
+  }
+
+  fun isGrainUnit() {
+    actual.asVerifiedType<Token.GrainUnit>()
+  }
+
+  fun isOunceUnit() {
+    actual.asVerifiedType<Token.OunceUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }
