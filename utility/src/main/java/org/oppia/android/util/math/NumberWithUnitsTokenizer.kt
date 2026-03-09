@@ -263,6 +263,31 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.GramUnit(startIndex, chars.getRetrievalCount()) // g
           }
         }
+        'h' -> {
+          when (chars.peek()) {
+            'r' -> {
+              chars.next()
+              when (chars.peek()) {
+                's' -> {
+                  chars.next()
+                  Token.HourUnit(startIndex, chars.getRetrievalCount()) // hrs
+                }
+                else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // hr
+              }
+            }
+            'o' -> {
+              val token = tokenizeExpectedUnit(
+                "hour",
+                startIndex,
+                chars
+              ) { start, end -> Token.HourUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // hours
+              token
+            }
+            else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // h
+          }
+        }
         'i' -> {
           when (chars.peek()) {
             'n' -> {
@@ -356,6 +381,32 @@ class NumberWithUnitsTokenizer private constructor() {
 
               if (chars.peek() == 's') chars.next() // meters
               token
+            }
+            'i' -> {
+              chars.next()
+              when (chars.peek()) {
+                'n' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'u' -> {
+                      val token = tokenizeExpectedUnit(
+                        "minute",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.MinuteUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // minutes
+                      token
+                    }
+                    's' -> {
+                      chars.next()
+                      Token.MinuteUnit(startIndex, chars.getRetrievalCount()) // mins
+                    }
+                    else -> Token.MinuteUnit(startIndex, chars.getRetrievalCount()) // min
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
             }
             else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
           }
@@ -486,7 +537,39 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            'e' -> {
+              chars.next()
+              when (chars.peek()) {
+                'c' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'o' -> {
+                      val token = tokenizeExpectedUnit(
+                        "second",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.SecondUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // seconds
+                      token
+                    }
+
+                    else -> {
+                      val token = tokenizeExpectedUnit(
+                        "sec",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.SecondUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // secs
+                      token
+                    }
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            else -> Token.SecondUnit(startIndex, chars.getRetrievalCount()) // s
           }
         }
         'y' -> {

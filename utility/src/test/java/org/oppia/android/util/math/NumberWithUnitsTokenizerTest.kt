@@ -301,10 +301,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -328,10 +325,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -382,10 +376,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -459,9 +450,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -569,9 +558,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -734,6 +721,81 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Degrees", "input=10 Degrees")
   @Iteration("10 °", "input=10 °")
   fun testTokenize_incorrectDegreeUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 s", "input=10 s")
+  @Iteration("10 second", "input=10 second")
+  @Iteration("10 seconds", "input=10 seconds")
+  @Iteration("10 sec", "input=10 sec")
+  @Iteration("10 secs", "input=10 secs")
+  fun testTokenize_correctSecondUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSecondUnit()
+  }
+
+  @Test
+  @Iteration("10 S", "input=10 S")
+  @Iteration("10 Second", "input=10 Second")
+  @Iteration("10 Seconds", "input=10 Seconds")
+  fun testTokenize_incorrectSecondUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 min", "input=10 min")
+  @Iteration("10 mins", "input=10 mins")
+  @Iteration("10 minute", "input=10 minute")
+  @Iteration("10 minutes", "input=10 minutes")
+  fun testTokenize_correctMinuteUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isMinuteUnit()
+  }
+
+  @Test
+  @Iteration("10 Min", "input=10 Min")
+  @Iteration("10 Minute", "input=10 Minute")
+  @Iteration("10 Minutes", "input=10 Minutes")
+  fun testTokenize_incorrectMinuteUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 h", "input=10 h")
+  @Iteration("10 hr", "input=10 hr")
+  @Iteration("10 hrs", "input=10 hrs")
+  @Iteration("10 hour", "input=10 hour")
+  @Iteration("10 hours", "input=10 hours")
+  fun testTokenize_correctHourUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isHourUnit()
+  }
+
+  @Test
+  @Iteration("10 H", "input=10 H")
+  @Iteration("10 Hr", "input=10 Hr")
+  @Iteration("10 Hour", "input=10 Hour")
+  @Iteration("10 Hours", "input=10 Hours")
+  fun testTokenize_incorrectHourUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)

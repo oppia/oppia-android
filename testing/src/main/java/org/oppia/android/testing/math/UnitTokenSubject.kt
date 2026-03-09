@@ -135,6 +135,18 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.DegreeUnit>()
   }
 
+  fun isSecondUnit() {
+    actual.asVerifiedType<Token.SecondUnit>()
+  }
+
+  fun isMinuteUnit() {
+    actual.asVerifiedType<Token.MinuteUnit>()
+  }
+
+  fun isHourUnit() {
+    actual.asVerifiedType<Token.HourUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }
