@@ -127,6 +127,14 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.CelsiusUnit>()
   }
 
+  fun isRadianUnit() {
+    actual.asVerifiedType<Token.RadianUnit>()
+  }
+
+  fun isDegreeUnit() {
+    actual.asVerifiedType<Token.DegreeUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

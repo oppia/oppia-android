@@ -164,7 +164,19 @@ class NumberWithUnitsTokenizer private constructor() {
                       chars.next()
                       Token.CelsiusUnit(startIndex, chars.getRetrievalCount()) // degC
                     }
-                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                    'r' -> {
+                      val token = tokenizeExpectedUnit(
+                        "degree",
+                        startIndex,
+                        chars
+                      ) { start, end -> Token.DegreeUnit(start, end) }
+
+                      if (chars.peek() == 's') chars.next() // degrees
+                      token
+                    }
+                    else -> {
+                      Token.DegreeUnit(startIndex, chars.getRetrievalCount()) // deg
+                    }
                   }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -385,14 +397,45 @@ class NumberWithUnitsTokenizer private constructor() {
           }
         }
         'r' -> {
-          val token = tokenizeExpectedUnit(
-            "rupee",
-            startIndex,
-            chars
-          ) { start, end -> Token.RupeeSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next() // Allow for plural suffix (rupees).
+          when (chars.peek()) {
+            'a' -> {
+              chars.next()
+              when (chars.peek()) {
+                'd' -> {
+                  val token = tokenizeExpectedUnit(
+                    "rad",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.RadianUnit(start, end) }
 
-          token
+                  if (chars.peek() == 'i') {
+                    val radianToken = tokenizeExpectedUnit(
+                      "radian",
+                      startIndex,
+                      chars
+                    ) { start, end -> Token.RadianUnit(start, end) }
+
+                    if (chars.peek() == 's') chars.next() // radians
+                    radianToken
+                  } else {
+                    token
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            'u' -> {
+              val token = tokenizeExpectedUnit(
+                "rupee",
+                startIndex,
+                chars
+              ) { start, end -> Token.RupeeSuffixUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next()
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
         }
         's' -> {
           when (chars.peek()) {

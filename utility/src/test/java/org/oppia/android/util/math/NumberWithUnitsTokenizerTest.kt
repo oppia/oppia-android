@@ -691,4 +691,52 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(37)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("10 rad", "input=10 rad")
+  @Iteration("10 radian", "input=10 radian")
+  @Iteration("10 radians", "input=10 radians")
+  fun testTokenize_correctRadianUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isRadianUnit()
+  }
+
+  @Test
+  @Iteration("10 Rad", "input=10 Rad")
+  @Iteration("10 Radian", "input=10 Radian")
+  fun testTokenize_incorrectRadianUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    tokens.drop(1).forEach {
+      assertThat(it).isInvalidToken()
+    }
+  }
+
+  @Test
+  @Iteration("10 deg", "input=10 deg")
+  @Iteration("10 degree", "input=10 degree")
+  @Iteration("10 degrees", "input=10 degrees")
+  fun testTokenize_correctDegreeUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isDegreeUnit()
+  }
+
+  @Test
+  @Iteration("10 Deg", "input=10 Deg")
+  @Iteration("10 Degree", "input=10 Degree")
+  @Iteration("10 Degrees", "input=10 Degrees")
+  @Iteration("10 °", "input=10 °")
+  fun testTokenize_incorrectDegreeUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }
