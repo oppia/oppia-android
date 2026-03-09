@@ -649,4 +649,46 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[2]).isInvalidToken() // u
     assertThat(tokens[3]).isYardUnit() // yd
   }
+  @Test
+  @Iteration("310.15 K", "input=310.15 K")
+  @Iteration("310.15 kelvin", "input=310.15 kelvin")
+  fun testTokenize_correctKelvinUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(310.15)
+    assertThat(tokens[1]).isKelvinUnit()
+  }
+
+  @Test
+  @Iteration("310.15 k", "input=310.15 k")
+  @Iteration("310.15 Kelvin", "input=310.15 Kelvin")
+  fun testTokenize_incorrectKelvinUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(310.15)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("37 degC", "input=37 degC")
+  @Iteration("37 celsius", "input=37 celsius")
+  fun testTokenize_correctCelsiusUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(37)
+    assertThat(tokens[1]).isCelsiusUnit()
+  }
+
+  @Test
+  @Iteration("37 °C", "input=37 °C")
+  @Iteration("37 C", "input=37 C")
+  @Iteration("37 Celsius", "input=37 Celsius")
+  fun testTokenize_incorrectCelsiusUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(37)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

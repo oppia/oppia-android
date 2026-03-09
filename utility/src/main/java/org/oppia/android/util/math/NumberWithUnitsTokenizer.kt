@@ -95,6 +95,33 @@ class NumberWithUnitsTokenizer private constructor() {
               chars.next()
               Token.CcUnit(startIndex, chars.getRetrievalCount()) // cc
             }
+            'e' -> {
+              chars.next()
+              when (chars.peek()) {
+                'l' -> {
+                  val token = tokenizeExpectedUnit(
+                    "celsius",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.CelsiusUnit(start, end) }
+
+                  token
+                }
+
+                'n' -> {
+                  val token = tokenizeExpectedUnit(
+                    "cent",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.CentSuffixUnit(start, end) }
+
+                  if (chars.peek() == 's') chars.next()
+                  token
+                }
+
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
             'u' -> {
               chars.next()
               when (chars.peek()) {
@@ -122,28 +149,39 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'd' -> {
+          when (chars.peek()) {
             'e' -> {
+              chars.next()
+              when (chars.peek()) {
+                'g' -> {
+                  chars.next()
+                  when (chars.peek()) {
+                    'C' -> {
+                      chars.next()
+                      Token.CelsiusUnit(startIndex, chars.getRetrievalCount()) // degC
+                    }
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+              }
+            }
+            'o' -> {
               val token = tokenizeExpectedUnit(
-                "cent",
+                "dollar",
                 startIndex,
                 chars
-              ) { start, end -> Token.CentSuffixUnit(start, end) }
+              ) { start, end -> Token.DollarSuffixUnit(start, end) }
 
               if (chars.peek() == 's') chars.next()
               token
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
-        }
-        'd' -> {
-          val token = tokenizeExpectedUnit(
-            "dollar",
-            startIndex,
-            chars
-          ) { start, end -> Token.DollarSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next() // Allow for plural suffix (dollars).
-
-          token
         }
         'f' -> {
           when (chars.peek()) {
@@ -238,6 +276,13 @@ class NumberWithUnitsTokenizer private constructor() {
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
+        }
+        'k' -> {
+          tokenizeExpectedUnit(
+            "kelvin",
+            startIndex,
+            chars
+          ) { start, end -> Token.KelvinUnit(start, end) }
         }
         'l' -> {
           when (chars.peek()) {
@@ -439,6 +484,12 @@ class NumberWithUnitsTokenizer private constructor() {
           if (chars.peek() == 's') chars.next() // Allow for plural suffix (Dollars).
 
           token
+        }
+        'K' -> {
+          when (chars.peek()) {
+            'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount()) // Kelvin must be lowercase
+            else -> Token.KelvinUnit(startIndex, chars.getRetrievalCount()) // K
+          }
         }
         'L' -> {
           when (chars.peek()) {

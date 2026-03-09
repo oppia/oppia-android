@@ -119,6 +119,14 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.CubicYardUnit>()
   }
 
+  fun isKelvinUnit() {
+    actual.asVerifiedType<Token.KelvinUnit>()
+  }
+
+  fun isCelsiusUnit() {
+    actual.asVerifiedType<Token.CelsiusUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }
