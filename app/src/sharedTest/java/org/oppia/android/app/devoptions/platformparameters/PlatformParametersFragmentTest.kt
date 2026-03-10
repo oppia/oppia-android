@@ -101,7 +101,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.Companion.replaceText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -709,7 +709,7 @@ class PlatformParametersFragmentTest {
           position = 7,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("29"))
+      ).perform(replaceText("29"))
 
       verifyPlatformParameterValue(
         position = 7,
@@ -742,7 +742,7 @@ class PlatformParametersFragmentTest {
           position = 7,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText(""))
+      ).perform(replaceText(""))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
@@ -771,7 +771,7 @@ class PlatformParametersFragmentTest {
           position = 7,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText(""))
+      ).perform(replaceText(""))
 
       onView(
         atPositionOnView(
@@ -793,7 +793,7 @@ class PlatformParametersFragmentTest {
           position = 7,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("12"))
+      ).perform(replaceText("12"))
 
       onView(
         atPositionOnView(
@@ -826,7 +826,7 @@ class PlatformParametersFragmentTest {
           position = 7,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("42"))
+      ).perform(replaceText("42"))
 
       val expectedValue = PlatformParameterValue.newBuilder()
         .setInteger(42)
@@ -1017,7 +1017,7 @@ class PlatformParametersFragmentTest {
           position = 1,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText(""))
+      ).perform(replaceText(""))
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
@@ -1042,7 +1042,7 @@ class PlatformParametersFragmentTest {
           position = 1,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText(""))
+      ).perform(replaceText(""))
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
@@ -1063,7 +1063,7 @@ class PlatformParametersFragmentTest {
           position = 1,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("25"))
+      ).perform(replaceText("25"))
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
@@ -1476,7 +1476,7 @@ class PlatformParametersFragmentTest {
           position = position,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("25"))
+      ).perform(replaceText("25"))
       onView(withId(R.id.save_button)).check(matches(isEnabled()))
       onView(
         atPositionOnView(
@@ -1484,7 +1484,7 @@ class PlatformParametersFragmentTest {
           position = position,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText(originalValue))
+      ).perform(replaceText(originalValue))
       onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
     }
   }
@@ -1506,7 +1506,7 @@ class PlatformParametersFragmentTest {
           position = position,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
-      ).perform(EditTextInputAction.replaceText("30"))
+      ).perform(replaceText("30"))
       verifyPlatformParameterBackgroundColor(
         position = position,
         expectedColor =
@@ -1573,7 +1573,7 @@ class PlatformParametersFragmentTest {
             position = 1,
             targetViewId = R.id.platform_parameter_input_edit_text
           )
-        ).perform(EditTextInputAction.replaceText(""))
+        ).perform(replaceText(""))
         testCoroutineDispatchers.runCurrent()
 
         val viewHolder2 = recyclerView.findViewHolderForAdapterPosition(2)

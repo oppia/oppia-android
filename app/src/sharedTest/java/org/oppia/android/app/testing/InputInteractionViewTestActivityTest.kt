@@ -71,7 +71,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.Companion.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -150,7 +150,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-        EditTextInputAction.appendText(
+        appendText(
           "9"
         )
       )
@@ -173,7 +173,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-        EditTextInputAction.appendText(
+        appendText(
           "9.5"
         )
       )
@@ -195,7 +195,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-        EditTextInputAction.appendText(
+        appendText(
           "-9.5"
         )
       )
@@ -215,7 +215,7 @@ class InputInteractionViewTestActivityTest {
       InputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_number_input_interaction_view))
-      .perform(EditTextInputAction.appendText("9"))
+      .perform(appendText("9"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
@@ -230,7 +230,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-          EditTextInputAction.appendText(
+          appendText(
             "/"
           )
         )
@@ -270,7 +270,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-          EditTextInputAction.appendText(
+          appendText(
             "-12345678.6787687678"
           )
         )
@@ -295,7 +295,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-          EditTextInputAction.appendText(
+          appendText(
             "1234567886787687678"
           )
         )
@@ -320,7 +320,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-          EditTextInputAction.appendText(
+          appendText(
             "-"
           )
         )
@@ -344,7 +344,7 @@ class InputInteractionViewTestActivityTest {
   fun testNumericInput_withNegativeSymbolNotAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
-      .perform(EditTextInputAction.appendText("55-"))
+      .perform(appendText("55-"))
     onView(withId(R.id.number_input_error))
       .check(
         matches(
@@ -362,7 +362,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-        EditTextInputAction.appendText(
+        appendText(
           "--55"
         )
       )
@@ -383,7 +383,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-        EditTextInputAction.appendText(
+        appendText(
           "5.5."
         )
       )
@@ -403,7 +403,7 @@ class InputInteractionViewTestActivityTest {
   fun testNumericInput_withDecimalAtStart_numberStartingWithFloatingPointError() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
-      .perform(EditTextInputAction.appendText(".5"))
+      .perform(appendText(".5"))
     onView(withId(R.id.number_input_error))
       .check(
         matches(

@@ -80,7 +80,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.Companion.appendText
+import org.oppia.android.testing.espresso.EditTextInputAction.Companion.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -366,7 +367,7 @@ class MathExpressionInteractionsViewTest {
 
       // Request, then clear focus after inputting text.
       onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(EditTextInputAction.appendText("12+7"))
+        .perform(appendText("12+7"))
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity -> activity.getInteractionView().requestFocus() }
       testCoroutineDispatchers.runCurrent()
@@ -1690,7 +1691,7 @@ class MathExpressionInteractionsViewTest {
    */
   private fun typeExpressionInput(text: String) {
     onView(withId(R.id.test_math_expression_input_interaction_view))
-      .perform(EditTextInputAction.appendText(text))
+      .perform(appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1706,7 +1707,7 @@ class MathExpressionInteractionsViewTest {
     // Note that replaceText is used here since some answers can contain extra spaces (which will
     // trigger an automatic period to be entered) or Unicode (which Espresso doesn't supported).
     onView(withId(R.id.test_math_expression_input_interaction_view))
-      .perform(EditTextInputAction.replaceText(text))
+      .perform(replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 

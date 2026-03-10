@@ -78,7 +78,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.Companion.appendText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -151,7 +151,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("James"))
+      ).perform(appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -173,7 +173,7 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
-        EditTextInputAction.appendText("James"),
+        appendText("James"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -194,7 +194,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("James"))
+      ).perform(appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -215,7 +215,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("James"))
+      ).perform(appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -245,7 +245,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("Admin"))
+      ).perform(appendText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input)).check(
@@ -273,7 +273,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("Admin"))
+      ).perform(appendText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -281,7 +281,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText(" "))
+      ).perform(appendText(" "))
       onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
     }
   }
@@ -299,7 +299,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("123"))
+      ).perform(appendText("123"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -327,7 +327,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText("123"))
+      ).perform(appendText("123"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -336,7 +336,7 @@ class ProfileRenameFragmentTest {
           withId(R.id.profile_rename_input_edit_text),
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
-      ).perform(EditTextInputAction.appendText(" "))
+      ).perform(appendText(" "))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
     }
@@ -356,7 +356,7 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
-        EditTextInputAction.appendText("test"),
+        appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -389,7 +389,7 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
-        EditTextInputAction.appendText("Admin"),
+        appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
