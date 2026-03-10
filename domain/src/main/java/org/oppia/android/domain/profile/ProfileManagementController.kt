@@ -1305,7 +1305,10 @@ class ProfileManagementController @Inject constructor(
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
     val croppedBitmap = ThumbnailUtils.extractThumbnail(bitmap, cropSize, cropSize)
     val orientation = context.contentResolver.openInputStream(uri)?.use { stream ->
-      ExifInterface(stream).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+      ExifInterface(stream).getAttributeInt(
+        ExifInterface.TAG_ORIENTATION,
+        ExifInterface.ORIENTATION_NORMAL
+      )
     } ?: ExifInterface.ORIENTATION_NORMAL
     var rotate = 0
     when (orientation) {
