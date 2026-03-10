@@ -197,7 +197,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.CENTI, startIndex, chars.getRetrievalCount()) // c
+            else -> Token.SiPrefix(Token.SiPrefixValue.CENTI, startIndex, chars.getRetrievalCount())
           }
         }
         'd' -> {
@@ -223,7 +223,7 @@ class NumberWithUnitsTokenizer private constructor() {
                       ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.DECA, start, end) }
                     }
                     'i' -> {
-                       tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "deci",
                         startIndex,
                         chars
@@ -471,7 +471,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.KILO, start, end) }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.KILO, startIndex, chars.getRetrievalCount()) // k
+            else -> Token.SiPrefix(Token.SiPrefixValue.KILO, startIndex, chars.getRetrievalCount())
           }
         }
         'l' -> {
@@ -929,7 +929,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.ZEPTO, startIndex, chars.getRetrievalCount()) // z
+            else -> Token.SiPrefix(Token.SiPrefixValue.ZEPTO, startIndex, chars.getRetrievalCount())
           }
         }
         'A' -> {
@@ -1022,7 +1022,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.PascalUnit(startIndex, chars.getRetrievalCount()) // Pa
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.PETA, startIndex, chars.getRetrievalCount()) // P
+            else -> Token.SiPrefix(Token.SiPrefixValue.PETA, startIndex, chars.getRetrievalCount())
           }
         }
         'R' -> {

@@ -1231,7 +1231,6 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ZEPTO)
   }
 
-
   @Test
   @Iteration("10 yocto", "input=10 yocto")
   @Iteration("10 y", "input=10 y")
