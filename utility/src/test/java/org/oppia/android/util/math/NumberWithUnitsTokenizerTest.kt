@@ -919,4 +919,26 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("100 W", "input=100 W")
+  @Iteration("100 watt", "input=100 watt")
+  @Iteration("100 watts", "input=100 watts")
+  fun testTokenize_correctWattUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isWattUnit()
+  }
+
+  @Test
+  @Iteration("100 Watt", "input=100 Watt")
+  @Iteration("100 Watts", "input=100 Watts")
+  fun testTokenize_incorrectWattUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

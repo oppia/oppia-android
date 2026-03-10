@@ -643,6 +643,21 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.SecondUnit(startIndex, chars.getRetrievalCount()) // s
           }
         }
+        'w' -> {
+          when (chars.peek()) {
+            'a' -> {
+              val token = tokenizeExpectedUnit(
+                "watt",
+                startIndex,
+                chars
+              ) { start, end -> Token.WattUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // watts
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
         'y' -> {
           when (chars.peek()) {
             'a' -> {
@@ -760,6 +775,13 @@ class NumberWithUnitsTokenizer private constructor() {
               }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'W' -> {
+          when (chars.peek()) {
+            // Watt must be lowercase
+            'a' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            else -> Token.WattUnit(startIndex, chars.getRetrievalCount()) // W
           }
         }
         else -> {
