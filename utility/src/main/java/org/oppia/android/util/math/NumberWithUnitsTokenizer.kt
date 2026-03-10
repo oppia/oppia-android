@@ -3,14 +3,39 @@ package org.oppia.android.util.math
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 import java.lang.StringBuilder
 
+/**
+ * A tokenizer for parsing mathematical expressions containing numbers and units.
+ *
+ *
+ * The tokenizer supports whitespace between tokens and can handle various unit formats
+ * including both singular and plural forms, abbreviated forms, and different naming conventions.
+ *
+ * See https://docs.google.com/document/d/1PF1LdzBUwNO3tSqucCoMdYpPOWUySI3yS4m_knfLdtE for the
+ * various units supported by this tokenizer.
+ */
 class NumberWithUnitsTokenizer private constructor() {
   companion object {
+    /**
+     * Tokenizes a string input into a sequence of [Token] objects.
+     *
+     * @param input the string to tokenize
+     * @return a [Sequence] of [Token] objects representing the parsed input
+     */
     fun tokenize(input: String): Sequence<Token> = tokenize(input.toCharArray().asSequence())
 
+    /**
+     * Tokenizes a sequence of characters into a sequence of [Token] objects.
+     *
+     * This method processes characters one by one, identifying tokens based on the first
+     * character encountered. It handles whitespace automatically and delegates to specific
+     * tokenization methods based on the character type.
+     *
+     * @param input the sequence of characters to tokenize
+     * @return a [Sequence] of [Token] objects
+     */
     private fun tokenize(input: Sequence<Char>): Sequence<Token> {
       val chars = input.toPeekableIterator()
       return generateSequence {
-        // Consume any whitespace that might precede a valid token.
         chars.consumeWhitespace()
 
         when (chars.peek()) {
@@ -51,18 +76,27 @@ class NumberWithUnitsTokenizer private constructor() {
       }
     }
 
+    /**
+     * Tokenizes a number (either integer or real) starting from the current position.
+     *
+     * This method handles both integers (e.g., "123") and real numbers with decimal points (e.g., "123.45").
+     * Whitespace is allowed between digits and around the decimal point.
+     *
+     * @param chars the peekable iterator positioned at the start of a number
+     * @return a [Token.PositiveInteger], [Token.PositiveRealNumber], or [Token.InvalidToken]
+     */
     private fun tokenizeIntegerOrRealNumber(chars: PeekableIterator<Char>): Token {
       val startIndex = chars.getRetrievalCount()
       val integerPart1 =
         parseInteger(chars)
           ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
-      val integerEndIndex = chars.getRetrievalCount() // The end index for integers.
-      chars.consumeWhitespace() // Whitespace is allowed between digits and the '.'.
-      return if (chars.peek() == '.') {
-        chars.next() // Parse the "." since it will be re-added later.
-        chars.consumeWhitespace() // Whitespace is allowed between the '.' and following digits.
+      val integerEndIndex = chars.getRetrievalCount()
+      chars.consumeWhitespace()
 
-        // Another integer must follow the ".".
+      return if (chars.peek() == '.') {
+        chars.next()
+        chars.consumeWhitespace()
+
         val integerPart2 = parseInteger(chars)
           ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
 
@@ -79,24 +113,49 @@ class NumberWithUnitsTokenizer private constructor() {
       }
     }
 
+    /**
+     * Parses a sequence of digits into a string representation of an integer.
+     *
+     * This method consumes consecutive digit characters and allows whitespace between digits.
+     * It returns null if no digits are found at the current position.
+     *
+     * @param chars the peekable iterator to parse from
+     * @return the parsed integer as a string, or null if no digits were found
+     */
     private fun parseInteger(chars: PeekableIterator<Char>): String? {
       val integerBuilder = StringBuilder()
       while (chars.peek() in '0'..'9') {
         integerBuilder.append(chars.next())
-        chars.consumeWhitespace() // Whitespace is allowed between digits.
+        chars.consumeWhitespace()
       }
       return if (integerBuilder.isNotEmpty()) {
         integerBuilder.toString()
-      } else null // Failed to parse; no digits.
+      } else null
     }
 
+    /**
+     * Tokenizes a single-character symbol using the provided factory function.
+     *
+     * @param chars the peekable iterator positioned at the symbol
+     * @param factory function that creates the appropriate token given start and end indices
+     * @return the token created by the factory function
+     */
     private fun tokenizeSymbol(chars: PeekableIterator<Char>, factory: (Int, Int) -> Token): Token {
       val startIndex = chars.getRetrievalCount()
-      chars.next() // Parse the symbol.
+      chars.next()
       val endIndex = chars.getRetrievalCount()
       return factory(startIndex, endIndex)
     }
 
+    /**
+     * Tokenizes a unit or SI prefix starting from the current position.
+     *
+     * The method supports both singular and plural forms, abbreviated forms,
+     * and different case conventions where applicable.
+     *
+     * @param chars the peekable iterator positioned at the start of a unit
+     * @return the appropriate [Token] representing the unit or an [Token.InvalidToken]
+     */
     private fun tokenizeUnit(chars: PeekableIterator<Char>): Token {
       val startIndex = chars.getRetrievalCount()
 
@@ -110,7 +169,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.AmpereUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // amperes
+              if (chars.peek() == 's') chars.next()
               token
             }
             't' -> {
@@ -136,11 +195,11 @@ class NumberWithUnitsTokenizer private constructor() {
             }
             'c' -> {
               chars.next()
-              Token.CcUnit(startIndex, chars.getRetrievalCount()) // cc
+              Token.CcUnit(startIndex, chars.getRetrievalCount())
             }
             'd' -> {
               chars.next()
-              Token.CandelaUnit(startIndex, chars.getRetrievalCount()) // cd
+              Token.CandelaUnit(startIndex, chars.getRetrievalCount())
             }
             'e' -> {
               chars.next()
@@ -169,10 +228,10 @@ class NumberWithUnitsTokenizer private constructor() {
                           ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.CENTI, start, end) }
                         }
                         's' -> {
-                          chars.next() // cents
+                          chars.next()
                           Token.CentSuffixUnit(startIndex, chars.getRetrievalCount())
                         }
-                        else -> Token.CentSuffixUnit(startIndex, chars.getRetrievalCount()) // cent
+                        else -> Token.CentSuffixUnit(startIndex, chars.getRetrievalCount())
                       }
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -249,7 +308,7 @@ class NumberWithUnitsTokenizer private constructor() {
                   when (chars.peek()) {
                     'C' -> {
                       chars.next()
-                      Token.CelsiusUnit(startIndex, chars.getRetrievalCount()) // degC
+                      Token.CelsiusUnit(startIndex, chars.getRetrievalCount())
                     }
                     'r' -> {
                       val token = tokenizeExpectedUnit(
@@ -258,11 +317,11 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.DegreeUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // degrees
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                     else -> {
-                      Token.DegreeUnit(startIndex, chars.getRetrievalCount()) // deg
+                      Token.DegreeUnit(startIndex, chars.getRetrievalCount())
                     }
                   }
                 }
@@ -329,7 +388,7 @@ class NumberWithUnitsTokenizer private constructor() {
             }
             't' -> {
               chars.next()
-              Token.FootUnit(startIndex, chars.getRetrievalCount()) // "ft"
+              Token.FootUnit(startIndex, chars.getRetrievalCount())
             }
             else -> Token.SiPrefix(Token.SiPrefixValue.FEMTO, startIndex, chars.getRetrievalCount())
           }
@@ -358,7 +417,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.GrainUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // grains
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
 
@@ -369,7 +428,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.GramUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // grams
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -378,7 +437,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.GrainUnit(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.GramUnit(startIndex, chars.getRetrievalCount()) // g
+            else -> Token.GramUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'h' -> {
@@ -410,7 +469,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.HourUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // hours
+              if (chars.peek() == 's') chars.next()
               token
             }
             'r' -> {
@@ -418,18 +477,18 @@ class NumberWithUnitsTokenizer private constructor() {
               when (chars.peek()) {
                 's' -> {
                   chars.next()
-                  Token.HourUnit(startIndex, chars.getRetrievalCount()) // hrs
+                  Token.HourUnit(startIndex, chars.getRetrievalCount())
                 }
-                else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // hr
+                else -> Token.HourUnit(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.HourUnit(startIndex, chars.getRetrievalCount()) // h
+            else -> Token.HourUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'i' -> {
           when (chars.peek()) {
             'n' -> {
-              chars.next() // consume 'n'
+              chars.next()
 
               when (chars.peek()) {
                 'c' -> {
@@ -439,14 +498,14 @@ class NumberWithUnitsTokenizer private constructor() {
                     chars
                   ) { start, end -> Token.InchUnit(start, end) }
 
-                  if (chars.peek() == 'e') { // inches
+                  if (chars.peek() == 'e') {
                     chars.next()
                     if (chars.peek() == 's') chars.next()
                   }
 
                   token
                 }
-                else -> Token.InchUnit(startIndex, chars.getRetrievalCount()) // "in"
+                else -> Token.InchUnit(startIndex, chars.getRetrievalCount())
               }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -461,7 +520,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.JouleUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // joules
+              if (chars.peek() == 's') chars.next()
               token
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -490,7 +549,7 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             't' -> {
               chars.next()
-              Token.LiterUnit(startIndex, chars.getRetrievalCount()) // lt
+              Token.LiterUnit(startIndex, chars.getRetrievalCount())
             }
             'i' -> {
               chars.next()
@@ -505,7 +564,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.LiterUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // liters
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                     'r' -> {
@@ -515,7 +574,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.LiterUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // litres
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -524,18 +583,18 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount()) // l
+            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'm' -> {
           when (chars.peek()) {
             '2' -> {
               chars.next()
-              Token.SquareMeterUnit(startIndex, chars.getRetrievalCount()) // m2
+              Token.SquareMeterUnit(startIndex, chars.getRetrievalCount())
             }
             '3' -> {
               chars.next()
-              Token.CubicMeterUnit(startIndex, chars.getRetrievalCount()) // m3
+              Token.CubicMeterUnit(startIndex, chars.getRetrievalCount())
             }
             'e' -> {
               chars.next()
@@ -547,7 +606,7 @@ class NumberWithUnitsTokenizer private constructor() {
                     chars
                   ) { start, end -> Token.MeterUnit(start, end) }
 
-                  if (chars.peek() == 's') chars.next() // meters
+                  if (chars.peek() == 's') chars.next()
                   token
                 }
                 'g' -> {
@@ -573,14 +632,14 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.MinuteUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // minutes
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                     's' -> {
                       chars.next()
-                      Token.MinuteUnit(startIndex, chars.getRetrievalCount()) // mins
+                      Token.MinuteUnit(startIndex, chars.getRetrievalCount())
                     }
-                    else -> Token.MinuteUnit(startIndex, chars.getRetrievalCount()) // min
+                    else -> Token.MinuteUnit(startIndex, chars.getRetrievalCount())
                   }
                 }
                 'l' -> {
@@ -613,16 +672,16 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.MoleUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // moles
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
-                    else -> Token.MoleUnit(startIndex, chars.getRetrievalCount()) // mol
+                    else -> Token.MoleUnit(startIndex, chars.getRetrievalCount())
                   }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.MeterUnit(startIndex, chars.getRetrievalCount()) // "m"
+            else -> Token.MeterUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'n' -> {
@@ -655,7 +714,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.OhmUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // ohms
+              if (chars.peek() == 's') chars.next()
               token
             }
             'u' -> {
@@ -665,12 +724,12 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.OunceUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // ounces
+              if (chars.peek() == 's') chars.next()
               token
             }
             'z' -> {
               chars.next()
-              Token.OunceUnit(startIndex, chars.getRetrievalCount()) // oz
+              Token.OunceUnit(startIndex, chars.getRetrievalCount())
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -686,7 +745,7 @@ class NumberWithUnitsTokenizer private constructor() {
 
               when (chars.peek()) {
                 'a', 'e' -> {
-                  chars.next() // Allow for "paisa" & "paise" suffix only.
+                  chars.next()
                   paisaToken
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -728,7 +787,7 @@ class NumberWithUnitsTokenizer private constructor() {
                       chars
                     ) { start, end -> Token.RadianUnit(start, end) }
 
-                    if (chars.peek() == 's') chars.next() // radians
+                    if (chars.peek() == 's') chars.next()
                     radianToken
                   } else {
                     token
@@ -760,7 +819,7 @@ class NumberWithUnitsTokenizer private constructor() {
                   when (chars.peek()) {
                     't' -> {
                       chars.next()
-                      Token.SquareFootUnit(startIndex, chars.getRetrievalCount()) // sqft
+                      Token.SquareFootUnit(startIndex, chars.getRetrievalCount())
                     }
                     'e' -> {
                       tokenizeExpectedUnit(
@@ -784,7 +843,7 @@ class NumberWithUnitsTokenizer private constructor() {
                   when (chars.peek()) {
                     'd' -> {
                       chars.next()
-                      Token.SquareYardUnit(startIndex, chars.getRetrievalCount()) // sqyd
+                      Token.SquareYardUnit(startIndex, chars.getRetrievalCount())
                     }
                     'a' -> {
                       tokenizeExpectedUnit(
@@ -812,7 +871,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.SecondUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // seconds
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
 
@@ -823,7 +882,7 @@ class NumberWithUnitsTokenizer private constructor() {
                         chars
                       ) { start, end -> Token.SecondUnit(start, end) }
 
-                      if (chars.peek() == 's') chars.next() // secs
+                      if (chars.peek() == 's') chars.next()
                       token
                     }
                   }
@@ -831,7 +890,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SecondUnit(startIndex, chars.getRetrievalCount()) // s
+            else -> Token.SecondUnit(startIndex, chars.getRetrievalCount())
           }
         }
         't' -> {
@@ -856,14 +915,14 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.WattUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // watts
+              if (chars.peek() == 's') chars.next()
               token
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
         'u' -> {
-          Token.SiPrefix(Token.SiPrefixValue.MICRO, startIndex, chars.getRetrievalCount()) // u
+          Token.SiPrefix(Token.SiPrefixValue.MICRO, startIndex, chars.getRetrievalCount())
         }
         'v' -> {
           when (chars.peek()) {
@@ -874,7 +933,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.VoltUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // volts
+              if (chars.peek() == 's') chars.next()
               token
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -889,12 +948,12 @@ class NumberWithUnitsTokenizer private constructor() {
                 chars
               ) { start, end -> Token.YardUnit(start, end) }
 
-              if (chars.peek() == 's') chars.next() // yards
+              if (chars.peek() == 's') chars.next()
               token
             }
             'd' -> {
               chars.next()
-              Token.YardUnit(startIndex, chars.getRetrievalCount()) // "yd"
+              Token.YardUnit(startIndex, chars.getRetrievalCount())
             }
             'o' -> {
               chars.next()
@@ -948,7 +1007,7 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             // Ampere must be lowercase
             'm' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.AmpereUnit(startIndex, chars.getRetrievalCount()) // A
+            else -> Token.AmpereUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'C' -> {
@@ -957,7 +1016,7 @@ class NumberWithUnitsTokenizer private constructor() {
             startIndex,
             chars
           ) { start, end -> Token.CentSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next() // Allow for plural suffix (Cents).
+          if (chars.peek() == 's') chars.next()
 
           token
         }
@@ -967,17 +1026,17 @@ class NumberWithUnitsTokenizer private constructor() {
             startIndex,
             chars
           ) { start, end -> Token.DollarSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next() // Allow for plural suffix (Dollars).
+          if (chars.peek() == 's') chars.next()
 
           token
         }
-        'E' -> Token.SiPrefix(Token.SiPrefixValue.EXA, startIndex, chars.getRetrievalCount()) // E
-        'G' -> Token.SiPrefix(Token.SiPrefixValue.GIGA, startIndex, chars.getRetrievalCount()) // G
+        'E' -> Token.SiPrefix(Token.SiPrefixValue.EXA, startIndex, chars.getRetrievalCount())
+        'G' -> Token.SiPrefix(Token.SiPrefixValue.GIGA, startIndex, chars.getRetrievalCount())
         'H' -> {
           when (chars.peek()) {
             'z' -> {
               chars.next()
-              Token.HertzUnit(startIndex, chars.getRetrievalCount()) // Hz
+              Token.HertzUnit(startIndex, chars.getRetrievalCount())
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -986,14 +1045,14 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             // Joule must be lowercase
             'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.JouleUnit(startIndex, chars.getRetrievalCount()) // J
+            else -> Token.JouleUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'K' -> {
           when (chars.peek()) {
             // Kelvin must be lowercase
             'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.KelvinUnit(startIndex, chars.getRetrievalCount()) // K
+            else -> Token.KelvinUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'L' -> {
@@ -1002,12 +1061,12 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
           }
         }
-        'M' -> Token.SiPrefix(Token.SiPrefixValue.MEGA, startIndex, chars.getRetrievalCount()) // M
+        'M' -> Token.SiPrefix(Token.SiPrefixValue.MEGA, startIndex, chars.getRetrievalCount())
         'N' -> {
           when (chars.peek()) {
             // Newton must be lowercase
             'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.NewtonUnit(startIndex, chars.getRetrievalCount()) // N
+            else -> Token.NewtonUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'P' -> {
@@ -1031,7 +1090,7 @@ class NumberWithUnitsTokenizer private constructor() {
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
                 }
-                else -> Token.PascalUnit(startIndex, chars.getRetrievalCount()) // Pa
+                else -> Token.PascalUnit(startIndex, chars.getRetrievalCount())
               }
             }
             else -> Token.SiPrefix(Token.SiPrefixValue.PETA, startIndex, chars.getRetrievalCount())
@@ -1048,14 +1107,14 @@ class NumberWithUnitsTokenizer private constructor() {
                 startIndex,
                 chars
               ) { start, end -> Token.RupeeSuffixUnit(start, end) }
-              if (chars.peek() == 's') chars.next() // Allow for plural suffix (Rupees).
+              if (chars.peek() == 's') chars.next()
 
               token
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
-        'T' -> Token.SiPrefix(Token.SiPrefixValue.TERA, startIndex, chars.getRetrievalCount()) // T
+        'T' -> Token.SiPrefix(Token.SiPrefixValue.TERA, startIndex, chars.getRetrievalCount())
         'U' -> {
           when (chars.next()) {
             'S' -> {
@@ -1071,31 +1130,44 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             // Watt must be lowercase
             'a' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.WattUnit(startIndex, chars.getRetrievalCount()) // W
+            else -> Token.WattUnit(startIndex, chars.getRetrievalCount())
           }
         }
         'V' -> {
           when (chars.peek()) {
             // Volt must be lowercase
             'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.VoltUnit(startIndex, chars.getRetrievalCount()) // V
+            else -> Token.VoltUnit(startIndex, chars.getRetrievalCount())
           }
         }
-        'Y' -> Token.SiPrefix(Token.SiPrefixValue.YOTTA, startIndex, chars.getRetrievalCount()) // Y
-        'Z' -> Token.SiPrefix(Token.SiPrefixValue.ZETTA, startIndex, chars.getRetrievalCount()) // Z
+        'Y' -> Token.SiPrefix(Token.SiPrefixValue.YOTTA, startIndex, chars.getRetrievalCount())
+        'Z' -> Token.SiPrefix(Token.SiPrefixValue.ZETTA, startIndex, chars.getRetrievalCount())
         else -> {
           Token.InvalidToken(startIndex, chars.getRetrievalCount())
         }
       }
     }
 
+    /**
+     * Tokenizes an expected unit by verifying the remaining characters match the expected name.
+     *
+     * This method is used when the tokenizer has already consumed the first few characters of a unit
+     * and needs to verify that the remaining characters match the expected unit name. If the match
+     * is successful, it creates a token using the provided factory function; otherwise, it returns
+     * an invalid token.
+     *
+     * @param name the complete expected unit name (e.g., "ampere", "meter", "kilogram")
+     * @param startIndex the starting index in the input stream where the unit began
+     * @param chars the peekable iterator positioned after the already-consumed characters
+     * @param factory function that creates the appropriate token given start and end indices
+     * @return the token created by the factory function if successful, otherwise an [Token.InvalidToken]
+     */
     private fun tokenizeExpectedUnit(
       name: String,
       startIndex: Int,
       chars: PeekableIterator<Char>,
       factory: (Int, Int) -> Token
     ): Token {
-      // Only check the remaining characters in the unit name, since the first few characters has already been scanned.
       val remainingUnit = name.substring(chars.getRetrievalCount() - startIndex)
       return if (chars.expectNextCharsForUnit(remainingUnit)) {
         factory(startIndex, chars.getRetrievalCount())
@@ -1391,19 +1463,44 @@ class NumberWithUnitsTokenizer private constructor() {
       class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
     }
 
+    /**
+     * Converts a string to a Double, ensuring the result is finite (not infinite or NaN).
+     *
+     * @return the parsed Double if valid and finite, null otherwise
+     */
     private fun String.toValidDoubleOrNull(): Double? {
       return toDoubleOrNull()?.takeIf { it.isFinite() }
     }
 
+    /**
+     * Determines if a character is considered whitespace for tokenization purposes.
+     *
+     * @return true if the character is a space, tab, newline, or carriage return
+     */
     private fun Char.isWhitespace(): Boolean = when (this) {
       ' ', '\t', '\n', '\r' -> true
       else -> false
     }
 
+    /**
+     * Consumes all consecutive whitespace characters from the iterator.
+     *
+     * This method advances the iterator past any whitespace characters until
+     * a non-whitespace character is encountered or the end is reached.
+     */
     private fun PeekableIterator<Char>.consumeWhitespace() {
       while (peek()?.isWhitespace() == true) next()
     }
 
+    /**
+     * Verifies that the next characters in the iterator exactly match the expected string.
+     *
+     * This method is used to validate unit names by checking that the remaining characters
+     * in the iterator match the expected unit suffix. It consumes the characters if they match.
+     *
+     * @param chars the expected string to match
+     * @return true if all characters match exactly, false otherwise
+     */
     private fun PeekableIterator<Char>.expectNextCharsForUnit(
       chars: String
     ): Boolean {
