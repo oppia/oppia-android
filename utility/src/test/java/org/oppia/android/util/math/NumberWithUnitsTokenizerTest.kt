@@ -961,4 +961,72 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("10 A", "input=10 A")
+  @Iteration("10 ampere", "input=10 ampere")
+  @Iteration("10 amperes", "input=10 amperes")
+  fun testTokenize_correctAmpereUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isAmpereUnit()
+  }
+
+  @Test
+  @Iteration("10 a", "input=10 a")
+  @Iteration("10 Ampere", "input=10 Ampere")
+  @Iteration("10 Amperes", "input=10 Amperes")
+  fun testTokenize_incorrectAmpereUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 V", "input=10 V")
+  @Iteration("10 volt", "input=10 volt")
+  @Iteration("10 volts", "input=10 volts")
+  fun testTokenize_correctVoltUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isVoltUnit()
+  }
+
+  @Test
+  @Iteration("10 v", "input=10 v")
+  @Iteration("10 Volt", "input=10 Volt")
+  @Iteration("10 Volts", "input=10 Volts")
+  fun testTokenize_incorrectVoltUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 ohm", "input=10 ohm")
+  @Iteration("10 ohms", "input=10 ohms")
+  fun testTokenize_correctOhmUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isOhmUnit()
+  }
+
+  @Test
+  @Iteration("10 Ohm", "input=10 Ohm")
+  @Iteration("10 Ohms", "input=10 Ohms")
+  @Iteration("10 Ω", "input=10 Ω")
+  fun testTokenize_incorrectOhmUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

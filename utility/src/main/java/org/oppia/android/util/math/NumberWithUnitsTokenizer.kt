@@ -89,6 +89,21 @@ class NumberWithUnitsTokenizer private constructor() {
       val startIndex = chars.getRetrievalCount()
 
       return when (chars.next()) {
+        'a' -> {
+          when (chars.peek()) {
+            'm' -> {
+              val token = tokenizeExpectedUnit(
+                "ampere",
+                startIndex,
+                chars
+              ) { start, end -> Token.AmpereUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // amperes
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
         'c' -> {
           when (chars.peek()) {
             'a' -> {
@@ -484,11 +499,16 @@ class NumberWithUnitsTokenizer private constructor() {
         }
         'o' -> {
           when (chars.peek()) {
-            'z' -> {
-              chars.next()
-              Token.OunceUnit(startIndex, chars.getRetrievalCount()) // oz
-            }
+            'h' -> {
+              val token = tokenizeExpectedUnit(
+                "ohm",
+                startIndex,
+                chars
+              ) { start, end -> Token.OhmUnit(start, end) }
 
+              if (chars.peek() == 's') chars.next() // ohms
+              token
+            }
             'u' -> {
               val token = tokenizeExpectedUnit(
                 "ounce",
@@ -499,7 +519,10 @@ class NumberWithUnitsTokenizer private constructor() {
               if (chars.peek() == 's') chars.next() // ounces
               token
             }
-
+            'z' -> {
+              chars.next()
+              Token.OunceUnit(startIndex, chars.getRetrievalCount()) // oz
+            }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
@@ -658,6 +681,21 @@ class NumberWithUnitsTokenizer private constructor() {
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
+        'v' -> {
+          when (chars.peek()) {
+            'o' -> {
+              val token = tokenizeExpectedUnit(
+                "volt",
+                startIndex,
+                chars
+              ) { start, end -> Token.VoltUnit(start, end) }
+
+              if (chars.peek() == 's') chars.next() // volts
+              token
+            }
+            else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
         'y' -> {
           when (chars.peek()) {
             'a' -> {
@@ -675,6 +713,13 @@ class NumberWithUnitsTokenizer private constructor() {
               Token.YardUnit(startIndex, chars.getRetrievalCount()) // "yd"
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+          }
+        }
+        'A' -> {
+          when (chars.peek()) {
+            // Ampere must be lowercase
+            'm' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            else -> Token.AmpereUnit(startIndex, chars.getRetrievalCount()) // A
           }
         }
         'C' -> {
@@ -794,6 +839,13 @@ class NumberWithUnitsTokenizer private constructor() {
             // Watt must be lowercase
             'a' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
             else -> Token.WattUnit(startIndex, chars.getRetrievalCount()) // W
+          }
+        }
+        'V' -> {
+          when (chars.peek()) {
+            // Volt must be lowercase
+            'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+            else -> Token.VoltUnit(startIndex, chars.getRetrievalCount()) // V
           }
         }
         else -> {
