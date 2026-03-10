@@ -171,6 +171,10 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.WattUnit>()
   }
 
+  fun isPascalUnit() {
+    actual.asVerifiedType<Token.PascalUnit>()
+  }
+
   fun isInvalidToken() {
     actual.asVerifiedType<Token.InvalidToken>()
   }

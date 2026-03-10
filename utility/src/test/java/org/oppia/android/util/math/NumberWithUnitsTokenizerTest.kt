@@ -941,4 +941,24 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
     assertThat(tokens[1]).isInvalidToken()
   }
+
+  @Test
+  @Iteration("100 Pa", "input=100 Pa")
+  fun testTokenize_correctPascalUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isPascalUnit()
+  }
+
+  @Test
+  @Iteration("100 pa", "input=100 pa")
+  @Iteration("100 pascal", "input=100 pascal")
+  fun testTokenize_incorrectPascalUnits_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isInvalidToken()
+  }
 }

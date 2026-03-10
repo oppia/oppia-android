@@ -734,16 +734,28 @@ class NumberWithUnitsTokenizer private constructor() {
           }
         }
         'P' -> {
-          val paisaToken = tokenizeExpectedUnit(
-            "Pais",
-            startIndex,
-            chars
-          ) { start, end -> Token.PaisaSuffixUnit(start, end) }
-
           when (chars.peek()) {
-            'a', 'e' -> {
-              chars.next() // Allow for "Paisa" & "Paise" suffix only.
-              paisaToken
+            'a' -> {
+              chars.next()
+              when (chars.peek()) {
+                'i' -> {
+                  val paisaToken = tokenizeExpectedUnit(
+                    "Pais",
+                    startIndex,
+                    chars
+                  ) { start, end -> Token.PaisaSuffixUnit(start, end) }
+
+                  when (chars.peek()) {
+                    'a', 'e' -> {
+                      chars.next()
+                      paisaToken
+                    }
+
+                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
+                  }
+                }
+                else -> Token.PascalUnit(startIndex, chars.getRetrievalCount()) // Pa
+              }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
