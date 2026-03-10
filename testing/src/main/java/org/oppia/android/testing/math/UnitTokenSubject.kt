@@ -27,6 +27,22 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.DivideSymbol>()
   }
 
+  fun isExponentiationSymbol() {
+    actual.asVerifiedType<Token.ExponentiationSymbol>()
+  }
+
+  fun isMultiplySymbol() {
+    actual.asVerifiedType<Token.MultiplySymbol>()
+  }
+
+  fun isLeftParenthesisSymbol() {
+    actual.asVerifiedType<Token.LeftParenthesisSymbol>()
+  }
+
+  fun isRightParenthesisSymbol() {
+    actual.asVerifiedType<Token.RightParenthesisSymbol>()
+  }
+
   fun isDollarPrefixUnit() {
     actual.asVerifiedType<Token.DollarPrefixUnit>()
   }

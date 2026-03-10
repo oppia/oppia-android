@@ -31,6 +31,18 @@ class NumberWithUnitsTokenizer private constructor() {
           '¢' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.CentSuffixUnit(startIndex, endIndex)
           }
+          '^' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.ExponentiationSymbol(startIndex, endIndex)
+          }
+          '*' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.MultiplySymbol(startIndex, endIndex)
+          }
+          '(' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.LeftParenthesisSymbol(startIndex, endIndex)
+          }
+          ')' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.RightParenthesisSymbol(startIndex, endIndex)
+          }
           null -> null
           else -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.InvalidToken(startIndex, endIndex)

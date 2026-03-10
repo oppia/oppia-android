@@ -1241,4 +1241,682 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOCTO)
   }
+
+  @Test
+  fun testTokenize_accelerationWithSpacedUnits_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(" 9.8 m s ^ -2 ").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(9.8)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isSecondUnit()
+    assertThat(tokens[3]).isExponentiationSymbol()
+    assertThat(tokens[4]).isMinusSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_velocityMeterPerSecond_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 m/s").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+  }
+
+  @Test
+  fun testTokenize_velocityKilometerPerHour_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("100 km/h").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isHourUnit()
+  }
+
+  @Test
+  fun testTokenize_accelerationMeterPerSecondSquared_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("9.8 m/s^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(9.8)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_dollarsPerSquareMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("20 dollars / m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[1]).isDollarSuffixUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_dollarPrefixPerSquareMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("$ 20 / m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isDollarPrefixUnit()
+    assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(20)
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_rupeesPerSquareMeterWithDivide_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 /m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_rupeesWithMeterNegativeExponent_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 m^-2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[3]).isExponentiationSymbol()
+    assertThat(tokens[4]).isMinusSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_kilogramPerMeterPerSecond_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / m / s").toList()
+
+    assertThat(tokens).hasSize(7)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isDivideSymbol()
+    assertThat(tokens[6]).isSecondUnit()
+  }
+
+  @Test
+  fun testTokenize_newtonPerMeterPerSecond_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 N / m / s").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isDivideSymbol()
+    assertThat(tokens[5]).isSecondUnit()
+  }
+
+  @Test
+  fun testTokenize_kilogramPerMeterTimesSecondWithParentheses_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / (m * s)").toList()
+
+    assertThat(tokens).hasSize(9)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isLeftParenthesisSymbol()
+    assertThat(tokens[5]).isMeterUnit()
+    assertThat(tokens[6]).isMultiplySymbol()
+    assertThat(tokens[7]).isSecondUnit()
+    assertThat(tokens[8]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_jouleWithUnitProductInParentheses_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("50 J / (kg * K)").toList()
+
+    assertThat(tokens).hasSize(9)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(50)
+    assertThat(tokens[1]).isJouleUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
+    assertThat(tokens[4]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[5]).isGramUnit()
+    assertThat(tokens[6]).isMultiplySymbol()
+    assertThat(tokens[7]).isKelvinUnit()
+    assertThat(tokens[8]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_wattPerSquareMeterKelvin_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("5 W / (m^2 * K)").toList()
+
+    assertThat(tokens).hasSize(10)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
+    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isExponentiationSymbol()
+    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[7]).isMultiplySymbol()
+    assertThat(tokens[8]).isKelvinUnit()
+    assertThat(tokens[9]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_realNumberWithBracketedUnitsAndExponent_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("12.50 (kg * m)^-3").toList()
+
+    assertThat(tokens).hasSize(10)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(12.50)
+    assertThat(tokens[1]).isLeftParenthesisSymbol()
+    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[3]).isGramUnit()
+    assertThat(tokens[4]).isMultiplySymbol()
+    assertThat(tokens[5]).isMeterUnit()
+    assertThat(tokens[6]).isRightParenthesisSymbol()
+    assertThat(tokens[7]).isExponentiationSymbol()
+    assertThat(tokens[8]).isMinusSymbol()
+    assertThat(tokens[9]).isPositiveIntegerWhoseValue().isEqualTo(3)
+  }
+
+  @Test
+  fun testTokenize_bracketedUnitsSquared_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("(m * s)^2").toList()
+
+    assertThat(tokens).hasSize(7)
+    assertThat(tokens[0]).isLeftParenthesisSymbol()
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isMultiplySymbol()
+    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[4]).isRightParenthesisSymbol()
+    assertThat(tokens[5]).isExponentiationSymbol()
+    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_nestedParentheses_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("((m))").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isLeftParenthesisSymbol()
+    assertThat(tokens[1]).isLeftParenthesisSymbol()
+    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[3]).isRightParenthesisSymbol()
+    assertThat(tokens[4]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_complexNestedExpression_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / ((m * s) * K)").toList()
+
+    assertThat(tokens).hasSize(13)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isLeftParenthesisSymbol()
+    assertThat(tokens[5]).isLeftParenthesisSymbol()
+    assertThat(tokens[6]).isMeterUnit()
+    assertThat(tokens[7]).isMultiplySymbol()
+    assertThat(tokens[8]).isSecondUnit()
+    assertThat(tokens[9]).isRightParenthesisSymbol()
+    assertThat(tokens[10]).isMultiplySymbol()
+    assertThat(tokens[11]).isKelvinUnit()
+    assertThat(tokens[12]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_densityKilogramPerCubicMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1000 kg/m^3").toList()
+
+    assertThat(tokens).hasSize(7)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isExponentiationSymbol()
+    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(3)
+  }
+
+  @Test
+  fun testTokenize_densityGramPerCubicCentimeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("2.7 g/cc").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.7)
+    assertThat(tokens[1]).isGramUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isCubicCentimeterUnit()
+  }
+
+  @Test
+  fun testTokenize_pressurePascal_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("101325 Pa").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(101325)
+    assertThat(tokens[1]).isPascalUnit()
+  }
+
+  @Test
+  fun testTokenize_pressureNewtonPerSquareMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("100 N/m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_electricalResistanceOhmMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1.7 ohm * m").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(1.7)
+    assertThat(tokens[1]).isOhmUnit()
+    assertThat(tokens[2]).isMultiplySymbol()
+    assertThat(tokens[3]).isMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_electricFieldVoltPerMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("500 V/m").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(500)
+    assertThat(tokens[1]).isVoltUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_powerWattPerSquareMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1000 W/m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
+    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_energyKilowattHour_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("500 kW * h").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(500)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isWattUnit()
+    assertThat(tokens[3]).isMultiplySymbol()
+    assertThat(tokens[4]).isHourUnit()
+  }
+
+  @Test
+  fun testTokenize_workNewtonMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("100 N * m").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[2]).isMultiplySymbol()
+    assertThat(tokens[3]).isMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_frequencyKilohertz_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("2.4 kHz").toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.4)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isHertzUnit()
+  }
+
+  @Test
+  fun testTokenize_angularVelocityRadPerSecond_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("3.14 rad/s").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(3.14)
+    assertThat(tokens[1]).isRadianUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+  }
+
+  @Test
+  fun testTokenize_angularAcceleration_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("2.5 rad/s^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.5)
+    assertThat(tokens[1]).isRadianUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_molarConcentration_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("0.5 mol/L").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(0.5)
+    assertThat(tokens[1]).isMoleUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLiterUnit()
+  }
+
+  @Test
+  fun testTokenize_molarMass_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("18 g/mol").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(18)
+    assertThat(tokens[1]).isGramUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMoleUnit()
+  }
+
+  @Test
+  fun testTokenize_luminousIntensityCandelaPerSquareMeter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1000 cd/m^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
+    assertThat(tokens[1]).isCandelaUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_milligramPerMilliliter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("5 milligram/millilitre").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+    assertThat(tokens[5]).isLiterUnit()
+  }
+
+  @Test
+  fun testTokenize_microgramPerLiter_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("100 ug/l").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isLiterUnit()
+  }
+
+  @Test
+  fun testTokenize_nanometerPerSecond_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("50 nm/s").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(50)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.NANO)
+    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isSecondUnit()
+  }
+
+  @Test
+  fun testTokenize_ouncesPerSquareInch_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("14.7 oz/in^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(14.7)
+    assertThat(tokens[1]).isOunceUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isInchUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_yardPerHour_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("60 yd/h").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(60)
+    assertThat(tokens[1]).isYardUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isHourUnit()
+  }
+
+  @Test
+  fun testTokenize_feetPerSecondSquared_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("32 ft/s^2").toList()
+
+    assertThat(tokens).hasSize(6)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(32)
+    assertThat(tokens[1]).isFootUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_compoundUnitWithExtraWhitespace_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("  10   kg  /  m  ^  2  ").toList()
+
+    assertThat(tokens).hasSize(7)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isExponentiationSymbol()
+    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_compoundUnitWithNoWhitespace_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("10kg/m^2").toList()
+
+    assertThat(tokens).hasSize(7)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isGramUnit()
+    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isExponentiationSymbol()
+    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_unitWithLargePositiveExponent_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1 m^10").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isExponentiationSymbol()
+    assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(10)
+  }
+
+  @Test
+  fun testTokenize_unitWithLargeNegativeExponent_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1 m^-10").toList()
+
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isExponentiationSymbol()
+    assertThat(tokens[3]).isMinusSymbol()
+    assertThat(tokens[4]).isPositiveIntegerWhoseValue().isEqualTo(10)
+  }
+
+  @Test
+  fun testTokenize_multipleUnitsWithExponents_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("1 m^2 * s^-1").toList()
+
+    assertThat(tokens).hasSize(9)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
+    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[2]).isExponentiationSymbol()
+    assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[4]).isMultiplySymbol()
+    assertThat(tokens[5]).isSecondUnit()
+    assertThat(tokens[6]).isExponentiationSymbol()
+    assertThat(tokens[7]).isMinusSymbol()
+    assertThat(tokens[8]).isPositiveIntegerWhoseValue().isEqualTo(1)
+  }
+
+  @Test
+  fun testTokenize_scientificNotationStyleNumber_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("6.022 * 10^23 mol^-1").toList()
+
+    assertThat(tokens).hasSize(9)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(6.022)
+    assertThat(tokens[1]).isMultiplySymbol()
+    assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[3]).isExponentiationSymbol()
+    assertThat(tokens[4]).isPositiveIntegerWhoseValue().isEqualTo(23)
+    assertThat(tokens[5]).isMoleUnit()
+    assertThat(tokens[6]).isExponentiationSymbol()
+    assertThat(tokens[7]).isMinusSymbol()
+    assertThat(tokens[8]).isPositiveIntegerWhoseValue().isEqualTo(1)
+  }
+
+  @Test
+  fun testTokenize_emptyParentheses_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("()").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isLeftParenthesisSymbol()
+    assertThat(tokens[1]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_unmatchedLeftParenthesis_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("(m").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isLeftParenthesisSymbol()
+    assertThat(tokens[1]).isMeterUnit()
+  }
+
+  @Test
+  fun testTokenize_unmatchedRightParenthesis_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("m)").toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[1]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_gravitationalConstant_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("6.674 N * m^2 / kg^2").toList()
+
+    assertThat(tokens).hasSize(11)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(6.674)
+    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[2]).isMultiplySymbol()
+    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[6]).isDivideSymbol()
+    assertThat(tokens[7]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[8]).isGramUnit()
+    assertThat(tokens[9]).isExponentiationSymbol()
+    assertThat(tokens[10]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_specificHeatCapacity_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("4.186 J / (g * degC)").toList()
+
+    assertThat(tokens).hasSize(8)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(4.186)
+    assertThat(tokens[1]).isJouleUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
+    assertThat(tokens[4]).isGramUnit()
+    assertThat(tokens[5]).isMultiplySymbol()
+    assertThat(tokens[6]).isCelsiusUnit()
+    assertThat(tokens[7]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_thermalConductivity_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("0.6 W / (m * K)").toList()
+
+    assertThat(tokens).hasSize(8)
+    assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(0.6)
+    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
+    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[5]).isMultiplySymbol()
+    assertThat(tokens[6]).isKelvinUnit()
+    assertThat(tokens[7]).isRightParenthesisSymbol()
+  }
+
+  @Test
+  fun testTokenize_onlyOperators_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("/ * ^").toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isDivideSymbol()
+    assertThat(tokens[1]).isMultiplySymbol()
+    assertThat(tokens[2]).isExponentiationSymbol()
+  }
+
+  @Test
+  fun testTokenize_consecutiveExponents_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("m^^2").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[1]).isExponentiationSymbol()
+    assertThat(tokens[2]).isExponentiationSymbol()
+    assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(2)
+  }
+
+  @Test
+  fun testTokenize_consecutiveDivisions_parsesCorrectly() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("m//s").toList()
+
+    assertThat(tokens).hasSize(4)
+    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[1]).isDivideSymbol()
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isSecondUnit()
+  }
 }
