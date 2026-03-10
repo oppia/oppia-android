@@ -191,6 +191,11 @@ class UnitTokenSubject(
     actual.asVerifiedType<Token.InvalidToken>()
   }
 
+  fun isSiPrefixWithValue(expectedValue: Token.SiPrefixValue) {
+    val siPrefix = actual.asVerifiedType<Token.SiPrefix>()
+    Truth.assertThat(siPrefix.prefixValue).isEqualTo(expectedValue)
+  }
+
   companion object {
     /** Returns a new [UnitTokenSubject] to verify aspects of the specified [Token] value. */
     fun assertThat(actual: Token): UnitTokenSubject =

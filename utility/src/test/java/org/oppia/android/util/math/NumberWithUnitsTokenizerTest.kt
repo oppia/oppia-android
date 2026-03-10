@@ -9,6 +9,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.UnitTokenSubject.Companion.assertThat
+import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
 import org.robolectric.annotation.Config
 
 /** Tests for [NumberWithUnitsTokenizer]. */
@@ -293,7 +294,6 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("20 M", "input=20 M")
   @Iteration("20 Meter", "input=20 Meter")
   @Iteration("20 Meters", "input=20 Meters")
   fun testTokenize_incorrectMeterUnits_parsesInvalidToken() {
@@ -301,7 +301,8 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[2]).isInvalidToken()
   }
 
   @Test
@@ -371,12 +372,12 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Yd", "input=20 Yd")
   @Iteration("20 Yard", "input=20 Yard")
   @Iteration("20 Yards", "input=20 Yards")
-  fun testTokenize_incorrectYardUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectYardUnits_parsesYottaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOTTA)
   }
 
   @Test
@@ -392,17 +393,13 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("20 G", "input=20 G")
   @Iteration("20 Gram", "input=20 Gram")
   @Iteration("20 Grams", "input=20 Grams")
-  fun testTokenize_incorrectGramUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectGramUnits_parsesGigaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-
-    // First invalid token; later tokens can map to other valid units.
-    // Here 'm' of "Gram(s)" is a valid meter unit
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
   }
 
   @Test
@@ -421,13 +418,12 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Gr", "input=20 Gr")
   @Iteration("20 Grain", "input=20 Grain")
   @Iteration("20 Grains", "input=20 Grains")
-  fun testTokenize_incorrectGrainUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectGrainUnits_parsesGigaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    // First invalid token; later tokens can map to other valid units.
-    // Here 'in' of "Grain(s)" is a valid inch unit
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
+    assertThat(tokens[2]).isInvalidToken()
   }
 
   @Test
@@ -463,12 +459,12 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectSquareMeterUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectSquareMeterUnits_parsesMegaPrefixAndInteger() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 M2").toList()
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
     assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
 
@@ -524,11 +520,11 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectCubicMeterUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCubicMeterUnits_parsesMegaPrefixAndInteger() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 M3").toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
     assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(3)
   }
 
@@ -595,7 +591,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
     assertThat(tokens[3]).isInchUnit() // in
   }
 
@@ -614,7 +610,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
     assertThat(tokens[3]).isFootUnit() // ft
   }
 
@@ -633,7 +629,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isInvalidToken() // u
+    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
     assertThat(tokens[3]).isYardUnit() // yd
   }
   @Test
@@ -648,10 +644,8 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("310.15 k", "input=310.15 k")
-  @Iteration("310.15 Kelvin", "input=310.15 Kelvin")
-  fun testTokenize_incorrectKelvinUnits_parsesInvalidToken() {
-    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+  fun testTokenize_incorrectKelvinUnits_uppercaseKelvin_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize("310.15 Kelvin").toList()
 
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(310.15)
     assertThat(tokens[1]).isInvalidToken()
@@ -698,9 +692,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isInvalidToken()
   }
 
   @Test
@@ -769,11 +761,11 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Min", "input=10 Min")
   @Iteration("10 Minute", "input=10 Minute")
   @Iteration("10 Minutes", "input=10 Minutes")
-  fun testTokenize_incorrectMinuteUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectMinuteUnits_parsesMegaPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
   }
 
   @Test
@@ -814,13 +806,13 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectHertzUnits_hz_parsesHourAndInvalidToken() {
+  fun testTokenize_incorrectHertzUnits_hz_parsesHourUnitAndZeptoPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 hz").toList()
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isHourUnit()
-    assertThat(tokens[2]).isInvalidToken()
+    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.ZEPTO)
   }
 
   @Test
@@ -847,11 +839,12 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Mol", "input=10 Mol")
   @Iteration("10 Mole", "input=10 Mole")
   @Iteration("10 Moles", "input=10 Moles")
-  fun testTokenize_incorrectMoleUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectMoleUnits_parsesMegaPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[2]).isInvalidToken()
   }
 
   @Test
@@ -888,10 +881,8 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("10 n", "input=10 n")
-  @Iteration("10 Newton", "input=10 Newton")
   fun testTokenize_incorrectNewtonUnits_parsesInvalidToken() {
-    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+    val tokens = NumberWithUnitsTokenizer.tokenize("10 Newton").toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
@@ -975,7 +966,6 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("10 a", "input=10 a")
   @Iteration("10 Ampere", "input=10 Ampere")
   @Iteration("10 Amperes", "input=10 Amperes")
   fun testTokenize_incorrectAmpereUnits_parsesInvalidToken() {
@@ -1028,5 +1018,228 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken()
+  }
+
+  @Test
+  @Iteration("10 deca", "input=10 deca")
+  @Iteration("10 da", "input=10 da")
+  fun testTokenize_deca_parsesDecaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.DECA)
+  }
+
+  @Test
+  @Iteration("10 hecto", "input=10 hecto")
+  // Note: "h" is also the symbol for hour
+  // @Iteration("10 h", "input=10 h")
+  fun testTokenize_hecto_parsesHectoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.HECTO)
+  }
+
+  @Test
+  @Iteration("10 kilo", "input=10 kilo")
+  @Iteration("10 k", "input=10 k")
+  fun testTokenize_kilo_parsesKiloSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+  }
+
+  @Test
+  @Iteration("10 mega", "input=10 mega")
+  @Iteration("10 M", "input=10 M")
+  fun testTokenize_mega_parsesMegaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+  }
+
+  @Test
+  @Iteration("10 giga", "input=10 giga")
+  @Iteration("10 G", "input=10 G")
+  fun testTokenize_giga_parsesGigaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
+  }
+
+  @Test
+  @Iteration("10 tera", "input=10 tera")
+  @Iteration("10 T", "input=10 T")
+  fun testTokenize_tera_parsesTeraSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.TERA)
+  }
+
+  @Test
+  @Iteration("10 peta", "input=10 peta")
+  @Iteration("10 P", "input=10 P")
+  fun testTokenize_peta_parsesPetaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.PETA)
+  }
+
+  @Test
+  @Iteration("10 exa", "input=10 exa")
+  @Iteration("10 E", "input=10 E")
+  fun testTokenize_exa_parsesExaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.EXA)
+  }
+
+  @Test
+  @Iteration("10 zetta", "input=10 zetta")
+  @Iteration("10 Z", "input=10 Z")
+  fun testTokenize_zetta_parsesZettaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ZETTA)
+  }
+
+  @Test
+  @Iteration("10 yotta", "input=10 yotta")
+  @Iteration("10 Y", "input=10 Y")
+  fun testTokenize_yotta_parsesYottaSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOTTA)
+  }
+
+  @Test
+  @Iteration("10 deci", "input=10 deci")
+  @Iteration("10 d", "input=10 d")
+  fun testTokenize_deci_parsesDeciSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.DECI)
+  }
+
+  @Test
+  @Iteration("10 centi", "input=10 centi")
+  @Iteration("10 c", "input=10 c")
+  fun testTokenize_centi_parsesCentiSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.CENTI)
+  }
+
+  @Test
+  @Iteration("10 milli", "input=10 milli")
+  // Note: "m" is also the symbol for meter
+  // @Iteration("10 m", "input=10 m")
+  fun testTokenize_milli_parsesMilliSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+  }
+
+  @Test
+  @Iteration("10 micro", "input=10 micro")
+  @Iteration("10 u", "input=10 u")
+  fun testTokenize_micro_parsesMicroSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO)
+  }
+
+  @Test
+  @Iteration("10 nano", "input=10 nano")
+  @Iteration("10 n", "input=10 n")
+  fun testTokenize_nano_parsesNanoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.NANO)
+  }
+
+  @Test
+  @Iteration("10 pico", "input=10 pico")
+  @Iteration("10 p", "input=10 p")
+  fun testTokenize_pico_parsesPicoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.PICO)
+  }
+
+  @Test
+  @Iteration("10 femto", "input=10 femto")
+  @Iteration("10 f", "input=10 f")
+  fun testTokenize_femto_parsesFemtoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.FEMTO)
+  }
+
+  @Test
+  @Iteration("10 atto", "input=10 atto")
+  @Iteration("10 a", "input=10 a")
+  fun testTokenize_atto_parsesAttoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ATTO)
+  }
+
+  @Test
+  @Iteration("10 zepto", "input=10 zepto")
+  @Iteration("10 z", "input=10 z")
+  fun testTokenize_zepto_parsesZeptoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ZEPTO)
+  }
+
+
+  @Test
+  @Iteration("10 yocto", "input=10 yocto")
+  @Iteration("10 y", "input=10 y")
+  fun testTokenize_yocto_parsesYoctoSiPrefix() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOCTO)
   }
 }
