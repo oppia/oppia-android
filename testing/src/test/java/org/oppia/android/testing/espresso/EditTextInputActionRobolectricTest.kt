@@ -38,7 +38,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("123")
 
-        appendText("45").perform(null, editText)
+        EditTextInputAction.Companion.appendText("45").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("12345")
       }
@@ -52,7 +52,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("")
 
-        appendText("hello").perform(null, editText)
+        EditTextInputAction.Companion.appendText("hello").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("hello")
       }
@@ -66,7 +66,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("123")
 
-        appendText("").perform(null, editText)
+        EditTextInputAction.Companion.appendText("").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("123")
       }
@@ -80,7 +80,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("abc")
 
-        appendText("@#$").perform(null, editText)
+        EditTextInputAction.Companion.appendText("@#$").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("abc@#$")
       }
@@ -94,7 +94,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("Hello ")
 
-        appendText("\uD83C\uDF0D").perform(null, editText)
+        EditTextInputAction.Companion.appendText("\uD83C\uDF0D").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("Hello \uD83C\uDF0D")
       }
@@ -108,7 +108,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("123")
 
-        replaceText("9").perform(null, editText)
+        EditTextInputAction.Companion.replaceText("9").perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("9")
       }
@@ -122,7 +122,7 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("old text")
 
-        replaceText("").perform(null, editText)
+        EditTextInputAction.Companion.replaceText("").perform(null, editText)
 
         assertThat(editText.text.toString()).isEmpty()
       }
@@ -136,7 +136,8 @@ class EditTextInputActionRobolectricTest {
         val editText = EditText(activity)
         editText.setText("old text")
 
-        replaceText("\u0645\u0631\u062D\u0628\u0627").perform(null, editText)
+        EditTextInputAction.Companion.replaceText("\u0645\u0631\u062D\u0628\u0627")
+          .perform(null, editText)
 
         assertThat(editText.text.toString()).isEqualTo("\u0645\u0631\u062D\u0628\u0627")
       }
