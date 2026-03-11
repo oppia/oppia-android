@@ -97,11 +97,7 @@ class SelectionInteractionView @JvmOverloads constructor(
       SelectionItemInputType.CHECKBOXES ->
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewDataBinderWithSameModelType(
-            inflateDataBinding = { inflater, parent, attachToParent ->
-              bindingInterface.provideSelectionInteractionViewInflatedView(
-                inflater, parent, attachToParent
-              )
-            },
+            inflateDataBinding = bindingInterface::provideSelectionInteractionViewInflatedView,
             setViewModel = { binding, viewModel ->
               bindingInterface.provideSelectionInteractionViewModel(
                 binding,
@@ -118,11 +114,7 @@ class SelectionInteractionView @JvmOverloads constructor(
       SelectionItemInputType.RADIO_BUTTONS ->
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewDataBinderWithSameModelType(
-            inflateDataBinding = { inflater, parent, attachToParent ->
-              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
-                inflater, parent, attachToParent
-              )
-            },
+            inflateDataBinding = bindingInterface::provideMultipleChoiceInteractionItemsInflatedView,
             setViewModel = { binding, viewModel ->
               bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
                 binding,

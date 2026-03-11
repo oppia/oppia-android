@@ -193,11 +193,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   ): BindableAdapter<DragDropInteractionContentViewModel> {
     return singleTypeBuilderFactory.create<DragDropInteractionContentViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          viewBindingShim.provideDragDropSortInteractionInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
+        inflateDataBinding = viewBindingShim::provideDragDropSortInteractionInflatedView,
         setViewModel = { binding, viewModel ->
           viewBindingShim.setDragDropInteractionItemsBinding(binding)
           viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
@@ -218,11 +214,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private fun createNestedAdapter(): BindableAdapter<String> {
     return singleTypeBuilderFactory.create<String>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          viewBindingShim.provideDragDropSingleItemInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
+        inflateDataBinding = viewBindingShim::provideDragDropSingleItemInflatedView,
         setViewModel = { binding, viewModel ->
           viewBindingShim.setDragDropSingleItemBinding(binding)
           viewBindingShim.setDragDropSingleItemBindingHtmlContent(

@@ -91,17 +91,8 @@ class PromotedStoryListView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
     return singleTypeBuilderFactory.create<PromotedStoryViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          bindingInterface.providePromotedStoryCardInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
-        setViewModel = { binding, viewModel ->
-          bindingInterface.providePromotedStoryViewModel(
-            binding,
-            viewModel
-          )
-        }
+        inflateDataBinding = bindingInterface::providePromotedStoryCardInflatedView,
+        setViewModel = bindingInterface::providePromotedStoryViewModel
       ).build()
   }
 }

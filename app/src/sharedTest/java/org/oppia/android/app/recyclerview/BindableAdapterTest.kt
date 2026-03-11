@@ -635,9 +635,9 @@ class BindableAdapterTest {
     layout(0, 0, 1000, 1000)
   }
 
-  private fun RecyclerView.lookUpTextWithDataBindingAt(position: Int): String {
+  private fun RecyclerView.lookUpTextWithDataBindingAt(position: Int): String? {
     return (findViewHolderForAdapterPosition(position)?.itemView as? TextView)
-      ?.text?.toString() ?: ""
+      ?.text?.toString()
   }
 
   private enum class ViewModelType {

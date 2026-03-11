@@ -59,17 +59,8 @@ class SurveyNpsItemOptionView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
     return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          bindingInterface.provideNpsItemsInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
-        setViewModel = { binding, viewModel ->
-          bindingInterface.provideNpsItemsViewModel(
-            binding,
-            viewModel
-          )
-        }
+        inflateDataBinding = bindingInterface::provideNpsItemsInflatedView,
+        setViewModel = bindingInterface::provideNpsItemsViewModel
       )
       .build()
   }

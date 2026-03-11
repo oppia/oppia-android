@@ -59,17 +59,8 @@ class SurveyMultipleChoiceOptionView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
     return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          bindingInterface.provideMultipleChoiceItemsInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
-        setViewModel = { binding, viewModel ->
-          bindingInterface.provideMultipleChoiceOptionViewModel(
-            binding,
-            viewModel
-          )
-        }
+        inflateDataBinding = bindingInterface::provideMultipleChoiceItemsInflatedView,
+        setViewModel = bindingInterface::provideMultipleChoiceOptionViewModel
       )
       .build()
   }

@@ -97,17 +97,8 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
     return singleTypeBuilderFactory.create<ComingSoonTopicsViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = { inflater, parent, attachToParent ->
-          bindingInterface.provideComingSoonTopicViewInflatedView(
-            inflater, parent, attachToParent
-          )
-        },
-        setViewModel = { binding, viewModel ->
-          bindingInterface.provideComingSoonTopicsViewViewModel(
-            binding,
-            viewModel
-          )
-        }
+        inflateDataBinding = bindingInterface::provideComingSoonTopicViewInflatedView,
+        setViewModel = bindingInterface::provideComingSoonTopicsViewViewModel
       ).build()
   }
 }
