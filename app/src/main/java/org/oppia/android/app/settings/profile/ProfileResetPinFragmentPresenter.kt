@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.databinding.databinding.ProfileResetPinFragmentBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -126,7 +126,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         return@setOnClickListener
       }
       profileManagementController
-        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
+        .updatePin(LegacyProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
         .observe(
           activity,
           Observer {

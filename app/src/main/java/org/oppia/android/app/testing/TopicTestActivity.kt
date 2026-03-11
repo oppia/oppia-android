@@ -5,7 +5,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
@@ -32,7 +32,7 @@ class TopicTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       profileId = profileId,
@@ -45,7 +45,7 @@ class TopicTestActivity :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList, ProfileId.getDefaultInstance()
+        this, skillIdList, LegacyProfileId.getDefaultInstance()
       )
     )
   }
@@ -68,7 +68,7 @@ class TopicTestActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -91,7 +91,7 @@ class TopicTestActivity :
   }
 
   override fun routeToRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int

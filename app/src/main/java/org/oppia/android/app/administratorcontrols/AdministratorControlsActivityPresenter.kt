@@ -10,7 +10,7 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.databinding.databinding.AdministratorControlsActivityBinding
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AdministratorControlActivityStateBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
@@ -31,7 +31,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var binding: AdministratorControlsActivityBinding
 
   private lateinit var lastLoadedFragment: String
-  private var selectedProfileId: ProfileId = ProfileId.getDefaultInstance()
+  private var selectedProfileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
   private lateinit var extraControlsTitle: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
@@ -39,7 +39,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun handleOnCreate(
     extraControlsTitle: String?,
     lastLoadedFragment: String,
-    selectedProfileId: ProfileId,
+    selectedProfileId: LegacyProfileId,
     isProfileDeletionDialogVisible: Boolean
   ) {
     binding = DataBindingUtil.setContentView(
@@ -144,7 +144,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
-  fun loadProfileEdit(profileId: ProfileId, profileName: String) {
+  fun loadProfileEdit(profileId: LegacyProfileId, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     selectedProfileId = profileId
     extraControlsTitle = profileName

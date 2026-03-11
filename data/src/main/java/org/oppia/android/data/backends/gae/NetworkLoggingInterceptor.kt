@@ -57,9 +57,7 @@ class NetworkLoggingInterceptor @Inject constructor(
         _logNetworkCallFlow.emit(
           RetrofitCallContext.newBuilder()
             .setRequestUrl(request.url.toString())
-            .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
-            .setBody(responseBodyText ?: "")
             .build()
         )
       }
@@ -69,7 +67,6 @@ class NetworkLoggingInterceptor @Inject constructor(
           _logFailedNetworkCallFlow.emit(
             RetrofitCallFailedContext.newBuilder()
               .setRequestUrl(request.url.toString())
-              .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
               .setErrorMessage(responseBodyText ?: "")
               .build()
@@ -83,7 +80,6 @@ class NetworkLoggingInterceptor @Inject constructor(
         _logFailedNetworkCallFlow.emit(
           RetrofitCallFailedContext.newBuilder()
             .setRequestUrl(request.url.toString())
-            .setHeaders(request.headers.toString())
             .setResponseStatusCode(0)
             .setErrorMessage(exception.toString())
             .build()

@@ -19,7 +19,7 @@ import org.oppia.android.app.databinding.databinding.SurveyMarketFitQuestionLayo
 import org.oppia.android.app.databinding.databinding.SurveyNpsScoreLayoutBinding
 import org.oppia.android.app.databinding.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.app.model.EphemeralSurveyQuestion
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -51,7 +51,7 @@ class SurveyFragmentPresenter @Inject constructor(
     surveyProgressController.getCurrentQuestion().toLiveData()
   }
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var binding: SurveyFragmentBinding
   private lateinit var surveyToolbar: Toolbar
   private lateinit var answerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver
@@ -68,7 +68,7 @@ class SurveyFragmentPresenter @Inject constructor(
     topicId: String,
     fragment: SurveyFragment
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.answerAvailabilityReceiver = fragment
     this.answerHandler = fragment
 
@@ -341,7 +341,7 @@ class SurveyFragmentPresenter @Inject constructor(
   private fun logBeginSurveyEvent(
     explorationId: String,
     topicId: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ) {
     analyticsController.logImportantEvent(
       oppiaLogger.createBeginSurveyContext(

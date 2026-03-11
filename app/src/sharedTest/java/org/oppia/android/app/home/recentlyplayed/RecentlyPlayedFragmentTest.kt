@@ -51,7 +51,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
@@ -148,7 +148,7 @@ class RecentlyPlayedFragmentTest {
 
   @Mock lateinit var mockRouteToExplorationListener: RouteToExplorationListener
   @Mock lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
-  @Captor lateinit var profileIdCaptor: ArgumentCaptor<ProfileId>
+  @Captor lateinit var profileIdCaptor: ArgumentCaptor<LegacyProfileId>
   @Captor lateinit var classroomIdCaptor: ArgumentCaptor<String>
   @Captor lateinit var topicIdCaptor: ArgumentCaptor<String>
   @Captor lateinit var storyIdCaptor: ArgumentCaptor<String>
@@ -166,7 +166,7 @@ class RecentlyPlayedFragmentTest {
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -1382,7 +1382,7 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
@@ -1415,7 +1415,7 @@ class RecentlyPlayedFragmentTest {
     lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
 
     override fun routeToExploration(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -1435,7 +1435,7 @@ class RecentlyPlayedFragmentTest {
     }
 
     override fun routeToResumeLesson(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,

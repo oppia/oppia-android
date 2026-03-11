@@ -9,7 +9,7 @@ import org.oppia.android.app.databinding.databinding.AudioLanguageActivityBindin
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   /** Handles when the activity is first created. */
   fun handleOnCreate(
     audioLanguage: AudioLanguage,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     parentScreen: AudioLanguageActivityParams.ParentScreen
   ) {
     this.audioLanguage = audioLanguage
