@@ -142,6 +142,23 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "number_with_units_subject",
+    testonly = True,
+    srcs = [
+        "NumberWithUnitsSubject.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":fraction_subject",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_android_library(
     name = "number_with_units_token_subject",
     testonly = True,
     srcs = [

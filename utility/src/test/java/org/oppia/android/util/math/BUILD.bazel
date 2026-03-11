@@ -373,6 +373,7 @@ oppia_android_test(
         "//model/src/main/proto:interaction_object_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/math:number_with_units_subject",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",

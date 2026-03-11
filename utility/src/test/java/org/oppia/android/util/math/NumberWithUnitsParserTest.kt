@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -20,10 +21,11 @@ class NumberWithUnitsParserTest {
   fun testParser_withDollarSymbolPrefix_noSpace_parsesCorrectly() {
     val parsingResult = parseNumberWithUnitsExpectingSuccess("$100")
 
-    assertThat(parsingResult.real).isEqualTo(100.0)
-    assertThat(parsingResult.unitList).hasSize(1)
-    assertThat(parsingResult.unitList[0].unit).isEqualTo("dollar")
-    assertThat(parsingResult.unitList[0].exponent).isEqualTo(1)
+    assertThat(parsingResult).apply {
+      hasRealValueThat().isEqualTo(100.0)
+      hasUnitCountThat().isEqualTo(1)
+      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+    }
   }
 
 //  @Test

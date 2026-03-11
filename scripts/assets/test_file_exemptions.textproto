@@ -4352,6 +4352,10 @@ test_file_exemption {
   override_min_coverage_percent_required: 0
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/NumberWithUnitsSubject.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/NumberWithUnitsTokenSubject.kt"
   test_file_not_required: true
 }
