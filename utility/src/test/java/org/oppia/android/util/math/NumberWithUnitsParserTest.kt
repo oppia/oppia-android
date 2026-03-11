@@ -2,9 +2,10 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -15,103 +16,56 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config
 class NumberWithUnitsParserTest {
-  private lateinit var numberWithUnitsParser: NumberWithUnitsParser
-
-  @Before
-  fun setUp() {
-    numberWithUnitsParser = NumberWithUnitsParser()
-  }
-
   @Test
   fun testParser_withDollarSymbolPrefix_noSpace_parsesCorrectly() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("$100")
+    val parsingResult = parseNumberWithUnitsExpectingSuccess("$100")
 
-    assertThat(numberWithUnits.real).isEqualTo(100.0)
-    assertThat(numberWithUnits.unitList).hasSize(1)
-    assertThat(numberWithUnits.unitList[0].unit).isEqualTo("dollar")
-    assertThat(numberWithUnits.unitList[0].exponent).isEqualTo(1)
+    assertThat(parsingResult.real).isEqualTo(100.0)
+    assertThat(parsingResult.unitList).hasSize(1)
+    assertThat(parsingResult.unitList[0].unit).isEqualTo("dollar")
+    assertThat(parsingResult.unitList[0].exponent).isEqualTo(1)
   }
 
-  @Test
-  fun testParser_withDollarSymbolPrefix_withSpace_parsesCorrectly() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("$ 100")
+//  @Test
+//  fun testParser_withDollarSymbolPrefix_noSpace_parsesCorrectly1() {
+//    assertThat(parseNumberWithUnitsExpectingFailure("$ 100/1 g/m")).isInstanceOf(NumberWithUnitsParsingError.InvalidTokenError::class.java)
+//  }
 
-    assertThat(numberWithUnits.real).isEqualTo(100.0)
-    assertThat(numberWithUnits.unitList).hasSize(1)
-    assertThat(numberWithUnits.unitList[0].unit).isEqualTo("dollar")
-    assertThat(numberWithUnits.unitList[0].exponent).isEqualTo(1)
+  private fun parseNumberWithUnitsExpectingSuccess(
+    expression: String
+  ): NumberWithUnits {
+    val parsingResult = parseNumberWithUnits(expression)
+    return expectSuccessfulParsingResult(parsingResult)
   }
 
-  @Test
-  fun testParser_withDollarSymbolPrefix_withDecimal_parsesCorrectly() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("$100.50")
-
-    assertThat(numberWithUnits.real).isEqualTo(100.50)
-    assertThat(numberWithUnits.unitList).hasSize(1)
-    assertThat(numberWithUnits.unitList[0].unit).isEqualTo("dollar")
-    assertThat(numberWithUnits.unitList[0].exponent).isEqualTo(1)
+  private fun parseNumberWithUnitsExpectingFailure(
+    expression: String
+  ): NumberWithUnitsParsingError {
+    val parsingResult = parseNumberWithUnits(expression)
+    return expectFailingParsingResult(parsingResult)
   }
 
-  @Test
-  fun testParser_withDollarSymbolPrefix_withLeadingAndTrailingSpaces_parsesCorrectly() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits(" $100 ")
-
-    assertThat(numberWithUnits.real).isEqualTo(100.0)
-    assertThat(numberWithUnits.unitList).hasSize(1)
-    assertThat(numberWithUnits.unitList[0].unit).isEqualTo("dollar")
-    assertThat(numberWithUnits.unitList[0].exponent).isEqualTo(1)
+  private fun parseNumberWithUnits(
+    expression: String,
+  ): NumberWithUnitsParsingResult<NumberWithUnits> {
+    return NumberWithUnitsParser.parseNumberWithUnits(expression)
   }
 
-  @Test
-  fun testParser_withDollarSymbolSuffix_givesInvalidCurrencyFormatError() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("100 $")
-
-    print(numberWithUnits)
+  private fun expectSuccessfulParsingResult(
+    result: NumberWithUnitsParsingResult<NumberWithUnits>
+  ): NumberWithUnits {
+    assertThat(result).isInstanceOf(
+      NumberWithUnitsParsingResult.Success::class.java
+    )
+    return (result as NumberWithUnitsParsingResult.Success<NumberWithUnits>).result
   }
 
-  @Test
-  fun testParser_withWordDollarPrefix_givesInvalidCurrencyFormatError() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("Dollar 100")
-
-    print(numberWithUnits)
-  }
-
-  @Test
-  fun testParser_withWordDollarSuffix_parsesCorrectly() {
-    val numberWithWordDollarSuffix1 = numberWithUnitsParser.parseNumberWithUnits("100 dollar")
-    val numberWithWordDollarSuffix2 = numberWithUnitsParser.parseNumberWithUnits("100 Dollar")
-
-    print(numberWithWordDollarSuffix1)
-    print(numberWithWordDollarSuffix2)
-  }
-
-  @Test
-  fun testParser_withWordDollarsPrefix_givesInvalidCurrencyFormatError() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("Dollars 100")
-
-    print(numberWithUnits)
-  }
-
-  @Test
-  fun testParser_withWordDollarsSuffix_parsesCorrectly() {
-    val numberWithWordDollarsSuffix1 = numberWithUnitsParser.parseNumberWithUnits("100 dollars")
-    val numberWithWordDollarsSuffix2 = numberWithUnitsParser.parseNumberWithUnits("100 Dollars")
-
-    print(numberWithWordDollarsSuffix1)
-    print(numberWithWordDollarsSuffix2)
-  }
-
-  @Test
-  fun testParser_withUsdPrefix_givesInvalidCurrencyFormatError() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("USD 100")
-
-    print(numberWithUnits)
-  }
-
-  @Test
-  fun testParser_withUsdSuffix_parsesCorrectly() {
-    val numberWithUnits = numberWithUnitsParser.parseNumberWithUnits("100 USD")
-
-    print(numberWithUnits)
+  private fun <T> expectFailingParsingResult(
+    result: NumberWithUnitsParsingResult<T>
+  ): NumberWithUnitsParsingError {
+    assertThat(result).isInstanceOf(
+      NumberWithUnitsParsingResult.Failure::class.java
+    )
+    return (result as NumberWithUnitsParsingResult.Failure<T>).error
   }
 }

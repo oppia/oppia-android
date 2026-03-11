@@ -153,7 +153,7 @@ class NumberWithUnitsTokenizer private constructor() {
      * The method supports both singular and plural forms, abbreviated forms,
      * and different case conventions where applicable.
      *
-     * @param chars the peekable iterator positioned at the start of a unit
+     * @param chars the [PeekableIterator] positioned at the start of a unit
      * @return the appropriate [Token] representing the unit or an [Token.InvalidToken]
      */
     private fun tokenizeUnit(chars: PeekableIterator<Char>): Token {
