@@ -12,6 +12,7 @@ import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
@@ -114,23 +115,8 @@ class TopicController @Inject constructor(
    * @param topicId the ID corresponding to the topic which needs to be returned.
    * @return a [DataProvider] for [EphemeralTopic] combined with [TopicProgress].
    */
-  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<EphemeralTopic> {
-    val topicDataProvider = dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
-      retrieveTopic(topicId)?.let {
-        AsyncResult.Success(it)
-      } ?: AsyncResult.Failure(IllegalStateException("Topic doesn't exist: $topicId"))
-    }
-    val topicProgressDataProvider =
-      storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
-
-    val topicCombinedProvider = topicDataProvider.combineWith(
-      topicProgressDataProvider, GET_TOPIC_PROVIDER_ID, ::combineTopicAndTopicProgress
-    )
-    val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
-    return topicCombinedProvider.combineWith(
-      translationLocaleProvider, GET_TOPIC_PROVIDER_ID
-    ) { topic, locale -> topic.toEphemeral(locale) }
+  fun getTopic(profileId: LegacyProfileId, topicId: String): DataProvider<EphemeralTopic> {
+    return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
   }
 
   /**
@@ -143,7 +129,7 @@ class TopicController @Inject constructor(
    * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
    */
   fun getTopics(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicIds: List<String>
   ): DataProvider<List<EphemeralTopic>> {
     val topicsDataProvider =
@@ -182,7 +168,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralStorySummary] combined with [StoryProgress].
    */
   fun getStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String
   ): DataProvider<EphemeralStorySummary> {
@@ -214,7 +200,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralChapterSummary]
    */
   fun retrieveChapter(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -248,7 +234,7 @@ class TopicController @Inject constructor(
    * if there is none.
    */
   fun getConceptCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     skillId: String
   ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
@@ -269,7 +255,7 @@ class TopicController @Inject constructor(
    * a failed result if there is none.
    */
   fun getRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
@@ -290,7 +276,7 @@ class TopicController @Inject constructor(
    * Returns the list of all completed stories in the form of [CompletedStoryList] for a specific
    * profile.
    */
-  fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
+  fun getCompletedStoryList(profileId: LegacyProfileId): DataProvider<CompletedStoryList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
@@ -315,7 +301,7 @@ class TopicController @Inject constructor(
   /**
    * Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile.
    */
-  fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
+  fun getOngoingTopicList(profileId: LegacyProfileId): DataProvider<OngoingTopicList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =

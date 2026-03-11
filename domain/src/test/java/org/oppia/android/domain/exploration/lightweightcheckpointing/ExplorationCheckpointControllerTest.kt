@@ -17,7 +17,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -116,8 +116,8 @@ class ExplorationCheckpointControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -825,7 +825,7 @@ class ExplorationCheckpointControllerTest {
     }
   }
 
-  private fun saveCheckpoint(profileId: ProfileId, index: Int): Any? {
+  private fun saveCheckpoint(profileId: LegacyProfileId, index: Int): Any? {
     val recordProvider = explorationCheckpointController.recordExplorationCheckpoint(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
@@ -834,7 +834,7 @@ class ExplorationCheckpointControllerTest {
     return monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
-  private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
+  private fun saveMultipleCheckpoints(profileId: LegacyProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {
       saveCheckpoint(profileId, index)
     }
@@ -878,7 +878,7 @@ class ExplorationCheckpointControllerTest {
       .build()
 
   private fun retrieveExplorationCheckpointWithOverride(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     expIdToLoadInstead: String
   ): DataProvider<ExplorationCheckpoint> {
     fakeExplorationRetriever.setExplorationProxy(
@@ -891,7 +891,7 @@ class ExplorationCheckpointControllerTest {
   }
 
   private fun createCheckpointForTestExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     playRoutine: () -> Unit
   ) {
     fakeExplorationRetriever.setExplorationProxy(

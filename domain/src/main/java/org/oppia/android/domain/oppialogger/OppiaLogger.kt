@@ -2,7 +2,7 @@ package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.RevisionCardContext
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -263,7 +263,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   }
 
   /** Returns the context of the event indicating that a profile started onboarding. */
-  fun createProfileOnboardingStartedContext(profileId: ProfileId): EventLog.Context {
+  fun createProfileOnboardingStartedContext(profileId: LegacyProfileId): EventLog.Context {
     return EventLog.Context.newBuilder().setStartProfileOnboardingEvent(
       EventLog.ProfileOnboardingContext.newBuilder()
         .setProfileId(profileId)
@@ -272,7 +272,7 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
   }
 
   /** Returns the context of the event indicating that a profile completed onboarding. */
-  fun createProfileOnboardingEndedContext(profileId: ProfileId): EventLog.Context {
+  fun createProfileOnboardingEndedContext(profileId: LegacyProfileId): EventLog.Context {
     return EventLog.Context.newBuilder().setEndProfileOnboardingEvent(
       EventLog.ProfileOnboardingContext.newBuilder()
         .setProfileId(profileId)
@@ -302,15 +302,11 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
    */
   fun createRetrofitCallContext(
     url: String,
-    headers: String,
-    body: String,
     responseCode: Int
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallContext(
       EventLog.RetrofitCallContext.newBuilder()
         .setRequestUrl(url)
-        .setHeaders(headers)
-        .setBody(body)
         .setResponseStatusCode(responseCode)
         .build()
     ).build()
@@ -321,16 +317,12 @@ class OppiaLogger @Inject constructor(private val consoleLogger: ConsoleLogger) 
    */
   fun createRetrofitCallFailedContext(
     url: String,
-    headers: String,
-    body: String,
     responseCode: Int,
     errorMessage: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setRetrofitCallFailedContext(
       EventLog.RetrofitCallFailedContext.newBuilder()
         .setRequestUrl(url)
-        .setHeaders(headers)
-        .setBody(body)
         .setResponseStatusCode(responseCode)
         .setErrorMessage(errorMessage)
         .build()

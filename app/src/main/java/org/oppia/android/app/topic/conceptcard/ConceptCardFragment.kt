@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ConceptCardFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -30,7 +30,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
     /** The fragment tag corresponding to the concept card dialog fragment. */
     private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
-    private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
+    private fun newInstance(skillId: String, profileId: LegacyProfileId): ConceptCardFragment {
       val args = ConceptCardFragmentArguments.newBuilder().apply {
         this.skillId = skillId
       }.build()
@@ -53,7 +53,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
      */
     fun bringToFrontOrCreateIfNew(
       skillId: String,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       fragmentManager: FragmentManager
     ) {
       // Concept cards are keyed by profileId and skillId. However, in this method we are only
@@ -92,7 +92,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
     private fun showNewInstance(
       skillId: String,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       fragmentManager: FragmentManager,
     ): ConceptCardFragment {
       val conceptCardFragment = newInstance(skillId, profileId)

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicPracticeFragmentArguments
 import org.oppia.android.app.model.TopicPracticeFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
@@ -26,7 +26,7 @@ class TopicPracticeFragment : InjectableFragment() {
     const val TOPIC_PRACTICE_FRAGMENT_STATE_KEY = "TopicPracticeFragment.state"
 
     /** Returns a new [TopicPracticeFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicPracticeFragment {
+    fun newInstance(profileId: LegacyProfileId, topicId: String): TopicPracticeFragment {
       val args = TopicPracticeFragmentArguments.newBuilder().apply {
         this.topicId = topicId
       }.build()
@@ -68,7 +68,7 @@ class TopicPracticeFragment : InjectableFragment() {
       TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
       TopicPracticeFragmentArguments.getDefaultInstance()
     )
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder()
+    val profileId = arguments?.extractCurrentUserProfileId() ?: LegacyProfileId.newBuilder()
       .setInternalId(-1).build()
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."

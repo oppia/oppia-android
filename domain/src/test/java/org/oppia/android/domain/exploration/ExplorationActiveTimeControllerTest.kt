@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -94,8 +94,8 @@ class ExplorationActiveTimeControllerTest {
   @Inject
   lateinit var explorationDataController: ExplorationDataController
 
-  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -492,7 +492,7 @@ class ExplorationActiveTimeControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(

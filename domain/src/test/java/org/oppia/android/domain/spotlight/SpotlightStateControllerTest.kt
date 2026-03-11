@@ -12,7 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
@@ -78,8 +78,8 @@ class SpotlightStateControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-  private val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {

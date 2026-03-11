@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -76,11 +76,11 @@ class ModifyLessonProgressControllerTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(1).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }

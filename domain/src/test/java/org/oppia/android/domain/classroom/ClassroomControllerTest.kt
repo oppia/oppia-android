@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -65,11 +65,11 @@ class ClassroomControllerTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private lateinit var profileId0: ProfileId
+  private lateinit var profileId0: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponent()
   }
@@ -309,7 +309,7 @@ class ClassroomControllerTest {
     assertThat(classroomId).isEmpty()
   }
 
-  private fun getClassroomList(profileId: ProfileId) =
+  private fun getClassroomList(profileId: LegacyProfileId) =
     monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId))
 
   private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(

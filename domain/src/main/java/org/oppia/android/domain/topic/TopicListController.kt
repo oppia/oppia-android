@@ -7,9 +7,9 @@ import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
@@ -98,7 +98,7 @@ class TopicListController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(profileId: ProfileId): DataProvider<TopicList> {
+  fun getTopicList(profileId: LegacyProfileId): DataProvider<TopicList> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
@@ -113,12 +113,12 @@ class TopicListController @Inject constructor(
    *    fetched.
    * @return a [DataProvider] for an [PromotedActivityList].
    */
-  fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
-    val topicProgressListDataProvider =
+  fun getPromotedActivityList(profileId: LegacyProfileId): DataProvider<PromotedActivityList> {
+    val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
-    return topicProgressListDataProvider.combineWith(
+    return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider, GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID
     ) { topicProgressList, contentLocale ->
       computePromotedActivityList(topicProgressList, contentLocale)

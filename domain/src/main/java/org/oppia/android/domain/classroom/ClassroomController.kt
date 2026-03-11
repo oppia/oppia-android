@@ -7,9 +7,9 @@ import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ClassroomSummary
 import org.oppia.android.app.model.EphemeralClassroomSummary
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
@@ -56,7 +56,7 @@ class ClassroomController @Inject constructor(
   private val translationController: TranslationController,
 ) {
   /** Returns the list of [ClassroomSummary]s currently tracked by the app. */
-  fun getClassroomList(profileId: ProfileId): DataProvider<ClassroomList> {
+  fun getClassroomList(profileId: LegacyProfileId): DataProvider<ClassroomList> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     return translationLocaleProvider.transform(
@@ -91,7 +91,7 @@ class ClassroomController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(profileId: ProfileId, classroomId: String): DataProvider<TopicList> {
+  fun getTopicList(profileId: LegacyProfileId, classroomId: String): DataProvider<TopicList> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID) { contentLocale ->

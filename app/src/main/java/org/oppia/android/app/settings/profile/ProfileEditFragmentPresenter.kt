@@ -11,7 +11,7 @@ import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogList
 import org.oppia.android.app.databinding.databinding.ProfileEditFragmentBinding
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -99,7 +99,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableDownloads = !binding.profileEditAllowDownloadSwitch.isChecked
       binding.profileEditAllowDownloadSwitch.isChecked = enableDownloads
       profileManagementController.updateAllowDownloadAccess(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         enableDownloads
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -113,7 +113,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableLangSwitching = !binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked
       binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked = enableLangSwitching
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         enableLangSwitching
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -143,8 +143,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
    * currently using a tablet device.
    */
   fun deleteProfile(internalProfileId: Int) {
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     profileManagementController
-      .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
+      .deleteProfile(legacyProfileId).toLiveData()
       .observe(
         fragment,
         Observer {

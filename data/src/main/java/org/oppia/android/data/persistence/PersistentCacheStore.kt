@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -411,7 +411,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     fun <T : MessageLite> createPerProfile(
       cacheName: String,
       initialValue: T,
-      profileId: ProfileId
+      profileId: LegacyProfileId
     ): PersistentCacheStore<T> {
       val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
       return PersistentCacheStore(
