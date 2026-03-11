@@ -72,7 +72,13 @@ class NumberWithUnitsParser private constructor(
       if (compoundUnits is NumberWithUnitsParsingResult.Failure) {
         return compoundUnits.propagate()
       }
-      builder.addAllUnit((compoundUnits as NumberWithUnitsParsingResult.Success).result)
+      val suffixUnits = (compoundUnits as NumberWithUnitsParsingResult.Success).result
+      // Check for duplicate currency: a currency prefix was already added, so if any suffix
+      // unit is also a currency unit the expression is ambiguous (e.g. "$5 dollars").
+      if (suffixUnits.any { isCurrencyUnit(it.unit) }) {
+        return NumberWithUnitsParsingError.DuplicateCurrencyError.toFailure()
+      }
+      builder.addAllUnit(suffixUnits)
     }
 
     return NumberWithUnitsParsingResult.Success(builder.build())
@@ -453,6 +459,10 @@ class NumberWithUnitsParser private constructor(
     val token = tokens.peek() ?: return false
     return token is Token.SiPrefix || anyUnitTokenToString(token) != null
   }
+
+  /** Returns whether [unitName] is a currency unit canonical name. */
+  private fun isCurrencyUnit(unitName: String): Boolean =
+    unitName == "dollar" || unitName == "cent" || unitName == "rupee" || unitName == "paise"
 
   companion object {
     /** The result of attempting to parse a raw number-with-units expression. */
