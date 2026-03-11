@@ -1787,7 +1787,7 @@ states {
       id: "TextInput"
       answer_groups {
         outcome {
-          dest_state_name: "ContinueDefault"
+          dest_state_name: "DragDropNoGroup"
           feedback {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
@@ -2088,47 +2088,6 @@ states {
       }
     }
     linked_skill_id: "test_skill_id_1"
-  }
-}
-states {
-  key: "ContinueDefault"
-  value {
-    name: "ContinueDefault"
-    recorded_voiceovers {
-      key: "content"
-      value {
-      }
-    }
-    recorded_voiceovers {
-      key: "default_outcome"
-      value {
-      }
-    }
-    content {
-      html: "<p>You are almost done! Click continue to finish.</p>"
-      content_id: "content"
-    }
-    written_translations {
-      key: "content"
-      value {
-      }
-    }
-    written_translations {
-      key: "default_outcome"
-      value {
-      }
-    }
-    interaction {
-      id: "Continue"
-      default_outcome {
-        dest_state_name: "DragDropNoGroup"
-        feedback {
-          html: "Moving forward."
-          content_id: "default_outcome"
-        }
-        labelled_as_correct: true
-      }
-    }
   }
 }
 states {

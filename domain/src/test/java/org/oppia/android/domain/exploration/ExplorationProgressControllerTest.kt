@@ -2123,7 +2123,6 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState6AndMoveToNextState()
     playThroughPrototypeState7AndMoveToNextState()
     playThroughPrototypeState8AndMoveToNextState()
-    playThroughPrototypeDefaultContinueStateAndMoveToNextState()
     playThroughPrototypeState9AndMoveToNextState()
     val ephemeralState = playThroughPrototypeState10AndMoveToNextState()
 
@@ -3830,7 +3829,6 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState6AndMoveToNextState()
     playThroughPrototypeState7AndMoveToNextState()
     playThroughPrototypeState8AndMoveToNextState()
-    playThroughPrototypeDefaultContinueStateAndMoveToNextState()
     playThroughPrototypeState9AndMoveToNextState()
     return playThroughPrototypeState10AndMoveToNextState()
   }
@@ -3983,12 +3981,6 @@ class ExplorationProgressControllerTest {
 
   private fun playThroughPrototypeState8AndMoveToNextState(): EphemeralState {
     submitPrototypeState8Answer()
-    return moveToNextState()
-  }
-
-  private fun playThroughPrototypeDefaultContinueStateAndMoveToNextState(): EphemeralState {
-    // Continue interaction without custom button text (default "Continue").
-    submitContinueButtonAnswer()
     return moveToNextState()
   }
 

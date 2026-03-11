@@ -149,6 +149,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
@@ -1254,7 +1255,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
@@ -1357,7 +1357,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
@@ -1388,7 +1387,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
@@ -1427,7 +1425,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
@@ -2416,7 +2413,6 @@ class StateFragmentTest {
 
       // Text input interaction.
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Verify that the user is now on the ninth state.
       verifyViewTypeIsPresent(DRAG_DROP_SORT_INTERACTION)
@@ -2438,7 +2434,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
 
       // Drag and drop interaction without grouping.
       playThroughPrototypeState9()
@@ -2463,7 +2458,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       playThroughPrototypeState9()
 
       // Drag and drop interaction with grouping.
@@ -2606,19 +2600,11 @@ class StateFragmentTest {
   fun testStateFragment_english_defaultContinueInteraction_buttonShowsDefaultText() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-      playThroughPrototypeState5()
-      playThroughPrototypeState6()
-      playThroughPrototypeState7()
-      playThroughPrototypeState8()
 
-      // After state 8 (Text), the exploration reaches a Continue interaction without custom button
-      // text. The button should display the default "Continue" text from app string resources.
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText
+      // (old-style). The button should display the default "Continue" text from app resources.
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_interaction_button))
         .check(matches(withText(R.string.state_continue_button)))
@@ -2636,20 +2622,12 @@ class StateFragmentTest {
     setUpTestWithLanguageSwitchingFeatureOff()
     forceDefaultLocale(Locale("ar", "EG"))
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-      playThroughPrototypeState5()
-      playThroughPrototypeState6()
-      playThroughPrototypeState7()
-      playThroughPrototypeState8()
 
-      // After state 8 (Text), the exploration reaches a Continue interaction without custom button
-      // text. With Arabic app language, the button should display the Arabic translation of the
-      // default "Continue" text from the app's string resources.
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText.
+      // With Arabic app language, the button should display the Arabic translation of the default
+      // "Continue" text from the app's string resources.
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_interaction_button))
         .check(matches(withText("استمرار")))
@@ -3277,7 +3255,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
@@ -3307,7 +3284,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
       dragAndDropItem(fromPosition = 0, toPosition = 3)
@@ -3339,7 +3315,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
@@ -3369,7 +3344,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
 
       dragAndDropItem(fromPosition = 0, toPosition = 3)
@@ -3401,7 +3375,6 @@ class StateFragmentTest {
       playThroughPrototypeState6()
       playThroughPrototypeState7()
       playThroughPrototypeState8()
-      playThroughPrototypeDefaultContinueState()
       updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
       dragAndDropItem(fromPosition = 0, toPosition = 3)
       clickSubmitAnswerButton()
@@ -6454,11 +6427,6 @@ class StateFragmentTest {
     clickContinueNavigationButton()
   }
 
-  private fun playThroughPrototypeDefaultContinueState() {
-    // Continue interaction without custom button text (default "Continue").
-    clickContinueInteractionButton()
-  }
-
   private fun playThroughPrototypeExploration() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
@@ -6468,7 +6436,6 @@ class StateFragmentTest {
     playThroughPrototypeState6()
     playThroughPrototypeState7()
     playThroughPrototypeState8()
-    playThroughPrototypeDefaultContinueState()
     playThroughPrototypeState9()
     playThroughPrototypeState10()
   }
@@ -6482,7 +6449,6 @@ class StateFragmentTest {
     playThroughPrototypeState6()
     playThroughPrototypeState7()
     playThroughPrototypeState8InArabic()
-    playThroughPrototypeDefaultContinueState()
     playThroughPrototypeState9()
     playThroughPrototypeState10()
   }
@@ -6935,8 +6901,14 @@ class StateFragmentTest {
           explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
         )
       ) { "Failed to create audio data source." }
+      val dataSource3 = checkNotNull(
+        createAudioDataSource(
+          explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-en-nb3k4zuyir.mp3"
+        )
+      ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource3, IOException("Test does not have networking"))
     }
   }
 
