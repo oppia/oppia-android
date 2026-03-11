@@ -142,10 +142,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "unit_token_subject",
+    name = "number_with_units_token_subject",
     testonly = True,
     srcs = [
-        "UnitTokenSubject.kt",
+        "NumberWithUnitsTokenSubject.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",

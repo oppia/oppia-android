@@ -8,7 +8,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
-import org.oppia.android.testing.math.UnitTokenSubject.Companion.assertThat
+import org.oppia.android.testing.math.NumberWithUnitsTokenSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
 import org.robolectric.annotation.Config
 
@@ -19,8 +19,11 @@ import org.robolectric.annotation.Config
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @Config
 class NumberWithUnitsTokenizerTest {
-  @Parameter lateinit var input: String
-  @Parameter lateinit var expected: String
+  @Parameter
+  lateinit var input: String
+
+  @Parameter
+  lateinit var expected: String
 
   @Test
   fun testTokenize_emptyString_producesNoTokens() {
@@ -632,6 +635,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
     assertThat(tokens[3]).isYardUnit() // yd
   }
+
   @Test
   @Iteration("310.15 K", "input=310.15 K")
   @Iteration("310.15 kelvin", "input=310.15 kelvin")

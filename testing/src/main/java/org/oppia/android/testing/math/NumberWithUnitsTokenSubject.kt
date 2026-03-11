@@ -5,12 +5,15 @@ import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
 import com.google.common.truth.Subject
 import com.google.common.truth.Truth
+import org.oppia.android.util.math.NumberWithUnitsTokenizer
 import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
+
+// TODO: Add tests for this class.
 
 /**
  * A Truth [Subject] for testing [Token] objects from [NumberWithUnitsTokenizer].
  */
-class UnitTokenSubject(
+class NumberWithUnitsTokenSubject(
   metadata: FailureMetadata,
   private val actual: Token
 ) : Subject(metadata, actual) {
@@ -491,16 +494,16 @@ class UnitTokenSubject(
 
   companion object {
     /**
-     * Creates a new [UnitTokenSubject] to verify aspects of the specified [Token] value.
+     * Creates a new [NumberWithUnitsTokenSubject] to verify aspects of the specified [Token] value.
      *
      * This is the main entry point for using this Truth subject. It follows the standard
      * Truth pattern for creating subjects.
      *
      * @param actual the [Token] to create assertions for
-     * @return a new [UnitTokenSubject] for making assertions
+     * @return a new [NumberWithUnitsTokenSubject] for making assertions
      */
-    fun assertThat(actual: Token): UnitTokenSubject =
-      Truth.assertAbout(::UnitTokenSubject).that(actual)
+    fun assertThat(actual: Token): NumberWithUnitsTokenSubject =
+      Truth.assertAbout(::NumberWithUnitsTokenSubject).that(actual)
 
     /**
      * Extension function that safely casts a [Token] to a specific subtype.

@@ -397,7 +397,7 @@ oppia_android_test(
          "//third_party:org_robolectric_robolectric",
          "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
          "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
-         "//testing/src/main/java/org/oppia/android/testing/math:unit_token_subject",
+         "//testing/src/main/java/org/oppia/android/testing/math:number_with_units_token_subject",
          "//third_party:robolectric_android-all",
          "//utility/src/main/java/org/oppia/android/util/math:number_with_units_tokenizer",
      ],
