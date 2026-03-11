@@ -114,7 +114,8 @@ class SelectionInteractionView @JvmOverloads constructor(
       SelectionItemInputType.RADIO_BUTTONS ->
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewDataBinderWithSameModelType(
-            inflateDataBinding = bindingInterface::provideMultipleChoiceInteractionItemsInflatedView,
+            inflateDataBinding =
+              bindingInterface::provideMultipleChoiceInteractionItemsInflatedView,
             setViewModel = { binding, viewModel ->
               bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
                 binding,
