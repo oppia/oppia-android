@@ -643,8 +643,10 @@ class StructureCompatibilityChecker(
     private val IMAGE_TAG_REGEX = "<\\s*oppia-noninteractive-image.+?>".toRegex()
     private val IMAGE_FILE_PATH_REGEX = "filepath-with-value\\s*=\\s*\"(.+?)\"".toRegex()
     private val MATH_TAG_REGEX =
-      ("<\\s*oppia-noninteractive-math[^>]*?>" +
-        "[\\s\\S]*?</\\s*oppia-noninteractive-math\\s*>").toRegex()
+      (
+        "<\\s*oppia-noninteractive-math[^>]*?>" +
+          "[\\s\\S]*?</\\s*oppia-noninteractive-math\\s*>"
+      ).toRegex()
     private val MATH_CONTENT_VALUE_REGEX =
       "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
     private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.*?)\"".toRegex()
