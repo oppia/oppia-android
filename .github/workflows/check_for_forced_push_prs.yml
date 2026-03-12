@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Detect and close (on change)
-        if: ${{ github.event.action == 'synchronize' }}
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'synchronize' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -24,13 +24,13 @@ jobs:
             const status = (await github.rest.repos.compareCommits({ owner, repo, base: before, head: after })).data.status;
             if (status === 'diverged' || status === 'behind') {
               core.setFailed(`Force push detected (history has been altered). Commit history status: ${status}.`);
-              const closeMessage = 'Closing PR: Force pushing is not allowed in this repository. This PR has been automatically closed. Please create a new PR with a clean commit history and manually copy over any unresolved reviewer comment threads from this PR.';
+              const closeMessage = 'Closing PR: Force pushing is not allowed in this repository. This PR has been automatically closed. Please create a new PR with a clean commit history and manually copy over any unresolved reviewer comment threads from this PR. For more information, please make sure to review this part of the wiki which provides guidance on merging PRs: https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#step-3-address-review-comments-until-all-reviewers-give-lgtm.';
               await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body: closeMessage });
               await github.rest.pulls.update({ owner, repo, pull_number: pr.number, state: 'closed' });
             } else core.info(`Standard push detected. Commit history status: ${status}. No action taken.`);
 
       - name: Detect and close reopened force-pushed PRs
-        if: ${{ github.event.action == 'reopened' }}
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'reopened' }}
         uses: actions/github-script@v8
         with:
           script: |

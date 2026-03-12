@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Scan PR for issues being addressed
         id: step-1
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -36,7 +37,7 @@ jobs:
 
       - name: Find issue assignment(s)
         id: step-2
-        if: ${{ steps.step-1.outputs.failure_message == '' }}
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && steps.step-1.outputs.failure_message == '' }}
         uses: actions/github-script@v8
         env:
           ISSUE_NUMBERS_LIST_JSON: ${{ steps.step-1.outputs.issue_numbers_list_json }}
