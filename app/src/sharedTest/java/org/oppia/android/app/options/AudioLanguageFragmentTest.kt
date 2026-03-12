@@ -59,7 +59,7 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -702,7 +702,7 @@ class AudioLanguageFragmentTest {
   fun testFragment_withHindiLanguagePreviouslySet_defaultsBackToEnglish() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
 
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     val updateProvider = profileManagementController.updateAudioLanguage(
       profileId,
       HINDI_AUDIO_LANGUAGE

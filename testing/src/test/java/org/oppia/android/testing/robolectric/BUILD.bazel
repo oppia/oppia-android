@@ -57,3 +57,21 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
+
+oppia_android_test(
+    name = "ShadowImageMediaStoreTest",
+    srcs = ["ShadowImageMediaStoreTest.kt"],
+    custom_package = "org.oppia.android.testing.robolectric",
+    test_class = "org.oppia.android.testing.robolectric.ShadowImageMediaStoreTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_image_media_store",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
