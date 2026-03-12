@@ -287,7 +287,7 @@
   <string name="admin_auth_submit">إرسال</string>
   <string name="admin_auth_close">إغلاق</string>
   <string name="admin_pin_requirement_description">قبل أن نضيف ملفات شخصية، نريد أن نحمي حسابك الشخصي عن طريق إنشاء رقم تعريف شخصي. هذا يمكنك من السماح بالتنزيلات وإدارة الملفات الشخصية على الجهاز.</string>
-  <string name="admin_pin_pin_description">لا تستخدم رقم تعريف شخصي استخدمته من قبل لحسابات الشخصية مثل حساب البنك أو حساب الضمان الإجتماعي.</string>
+  <string name="admin_pin_pin_description">&lt;b&gt;لا&lt;/b&gt; تستخدم رقم التعريف الشخصي (PIN) الذي قمت بتعيينه لحساباتك الشخصية مثل الحسابات المصرفية أو حسابات الضمان الاجتماعي.</string>
   <string name="admin_pin_new_pin">رقم تعريف شخصي جديد مكون من 5 أرقام</string>
   <string name="admin_pin_new_confirm">تأكيد رقم التعريف الشخصي المكون من 5 أرقام</string>
   <string name="admin_pin_error_pin_length">رقم التعريف الشخصي يجب أن يتكون من 5 أرقام.</string>
@@ -426,8 +426,8 @@
   <string name="log_out_dialog_cancel_button">إلغاء</string>
   <string name="log_out_dialog_okay_button">حسنا</string>
   <string name="log_out_dialog_message">هل أنت متأكد من رغبتك في تسجيل الخروج من ملفك الشخصي؟</string>
-  <string name="app_version_name">إصدار التطبيق %s</string>
-  <string name="app_last_update_date">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
+  <string name="app_version_name" fuzzy="true">إصدار التطبيق %s</string>
+  <string name="app_last_update_date" fuzzy="true">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
   <string name="app_version_activity_title">إصدار التطبيق</string>
   <string name="app_language_activity_title">لغة التطبيق</string>
   <string name="audio_language_activity_title">لغة الصوت المفضلة</string>

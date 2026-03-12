@@ -207,7 +207,7 @@
   <string name="admin_auth_submit">Wasilisha</string>
   <string name="admin_auth_close">Funga</string>
   <string name="admin_pin_requirement_description" fuzzy="true">Kabla ya kuongeza wasifu, tunahitaji kulinda akaunti yako kwa kuunda Nambari ya Siri. Hii hukupa uwezo wa kuidhinisha upakuaji na kudhibiti wasifu kwenye kifaa.</string>
-  <string name="admin_pin_pin_description">Tumia Nambari yako ya siri uliyoweka kwa akaunti za kibinafsi kama vile benki au usalama wa kijamii.</string>
+  <string name="admin_pin_pin_description" fuzzy="true">Tumia Nambari yako ya siri uliyoweka kwa akaunti za kibinafsi kama vile benki au usalama wa kijamii.</string>
   <string name="admin_pin_new_pin">Nambari mpya ya Siri ya tarakimu 5</string>
   <string name="admin_pin_new_confirm">Thibitisha Nambari ya Siri ya tarakimu 5</string>
   <string name="admin_pin_error_pin_length">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 5.</string>
@@ -327,8 +327,8 @@
   <string name="log_out_dialog_cancel_button">Ghairi</string>
   <string name="log_out_dialog_okay_button">Sawa</string>
   <string name="log_out_dialog_message">Je,una uhakika unataka kutoka kwenye wasifu wako?</string>
-  <string name="app_version_name">Toleo la Programu %s</string>
-  <string name="app_last_update_date">Sasisho la mwisho lilisakinishwa kwenye %s. Tumia nambari ya toleo iliyo hapo juu kutuma maoni kuhusu hitilafu.</string>
+  <string name="app_version_name" fuzzy="true">Toleo la Programu %s</string>
+  <string name="app_last_update_date" fuzzy="true">Sasisho la mwisho lilisakinishwa kwenye %s. Tumia nambari ya toleo iliyo hapo juu kutuma maoni kuhusu hitilafu.</string>
   <string name="app_version_activity_title">Toleo la Programu</string>
   <string name="app_language_activity_title">Lugha ya Programu</string>
   <string name="audio_language_activity_title" fuzzy="true">Lugha chaguomsingi ya Sauti</string>
