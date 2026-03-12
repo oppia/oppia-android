@@ -14,8 +14,8 @@ import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
@@ -54,7 +54,8 @@ class HomeViewModel(
   private val translationController: TranslationController
 ) : ObservableViewModel() {
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId =
+    LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
     R.integer.promoted_story_list_limit
   )

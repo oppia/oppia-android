@@ -64,7 +64,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.help.HelpActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -178,7 +178,7 @@ class NavigationDrawerActivityProdTest {
     testCoroutineDispatchers.registerIdlingResource()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
-      ProfileId.newBuilder().setInternalId(
+      LegacyProfileId.newBuilder().setInternalId(
         internalProfileId
       ).build(),
       timestampOlderThanOneWeek = false
@@ -260,7 +260,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileStoryProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
-      ProfileId.newBuilder().setInternalId(
+      LegacyProfileId.newBuilder().setInternalId(
         internalProfileId
       ).build(),
       timestampOlderThanOneWeek = false
@@ -282,7 +282,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileTopicProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
-      ProfileId.newBuilder().setInternalId(
+      LegacyProfileId.newBuilder().setInternalId(
         internalProfileId
       ).build(),
       timestampOlderThanOneWeek = false
@@ -326,7 +326,7 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.nav_header_profile_name)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
         hasProtoExtra(
@@ -816,7 +816,7 @@ class NavigationDrawerActivityProdTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
-      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }

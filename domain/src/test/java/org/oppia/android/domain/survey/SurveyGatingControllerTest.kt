@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -610,7 +610,7 @@ class SurveyGatingControllerTest {
 
   private fun startAndEndExplorationSession(
     sessionLengthMs: Long,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ) {
     explorationActiveTimeController.onAppInForeground()
@@ -723,7 +723,7 @@ class SurveyGatingControllerTest {
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
     private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
 
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
   }
 }

@@ -1,6 +1,6 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Survey
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
@@ -42,7 +42,7 @@ class SurveyController @Inject constructor(
   fun startSurveySession(
     mandatoryQuestionNames: List<SurveyQuestionName>,
     showOptionalQuestion: Boolean = true,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): DataProvider<Any?> {
     return try {
       val createSurveyDataProvider =

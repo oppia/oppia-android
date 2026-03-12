@@ -57,7 +57,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -149,7 +149,7 @@ class AdministratorControlsActivityTest {
   @Inject lateinit var context: Context
 
   private val internalProfileId = 0
-  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val administratorControlsListRecyclerViewId: Int = R.id.administrator_controls_list
 
   @Test
@@ -742,7 +742,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -770,7 +770,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -799,7 +799,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -939,7 +939,7 @@ class AdministratorControlsActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     setUpTestApplicationComponent()
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
     val screenName = createAdministratorControlsActivityIntent(profileId)
       .extractCurrentAppScreenName()
@@ -998,7 +998,7 @@ class AdministratorControlsActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAdministratorControlsActivityIntent(profileId: ProfileId): Intent {
+  private fun createAdministratorControlsActivityIntent(profileId: LegacyProfileId): Intent {
 
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context = context,

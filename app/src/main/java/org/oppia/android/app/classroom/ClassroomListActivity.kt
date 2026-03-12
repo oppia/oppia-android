@@ -15,7 +15,7 @@ import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
@@ -47,7 +47,7 @@ class ClassroomListActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Inject
   @field:EnableOnboardingFlowV2
@@ -55,7 +55,7 @@ class ClassroomListActivity :
 
   companion object {
     /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
-    fun createClassroomListActivity(context: Context, profileId: ProfileId?): Intent {
+    fun createClassroomListActivity(context: Context, profileId: LegacyProfileId?): Intent {
       return Intent(context, ClassroomListActivity::class.java).apply {
         decorateWithScreenName(CLASSROOM_LIST_ACTIVITY)
         profileId?.let { decorateWithUserProfileId(profileId) }
@@ -87,14 +87,14 @@ class ClassroomListActivity :
     )
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: LegacyProfileId, classroomId: String, topicId: String) {
     startActivity(
       createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String

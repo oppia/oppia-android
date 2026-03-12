@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -16,10 +16,10 @@ class ProfileProgressActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController
 ) {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     activity.setContentView(R.layout.profile_progress_activity)
     if (getProfileProgressFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
