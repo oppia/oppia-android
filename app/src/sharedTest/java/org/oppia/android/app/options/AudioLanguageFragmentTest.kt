@@ -59,6 +59,7 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -102,6 +103,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -152,6 +154,8 @@ class AudioLanguageFragmentTest {
   lateinit var profileTestHelper: ProfileTestHelper
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -696,27 +700,18 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_withHindiLanguagePreviouslySet_defaultsBackToEnglish() {
-    // Initialize the test application component and profiles
     initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
-    profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.runCurrent()
 
-    // First, set the user's audio language to Hindi (unsupported in production config)
-    val defaultProfileId = profileTestHelper.getDefaultProfileId()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
     val updateProvider = profileManagementController.updateAudioLanguage(
-      defaultProfileId,
+      profileId,
       HINDI_AUDIO_LANGUAGE
     )
-    profileTestHelper.executeAsyncProvider(updateProvider)
-    testCoroutineDispatchers.runCurrent()
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
 
-    // Open the AudioLanguageFragment - pass English as the intent param
-    // The fragment should detect that the saved preference (Hindi) is unsupported in production
-    // config and fall back to English instead of using the unsupported Hindi value
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Verify that English is selected (fallback from unsupported Hindi)
       verifyEnglishIsSelected()
     }
   }
