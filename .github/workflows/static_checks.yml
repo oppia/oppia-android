@@ -21,9 +21,9 @@ jobs:
     name: Check CODEOWNERS & Repository files
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - uses: mszostok/codeowners-validator@v0.5.1
+      - uses: mszostok/codeowners-validator@v0.7.4
         with:
           checks: "duppatterns,files,syntax"
           experimental_checks: "notowned"
@@ -53,7 +53,7 @@ jobs:
     name: Lint Tests
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Create oppia android tools directory
         run: mkdir -p $HOME/oppia-android-tools
@@ -100,7 +100,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -109,7 +109,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -222,7 +222,7 @@ jobs:
     name: Maven Dependencies Checks
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3

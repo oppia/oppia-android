@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.3.0
         with:
           workflow: unit_tests.yml
           sha: auto
@@ -39,7 +39,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -48,7 +48,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -139,14 +139,14 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -195,7 +195,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: test_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -265,14 +265,14 @@ jobs:
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
       - name: Upload Coverage Report Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
           path: coverage_reports
 
       - name: Upload bazel target file
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: code-coverage-bazel-targets-${{ env.SHARD_NAME }}
           path: bazel_targets.txt
@@ -287,10 +287,10 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Download Coverage Report Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: coverage-report-artifact
           pattern: coverage-report-*
@@ -307,7 +307,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -324,7 +324,7 @@ jobs:
           bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
 
       - name: Upload Generated Markdown Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report

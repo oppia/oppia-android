@@ -29,7 +29,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -38,7 +38,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -129,14 +129,14 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -181,7 +181,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: test_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -264,7 +264,7 @@ jobs:
 
       - name: Upload bazel target file
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unit-tests-bazel-targets-${{ env.SHARD_NAME }}
           path: bazel_targets.txt
