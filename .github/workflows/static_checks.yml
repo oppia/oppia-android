@@ -8,9 +8,12 @@ on:
   push:
     branches:
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -28,7 +31,7 @@ jobs:
   check_base_branch:
     name: Check base branch
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     steps:
       - name: "Branch is not based on develop or release branch"
         if: ${{ github.base_ref != 'develop' && !startsWith(github.base_ref, 'release-') }}

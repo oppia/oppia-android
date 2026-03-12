@@ -11,9 +11,12 @@ on:
     branches:
       # Push events on develop branch
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -76,15 +79,33 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      - name: Check PR for [RunAllTests]
+        id: check_pr
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" == *"[RunAllTests]"* ]]; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
+
+      # Search all PR commit messages included in the merge group for any that require running all tests upon merging.
+      - name: Check merge group for [RunAllTests]
+        id: check_mg
+        if: ${{ github.event_name == 'merge_group' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MESSAGES=$(gh api repos/${{ github.repository }}/compare/${{ github.event.merge_group.base_sha }}...${{ github.sha }} --jq '.commits[].commit.message')
+          if echo "$MESSAGES" | grep -Fq "[RunAllTests]"; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
+
       - name: Compute test matrix
         id: compute-test-matrix
         env:
-          compute_all_targets: ${{ contains(github.event.pull_request.title, '[RunAllTests]') }}
+          compute_all_targets: ${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
           # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request. Defer to origin/develop outside a PR (such as develop's main CI runs).
-          base_commit_hash: ${{ github.event.pull_request.base.sha || 'origin/develop' }}
+          base_commit_hash: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/develop' }}
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
-        # comma-separated list of test targets for the matrix.
+        # comma-separated list of test targets for the matrix. Note that the extra fetch is to
+        # enusre that the base commit is fully fetched locally so that it can be diffed against.
         run: |
+          git fetch origin $base_commit_hash --depth=1
           bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log $base_commit_hash compute_all_tests=$compute_all_targets
           TEST_BUCKET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if configured to run all or on the develop branch): $TEST_BUCKET_LIST"

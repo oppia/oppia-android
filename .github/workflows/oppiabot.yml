@@ -6,6 +6,9 @@ on:
   pull_request_target:
     branches:
       - develop
+  merge_group:
+    branches:
+      - develop
 
 jobs:
   oppiabot:
