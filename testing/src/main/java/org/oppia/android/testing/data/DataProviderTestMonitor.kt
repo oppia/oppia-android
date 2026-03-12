@@ -182,12 +182,10 @@ class DataProviderTestMonitor<T> private constructor(
       // Waiting for a result is the same as ensuring the conditions are right for the provider to
       // execute (since it must return a result if it's executed, even if it's pending).
       val monitor = createMonitor(dataProvider)
-      monitor.waitForNextResult().also {
-        monitor.stopObservingDataProvider()
-      }.also {
-        // There must be an actual result for the provider to be successful.
-        assertThat(it).isNotPending()
-      }
+      val result = monitor.waitForNextResult()
+      monitor.stopObservingDataProvider()
+      // There must be an actual result for the provider to be successful.
+      assertThat(result).isNotPending()
     }
 
     /**

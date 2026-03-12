@@ -28,12 +28,7 @@ import kotlin.system.exitProcess
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
-    println(
-      "Usage: bazel run //scripts:retrieve_affected_tests --" +
-        " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
-        " <path_to_test_target_list_output_file>"
-    )
-    exitProcess(1)
+    printUsageAndExit()
   }
 
   val protoBase64 = args[0]
@@ -47,4 +42,13 @@ fun main(args: Array<String>) {
   testTargetsOutputFile.printWriter().use { writer ->
     writer.println(affectedTestsBucket.affectedTestTargetsList.joinToString(separator = " "))
   }
+}
+
+private fun printUsageAndExit(): Nothing {
+  println(
+    "Usage: bazel run //scripts:retrieve_affected_tests --" +
+      " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
+      " <path_to_test_target_list_output_file>"
+  )
+  exitProcess(1)
 }

@@ -40,12 +40,7 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
  */
 fun main(args: Array<String>) {
   if (args.size < 4) {
-    println(
-      "Usage: bazel run //scripts:compute_affected_tests --" +
-        " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
-        " <compute_all_tests=true/false>"
-    )
-    exitProcess(1)
+    printUsageAndExit()
   }
 
   val pathToRoot = args[0]
@@ -66,6 +61,15 @@ fun main(args: Array<String>) {
     ComputeAffectedTests(scriptBgDispatcher)
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllTestsSetting)
   }
+}
+
+private fun printUsageAndExit(): Nothing {
+  println(
+    "Usage: bazel run //scripts:compute_affected_tests --" +
+      " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
+      " <compute_all_tests=true/false>"
+  )
+  exitProcess(1)
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.

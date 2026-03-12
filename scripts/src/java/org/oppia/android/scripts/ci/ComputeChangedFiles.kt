@@ -40,12 +40,7 @@ private const val MAX_FILE_COUNT_PER_SMALL_SHARD = 15
  */
 fun main(args: Array<String>) {
   if (args.size < 4) {
-    println(
-      "Usage: bazel run //scripts:compute_changed_files --" +
-        " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
-        " <compute_all_files=true/false>"
-    )
-    exitProcess(1)
+    printUsageAndExit()
   }
 
   val pathToRoot = args[0]
@@ -67,6 +62,15 @@ fun main(args: Array<String>) {
     ComputeChangedFiles(scriptBgDispatcher)
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
   }
+}
+
+private fun printUsageAndExit(): Nothing {
+  println(
+    "Usage: bazel run //scripts:compute_changed_files --" +
+      " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
+      " <compute_all_files=true/false>"
+  )
+  exitProcess(1)
 }
 
 /** Utility used to compute changed files. */

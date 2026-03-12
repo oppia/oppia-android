@@ -37,12 +37,7 @@ import kotlin.system.exitProcess
  */
 fun main(args: Array<String>) {
   if (args.size < 5) {
-    println(
-      "Usage: bazel run //scripts:retrieve_changed_files --" +
-        " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
-        " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
-    )
-    exitProcess(1)
+    printUsageAndExit()
   }
 
   val repoRoot = args[0]
@@ -116,6 +111,15 @@ private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
     .map { File(rootDirectory, it) }
     .filter(File::exists)
     .map { it.toRelativeString(rootDirectory) }
+}
+
+private fun printUsageAndExit(): Nothing {
+  println(
+    "Usage: bazel run //scripts:retrieve_changed_files --" +
+      " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
+      " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
+  )
+  exitProcess(1)
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
