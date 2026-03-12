@@ -3,6 +3,8 @@ package org.oppia.android.scripts.gae.compat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.AudioVoiceoverHasInvalidAudioFormat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlInTitleOrDescription
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlUnexpectedlyInUnicodeContent
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagMissingRawLatex
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagUsingSvgFallback
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MissingRequiredXlationLangForContentTranslation
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MissingRequiredXlationLangForTitleOrDescFromWeb
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.StateHasInvalidInteractionId
@@ -54,7 +56,7 @@ import org.oppia.proto.v1.structure.LanguageType
 // TODO: Check image validity?
 // TODO: Check audio validity?
 // TODO: Check HTML parsability?
-// TODO: Check math exp parsability?
+// Math expression parsability is checked via checkHasValidMathTags().
 
 class StructureCompatibilityChecker(
   private val constraints: CompatibilityConstraints,
@@ -476,6 +478,17 @@ class StructureCompatibilityChecker(
       val stateName: String,
       override val origin: ContainerId
     ) : CompatibilityFailure()
+
+    data class MathTagMissingRawLatex(
+      val contentId: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class MathTagUsingSvgFallback(
+      val contentId: String,
+      val svgFilename: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
   }
 
   private fun String.checkIsValidTopicId(origin: ContainerId): List<CompatibilityFailure> {
@@ -591,7 +604,9 @@ class StructureCompatibilityChecker(
       } ?: TextHasInvalidTags(contentId, extraTags, origin)
       listOf(failure)
     } else emptyList()
-    return tagFailures + checkHasValidImageReferences(origin, contentId)
+    return tagFailures +
+      checkHasValidImageReferences(origin, contentId) +
+      checkHasValidMathTags(origin, contentId)
   }
 
   private fun String.checkHasValidImageReferences(
@@ -606,6 +621,33 @@ class StructureCompatibilityChecker(
         TextUsesImageTagWithMissingFilePath(contentId, origin)
       }
     )
+  }
+
+  private fun String.checkHasValidMathTags(
+    origin: ContainerId,
+    contentId: String
+  ): List<CompatibilityFailure> {
+    return MATH_TAG_REGEX.findAll(this).flatMap { matchResult ->
+      val tagContent = matchResult.value
+      val mathContentJson = MATH_CONTENT_VALUE_REGEX.find(tagContent)
+        ?.destructured?.let { (value) -> value.unescapeHtmlEntities() }
+      val failures = mutableListOf<CompatibilityFailure>()
+      if (mathContentJson != null) {
+        val rawLatex = RAW_LATEX_REGEX.find(mathContentJson)
+          ?.destructured?.let { (latex) -> latex }
+        if (rawLatex.isNullOrBlank()) {
+          failures += MathTagMissingRawLatex(contentId, origin)
+        }
+        val svgFilename = SVG_FILENAME_REGEX.find(mathContentJson)
+          ?.destructured?.let { (svg) -> svg }
+        if (!svgFilename.isNullOrBlank()) {
+          failures += MathTagUsingSvgFallback(contentId, svgFilename, origin)
+        }
+      } else {
+        failures += MathTagMissingRawLatex(contentId, origin)
+      }
+      failures.asSequence()
+    }.toList()
   }
 
   private fun Int.checkIsValidStateSchemaVersion(origin: ContainerId): List<CompatibilityFailure> {
@@ -629,6 +671,12 @@ class StructureCompatibilityChecker(
     private val HTML_TAG_REGEX = "<\\s*([^\\s/>]+)[^>]*?>".toRegex()
     private val IMAGE_TAG_REGEX = "<\\s*oppia-noninteractive-image.+?>".toRegex()
     private val IMAGE_FILE_PATH_REGEX = "filepath-with-value\\s*=\\s*\"(.+?)\"".toRegex()
+    private val MATH_TAG_REGEX =
+      "<\\s*oppia-noninteractive-math[^>]*?>[\\s\\S]*?</\\s*oppia-noninteractive-math\\s*>".toRegex()
+    private val MATH_CONTENT_VALUE_REGEX =
+      "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
+    private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.+?)\\\\\"".toRegex()
+    private val SVG_FILENAME_REGEX = "svg_filename[^:]*:\\s*\\\\?\"(.+?)\\\\\"".toRegex()
 
     private fun String.checkTitleOrDescTextForHtml(
       origin: ContainerId
@@ -649,6 +697,10 @@ class StructureCompatibilityChecker(
 
     private fun String.extractHtmlTags(): Set<String> =
       HTML_TAG_REGEX.findAll(this).map { it.destructured }.map { (tagName) -> tagName }.toSet()
+
+    private fun String.unescapeHtmlEntities(): String =
+      replace("&amp;quot;", "\"").replace("&amp;amp;", "&").replace("&amp;lt;", "<")
+        .replace("&amp;gt;", ">").replace("&amp;apos;", "'")
 
     // TODO: Move to common utility?
     private fun String.extractImageReferences() =
