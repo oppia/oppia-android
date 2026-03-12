@@ -41,8 +41,14 @@ data class MathModel(
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       val rawLatexBytes = rawLatex.encodeToByteArray()
+
+      val latexSize = rawLatexBytes.size
+      val lineHeightBytes = Int.SIZE_BYTES
+      val inlineFlagBytes = 1
+      val colorBytes = Int.SIZE_BYTES
+
       messageDigest.update(
-        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1 + Int.SIZE_BYTES).apply {
+        ByteBuffer.allocate(latexSize + lineHeightBytes + inlineFlagBytes + colorBytes).apply {
           put(rawLatexBytes)
           putInt(lineHeightHundredX)
           put(if (useInlineRendering) 1 else 0)

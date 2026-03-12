@@ -197,14 +197,14 @@ class MathModelTest {
 
   @Test
   fun testToKeySignature_differentModelByEquationColor_returnsDifferentKeyWithDifferentDigest() {
-    val Model1 = MathModel(
+    val model1 = MathModel(
       rawLatex = "\\frac{2}{6}",
       lineHeight = 21.5f,
       useInlineRendering = true,
       equationColor = Color.BLACK
     )
 
-    val Model2 = MathModel(
+    val model2 = MathModel(
       rawLatex = "\\frac{2}{6}",
       lineHeight = 21.5f,
       useInlineRendering = true,
@@ -214,8 +214,8 @@ class MathModelTest {
     val digest1 = MessageDigest.getInstance("SHA-256")
     val digest2 = MessageDigest.getInstance("SHA-256")
 
-    val key1 = Model1.toKeySignature()
-    val key2 = Model2.toKeySignature()
+    val key1 = model1.toKeySignature()
+    val key2 = model2.toKeySignature()
 
     key1.updateDiskCacheKey(digest1)
     key2.updateDiskCacheKey(digest2)
@@ -224,6 +224,6 @@ class MathModelTest {
     assertThat(key1).isNotEqualTo(key2)
     assertThat(key1.hashCode()).isNotEqualTo(key2.hashCode())
     assertThat(digest1.digest()).isNotEqualTo(digest2.digest())
-    assertThat(Model1).isNotEqualTo(Model2)
+    assertThat(model1).isNotEqualTo(model2)
   }
 }

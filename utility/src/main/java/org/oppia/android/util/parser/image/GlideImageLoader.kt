@@ -26,7 +26,7 @@ import javax.inject.Singleton
 /** An [ImageLoader] that uses Glide. */
 @Singleton
 class GlideImageLoader @Inject constructor(
-  private val context: Context,
+  context: Context,
   @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
