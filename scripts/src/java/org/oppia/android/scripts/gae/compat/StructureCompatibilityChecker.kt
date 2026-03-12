@@ -616,27 +616,10 @@ class StructureCompatibilityChecker(
     )
   }
 
-  internal fun String.checkHasValidMathTags(
+  private fun String.checkHasValidMathTags(
     origin: ContainerId,
     contentId: String
-  ): List<CompatibilityFailure> {
-    return MATH_TAG_REGEX.findAll(this).flatMap { matchResult ->
-      val tagContent = matchResult.value
-      val mathContentJson = MATH_CONTENT_VALUE_REGEX.find(tagContent)
-        ?.destructured?.let { (value) -> value.unescapeHtmlEntities() }
-      val failures = mutableListOf<CompatibilityFailure>()
-      if (mathContentJson != null) {
-        val rawLatex = RAW_LATEX_REGEX.find(mathContentJson)
-          ?.destructured?.let { (latex) -> latex }
-        if (rawLatex.isNullOrBlank()) {
-          failures += MathTagMissingRawLatex(contentId, origin)
-        }
-      } else {
-        failures += MathTagMissingRawLatex(contentId, origin)
-      }
-      failures.asSequence()
-    }.toList()
-  }
+  ): List<CompatibilityFailure> = checkMathTagsForLatex(this, origin, contentId)
 
   private fun Int.checkIsValidStateSchemaVersion(origin: ContainerId): List<CompatibilityFailure> {
     return if (this > constraints.supportedStateSchemaVersion) {
@@ -653,7 +636,7 @@ class StructureCompatibilityChecker(
     } else emptyList()
   }
 
-  private companion object {
+  companion object {
     private val HTML_PRESENCE_REGEX = "</?.+?>".toRegex()
     // This regex is a simplification of the standard: https://www.w3.org/TR/xml/#NT-NameStartChar.
     private val HTML_TAG_REGEX = "<\\s*([^\\s/>]+)[^>]*?>".toRegex()
@@ -665,6 +648,29 @@ class StructureCompatibilityChecker(
     private val MATH_CONTENT_VALUE_REGEX =
       "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
     private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.*?)\"".toRegex()
+
+    fun checkMathTagsForLatex(
+      html: String,
+      origin: ContainerId,
+      contentId: String
+    ): List<CompatibilityFailure> {
+      return MATH_TAG_REGEX.findAll(html).flatMap { matchResult ->
+        val tagContent = matchResult.value
+        val mathContentJson = MATH_CONTENT_VALUE_REGEX.find(tagContent)
+          ?.destructured?.let { (value) -> value.unescapeHtmlEntities() }
+        val failures = mutableListOf<CompatibilityFailure>()
+        if (mathContentJson != null) {
+          val rawLatex = RAW_LATEX_REGEX.find(mathContentJson)
+            ?.destructured?.let { (latex) -> latex }
+          if (rawLatex.isNullOrBlank()) {
+            failures += MathTagMissingRawLatex(contentId, origin)
+          }
+        } else {
+          failures += MathTagMissingRawLatex(contentId, origin)
+        }
+        failures.asSequence()
+      }.toList()
+    }
 
     private fun String.checkTitleOrDescTextForHtml(
       origin: ContainerId
