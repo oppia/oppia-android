@@ -21,6 +21,11 @@ jobs:
         with:
           version: 6.5.0
 
+      - name: Pre-Build Check Scripts
+        if: ${{ github.event.action == 'closed' }}
+        run: |
+          bazel build //scripts:todo_issue_resolved_check //scripts:todo_issue_comment_check
+
       - name: TODO Issue Resolved Check
         id: todoIssueResolvedCheck
         if: ${{ github.event.action == 'closed' }}
