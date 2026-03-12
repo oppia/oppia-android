@@ -664,7 +664,7 @@ class StructureCompatibilityChecker(
         "[\\s\\S]*?</\\s*oppia-noninteractive-math\\s*>").toRegex()
     private val MATH_CONTENT_VALUE_REGEX =
       "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
-    private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.+?)\\\\\"".toRegex()
+    private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.*?)\"".toRegex()
 
     private fun String.checkTitleOrDescTextForHtml(
       origin: ContainerId
