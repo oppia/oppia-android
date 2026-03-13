@@ -10,7 +10,8 @@ import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 /**
  * Parser for number-with-units expressions.
  *
- * For the formal grammar specification see the grammar doc referenced in [NumberWithUnitsTokenizer].
+ * For the formal grammar specification, refer to the doc:
+ * https://docs.google.com/document/d/1PF1LdzBUwNO3tSqucCoMdYpPOWUySI3yS4m_knfLdtE.
  */
 class NumberWithUnitsParser private constructor(
   private val rawExpression: String,
@@ -61,7 +62,7 @@ class NumberWithUnitsParser private constructor(
       ?: return NumberWithUnitsParsingError.GenericError.toFailure()
 
     val numberResult = parseNumber()
-    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult.propagate()
+    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult
 
     val builder = (numberResult as NumberWithUnitsParsingResult.Success).result
     builder.addUnit(prefixUnit)
@@ -70,7 +71,7 @@ class NumberWithUnitsParser private constructor(
     if (isAtSuffixUnit()) {
       val compoundUnits = parseCompoundUnit()
       if (compoundUnits is NumberWithUnitsParsingResult.Failure) {
-        return compoundUnits.propagate()
+        return compoundUnits
       }
       val suffixUnits = (compoundUnits as NumberWithUnitsParsingResult.Success).result
       // Check for duplicate currency: a currency prefix was already added, so if any suffix
@@ -92,7 +93,7 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseSuffixFormattedValue(): NumberWithUnitsParsingResult<NumberWithUnits> {
     val numberResult = parseNumber()
-    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult.propagate()
+    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult
 
     val builder = (numberResult as NumberWithUnitsParsingResult.Success).result
 
@@ -102,7 +103,7 @@ class NumberWithUnitsParser private constructor(
     }
 
     val compoundUnits = parseCompoundUnit()
-    if (compoundUnits is NumberWithUnitsParsingResult.Failure) return compoundUnits.propagate()
+    if (compoundUnits is NumberWithUnitsParsingResult.Failure) return compoundUnits
     builder.addAllUnit((compoundUnits as NumberWithUnitsParsingResult.Success).result)
 
     return NumberWithUnitsParsingResult.Success(builder.build())
@@ -114,6 +115,11 @@ class NumberWithUnitsParser private constructor(
    * negatable_number = [ "-" ] , number ;
    * number = positive_integer , [ ( "/" , positive_integer ) | ( "." , positive_integer ) ] ;
    * ```
+   *
+   * Notes that [Token.PositiveRealNumber] is already tokenized as a single token, so decimal
+   * parsing does not happen here. `integer/integer` is always interpreted as a fractional numeric
+   * literal at this stage. Unit division (for example `m/s`) is parsed later as part of
+   * `compound_unit`.
    */
   private fun parseNumber(): NumberWithUnitsParsingResult<NumberWithUnits.Builder> {
     var isNegative = false
@@ -137,7 +143,7 @@ class NumberWithUnitsParser private constructor(
 
       is Token.PositiveInteger -> {
         tokens.next()
-        // Check for fraction or decimal continuation
+        // Check for fraction continuation.
         if (tokens.peek() is Token.DivideSymbol) {
           // Peek ahead: could be a fraction (integer/integer) if followed by PositiveInteger
           // and then a unit or end-of-input. But we need to distinguish "1/2 kg" (fraction)
@@ -182,7 +188,7 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseCompoundUnit(): NumberWithUnitsParsingResult<List<NumberUnit>> {
     val numeratorUnits = parseUnitsMultiplied()
-    if (numeratorUnits is NumberWithUnitsParsingResult.Failure) return numeratorUnits.propagate()
+    if (numeratorUnits is NumberWithUnitsParsingResult.Failure) return numeratorUnits
 
     val allUnits =
       (numeratorUnits as NumberWithUnitsParsingResult.Success).result.toMutableList()
@@ -191,7 +197,7 @@ class NumberWithUnitsParser private constructor(
     if (tokens.peek() is Token.DivideSymbol) {
       tokens.next() // consume '/'
       val denomResult = parseDenominatorExpression()
-      if (denomResult is NumberWithUnitsParsingResult.Failure) return denomResult.propagate()
+      if (denomResult is NumberWithUnitsParsingResult.Failure) return denomResult
       allUnits.addAll((denomResult as NumberWithUnitsParsingResult.Success).result)
     }
 
@@ -214,7 +220,7 @@ class NumberWithUnitsParser private constructor(
     }
 
     val unitsResult = parseUnitsMultiplied()
-    if (unitsResult is NumberWithUnitsParsingResult.Failure) return unitsResult.propagate()
+    if (unitsResult is NumberWithUnitsParsingResult.Failure) return unitsResult
 
     if (hasParens) {
       if (tokens.peek() !is Token.RightParenthesisSymbol) {
@@ -240,13 +246,13 @@ class NumberWithUnitsParser private constructor(
     val units = mutableListOf<NumberUnit>()
 
     val firstUnit = parseUnitWithExponent()
-    if (firstUnit is NumberWithUnitsParsingResult.Failure) return firstUnit.propagate()
+    if (firstUnit is NumberWithUnitsParsingResult.Failure) return firstUnit
     units.add((firstUnit as NumberWithUnitsParsingResult.Success).result)
 
     // Continue consuming units while we see suffix units (but not '/', ')' or end)
     while (isAtSuffixUnit()) {
       val nextUnit = parseUnitWithExponent()
-      if (nextUnit is NumberWithUnitsParsingResult.Failure) return nextUnit.propagate()
+      if (nextUnit is NumberWithUnitsParsingResult.Failure) return nextUnit
       units.add((nextUnit as NumberWithUnitsParsingResult.Success).result)
     }
 
@@ -261,7 +267,7 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseUnitWithExponent(): NumberWithUnitsParsingResult<NumberUnit> {
     val unitName = parseSuffixUnit()
-    if (unitName is NumberWithUnitsParsingResult.Failure) return unitName.propagate()
+    if (unitName is NumberWithUnitsParsingResult.Failure) return unitName
     val name = (unitName as NumberWithUnitsParsingResult.Success).result
 
     var exponent = 1
@@ -360,7 +366,7 @@ class NumberWithUnitsParser private constructor(
     is Token.SquareMeterUnit -> "m2"
     // volume
     is Token.CubicMeterUnit -> "m3"
-    is Token.LiterUnit -> "L"
+    is Token.LiterUnit -> "l"
     // angle
     is Token.RadianUnit -> "rad"
     is Token.DegreeUnit -> "deg"
@@ -466,14 +472,14 @@ class NumberWithUnitsParser private constructor(
 
   companion object {
     /** The result of attempting to parse a raw number-with-units expression. */
-    sealed class NumberWithUnitsParsingResult<T> {
+    sealed class NumberWithUnitsParsingResult<out T> {
       /** Indicates that the parse was successful with a value of [result]. */
-      data class Success<T>(val result: T) : NumberWithUnitsParsingResult<T>()
+      data class Success<out T>(val result: T) : NumberWithUnitsParsingResult<T>()
 
       /** Indicates that the parse failed with the specified [error]. */
-      data class Failure<T>(
+      data class Failure(
         val error: NumberWithUnitsParsingError
-      ) : NumberWithUnitsParsingResult<T>()
+      ) : NumberWithUnitsParsingResult<Nothing>()
     }
 
     /**
@@ -491,12 +497,9 @@ class NumberWithUnitsParser private constructor(
       return NumberWithUnitsParser(normalized, tokens).parseNumberWithUnits()
     }
 
-    private fun <T> NumberWithUnitsParsingError.toFailure(): NumberWithUnitsParsingResult<T> =
+    /** Creates a failed parse result with [this] error. */
+    private fun NumberWithUnitsParsingError.toFailure(): NumberWithUnitsParsingResult<Nothing> =
       NumberWithUnitsParsingResult.Failure(this)
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> NumberWithUnitsParsingResult.Failure<*>.propagate():
-      NumberWithUnitsParsingResult<T> = this as NumberWithUnitsParsingResult.Failure<T>
 
     /**
      * Potentially changes [this] result into a failure based on the provided [operation].

@@ -361,7 +361,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -735,7 +735,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dL").hasExponentThat().isEqualTo(1)
+      hasUnit("dl").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -825,7 +825,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("kL").hasExponentThat().isEqualTo(1)
+      hasUnit("kl").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -1589,7 +1589,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -1599,7 +1599,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -1609,7 +1609,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -1619,7 +1619,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
     }
   }
 
@@ -2042,7 +2042,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(20.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("L").hasExponentThat().isEqualTo(1)
+      hasUnit("l").hasExponentThat().isEqualTo(1)
       hasUnit("s").hasExponentThat().isEqualTo(-1)
     }
   }
@@ -3093,6 +3093,6 @@ class NumberWithUnitsParserTest {
     assertThat(result).isInstanceOf(
       NumberWithUnitsParsingResult.Failure::class.java
     )
-    return (result as NumberWithUnitsParsingResult.Failure<T>).error
+    return (result as NumberWithUnitsParsingResult.Failure).error
   }
 }
