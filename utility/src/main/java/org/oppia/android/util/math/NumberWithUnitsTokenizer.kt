@@ -1,7 +1,6 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
-import java.lang.StringBuilder
 
 /**
  * A tokenizer for parsing mathematical expressions containing numbers and units.
@@ -1242,31 +1241,37 @@ class NumberWithUnitsTokenizer private constructor() {
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a dollar currency prefix, e.g. '$'. */
       class DollarPrefixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a rupee currency prefix, e.g. 'Rs' or '₹'. */
       class RupeePrefixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a dollar currency suffix, e.g. 'USD' or 'dollar'. */
       class DollarSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cent currency suffix, e.g. 'cent' or 'cents'. */
       class CentSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a rupee currency suffix, e.g. 'rupee' or 'rupees'. */
       class RupeeSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a paisa currency suffix, e.g. 'paisa' or 'paise'. */
       class PaisaSuffixUnit(
         override val startIndex: Int,
         override val endIndex: Int
@@ -1285,175 +1290,266 @@ class NumberWithUnitsTokenizer private constructor() {
 
       /** Enumerates all recognized SI prefixes. */
       enum class SiPrefixValue {
-        DECA, HECTO, KILO, MEGA, GIGA, TERA, PETA, EXA, ZETTA, YOTTA,
-        DECI, CENTI, MILLI, MICRO, NANO, PICO, FEMTO, ATTO, ZEPTO, YOCTO
+        /** Represents the SI prefix deca (10^1). */
+        DECA,
+
+        /** Represents the SI prefix hecto (10^2). */
+        HECTO,
+
+        /** Represents the SI prefix kilo (10^3). */
+        KILO,
+
+        /** Represents the SI prefix mega (10^6). */
+        MEGA,
+
+        /** Represents the SI prefix giga (10^9). */
+        GIGA,
+
+        /** Represents the SI prefix tera (10^12). */
+        TERA,
+
+        /** Represents the SI prefix peta (10^15). */
+        PETA,
+
+        /** Represents the SI prefix exa (10^18). */
+        EXA,
+
+        /** Represents the SI prefix zetta (10^21). */
+        ZETTA,
+
+        /** Represents the SI prefix yotta (10^24). */
+        YOTTA,
+
+        /** Represents the SI prefix deci (10^-1). */
+        DECI,
+
+        /** Represents the SI prefix centi (10^-2). */
+        CENTI,
+
+        /** Represents the SI prefix milli (10^-3). */
+        MILLI,
+
+        /** Represents the SI prefix micro (10^-6). */
+        MICRO,
+
+        /** Represents the SI prefix nano (10^-9). */
+        NANO,
+
+        /** Represents the SI prefix pico (10^-12). */
+        PICO,
+
+        /** Represents the SI prefix femto (10^-15). */
+        FEMTO,
+
+        /** Represents the SI prefix atto (10^-18). */
+        ATTO,
+
+        /** Represents the SI prefix zepto (10^-21). */
+        ZEPTO,
+
+        /** Represents the SI prefix yocto (10^-24). */
+        YOCTO
       }
 
+      /** Represents a meter unit. */
       class MeterUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an inch unit. */
       class InchUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a foot unit. */
       class FootUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a yard unit. */
       class YardUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a gram unit. */
       class GramUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a grain unit. */
       class GrainUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an ounce unit. */
       class OunceUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a square meter unit. */
       class SquareMeterUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a square inch unit. */
       class SquareInchUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a square foot unit. */
       class SquareFootUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a square yard unit. */
       class SquareYardUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cubic meter unit. */
       class CubicMeterUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a liter unit. */
       class LiterUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cubic centimeter unit (cc). */
       class CcUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cubic inch unit. */
       class CubicInchUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cubic foot unit. */
       class CubicFootUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a cubic yard unit. */
       class CubicYardUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a kelvin unit. */
       class KelvinUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a celsius unit. */
       class CelsiusUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a radian unit. */
       class RadianUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a degree unit. */
       class DegreeUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a second unit. */
       class SecondUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a minute unit. */
       class MinuteUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an hour unit. */
       class HourUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a hertz unit. */
       class HertzUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a mole unit. */
       class MoleUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a candela unit. */
       class CandelaUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a newton unit. */
       class NewtonUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a joule unit. */
       class JouleUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a watt unit. */
       class WattUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a pascal unit. */
       class PascalUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an ampere unit. */
       class AmpereUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a volt unit. */
       class VoltUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an ohm unit. */
       class OhmUnit(
         override val startIndex: Int,
         override val endIndex: Int
