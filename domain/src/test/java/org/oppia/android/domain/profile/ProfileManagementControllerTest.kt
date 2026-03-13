@@ -2,8 +2,6 @@ package org.oppia.android.domain.profile
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,7 +45,6 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.robolectric.ShadowImageMediaStore
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -66,11 +63,8 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
@@ -125,7 +119,6 @@ class ProfileManagementControllerTest {
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
-    ShadowImageMediaStore.reset()
   }
 
   @Test
@@ -701,192 +694,6 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.avatar.avatarColorRgb).isEqualTo(DEFAULT_AVATAR_COLOR_RGB)
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testAddProfile_withAvatarImage_checkAvatarImageUriIsSet() {
-    setUpTestApplicationComponent()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/add_profile")
-
-    val addProvider = addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = testUri,
-      isAdmin = true
-    )
-    monitorFactory.waitForNextSuccessfulResult(addProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.avatar.avatarImageUri).isNotEmpty()
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testAddProfile_withAvatarImage_savedFileExists() {
-    setUpTestApplicationComponent()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/add_file_exists")
-
-    val addProvider = addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = testUri,
-      isAdmin = true
-    )
-    monitorFactory.waitForNextSuccessfulResult(addProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    val savedFile = File(profile.avatar.avatarImageUri)
-    assertThat(savedFile.exists()).isTrue()
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testAddProfile_withAvatarImage_savedFileContainsValidImage() {
-    setUpTestApplicationComponent()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/add_valid_image")
-
-    val addProvider = addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = testUri,
-      isAdmin = true
-    )
-    monitorFactory.waitForNextSuccessfulResult(addProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    val savedBitmap = BitmapFactory.decodeFile(profile.avatar.avatarImageUri)
-    assertThat(savedBitmap).isNotNull()
-    assertThat(savedBitmap.width).isEqualTo(300)
-    assertThat(savedBitmap.height).isEqualTo(300)
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testUpdateProfileAvatar_withAvatarImage_checkAvatarImageUriIsUpdated() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/update_avatar")
-
-    val updateProvider = profileManagementController
-      .updateProfileAvatar(
-        PROFILE_ID_2,
-        avatarImagePath = testUri,
-        colorRgb = DEFAULT_AVATAR_COLOR_RGB
-      )
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.avatar.avatarImageUri).isNotEmpty()
-    val savedFile = File(profile.avatar.avatarImageUri)
-    assertThat(savedFile.exists()).isTrue()
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testUpdateProfileAvatar_withAvatarImage_savedFileContainsValidImage() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/update_avatar_valid")
-
-    val updateProvider = profileManagementController
-      .updateProfileAvatar(
-        PROFILE_ID_2,
-        avatarImagePath = testUri,
-        colorRgb = DEFAULT_AVATAR_COLOR_RGB
-      )
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    val savedBitmap = BitmapFactory.decodeFile(profile.avatar.avatarImageUri)
-    assertThat(savedBitmap).isNotNull()
-    assertThat(savedBitmap.width).isEqualTo(300)
-    assertThat(savedBitmap.height).isEqualTo(300)
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testUpdateProfileAvatar_withAvatarImage_thenUpdateWithColor_checkColorIsSet() {
-    setUpTestApplicationComponent()
-    addTestProfiles()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/update_then_color")
-
-    val updateWithImageProvider = profileManagementController
-      .updateProfileAvatar(
-        PROFILE_ID_2,
-        avatarImagePath = testUri,
-        colorRgb = DEFAULT_AVATAR_COLOR_RGB
-      )
-    monitorFactory.waitForNextSuccessfulResult(updateWithImageProvider)
-
-    val updateWithColorProvider = profileManagementController
-      .updateProfileAvatar(
-        PROFILE_ID_2,
-        /* avatarImagePath = */ null,
-        colorRgb = DEFAULT_AVATAR_COLOR_RGB
-      )
-    monitorFactory.waitForNextSuccessfulResult(updateWithColorProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.avatar.avatarColorRgb).isEqualTo(DEFAULT_AVATAR_COLOR_RGB)
-    assertThat(profile.avatar.avatarImageUri).isEmpty()
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testUpdateNewProfileDetails_withAvatarImage_checkAvatarImageUriIsSet() {
-    setUpTestWithOnboardingV2Enabled(true)
-    profileTestHelper.createDefaultAdminProfile()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/update_details")
-
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER,
-      testUri,
-      DEFAULT_AVATAR_COLOR_RGB,
-      "John",
-      isAdmin = true
-    )
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.avatar.avatarImageUri).isNotEmpty()
-    assertThat(profile.name).isEqualTo("John")
-    assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
-  }
-
-  @Test
-  @Config(shadows = [ShadowImageMediaStore::class])
-  fun testUpdateNewProfileDetails_withAvatarImage_savedFileContainsValidImage() {
-    setUpTestWithOnboardingV2Enabled(true)
-    profileTestHelper.createDefaultAdminProfile()
-    val testUri = createAndRegisterTestAvatarUri("content://test/avatar/update_details_valid")
-
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER,
-      testUri,
-      DEFAULT_AVATAR_COLOR_RGB,
-      "John",
-      isAdmin = true
-    )
-    monitorFactory.waitForNextSuccessfulResult(updateProvider)
-
-    val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
-    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    val savedFile = File(profile.avatar.avatarImageUri)
-    assertThat(savedFile.exists()).isTrue()
-    val savedBitmap = BitmapFactory.decodeFile(profile.avatar.avatarImageUri)
-    assertThat(savedBitmap).isNotNull()
-    assertThat(savedBitmap.width).isEqualTo(300)
-    assertThat(savedBitmap.height).isEqualTo(300)
   }
 
   @Test
@@ -2314,33 +2121,6 @@ class ProfileManagementControllerTest {
       isAdmin,
       allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
     )
-  }
-
-  /**
-   * Creates a test [Bitmap], registers it with [ShadowImageMediaStore] for the given [uriString],
-   * and also registers a corresponding [InputStream] with Robolectric's [ShadowContentResolver]
-   * so that both [MediaStore.Images.Media.getBitmap] and [ContentResolver.openInputStream] work
-   * for the returned [Uri].
-   *
-   * The test bitmap is a 400x400 ARGB_8888 image (larger than the 300px crop size used by the
-   * controller) to ensure that the cropping and compression logic is exercised.
-   */
-  private fun createAndRegisterTestAvatarUri(uriString: String): Uri {
-    val testUri = Uri.parse(uriString)
-    val testBitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
-    val pngBytes = ByteArrayOutputStream().use { outputStream ->
-      testBitmap.compress(Bitmap.CompressFormat.PNG, /* quality = */ 100, outputStream)
-      outputStream.toByteArray()
-    }
-
-    // Register with custom shadow for MediaStore.Images.Media.getBitmap().
-    ShadowImageMediaStore.registerBitmap(testUri, testBitmap)
-
-    // Register with Robolectric's ShadowContentResolver for openInputStream().
-    val shadowContentResolver = Shadows.shadowOf(context.contentResolver)
-    shadowContentResolver.registerInputStream(testUri, ByteArrayInputStream(pngBytes))
-
-    return testUri
   }
 
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =

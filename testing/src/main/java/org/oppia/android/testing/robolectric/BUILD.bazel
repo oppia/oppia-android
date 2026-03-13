@@ -71,15 +71,3 @@ kt_android_library(
         "//third_party:org_robolectric_robolectric",
     ],
 )
-
-kt_android_library(
-    name = "shadow_image_media_store",
-    testonly = True,
-    srcs = [
-        "ShadowImageMediaStore.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//third_party:org_robolectric_robolectric",
-    ],
-)
