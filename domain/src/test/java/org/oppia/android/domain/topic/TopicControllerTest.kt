@@ -76,7 +76,6 @@ class TopicControllerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var topicController: TopicController
-  @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -209,6 +208,23 @@ class TopicControllerTest {
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_recordProgressForSecondChapterOnly_firstChapterIsNotStarted() {
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp1(
+      profileId1,
+      timestampOlderThanOneWeek = false
+    )
+
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
 
   @Test
@@ -774,20 +790,6 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetTopic_recordProgressForSecondChapterOnly_firstChapterIsNotStarted() {
-    markOnlyFractionsStory0Chapter1AsInProgressSaved()
-
-    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
-
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
-    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_STARTED)
-    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
-      .isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
-  }
-
-  @Test
   fun testOngoingTopicList_validData_withoutAnyProgress_ongoingTopicListIsEmpty() {
     val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
@@ -1136,17 +1138,6 @@ class TopicControllerTest {
       profileId1,
       timestampOlderThanOneWeek = false
     )
-  }
-
-  private fun markOnlyFractionsStory0Chapter1AsInProgressSaved() {
-    val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      lastPlayedTimestamp = 0
-    )
-    monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   private fun forceDefaultLocale(locale: Locale) {

@@ -149,8 +149,10 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     if (notCompletedChapterCount == 0) {
       this.binding.isAllChecked = true
     }
+
     // Clear any previous listener to prevent stale callbacks during RecyclerView recycling.
     binding.markChaptersCompletedChapterCheckBox.setOnCheckedChangeListener(null)
+
     if (model.checkIfChapterIsCompleted()) {
       binding.isChapterChecked = true
       binding.isChapterCheckboxEnabled = false
