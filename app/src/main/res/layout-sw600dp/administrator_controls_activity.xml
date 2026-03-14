@@ -5,25 +5,33 @@
   <androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/administrator_controls_activity_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/component_color_shared_screen_tertiary_background_color">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/administrator_controls_activity_toolbar"
+      <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/administrator_controls_activity_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_shared_activity_toolbar_color"
-        android:minHeight="?attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:titleTextAppearance="@style/ToolbarTextAppearance" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+          android:id="@+id/administrator_controls_activity_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/component_color_shared_activity_toolbar_color"
+          android:minHeight="?attr/actionBarSize"
+          app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+          app:titleTextAppearance="@style/ToolbarTextAppearance" />
+      </com.google.android.material.appbar.AppBarLayout>
 
       <FrameLayout
         android:id="@+id/administrator_controls_fragment_placeholder"
@@ -32,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/administrator_controls_guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_app_bar_layout" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/administrator_controls_guideline"
@@ -48,7 +56,7 @@
         android:background="@color/component_color_shared_divider_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/administrator_controls_guideline"
-        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_app_bar_layout" />
 
       <ImageButton
         android:id="@+id/administrator_controls_multipane_options_back_button"
@@ -75,7 +83,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/administrator_controls_multipane_options_back_button"
-        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_app_bar_layout" />
 
       <FrameLayout
         android:id="@+id/administrator_controls_fragment_multipane_placeholder"
@@ -95,7 +103,7 @@
         android:background="@drawable/toolbar_drop_shadow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_app_bar_layout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView

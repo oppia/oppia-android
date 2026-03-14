@@ -3,6 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@color/component_color_shared_activity_status_bar_color"
+  android:fitsSystemWindows="true"
   tools:context="app.onboarding.OnboardingActivity">
 
   <FrameLayout

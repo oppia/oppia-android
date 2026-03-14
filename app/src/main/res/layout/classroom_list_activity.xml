@@ -4,6 +4,7 @@
   android:id="@+id/classroom_list_activity_drawer_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:fitsSystemWindows="true"
   tools:context=".app.classroom.ClassroomListActivity">
 
   <LinearLayout

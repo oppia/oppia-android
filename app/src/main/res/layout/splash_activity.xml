@@ -24,6 +24,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/component_color_splash_activity_background_color"
+    android:fitsSystemWindows="true"
     tools:context=".app.splash.SplashActivity">
 
     <androidx.constraintlayout.widget.Guideline

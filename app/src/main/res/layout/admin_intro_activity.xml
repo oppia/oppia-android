@@ -2,4 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/admin_intro_fragment_placeholder"
   android:layout_width="match_parent"
-  android:layout_height="match_parent" />
+  android:layout_height="match_parent"
+  android:background="@color/component_color_shared_activity_status_bar_color"
+  android:fitsSystemWindows="true" />

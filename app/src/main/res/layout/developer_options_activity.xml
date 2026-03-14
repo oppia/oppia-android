@@ -5,7 +5,8 @@
   <androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/developer_options_activity_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
       android:layout_width="match_parent"
