@@ -27,6 +27,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -130,7 +131,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the only chapter of test topic 1 story 2 as completed, and any needed prerequisites.
+   * Marks the first chapter of test topic 1 story 2 as completed, and any needed prerequisites.
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
@@ -143,6 +144,26 @@ class StoryProgressTestHelper @Inject constructor(
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of test topic 1 story 2 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
+   * and any other nuances.
+   */
+  fun markCompletedTestTopic1Story0Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete prerequisite chapter first.
+    markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_6,
       timestampOlderThanOneWeek
     )
   }
@@ -167,7 +188,8 @@ class StoryProgressTestHelper @Inject constructor(
     profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
-    markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
+    // Complete last chapter (+ previous automatically).
+    markCompletedTestTopic1Story0Exp1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
