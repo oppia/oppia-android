@@ -31,7 +31,7 @@ class NumberWithUnitsInputViewModel private constructor(
   userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.NUMBER_WITH_UNITS_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = userAnswerState.textInputAnswer
-  private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+  private var answerErrorCategory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
@@ -60,7 +60,7 @@ class NumberWithUnitsInputViewModel private constructor(
   }
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    answerErrorCetegory = category
+    answerErrorCategory = category
     return when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
@@ -108,7 +108,7 @@ class NumberWithUnitsInputViewModel private constructor(
   override fun getUserAnswerState(): UserAnswerState {
     return UserAnswerState.newBuilder().apply {
       this.textInputAnswer = answerText.toString()
-      this.answerErrorCategory = answerErrorCetegory
+      this.answerErrorCategory = answerErrorCategory
     }.build()
   }
 
