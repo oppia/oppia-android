@@ -1,6 +1,5 @@
 package org.oppia.android.domain.classify.rules.numberwithunits
 
-import javax.inject.Inject
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.NumberWithUnits
@@ -10,6 +9,7 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.aggregate
 import org.oppia.android.util.math.isApproximatelyEqualTo
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two numbers with units are equal per the numbers with units

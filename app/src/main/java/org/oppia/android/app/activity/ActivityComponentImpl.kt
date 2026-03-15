@@ -167,7 +167,7 @@ interface ActivityComponentImpl :
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
   fun inject(
     numberWithUnitsInputInteractionViewTestActivity:
-    NumberWithUnitsInputInteractionViewTestActivity
+      NumberWithUnitsInputInteractionViewTestActivity
   )
 
   fun inject(textInputInteractionViewTestActivity: TextInputInteractionViewTestActivity)
