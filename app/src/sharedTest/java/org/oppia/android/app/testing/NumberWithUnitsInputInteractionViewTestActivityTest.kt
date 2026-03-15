@@ -292,4 +292,3 @@ class NumberWithUnitsInputInteractionViewTestActivityTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.customview.interaction.NumberWithUnitsInputInteractionView
@@ -22,7 +23,6 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
-import javax.inject.Inject
 
 /**
  * This is a dummy activity to test [NumberWithUnitsInputInteractionView].
@@ -48,9 +48,10 @@ class NumberWithUnitsInputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityNumberWithUnitsInputInteractionViewTestBinding>(
-      this, R.layout.activity_number_with_units_input_interaction_view_test
-    )
+    binding = DataBindingUtil
+      .setContentView<ActivityNumberWithUnitsInputInteractionViewTestBinding>(
+        this, R.layout.activity_number_with_units_input_interaction_view_test
+      )
 
     val params =
       intent.getProtoExtra(
@@ -106,4 +107,3 @@ class NumberWithUnitsInputInteractionViewTestActivity :
     }
   }
 }
-

@@ -371,6 +371,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumberWithUnitsInputInteractionView.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt"
   test_file_not_required: true
 }
@@ -1818,6 +1822,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumberWithUnitsInputViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
