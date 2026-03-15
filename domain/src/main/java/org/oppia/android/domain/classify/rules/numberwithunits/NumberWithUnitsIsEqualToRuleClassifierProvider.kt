@@ -40,8 +40,8 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
     if (answer.numberTypeCase != input.numberTypeCase) {
       return false
     }
-    // Units must match after aggregation, and order is irrelevant.
-    if (answer.aggregate().unitList.toSet() != input.aggregate().unitList.toSet()) {
+    // Units must match, but in different orders is fine.
+    if (answer.unitList.toSet() != input.unitList.toSet()) {
       return false
     }
     // Otherwise, verify the value itself matches.

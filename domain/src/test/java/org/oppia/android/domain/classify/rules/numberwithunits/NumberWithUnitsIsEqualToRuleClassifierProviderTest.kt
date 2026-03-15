@@ -97,6 +97,84 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       FRACTION_VALUE_TEST_2_OVER_5,
       listOf(NUMBER_UNIT_METER_TO_POWER_1, NUMBER_UNIT_METER_TO_POWER_1)
     )
+  private val FRACTION_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 2, denominator = 1
+    ).fraction
+  private val FRACTION_VALUE_TEST_6_OVER_3 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 6, denominator = 3
+    ).fraction
+  private val FRACTION_VALUE_TEST_2_OVER_3 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 2, denominator = 3
+    ).fraction
+  private val FRACTION_VALUE_TEST_20_OVER_30 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 20, denominator = 30
+    ).fraction
+  private val FRACTION_VALUE_TEST_100 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 100, denominator = 1
+    ).fraction
+  private val FRACTION_VALUE_TEST_2000 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 2000, denominator = 1
+    ).fraction
+  private val FRACTION_VALUE_TEST_200 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 200, denominator = 1
+    ).fraction
+  private val FRACTION_VALUE_TEST_2_OVER_30 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 2, denominator = 30
+    ).fraction
+  private val FRACTION_VALUE_TEST_20 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 20, denominator = 1
+    ).fraction
+  private val FRACTION_VALUE_TEST_10 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false, numerator = 10, denominator = 1
+    ).fraction
+  private val UNIT_KG_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "kg", exponent = 1)
+  private val UNIT_G_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "g", exponent = 1)
+  private val UNIT_M_TO_POWER_NEGATIVE_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "m", exponent = -2)
+  private val UNIT_M_TO_POWER_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "m", exponent = 2)
+  private val UNIT_METER_TO_POWER_NEGATIVE_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "meter", exponent = -2)
+  private val UNIT_CM_TO_POWER_NEGATIVE_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "cm", exponent = -2)
+  private val UNIT_RUPEES_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "rupees", exponent = 1)
+  private val UNIT_RUPEE_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "rupee", exponent = 1)
+  private val UNIT_PAISE_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "paise", exponent = 1)
+  private val UNIT_DOLLARS_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "dollars", exponent = 1)
+  private val UNIT_DOLLAR_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "dollar", exponent = 1)
+  private val UNIT_DOLLARS_TITLE_CASE_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "Dollars", exponent = 1)
+  private val UNIT_CENTS_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "cents", exponent = 1)
+  private val UNIT_M_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "m", exponent = 1)
+  private val UNIT_S_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "s", exponent = 1)
+  private val UNIT_S_TO_POWER_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "s", exponent = 2)
+  private val UNIT_S_TO_POWER_NEGATIVE_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "s", exponent = -1)
+  private val UNIT_N_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "N", exponent = 1)
+  private val UNIT_J_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "J", exponent = 1)
 
   @Inject
   internal lateinit var numberWithUnitsIsEqualToRuleClassifierProvider:
@@ -196,7 +274,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testFractionInputWithDuplicateUnits_withEquivalentAggregatedFractionAnswer_matches() {
+  fun testFractionInputWithDuplicateUnits_withEquivalentAggregatedFractionAnswer_doesNotMatch() {
     val inputs = mapOf("f" to TEST_DUPLICATED_FRACTION_INPUT_NUMBER_WITH_UNITS)
 
     val matches =
@@ -206,7 +284,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
         classificationContext = ClassificationContext()
       )
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -224,6 +302,534 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       )
 
     assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testExactValueMatch_fractionKgMNegative2_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testExactValueMatch_negativeRealM2_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+        number = -4.5,
+        units = listOf(UNIT_M_TO_POWER_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+          number = -4.5,
+          units = listOf(UNIT_M_TO_POWER_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testExactValueMatch_fractionTwoThirdsKgMNegative2_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2_OVER_3,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2_OVER_3,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testExactValueMatch_hundredRupees_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_RUPEES_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_RUPEES_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testExactValueMatch_hundredDollars_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_DOLLARS_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_DOLLARS_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testExactValueMatch_hundredCents_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_CENTS_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_CENTS_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testApproximateValueMatch_fractionSixOverThree_vsTwo_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_6_OVER_3,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testApproximateValueMatch_fractionTwentyOverThirty_vsTwoThirds_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_20_OVER_30,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2_OVER_3,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testApproximateValueMatch_realVsFractionEquivalent_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+        number = 0.666666666666,
+        units = listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2_OVER_3,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testApproximateValueMatch_realPoint66VsFractionTwoThirds_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+        number = 0.66,
+        units = listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2_OVER_3,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testValueMismatch_realTwoPointFiveVsTwo_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+        number = 2.5,
+        units = listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+          number = 2.0,
+          units = listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testExponentMismatch_kgM2VsKgMNegative2_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitMismatch_kgM2VsKgMNegative2_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitMismatch_hundredRupeesVsHundredPaise_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_RUPEES_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_PAISE_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitMismatch_hundredDollarsVsHundredCents_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_DOLLARS_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_CENTS_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitMismatch_hundredRupeesVsHundredDollars_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_RUPEES_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_DOLLARS_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitConversion_twoThousandGmNegative2VsTwoKgMNegative2_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2000,
+        listOf(UNIT_G_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitConversion_realPoint2GcmNegative2VsTwoKgMNegative2_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+        number = 0.2,
+        units = listOf(UNIT_G_TO_POWER_1, UNIT_CM_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitConversion_fractionTwoOverThirtyGcmNegative2VsTwoThirdsKgMNegative2_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2_OVER_30,
+        listOf(UNIT_G_TO_POWER_1, UNIT_CM_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2_OVER_3,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitConversion_twoRupeesVsTwoHundredPaise_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_RUPEES_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_200,
+          listOf(UNIT_PAISE_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitConversion_twoDollarsVsTwoHundredCents_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_DOLLARS_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_200,
+          listOf(UNIT_CENTS_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitReduction_twentyMSquareSecondPerSecondVsTwentyMPerSecond_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_20,
+        listOf(UNIT_M_TO_POWER_1, UNIT_S_TO_POWER_2, UNIT_S_TO_POWER_NEGATIVE_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_20,
+          listOf(UNIT_M_TO_POWER_1, UNIT_S_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitCombination_tenNewtonMeterVsTenJoule_doesNotMatch() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_10,
+        listOf(UNIT_N_TO_POWER_1, UNIT_M_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_10,
+          listOf(UNIT_J_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testUnitReordering_twoMKgPerSecondVsTwoKgMPerSecond_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_M_TO_POWER_1, UNIT_KG_TO_POWER_1, UNIT_S_TO_POWER_NEGATIVE_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_1, UNIT_S_TO_POWER_NEGATIVE_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
   }
 
   @Test
