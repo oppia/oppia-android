@@ -1,5 +1,6 @@
 package org.oppia.android.domain.classify.rules.numberwithunits
 
+import javax.inject.Inject
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.NumberWithUnits
@@ -7,8 +8,8 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.aggregate
 import org.oppia.android.util.math.isApproximatelyEqualTo
-import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two numbers with units are equal per the numbers with units
@@ -39,8 +40,8 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
     if (answer.numberTypeCase != input.numberTypeCase) {
       return false
     }
-    // Units must match, but in different orders is fine.
-    if (answer.unitList.toSet() != input.unitList.toSet()) {
+    // Units must match after aggregation, and order is irrelevant.
+    if (answer.aggregate().unitList.toSet() != input.aggregate().unitList.toSet()) {
       return false
     }
     // Otherwise, verify the value itself matches.
