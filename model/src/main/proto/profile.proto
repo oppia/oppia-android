@@ -127,6 +127,7 @@ message ProfileAvatar {
   }
 }
 
+// TODO : Delete once migration to Profile Id is completed.
 // Opaque data structure to pass ID.
 message LegacyProfileId {
   /**
@@ -134,6 +135,15 @@ message LegacyProfileId {
    * Should not be used directory outside of the profile system.
    */
   int32 internal_id = 1;
+}
+
+// Opaque data structure to pass ID
+message ProfileId {
+  /**
+   * Unique ID used to identify a single profile.
+   * Should not be used directory outside of the profile system.
+   */
+  optional int32 internal_id = 1;
 }
 
 // Used in BindableAdapter for ProfileChooserFragment.
