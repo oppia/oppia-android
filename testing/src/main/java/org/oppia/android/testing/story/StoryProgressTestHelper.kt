@@ -507,7 +507,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the only chapter of test topic 1 story 2 as in progress saved. For specifics on parameters
+   * Marks the first chapter of test topic 1 story 2 as in progress saved. For specifics on parameters
    * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic1Story2Exp0(
@@ -524,7 +524,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the only chapter of test topic 1 story 2 as in progress not saved. For specifics on parameters
+   * Marks the first chapter of test topic 1 story 2 as in progress not saved. For specifics on parameters
    * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic1Story2Exp0(
@@ -536,6 +536,44 @@ class StoryProgressTestHelper @Inject constructor(
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of test topic 1 story 2 as in progress saved. For specifics on parameters
+   * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic1Story2Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapter first.
+    markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressSaved(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_6,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of test topic 1 story 2 as in progress not saved. For specifics on parameters
+   * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedTestTopic1Story2Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapter first.
+    markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_6,
       timestampOlderThanOneWeek
     )
   }
