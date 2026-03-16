@@ -7,7 +7,6 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.aggregate
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
