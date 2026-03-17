@@ -22,8 +22,8 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const incorrectFormatRegex = /^Fix(?: part of)? #(\d+)\w*$/gm;
-            const correctFormatRegex = /^Fixes(?: part of)? #(\d+)\w*$/gm;
+            const incorrectFormatRegex = /^Fix(?: part of)? #(\d+)[^\S\r\n]*$/gm;
+            const correctFormatRegex = /^Fixes(?: part of)? #(\d+)[^\S\r\n]*$/gm;
             const invalidIssueNumbers = [... (context.payload.pull_request.body || '').matchAll(incorrectFormatRegex)].map((match) => match[1]);
             const issueNumbers = [... (context.payload.pull_request.body || '').matchAll(correctFormatRegex)].map((match) => match[1]);
             core.setOutput('issue_numbers_list_json', JSON.stringify(issueNumbers));
