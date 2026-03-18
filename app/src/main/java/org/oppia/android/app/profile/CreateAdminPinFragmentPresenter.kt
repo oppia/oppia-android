@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.delay
-import org.oppia.android.app.databinding.databinding.PinSetupFragmentBinding
+import org.oppia.android.app.databinding.databinding.CreateAdminPinFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
@@ -79,20 +79,20 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController
 ) {
-  private lateinit var binding: PinSetupFragmentBinding
+  private lateinit var binding: CreateAdminPinFragmentBinding
 
   /** Creates and returns the view for the [CreateAdminPinFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?
   ): View? {
-    binding = PinSetupFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = CreateAdminPinFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     createComposeView()
     return binding.root
   }
 
   private fun createComposeView() {
-    binding.pinSetupComposeView.apply {
+    binding.createAdminPinComposeView.apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
         MaterialTheme {

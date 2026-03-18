@@ -100,16 +100,16 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PinSetupFragment]. */
+/** Tests for [CreateAdminPinFragment]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PinSetupFragmentTest.TestApplication::class,
+  application = CreateAdminPinFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class PinSetupFragmentTest {
+class CreateAdminPinFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val composeRule = createEmptyComposeRule()
@@ -132,20 +132,20 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_onLaunch_allTextViewsHaveCorrectContent() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_header))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_header))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_message))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_message))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .assertIsDisplayed()
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_step_count_five))
@@ -162,20 +162,20 @@ class PinSetupFragmentTest {
   @Test
   @Config(qualifiers = "+land")
   fun testFragment_landscapeMode_onLaunch_allTextViewsHaveCorrectContent() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_header))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_header))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_message))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_message))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .assertIsDisplayed()
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .assertIsDisplayed()
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_step_count_five))
@@ -191,7 +191,7 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_clickContinue_withEmptyPin_showsBlankPinError() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -201,18 +201,18 @@ class PinSetupFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_blank_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_blank_error))
         .assertIsDisplayed()
     }
   }
 
   @Test
   fun testFragment_clickContinue_withFilledPinAndEmptyConfirmPin_showsMismatchError() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
@@ -222,26 +222,26 @@ class PinSetupFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
     }
   }
 
   @Test
   fun testFragment_clickContinue_withMismatchedPins_showsMismatchError_continueButtonIsDisabled() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("54321")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
       composeRule
@@ -252,15 +252,15 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_inputThreeDigitPin_showsPinLengthError_continueButtonIsDisabled() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("123")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule
@@ -271,23 +271,23 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_inputShortPin_inputSameShortConfirmPin_showsErrorForPin_continueIsDisabled() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("123")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("123")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
       composeRule
@@ -298,23 +298,23 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_inputShortPin_inputDiffShortConfirmPin_showsErrorForBoth_continueIsDisabled() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("123")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("456")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
       composeRule
@@ -325,20 +325,20 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_validPin_shortConfirm_showsMismatchError_continueDisabled() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       // Enter a too-short confirm PIN.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("12")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
       composeRule
@@ -349,15 +349,15 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinue() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       // Start with a short PIN to trigger length error.
-      val enterPinNode = context.getString(R.string.pin_setup_activity_enter_pin_label)
+      val enterPinNode = context.getString(R.string.create_admin_pin_activity_enter_pin_label)
       composeRule.onNodeWithText(enterPinNode).performTextInput("12")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule
@@ -367,11 +367,11 @@ class PinSetupFragmentTest {
       composeRule.onNodeWithText(enterPinNode).performTextInput("345")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertDoesNotExist()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("12345")
 
       // Enter matching confirm PIN; continue should be enabled now.
@@ -383,16 +383,19 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_imeActionDone_withMatchingValidPins_navigatesToProfileChooser() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
-      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("12345")
 
-      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performImeAction()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -401,15 +404,15 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_clickContinue_withMatchingValidPins_navigatesToProfileChooser() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("12345")
 
       composeRule
@@ -422,7 +425,7 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_onBackButtonClicked_currentScreenIsDestroyed() {
-    launch(PinSetupActivity::class.java).use { scenario ->
+    launch(CreateAdminPinActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
@@ -436,68 +439,68 @@ class PinSetupFragmentTest {
 
   @Test
   fun testFragment_inputPin_onlyAcceptsDigits() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Try to input non-digit characters
+      // Try to input non-digit characters.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("abc12def")
 
       // Should only accept the digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .assertValueEquals("12")
     }
   }
 
   @Test
   fun testFragment_inputConfirmPin_onlyAcceptsDigits() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Try to input non-digit characters
+      // Try to input non-digit characters.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("abc12def")
 
       // Should only accept the digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .assertValueEquals("12")
     }
   }
 
   @Test
   fun testFragment_inputPin_limitsToFiveDigits() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Try to input more than 5 digits
+      // Try to input more than 5 digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("123456789")
 
       // Should only accept the first 5 digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .assertValueEquals("12345")
     }
   }
 
   @Test
   fun testFragment_inputConfirmPin_limitsToFiveDigits() {
-    launch(PinSetupActivity::class.java).use {
+    launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      // Try to input more than 5 digits
+      // Try to input more than 5 digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("123456789")
 
       // Should only accept the first 5 digits.
       composeRule
-        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .assertValueEquals("12345")
     }
   }
@@ -577,7 +580,7 @@ class PinSetupFragmentTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(pinSetupFragmentTest: PinSetupFragmentTest)
+    fun inject(createAdminPinFragmentTest: CreateAdminPinFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -587,8 +590,8 @@ class PinSetupFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(pinSetupFragmentTest: PinSetupFragmentTest) {
-      component.inject(pinSetupFragmentTest)
+    fun inject(createAdminPinFragmentTest: CreateAdminPinFragmentTest) {
+      component.inject(createAdminPinFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
