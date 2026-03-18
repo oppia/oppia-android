@@ -36,7 +36,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
     input_file = ctx.attr.input_file.files.to_list()[0]
 
     command = """
-    # Extract AAB to working directory.
+    # Extract the input AAB file into a temporary working directory.
     WORKING_DIR=$(mktemp -d)
     unzip -q -d $WORKING_DIR {0}
 
