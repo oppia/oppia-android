@@ -623,10 +623,41 @@ class ComputeAabDifferencesTest {
     buildStats.writeSummariesTo(printStream, longSummary = false)
 
     val output = outputStream.toString()
-    assertThat(output).contains("# APK & AAB differences analysis")
-    assertThat(output).contains("Note that this is a summarized snapshot")
-    assertThat(output).contains("## Dev")
-    assertThat(output).contains("<details><summary>Expand to see flavor specifics</summary>")
+    assertThat(output).isEqualTo(
+      """
+      |# APK & AAB differences analysis
+      |Note that this is a summarized snapshot. See the CI artifacts for detailed differences.
+      |
+      |## Dev
+      |
+      |<details><summary>Expand to see flavor specifics</summary>
+      |
+      |### Universal APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |### AAB differences
+      |<details><summary>Expand to see AAB specifics</summary>
+      |
+      |Supported configurations:
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |</details></details>
+      |""".trimMargin()
+    )
   }
 
   @Test
@@ -640,11 +671,51 @@ class ComputeAabDifferencesTest {
     buildStats.writeSummariesTo(printStream, longSummary = true)
 
     val output = outputStream.toString()
-    assertThat(output).contains("# APK & AAB differences analysis")
-    assertThat(output).doesNotContain("Note that this is a summarized snapshot")
-    assertThat(output).contains("## Dev")
-    assertThat(output).doesNotContain("<details>")
-    assertThat(output).contains("*Detailed file differences:*")
+    assertThat(output).isEqualTo(
+      """
+      |# APK & AAB differences analysis
+      |
+      |## Dev
+      |
+      |### Universal APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |*Detailed file differences:*
+      |
+      |### AAB differences
+      |Supported configurations:
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |*Detailed file differences:*
+      |
+      |""".trimMargin()
+    )
   }
 
   @Test
@@ -661,10 +732,70 @@ class ComputeAabDifferencesTest {
     buildStats.writeSummariesTo(printStream, longSummary = false)
 
     val output = outputStream.toString()
-    assertThat(output).contains("# APK & AAB differences analysis")
-    assertThat(output).contains("## Dev")
-    assertThat(output).contains("## Alpha")
-    assertThat(output).contains("Note that this is a summarized snapshot")
+    assertThat(output).isEqualTo(
+      """
+      |# APK & AAB differences analysis
+      |Note that this is a summarized snapshot. See the CI artifacts for detailed differences.
+      |
+      |## Dev
+      |
+      |<details><summary>Expand to see flavor specifics</summary>
+      |
+      |### Universal APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |### AAB differences
+      |<details><summary>Expand to see AAB specifics</summary>
+      |
+      |Supported configurations:
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |</details></details>
+      |
+      |## Alpha
+      |
+      |<details><summary>Expand to see flavor specifics</summary>
+      |
+      |### Universal APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |### AAB differences
+      |<details><summary>Expand to see AAB specifics</summary>
+      |
+      |Supported configurations:
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |</details></details>
+      |""".trimMargin()
+    )
   }
 
   @Test
@@ -681,11 +812,105 @@ class ComputeAabDifferencesTest {
     buildStats.writeSummariesTo(printStream, longSummary = true)
 
     val output = outputStream.toString()
-    assertThat(output).contains("# APK & AAB differences analysis")
-    assertThat(output).doesNotContain("Note that this is a summarized snapshot")
-    assertThat(output).contains("## Dev")
-    assertThat(output).contains("## Alpha")
-    assertThat(output).doesNotContain("<details>")
+    assertThat(output).isEqualTo(
+      """
+      |# APK & AAB differences analysis
+      |
+      |## Dev
+      |
+      |### Universal APK
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
+      |
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
+      |
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
+      |
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
+      |
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
+      |
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
+      |
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
+      |
+      |*Detailed file differences:*
+      |1000${'\t'}2000${'\t'}1000${'\t'}/res/layout/activity_main.xml
+      |500${'\t'}0${'\t'}-500${'\t'}/res/drawable/ic_bg.png
+      |
+      |### AAB differences
+      |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |*Detailed file differences:*
+      |
+      |
+      |## Alpha
+      |
+      |### Universal APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |*Detailed file differences:*
+      |
+      |### AAB differences
+      |Supported configurations:
+      |
+      |#### Base APK
+      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |
+      |Method count: 0 (old), 0 (new), **0** (No change)
+      |
+      |Features: 0 (old), 0 (new), **0** (No change)
+      |
+      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |
+      |Resources: 0 (old), 0 (new), **0** (No change)
+      |
+      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |
+      |*Detailed file differences:*
+      |
+      |""".trimMargin()
+    )
   }
 
   private fun createComputeAabDifferences(): ComputeAabDifferences {
