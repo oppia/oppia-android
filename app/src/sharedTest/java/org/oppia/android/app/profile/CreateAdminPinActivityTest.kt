@@ -91,14 +91,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PinSetupActivity]. */
+/** Tests for [CreateAdminPinActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PinSetupActivityTest.TestApplication::class,
+  application = CreateAdminPinActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class PinSetupActivityTest {
+class CreateAdminPinActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -125,23 +125,23 @@ class PinSetupActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createPinSetupActivityIntent().extractCurrentAppScreenName()
-    assertThat(screenName).isEqualTo(ScreenName.PIN_SETUP_ACTIVITY)
+    assertThat(screenName).isEqualTo(ScreenName.CREATE_ADMIN_PIN_ACTIVITY)
   }
 
   @Test
   fun testActivity_hasCorrectActivityLabel() {
-    ActivityScenario.launch<PinSetupActivity>(createPinSetupActivityIntent())
+    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent())
       .use { scenario ->
         scenario?.onActivity { activity ->
           val title = activity.title
-          assertThat(title).isEqualTo(context.getString(R.string.pin_setup_activity_title))
+          assertThat(title).isEqualTo(context.getString(R.string.create_admin_pin_activity_title))
         }
       }
   }
 
   private fun createPinSetupActivityIntent(): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
-    return PinSetupActivity.createPinSetupActivityIntent(context, profileId)
+    return CreateAdminPinActivity.createAdminPinActivityIntent(context, profileId)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -217,7 +217,7 @@ class PinSetupActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(pinSetupActivityTest: PinSetupActivityTest)
+    fun inject(pinSetupActivityTest: CreateAdminPinActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -227,8 +227,8 @@ class PinSetupActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(pinSetupActivityTest: PinSetupActivityTest) {
-      component.inject(pinSetupActivityTest)
+    fun inject(createAdminPinActivityTest: CreateAdminPinActivityTest) {
+      component.inject(createAdminPinActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

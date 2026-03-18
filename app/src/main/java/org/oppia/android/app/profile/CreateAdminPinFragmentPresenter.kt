@@ -71,9 +71,9 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-/** The presenter for [PinSetupFragment]. */
+/** The presenter for [CreateAdminPinFragment]. */
 @FragmentScope
-class PinSetupFragmentPresenter @Inject constructor(
+class CreateAdminPinFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -81,7 +81,7 @@ class PinSetupFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: PinSetupFragmentBinding
 
-  /** Creates and returns the view for the [PinSetupFragment]. */
+  /** Creates and returns the view for the [CreateAdminPinFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?
@@ -179,7 +179,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           }
         },
         label = resourceHandler
-          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_enter_pin_label),
+          .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_enter_pin_label),
         error = uiState.pinError,
         isError = uiState.pinError.isNotEmpty(),
         focusManager = focusManager,
@@ -202,7 +202,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           }
         },
         label = resourceHandler
-          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_confirm_pin_label),
+          .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_confirm_pin_label),
         error = uiState.confirmPinError,
         isError = uiState.confirmPinError.isNotEmpty(),
         focusManager = focusManager,
@@ -255,7 +255,7 @@ class PinSetupFragmentPresenter @Inject constructor(
   private fun PinSetupHeader() {
     Text(
       text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_header
+        R.string.create_admin_pin_activity_header
       ),
       fontSize = 20.sp,
       fontWeight = FontWeight.Bold,
@@ -269,7 +269,7 @@ class PinSetupFragmentPresenter @Inject constructor(
   private fun PinSetupMessage() {
     Text(
       text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_message
+        R.string.create_admin_pin_activity_message
       ),
       fontSize = 14.sp,
       textAlign = TextAlign.Center,
@@ -325,8 +325,13 @@ class PinSetupFragmentPresenter @Inject constructor(
         ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
           unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
-          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
-          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
+          focusedBorderColor = colorResource(R.color.component_color_shared_pin_focused_color),
+          cursorColor = colorResource(R.color.component_color_shared_pin_cursor_color),
+          backgroundColor =
+            colorResource(R.color.component_color_shared_transparent_background_color),
+          textColor = colorResource(R.color.component_color_shared_primary_text_color),
+          unfocusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color),
+          focusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color)
         )
       )
       if (error.isNotEmpty()) {
@@ -346,7 +351,7 @@ class PinSetupFragmentPresenter @Inject constructor(
       text = resourceHandler.getStringInLocaleWithWrapping(
         R.string.onboarding_step_count_five
       ),
-      color = colorResource(R.color.component_color_onboarding_shared_green_color),
+      color = colorResource(R.color.component_color_onboarding_shared_green_text_color),
       fontSize = 16.sp,
       fontWeight = FontWeight.Medium,
       modifier = Modifier.padding(bottom = 16.dp)
@@ -370,7 +375,7 @@ class PinSetupFragmentPresenter @Inject constructor(
       ) {
         Text(
           text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
-          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          color = colorResource(R.color.component_color_onboarding_shared_green_text_color),
           fontWeight = FontWeight.Bold
         )
       }
@@ -416,7 +421,7 @@ class PinSetupFragmentPresenter @Inject constructor(
       pin.isNotEmpty() && pin.length < ADMIN_PIN_LENGTH -> {
         // Use the length error string for real-time feedback
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_length_error
+          R.string.create_admin_pin_activity_length_error
         )
       }
 
@@ -429,7 +434,7 @@ class PinSetupFragmentPresenter @Inject constructor(
       confirmPin.isNotEmpty() && confirmPin != pin -> {
         // Use the mismatch error string for real-time feedback
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_mismatch_error
+          R.string.create_admin_pin_activity_mismatch_error
         )
       }
 
@@ -446,7 +451,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         PinValidationResult(
           isValid = false,
           errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_blank_error
+            R.string.create_admin_pin_activity_blank_error
           )
         )
       }
@@ -455,7 +460,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         PinValidationResult(
           isValid = false,
           errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_mismatch_error
+            R.string.create_admin_pin_activity_mismatch_error
           )
         )
       }
@@ -464,7 +469,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         PinValidationResult(
           isValid = false,
           errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_length_error
+            R.string.create_admin_pin_activity_length_error
           )
         )
       }
@@ -473,7 +478,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         PinValidationResult(
           isValid = false,
           errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_mismatch_error
+            R.string.create_admin_pin_activity_mismatch_error
           )
         )
       }
@@ -486,7 +491,7 @@ class PinSetupFragmentPresenter @Inject constructor(
 
   private fun updatePin(pin: String) {
     val profileId = checkNotNull(fragment.arguments?.extractCurrentUserProfileId()) {
-      "Expected profileId to be included in the arguments for PinSetupFragment."
+      "Expected profileId to be included in the arguments for CreateAdminPinFragment."
     }
 
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
@@ -496,7 +501,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           intent.putProtoExtra(
             PROFILE_CHOOSER_PARAMS_KEY,
             ProfileChooserActivityParams.newBuilder()
-              .setParentScreen(ProfileChooserActivityParams.ParentScreen.CREATE_PIN_SCREEN)
+              .setParentScreen(ProfileChooserActivityParams.ParentScreen.CREATE_ADMIN_PIN_SCREEN)
               .build()
           )
         }

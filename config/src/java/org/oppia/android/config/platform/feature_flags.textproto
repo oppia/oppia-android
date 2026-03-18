@@ -51,7 +51,7 @@ feature_flag_definition {
 feature_flag_definition {
   id: ONBOARDING_FLOW_V2
   remote_server_name: "android_enable_onboarding_flow_v2"
-  default_is_enabled: true
+  default_is_enabled: false
 }
 feature_flag_definition {
   id: MULTIPLE_CLASSROOMS

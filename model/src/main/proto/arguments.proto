@@ -970,11 +970,11 @@ message ProfileChooserActivityParams {
     // Indicates that the originating screen isn't actually known.
     PARENT_SCREEN_UNSPECIFIED = 0;
 
-    // Corresponds to the story viewer screen.
+    // Corresponds to the splash screen.
     SPLASH_SCREEN = 1;
 
-    // Corresponds to the admin intro screen.
-    CREATE_PIN_SCREEN = 2;
+    // Corresponds to the create admin PIN screen.
+    CREATE_ADMIN_PIN_SCREEN = 2;
 
     // Corresponds to the exit profile dialog.
     EXIT_PROFILE_SCREEN = 3;

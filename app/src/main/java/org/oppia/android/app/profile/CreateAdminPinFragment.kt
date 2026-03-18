@@ -9,11 +9,11 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains the PIN setup screen. */
-class PinSetupFragment : InjectableFragment() {
+/** Fragment that contains the create admin PIN screen. */
+class CreateAdminPinFragment : InjectableFragment() {
 
   @Inject
-  lateinit var pinSetupFragmentPresenter: PinSetupFragmentPresenter
+  lateinit var createAdminPinFragmentPresenter: CreateAdminPinFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -25,6 +25,6 @@ class PinSetupFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return pinSetupFragmentPresenter.handleCreateView(inflater, container)
+    return createAdminPinFragmentPresenter.handleCreateView(inflater, container)
   }
 }

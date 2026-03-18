@@ -184,7 +184,7 @@ enum ScreenName {
   ADMIN_INTRO_ACTIVITY = 57;
 
   // Screen name value for the scenario when the create admin PIN screen is visible to the user.
-  PIN_SETUP_ACTIVITY = 58;
+  CREATE_ADMIN_PIN_ACTIVITY = 58;
 }
 
 // Defines the current visible UI screen of the application.
