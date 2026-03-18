@@ -267,12 +267,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 
       // End the process forcibly since the app is not designed to recover from major on-disk state
       // changes that happen from underneath it (like deleting all profiles).
-      terminateProcess()
+      exitProcess(0)
     }
-  }
-
-  private fun terminateProcess() {
-    exitProcess(0)
   }
 
   private fun showSuccessDialog() {

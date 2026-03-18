@@ -318,10 +318,9 @@ class SurveyProgressController @Inject constructor(
             try {
               controllerState.completeSurveyImpl(message.callbackFlow)
             } finally {
-              // No-op: ensures cleanup even on failure before breaking the actor loop.
+              // Ensure the actor ends since the session requires no further message processing.
+              break
             }
-            // Ensure the actor ends since the session requires no further message processing.
-            break
           }
         }
       }
