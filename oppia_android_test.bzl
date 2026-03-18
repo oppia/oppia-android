@@ -32,7 +32,7 @@ def oppia_android_layer_level_test(
     """
     if name not in filtered_tests:
         oppia_android_test(
-            name = name[:name.find(".kt")] if "/" in name else name,
+            name =name.replace(".kt", "") if "/" in name else name,
             srcs = [processed_src or name] + additional_srcs,
             test_class = (
                 test_class or _remove_prefix_suffix(name, test_path_prefix, ".kt").replace("/", ".")
