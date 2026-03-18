@@ -9,8 +9,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.TextInputActionTestActivity
-import org.oppia.android.testing.espresso.EditTextInputAction.Companion.appendText
-import org.oppia.android.testing.espresso.EditTextInputAction.Companion.replaceText
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
+import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
 import org.robolectric.annotation.Config
