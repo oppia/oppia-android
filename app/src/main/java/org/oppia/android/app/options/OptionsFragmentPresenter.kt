@@ -13,8 +13,8 @@ import org.oppia.android.app.databinding.databinding.OptionsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -50,7 +50,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var appLanguage = OppiaLanguage.ENGLISH
   private var audioLanguage = AudioLanguage.NO_AUDIO
 
@@ -71,7 +71,7 @@ class OptionsFragmentPresenter @Inject constructor(
     )
 
     internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     optionControlsViewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.ExplorationFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
@@ -161,7 +161,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       oppiaLogger.createOpenExplorationActivityContext(
         classroomId, topicId, storyId, explorationId
       ),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 

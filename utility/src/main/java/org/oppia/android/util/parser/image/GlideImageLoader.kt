@@ -74,11 +74,12 @@ class GlideImageLoader @Inject constructor(
     rawLatex: String,
     lineHeight: Float,
     useInlineRendering: Boolean,
+    equationColor: Int,
     target: ImageTarget<Bitmap>
   ) {
     glide
       .asBitmap()
-      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering, equationColor))
       .intoTarget(target)
   }
 

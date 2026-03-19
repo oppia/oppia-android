@@ -1,0 +1,76 @@
+# Jobs for determining if a PR body is correctly fixing or partly fixing one or more issues, and
+# that the PR author is assigned to work on those issues.
+
+name: Verify PR Fixed Issue Assignment
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  validate-pr:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan PR for issues being addressed
+        id: step-1
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const incorrectFormatRegex = /^Fix(?: part of)? #(\d+)$/gm;
+            const correctFormatRegex = /^Fixes(?: part of)? #(\d+)$/gm;
+            const invalidIssueNumbers = [... (context.payload.pull_request.body || '').matchAll(incorrectFormatRegex)].map((match) => match[1]);
+            const issueNumbers = [... (context.payload.pull_request.body || '').matchAll(correctFormatRegex)].map((match) => match[1]);
+            core.setOutput('issue_numbers_list_json', JSON.stringify(issueNumbers));
+            core.info(`PR #${context.payload.pull_request.number} is marked as fixing or partially fixing issue(s): ${JSON.stringify(issueNumbers)}. It also has invalid reference(s): ${JSON.stringify(invalidIssueNumbers)}.`);
+            if (invalidIssueNumbers.length !== 0) {
+              const issueRefs = invalidIssueNumbers.map((issueNumber) => `#${issueNumber}`).join(', ');
+              core.setOutput('failure_message', `the PR description should not use 'Fix #<issue>' or 'Fix part of #<issue>' syntax. Instead use 'Fixes' and 'Fixes part of', per referenced issue(s): ${issueRefs}`);
+            } else if (issueNumbers.length === 0) {
+              core.setOutput('failure_message', "the PR description must contain 'Fixes #<issue>' or 'Fixes part of #<issue>' for each issue the PR is changing, and each one on its own line with no other text");
+            }
+
+      - name: Find issue assignment(s)
+        id: step-2
+        if: ${{ steps.step-1.outputs.failure_message == '' }}
+        uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBERS_LIST_JSON: ${{ steps.step-1.outputs.issue_numbers_list_json }}
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+            const issuePromises =
+              JSON.parse(process.env.ISSUE_NUMBERS_LIST_JSON).map((issueNumber) =>
+                github.rest.issues.get({ owner: context.repo.owner, repo: context.repo.repo, issue_number: issueNumber })
+                  .then((issue) => ({ issueNumber, assignees: issue.data.assignees.map(a => a.login), isValid: true }))
+                  .catch((error) => ({ issueNumber, assignees: [], isValid: false })))
+            const invalidAuthorshipIssueNumbers =
+              (await Promise.all(issuePromises))
+                .filter((result) => !result.isValid || !result.assignees.includes(author))
+                .map((result) => result.issueNumber);
+            core.info(`The following issues are being referenced in PR #${context.payload.pull_request.number} but are not assigned to the PR author (${author}): ${JSON.stringify(invalidAuthorshipIssueNumbers)}.`);
+            if (invalidAuthorshipIssueNumbers.length !== 0) {
+              const issueRefs = invalidAuthorshipIssueNumbers.map((issueNumber) => `#${issueNumber}`).join(', ');
+              const issueRefLine = invalidAuthorshipIssueNumbers.length == 1 ? `issue ${issueRefs} (or it does not exist)` : `issues ${issueRefs} (or they do not exist)`;
+              core.setOutput('failure_message', `you are not assigned to referenced ${issueRefLine}. You may only fix issues that you are assigned to to help avoid multiple team members duplicating work on the same issue`);
+            }
+
+      - name: Move PR to draft and add comment
+        id: step-3
+        if: ${{ steps.step-1.outputs.failure_message != '' || steps.step-2.outputs.failure_message != '' }}
+        uses: actions/github-script@v7
+        env:
+          FAILURE_MESSAGE_1: ${{ steps.step-1.outputs.failure_message }}
+          FAILURE_MESSAGE_2: ${{ steps.step-2.outputs.failure_message }}
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const failureReason = process.env.FAILURE_MESSAGE_1 || process.env.FAILURE_MESSAGE_2;
+            const failureMessage = `@${pr.user.login} this PR is being marked as draft because ${failureReason}.`;
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body: failureMessage });
+            await github.graphql('mutation($id: ID!) { convertPullRequestToDraft(input: {pullRequestId: $id}) { clientMutationId } }', { id: pr.node_id });
+            core.setFailed(failureMessage);

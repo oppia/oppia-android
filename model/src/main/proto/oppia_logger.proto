@@ -27,7 +27,7 @@ message EventLog {
   // The profile to which this event corresponds, or empty if this event is not tied to a particular
   // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
   // at source.
-  ProfileId profile_id = 8;
+  LegacyProfileId profile_id = 8;
 
   // The app language selection context at the time of this event's creation.
   AppLanguageSelection app_language_selection = 5;
@@ -253,7 +253,7 @@ message EventLog {
     // The profile to which this event corresponds, or empty if this event is not tied to a particular
     // profile. This is only used for diagnostic purposes as events are only ever logged anonymously
     // at source.
-    ProfileId profile_id = 1;
+    LegacyProfileId profile_id = 1;
 
     // Represents the type of user profile.
     ProfileType profile_type = 2;
@@ -487,11 +487,13 @@ message EventLog {
     // String of the url being called.
     string request_url = 1;
 
-    // Headers passed as part of the retrofit call.
-    string headers = 2;
+    // Deprecated headers field. Headers always exceeded GA4's 100-character parameter limit and were
+    // discarded by Firebase Analytics.
+    reserved 2;
 
-    // Body of the retrofit call.
-    string body = 3;
+    // Deprecated body field. Body always exceeded GA4's 100-character parameter limit and was
+    // discarded by Firebase Analytics.
+    reserved 3;
 
     // Http response code from the call.
     int32 response_status_code = 4;
@@ -502,11 +504,13 @@ message EventLog {
     // String of the url being called.
     string request_url = 1;
 
-    // Headers passed as part of the retrofit call.
-    string headers = 2;
+    // Deprecated headers field. Headers always exceeded GA4's 100-character parameter limit and were
+    // discarded by Firebase Analytics.
+    reserved 2;
 
-    // Body of the retrofit call.
-    string body = 3;
+    // Deprecated body field. Body always exceeded GA4's 100-character parameter limit and was
+    // discarded by Firebase Analytics.
+    reserved 3;
 
     // Response code from the call.
     int32 response_status_code = 4;
@@ -556,7 +560,7 @@ message EventLog {
   // Structure for the profile onboarding context.
   message ProfileOnboardingContext {
     // The Id of the profile to be onboarded.
-    ProfileId profile_id = 1;
+    LegacyProfileId profile_id = 1;
   }
 
   // Supported priority of events for event logging

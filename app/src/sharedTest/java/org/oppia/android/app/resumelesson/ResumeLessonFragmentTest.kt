@@ -37,7 +37,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -284,7 +284,7 @@ class ResumeLessonFragmentTest {
         val receivedCheckpoint = args.checkpoint
 
         assertThat(receivedProfileId)
-          .isEqualTo(ProfileId.newBuilder().apply { internalId = 1 }.build())
+          .isEqualTo(LegacyProfileId.newBuilder().apply { internalId = 1 }.build())
         assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
         assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
         assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
@@ -299,7 +299,7 @@ class ResumeLessonFragmentTest {
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -312,7 +312,7 @@ class ResumeLessonFragmentTest {
   private fun createResumeRatiosLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,

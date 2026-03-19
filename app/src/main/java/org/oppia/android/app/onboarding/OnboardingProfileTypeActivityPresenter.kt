@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeActivityBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class OnboardingProfileTypeActivityPresenter @Inject constructor(
   private lateinit var binding: OnboardingProfileTypeActivityBinding
 
   /** Handle creation and binding of the  OnboardingProfileTypeActivity layout. */
-  fun handleOnCreate(profileId: ProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId) {
     binding = DataBindingUtil.setContentView(activity, R.layout.onboarding_profile_type_activity)
     binding.apply {
       lifecycleOwner = activity

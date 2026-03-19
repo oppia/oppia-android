@@ -895,7 +895,7 @@ class HtmlParserTest {
         textView.text = htmlResult
 
         assertThat(textView.contentDescription.toString()).isEqualTo(
-          "Visit refresher lesson to learn more."
+          "Visit skill_id_1 concept card to learn more."
         )
       }
     }
@@ -1078,7 +1078,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_withMathTag_loadsTextSvg() {
+  fun testHtmlContent_withMathTag_loadsLatexDrawable() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -1101,9 +1101,9 @@ class HtmlParserTest {
         textView.text = htmlResult
       }
 
-      val loadedInlineImages = testGlideImageLoader.getLoadedTextSvgs()
-      assertThat(loadedInlineImages).hasSize(1)
-      assertThat(loadedInlineImages.first()).contains("math_image1.svg")
+      val loadedMathDrawables = testGlideImageLoader.getLoadedMathDrawables()
+      assertThat(loadedMathDrawables).hasSize(1)
+      assertThat(loadedMathDrawables.first().rawLatex).isEqualTo("\\frac{2}{5}")
     }
   }
 
