@@ -1536,6 +1536,137 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @Test
+  fun testProfileChooser_afterDataReset_showsAdminProfile() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow, deleteAllProfiles() does not update the in-memory cache
+      // (the app is expected to be forcibly closed after deletion), so the admin profile
+      // is still shown in the recycler view.
+      onView(withId(R.id.profile_recycler_view))
+        .check(matches(isDisplayed()))
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooser_enableOnboardingV2_afterDataReset_showsEmptyProfileList() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v2 onboarding flow, the profile list is empty after data reset.
+      onView(withId(R.id.profiles_list))
+        .check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profiles_list,
+          position = 0,
+          targetViewId = R.id.profile_name_text
+        )
+      ).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_selectingAdminProfile_doesNotCrash() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow, the admin profile is still displayed due to in-memory
+      // cache. Verify that the admin profile is present and clickable without crashing.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_classroomsEnabled_selectingAdminProfile_doesNotCrash() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow with classrooms enabled, the admin profile is still
+      // displayed due to in-memory cache. Verify it is clickable and navigates
+      // to ClassroomListActivity.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)

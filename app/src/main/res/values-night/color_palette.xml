@@ -233,7 +233,8 @@
   <color name="color_palette_button_shadow_color">@color/color_def_black_25</color>
   <!-- ON-BOARDING -->
   <color name="color_palette_onboarding_primary_color">@color/color_def_dark_green</color>
-  <color name="color_palette_onboarding_primary_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_onboarding_primary_text_color">@color/color_def_white</color>
+  <color name="color_palette_onboarding_secondary_text_color">@color/color_def_white</color>
   <color name="color_palette_onboarding_profile_type_background_color">@color/color_def_jade</color>
   <color name="color_palette_onboarding_edit_icon_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_black_color">@color/color_def_black</color>
@@ -260,4 +261,6 @@
   <!-- PROFILE LOGIN -->
   <color name="color_palette_profile_login_background_color">@color/color_def_highlight_blue_darker</color>
   <color name="color_palette_profile_login_primary_text_color">@color/color_def_white</color>
+  <!-- Create Admin PIN Activity -->
+  <color name="color_palette_pin_stroke_color">@color/color_def_white</color>
 </resources>

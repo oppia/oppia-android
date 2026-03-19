@@ -46,7 +46,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
-import org.oppia.android.app.profile.PinSetupActivity
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -260,7 +260,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
       Button(
         onClick = {
           fragment.startActivity(
-            PinSetupActivity.createPinSetupActivityIntent(activity, profileId)
+            CreateAdminPinActivity.createAdminPinActivityIntent(activity, profileId)
           )
         },
         colors = ButtonDefaults.buttonColors(

@@ -1,6 +1,7 @@
 package org.oppia.android.app.profile
 
 import android.content.res.Configuration
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,8 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.delay
-import org.oppia.android.app.databinding.databinding.PinSetupFragmentBinding
+import org.oppia.android.app.databinding.databinding.CreateAdminPinFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.CreateAdminPinUiState
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -71,40 +73,52 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-/** The presenter for [PinSetupFragment]. */
+/** The presenter for [CreateAdminPinFragment]. */
 @FragmentScope
-class PinSetupFragmentPresenter @Inject constructor(
+class CreateAdminPinFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController
 ) {
-  private lateinit var binding: PinSetupFragmentBinding
+  private lateinit var binding: CreateAdminPinFragmentBinding
 
-  /** Creates and returns the view for the [PinSetupFragment]. */
+  /** Creates and returns the view for the [CreateAdminPinFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
   ): View? {
-    binding = PinSetupFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    createComposeView()
+    binding = CreateAdminPinFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    createComposeView(savedInstanceState)
     return binding.root
   }
 
-  private fun createComposeView() {
-    binding.pinSetupComposeView.apply {
+  private fun createComposeView(savedInstanceState: Bundle?) {
+    val initialState = savedInstanceState
+      ?.getByteArray(UI_STATE_SAVED_INSTANCE_STATE_KEY)
+      ?.let { CreateAdminPinUiState.parseFrom(it) }
+      ?: CreateAdminPinUiState.getDefaultInstance()
+
+    binding.createAdminPinComposeView.apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
         MaterialTheme {
-          PinSetupScreen()
+          CreateAdminPinScreen(initialState)
         }
       }
     }
   }
 
+  // Saver that serializes CreateAdminPinUiState to/from its proto byte representation.
+  private val createAdminPinUiStateSaver = Saver<CreateAdminPinUiState, ByteArray>(
+    save = { it.toByteArray() },
+    restore = { CreateAdminPinUiState.parseFrom(it) }
+  )
+
   @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  fun PinSetupScreen() {
+  fun CreateAdminPinScreen(initialState: CreateAdminPinUiState) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -114,38 +128,10 @@ class PinSetupFragmentPresenter @Inject constructor(
       derivedStateOf { isPortrait }
     }
 
-    // PinSetupUiStateSaver uses Pascal case because it's a singleton functional object, and
-    // Kotlin’s naming conventions recommend PascalCase for anything that behaves like a singleton.
-    val PinSetupUiStateSaver = run {
-      Saver<PinSetupUiState, Map<String, String>>(
-        save = {
-          mapOf(
-            "pin" to it.pin,
-            "confirmPin" to it.confirmPin,
-            "showError" to it.showError.toString(),
-            "errorMessage" to it.errorMessage,
-            "pinError" to it.pinError,
-            "confirmPinError" to it.confirmPinError
-          )
-        },
-        restore = {
-          PinSetupUiState(
-            pin = it["pin"] ?: "",
-            confirmPin = it["confirmPin"] ?: "",
-            showError = it["showError"].toBoolean(),
-            errorMessage = it["errorMessage"] ?: "",
-            pinError = it["pinError"] ?: "",
-            confirmPinError = it["confirmPinError"] ?: ""
-          )
-        }
-      )
+    var uiState by rememberSaveable(stateSaver = createAdminPinUiStateSaver) {
+      mutableStateOf(initialState)
     }
 
-    var uiState by rememberSaveable(stateSaver = PinSetupUiStateSaver) {
-      mutableStateOf(PinSetupUiState())
-    }
-
-    // Request focus when the screen first composes.
     LaunchedEffect(Unit) {
       focusRequester.requestFocus()
       delay(100)
@@ -161,66 +147,35 @@ class PinSetupFragmentPresenter @Inject constructor(
     ) {
       Spacer(modifier = Modifier.weight(1f))
 
-      PinSetupHeader()
+      CreateAdminPinHeader()
 
-      PinSetupMessage()
+      CreateAdminPinMessage()
 
-      PinInputField(
+      CreateAdminPinInputField(
         value = uiState.pin,
-        onValueChange = { newValue ->
-          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH.
-          if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-            uiState = uiState.copy(
-              pin = newValue,
-              pinError = validatePinInput(newValue),
-              // Clear general error when user starts typing.
-              showError = if (newValue.isNotEmpty()) false else uiState.showError
-            )
-          }
-        },
+        onValueChange = { onPinChanged(uiState, it) { newState -> uiState = newState } },
         label = resourceHandler
-          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_enter_pin_label),
-        error = uiState.pinError,
-        isError = uiState.pinError.isNotEmpty(),
+          .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_enter_pin_label),
+        error = computePinError(uiState.pin),
         focusManager = focusManager,
         imeAction = ImeAction.Next,
         focusRequester = focusRequester
       )
 
-      PinInputField(
+      CreateAdminPinInputField(
         value = uiState.confirmPin,
-        onValueChange = { newValue ->
-          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH.
-          if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-            uiState = uiState.copy(
-              confirmPin = newValue,
-              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty())
-                validateConfirmPinInput(uiState.pin, newValue) else "",
-              // Clear general error when user starts typing.
-              showError = if (newValue.isNotEmpty()) false else uiState.showError
-            )
-          }
+        onValueChange = {
+          onConfirmPinChanged(uiState, it) { newState -> uiState = newState }
         },
         label = resourceHandler
-          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_confirm_pin_label),
-        error = uiState.confirmPinError,
-        isError = uiState.confirmPinError.isNotEmpty(),
+          .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_confirm_pin_label),
+        error = computeConfirmPinError(uiState.pin, uiState.confirmPin),
         focusManager = focusManager,
         imeAction = ImeAction.Done,
-        onDone = {
-          val validationResult = validatePins(uiState.pin, uiState.confirmPin)
-          if (validationResult.isValid) {
-            updatePin(uiState.pin)
-          } else {
-            uiState = uiState.copy(
-              showError = true,
-              errorMessage = validationResult.errorMessage
-            )
-          }
-        }
+        onDone = { onSubmit(uiState) { newState -> uiState = newState } }
       )
 
-      PinErrorText(
+      CreateAdminPinErrorText(
         showError = uiState.showError,
         errorMessage = uiState.errorMessage
       )
@@ -228,34 +183,24 @@ class PinSetupFragmentPresenter @Inject constructor(
       Spacer(modifier = Modifier.weight(1f))
 
       if (stepCountIsVisible) {
-        StepCountText()
+        CreateAdminPinStepCountText()
         Spacer(modifier = Modifier.height(8.dp))
       }
 
-      NavigationButtons(
+      CreateAdminPinNavigationButtons(
         onBackClick = { activity.finish() },
-        onContinueClick = {
-          val validationResult = validatePins(uiState.pin, uiState.confirmPin)
-          if (validationResult.isValid) {
-            uiState = uiState.copy(showError = false)
-            updatePin(uiState.pin)
-          } else {
-            uiState = uiState.copy(
-              showError = true,
-              errorMessage = validationResult.errorMessage
-            )
-          }
-        },
-        isContinueEnabled = uiState.pinError.isEmpty() && uiState.confirmPinError.isEmpty()
+        onContinueClick = { onSubmit(uiState) { newState -> uiState = newState } },
+        isContinueEnabled = computePinError(uiState.pin).isEmpty() &&
+          computeConfirmPinError(uiState.pin, uiState.confirmPin).isEmpty()
       )
     }
   }
 
   @Composable
-  private fun PinSetupHeader() {
+  private fun CreateAdminPinHeader() {
     Text(
       text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_header
+        R.string.create_admin_pin_activity_header
       ),
       fontSize = 20.sp,
       fontWeight = FontWeight.Bold,
@@ -266,10 +211,10 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun PinSetupMessage() {
+  private fun CreateAdminPinMessage() {
     Text(
       text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_message
+        R.string.create_admin_pin_activity_message
       ),
       fontSize = 14.sp,
       textAlign = TextAlign.Center,
@@ -279,12 +224,11 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun PinInputField(
+  private fun CreateAdminPinInputField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
     error: String,
-    isError: Boolean,
     focusManager: FocusManager,
     imeAction: ImeAction,
     focusRequester: FocusRequester? = null,
@@ -319,14 +263,17 @@ class PinSetupFragmentPresenter @Inject constructor(
           } else null
         ),
         visualTransformation = PasswordVisualTransformation(),
-        isError = isError,
-        textStyle = LocalTextStyle.current.copy(
-          fontSize = 16.sp
-        ),
+        isError = error.isNotEmpty(),
+        textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
           unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
-          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
-          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
+          focusedBorderColor = colorResource(R.color.component_color_shared_pin_focused_color),
+          cursorColor = colorResource(R.color.component_color_shared_pin_cursor_color),
+          backgroundColor =
+            colorResource(R.color.component_color_shared_transparent_background_color),
+          textColor = colorResource(R.color.component_color_shared_primary_text_color),
+          unfocusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color),
+          focusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color)
         )
       )
       if (error.isNotEmpty()) {
@@ -341,12 +288,12 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun StepCountText() {
+  private fun CreateAdminPinStepCountText() {
     Text(
       text = resourceHandler.getStringInLocaleWithWrapping(
         R.string.onboarding_step_count_five
       ),
-      color = colorResource(R.color.component_color_onboarding_shared_green_color),
+      color = colorResource(R.color.component_color_onboarding_shared_green_text_color),
       fontSize = 16.sp,
       fontWeight = FontWeight.Medium,
       modifier = Modifier.padding(bottom = 16.dp)
@@ -354,10 +301,10 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun NavigationButtons(
+  private fun CreateAdminPinNavigationButtons(
     onBackClick: () -> Unit,
     onContinueClick: () -> Unit,
-    isContinueEnabled: Boolean = true
+    isContinueEnabled: Boolean
   ) {
     Row(
       modifier = Modifier
@@ -365,12 +312,10 @@ class PinSetupFragmentPresenter @Inject constructor(
         .padding(top = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween
     ) {
-      TextButton(
-        onClick = onBackClick
-      ) {
+      TextButton(onClick = onBackClick) {
         Text(
           text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
-          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          color = colorResource(R.color.component_color_onboarding_shared_green_text_color),
           fontWeight = FontWeight.Bold
         )
       }
@@ -398,7 +343,7 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun PinErrorText(showError: Boolean, errorMessage: String) {
+  private fun CreateAdminPinErrorText(showError: Boolean, errorMessage: String) {
     if (showError) {
       Text(
         text = errorMessage,
@@ -411,27 +356,71 @@ class PinSetupFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun validatePinInput(pin: String): String {
+  private fun onPinChanged(
+    uiState: CreateAdminPinUiState,
+    newValue: String,
+    updateState: (CreateAdminPinUiState) -> Unit
+  ) {
+    if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
+      updateState(
+        uiState.toBuilder()
+          .setPin(newValue)
+          .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
+          .build()
+      )
+    }
+  }
+
+  private fun onConfirmPinChanged(
+    uiState: CreateAdminPinUiState,
+    newValue: String,
+    updateState: (CreateAdminPinUiState) -> Unit
+  ) {
+    if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
+      updateState(
+        uiState.toBuilder()
+          .setConfirmPin(newValue)
+          .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
+          .build()
+      )
+    }
+  }
+
+  private fun onSubmit(
+    uiState: CreateAdminPinUiState,
+    updateState: (CreateAdminPinUiState) -> Unit
+  ) {
+    val validationResult = validatePins(uiState.pin, uiState.confirmPin)
+    if (validationResult.isValid) {
+      updateState(uiState.toBuilder().setShowError(false).build())
+      updatePin(uiState.pin)
+    } else {
+      updateState(
+        uiState.toBuilder()
+          .setShowError(true)
+          .setErrorMessage(validationResult.errorMessage)
+          .build()
+      )
+    }
+  }
+
+  private fun computePinError(pin: String): String {
     return when {
-      pin.isNotEmpty() && pin.length < ADMIN_PIN_LENGTH -> {
-        // Use the length error string for real-time feedback
+      pin.isNotEmpty() && pin.length < ADMIN_PIN_LENGTH ->
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_length_error
+          R.string.create_admin_pin_activity_length_error
         )
-      }
 
       else -> ""
     }
   }
 
-  private fun validateConfirmPinInput(pin: String, confirmPin: String): String {
+  private fun computeConfirmPinError(pin: String, confirmPin: String): String {
     return when {
-      confirmPin.isNotEmpty() && confirmPin != pin -> {
-        // Use the mismatch error string for real-time feedback
+      confirmPin.isNotEmpty() && confirmPin != pin ->
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_mismatch_error
+          R.string.create_admin_pin_activity_mismatch_error
         )
-      }
 
       else -> ""
     }
@@ -442,51 +431,33 @@ class PinSetupFragmentPresenter @Inject constructor(
     val isValidConfirmPin = confirmPin.length == ADMIN_PIN_LENGTH && confirmPin.all(Char::isDigit)
 
     return when {
-      pin.isEmpty() -> {
-        PinValidationResult(
-          isValid = false,
-          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_blank_error
-          )
+      isValidPin && isValidConfirmPin && pin == confirmPin -> PinValidationResult(isValid = true)
+      pin.isEmpty() -> PinValidationResult(
+        isValid = false,
+        errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+          R.string.create_admin_pin_activity_blank_error
         )
-      }
+      )
 
-      pin.isNotEmpty() && confirmPin.isEmpty() -> {
-        PinValidationResult(
-          isValid = false,
-          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_mismatch_error
-          )
+      !isValidPin || !isValidConfirmPin -> PinValidationResult(
+        isValid = false,
+        errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+          R.string.create_admin_pin_activity_length_error
         )
-      }
+      )
 
-      !isValidPin || !isValidConfirmPin -> {
-        PinValidationResult(
-          isValid = false,
-          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_length_error
-          )
+      else -> PinValidationResult(
+        isValid = false,
+        errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+          R.string.create_admin_pin_activity_mismatch_error
         )
-      }
-
-      pin != confirmPin -> {
-        PinValidationResult(
-          isValid = false,
-          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
-            R.string.pin_setup_activity_mismatch_error
-          )
-        )
-      }
-
-      else -> {
-        PinValidationResult(isValid = true)
-      }
+      )
     }
   }
 
   private fun updatePin(pin: String) {
     val profileId = checkNotNull(fragment.arguments?.extractCurrentUserProfileId()) {
-      "Expected profileId to be included in the arguments for PinSetupFragment."
+      "Expected profileId to be included in the arguments for CreateAdminPinFragment."
     }
 
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
@@ -496,35 +467,24 @@ class PinSetupFragmentPresenter @Inject constructor(
           intent.putProtoExtra(
             PROFILE_CHOOSER_PARAMS_KEY,
             ProfileChooserActivityParams.newBuilder()
-              .setParentScreen(ProfileChooserActivityParams.ParentScreen.CREATE_PIN_SCREEN)
+              .setParentScreen(ProfileChooserActivityParams.ParentScreen.CREATE_ADMIN_PIN_SCREEN)
               .build()
           )
         }
         fragment.startActivity(intent)
-        // We don't want the user to be able to revisit the onboarding screens after this last step.
         fragment.activity?.finishAffinity()
       }
     }
   }
 
   companion object {
-    /** The required length for admin PINs. */
     private const val ADMIN_PIN_LENGTH = 5
+    private const val UI_STATE_SAVED_INSTANCE_STATE_KEY = "CreateAdminPinFragmentPresenter.ui_state"
   }
+
+  /** Data class for PIN validation result. */
+  private data class PinValidationResult(
+    val isValid: Boolean,
+    val errorMessage: String = ""
+  )
 }
-
-/** Data class to encapsulate the PIN setup UI state. */
-data class PinSetupUiState(
-  val pin: String = "",
-  val confirmPin: String = "",
-  val showError: Boolean = false,
-  val errorMessage: String = "",
-  val pinError: String = "",
-  val confirmPinError: String = ""
-)
-
-/** Data class for PIN validation result. */
-data class PinValidationResult(
-  val isValid: Boolean,
-  val errorMessage: String = ""
-)

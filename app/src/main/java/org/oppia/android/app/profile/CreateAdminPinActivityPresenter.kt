@@ -8,37 +8,37 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-/** The presenter for [PinSetupActivity]. */
+/** The presenter for [CreateAdminPinActivity]. */
 @ActivityScope
-class PinSetupActivityPresenter @Inject constructor(
+class CreateAdminPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private companion object {
-    private const val TAG_PIN_SETUP_FRAGMENT = "TAG_PIN_SETUP_FRAGMENT"
+    private const val TAG_CREATE_ADMIN_PIN_FRAGMENT = "TAG_CREATE_ADMIN_PIN_FRAGMENT"
   }
 
-  /** Creates the view for [PinSetupActivity]. */
+  /** Creates the view for [CreateAdminPinActivity]. */
   fun handleOnCreate(profileId: LegacyProfileId) {
-    activity.setContentView(R.layout.pin_setup_activity)
+    activity.setContentView(R.layout.create_admin_pin_activity)
 
     if (getPinSetupFragment() == null) {
-      val pinSetupFragment = PinSetupFragment().apply {
+      val createAdminPinFragment = CreateAdminPinFragment().apply {
         arguments = Bundle().also { it.decorateWithUserProfileId(profileId) }
       }
 
       activity.supportFragmentManager.beginTransaction()
         .add(
           R.id.pin_setup_fragment_placeholder,
-          pinSetupFragment,
-          TAG_PIN_SETUP_FRAGMENT
+          createAdminPinFragment,
+          TAG_CREATE_ADMIN_PIN_FRAGMENT
         )
         .commitNow()
     }
   }
 
-  private fun getPinSetupFragment(): PinSetupFragment? {
+  private fun getPinSetupFragment(): CreateAdminPinFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_PIN_SETUP_FRAGMENT
-    ) as? PinSetupFragment
+      TAG_CREATE_ADMIN_PIN_FRAGMENT
+    ) as? CreateAdminPinFragment
   }
 }
