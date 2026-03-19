@@ -11,7 +11,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.state.ImageRegionSelectionInteractionViewTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -63,7 +62,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.state.StateFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [

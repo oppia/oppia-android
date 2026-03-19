@@ -219,22 +219,7 @@ jobs:
 
       - name: Build Oppia Tests
         run: |
-          # Attempt to build 5 times in case there are flaky builds.
-          # TODO(#3759): Remove this once there are no longer app test build failures.
-          i=0
-          # Disable exit-on-first-failure.
-          set +e
-          while [ $i -ne 5 ]; do
-            i=$(( $i+1 ))
-            echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going --target_pattern_file=bazel_targets.txt
-          done
-          # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
-          # Reenable exit-on-first-failure.
-          set -e
-          # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
+          bazel build --keep_going --target_pattern_file=bazel_targets.txt
 
       - name: Run Oppia Coverage
         env:

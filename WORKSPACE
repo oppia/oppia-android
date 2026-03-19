@@ -191,6 +191,12 @@ http_archive(
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
 
+# Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
+bind(
+    name = "python_headers",
+    actual = "//tools/python:_empty_python_headers_do_not_depend",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"

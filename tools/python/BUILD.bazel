@@ -1,0 +1,10 @@
+"""
+Configurations for codebase-wide configurations of Python.
+"""
+
+# This is a hacky empty library to satisfy a transitive dependency to allow the build graph to be
+# remote pre-fetched for offline builds.
+cc_library(
+    name = "_empty_python_headers_do_not_depend",
+    visibility = ["//visibility:public"],
+)
