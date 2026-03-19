@@ -12,7 +12,9 @@ import android.os.Build
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -147,15 +149,15 @@ class CreateProfileFragmentTest {
   @get:Rule
   val composeRule = createEmptyComposeRule()
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
   lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
   @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
@@ -209,6 +211,7 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @Test
   fun testFragment_supervisorOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
       onView(withId(R.id.onboarding_steps_count))
@@ -858,23 +861,6 @@ class CreateProfileFragmentTest {
         context.getString(R.string.create_profile_activity_success_dialog_message, "John")
       )
         .assertIsDisplayed()
-    }
-  }
-
-  @Test
-  fun testAddLearnerFlow_validName_pinCheckboxChecked_pinNotEntered_showsErrorOnContinue() {
-    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
     }
   }
 

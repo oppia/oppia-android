@@ -262,7 +262,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun addProfileButtonClickListener() {
     if (chooserViewModel.adminPin.isEmpty()) {
       activity.startActivity(
-        PinSetupActivity.createPinSetupActivityIntent(
+        CreateAdminPinActivity.createAdminPinActivityIntent(
           activity,
           chooserViewModel.adminProfileId
         )

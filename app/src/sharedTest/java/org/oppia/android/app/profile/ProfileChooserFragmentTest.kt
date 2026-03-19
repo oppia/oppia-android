@@ -442,7 +442,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testOnboardingV2_adminWithoutPin_clickAdd_opensPinSetupActivity() {
+  fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -453,7 +453,7 @@ class ProfileChooserFragmentTest {
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(PinSetupActivity::class.java.name))
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
     }
   }
 

@@ -31,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -316,14 +315,14 @@ class ProfileLoginFragmentTest {
   fun testFragment_adminLogin_withAddNewLearnerFlow_routesToCreateProfileActivity() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
       context,
       adminProfileId,
       ProfileType.ADDITIONAL_LEARNER
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -343,14 +342,14 @@ class ProfileLoginFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
       context,
       adminProfileId,
       ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -370,14 +369,14 @@ class ProfileLoginFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
       context,
       adminProfileId,
       ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -1000,7 +999,7 @@ class ProfileLoginFragmentTest {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileLoginFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
     fun inject(profileLoginFragmentTest: ProfileLoginFragmentTest) {
