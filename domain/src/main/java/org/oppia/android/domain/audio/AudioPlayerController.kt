@@ -98,7 +98,9 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
 
       mediaPlayerActive = true
-      // Recreation is necessary since media player's resources have been released
+      if (!isReleased) {
+        mediaPlayer.release()
+      }
       mediaPlayer = MediaPlayer()
       isReleased = false
       setMediaPlayerListeners()
@@ -152,7 +154,7 @@ class AudioPlayerController @Inject constructor(
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
-    } catch (e: Exception) {
+    } catch (e: java.io.IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
@@ -165,10 +167,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()

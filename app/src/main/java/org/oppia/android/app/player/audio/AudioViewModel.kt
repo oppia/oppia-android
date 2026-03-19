@@ -18,9 +18,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
-import kotlin.concurrent.withLock
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
@@ -38,7 +36,6 @@ class AudioViewModel @Inject constructor(
   private var voiceoverMap = mapOf<String, Voiceover>()
   private var currentContentId: String? = null
   private val defaultLanguage = "en"
-  private val audioLock = ReentrantLock()
   private var autoPlay: Boolean? = null
   private var reloadingMainContent: Boolean? = null
   private var hasFeedback: Boolean? = null
@@ -73,7 +70,7 @@ class AudioViewModel @Inject constructor(
   fun setStateAndExplorationId(newState: State, id: String) {
     state = newState
     explorationId = id
-    checkIfLoadingPossible()
+    maybeLoadAudio()
   }
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
@@ -81,7 +78,7 @@ class AudioViewModel @Inject constructor(
     currentContentId = null
     autoPlay = allowAutoPlay
     reloadingMainContent = reloadingContent
-    checkIfLoadingPossible()
+    maybeLoadAudio()
   }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
@@ -89,50 +86,83 @@ class AudioViewModel @Inject constructor(
     currentContentId = contentId
     autoPlay = allowAutoPlay
     reloadingMainContent = false
-    checkIfLoadingPossible()
+    maybeLoadAudio()
   }
 
   /** Sets language code for data binding and changes data source to correct audio. */
   fun setAudioLanguageCode(languageCode: String) {
     selectedLanguageCode = languageCode
     currentLanguageCode.set(selectedLanguageCode)
-    checkIfLoadingPossible()
+    maybeLoadAudio()
   }
 
-  private fun checkIfLoadingPossible() {
-    if (state != null &&
-      this::explorationId.isInitialized &&
-      this::selectedLanguageCode.isInitialized &&
-      autoPlay != null &&
-      reloadingMainContent != null &&
-      hasFeedback != null
+  /**
+   * Checks whether all required fields are initialized, performs content ID fallback logic, and
+   * calls [loadAudio] or [resetAudio] accordingly.
+   *
+   * Fallback logic:
+   * 1. If [currentContentId] is non-null and non-empty, use it.
+   * 2. Otherwise, fall back to [State.getContent]'s content ID.
+   * 3. If the state has no content ID, that's an invariant violation (throws).
+   *
+   * Renamed from `checkIfLoadingPossible` per reviewer feedback.
+   */
+  private fun maybeLoadAudio() {
+    val currentState = state ?: return
+    if (!this::explorationId.isInitialized ||
+      !this::selectedLanguageCode.isInitialized ||
+      autoPlay == null ||
+      reloadingMainContent == null ||
+      hasFeedback == null
     ) {
-      loadAudio(currentContentId)
+      return
+    }
+
+    val contentId = currentContentId?.takeIf(String::isNotEmpty)
+    if (contentId != null) {
+      loadAudio(
+        contentId = contentId,
+        state = currentState,
+        selectedLanguageCode = selectedLanguageCode
+      )
+    } else {
+      val stateContentId = currentState.content.contentId
+      check(stateContentId.isNotEmpty()) {
+        "State has a non-empty content ID invariant violation."
+      }
+      loadAudio(
+        contentId = stateContentId,
+        state = currentState,
+        selectedLanguageCode = selectedLanguageCode
+      )
     }
   }
 
   /**
-   * Load audio based on the contentId.
+   * Loads audio for the given [contentId].
    *
-   * @param contentId If contentId is null, then state.content.contentId is used as default.
+   * This method assumes [contentId] is non-null and non-empty, and that all other required state
+   * (exploration ID, language code, etc.) has been verified by [maybeLoadAudio].
+   *
+   * @param contentId the non-empty content ID to load audio for
+   * @param state the current [State] to look up voiceover mappings from
+   * @param selectedLanguageCode the currently selected audio language code
    */
-  private fun loadAudio(contentId: String?) {
-    val targetContentId =
-      contentId?.takeIf(String::isNotEmpty) ?: state?.content?.contentId ?: return
-
+  private fun loadAudio(
+    contentId: String,
+    state: State,
+    selectedLanguageCode: String
+  ) {
     val voiceoverMapping =
-      state?.recordedVoiceoversMap?.get(targetContentId) ?: VoiceoverMapping.getDefaultInstance()
+      state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()
 
     voiceoverMap = voiceoverMapping.voiceoverMappingMap
-    currentContentId = targetContentId
+    currentContentId = contentId
     languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
     selectedLanguageUnavailable.set(false)
 
     val languageCodeForDataSource = when {
-      !this::selectedLanguageCode.isInitialized && languages.contains(defaultLanguage) -> {
-        defaultLanguage.also { selectedLanguageCode = it }
-      }
-      this::selectedLanguageCode.isInitialized && languages.contains(selectedLanguageCode) -> {
+      selectedLanguageCode in languages -> {
         selectedLanguageCode
       }
       languages.isNotEmpty() -> {
@@ -159,21 +189,36 @@ class AudioViewModel @Inject constructor(
     }
   }
 
+  /**
+   * Resets audio state when there is no content ID to load.
+   *
+   * This is called when audio playback completes and there is no feedback content ID or state
+   * content ID to fall back to.
+   */
+  private fun resetAudio() {
+    currentContentId = null
+    voiceoverMap = mapOf()
+    languages = listOf()
+    audioPlayerController.releaseMediaPlayer()
+  }
+
   /** Plays or pauses AudioController depending on passed in state. */
   fun togglePlayPause(type: UiAudioPlayStatus?) {
-    audioLock.withLock {
-      when (type) {
-        UiAudioPlayStatus.PLAYING ->
-          audioPlayerController.pause(isFromExplicitUserAction = true)
-        UiAudioPlayStatus.PREPARED,
-        UiAudioPlayStatus.PAUSED,
-        UiAudioPlayStatus.COMPLETED -> {
-          audioPlayerController.play(
-            isPlayingFromAutoPlay = false,
-            reloadingMainContent = false
-          )
-        }
-        else -> {}
+    when (type) {
+      UiAudioPlayStatus.PLAYING ->
+        audioPlayerController.pause(isFromExplicitUserAction = true)
+      UiAudioPlayStatus.PREPARED,
+      UiAudioPlayStatus.PAUSED,
+      UiAudioPlayStatus.COMPLETED -> {
+        audioPlayerController.play(
+          isPlayingFromAutoPlay = false,
+          reloadingMainContent = false
+        )
+      }
+      UiAudioPlayStatus.LOADING,
+      UiAudioPlayStatus.FAILED,
+      null -> {
+        // No action needed for loading/failed states or null.
       }
     }
   }
@@ -242,7 +287,7 @@ class AudioViewModel @Inject constructor(
         PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
         PlayStatus.COMPLETED -> {
           if (hasFeedback == true) {
-            loadAudio(contentId = null)
+            maybeLoadAudio()
           }
           hasFeedback = false
           UiAudioPlayStatus.COMPLETED
