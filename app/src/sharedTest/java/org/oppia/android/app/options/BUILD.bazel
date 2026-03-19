@@ -182,6 +182,7 @@ oppia_android_test(
         "//config/src/java/org/oppia/android/config:production_languages_config",
         "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
