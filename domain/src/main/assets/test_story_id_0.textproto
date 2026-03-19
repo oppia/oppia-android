@@ -1,10 +1,12 @@
 story_id: "test_story_id_0"
 story_thumbnail {
+  thumbnail_filename: "duck_and_chicken.img"
   background_color_rgb: 11761905
 }
 chapters {
   exploration_id: "test_exp_id_2"
   chapter_thumbnail {
+    thumbnail_filename: "child_with_fractions_homework.img"
     background_color_rgb: 14061432
   }
   written_translations {
@@ -29,6 +31,7 @@ chapters {
 chapters {
   exploration_id: "13"
   chapter_thumbnail {
+    thumbnail_filename: "duck_and_chicken.img"
     background_color_rgb: 14061432
   }
   written_translations {
@@ -52,6 +55,7 @@ chapters {
 chapters {
   exploration_id: "test_exp_id_5"
   chapter_thumbnail {
+    thumbnail_filename: "person_with_pie_chart.img"
     background_color_rgb: 14061432
   }
   written_translations {

@@ -158,7 +158,6 @@ import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.LoadThumbnailsFromGcs
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -2998,10 +2997,6 @@ class StateFragmentLocalTest {
     @Provides
     @LoadImagesFromAssets
     fun provideLoadImagesFromAssets(): Boolean = false
-
-    @Provides
-    @LoadThumbnailsFromGcs
-    fun provideLoadThumbnailsFromGcs(): Boolean = false
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

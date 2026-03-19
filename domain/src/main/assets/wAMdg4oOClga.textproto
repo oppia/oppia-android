@@ -1,10 +1,12 @@
 story_id: "wAMdg4oOClga"
 story_thumbnail {
+  thumbnail_filename: "duck_and_chicken.img"
   background_color_rgb: 11786481
 }
 chapters {
   exploration_id: "2mzzFVDLuAj8"
   chapter_thumbnail {
+    thumbnail_filename: "duck_and_chicken.img"
     background_color_rgb: 14061432
   }
   written_translations {
@@ -28,6 +30,7 @@ chapters {
 chapters {
   exploration_id: "5NWuolNcwH6e"
   chapter_thumbnail {
+    thumbnail_filename: "person_with_pie_chart.img"
     background_color_rgb: 14088824
   }
   written_translations {

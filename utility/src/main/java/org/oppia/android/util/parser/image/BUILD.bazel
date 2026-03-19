@@ -118,6 +118,21 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "dev_image_parsing_module",
+    srcs = [
+        "DevImageParsingModule.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":image_parsing_annonations",
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
     name = "image_targets",
     srcs = [
         "ImageTargets.kt",

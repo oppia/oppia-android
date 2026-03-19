@@ -1,10 +1,12 @@
 story_id: "wANbh4oOClga"
 story_thumbnail {
+  thumbnail_filename: "baker.img"
   background_color_rgb: 11786481
 }
 chapters {
   exploration_id: "umPkwp0L1M0-"
   chapter_thumbnail {
+    thumbnail_filename: "baker.img"
     background_color_rgb: 14061432
   }
   written_translations {
@@ -29,6 +31,7 @@ chapters {
 chapters {
   exploration_id: "MjZzEVOG47_1"
   chapter_thumbnail {
+    thumbnail_filename: "child_with_fractions_homework.img"
     background_color_rgb: 14055672
   }
   written_translations {

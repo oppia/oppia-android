@@ -21,6 +21,7 @@ skill_ids: "B39yK4cbHZYI"
 skill_ids: "5RM9KPfQxobH"
 skill_ids: "UxTGIJqaHMLa"
 subtopic_thumbnail {
+  thumbnail_filename: "baker.img"
   background_color_rgb: 16741119
 }
 title {

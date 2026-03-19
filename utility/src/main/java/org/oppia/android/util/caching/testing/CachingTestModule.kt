@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.LoadThumbnailsFromGcs
 
 /**
  * Provides test dependencies corresponding to the app's caching policies. In particular, this
@@ -19,8 +18,4 @@ class CachingTestModule {
   @Provides
   @LoadImagesFromAssets
   fun provideLoadImagesFromAssets(): Boolean = false
-
-  @Provides
-  @LoadThumbnailsFromGcs
-  fun provideLoadThumbnailsFromGcs(): Boolean = false
 }

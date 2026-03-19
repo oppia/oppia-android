@@ -1,10 +1,12 @@
 story_id: "test_story_id_2"
 story_thumbnail {
+  thumbnail_filename: "child_with_cupcakes.img"
   background_color_rgb: 11761905
 }
 chapters {
   exploration_id: "test_exp_id_4"
   chapter_thumbnail {
+    thumbnail_filename: "baker.img"
     background_color_rgb: 14061432
   }
   written_translations {

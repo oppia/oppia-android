@@ -3,6 +3,7 @@ canonical_story_ids: "test_story_id_2"
 is_published: true
 has_practice_questions: false
 topic_thumbnail {
+  thumbnail_filename: "duck_and_chicken.img"
 }
 written_translations {
   key: "title"

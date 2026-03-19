@@ -1,10 +1,12 @@
 story_id: "xBSdg4oOClga"
 story_thumbnail {
+  thumbnail_filename: "child_with_cupcakes.img"
   background_color_rgb: 11792856
 }
 chapters {
   exploration_id: "k2bQ7z5XHNbK"
   chapter_thumbnail {
+    thumbnail_filename: "child_with_cupcakes.img"
     background_color_rgb: 16158584
   }
   written_translations {
@@ -28,6 +30,7 @@ chapters {
 chapters {
   exploration_id: "tIoSb3HZFN6e"
   chapter_thumbnail {
+    thumbnail_filename: "child_with_book.img"
     background_color_rgb: 16158584
   }
   written_translations {

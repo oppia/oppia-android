@@ -7,6 +7,7 @@ subtopic_ids: 4
 is_published: true
 has_practice_questions: true
 topic_thumbnail {
+  thumbnail_filename: "child_with_fractions_homework.img"
 }
 written_translations {
   key: "title"

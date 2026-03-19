@@ -19,6 +19,7 @@ written_translation {
 }
 skill_ids: "NGZ89uMw0IGV"
 subtopic_thumbnail {
+  thumbnail_filename: "duck_and_chicken.img"
   background_color_rgb: 16741119
 }
 title {

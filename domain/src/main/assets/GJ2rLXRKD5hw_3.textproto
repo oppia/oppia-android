@@ -20,6 +20,7 @@ written_translation {
 skill_ids: "5RM9KPfQxobH"
 skill_ids: "UxTGIJqaHMLa"
 subtopic_thumbnail {
+  thumbnail_filename: "child_with_cupcakes.img"
   background_color_rgb: 16741119
 }
 title {
