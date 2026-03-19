@@ -25,6 +25,6 @@ class CreateAdminPinFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return createAdminPinFragmentPresenter.handleCreateView(inflater, container)
+    return createAdminPinFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
   }
 }

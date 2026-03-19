@@ -192,3 +192,18 @@ message CurrentAppScreen {
   // Screen name value depicting the name of the currently visible UI screen.
   ScreenName screen_name = 1;
 }
+
+// Represents the UI state for the create admin PIN screen.
+message CreateAdminPinUiState {
+  // The PIN currently entered by the user.
+  string pin = 1;
+
+  // The confirmation PIN currently entered by the user.
+  string confirm_pin = 2;
+
+  // Whether a submit-time validation error should be displayed.
+  bool show_error = 3;
+
+  // The submit-time error message to display when show_error is true.
+  string error_message = 4;
+}
