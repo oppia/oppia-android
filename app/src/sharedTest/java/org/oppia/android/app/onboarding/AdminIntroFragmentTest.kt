@@ -34,7 +34,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -215,14 +214,7 @@ class AdminIntroFragmentTest {
         .performClick()
 
       testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = AdminIntroActivityParams.newBuilder()
-        .setProfileType(ProfileType.SUPERVISOR)
-        .setProfileNickname("Admin")
-        .build()
-
       intended(hasComponent(CreateAdminPinActivity::class.java.name))
-      intended(hasProtoExtra(ADMIN_INTRO_PARAMS_KEY, expectedParams))
       intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }

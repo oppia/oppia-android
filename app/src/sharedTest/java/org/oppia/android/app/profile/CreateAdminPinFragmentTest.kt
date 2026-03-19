@@ -585,7 +585,7 @@ class CreateAdminPinFragmentTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPinSetupFragmentTest_TestApplicationComponent.builder()
+      DaggerCreateAdminPinFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }

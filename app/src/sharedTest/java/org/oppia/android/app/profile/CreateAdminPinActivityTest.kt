@@ -26,7 +26,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -140,7 +140,7 @@ class CreateAdminPinActivityTest {
   }
 
   private fun createPinSetupActivityIntent(): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     return CreateAdminPinActivity.createAdminPinActivityIntent(context, profileId)
   }
 
@@ -217,12 +217,12 @@ class CreateAdminPinActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(pinSetupActivityTest: CreateAdminPinActivityTest)
+    fun inject(createAdminPinActivityTest: CreateAdminPinActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPinSetupActivityTest_TestApplicationComponent.builder()
+      DaggerCreateAdminPinActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
