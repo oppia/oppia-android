@@ -618,7 +618,7 @@ class ComputeAabDifferencesTest {
     val printStream = PrintStream(outputStream)
 
     val buildStats = ComputeAabDifferences.BuildStats(
-      aabStats = mapOf("dev" to createEmptyAabStats())
+      aabStats = mapOf("dev" to createAabStatsWithDiffs())
     )
     buildStats.writeSummariesTo(printStream, longSummary = false)
 
@@ -633,24 +633,36 @@ class ComputeAabDifferencesTest {
       |<details><summary>Expand to see flavor specifics</summary>
       |
       |### Universal APK
-      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
       |
-      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
       |
-      |Method count: 0 (old), 0 (new), **0** (No change)
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
       |
-      |Features: 0 (old), 0 (new), **0** (No change)
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
       |
-      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
       |
-      |Resources: 0 (old), 0 (new), **0** (No change)
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
       |
-      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
       |
       |### AAB differences
       |<details><summary>Expand to see AAB specifics</summary>
       |
       |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
       |
       |#### Base APK
       |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
@@ -666,7 +678,7 @@ class ComputeAabDifferencesTest {
     val printStream = PrintStream(outputStream)
 
     val buildStats = ComputeAabDifferences.BuildStats(
-      aabStats = mapOf("dev" to createEmptyAabStats())
+      aabStats = mapOf("dev" to createAabStatsWithDiffs())
     )
     buildStats.writeSummariesTo(printStream, longSummary = true)
 
@@ -678,24 +690,38 @@ class ComputeAabDifferencesTest {
       |## Dev
       |
       |### Universal APK
-      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
       |
-      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
       |
-      |Method count: 0 (old), 0 (new), **0** (No change)
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
       |
-      |Features: 0 (old), 0 (new), **0** (No change)
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
       |
-      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
       |
-      |Resources: 0 (old), 0 (new), **0** (No change)
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
       |
-      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
       |
       |*Detailed file differences:*
+      |1000${'\t'}2000${'\t'}1000${'\t'}/res/layout/activity_main.xml
+      |500${'\t'}0${'\t'}-500${'\t'}/res/drawable/ic_bg.png
       |
       |### AAB differences
       |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
       |
       |#### Base APK
       |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
@@ -725,8 +751,8 @@ class ComputeAabDifferencesTest {
 
     val buildStats = ComputeAabDifferences.BuildStats(
       aabStats = mapOf(
-        "dev" to createEmptyAabStats(),
-        "alpha" to createEmptyAabStats()
+        "dev" to createAabStatsWithDiffs(),
+        "alpha" to createAabStatsWithDiffs()
       )
     )
     buildStats.writeSummariesTo(printStream, longSummary = false)
@@ -742,24 +768,36 @@ class ComputeAabDifferencesTest {
       |<details><summary>Expand to see flavor specifics</summary>
       |
       |### Universal APK
-      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
       |
-      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
       |
-      |Method count: 0 (old), 0 (new), **0** (No change)
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
       |
-      |Features: 0 (old), 0 (new), **0** (No change)
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
       |
-      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
       |
-      |Resources: 0 (old), 0 (new), **0** (No change)
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
       |
-      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
       |
       |### AAB differences
       |<details><summary>Expand to see AAB specifics</summary>
       |
       |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
       |
       |#### Base APK
       |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
@@ -771,24 +809,36 @@ class ComputeAabDifferencesTest {
       |<details><summary>Expand to see flavor specifics</summary>
       |
       |### Universal APK
-      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
       |
-      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
       |
-      |Method count: 0 (old), 0 (new), **0** (No change)
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
       |
-      |Features: 0 (old), 0 (new), **0** (No change)
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
       |
-      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
       |
-      |Resources: 0 (old), 0 (new), **0** (No change)
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
       |
-      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
       |
       |### AAB differences
       |<details><summary>Expand to see AAB specifics</summary>
       |
       |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
       |
       |#### Base APK
       |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
@@ -806,7 +856,7 @@ class ComputeAabDifferencesTest {
     val buildStats = ComputeAabDifferences.BuildStats(
       aabStats = mapOf(
         "dev" to createAabStatsWithDiffs(),
-        "alpha" to createEmptyAabStats()
+        "alpha" to createAabStatsWithDiffs()
       )
     )
     buildStats.writeSummariesTo(printStream, longSummary = true)
@@ -873,24 +923,38 @@ class ComputeAabDifferencesTest {
       |## Alpha
       |
       |### Universal APK
-      |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK file size: 1000 bytes (old), 2000 bytes (new), **1000 bytes** (Added)
       |
-      |APK download size (estimated): 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
+      |APK download size (estimated): 500 bytes (old), 800 bytes (new), **300 bytes** (Added)
       |
-      |Method count: 0 (old), 0 (new), **0** (No change)
+      |Method count: 5000 (old), 5500 (new), **500** (Added)
       |
-      |Features: 0 (old), 0 (new), **0** (No change)
+      |Features: 1 (old), 2 (new), **1** (Added):
+      |- nfc (added)
       |
-      |Permissions: 0 (old), 0 (new), **0** (No change)
+      |Permissions: 1 (old), 3 (new), **2** (Added):
+      |- android.permission.CAMERA (added)
+      |- android.permission.WRITE_EXTERNAL_STORAGE (added)
       |
-      |Resources: 0 (old), 0 (new), **0** (No change)
+      |Resources: 4 (old), 4 (new), **0** (No change)
+      |- String: 2 (old), 3 (new), **1** (Added):
+      |  - new_string (added)
+      |- Drawable: 2 (old), 1 (new), **1** (Removed):
+      |  - ic_bg (removed)
       |
-      |Lesson assets: 0 (old), 0 (new), **0** (No change)
+      |Lesson assets: 1 (old), 3 (new), **2** (Added):
+      |- lesson2.json (added)
+      |- lesson3.json (added)
       |
       |*Detailed file differences:*
+      |1000${'\t'}2000${'\t'}1000${'\t'}/res/layout/activity_main.xml
+      |500${'\t'}0${'\t'}-500${'\t'}/res/drawable/ic_bg.png
       |
       |### AAB differences
       |Supported configurations:
+      |- hdpi (same)
+      |- xhdpi (same)
+      |- xxhdpi (added)
       |
       |#### Base APK
       |APK file size: 0 bytes (old), 0 bytes (new), **0 bytes** (No change)
