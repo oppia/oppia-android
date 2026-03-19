@@ -671,11 +671,17 @@ class LocalizationTracker private constructor(
     private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
     private const val CUSTOM_MATH_TAG = "oppia-noninteractive-math"
     private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
+    private val customMathTagContentRegex by lazy {
+      Regex(
+        "<\\s*$CUSTOM_MATH_TAG[^>]*?>.*?</\\s*$CUSTOM_MATH_TAG\\s*>",
+        setOf(RegexOption.DOT_MATCHES_ALL)
+      )
+    }
     private val customImageTagRegex by lazy {
       Regex("<\\s*$CUSTOM_IMG_TAG.+?$CUSTOM_IMG_FILE_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
     }
     private val customMathTagRegex by lazy {
-      Regex("<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
+      Regex("$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
     }
     val VALID_LANGUAGE_TYPES = LanguageType.values().filter { it.isValid() }
 
@@ -727,14 +733,32 @@ class LocalizationTracker private constructor(
     }
 
     private fun collectMathSourcesFromHtml(html: String): Set<String> {
-      return customMathTagRegex.findAll(html)
-        .map { it.destructured }
-        .map { (match) -> match }
-        .map { it.replace("&amp;quot;", "\"") }
-        .map { MathContentValue.parseFromHtmlValue(it) }
+      return extractMathContentsFromHtml(html)
+        .mapNotNull { it }
         .map { it.svgFilename }
         .filter { it.isNotEmpty() } // Ignore incorrect missing images.
         .toSet()
+    }
+
+    fun extractMathContentsFromHtml(html: String): List<MathContentValue?> {
+      return extractMathTagContentValuesFromHtml(html).map { mathContentJson ->
+        mathContentJson?.let {
+          try {
+            MathContentValue.parseFromHtmlValue(it)
+          } catch (_: Exception) {
+            null
+          }
+        }
+      }
+    }
+
+    fun extractMathTagContentValuesFromHtml(html: String): List<String?> {
+      return customMathTagContentRegex.findAll(html).map { tagMatch ->
+        val tagContent = tagMatch.value
+        customMathTagRegex.find(tagContent)
+          ?.destructured?.let { (match) -> match }
+          ?.replace("&amp;quot;", "\"")
+      }.toList()
     }
   }
 }

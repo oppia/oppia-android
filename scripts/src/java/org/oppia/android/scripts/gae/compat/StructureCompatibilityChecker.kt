@@ -43,6 +43,7 @@ import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
+import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.parseColorRgb
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContainerId
@@ -642,36 +643,19 @@ class StructureCompatibilityChecker(
     private val HTML_TAG_REGEX = "<\\s*([^\\s/>]+)[^>]*?>".toRegex()
     private val IMAGE_TAG_REGEX = "<\\s*oppia-noninteractive-image.+?>".toRegex()
     private val IMAGE_FILE_PATH_REGEX = "filepath-with-value\\s*=\\s*\"(.+?)\"".toRegex()
-    private val MATH_TAG_REGEX =
-      (
-        "<\\s*oppia-noninteractive-math[^>]*?>" +
-          "[\\s\\S]*?</\\s*oppia-noninteractive-math\\s*>"
-      ).toRegex()
-    private val MATH_CONTENT_VALUE_REGEX =
-      "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
-    private val RAW_LATEX_REGEX = "raw_latex[^:]*:\\s*\\\\?\"(.*?)\"".toRegex()
 
     fun checkMathTagsForLatex(
       html: String,
       origin: ContainerId,
       contentId: String
     ): List<CompatibilityFailure> {
-      return MATH_TAG_REGEX.findAll(html).flatMap { matchResult ->
-        val tagContent = matchResult.value
-        val mathContentJson = MATH_CONTENT_VALUE_REGEX.find(tagContent)
-          ?.destructured?.let { (value) -> value.unescapeHtmlEntities() }
-        val failures = mutableListOf<CompatibilityFailure>()
-        if (mathContentJson != null) {
-          val rawLatex = RAW_LATEX_REGEX.find(mathContentJson)
-            ?.destructured?.let { (latex) -> latex }
-          if (rawLatex.isNullOrBlank()) {
-            failures += MathTagMissingRawLatex(contentId, origin)
-          }
+      return extractMathContentsFromHtml(html).mapNotNull { mathContent ->
+        if (mathContent?.rawLatex.isNullOrBlank()) {
+          MathTagMissingRawLatex(contentId, origin)
         } else {
-          failures += MathTagMissingRawLatex(contentId, origin)
+          null
         }
-        failures.asSequence()
-      }.toList()
+      }
     }
 
     private fun String.checkTitleOrDescTextForHtml(
@@ -693,10 +677,6 @@ class StructureCompatibilityChecker(
 
     private fun String.extractHtmlTags(): Set<String> =
       HTML_TAG_REGEX.findAll(this).map { it.destructured }.map { (tagName) -> tagName }.toSet()
-
-    private fun String.unescapeHtmlEntities(): String =
-      replace("&amp;quot;", "\"").replace("&amp;amp;", "&").replace("&amp;lt;", "<")
-        .replace("&amp;gt;", ">").replace("&amp;apos;", "'")
 
     // TODO: Move to common utility?
     private fun String.extractImageReferences() =

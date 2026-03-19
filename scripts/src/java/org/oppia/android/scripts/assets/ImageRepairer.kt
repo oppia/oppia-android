@@ -52,7 +52,8 @@ class ImageRepairer {
 
   fun hasTransparentPixels(imageData: ByteArray, extension: String): Boolean {
     if (extension.equals("svg", ignoreCase = true)) return false
-    val image = imageData.inputStream().use { ImageIO.read(it) } ?: return false
+    val image = imageData.inputStream().use { ImageIO.read(it) }
+      ?: error("Failed to read image data (extension: $extension, size: ${imageData.size} bytes)")
     if (!image.colorModel.hasAlpha()) return false
     for (y in 0 until image.height) {
       for (x in 0 until image.width) {
