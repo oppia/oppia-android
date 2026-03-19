@@ -14,6 +14,7 @@ import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
@@ -154,7 +155,7 @@ class AudioPlayerController @Inject constructor(
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
-    } catch (e: java.io.IOException) {
+    } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
@@ -194,10 +195,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun pause(isFromExplicitUserAction: Boolean) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
         playProgress.value =
           AsyncResult.Success(
@@ -255,9 +253,11 @@ class AudioPlayerController @Inject constructor(
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
-      if (mediaPlayerActive) {
+      if (!isReleased) {
+        check(mediaPlayerActive) { "Media player has not been previously initialized" }
         mediaPlayerActive = false
         isReleased = true
+        prepared = false
         mediaPlayer.release()
         stopUpdatingSeekBar()
       }
@@ -271,10 +271,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun seekTo(position: Int) {
     audioLock.withLock {
-      if (!prepared) {
-        oppiaLogger.w("AudioPlayerController", "Media Player not in a prepared state")
-        return
-      }
+      check(prepared) { "Media Player not in a prepared state" }
       mediaPlayer.seekTo(position)
     }
   }

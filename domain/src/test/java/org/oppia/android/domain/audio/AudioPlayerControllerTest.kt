@@ -57,6 +57,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -487,7 +488,12 @@ class AudioPlayerControllerTest {
   @Test
   fun testController_notInitialized_releasePlayer_fails() {
     setUpMediaReadyApplication()
-    audioPlayerController.releaseMediaPlayer()
+    val exception = assertThrows<IllegalStateException>() {
+      audioPlayerController.releaseMediaPlayer()
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Media player has not been previously initialized")
   }
 
   @Test
@@ -502,26 +508,33 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testError_notPrepared_invokePlay_doesNotFail() {
+  fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
+    val exception = assertThrows<IllegalStateException>() {
+      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    }
 
-    // This checks that no exception is thrown (which was the previous behavior).
-    audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
-
-    // Also verify that the media player is NOT playing (it should have been ignored).
-    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+    assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
 
   @Test
-  fun testError_notPrepared_invokePause_doesNotFail() {
+  fun testError_notPrepared_invokePause_fails() {
     setUpMediaReadyApplication()
-    audioPlayerController.pause(isFromExplicitUserAction = true)
+    val exception = assertThrows<IllegalStateException>() {
+      audioPlayerController.pause(isFromExplicitUserAction = true)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
 
   @Test
-  fun testError_notPrepared_invokeSeekTo_doesNotFail() {
+  fun testError_notPrepared_invokeSeekTo_fails() {
     setUpMediaReadyApplication()
-    audioPlayerController.seekTo(500)
+    val exception = assertThrows<IllegalStateException>() {
+      audioPlayerController.seekTo(500)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
 
   @Test
