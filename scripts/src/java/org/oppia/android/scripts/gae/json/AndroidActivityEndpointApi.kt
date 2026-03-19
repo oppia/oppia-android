@@ -93,6 +93,8 @@ internal interface AndroidActivityEndpointApi {
   @GET("android_data?activity_type=questions")
   fun fetchLatestQuestions(
     @Query("offset") offset: Int,
-    @Query("activities_data") request: AndroidActivityRequests.NonLocalized = AndroidActivityRequests.NonLocalized(emptyList()) // TODO: Do this more cleanly.
+    // TODO: Do this more cleanly.
+    @Query("activities_data") request: AndroidActivityRequests.NonLocalized =
+      AndroidActivityRequests.NonLocalized(emptyList())
   ): Call<List<VersionedStructure<GaeQuestion>>>
 }
