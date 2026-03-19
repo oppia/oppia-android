@@ -673,7 +673,7 @@ class LocalizationTracker private constructor(
     private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
     private val customMathTagContentRegex by lazy {
       Regex(
-        "<\\s*$CUSTOM_MATH_TAG[^>]*?>.*?</\\s*$CUSTOM_MATH_TAG\\s*>",
+        "<\\s*$CUSTOM_MATH_TAG\\b[^>]*?(?:/>|>.*?</\\s*$CUSTOM_MATH_TAG\\s*>)",
         setOf(RegexOption.DOT_MATCHES_ALL)
       )
     }
