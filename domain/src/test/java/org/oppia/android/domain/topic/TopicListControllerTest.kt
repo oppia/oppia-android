@@ -148,7 +148,7 @@ class TopicListControllerTest {
     val topicList = retrieveTopicList()
 
     val secondTopic = topicList.getTopicSummary(1).topicSummary
-    assertThat(secondTopic.totalChapterCount).isEqualTo(1)
+    assertThat(secondTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test
@@ -744,7 +744,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterTitle.html).isEqualTo("Fifth Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
-    assertThat(promotedStory.totalChapterCount).isEqualTo(1)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
   private fun verifyOngoingStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {
