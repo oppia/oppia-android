@@ -1,0 +1,19 @@
+"""
+Utilities for loading images in developer builds.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "thumbnail_content_provider",
+    srcs = [
+        "ThumbnailContentProvider.kt",
+    ],
+    manifest = "AndroidManifest.xml",
+    visibility = [
+        "//:oppia_binary_visibility",
+    ],
+    deps = [
+        "//app",
+    ],
+)

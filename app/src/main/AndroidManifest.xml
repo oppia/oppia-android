@@ -370,10 +370,6 @@
       android:name=".app.testing.TextInputLayoutBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <provider
-      android:name=".app.application.dev.ThumbnailContentProvider"
-      android:authorities="org.oppia.android.provider"
-      android:exported="false" />
-    <provider
       android:name="androidx.startup.InitializationProvider"
       android:authorities="${applicationId}.androidx-startup"
       tools:node="remove" />

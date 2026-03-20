@@ -118,9 +118,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "dev_image_parsing_module",
+    name = "image_parsing_debug_module",
     srcs = [
-        "DevImageParsingModule.kt",
+        "ImageParsingDebugModule.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",

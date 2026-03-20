@@ -1,14 +1,11 @@
-package org.oppia.android.app.application.dev
+package org.oppia.android.app.utility.imageloading
 
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import androidx.appcompat.content.res.AppCompatResources
 import org.oppia.android.app.views.R
 import java.io.File
 import java.io.FileOutputStream
@@ -17,9 +14,9 @@ import java.io.FileOutputStream
  * A developer-only [ContentProvider] that serves local drawable resources as thumbnail images.
  *
  * In developer builds, thumbnail image loading is redirected from Google Cloud Storage to this
- * content provider via the `content://org.oppia.android.provider` URI scheme. When a thumbnail
+ * content provider via the `content://org.oppia.android.provider.gcs` URI scheme. When a thumbnail
  * filename (e.g., `baker.img`) is requested, this provider maps it to the corresponding local
- * drawable resource (e.g., `lesson_thumbnail_graphic_baker.xml`) and returns the rendered image.
+ * SVG asset and returns its content directly.
  *
  * This allows proto lessons with `thumbnail_filename` placeholders to successfully load thumbnails
  * without needing access to GCS, which is unavailable in dev builds.
@@ -27,15 +24,11 @@ import java.io.FileOutputStream
 class ThumbnailContentProvider : ContentProvider() {
 
   companion object {
-    private const val AUTHORITY = "org.oppia.android.provider"
+    private const val AUTHORITY = "org.oppia.android.provider.gcs"
     private const val THUMBNAIL_MATCH = 1
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
-      // Match any path under the authority — the thumbnail filename is extracted from the
-      // last path segment of the URI.
-      addURI(AUTHORITY, "*/*/*/*/#", THUMBNAIL_MATCH)
-      addURI(AUTHORITY, "*/*/*/*", THUMBNAIL_MATCH)
-      addURI(AUTHORITY, "thumbnail/*", THUMBNAIL_MATCH)
-      addURI(AUTHORITY, "#", THUMBNAIL_MATCH)
+      // Match URIs like: entity_type/entity_id/assets/<image|thumbnails>/filename
+      addURI(AUTHORITY, "*/*/*/*/*", THUMBNAIL_MATCH)
     }
 
     /**
@@ -68,7 +61,7 @@ class ThumbnailContentProvider : ContentProvider() {
     sortOrder: String?
   ): Cursor? = null
 
-  override fun getType(uri: Uri): String = "image/png"
+  override fun getType(uri: Uri): String = "image/svg+xml"
 
   override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
@@ -88,23 +81,15 @@ class ThumbnailContentProvider : ContentProvider() {
     val drawableResId = THUMBNAIL_FILENAME_TO_DRAWABLE_MAP[thumbnailFilename]
       ?: DEFAULT_THUMBNAIL_DRAWABLE
 
-    val drawable = AppCompatResources.getDrawable(context, drawableResId)
-      ?: return null
-
-    // Render the drawable (which may be a vector/XML drawable) to a bitmap.
-    val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 192
-    val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 192
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    drawable.setBounds(0, 0, canvas.width, canvas.height)
-    drawable.draw(canvas)
-
-    // Write the bitmap to a temporary file and return a file descriptor.
-    val cacheFile = File(context.cacheDir, "thumbnail_${thumbnailFilename.hashCode()}.png")
-    FileOutputStream(cacheFile).use { outputStream ->
-      bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    // Read the raw XML vector drawable resource and serve it directly as SVG content.
+    val cacheFile = File(context.cacheDir, "thumbnail_${thumbnailFilename.hashCode()}.svg")
+    if (!cacheFile.exists()) {
+      context.resources.openRawResource(drawableResId).use { inputStream ->
+        FileOutputStream(cacheFile).use { outputStream ->
+          inputStream.copyTo(outputStream)
+        }
+      }
     }
-    bitmap.recycle()
 
     return ParcelFileDescriptor.open(cacheFile, ParcelFileDescriptor.MODE_READ_ONLY)
   }

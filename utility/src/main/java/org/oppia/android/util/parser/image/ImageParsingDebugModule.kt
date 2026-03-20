@@ -14,12 +14,12 @@ import javax.inject.Singleton
  * inaccessible.
  */
 @Module
-class DevImageParsingModule {
+class ImageParsingDebugModule {
   @Provides
   @DefaultGcsPrefix
   @Singleton
   fun provideDefaultGcsPrefix(): String {
-    return "content://org.oppia.android.provider"
+    return "content://org.oppia.android.provider.gcs"
   }
 
   @Provides
