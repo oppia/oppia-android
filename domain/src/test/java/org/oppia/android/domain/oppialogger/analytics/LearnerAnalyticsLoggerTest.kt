@@ -13,9 +13,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -1189,6 +1192,143 @@ class LearnerAnalyticsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSubmitAnswerContextThat().hasAnswerCorrectValueThat().isTrue()
+  }
+
+  @Test
+  fun testLearnerAnalyticsLogger_stringifiesTextAnswerCorrectly() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    val answer = InteractionObject.newBuilder().apply {
+      normalizedString = "test answer"
+    }.build()
+    val userAnswer = UserAnswer.newBuilder().apply {
+      this.answer = answer
+    }.build()
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = userAnswer,
+      isCorrect = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasStringifiedAnswerThat().isEqualTo("test answer")
+    }
+  }
+
+  @Test
+  fun testLearnerAnalyticsLogger_stringifiesNumericAnswerCorrectly() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    val answer = InteractionObject.newBuilder().apply {
+      signedInt = 42
+    }.build()
+    val userAnswer = UserAnswer.newBuilder().apply {
+      this.answer = answer
+    }.build()
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = userAnswer,
+      isCorrect = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasStringifiedAnswerThat().isEqualTo("42")
+    }
+  }
+
+  @Test
+  fun testLearnerAnalyticsLogger_stringifiesFractionAnswerCorrectly() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    val fraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 2
+    }.build()
+    val answer = InteractionObject.newBuilder().apply {
+      this.fraction = fraction
+    }.build()
+    val userAnswer = UserAnswer.newBuilder().apply {
+      this.answer = answer
+    }.build()
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = userAnswer,
+      isCorrect = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasStringifiedAnswerThat().isEqualTo("1/2")
+    }
+  }
+
+  @Test
+  fun testLearnerAnalyticsLogger_stringifiesRatioAnswerCorrectly() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    val ratioExpression = RatioExpression.newBuilder().apply {
+      addAllRatioComponent(listOf(1, 2, 3))
+    }.build()
+    val answer = InteractionObject.newBuilder().apply {
+      this.ratioExpression = ratioExpression
+    }.build()
+    val userAnswer = UserAnswer.newBuilder().apply {
+      this.answer = answer
+    }.build()
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = userAnswer,
+      isCorrect = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasStringifiedAnswerThat().isEqualTo("1:2:3")
+    }
+  }
+
+  @Test
+  fun testLearnerAnalyticsLogger_stringifiesMathExpressionAnswerCorrectly() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
+    val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    val answer = InteractionObject.newBuilder().apply {
+      mathExpression = "x + 1"
+    }.build()
+    val userAnswer = UserAnswer.newBuilder().apply {
+      this.answer = answer
+    }.build()
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = userAnswer,
+      isCorrect = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasStringifiedAnswerThat().isEqualTo("x + 1")
+    }
   }
 
   @Test

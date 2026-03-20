@@ -50,6 +50,11 @@ class MathTagHandler(
       else -> true
     }
     checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
+    val equationColor = ResourcesCompat.getColor(
+      application.resources,
+      R.color.component_color_shared_equation_color,
+      null
+    )
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(
@@ -66,6 +71,7 @@ class MathTagHandler(
             imageRetriever.loadMathDrawable(
               content.rawLatex,
               lineHeight,
+              equationColor,
               type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
             ),
             useInlineRendering
@@ -76,11 +82,7 @@ class MathTagHandler(
             lineHeight,
             assetManager,
             isMathMode = !useInlineRendering,
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */ null
-            )
+            equationColor
           )
         }
       }
@@ -132,10 +134,8 @@ class MathTagHandler(
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
         // Kotlitex expects escaped backslashes.
         val rawLatex = obj?.getOptionalString("raw_latex")
-        val svgFilename = obj?.getOptionalString("svg_filename")
         return when {
-          svgFilename != null -> MathAsSvg(svgFilename)
-          rawLatex != null -> MathAsLatex(rawLatex)
+          !rawLatex.isNullOrBlank() -> MathAsLatex(rawLatex)
           else -> null
         }
       }

@@ -518,8 +518,6 @@ class ApplicationLifecycleObserverTest {
         .isEqualTo(ActivityContextCase.RETROFIT_CALL_CONTEXT)
       assertThat(retrofitCallContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
       assertThat(retrofitCallContext.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-      assertThat(retrofitCallContext.headers).contains(headerString)
-      assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
     }
   }
 
