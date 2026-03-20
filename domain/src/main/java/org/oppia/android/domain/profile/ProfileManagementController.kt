@@ -1304,6 +1304,8 @@ class ProfileManagementController @Inject constructor(
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
     val croppedBitmap = ThumbnailUtils.extractThumbnail(bitmap, cropSize, cropSize)
+    // Use 'use' to ensure the InputStream is always closed after reading EXIF data.
+    // Fallback to ORIENTATION_NORMAL if the stream cannot be opened.
     val orientation = context.contentResolver.openInputStream(uri)?.use { stream ->
       ExifInterface(stream).getAttributeInt(
         ExifInterface.TAG_ORIENTATION,
