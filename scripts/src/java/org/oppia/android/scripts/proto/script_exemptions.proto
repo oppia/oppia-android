@@ -111,3 +111,27 @@ message TodoOpenExemption {
   // The line number of the exempted TODO.
   repeated int32 line_number = 2;
 }
+
+// Exemptions for the binary file check. Exemptions indicate files that are expected to be binary
+// and should not be flagged by the binary file check. Each exemption uses the full relative
+// filepath from the repository root (not the file type/extension).
+message BinaryFileExemptions {
+  // List of all the binary file exemptions.
+  // Also, note that the file paths in the textproto file are maintained in lexicographical order.
+  // While adding any new file, please add it only at the correct lexicographical position, so that
+  // the list remains sorted.
+  //
+  // For example, to exempt an image file from the binary file check, add:
+  // ```
+  // binary_file_exemption {
+  //   exempted_file_path: "app/src/main/res/drawable/ic_logo.png"
+  // }
+  // ```
+  repeated BinaryFileExemption binary_file_exemption = 1;
+
+  // Represents an individual binary file exemption.
+  message BinaryFileExemption {
+    // The relative path to the file from the root directory.
+    string exempted_file_path = 1;
+  }
+}

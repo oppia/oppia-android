@@ -1,0 +1,64 @@
+# Exemptions for binary files that are expected to be present in the repository.
+# Each exempted file uses its full relative path from the repository root.
+# Entries are maintained in lexicographical order.
+
+binary_file_exemption {
+  exempted_file_path: ".gitsecret/keys/pubring.kbx"
+}
+binary_file_exemption {
+  exempted_file_path: ".gitsecret/keys/pubring.kbx~"
+}
+binary_file_exemption {
+  exempted_file_path: ".gitsecret/keys/trustdb.gpg"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/review_placeholder.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/testing_fraction.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_01.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_02.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_03.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_04.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_05.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_06.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_07.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_fractions_08.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/topic_ratios_01.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/mipmap-hdpi/launcher_icon.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/mipmap-mdpi/launcher_icon.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/mipmap-xhdpi/launcher_icon.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/mipmap-xxhdpi/launcher_icon.png"
+}
+binary_file_exemption {
+  exempted_file_path: "app/src/main/res/mipmap-xxxhdpi/launcher_icon.png"
+}
+binary_file_exemption {
+  exempted_file_path: "config/oppia-dev-workflow-remote-cache-credentials.json.secret"
+}
