@@ -7,4 +7,12 @@ import org.oppia.android.app.application.AbstractOppiaApplication
 class DeveloperOppiaApplication : AbstractOppiaApplication(
   DaggerDeveloperApplicationComponent::builder,
   firebaseAppCheckProviderFactory = DebugAppCheckProviderFactory.getInstance()
-)
+) {
+  companion object {
+    init {
+      // This enables coroutine debugging tracking which produces much more useful and helpful
+      // stacktraces and other coroutine metadata context (such as better thread naming).
+      System.setProperty("kotlinx.coroutines.debug", "on")
+    }
+  }
+}

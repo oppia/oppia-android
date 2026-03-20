@@ -1,5 +1,7 @@
 package org.oppia.android.domain.oppialogger.exceptions
 
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
@@ -16,9 +18,10 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
 
   override fun onCreateStarted() {
     // This should be set up immediately to try and capture exceptions that occur early, but it may
-    // not be safe to log them until after app initialization completes.
-    existingUncaughtExceptionHandler = Thread.currentThread().uncaughtExceptionHandler
-    Thread.currentThread().uncaughtExceptionHandler = this
+    // not be safe to log them until after app initialization completes. This will catch *all*
+    // uncaught exceptions, not just those from the main thread.
+    existingUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+    Thread.setDefaultUncaughtExceptionHandler(this)
   }
 
   override fun onCompletedInitialization() {
@@ -27,13 +30,13 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
 
   override fun uncaughtException(thread: Thread, throwable: Throwable) {
     try {
+      consoleLogger.w("OPPIA_EXCEPTION_HANDLER", "Caught uncaught exception:", throwable)
       if (canLogExceptions) {
         exceptionsControllerProvider.get().logFatalException(Exception(throwable))
       } else {
         consoleLogger.e(
           "OPPIA_EXCEPTION_HANDLER",
-          "Skipped logging exception due to app not being fully initialized yet.",
-          throwable
+          "Skipped logging exception due to app not being fully initialized yet."
         )
       }
     } catch (e: Exception) {

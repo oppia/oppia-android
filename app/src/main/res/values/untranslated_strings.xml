@@ -37,7 +37,8 @@
   <string name="force_download_dialog_title_text" translatable="false">Remote Platform Parameters</string>
   <string name="force_download_dialog_restart_button_text" translatable="false">Restart</string>
   <string name="force_download_dialog_cancel_button_text" translatable="false">Cancel</string>
-  <string name="force_download_dialog_downloading_message_text" translatable="false">Downloading</string>
+  <string name="force_download_dialog_downloading_message_text" translatable="false">Downloading…</string>
+  <string name="force_download_dialog_failed_message_text" translatable="false">Failed to download.</string>
   <string name="force_download_dialog_successfully_downloaded_message_text" translatable="false">Successfully Downloaded</string>
   <string name="force_download_restart_message_text" translatable="false">Restart app to apply new configuration.</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>

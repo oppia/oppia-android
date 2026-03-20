@@ -55,6 +55,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.util.logging.ConsoleLogger
 
 /** Tests for [BootstrapOppiaWorker]. */
 @RunWith(AndroidJUnit4::class)
@@ -789,11 +790,13 @@ class BootstrapOppiaWorkerTest {
         return MockSuccessThenFailWorker()
       }
 
-      override suspend fun doWorkForTaskName(taskName: String): OppiaWorker.Result? {
+      override suspend fun doWorkForTaskName(
+        consoleLogger: ConsoleLogger, workerName: String, taskName: String
+      ): OppiaWorker.Result? {
         // Simulate a "later" run of the job (e.g. in the next process run) not having the same
         // tasks supported.
         if (hasIncompatibility) return null
-        return super.doWorkForTaskName(taskName)
+        return super.doWorkForTaskName(consoleLogger, workerName, taskName)
       }
     }
 

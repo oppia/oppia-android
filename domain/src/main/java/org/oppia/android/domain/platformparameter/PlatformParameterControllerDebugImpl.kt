@@ -1,5 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
+import java.net.UnknownHostException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -277,20 +278,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           val currentFlags = platformParameterControllerProdImpl.loadRemoteFeatureFlags()
           val paramDefs = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
           val flagDefs = platformParameterControllerProdImpl.loadSupportedFeatureFlags()
-          val gaeParams = try {
-            fetchRemotePlatformParametersListAsync().await()
-          } catch (e: HttpException) {
-            oppiaLogger.e("PlatformParameterController", "Error while downloading parameters.", e)
-            exceptionLogger.logException(e)
-            emptyList()
-          }
-          val gaeFlags = try {
-            fetchRemoteFeatureFlagsListAsync().await()
-          } catch (e: HttpException) {
-            oppiaLogger.e("PlatformParameterController", "Error while downloading flags.", e)
-            exceptionLogger.logException(e)
-            emptyList()
-          }
+          val gaeParams = fetchRemotePlatformParametersListAsync().await()
+          val gaeFlags = fetchRemoteFeatureFlagsListAsync().await()
           val incomingParams = convertAndFilterPlatformParameters(gaeParams, paramDefs)
           val incomingFlags = convertAndFilterFeatureFlags(gaeFlags, flagDefs)
           if (gaeParams.size != incomingParams.size) {
@@ -314,24 +303,49 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           oppiaLogger.d("PlatformParameterController", "Finished download attempt.")
         }
       }
-      ongoingDownloadTask?.await()
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+      return@createInMemoryDataProviderAsync try {
+        ongoingDownloadTask?.await()
+        AsyncResult.Success(Unit)
+      } catch (e: UnknownHostException) {
+        // UnknownHostException happens particularly when the device loses connectivity or there's a
+        // different DNS issue preventing oppia.org from being resolved.
+        exceptionLogger.logException(e)
+        oppiaLogger.e(
+          "PlatformParameterController",
+          "Failed to download parameters due to DNS or connectivity issue."
+        )
+        AsyncResult.Failure(e)
+      } catch (e: HttpException) {
+        // Something failed when trying to access one of the Oppia endpoints.
+        exceptionLogger.logException(e)
+        oppiaLogger.e(
+          "PlatformParameterController",
+          "Encountered HTTP issue when accessing URL: ${e.response()?.raw()?.request?.url?.toUrl()}"
+        )
+        AsyncResult.Failure(e)
+      }
     }
   }
 
   private fun fetchRemotePlatformParametersListAsync(): Deferred<List<GaePlatformParameter>> {
     return CoroutineScope(backgroundCoroutineDispatcher).async {
       withContext(Dispatchers.IO) {
+        val androidMinVersionForUpdate = customPropertyRetriever.getInt(
+          "android_min_version_code_for_recommending_app_update"
+        )
+        val androidMinVersion = customPropertyRetriever.getInt("android_min_supported_version_code")
+        val minSdkVersion = customPropertyRetriever.getInt("android_min_supported_api_level")
+        oppiaLogger.d(
+          "PlatformParameterController",
+          "System overrides:" +
+            " android_min_version_code_for_recommending_app_update=$androidMinVersionForUpdate," +
+            " android_min_supported_version_code=$androidMinVersion," +
+            " android_min_supported_api_level=$minSdkVersion"
+        )
         platformParameterDebugService.getPlatformParameters(
-          overrideAndroidMinVersionCodeForRecommendingAppUpdate = customPropertyRetriever.getInt(
-            "android_min_version_code_for_recommending_app_update"
-          ),
-          overrideAndroidMinSupportedVersionCode = customPropertyRetriever.getInt(
-            "android_min_supported_version_code"
-          ),
-          overrideAndroidMinSupportApiLevel = customPropertyRetriever.getInt(
-            "android_min_supported_api_level"
-          )
+          overrideAndroidMinVersionCodeForRecommendingAppUpdate = androidMinVersionForUpdate,
+          overrideAndroidMinSupportedVersionCode = androidMinVersion,
+          overrideAndroidMinSupportApiLevel = minSdkVersion
         ).await()
       }
     }
@@ -340,10 +354,14 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private fun fetchRemoteFeatureFlagsListAsync(): Deferred<List<GaeFeatureFlag>> {
     return CoroutineScope(backgroundCoroutineDispatcher).async {
       withContext(Dispatchers.IO) {
+        val enableFastSwitch =
+          customPropertyRetriever.getBoolean("android_enable_fast_language_switching_in_lesson")
+        oppiaLogger.d(
+          "PlatformParameterController",
+          "System overrides: android_enable_fast_language_switching_in_lesson=$enableFastSwitch"
+        )
         platformParameterDebugService.getFeatureFlags(
-          overrideEnableEnableFastLanguageSwitchingInLesson = customPropertyRetriever.getBoolean(
-            "android_enable_fast_language_switching_in_lesson"
-          )
+          overrideEnableEnableFastLanguageSwitchingInLesson = enableFastSwitch
         ).await()
       }
     }

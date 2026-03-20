@@ -8,7 +8,10 @@ kt_android_library(
     name = "oppia_worker",
     srcs = ["OppiaWorker.kt"],
     visibility = ["//:oppia_api_visibility"],
-    deps = ["//third_party:androidx_work_work-runtime"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
 )
 
 kt_android_library(

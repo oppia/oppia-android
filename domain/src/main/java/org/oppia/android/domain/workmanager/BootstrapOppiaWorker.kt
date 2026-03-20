@@ -100,7 +100,9 @@ class BootstrapOppiaWorker private constructor(
     val taskTypeName = inputData.getStringFromData(taskTypeNameKey)
 
     // Delegate execution to a factory helper to simplify type safety.
-    val result = taskTypeName?.let { factory.doWorkForTaskName(it) }
+    val result = taskTypeName?.let {
+      factory.doWorkForTaskName(consoleLogger, delegatedWorkerName, it)
+    }
     if (result == null) {
       // If the task type has an incompatibility then err on the side of canceling the task in case
       // there was some sort if incompatible change in the worker's API. Since the bootstrap

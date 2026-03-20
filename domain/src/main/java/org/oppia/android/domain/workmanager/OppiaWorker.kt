@@ -1,5 +1,7 @@
 package org.oppia.android.domain.workmanager
 
+import org.oppia.android.util.logging.ConsoleLogger
+
 /**
  * Represents a worker that's supported to perform arbitrary background operations even when the app
  * is not currently running with a foreground activity.
@@ -64,12 +66,17 @@ interface OppiaWorker<T : OppiaWorker.TaskType> {
      * This ought to never be called directly. It needs to exist to avoid a type safety issue within
      * [BootstrapOppiaWorker]'s internal workings.
      *
+     * @param consoleLogger the [ConsoleLogger] to log information messages to
+     * @param workerName the name of this worker about to run (for logging purposes)
      * @param taskName the [TaskType.persistentName] corresponding to the task to run
      * @return the [Result] of running the job, or `null` if the provided task name doesn't
      *     correspond to any known [TaskType]s supported by the [OppiaWorker]
      */
-    suspend fun doWorkForTaskName(taskName: String): Result? {
+    suspend fun doWorkForTaskName(
+      consoleLogger: ConsoleLogger, workerName: String, taskName: String
+    ): Result? {
       val taskType = supportedTaskTypes.find { taskName == it.persistentName } ?: return null
+      consoleLogger.i("BootstrapOppiaWorker", "Starting task $taskName in worker $workerName.")
       return createWorker().doWork(taskType)
     }
   }

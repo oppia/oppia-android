@@ -17,6 +17,8 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
+import kotlinx.coroutines.supervisorScope
+import org.oppia.android.util.logging.ConsoleLogger
 
 /**
  * Various functions to create or manipulate [DataProvider]s.
@@ -30,6 +32,7 @@ class DataProviders @Inject constructor(
   private val application: Application,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger
 ) {
   companion object {
@@ -168,7 +171,11 @@ class DataProviders @Inject constructor(
     fun <T> DataProvider<T>.toLiveData(): LiveData<AsyncResult<T>> {
       val dataProviders = getDataProviders()
       return NotifiableAsyncLiveData(
-        dataProviders.backgroundDispatcher, dataProviders.asyncDataSubscriptionManager, this
+        dataProviders.backgroundDispatcher,
+        dataProviders.asyncDataSubscriptionManager,
+        dataProviders.consoleLogger,
+        dataProviders.exceptionLogger,
+        this
       )
     }
 
@@ -354,6 +361,8 @@ class DataProviders @Inject constructor(
   private class NotifiableAsyncLiveData<T>(
     private val dispatcher: CoroutineDispatcher,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private val consoleLogger: ConsoleLogger,
+    private val exceptionLogger: ExceptionLogger,
     private val dataProvider: DataProvider<T>
   ) : LiveData<AsyncResult<T>>() {
     private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
@@ -371,7 +380,14 @@ class DataProviders @Inject constructor(
       // so that new observers can receive the most up-to-date value.
       if (runningJob.get() == null) {
         val job = CoroutineScope(dispatcher).launch {
-          handleDataProviderUpdate()
+          val result = try {
+            retrieveLatestAndStopJob()
+          } catch (e: Exception) {
+            consoleLogger.e("NotifiableAsyncLiveData", "Suppressing uncaught exception: $e.")
+            exceptionLogger.logException(e)
+            AsyncResult.Failure(e)
+          }
+          postValue(result)
         }
         // Note that this can race against handleDataProviderUpdate() clearing the job, but in
         // either outcome the behavior should still be correct (eventual consistency).
@@ -414,10 +430,11 @@ class DataProviders @Inject constructor(
       // mechanism which in turn always calls setValue(), even if there are no active observers. See
       // the override of setValue() above for the adjusted semantics this class requires to ensure
       // its own cache remains up-to-date.
-      retrieveFromDataProvider()?.let {
-        super.postValue(it)
-        runningJob.set(null)
-      }
+      retrieveLatestAndStopJob()?.let(::postValue)
+    }
+
+    private suspend fun retrieveLatestAndStopJob(): AsyncResult<T>? {
+      return retrieveFromDataProvider().also { runningJob.set(null) }
     }
 
     private suspend fun retrieveFromDataProvider(): AsyncResult<T>? {

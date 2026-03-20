@@ -15,6 +15,7 @@ import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.text.Charsets
+import kotlinx.coroutines.supervisorScope
 
 /**
  * Interceptor on top of Retrofit to log network requests and responses.
@@ -54,14 +55,16 @@ class NetworkLoggingInterceptor @Inject constructor(
         }?.buffer?.clone()?.readString(Charsets.UTF_8)
 
       CoroutineScope(backgroundDispatcher).launch {
-        _logNetworkCallFlow.emit(
-          RetrofitCallContext.newBuilder()
-            .setRequestUrl(request.url.toString())
-            .setHeaders(request.headers.toString())
-            .setResponseStatusCode(response.code)
-            .setBody(responseBodyText ?: "")
-            .build()
-        )
+        supervisorScope {
+          _logNetworkCallFlow.emit(
+            RetrofitCallContext.newBuilder()
+              .setRequestUrl(request.url.toString())
+              .setHeaders(request.headers.toString())
+              .setResponseStatusCode(response.code)
+              .setBody(responseBodyText ?: "")
+              .build()
+          )
+        }
       }
 
       if (!response.isSuccessful) {

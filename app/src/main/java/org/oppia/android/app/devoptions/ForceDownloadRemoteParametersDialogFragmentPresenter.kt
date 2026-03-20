@@ -39,12 +39,21 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
 
     forceDownloadRemoteParametersParametersController
       .downloadRemoteParameters().toLiveData().observe(fragment) {
-        if (it is AsyncResult.Success) {
-          oppiaLogger.d(
-            "ForceDownloadRemoteParametersDialog",
-            "Remote parameters downloaded successfully."
-          )
-          handleDownloadComplete(binding)
+        when (it) {
+          is AsyncResult.Pending -> {} // Do nothing.
+          is AsyncResult.Success -> {
+            oppiaLogger.d(
+              "ForceDownloadRemoteParametersDialog",
+              "Remote parameters downloaded successfully."
+            )
+            handleDownloadComplete(binding)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ForceDownloadRemoteParametersDialog", "Failed to download parameters.", it.error
+            )
+            handleDownloadFailed(binding)
+          }
         }
       }
 
@@ -80,5 +89,11 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       )
       setBackgroundResource(R.drawable.state_button_primary_background)
     }
+  }
+
+  private fun handleDownloadFailed(binding: ForceDownloadRemoteParametersDialogFragmentBinding) {
+    binding.forceDownloadMessage.text =
+      resourceHandler.getStringInLocale(R.string.force_download_dialog_failed_message_text)
+    binding.restartButton.visibility = View.GONE
   }
 }

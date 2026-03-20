@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import kotlinx.coroutines.supervisorScope
 
 typealias ObserveAsyncChange = suspend () -> Unit
 
@@ -93,7 +94,11 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * changes on a background thread.
    */
   fun notifyChangeAsync(id: Any) {
-    CoroutineScope(backgroundDispatcher).launch { notifyChange(id) }
+    CoroutineScope(backgroundDispatcher).launch {
+      supervisorScope {
+        notifyChange(id)
+      }
+    }
   }
 
   /**

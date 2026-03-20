@@ -11,7 +11,9 @@ class NetworkConfigProdModule {
   @Provides
   @BaseUrl
   fun provideNetworkBaseUrl(): String {
-    return "https://oppia.org"
+    // NOTE TO DEVELOPER: This MUST use the 'www' subdomain of oppia.org otherwise requests will
+    // fail since there's no DNS redirection.
+    return "https://www.oppia.org"
   }
 
   /**

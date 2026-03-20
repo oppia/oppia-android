@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.supervisorScope
 
 /**
  * Injectable factory for creating lifecycle-safe timers that use [LiveData]. This should always be used instead of
@@ -33,8 +34,10 @@ class LifecycleSafeTimerFactory @Inject constructor(
   fun createTimer(timeoutMillis: Long): LiveData<Any> {
     val liveData = MutableLiveData<Any>()
     backgroundCoroutineScope.launch {
-      delay(timeoutMillis)
-      liveData.postValue(Any())
+      supervisorScope {
+        delay(timeoutMillis)
+        liveData.postValue(Any())
+      }
     }
     return liveData
   }

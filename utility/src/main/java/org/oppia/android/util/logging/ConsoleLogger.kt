@@ -13,6 +13,7 @@ import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
+import java.io.StringWriter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -96,7 +97,20 @@ class ConsoleLogger @Inject constructor(
   }
 
   private fun writeError(logLevel: LogLevel, tag: String, log: String, tr: Throwable?) {
-    writeInternal(logLevel, tag, "$log\n${Log.getStackTraceString(tr)}")
+    writeInternal(logLevel, tag, "$log\n${computeStackTraceString(tr)}")
+  }
+
+  /**
+   * Returns a formatted string for the corresponding [throwable]'s stack trace, or an empty string
+   * if it's null.
+   *
+   * Note that this is used instead of [Log.getStackTraceString] because that method will ignore
+   * UnknownHostException (to avoid a lot of logcat spam across Android), but that exception is
+   * actually very useful to log for Oppia since it comes up a lot in offline cases.
+   */
+  private fun computeStackTraceString(throwable: Throwable?): String {
+    if (throwable == null) return ""
+    return StringWriter().also { PrintWriter(it).use(throwable::printStackTrace) }.toString()
   }
 
   private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
