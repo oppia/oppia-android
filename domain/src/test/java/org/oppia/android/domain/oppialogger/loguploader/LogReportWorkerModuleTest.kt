@@ -49,7 +49,8 @@ import javax.inject.Singleton
 @Config(application = LogReportWorkerModuleTest.TestApplication::class)
 class LogReportWorkerModuleTest {
   @Inject lateinit var context: Context
-  @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject
+  lateinit var readinessListeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
 
   @Before
@@ -60,8 +61,8 @@ class LogReportWorkerModuleTest {
   @Test
   fun testInjection_bindsLogUploadWorkerSchedulerIntoReadinessListenerSet() {
     // The main test is that the test suite builds.
-    val logReportWorkerSchedulers = readyLists.filterIsInstance<LogReportWorkerScheduler>()
-    assertThat(readyLists).isNotEmpty()
+    val logReportWorkerSchedulers = readinessListeners.filterIsInstance<LogReportWorkerScheduler>()
+    assertThat(readinessListeners).isNotEmpty()
     assertThat(logReportWorkerSchedulers).hasSize(1)
   }
 

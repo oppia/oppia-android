@@ -19,8 +19,8 @@ class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
   }
 
   /**
-   * Sets an [Exception] to throw the next time(s) [logPerformanceMetric] are called, or `null` if
-   * failure mode should be cleared.
+   * Sets an [Exception] to throw the next time(s) [logEvent] is called, or `null` if the failure
+   * mode should be cleared.
    */
   fun setFailure(failure: Exception?) {
     failureToThrow = failure
