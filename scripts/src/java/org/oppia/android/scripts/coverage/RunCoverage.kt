@@ -63,7 +63,9 @@ fun main(vararg args: String) {
     .map { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+          checkNotNull(findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)) {
+            "No source file found for test path: $filePath"
+          }
         }
         filePath.endsWith(".kt") -> filePath
         else -> null
