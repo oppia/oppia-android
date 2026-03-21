@@ -53,23 +53,12 @@ import javax.inject.Singleton
 @Config(application = DebugWorkerSchedulerTest.TestApplication::class)
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class DebugWorkerSchedulerTest {
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var configuration: Configuration
-
-  @Inject
-  lateinit var workManagerScheduler: WorkManagerScheduler
-
-  @Inject
-  lateinit var debugWorkerScheduler: DebugWorkerScheduler
-
-  @Inject
-  lateinit var testDriver: OppiaWorkManagerTestDriver
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var configuration: Configuration
+  @Inject lateinit var workManagerScheduler: WorkManagerScheduler
+  @Inject lateinit var debugWorkerScheduler: DebugWorkerScheduler
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
 
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundDispatcher: CoroutineDispatcher

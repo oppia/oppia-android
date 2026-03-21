@@ -2067,6 +2067,14 @@ class EventLogSubject private constructor(
      */
     fun hasAnswerCorrectValueThat(): BooleanSubject = assertThat(actual.isAnswerCorrect)
 
+    /**
+     * Returns a [StringSubject] to test [EventLog.SubmitAnswerContext.getStringifiedAnswer].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasStringifiedAnswerThat(): StringSubject = assertThat(actual.stringifiedAnswer)
+
     companion object {
       /**
        * Returns a new [SubmitAnswerContextSubject] to verify aspects of the specified

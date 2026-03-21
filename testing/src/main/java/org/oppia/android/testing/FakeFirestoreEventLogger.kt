@@ -19,7 +19,7 @@ class FakeFirestoreEventLogger @Inject constructor() : FirestoreEventLogger {
   }
 
   /**
-   * Sets an [Exception] to throw the next time(s) [logPerformanceMetric] are called, or `null` if
+   * Sets an [Exception] to throw the next time(s) [uploadEvent] is called, or `null` if the
    * failure mode should be cleared.
    */
   fun setFailure(failure: Exception?) {

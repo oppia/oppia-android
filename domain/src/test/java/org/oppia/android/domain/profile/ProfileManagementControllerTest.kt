@@ -1301,6 +1301,62 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testProfileManagementController_deleteAllProfiles_profilesListIsEmpty() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+    // Restart the application to reload from disk, verifying on-disk state is correct.
+    setUpTestApplicationComponent()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllProfiles_inMemoryCacheUpdated() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+
+    // Verify that the in-memory data provider reflects the deletion without restarting.
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllProfiles_preservesNonProfileData() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+    // Update device settings to non-default values before deletion.
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateWifiPermissionDeviceSettings(
+        ADMIN_PROFILE_ID_0, downloadAndUpdateOnWifiOnly = true
+      )
+    )
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
+        ADMIN_PROFILE_ID_0, automaticallyUpdateTopics = true
+      )
+    )
+
+    profileManagementController.deleteAllProfiles().ensureExecutes()
+    // Restart to verify on-disk state preserves non-profile data.
+    setUpTestApplicationComponent()
+
+    val deviceSettings = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getDeviceSettings()
+    )
+    assertThat(deviceSettings.allowDownloadAndUpdateOnlyOnWifi).isTrue()
+    assertThat(deviceSettings.automaticallyUpdateTopics).isTrue()
+  }
+
+  @Test
   fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasNotAdded() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Rohit")

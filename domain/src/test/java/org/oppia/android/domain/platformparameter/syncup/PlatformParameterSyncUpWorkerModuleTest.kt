@@ -49,7 +49,8 @@ import javax.inject.Singleton
 @Config(application = PlatformParameterSyncUpWorkerModuleTest.TestApplication::class)
 class PlatformParameterSyncUpWorkerModuleTest {
   @Inject lateinit var context: Context
-  @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject
+  lateinit var readinessListeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
 
   @Before
@@ -61,8 +62,8 @@ class PlatformParameterSyncUpWorkerModuleTest {
   fun testInjection_bindsPlatformParameterSyncUpWorkerSchedulerIntoReadinessListenerSet() {
     // The main test is that the test suite builds.
     val platformParameterSyncUpWorkerSchedulers =
-      readyLists.filterIsInstance<PlatformParameterSyncUpWorkerScheduler>()
-    assertThat(readyLists).isNotEmpty()
+      readinessListeners.filterIsInstance<PlatformParameterSyncUpWorkerScheduler>()
+    assertThat(readinessListeners).isNotEmpty()
     assertThat(platformParameterSyncUpWorkerSchedulers).hasSize(1)
   }
 

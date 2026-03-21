@@ -31,7 +31,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 class DebugWorkerDebugModuleTest {
   @Inject lateinit var context: Context
-  @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject
+  lateinit var readinessListeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
 
   @Before
@@ -42,8 +43,8 @@ class DebugWorkerDebugModuleTest {
   @Test
   fun testInjection_bindsDebugWorkerSchedulerIntoReadinessListenerSet() {
     // The main test is that the test suite builds.
-    val debugWorkerSchedulers = readyLists.filterIsInstance<DebugWorkerScheduler>()
-    assertThat(readyLists).isNotEmpty()
+    val debugWorkerSchedulers = readinessListeners.filterIsInstance<DebugWorkerScheduler>()
+    assertThat(readinessListeners).isNotEmpty()
     assertThat(debugWorkerSchedulers).hasSize(1)
   }
 

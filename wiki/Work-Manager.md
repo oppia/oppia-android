@@ -45,7 +45,27 @@ That's it! From there you can customize which tasks the job can do and adapt the
 
 # Writing tests with WorkManager
 
-TODO: Re-write this section once the new testing strategy is understood.
+Writing worker tests generally means testing one of three things:
+- The actual worker (i.e. the class that implements `OppiaWorker`).
+- Testing the class that automatically schedules the worker on application startup (i.e. the class that implements `StartupWorkerScheduleReadinessListener`).
+- Testing the Dagger module that correctly binds both the worker and the scheduler.
+
+For all three of these, look at the following references (plus their tested class implementations):
+- [`DebugWorkerTest`](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/workmanager/debug/DebugWorkerTest.kt)
+- [`DebugWorkerSchedulerTest`](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/workmanager/debug/DebugWorkerSchedulerTest.kt)
+- [`DebugWorkerDebugModuleTest`](https://github.com/oppia/oppia-android/blob/develop/domain/src/test/java/org/oppia/android/domain/workmanager/debug/DebugWorkerDebugModuleTest.kt)
+
+These classes are specifically designed to serve as examples for creating and testing Oppia workers.
+
+At a higher level, tests never interact with `WorkManager` directly. Instead, they make use of [`OppiaWorkManagerTestDriver`](https://github.com/oppia/oppia-android/blob/develop/domain/src/main/java/org/oppia/android/domain/workmanager/testing/OppiaWorkManagerTestDriver.kt) to do all of:
+- Initializing the test so that it can properly integrate with `WorkManager`.
+- Running `OppiaWorker`s as either one-off or periodic jobs.
+- Inspect the latest state of a job.
+- Force job constraints to test constrained scenarios (such as when internet connectivity is required).
+
+Cumulatively, these provide all the necessary functionality for testing both workers and worker schedulers. Validating the module is done using standard module testing techniques.
+
+Setting up the test environment properly is highly complex which is why the helper must be used (and, in fact, file content checks prohibit using `WorkManager` or its testing utilities directly).
 
 # Debugging WorkManager
 

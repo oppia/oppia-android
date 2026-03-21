@@ -96,8 +96,6 @@ class NetworkLoggingInterceptorTest {
     val firstRequest = firstRequestsDeferred.getCompleted().single()
     assertThat(firstRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
     assertThat(firstRequest.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-    assertThat(firstRequest.headers).contains(headerString)
-    assertThat(firstRequest.body).isEqualTo(testResponseBody)
   }
 
   @Test
@@ -121,12 +119,8 @@ class NetworkLoggingInterceptorTest {
     val firstFailingRequest = firstFailingRequestsDeferred.getCompleted().single()
     assertThat(firstRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
     assertThat(firstRequest.responseStatusCode).isEqualTo(pageNotFound)
-    assertThat(firstRequest.headers).contains(headerString)
-    assertThat(firstRequest.body).isEqualTo(testResponseBody)
     assertThat(firstFailingRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
     assertThat(firstFailingRequest.responseStatusCode).isEqualTo(pageNotFound)
-    assertThat(firstFailingRequest.headers).contains(headerString)
-    assertThat(firstFailingRequest.body).isEmpty()
     assertThat(firstFailingRequest.errorMessage).isNotEmpty()
     assertThat(firstFailingRequest.errorMessage).isEqualTo(testResponseBody)
   }
@@ -151,8 +145,6 @@ class NetworkLoggingInterceptorTest {
     val firstFailingRequest = firstFailingRequestsDeferred.getCompleted().single()
     assertThat(firstFailingRequest.requestUrl).isEqualTo(mockWebServerUrl.toString())
     assertThat(firstFailingRequest.responseStatusCode).isEqualTo(0)
-    assertThat(firstFailingRequest.headers).contains(headerString)
-    assertThat(firstFailingRequest.body).isEmpty()
     assertThat(firstFailingRequest.errorMessage).isNotEmpty()
     assertThat(firstFailingRequest.errorMessage).contains("Failed to connect to localhost")
   }

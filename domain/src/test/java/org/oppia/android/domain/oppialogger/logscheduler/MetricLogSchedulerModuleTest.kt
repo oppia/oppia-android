@@ -49,7 +49,8 @@ import javax.inject.Singleton
 @Config(application = MetricLogSchedulerModuleTest.TestApplication::class)
 class MetricLogSchedulerModuleTest {
   @Inject lateinit var context: Context
-  @Inject lateinit var readyLists: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject
+  lateinit var readinessListeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
 
   @Before
@@ -61,8 +62,8 @@ class MetricLogSchedulerModuleTest {
   fun testInjection_bindsMetricLogWorkerSchedulerIntoReadinessListenerSet() {
     // The main test is that the test suite builds.
     val metricLogWorkerSchedulers =
-      readyLists.filterIsInstance<MetricLogSchedulingWorkerScheduler>()
-    assertThat(readyLists).isNotEmpty()
+      readinessListeners.filterIsInstance<MetricLogSchedulingWorkerScheduler>()
+    assertThat(readinessListeners).isNotEmpty()
     assertThat(metricLogWorkerSchedulers).hasSize(1)
   }
 
