@@ -257,6 +257,7 @@ class StateFragmentTest {
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
+  //  15. Add tests to check drag and drop answers are persisted when orientation changes.
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
