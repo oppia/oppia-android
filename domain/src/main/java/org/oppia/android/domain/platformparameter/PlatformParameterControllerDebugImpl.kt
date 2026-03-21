@@ -330,11 +330,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private fun fetchRemotePlatformParametersListAsync(): Deferred<List<GaePlatformParameter>> {
     return CoroutineScope(backgroundCoroutineDispatcher).async {
       withContext(Dispatchers.IO) {
-        val androidMinVersionForUpdate = customPropertyRetriever.getInt(
+        val androidMinVersionForUpdate = customPropertyRetriever.getPropertyInt(
           "android_min_version_code_for_recommending_app_update"
         )
-        val androidMinVersion = customPropertyRetriever.getInt("android_min_supported_version_code")
-        val minSdkVersion = customPropertyRetriever.getInt("android_min_supported_api_level")
+        val androidMinVersion =
+          customPropertyRetriever.getPropertyInt("android_min_supported_version_code")
+        val minSdkVersion =
+          customPropertyRetriever.getPropertyInt("android_min_supported_api_level")
         oppiaLogger.d(
           "PlatformParameterController",
           "System overrides:" +
@@ -354,8 +356,9 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private fun fetchRemoteFeatureFlagsListAsync(): Deferred<List<GaeFeatureFlag>> {
     return CoroutineScope(backgroundCoroutineDispatcher).async {
       withContext(Dispatchers.IO) {
-        val enableFastSwitch =
-          customPropertyRetriever.getBoolean("android_enable_fast_language_switching_in_lesson")
+        val enableFastSwitch = customPropertyRetriever.getPropertyBoolean(
+          "android_enable_fast_language_switching_in_lesson"
+        )
         oppiaLogger.d(
           "PlatformParameterController",
           "System overrides: android_enable_fast_language_switching_in_lesson=$enableFastSwitch"

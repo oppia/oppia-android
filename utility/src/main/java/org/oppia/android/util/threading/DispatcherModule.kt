@@ -31,7 +31,6 @@ class DispatcherModule {
     return Executors.newSingleThreadExecutor(OppiaThreadFactory("blocking")).asCoroutineDispatcher()
   }
 
-  // TODO: Move outside this PR (helpful for debugging).
   private class OppiaThreadFactory(private val poolName: String): ThreadFactory {
     private val threadFactory by lazy { Executors.defaultThreadFactory() }
     private val counter = AtomicInteger(0)

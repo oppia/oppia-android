@@ -144,6 +144,7 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaLocale.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/properties/CustomPropertyRetrieverDebugImpl.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/parser/html/CustomHtmlContentHandlerTest.kt"
   exempted_file_patterns: "app/src/test/.+?Test\\.kt"
   exempted_file_patterns: "app/src/sharedTest/.+?Test\\.kt"

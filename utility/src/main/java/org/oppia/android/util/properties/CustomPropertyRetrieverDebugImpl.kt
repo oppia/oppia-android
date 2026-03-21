@@ -10,12 +10,13 @@ class CustomPropertyRetrieverDebugImpl @Inject constructor(
   private val packageName = "org.oppia.android"
   private val contentResolver by lazy { context.contentResolver }
 
-  override fun getString(name: String): String? =
+  override fun getPropertyString(name: String): String? =
     Settings.Global.getString(contentResolver, computeQualifiedPropertyName(name))
 
-  override fun getInt(name: String): Int? = getString(name)?.toIntOrNull()
+  override fun getPropertyInt(name: String): Int? = getPropertyString(name)?.toIntOrNull()
 
-  override fun getBoolean(name: String): Boolean? = getString(name)?.toBooleanStrictOrNull()
+  override fun getPropertyBoolean(name: String): Boolean? =
+    getPropertyString(name)?.toBooleanStrictOrNull()
 
   private fun computeQualifiedPropertyName(name: String) = "$packageName.$name"
 }

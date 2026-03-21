@@ -3336,6 +3336,10 @@ test_file_exemption {
   override_min_coverage_percent_required: 0
 }
 test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeFeatureFlag.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReport.kt"
   test_file_not_required: true
 }
@@ -3353,6 +3357,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReportingSystemContext.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaePlatformParameter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4773,6 +4781,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterValue.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/properties/CustomPropertyRetriever.kt"
   test_file_not_required: true
 }
 test_file_exemption {
