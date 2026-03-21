@@ -5833,7 +5833,7 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
     // Simulate previous app instance with feature flag disabled.
-    executeInPreviousAppInstance {
+    executeInPreviousAppInstance { _ ->
       TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     }
 
@@ -5856,7 +5856,7 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn_flashbackButtonShown() {
     // Simulate previous app instance with feature flag disabled.
-    executeInPreviousAppInstance {
+    executeInPreviousAppInstance { _ ->
       TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     }
 
@@ -5880,7 +5880,7 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
     // Simulate previous app instance with feature flag enabled.
-    executeInPreviousAppInstance {
+    executeInPreviousAppInstance { _ ->
       TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     }
 
