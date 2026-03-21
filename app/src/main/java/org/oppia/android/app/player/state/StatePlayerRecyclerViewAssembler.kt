@@ -295,7 +295,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           hasPreviousState,
           gcsEntityId,
           ephemeralState.writtenTranslationContext,
-          timeToStartNoticeAnimationMs
+          timeToStartNoticeAnimationMs,
+          ephemeralState.pendingState.wrongAnswerList
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
@@ -408,7 +409,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousButton: Boolean,
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext,
-    timeToStartNoticeAnimationMs: Long?
+    timeToStartNoticeAnimationMs: Long?,
+    wrongAnswerList: List<AnswerAndResponse>
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory.create(
@@ -421,7 +423,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       isSplitView.get()!!,
       writtenTranslationContext,
       timeToStartNoticeAnimationMs,
-      userAnswerState
+      userAnswerState,
+      wrongAnswerList
     )
   }
 

@@ -9,9 +9,12 @@ on:
     branches:
       # Push events on develop branch
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -24,7 +27,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -42,7 +45,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}

@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
@@ -59,7 +60,8 @@ class ContinueInteractionViewModel private constructor(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
+      userAnswerState: UserAnswerState,
+      wrongAnswerList: List<AnswerAndResponse>
     ): StateItemViewModel {
       return ContinueInteractionViewModel(
         interactionAnswerReceiver,

@@ -20,6 +20,15 @@ runs:
         fi
       shell: bash
 
+    # Extract the versions from build_vars.bzl, removing spaces and quotes.
+    - name: Parse build variables
+      run: |
+        SDK_VERSION=$(grep 'BUILD_SDK_VERSION' ${{ github.action_path }}/../../../build_vars.bzl | cut -d '=' -f 2 | tr -d ' "')
+        BUILD_TOOLS_VERSION=$(grep 'BUILD_TOOLS_VERSION' ${{ github.action_path }}/../../../build_vars.bzl | cut -d '=' -f 2 | tr -d ' "')
+        echo "SDK_VERSION=$SDK_VERSION" >> $GITHUB_ENV
+        echo "BUILD_TOOLS_VERSION=$BUILD_TOOLS_VERSION" >> $GITHUB_ENV
+      shell: bash
+
     - name: Set up new Android SDK directory
       run: |
         mkdir -p $HOME/android-sdk
@@ -55,14 +64,14 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
       shell: bash
 
-    - name: Install SDK 35
+    - name: Install SDK
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-35"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-${{ env.SDK_VERSION }}"
       shell: bash
 
-    - name: Install build tools 34.0.0
+    - name: Install build tools
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;34.0.0"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;${{ env.BUILD_TOOLS_VERSION }}"
       shell: bash
 
     - name: Configure Bazel to use specific sandbox tmpfs
