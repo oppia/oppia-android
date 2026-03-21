@@ -127,14 +127,15 @@ class AudioViewModel @Inject constructor(
       )
     } else {
       val stateContentId = currentState.content.contentId
-      check(stateContentId.isNotEmpty()) {
-        "State has a non-empty content ID invariant violation."
+      if (stateContentId.isNotEmpty()) {
+        loadAudio(
+          contentId = stateContentId,
+          state = currentState,
+          selectedLanguageCode = selectedLanguageCode
+        )
+      } else {
+        resetAudio()
       }
-      loadAudio(
-        contentId = stateContentId,
-        state = currentState,
-        selectedLanguageCode = selectedLanguageCode
-      )
     }
   }
 
@@ -178,6 +179,7 @@ class AudioViewModel @Inject constructor(
     }
 
     if (languageCodeForDataSource != null) {
+      // TODO(#3791): Remove this dependency.
       val locale = Locale(languageCodeForDataSource)
       selectedLanguageName.set(locale.getDisplayLanguage(locale))
 

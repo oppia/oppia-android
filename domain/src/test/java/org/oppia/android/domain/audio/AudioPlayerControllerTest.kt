@@ -456,12 +456,9 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
 
-    @Suppress("UNCHECKED_CAST")
-    val captor: ArgumentCaptor<AsyncResult<PlayProgress>> =
-      ArgumentCaptor.forClass(AsyncResult::class.java) as ArgumentCaptor<AsyncResult<PlayProgress>>
-    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(captor.capture())
-    val allValues = captor.allValues
-    assertThat(allValues.size).isEqualTo(8)
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    val allValues = audioPlayerResultCaptor.allValues
+    assertThat(allValues).hasSize(8)
     assertThat(allValues[0]).hasSuccessValueWhere {
       assertThat(type).isEqualTo(PlayStatus.PREPARING)
     }
