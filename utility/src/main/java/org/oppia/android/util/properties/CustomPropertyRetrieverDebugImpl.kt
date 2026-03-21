@@ -4,6 +4,10 @@ import android.content.Context
 import android.provider.Settings
 import javax.inject.Inject
 
+/**
+ * A debug implementation of [CustomPropertyRetriever] that fetches properties from the Android
+ * device's global settings.
+ */
 class CustomPropertyRetrieverDebugImpl @Inject constructor(
   private val context: Context
 ) : CustomPropertyRetriever {
