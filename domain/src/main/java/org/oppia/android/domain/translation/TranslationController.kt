@@ -109,7 +109,15 @@ class TranslationController @Inject constructor(
       locale.getCurrentLanguage()
     }
   }
-
+  /**
+   * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
+   * specified [OppiaLanguage].
+   */
+  fun getLocaleFor(language: OppiaLanguage): DataProvider<OppiaLocale.DisplayLocale> {
+    return dataProviders.createInMemoryDataProviderAsync(RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID) {
+      localeController.retrieveAppStringDisplayLocale(language).retrieveData()
+    }
+  }
   /**
    * Returns a data provider for a list of [OppiaLanguage] which can be passed to [updateAppLanguage].
    */
@@ -432,6 +440,9 @@ class TranslationController @Inject constructor(
     return when (languageSelection.selectionTypeCase) {
       AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(languageSelection.selectedLanguage)
+      // new
+      AppLanguageSelection.SelectionTypeCase.USE_ENGLISH_LANGUAGE ->
+        LanguageResolutionStatus.Resolved(OppiaLanguage.ENGLISH)
       AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT,
       AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         LanguageResolutionStatus.UseSystemLanguage

@@ -13,6 +13,6 @@ import org.oppia.android.app.translation.AppLanguageWatcherMixin
 abstract class InjectableSystemLocalizedAppCompatActivity : InjectableAppCompatActivity() {
 
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(shouldOnlyUseSystemLanguage = true)
+    appLanguageWatcherMixin.initialize(org.oppia.android.app.model.ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE)
   }
 }

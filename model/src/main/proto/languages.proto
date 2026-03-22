@@ -260,6 +260,9 @@ message AppLanguageSelection {
 
     // Indicates that the specified language should be used for app string translations.
     OppiaLanguage selected_language = 2;
+
+    // Indicates that the English language should be forced for this selection.
+    bool use_english_language = 3;
   }
 }
 

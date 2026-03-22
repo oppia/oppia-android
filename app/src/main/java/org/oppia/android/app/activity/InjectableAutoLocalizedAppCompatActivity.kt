@@ -13,6 +13,5 @@ import org.oppia.android.app.translation.AppLanguageWatcherMixin
 abstract class InjectableAutoLocalizedAppCompatActivity : InjectableAppCompatActivity() {
 
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(shouldOnlyUseSystemLanguage = false)
-  }
+    appLanguageWatcherMixin.initialize(org.oppia.android.app.model.ForcedActivityLanguageMode.UNSPECIFIED)  }
 }
