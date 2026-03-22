@@ -2,6 +2,7 @@ package org.oppia.android.testing.data
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.Empty
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.util.data.AsyncResult
@@ -258,5 +259,157 @@ class AsyncResultSubjectTest {
     AsyncResultSubject.assertThat(failureResult1)
       .hasSameEffectiveValueAs(failureResult2)
       .isFalse()
+  }
+
+  @Test
+  fun testAsyncResultSubject_successIntResult_isSuccessThat_isEqualToIntValue() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(100)
+
+    AsyncResultSubject.assertThat(intResult)
+      .isSuccessThat()
+      .isEqualTo(100)
+  }
+
+  @Test
+  fun testAsyncResultSubject_intSuccessResult_isComparableSuccessThat_isGreaterThan99() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(100)
+
+    AsyncResultSubject.assertThat(intResult)
+      .isComparableSuccessThat<Int>()
+      .isGreaterThan(99)
+  }
+
+  @Test
+  fun testAsyncResultSubject_stringSuccessResult_isComparableSuccessThat_isGreaterThanAbc() {
+    val stringResult: AsyncResult<String> = AsyncResult.Success("abd")
+
+    AsyncResultSubject.assertThat(stringResult)
+      .isComparableSuccessThat<String>()
+      .isGreaterThan("abc")
+  }
+
+  @Test
+  fun testAsyncResultSubject_nonStringComparableExtraction_throwsAssertionErrorWithActualType() {
+    val intResult: AsyncResult<Any> = AsyncResult.Success(100)
+
+    try {
+      AsyncResultSubject.assertThat(intResult)
+        .isComparableSuccessThat<String>()
+      throw AssertionError("Expected type mismatch exception")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_protoSuccessResult_isProtoSuccessThat_isEqualToExpectedProto() {
+    val emptyProto = Empty.getDefaultInstance()
+    val protoResult: AsyncResult<Empty> = AsyncResult.Success(emptyProto)
+
+    AsyncResultSubject.assertThat(protoResult)
+      .isProtoSuccessThat()
+      .isEqualTo(emptyProto)
+  }
+
+  @Test
+  fun testAsyncResultSubject_nonProtoSuccessResult_isProtoSuccessThat_throwsAssertionError() {
+    val stringResult: AsyncResult<String> = AsyncResult.Success("value")
+
+    try {
+      AsyncResultSubject.assertThat(stringResult)
+        .isProtoSuccessThat()
+      throw AssertionError("Expected type mismatch exception")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("java.lang.String")
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_withNestedCustomCause_hasRootCauseMessage() {
+    val rootCause = IllegalStateException("Root cause")
+    val wrappedCause = FileNotFoundException("Missing file").apply { initCause(rootCause) }
+    val failureResult: AsyncResult<String> =
+      AsyncResult.Failure(RuntimeException("Top error", wrappedCause))
+
+    AsyncResultSubject.assertThat(failureResult)
+      .isFailureThat()
+      .hasCauseThat()
+      .hasCauseThat()
+      .hasMessageThat()
+      .contains("Root cause")
+  }
+
+  @Test
+  fun testAsyncResultSubject_newerResult_isNewerOrSameAgeAsOlderResult_passes() {
+    val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
+    val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
+
+    AsyncResultSubject.assertThat(newerResult).isNewerOrSameAgeAs(olderResult)
+  }
+
+  @Test
+  fun testAsyncResultSubject_olderResult_isNewerOrSameAgeAsNewerResult_throwsAssertionError() {
+    val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
+    val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
+
+    try {
+      AsyncResultSubject.assertThat(olderResult).isNewerOrSameAgeAs(newerResult)
+      throw AssertionError("Expected newer-or-same-age assertion to fail")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("expected to be true")
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_olderResult_isOlderThanNewerResult_passes() {
+    val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
+    val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
+
+    AsyncResultSubject.assertThat(olderResult).isOlderThan(newerResult)
+  }
+
+  @Test
+  fun testAsyncResultSubject_newerResult_isOlderThanOlderResult_throwsAssertionError() {
+    val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
+    val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
+
+    try {
+      AsyncResultSubject.assertThat(newerResult).isOlderThan(olderResult)
+      throw AssertionError("Expected older-than assertion to fail")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("expected to be false")
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingAndFailure_haveDifferentEffectiveValue() {
+    val pendingResult: AsyncResult<String> = AsyncResult.Pending()
+    val failureResult: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error"))
+
+    AsyncResultSubject.assertThat(pendingResult)
+      .hasSameEffectiveValueAs(failureResult)
+      .isFalse()
+  }
+
+  @Test
+  fun testAsyncResultSubject_nullAndNonNullSuccessValues_haveDifferentEffectiveValue() {
+    val nullSuccessResult: AsyncResult<String?> = AsyncResult.Success(null)
+    val nonNullSuccessResult: AsyncResult<String?> = AsyncResult.Success("value")
+
+    AsyncResultSubject.assertThat(nullSuccessResult)
+      .hasSameEffectiveValueAs(nonNullSuccessResult)
+      .isFalse()
+  }
+
+  @Test
+  fun testAsyncResultSubject_intSuccess_withIsBooleanSuccessThat_throwsAssertionError() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(100)
+
+    try {
+      AsyncResultSubject.assertThat(intResult).isBooleanSuccessThat()
+      throw AssertionError("Expected type mismatch exception")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
+    }
   }
 }
