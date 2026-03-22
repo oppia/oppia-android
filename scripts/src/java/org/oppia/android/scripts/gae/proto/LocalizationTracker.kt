@@ -534,9 +534,17 @@ class LocalizationTracker private constructor(
     }
 
     fun recordVoiceover(id: ContainerId, contentId: String, voiceover: VoiceoverFileDto) {
-      require(contentId !in voiceovers) {
-        "Voiceover already recorded for content ID: $contentId, for language: $language, in" +
-          " container: $id."
+      // TODO: Re-add this assertion or add exemptions for it.
+//      require(contentId !in voiceovers) {
+//        "Voiceover already recorded for content ID: $contentId, for language: $language, in" +
+//          " container: $id."
+//      }
+      if (contentId in voiceovers) {
+        println(
+          "WARNING: Voiceover already recorded for content ID: $contentId, for language:" +
+            " $language, in container: $id."
+        )
+        return // Don't override the voiceover--first one wins.
       }
       voiceovers[contentId] = voiceover
     }
