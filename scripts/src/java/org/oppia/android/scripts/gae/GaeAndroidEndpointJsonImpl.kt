@@ -38,6 +38,7 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopi
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
 import org.oppia.android.scripts.proto.DownloadListVersions
+import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
@@ -70,7 +71,8 @@ class GaeAndroidEndpointJsonImpl(
   private val downloadQuestions: Boolean,
   private val coroutineDispatcher: CoroutineDispatcher,
   private val imageDownloader: ImageDownloader,
-  private val forcedVersions: DownloadListVersions?
+  private val forcedVersions: DownloadListVersions?,
+  private val downloadConfig: DownloadConfig
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
     AndroidActivityHandlerService(
@@ -102,7 +104,7 @@ class GaeAndroidEndpointJsonImpl(
       val additionalLanguages = request.requiredAdditionalLanguagesList.toSet()
       val tracker =
         DownloadProgressTracker.createTracker(
-          DownloadCountEstimator(classroomCount = SUPPORTED_CLASSROOMS.size),
+          DownloadCountEstimator(classroomCount = downloadConfig.allowedClassroomsCount),
           coroutineDispatcher,
           reportProgress
         )
@@ -127,7 +129,7 @@ class GaeAndroidEndpointJsonImpl(
           forcedVersions = forcedVersions
         )
       converterInitializer = ConverterInitializer(
-        activityService, coroutineDispatcher, topicDependencies, imageDownloader
+        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -246,7 +248,7 @@ class GaeAndroidEndpointJsonImpl(
   ): Deferred<List<GaeClassroom>> {
     // TODO: Double check the language verification (since sWBXKH4PZcK6 Swahili isn't 100%).
     return CoroutineScope(coroutineDispatcher).async {
-      SUPPORTED_CLASSROOMS.map { classroomName ->
+      downloadConfig.allowedClassroomsList.map { classroomName ->
         CoroutineScope(coroutineDispatcher).async {
           val classroomResult = activityService.fetchLatestClassroomAsync(
             classroomName
@@ -261,14 +263,15 @@ class GaeAndroidEndpointJsonImpl(
 
   // TODO: Remover this filter once downloading & checking all the other topics works correctly.
   private fun GaeClassroom.filterTopics(): GaeClassroom {
-    // These filters are topics that are known to be okay to ship with the app.
+    val allowedTopicIds = downloadConfig.allowedTopicIdsList.toSet()
+    val ignoredTopics = topicIdToPrereqTopicIds.keys - allowedTopicIds
+    if (ignoredTopics.isNotEmpty()) {
+      println()
+      println("Ignoring topics for classroom ${this.id}: $ignoredTopics")
+      println()
+    }
     return copy(
-      topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys {
-        it in listOf(
-          "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
-          "5g0nxGUmx5J5"
-        )
-      }
+      topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys { it in allowedTopicIds }
     )
   }
 
@@ -738,7 +741,8 @@ class GaeAndroidEndpointJsonImpl(
     private val activityService: AndroidActivityHandlerService,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val topicDependencies: Map<String, Set<String>>,
-    private val imageDownloader: ImageDownloader
+    private val imageDownloader: ImageDownloader,
+    private val downloadConfig: DownloadConfig
   ) {
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
@@ -755,7 +759,7 @@ class GaeAndroidEndpointJsonImpl(
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
     private suspend fun initializeLocalizationTracker(): LocalizationTracker =
-      LocalizationTracker.createTracker(imageDownloader).also { this.localizationTracker = it }
+      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also { this.localizationTracker = it }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
@@ -832,8 +836,6 @@ class GaeAndroidEndpointJsonImpl(
   }
 
   private companion object {
-    private val SUPPORTED_CLASSROOMS = setOf("math")
-
     private val SUPPORTED_INTERACTION_IDS =
       setOf(
         "Continue", "FractionInput", "ItemSelectionInput", "MultipleChoiceInput",

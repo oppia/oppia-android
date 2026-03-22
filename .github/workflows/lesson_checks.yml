@@ -42,7 +42,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/release_assets/pinned_versions.textproto
+            $(pwd)/release_assets/pinned_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto
 
       - name: Download lessons and verify conversion
         run: |
@@ -55,4 +56,6 @@ jobs:
             cache_mode=none \
             $(pwd)/release_assets/cache \
             $(pwd)/release_assets/pinned_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto \
+            false \
             -Werror

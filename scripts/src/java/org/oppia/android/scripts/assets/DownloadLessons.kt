@@ -30,6 +30,7 @@ import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageType
 import org.oppia.android.scripts.gae.proto.ImageDownloader
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
+import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.AndroidClientContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
@@ -136,11 +137,11 @@ import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 fun main(vararg args: String) {
-  check(args.size in 9..10) {
+  check(args.size in 10..11) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
       " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force>" +
       " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]>" +
-      " <download_questions=true/false> [-Werror]"
+      " </path/to/download_config.[textproto,pb]> <download_questions=true/false> [-Werror]"
   }
 
   val baseUrl = args[0]
@@ -157,8 +158,9 @@ fun main(vararg args: String) {
   }
   val cacheDirPath = args[6]
   val downloadListVersionsPath = args[7]
-  val downloadQuestions = args[8].toBooleanStrict()
-  val failOnError = args.getOrNull(9) == "-Werror"
+  val downloadConfigPath = args[8]
+  val downloadQuestions = args[9].toBooleanStrict()
+  val failOnError = args.getOrNull(10) == "-Werror"
   if (failOnError) {
     println("FAILING IF ANY ERRORS OCCUR.")
   }
@@ -181,6 +183,11 @@ fun main(vararg args: String) {
       "Expected versions proto file to exist: $downloadListVersionsPath."
     }
   }
+  val downloadConfigFile = File(downloadConfigPath).absoluteFile.normalize().also {
+    check(it.exists() && it.isFile) {
+      "Expected config proto file to exist: $downloadConfigPath."
+    }
+  }
   val apiSecret = apiSecretFile.readText().trim()
   val downloadListVersions = when (downloadListVersionsFile.extension) {
     "pb" -> downloadListVersionsFile.inputStream().buffered().use(DownloadListVersions::parseFrom)
@@ -188,12 +195,18 @@ fun main(vararg args: String) {
       TextFormat.parse(downloadListVersionsFile.readText(), DownloadListVersions::class.java)
     else -> error("Invalid extension for versions proto file: $downloadListVersionsPath.")
   }
+  val downloadConfig = when (downloadConfigFile.extension) {
+    "pb" -> downloadConfigFile.inputStream().buffered().use(DownloadConfig::parseFrom)
+    "textproto" -> // TODO: Force pb to be used.
+      TextFormat.parse(downloadConfigFile.readText(), DownloadConfig::class.java)
+    else -> error("Invalid extension for config proto file: $downloadConfigPath.")
+  }
 
   println("Using $downloadListVersionsPath to force structure versions for determinism.")
   val downloader =
     LessonDownloader(
       baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadQuestions,
-      downloadListVersions
+      downloadListVersions, downloadConfig
     )
   try {
     downloader.downloadLessons(outputDir, failOnError)
@@ -211,7 +224,8 @@ class LessonDownloader(
   private val cacheDir: File?,
   private val forceCacheLoad: Boolean,
   private val downloadQuestions: Boolean,
-  downloadListVersions: DownloadListVersions?
+  downloadListVersions: DownloadListVersions?,
+  downloadConfig: DownloadConfig
 ) {
   private val threadPool by lazy {
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
@@ -231,7 +245,8 @@ class LessonDownloader(
       downloadQuestions,
       coroutineDispatcher,
       imageDownloader,
-      forcedVersions = downloadListVersions
+      forcedVersions = downloadListVersions,
+      downloadConfig = downloadConfig
     )
   }
   private val textFormat by lazy { TextFormat.printer() }
