@@ -216,6 +216,7 @@ class ExplorationDataController @Inject constructor(
    * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
    *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
    *     instance.
+   * @param isReplay whether the user is replaying this lesson after having previously completed it
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */

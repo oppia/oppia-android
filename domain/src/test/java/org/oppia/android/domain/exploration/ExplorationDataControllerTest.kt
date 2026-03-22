@@ -209,7 +209,7 @@ class ExplorationDataControllerTest {
     // The first events should be starting a card then the exploration (it's out of order).
     val events = fakeAnalyticsEventLogger.getOldestEvents(2)
     assertThat(events).hasSize(2)
-    assertThat(events[1]).hasStartExplorationContextThat { hasIsReplayThat().isFalse() }
+    assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isFalse()
   }
 
   @Test
@@ -219,7 +219,7 @@ class ExplorationDataControllerTest {
     // The first events should be starting a card then the exploration (it's out of order).
     val events = fakeAnalyticsEventLogger.getOldestEvents(2)
     assertThat(events).hasSize(2)
-    assertThat(events[1]).hasStartExplorationContextThat { hasIsReplayThat().isTrue() }
+    assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isTrue()
   }
 
   @Test
