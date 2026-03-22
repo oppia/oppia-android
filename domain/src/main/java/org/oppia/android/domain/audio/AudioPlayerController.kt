@@ -151,7 +151,6 @@ class AudioPlayerController @Inject constructor(
   }
 
   private fun prepareDataSource(url: String) {
-    setMediaPlayerListeners()
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()

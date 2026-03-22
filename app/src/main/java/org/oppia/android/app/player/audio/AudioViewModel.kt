@@ -198,10 +198,9 @@ class AudioViewModel @Inject constructor(
    * content ID to fall back to.
    */
   private fun resetAudio() {
-    currentContentId = null
+    currentContentId = ""
     voiceoverMap = mapOf()
     languages = listOf()
-    audioPlayerController.releaseMediaPlayer()
   }
 
   /** Plays or pauses AudioController depending on passed in state. */
