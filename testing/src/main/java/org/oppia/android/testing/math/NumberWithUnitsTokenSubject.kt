@@ -274,10 +274,10 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a cubic centimeter unit.
    *
-   * @throws AssertionError if the token is not a [Token.CcUnit]
+   * @throws AssertionError if the token is not a [Token.CubicCentimeterUnit]
    */
   fun isCubicCentimeterUnit() {
-    actual.asVerifiedType<Token.CcUnit>()
+    actual.asVerifiedType<Token.CubicCentimeterUnit>()
   }
 
   /**

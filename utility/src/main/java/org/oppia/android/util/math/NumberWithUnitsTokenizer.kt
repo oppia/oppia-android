@@ -5,7 +5,6 @@ import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 /**
  * A tokenizer for parsing mathematical expressions containing numbers and units.
  *
- *
  * The tokenizer supports whitespace between tokens and can handle various unit formats
  * including both singular and plural forms, abbreviated forms, and different naming conventions.
  *
@@ -194,7 +193,7 @@ class NumberWithUnitsTokenizer private constructor() {
             }
             'c' -> {
               chars.next()
-              Token.CcUnit(startIndex, chars.getRetrievalCount())
+              Token.CubicCentimeterUnit(startIndex, chars.getRetrievalCount())
             }
             'd' -> {
               chars.next()
@@ -1430,7 +1429,7 @@ class NumberWithUnitsTokenizer private constructor() {
       ) : Token()
 
       /** Represents a cubic centimeter unit (cc). */
-      class CcUnit(
+      class CubicCentimeterUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()

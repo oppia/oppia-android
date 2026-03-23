@@ -414,7 +414,7 @@ class NumberWithUnitsParser private constructor(
       is Token.SquareFootUnit -> "sqft"
       is Token.SquareYardUnit -> "sqyd"
       // volume
-      is Token.CcUnit -> "cc"
+      is Token.CubicCentimeterUnit -> "cc"
       is Token.CubicInchUnit -> "cuin"
       is Token.CubicFootUnit -> "cuft"
       is Token.CubicYardUnit -> "cuyd"
