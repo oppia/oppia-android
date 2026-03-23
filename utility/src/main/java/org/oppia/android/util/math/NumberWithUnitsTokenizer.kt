@@ -114,9 +114,6 @@ class NumberWithUnitsTokenizer private constructor() {
     /**
      * Parses a sequence of digits into a string representation of an integer.
      *
-     * This method consumes consecutive digit characters and allows whitespace between digits.
-     * It returns null if no digits are found at the current position.
-     *
      * @param chars the peekable iterator to parse from
      * @return the parsed integer as a string, or null if no digits were found
      */
@@ -124,7 +121,6 @@ class NumberWithUnitsTokenizer private constructor() {
       val integerBuilder = StringBuilder()
       while (chars.peek() in '0'..'9') {
         integerBuilder.append(chars.next())
-        chars.consumeWhitespace()
       }
       return if (integerBuilder.isNotEmpty()) {
         integerBuilder.toString()

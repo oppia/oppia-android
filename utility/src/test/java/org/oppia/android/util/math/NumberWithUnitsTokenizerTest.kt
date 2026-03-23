@@ -46,7 +46,6 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("    1", "input=    1", "expected=1")
   @Iteration("42    ", "input=42    ", "expected=42")
-  @Iteration("  1 0  0   ", "input=  1 0  0   ", "expected=100")
   fun testTokenize_positiveIntegerWithWhitespaces_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
@@ -55,8 +54,8 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  @Iteration("   3  .  1   4    ", "input=   3  .  1   4    ", "expected=3.14")
-  @Iteration("9.  8  ", "input=9.  8  ", "expected=9.8")
+  @Iteration("   3.14    ", "input=   3.14    ", "expected=3.14")
+  @Iteration("  9.8  ", "input=  9.8  ", "expected=9.8")
   fun testTokenize_realNumberWithWhitespaces_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
