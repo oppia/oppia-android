@@ -79,6 +79,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -148,6 +149,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
@@ -167,6 +169,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -198,6 +201,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -2573,21 +2577,61 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Start exploring")))
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
+  fun testStateFragment_arabic_continueInteraction_buttonIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      // App strings aren't being translated, so the button label stays the same.
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      // The button label is translated using the exploration's written translations.
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("ابدأ الاستكشاف")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_defaultContinueInteraction_buttonShowsDefaultText() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText
+      // (old-style). The button should display the default "Continue" text from app resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText(R.string.state_continue_button)))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_arabicAppLang_defaultContinueInteraction_buttonShowsTranslatedDefault() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    forceDefaultLocale(Locale("ar", "EG"))
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText.
+      // With Arabic app language, the button should display the Arabic translation of the default
+      // "Continue" text from the app's string resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("استمرار")))
     }
   }
 
@@ -6728,6 +6772,11 @@ class StateFragmentTest {
     monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
   private fun verifyContentContains(expectedHtml: String) {
     scrollToViewType(CONTENT)
     onView(
@@ -6853,8 +6902,14 @@ class StateFragmentTest {
           explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
         )
       ) { "Failed to create audio data source." }
+      val dataSource3 = checkNotNull(
+        createAudioDataSource(
+          explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-en-nb3k4zuyir.mp3"
+        )
+      ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource3, IOException("Test does not have networking"))
     }
   }
 
