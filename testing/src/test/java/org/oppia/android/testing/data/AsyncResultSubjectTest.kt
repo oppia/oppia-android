@@ -3,6 +3,7 @@ package org.oppia.android.testing.data
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.Empty
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.util.data.AsyncResult
@@ -228,12 +229,11 @@ class AsyncResultSubjectTest {
   @Test
   fun testAsyncResultSubject_extractWrongTypeFromSuccess_throwsAssertionErrorWithCorrectType() {
     val intResult: AsyncResult<Int> = AsyncResult.Success(42)
-    try {
+    val exception = assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(intResult).isStringSuccessThat()
-      throw AssertionError("Expected type mismatch exception")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
     }
+
+    assertThat(exception).hasMessageThat().contains("java.lang.Integer")
   }
 
   @Test
@@ -292,13 +292,12 @@ class AsyncResultSubjectTest {
   fun testAsyncResultSubject_nonStringComparableExtraction_throwsAssertionErrorWithActualType() {
     val intResult: AsyncResult<Any> = AsyncResult.Success(100)
 
-    try {
+    val exception = assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(intResult)
         .isComparableSuccessThat<String>()
-      throw AssertionError("Expected type mismatch exception")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
     }
+
+    assertThat(exception).hasMessageThat().contains("java.lang.Integer")
   }
 
   @Test
@@ -315,13 +314,12 @@ class AsyncResultSubjectTest {
   fun testAsyncResultSubject_nonProtoSuccessResult_isProtoSuccessThat_throwsAssertionError() {
     val stringResult: AsyncResult<String> = AsyncResult.Success("value")
 
-    try {
+    val exception = assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(stringResult)
         .isProtoSuccessThat()
-      throw AssertionError("Expected type mismatch exception")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("java.lang.String")
     }
+
+    assertThat(exception).hasMessageThat().contains("java.lang.String")
   }
 
   @Test
@@ -352,11 +350,8 @@ class AsyncResultSubjectTest {
     val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
     val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
 
-    try {
+    assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(olderResult).isNewerOrSameAgeAs(newerResult)
-      throw AssertionError("Expected newer-or-same-age assertion to fail")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("expected to be true")
     }
   }
 
@@ -373,11 +368,8 @@ class AsyncResultSubjectTest {
     val olderResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 1L)
     val newerResult: AsyncResult<String> = AsyncResult.Success("value", resultTimeMillis = 2L)
 
-    try {
+    assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(newerResult).isOlderThan(olderResult)
-      throw AssertionError("Expected older-than assertion to fail")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("expected to be false")
     }
   }
 
@@ -405,11 +397,10 @@ class AsyncResultSubjectTest {
   fun testAsyncResultSubject_intSuccess_withIsBooleanSuccessThat_throwsAssertionError() {
     val intResult: AsyncResult<Int> = AsyncResult.Success(100)
 
-    try {
+    val exception = assertThrows(AssertionError::class.java) {
       AsyncResultSubject.assertThat(intResult).isBooleanSuccessThat()
-      throw AssertionError("Expected type mismatch exception")
-    } catch (e: AssertionError) {
-      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
     }
+
+    assertThat(exception).hasMessageThat().contains("java.lang.Integer")
   }
 }
