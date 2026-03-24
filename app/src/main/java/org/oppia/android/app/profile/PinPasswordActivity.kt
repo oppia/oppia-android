@@ -43,6 +43,25 @@ class PinPasswordActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     pinPasswordActivityPresenter.handleOnCreate()
+    pinEditText.addTextChangedListener {
+    viewModel.enteredPin.set(it.toString())
+    viewModel.validatePins()
+
+    viewModel.isSaveEnabled.addOnPropertyChangedCallback(
+  object : androidx.databinding.Observable.OnPropertyChangedCallback() {
+    override fun onPropertyChanged(sender: androidx.databinding.Observable?, propertyId: Int) {
+      val isEnabled = viewModel.isSaveEnabled.get() == true
+      saveButton.isEnabled = isEnabled
+      saveButton.alpha = if (isEnabled) 1.0f else 0.5f
+    }
+  }
+)
+}
+
+confirmPinEditText.addTextChangedListener {
+  viewModel.confirmPin.set(it.toString())
+  viewModel.validatePins()
+}
   }
 
   override fun routeToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
