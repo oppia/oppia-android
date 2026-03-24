@@ -128,6 +128,7 @@ class UrlImageParser private constructor(
   override fun loadMathDrawable(
     rawLatex: String,
     lineHeight: Float,
+    equationColor: Int,
     type: ImageRetriever.Type
   ): Drawable {
     return ProxyDrawable().also { drawable ->
@@ -135,6 +136,7 @@ class UrlImageParser private constructor(
         rawLatex,
         lineHeight,
         useInlineRendering = type == INLINE_TEXT_IMAGE,
+        equationColor,
         createCustomTarget(drawable) {
           when (type) {
             INLINE_TEXT_IMAGE -> AutoAdjustingImageTarget.InlineTextImage.createForMath(context, it)

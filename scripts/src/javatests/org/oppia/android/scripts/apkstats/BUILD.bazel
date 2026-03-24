@@ -53,6 +53,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
         "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],

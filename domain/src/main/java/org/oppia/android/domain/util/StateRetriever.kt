@@ -505,6 +505,9 @@ class StateRetriever @Inject constructor() {
     interactionId: String
   ): Map<String, SchemaObject> {
     return when (interactionId) {
+      "Continue" -> {
+        createContinueCustomizationArgsMap(customizationArgsJson)
+      }
       "DragAndDropSortInput" -> {
         createDragAndDropSortInputCustomizationArgsMap(customizationArgsJson)
       }
@@ -537,6 +540,16 @@ class StateRetriever @Inject constructor() {
       }
       else -> mutableMapOf()
     }
+  }
+
+  private fun createContinueCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    customizationArgsJson.optJSONObject("buttonText")?.optJSONObject("value")?.let { buttonText ->
+      customizationArgsMap["buttonText"] = parseSubtitledUnicode(buttonText)
+    }
+    return customizationArgsMap
   }
 
   private fun createRatioExpressionInputCustomizationArgsMap(

@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -161,40 +160,32 @@ class StoryFragmentPresenter @Inject constructor(
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
-      .registerViewBinder(
+      .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_CHAPTER,
-        inflateView = { parent ->
-          StoryChapterViewBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<StoryChapterViewBinding>(view)!!
-          val storyItemViewModel = viewModel as StoryChapterSummaryViewModel
-          binding.viewModel = storyItemViewModel
+        inflateDataBinding = StoryChapterViewBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
               entityType,
-              storyItemViewModel.storyId,
+              viewModel.storyId,
               imageCenterAlign = true,
               displayLocale = resourceHandler.getDisplayLocale()
-            ).parseOppiaHtml(storyItemViewModel.description, binding.chapterSummary)
-          if (storyItemViewModel.chapterSummary.chapterPlayState
+            ).parseOppiaHtml(viewModel.description, binding.chapterSummary)
+          if (viewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
-              storyItemViewModel.index.toString(),
-              storyItemViewModel.missingPrerequisiteChapterTitle
+              viewModel.index.toString(),
+              viewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
             if (!accessibilityService.isScreenReaderEnabled()) {
               val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                  smoothScrollToPosition(storyItemViewModel.index - 1)
+                  smoothScrollToPosition(viewModel.index - 1)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -218,7 +209,8 @@ class StoryFragmentPresenter @Inject constructor(
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
-        }
+        },
+        transformViewModel = { it as StoryChapterSummaryViewModel }
       )
       .build()
   }

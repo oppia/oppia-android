@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.apkstats
 
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.io.PrintStream
@@ -77,13 +79,16 @@ fun main(vararg args: String) {
 class ComputeAabDifferences(
   workingDirectoryPath: String,
   sdkProperties: AndroidBuildSdkProperties,
-  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 ) {
   private val bundleToolClient by lazy {
-    BundleToolClient(workingDirectoryPath, scriptBgDispatcher)
+    BundleToolClient(workingDirectoryPath, scriptBgDispatcher, commandExecutor)
   }
   private val aapt2Client by lazy {
-    Aapt2Client(workingDirectoryPath, sdkProperties.buildToolsVersion, scriptBgDispatcher)
+    Aapt2Client(
+      workingDirectoryPath, sdkProperties.buildToolsVersion, scriptBgDispatcher, commandExecutor
+    )
   }
   private val apkAnalyzerClient by lazy { ApkAnalyzerClient(aapt2Client) }
 

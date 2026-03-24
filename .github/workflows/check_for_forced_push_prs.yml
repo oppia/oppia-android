@@ -1,0 +1,46 @@
+# Jobs for detecting and closing PRs with permanently changed commit histories, including for forks.
+
+name: Close Force-Pushed PRs
+
+on:
+  pull_request_target:
+    types: [synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  check-force-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect and close (on change)
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'synchronize' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { before, after, pull_request: pr } = context.payload;
+            const { owner, repo } = context.repo;
+            // One of: 'diverged' (rebased, amended, or squashed), 'behind' (dropped commits), or 'ahead' (standard fast-forward).
+            const status = (await github.rest.repos.compareCommits({ owner, repo, base: before, head: after })).data.status;
+            if (status === 'diverged' || status === 'behind') {
+              core.setFailed(`Force push detected (history has been altered). Commit history status: ${status}.`);
+              const closeMessage = 'Closing PR: Force pushing is not allowed in this repository. This PR has been automatically closed. Please create a new PR with a clean commit history and manually copy over any unresolved reviewer comment threads from this PR. For more information, please make sure to review this part of the wiki which provides guidance on merging PRs: https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#step-3-address-review-comments-until-all-reviewers-give-lgtm.';
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body: closeMessage });
+              await github.rest.pulls.update({ owner, repo, pull_number: pr.number, state: 'closed' });
+            } else core.info(`Standard push detected. Commit history status: ${status}. No action taken.`);
+
+      - name: Detect and close reopened force-pushed PRs
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'reopened' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: pr.number });
+            const hasForcePushComment = comments.some(comment => comment.user.login === 'github-actions[bot]' && comment.body.includes('Closing PR:'));
+            if (hasForcePushComment) {
+              core.setFailed('Attempted to reopen a previously force-pushed PR.');
+              const closeMessage = 'Closing PR: This PR cannot be reopened because its commit history was previously rewritten via a force push.';
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body: closeMessage });
+              await github.rest.pulls.update({ owner, repo, pull_number: pr.number, state: 'closed' });
+            } else core.info('No prior force-push comments found. Reopen permitted.');

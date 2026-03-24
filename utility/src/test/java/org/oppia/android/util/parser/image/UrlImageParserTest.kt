@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.image
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.os.Looper
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -121,7 +122,8 @@ class UrlImageParserTest {
     urlImageParser.loadMathDrawable(
       rawLatex = rawLatex,
       lineHeight = 20f,
-      type = INLINE_TEXT_IMAGE
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
 
     Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -225,7 +227,10 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_inlineType_loadsInlineLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -238,7 +243,10 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_blockType_loadsBlockLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -251,16 +259,28 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_multiple_loadsEachLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{1}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{1}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 19f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 19f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
