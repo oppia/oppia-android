@@ -31,6 +31,9 @@ class PinPasswordViewModel @Inject constructor(
   val maxPinLength = ObservableField<Int>(5)
   val name = ObservableField<String>("")
   val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
+  val enteredPin = ObservableField<String>("")
+  val confirmPin = ObservableField<String>("")
+  val isSaveEnabled = ObservableField<Boolean>(false)
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
@@ -54,6 +57,28 @@ class PinPasswordViewModel @Inject constructor(
       is AsyncResult.Failure -> {
         oppiaLogger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.error)
         Profile.getDefaultInstance()
+        
+fun validatePins() {
+  val pin = enteredPin.get() ?: ""
+  val confirm = confirmPin.get() ?: ""
+
+  val isValid = pin.length == 5 && pin == confirm
+
+  isSaveEnabled.set(isValid)
+
+  when {
+    pin.isNotEmpty() && pin.length < 5 -> {
+      errorMessage.set("PIN must be 5 digits")
+    }
+    confirm.isNotEmpty() && confirm != pin -> {
+      errorMessage.set("PINs do not match")
+    }
+    else -> {
+      errorMessage.set("")
+    }
+  }
+}
+
       }
       is AsyncResult.Pending -> Profile.getDefaultInstance()
       is AsyncResult.Success -> profileResult.value
