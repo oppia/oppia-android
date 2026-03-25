@@ -70,6 +70,7 @@ class AudioViewModel @Inject constructor(
   fun setStateAndExplorationId(newState: State, id: String) {
     state = newState
     explorationId = id
+    maybeLoadAudio()
   }
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
