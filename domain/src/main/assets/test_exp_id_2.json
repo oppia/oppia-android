@@ -458,7 +458,8 @@
         },
         "solicit_answer_details": false,
         "next_content_id_index": -1,
-        "linked_skill_id": "test_skill_id_1"
+        "linked_skill_id": "test_skill_id_1",
+        "card_is_checkpoint": true
       },
       "Fractions": {
         "content": {
@@ -999,7 +1000,8 @@
         },
         "solicit_answer_details": false,
         "next_content_id_index": -1,
-        "linked_skill_id": null
+        "linked_skill_id": null,
+        "card_is_checkpoint": true
       },
       "RatioInput": {
         "content": {
