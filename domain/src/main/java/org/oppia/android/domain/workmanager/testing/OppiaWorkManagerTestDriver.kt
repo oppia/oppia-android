@@ -70,6 +70,8 @@ class OppiaWorkManagerTestDriver @Inject constructor(
   private val fakeOppiaClock: FakeOppiaClock,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
+  // TODO(#6191): Add tests for this class.
+
   private lateinit var workManager: WorkManager
   private val workDatabase get() = (workManager as WorkManagerImpl).workDatabase
   private val testDriver by lazy { checkNotNull(WorkManagerTestInitHelper.getTestDriver(context)) }

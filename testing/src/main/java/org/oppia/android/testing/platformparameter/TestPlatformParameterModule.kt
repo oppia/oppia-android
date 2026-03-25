@@ -76,7 +76,7 @@ class TestPlatformParameterModule {
           // cross-thread initialization cases such as for background workers.
           return CompletableDeferred(Unit)
         }
-        val dispatcher = if (Looper.getMainLooper().isCurrentThread) {
+        val dispatcher = if (Looper.getMainLooper().thread == Thread.currentThread()) {
           Dispatchers.Unconfined // Run immediately on the current (main) thread.
         } else Dispatchers.Main // Defer to the main thread.
         return CoroutineScope(dispatcher).async { loadParamsAndRunTestDispatchersOnMainThread() }

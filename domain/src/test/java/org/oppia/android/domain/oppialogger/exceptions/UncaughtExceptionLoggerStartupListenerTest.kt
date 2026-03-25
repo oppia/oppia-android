@@ -57,14 +57,12 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    val exceptionThrown = Exception("TEST")
-    uncaughtExceptionStartupListener.uncaughtException(
-      Thread.currentThread(),
-      exceptionThrown
-    )
+
+    val crashThread = Thread { throw Exception("TEST") }
+    crashThread.start()
+    crashThread.join()
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
-
     val exceptionLogs = monitorFactory.waitForNextSuccessfulResult(cachedExceptions)
     val exception = exceptionLogs.getExceptionLog(0).toException()
     assertThat(exception.message).matches("java.lang.Exception: TEST")
@@ -72,15 +70,15 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Test
   fun testHandler_throwException_withNetwork_verifyLogToRemoteService() {
-    val exceptionThrown = Exception("TEST")
-    uncaughtExceptionStartupListener.uncaughtException(
-      Thread.currentThread(),
-      exceptionThrown
-    )
+    val crashThread = Thread { throw Exception("TEST") }
+    crashThread.start()
+    crashThread.join()
 
     val exceptionCaught = fakeExceptionLogger.getMostRecentException()
     assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
-    assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
+    // Note: When throwing across threads, cause validation might require checking the exact instance
+    // or string matching depending on how the handler wraps exceptions.
+    assertThat(exceptionCaught.cause?.message).isEqualTo("TEST")
   }
 
   private fun setUpTestApplicationComponent() {

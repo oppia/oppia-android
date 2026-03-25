@@ -11,14 +11,14 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
   private val consoleLogger: ConsoleLogger // Should be safe for early app access.
 ) : Thread.UncaughtExceptionHandler, ApplicationStartupListener {
 
-  private var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
+  private var defaultUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
   private var canLogExceptions: Boolean = false
 
   override fun onCreateStarted() {
     // This should be set up immediately to try and capture exceptions that occur early, but it may
     // not be safe to log them until after app initialization completes.
-    existingUncaughtExceptionHandler = Thread.currentThread().uncaughtExceptionHandler
-    Thread.currentThread().uncaughtExceptionHandler = this
+    defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+    Thread.setDefaultUncaughtExceptionHandler(this)
   }
 
   override fun onCompletedInitialization() {
@@ -39,7 +39,7 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
     } catch (e: Exception) {
       consoleLogger.e("OPPIA_EXCEPTION_HANDLER", "Problem in logging exception", e)
     } finally {
-      existingUncaughtExceptionHandler?.uncaughtException(thread, throwable)
+      defaultUncaughtExceptionHandler?.uncaughtException(thread, throwable)
     }
   }
 }

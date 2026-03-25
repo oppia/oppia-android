@@ -15,8 +15,11 @@ import javax.inject.Singleton
 @Singleton
 class StartupWorkerScheduleReadinessMonitor @Inject constructor(
   private val workManagerScheduler: WorkManagerScheduler,
-  private val listsProv: Provider<Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>>
+  private val readinessListenersProvider:
+    Provider<Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>>
 ) : ApplicationStartupListener {
+  // TODO(#6189): Add tests for this class.
+
   override fun onCreateStarted() {
     // Do nothing. It's not yet safe to initialize the startup listeners and schedule workers since
     // the schedulers themselves may transitively depend on platform parameters. It's also fine to
@@ -26,7 +29,7 @@ class StartupWorkerScheduleReadinessMonitor @Inject constructor(
 
   override fun onCompletedInitialization() {
     // Now it's okay to initialize the listener instances and allow them to start scheduling work.
-    for (startupWorkerScheduleReadinessListener in listsProv.get()) {
+    for (startupWorkerScheduleReadinessListener in readinessListenersProvider.get()) {
       startupWorkerScheduleReadinessListener.scheduleWork(workManagerScheduler)
     }
   }

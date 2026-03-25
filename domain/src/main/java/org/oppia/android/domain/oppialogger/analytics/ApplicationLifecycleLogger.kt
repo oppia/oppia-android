@@ -35,6 +35,8 @@ class ApplicationLifecycleLogger @Inject constructor(
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
   private val analyticsController: AnalyticsController
 ) {
+  // TODO(#6190): Add tests for this class.
+
   private var isStartupLatencyLogged: Boolean = false
   private var currentScreen: ScreenName = ScreenName.SCREEN_NAME_UNSPECIFIED
   private val foregroundBackgroundRecordKeeper by lazy { ForegroundBackgroundRecordKeeper() }

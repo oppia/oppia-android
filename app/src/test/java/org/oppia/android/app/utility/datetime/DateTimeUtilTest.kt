@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.Multibinds
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,7 +57,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.workmanager.StartupWorkerScheduleReadinessListener
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -205,12 +203,6 @@ class DateTimeUtilTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
-  @Module
-  interface StartupWorkerScheduleReadinessListenerTestModule {
-    @Multibinds
-    fun provideAnalyticsListenerSet(): Set<StartupWorkerScheduleReadinessListener>
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -219,7 +211,6 @@ class DateTimeUtilTest {
       ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
       AlgebraicExpressionInputModule::class,
-      StartupWorkerScheduleReadinessListenerTestModule::class,
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,

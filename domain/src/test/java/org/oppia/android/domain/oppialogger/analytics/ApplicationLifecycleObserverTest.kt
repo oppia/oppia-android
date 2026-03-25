@@ -587,6 +587,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun resetProcessLifecycleOwner() {
+    // TODO(#6187): Replace this with a safer hack that doesn't require forcing non-final.
     // A *VERY* hacky way to force ProcessLifecycleOwner to reset state by recreating its internal
     // (static) singleton that would otherwise share and leak state across test boundaries. Upgrades
     // to the Java version may make the 'final' override fail, but if that happens then the

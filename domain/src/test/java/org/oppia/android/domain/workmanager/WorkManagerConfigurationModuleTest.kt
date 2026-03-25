@@ -47,7 +47,8 @@ import javax.inject.Singleton
 class WorkManagerConfigurationModuleTest {
   @Inject lateinit var context: Context
   @Inject lateinit var factories: Map<String, @JvmSuppressWildcards OppiaWorker.Factory<*>>
-  @Inject lateinit var listeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
+  @Inject
+  lateinit var readinessListeners: Set<@JvmSuppressWildcards StartupWorkerScheduleReadinessListener>
   @Inject lateinit var appStartupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
   @Inject lateinit var configuration: Configuration
 
@@ -68,7 +69,7 @@ class WorkManagerConfigurationModuleTest {
   fun testInjection_bindsStartupWorkerScheduleReadinessListenerSet() {
     // The module should be setting up a multibinding that then defaults to an empty set to ensure
     // injection. Note that the real test here is that test suite actually builds.
-    assertThat(listeners).isEmpty()
+    assertThat(readinessListeners).isEmpty()
   }
 
   @Test

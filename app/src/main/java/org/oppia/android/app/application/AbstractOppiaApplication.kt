@@ -10,7 +10,7 @@ import com.google.firebase.appcheck.AppCheckProviderFactory
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
@@ -66,19 +66,13 @@ abstract class AbstractOppiaApplication(
     // Kick off a background task to finish startup initialization. Nothing at this stage should be
     // startup-state sensitive. It's also fine for parameters to not be fully initialized at this
     // point because each app entry point already accounts for potentially uninitialized parameters:
-    // splash, direct activity recreation, and waking up the app to kick off a worker.
-    CoroutineScope(component.getBackgroundDispatcher()).async {
+    // splash, direct activity recreation, and waking up the app to kick off a worker. Finally,
+    // since this is using 'launch' any uncaught exceptions should correctly trigger a failure in
+    // app startup (which is ideal in this case because we can't reliably and safely start the app).
+    CoroutineScope(component.getBackgroundDispatcher()).launch {
       // Wait for parameters to load before running any startup routines that may depend on them.
       component.getPlatformParameterController().loadParametersAsync().await()
       startupListeners.forEach(ApplicationStartupListener::onCompletedInitialization)
-    }.invokeOnCompletion { e ->
-      if (e != null) {
-        // NOTE TO DEVELOPERS: It's normally highly discouraged to throw in invokeOnCompletion
-        // because it muddies the error propagation state. However this is a case where the app
-        // cannot safely recover and it should absolutely hard fail because the alternative is a
-        // potentially inconsistent state.
-        throw Exception("Failed to finish app initialization.", e)
-      }
     }
   }
 

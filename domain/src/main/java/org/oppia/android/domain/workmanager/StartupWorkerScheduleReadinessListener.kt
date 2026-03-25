@@ -11,8 +11,8 @@ interface StartupWorkerScheduleReadinessListener {
   /**
    * Called early in application startup to allow periodic work to be scheduled.
    *
-   * Note that no guarantees can be called about when in the application initialization this is
-   * called, but it is guaranteed to be called shortly after initialization. Between that and the
+   * Note that no guarantees can be called about when in the application initialization process this
+   * is called, but it is guaranteed to be called shortly after initialization. Between that and the
    * nature of `WorkManager` and Android OS job behaviors, no work that actually synchronizes with
    * application startup state should ever be scheduled through this method (or via `WorkManager` at
    * all).

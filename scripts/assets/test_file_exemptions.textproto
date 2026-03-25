@@ -3852,6 +3852,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/debug/DebugWorkerDebugModule.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
   override_min_coverage_percent_required: 68
 }
@@ -3902,14 +3906,6 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulerModule.kt"
   source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorkerScheduler.kt"
-  test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogReportWorkerModule.kt"
@@ -3990,10 +3986,6 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
   test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
-  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerModule.kt"
