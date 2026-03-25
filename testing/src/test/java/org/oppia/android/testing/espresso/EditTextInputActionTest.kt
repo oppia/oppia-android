@@ -19,7 +19,7 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class EditTextInputActionRobolectricTest {
+class EditTextInputActionTest {
 
   @Before
   fun setUp() {
