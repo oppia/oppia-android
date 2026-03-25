@@ -27,13 +27,23 @@ class PromotedStoryCardView @JvmOverloads constructor(
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
+  private var promotedStoryIndex: Int = -1
   private var isSpotlit = false
 
   /** Sets the index at which this custom view is located inside the recycler view. */
   fun setPromotedStoryIndex(index: Int) {
+    promotedStoryIndex = index
+    maybeRequestSpotlight()
+  }
+
+  private fun maybeRequestSpotlight() {
     // This view can get attached multiple times and we must make sure that the spotlight is
     // requested only once. Only spotlight the item at the first index of the recycler view.
-    if (!isSpotlit && index == 0) {
+    if (!isSpotlit &&
+      promotedStoryIndex == 0 &&
+      ::resourceHandler.isInitialized &&
+      ::fragment.isInitialized
+    ) {
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
@@ -56,5 +66,6 @@ class PromotedStoryCardView @JvmOverloads constructor(
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
+    maybeRequestSpotlight()
   }
 }
