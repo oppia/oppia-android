@@ -154,7 +154,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "31.0.1",
     },
     "oppia_proto_api": {
-        "version": "36bf24c7381617a6425e828e12d020e631055554",
+        "version": "1eca22026838ea37f3f4f88dcca31c5110062262",
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",

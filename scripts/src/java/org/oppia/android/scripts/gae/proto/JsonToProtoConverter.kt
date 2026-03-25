@@ -585,6 +585,7 @@ class JsonToProtoConverter(
       this.interaction = this@toProto.interaction?.toProto(containerId)
         ?: error("State has invalid interaction: $containerId.")
       this@toProto.linkedSkillId?.let(this::setLinkedSkillId)
+      this.isCheckpoint = this@toProto.cardIsCheckpoint
     }.build()
   }
 
