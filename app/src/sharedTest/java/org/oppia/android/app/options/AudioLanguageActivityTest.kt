@@ -2,6 +2,13 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -30,6 +37,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
+import org.oppia.android.app.ui.R as UiR
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -131,6 +139,29 @@ class AudioLanguageActivityTest {
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
         assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
+      }
+    }
+  }
+  @Test
+  fun testAudioLanguage_toolbarTitle_marqueeEnabled() {
+    runWithLaunchedActivity(ENGLISH_AUDIO_LANGUAGE) {
+      onActivity { activity ->
+        val toolbarTitle: TextView =
+          activity.findViewById(UiR.id.audio_language_toolbar_title)
+
+        // Set RTL layout direction to verify marquee behavior works correctly in RTL
+        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+        onView(ViewMatchers.withId(UiR.id.audio_language_toolbar_title))
+          .perform(ViewActions.click())
+
+        assertThat(toolbarTitle.ellipsize)
+          .isEqualTo(TextUtils.TruncateAt.MARQUEE)
+
+        assertThat(toolbarTitle.isSelected).isEqualTo(true)
+
+        assertThat(toolbarTitle.textAlignment)
+          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
