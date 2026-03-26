@@ -12,7 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers_injector",
         "//third_party:androidx_test_espresso_espresso-core",
     ],
 )
