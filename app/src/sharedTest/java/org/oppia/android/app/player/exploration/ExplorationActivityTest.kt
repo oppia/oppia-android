@@ -215,6 +215,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    setUpShadowMediaPlayerProvider()
   }
 
   @After
@@ -2413,6 +2414,26 @@ class ExplorationActivityTest {
         IOException::class.java
       )
     addException.invoke(/* obj= */ null, dataSource, exception)
+  }
+
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = ExplorationActivityTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
   }
 
   private fun isOnRobolectric(): Boolean {

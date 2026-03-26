@@ -172,8 +172,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
-import org.robolectric.shadows.util.DataSource
-import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -189,10 +187,6 @@ import javax.inject.Singleton
 class StateFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  private val AUDIO_URL_1 =
-    createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
-  private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -225,7 +219,18 @@ class StateFragmentLocalTest {
         .setSourceExecutor(executorService)
     )
     profileTestHelper.initializeProfiles()
-    ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+
+    // Set up a MediaInfoProvider to handle any audio DataSource that the explorations may use.
+    // This is necessary because explorations have many audio files (voiceovers for content,
+    // feedback, hints, solutions) and registering each individually is impractical.
+    ShadowMediaPlayer.setMediaInfoProvider { _ ->
+      // Return a generic MediaInfo for any DataSource. The tests don't actually play audio,
+      // they just need the MediaPlayer to not crash when setDataSource is called.
+      ShadowMediaPlayer.MediaInfo(
+        /* duration= */ 10_000,
+        /* preparationDelay= */ 0
+      )
+    }
   }
 
   @After

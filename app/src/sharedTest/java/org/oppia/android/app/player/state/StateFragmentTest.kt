@@ -6964,6 +6964,27 @@ class StateFragmentTest {
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource3, IOException("Test does not have networking"))
     }
+    setUpShadowMediaPlayerProvider()
+  }
+
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
   }
 
   private fun setUpTestApplicationComponent() {
