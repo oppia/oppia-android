@@ -650,7 +650,7 @@ class StructureCompatibilityChecker(
       contentId: String
     ): List<CompatibilityFailure> {
       return extractMathContentsFromHtml(html).mapNotNull { mathContent ->
-        if (mathContent?.rawLatex.isNullOrBlank()) {
+        if (mathContent.rawLatex.isNullOrBlank()) {
           MathTagMissingRawLatex(contentId, origin)
         } else {
           null

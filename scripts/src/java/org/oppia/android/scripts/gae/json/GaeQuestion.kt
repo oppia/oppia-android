@@ -10,8 +10,7 @@ data class GaeQuestion(
   @Json(name = "question_state_data_schema_version") val questionStateDataSchemaVersion: Int,
   @Json(name = "language_code") val languageCode: String,
   @Json(name = "linked_skill_ids") val linkedSkillIds: List<String>,
-  @Json(name = "inapplicable_skill_misconception_ids")
-  val inapplicableSkillMisconceptionIds: List<String>,
+  @Json(name = "inapplicable_skill_misconception_ids") val inapplicableSkillMisconceptionIds: List<String>,
   @Json(name = "next_content_id_index") val nextContentIdIndex: Int,
   @Json(name = "version") val version: Int
 )
