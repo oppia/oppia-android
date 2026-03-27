@@ -13,6 +13,7 @@ import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.proto.ImageDownloader
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
+import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.android.scripts.proto.DownloadListVersions.ChapterInfo
 import org.oppia.android.scripts.proto.DownloadListVersions.SkillInfo
@@ -34,10 +35,10 @@ import java.io.File
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 // TODO: verify that images aren't changed after upload, but this needs to be confirmed (that is, if they need to be changed a new image is added to GCS, instead).
 fun main(vararg args: String) {
-  check(args.size >= 5) {
+  check(args.size in 6..7) {
     "Expected use: bazel run //scripts:download_lesson_list <base_url> <gcs_base_url>" +
       " <gcs_bucket> </path/to/api/secret.file> </path/to/output_list.textproto>" +
-      " [</path/to/api/debug/dir>]"
+      " </path/to/download_config.[textproto,pb]> [</path/to/api/debug/dir>]"
   }
 
   val baseUrl = args[0]
@@ -45,11 +46,17 @@ fun main(vararg args: String) {
   val gcsBucket = args[2]
   val apiSecretPath = args[3]
   val outputFilePath = args[4]
-  val apiDebugPath = args.getOrNull(5)
+  val downloadConfigPath = args[5]
+  val apiDebugPath = args.getOrNull(6)
   val apiSecretFile = File(apiSecretPath).absoluteFile.normalize().also {
     check(it.exists() && it.isFile) { "Expected API secret file to exist: $apiSecretPath." }
   }
   val outputFile = File(outputFilePath).absoluteFile.normalize()
+  val downloadConfigFile = File(downloadConfigPath).absoluteFile.normalize().also {
+    check(it.exists() && it.isFile) {
+      "Expected config proto file to exist: $downloadConfigPath."
+    }
+  }
   val apiDebugDir = apiDebugPath?.let { path ->
     File(path).absoluteFile.normalize().also {
       check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
@@ -59,10 +66,16 @@ fun main(vararg args: String) {
   }
 
   val apiSecret = apiSecretFile.readText().trim()
+  val downloadConfig = when (downloadConfigFile.extension) {
+    "pb" -> downloadConfigFile.inputStream().buffered().use(DownloadConfig::parseFrom)
+    "textproto" -> // TODO: Force pb to be used.
+      TextFormat.parse(downloadConfigFile.readText(), DownloadConfig::class.java)
+    else -> error("Invalid extension for config proto file: $downloadConfigPath.")
+  }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val downloader = LessonListDownloader(
-      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, apiDebugDir, scriptBgDispatcher
+      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, apiDebugDir, scriptBgDispatcher, downloadConfig
     )
     runBlocking { downloader.downloadLessonListAsync(outputFile).await() }
   }
@@ -74,7 +87,8 @@ class LessonListDownloader(
   gcsBucket: String,
   apiSecret: String,
   private val apiDebugDir: File?,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val downloadConfig: DownloadConfig
 ) {
   private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
   private val imageDownloader by lazy { ImageDownloader(gcsService, scriptBgDispatcher) }
@@ -87,7 +101,8 @@ class LessonListDownloader(
       downloadQuestions = false,
       scriptBgDispatcher,
       imageDownloader,
-      forcedVersions = null // Always load latest when creating the pin versions list.
+      forcedVersions = null, // Always load latest when creating the pin versions list.
+      downloadConfig = downloadConfig
     )
   }
 

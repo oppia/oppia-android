@@ -1,0 +1,155 @@
+allowed_classrooms: "math"
+
+allowed_topic_ids: "iX9kYCjnouWN"
+allowed_topic_ids: "sWBXKH4PZcK6"
+allowed_topic_ids: "C4fqwrvqWpRm"
+allowed_topic_ids: "qW12maD4hiA8"
+allowed_topic_ids: "0abdeaJhmfPm"
+allowed_topic_ids: "5g0nxGUmx5J5"
+
+# TODO: Remove these specific exemptions once they're fixed on upstream web.
+default_id_exemptions {
+  exploration_id: "bWHHbghtVQKU"
+  content_id: "hint_46"
+  exemption_case: 10
+}
+default_id_exemptions {
+  exploration_id: "W50hotX4h_Up"
+  content_id: "hint_22"
+  exemption_case: 20
+}
+default_id_exemptions {
+  exploration_id: "W50hotX4h_Up"
+  content_id: "hint_23"
+  exemption_case: 21
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "content_220"
+  exemption_case: 30
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "feedback_161"
+  exemption_case: 31
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "feedback_222"
+  exemption_case: 32
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "default_outcome_160"
+  exemption_case: 33
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "default_outcome_221"
+  exemption_case: 34
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "ca_choices_223"
+  exemption_case: 35
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "ca_choices_224"
+  exemption_case: 36
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "ca_choices_225"
+  exemption_case: 37
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "ca_choices_226"
+  exemption_case: 38
+}
+default_id_exemptions {
+  exploration_id: "C8QUgzIETvRv"
+  content_id: "feedback_14"
+  exemption_case: 45
+}
+default_id_exemptions {
+  exploration_id: "OKxYhsWONHZV"
+  content_id: "ca_choices_128"
+  exemption_case: 39
+}
+default_id_exemptions {
+  exploration_id: "W0xq3jW5GzDF"
+  content_id: "feedback_2"
+  exemption_case: 40
+}
+default_id_exemptions {
+  exploration_id: "53Ka3mQ6ra5A"
+  content_id: "content_91"
+  exemption_case: 41
+}
+default_id_exemptions {
+  exploration_id: "53Ka3mQ6ra5A"
+  content_id: "default_outcome_92"
+  exemption_case: 42
+}
+default_id_exemptions {
+  exploration_id: "53Ka3mQ6ra5A"
+  content_id: "feedback_93"
+  exemption_case: 43
+}
+default_id_exemptions {
+  exploration_id: "53Ka3mQ6ra5A"
+  content_id: "ca_buttonText_23"
+  exemption_case: 44
+}
+
+# TODO: Remove these exemptions once they're fixed in web.
+translation_exemptions {
+  exploration_id: "xtbP46LKl1uj"
+  content_id: "solution_137"
+}
+translation_exemptions {
+  exploration_id: "ua7FTOXRaRjb"
+  content_id: "solution_139"
+}
+translation_exemptions {
+  exploration_id: "sRqParMOyWWB"
+  content_id: "solution_121"
+}
+translation_exemptions {
+  exploration_id: "Sl4TGJQhSjmk"
+  content_id: "solution_85"
+}
+translation_exemptions {
+  exploration_id: "rDJojPOc0KgJ"
+  content_id: "solution_148"
+}
+translation_exemptions {
+  exploration_id: "rwN3YPG9XWZa"
+  content_id: "solution_91"
+}
+translation_exemptions {
+  exploration_id: "ibeLZqbbjbKF"
+  content_id: "solution_141"
+}
+translation_exemptions {
+  exploration_id: "m1nvGABWeUoh"
+  content_id: "solution_168"
+}
+translation_exemptions {
+  exploration_id: "m1nvGABWeUoh"
+  content_id: "solution_167"
+}
+translation_exemptions {
+  exploration_id: "2EOuIfQHljkN"
+  content_id: "solution_127"
+}
+translation_exemptions {
+  exploration_id: "2EOuIfQHljkN"
+  content_id: "solution_130"
+}
+translation_exemptions {
+  exploration_id: "BJd7yHIxpqkq"
+  content_id: "solution_110"
+}

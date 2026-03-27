@@ -113,3 +113,14 @@ java_proto_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":android_lint_checks_proto"],
 )
+
+oppia_proto_library(
+    name = "download_config_proto",
+    srcs = ["download_config.proto"],
+)
+
+java_proto_library(
+    name = "download_config_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":download_config_proto"],
+)

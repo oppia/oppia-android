@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+message DownloadConfig {
+  repeated string allowed_classrooms = 1;
+  repeated string allowed_topic_ids = 2;
+  repeated RequiredDefaultIdPresenceExemption default_id_exemptions = 3;
+  repeated TranslationExemption translation_exemptions = 4;
+
+  message RequiredDefaultIdPresenceExemption {
+    string exploration_id = 1;
+    string content_id = 2;
+    int32 exemption_case = 3;
+  }
+
+  message TranslationExemption {
+    string exploration_id = 1;
+    string content_id = 2;
+  }
+}

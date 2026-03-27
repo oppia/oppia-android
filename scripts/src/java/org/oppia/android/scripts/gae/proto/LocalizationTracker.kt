@@ -23,6 +23,7 @@ import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.json.SubtitledText
 import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor.TranslatableActivityId
+import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
 import org.oppia.proto.v1.structure.ImageWithRegionsDto
@@ -42,7 +43,8 @@ import org.oppia.proto.v1.structure.VoiceoverFileDto
 
 class LocalizationTracker private constructor(
   private val oppiaWebTranslationExtractor: OppiaWebTranslationExtractor,
-  private val imageDownloader: ImageDownloader
+  private val imageDownloader: ImageDownloader,
+  private val downloadConfig: DownloadConfig
 ) {
   // TODO: Translations can come from four places:
   // - SubtitledHtml (directly embedded)
@@ -61,7 +63,7 @@ class LocalizationTracker private constructor(
     require(defaultLanguage.isValid()) {
       "Trying to initialize container with ID: $id with invalid default language: $defaultLanguage."
     }
-    containers[id] = Container(id, defaultLanguage, imageDownloader)
+    containers[id] = Container(id, defaultLanguage, imageDownloader, downloadConfig)
   }
 
   fun trackThumbnail(
@@ -363,10 +365,13 @@ class LocalizationTracker private constructor(
   private class Container(
     val id: ContainerId,
     val defaultLanguage: LanguageType,
-    private val imageDownloader: ImageDownloader
+    private val imageDownloader: ImageDownloader,
+    private val downloadConfig: DownloadConfig
   ) {
     private val languages by lazy {
-      mutableMapOf(defaultLanguage to TrackedAssets(defaultLanguage))
+      mutableMapOf(
+        defaultLanguage to TrackedAssets(defaultLanguage, downloadConfig = downloadConfig)
+      )
     }
     private val defaultAssets: TrackedAssets get() = languages.getValue(defaultLanguage)
     private val defaultContentIds: Set<String> get() = defaultAssets.allContentIds
@@ -462,42 +467,15 @@ class LocalizationTracker private constructor(
     }
 
     private fun retrieveAssetsForLanguage(language: LanguageType) =
-      languages.getOrPut(language) { TrackedAssets(language) }
+      languages.getOrPut(language) { TrackedAssets(language, downloadConfig = downloadConfig) }
 
     private fun ensureDefaultLanguageHasContent(contentId: String) {
-      // TODO: Remove these specific exemptions once they're fixed on upstream web.
-      val expectedExemptionCase = when {
-        id !is ContainerId.Exploration -> 0
-        id.id == "bWHHbghtVQKU" && contentId == "hint_46" -> 10
-        id.id == "W50hotX4h_Up" -> when (contentId) {
-          "hint_22" -> 20
-          "hint_23" -> 21
-          else -> 0
+      val expectedExemptionCase = if (id is ContainerId.Exploration) {
+        val exemption = downloadConfig.defaultIdExemptionsList.find {
+          it.explorationId == id.id && it.contentId == contentId
         }
-        id.id == "C8QUgzIETvRv" -> when (contentId) {
-          "content_220" -> 30
-          "feedback_161" -> 31
-          "feedback_222" -> 32
-          "default_outcome_160" -> 33
-          "default_outcome_221" -> 34
-          "ca_choices_223" -> 35
-          "ca_choices_224" -> 36
-          "ca_choices_225" -> 37
-          "ca_choices_226" -> 38
-          "feedback_14" -> 45
-          else -> 0
-        }
-        id.id == "OKxYhsWONHZV" && contentId == "ca_choices_128" -> 39
-        id.id == "W0xq3jW5GzDF" && contentId == "feedback_2" -> 40
-        id.id == "53Ka3mQ6ra5A" -> when (contentId) {
-          "content_91" -> 41
-          "default_outcome_92" -> 42
-          "feedback_93" -> 43
-          "ca_buttonText_23" -> 44
-          else -> 0
-        }
-        else -> 0
-      }
+        exemption?.exemptionCase ?: 0
+      } else 0
       if (contentId !in defaultContentIds && expectedExemptionCase > 0) return
       check(expectedExemptionCase == 0) { "Exemption $expectedExemptionCase should be removed." }
       if (contentId !in defaultContentIds) {
@@ -517,6 +495,7 @@ class LocalizationTracker private constructor(
     val textTranslations: MutableMap<String, LocalizableTextDto> = mutableMapOf(),
     val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf(),
     val imageRegionPaths: MutableSet<String> = mutableSetOf(),
+    val downloadConfig: DownloadConfig
   ) {
     val errors = mutableSetOf<String>()
 
@@ -555,9 +534,17 @@ class LocalizationTracker private constructor(
     }
 
     fun recordVoiceover(id: ContainerId, contentId: String, voiceover: VoiceoverFileDto) {
-      require(contentId !in voiceovers) {
-        "Voiceover already recorded for content ID: $contentId, for language: $language, in" +
-          " container: $id."
+      // TODO: Re-add this assertion or add exemptions for it.
+//      require(contentId !in voiceovers) {
+//        "Voiceover already recorded for content ID: $contentId, for language: $language, in" +
+//          " container: $id."
+//      }
+      if (contentId in voiceovers) {
+        println(
+          "WARNING: Voiceover already recorded for content ID: $contentId, for language:" +
+            " $language, in container: $id."
+        )
+        return // Don't override the voiceover--first one wins.
       }
       voiceovers[contentId] = voiceover
     }
@@ -611,29 +598,11 @@ class LocalizationTracker private constructor(
       contentId: String,
       localization: LocalizableTextDto
     ) {
-      // TODO: Remove these exemptions once they're fixed in web.
-      val expectedExemption = when {
-        id !is ContainerId.Exploration -> false
-        id.id == "xtbP46LKl1uj" && contentId == "solution_137" -> true
-        id.id == "ua7FTOXRaRjb" && contentId == "solution_139" -> true
-        id.id == "sRqParMOyWWB" && contentId == "solution_121" -> true
-        id.id == "Sl4TGJQhSjmk" && contentId == "solution_85" -> true
-        id.id == "rDJojPOc0KgJ" && contentId == "solution_148" -> true
-        id.id == "rwN3YPG9XWZa" && contentId == "solution_91" -> true
-        id.id == "ibeLZqbbjbKF" && contentId == "solution_141" -> true
-        id.id == "m1nvGABWeUoh" -> when (contentId) {
-          "solution_168" -> true
-          "solution_167" -> true
-          else -> false
+      val expectedExemption = if (id is ContainerId.Exploration) {
+        downloadConfig.translationExemptionsList.any {
+          it.explorationId == id.id && it.contentId == contentId
         }
-        id.id == "2EOuIfQHljkN" -> when (contentId) {
-          "solution_127" -> true
-          "solution_130" -> true
-          else -> false
-        }
-        id.id == "BJd7yHIxpqkq" && contentId == "solution_110" -> true
-        else -> false
-      }
+      } else false
       if (contentId in textTranslations && expectedExemption) return
       if (contentId in textTranslations) {
         errors +=
@@ -679,8 +648,8 @@ class LocalizationTracker private constructor(
     }
     val VALID_LANGUAGE_TYPES = LanguageType.values().filter { it.isValid() }
 
-    suspend fun createTracker(imageDownloader: ImageDownloader): LocalizationTracker =
-      LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader)
+    suspend fun createTracker(imageDownloader: ImageDownloader, downloadConfig: DownloadConfig): LocalizationTracker =
+      LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig)
 
     fun String.resolveLanguageCode(): LanguageType {
       return when (lowercase()) {

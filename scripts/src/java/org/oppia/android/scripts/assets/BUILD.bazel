@@ -14,6 +14,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/gae",
         "//scripts/src/java/org/oppia/android/scripts/gae:gae_json_impl",
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:proto_version_provider",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_config_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
     ],
 )
@@ -29,6 +30,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/gae",
         "//scripts/src/java/org/oppia/android/scripts/gae:gae_json_impl",
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:proto_version_provider",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_config_java_proto",
     ],
 )
 
