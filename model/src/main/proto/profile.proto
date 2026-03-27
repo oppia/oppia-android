@@ -127,7 +127,7 @@ message ProfileAvatar {
   }
 }
 
-// TODO(#5440) : Delete once migration to Profile Id is completed.
+// TODO(#5440): Delete once migration to Profile Id is completed.
 // Opaque data structure to pass ID.
 message LegacyProfileId {
   /**
