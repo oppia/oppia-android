@@ -541,6 +541,57 @@ class AudioFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_initialLoad_audioControlsAreDisplayed() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_progress_seek_bar)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_initialLoad_showsPlayButton() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
+  // TODO(#2417): Need a fake audio library to run this test on espresso
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testFragment_afterLanguageChange_audioStillLoads() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_language_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+    }
+  }
+
   private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("SeekBar with progress same as $position")

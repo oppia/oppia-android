@@ -537,6 +537,7 @@ kt_android_library(
     manifest = "src/main/ViewModelsManifest.xml",
     visibility = [
         "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+        "//app/src/test/java/org/oppia/android/app/player/audio:__pkg__",
     ],
     deps = [
         ":annotations",
