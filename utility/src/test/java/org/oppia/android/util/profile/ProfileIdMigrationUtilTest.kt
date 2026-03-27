@@ -27,11 +27,10 @@ class ProfileIdMigrationUtilTest {
   }
 
   @Test
-  fun testMigrate_legacyProfileIdWithZeroId_preservesZeroAsValidId() {
+  fun testMigrate_legacyProfileIdWithZeroId_convertsToNull() {
     val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     val profileId = legacyProfileId.migrate()
-    assertThat(profileId.hasInternalId()).isTrue()
-    assertThat(profileId.internalId).isEqualTo(0)
+    assertThat(profileId.hasInternalId()).isFalse()
   }
 
   @Test
