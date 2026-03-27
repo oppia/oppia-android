@@ -137,11 +137,12 @@ message LegacyProfileId {
   int32 internal_id = 1;
 }
 
-// Opaque data structure to pass ID
+// Opaque wrapper for passing profile identifiers between components.
 message ProfileId {
   /**
-   * Unique ID used to identify a single profile.
-   * Should not be used directory outside of the profile system.
+   * Internal identifier for a specific profile. This ID is only meaningful within
+   * the profile system and should not be accessed or used directly by external components.
+   * Optional to allow for uninitialized or invalid profile references.
    */
   optional int32 internal_id = 1;
 }
