@@ -644,12 +644,20 @@ class LocalizationTracker private constructor(
       Regex("<\\s*$CUSTOM_IMG_TAG.+?$CUSTOM_IMG_FILE_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
     }
     private val customMathTagRegex by lazy {
-      Regex("<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
+      Regex(
+        "<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\""
+      )
     }
     val VALID_LANGUAGE_TYPES = LanguageType.values().filter { it.isValid() }
 
-    suspend fun createTracker(imageDownloader: ImageDownloader, downloadConfig: DownloadConfig): LocalizationTracker =
-      LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig)
+    suspend fun createTracker(
+      imageDownloader: ImageDownloader,
+      downloadConfig: DownloadConfig
+    ): LocalizationTracker {
+      return LocalizationTracker(
+        OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig
+      )
+    }
 
     fun String.resolveLanguageCode(): LanguageType {
       return when (lowercase()) {

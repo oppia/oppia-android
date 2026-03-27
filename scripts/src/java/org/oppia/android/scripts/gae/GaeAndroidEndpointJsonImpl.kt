@@ -37,8 +37,8 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestStat
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicContentProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
-import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.android.scripts.proto.DownloadConfig
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
@@ -758,8 +758,10 @@ class GaeAndroidEndpointJsonImpl(
     suspend fun getTopicPackRepository(constraints: CompatibilityConstraints): TopicPackRepository =
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
-    private suspend fun initializeLocalizationTracker(): LocalizationTracker =
-      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also { this.localizationTracker = it }
+    private suspend fun initializeLocalizationTracker(): LocalizationTracker {
+      return LocalizationTracker.createTracker(imageDownloader, downloadConfig)
+        .also { this.localizationTracker = it }
+    }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
