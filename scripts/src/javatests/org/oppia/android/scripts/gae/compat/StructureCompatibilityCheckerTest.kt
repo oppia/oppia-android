@@ -78,7 +78,8 @@ class StructureCompatibilityCheckerTest {
   private fun buildMathTagHtml(rawLatex: String): String {
     val escapedRawLatex = rawLatex.replace("\\", "\\\\").replace("\"", "\\\"")
     val escapedContent =
-      "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$escapedRawLatex&amp;quot;,&amp;quot;svg_filename&amp;quot;:&amp;quot;math.svg&amp;quot;}"
+      "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$escapedRawLatex&amp;quot;" +
+        ",&amp;quot;svg_filename&amp;quot;:&amp;quot;math.svg&amp;quot;}"
     return "<oppia-noninteractive-math math_content-with-value=\"$escapedContent\">" +
       "</oppia-noninteractive-math>"
   }

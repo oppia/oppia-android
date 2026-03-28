@@ -484,7 +484,8 @@ class TopicControllerTest {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap).containsKey("worked_example_1")
+    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
+      .containsKey("worked_example_1")
   }
 
   @Test
@@ -525,8 +526,10 @@ class TopicControllerTest {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap).containsKey("worked_example_1")
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap).containsKey("worked_example_2")
+    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
+      .containsKey("worked_example_1")
+    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
+      .containsKey("worked_example_2")
   }
 
   @Test
