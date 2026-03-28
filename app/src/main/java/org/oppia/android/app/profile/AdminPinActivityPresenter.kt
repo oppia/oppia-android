@@ -30,10 +30,6 @@ class AdminPinActivityPresenter @Inject constructor(
   private val adminViewModel: AdminPinViewModel,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-
-  private var inputtedPin = false
-  private var inputtedConfirmPin = false
-
   private val args by lazy {
     activity.intent.getProtoExtra(
       ADMIN_PIN_ACTIVITY_PARAMS_KEY,
@@ -65,12 +61,9 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedPin.get() == it
         ) {
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
         } else {
           adminViewModel.pinErrorMsg.set("")
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
         }
       }
     }
@@ -82,12 +75,9 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedConfirmPin.get() == it
         ) {
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
         } else {
           adminViewModel.confirmPinErrorMsg.set("")
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
         }
       }
     }
@@ -167,7 +157,4 @@ class AdminPinActivityPresenter @Inject constructor(
     }
   }
 
-  private fun setValidPin() {
-    adminViewModel.isButtonActive.set(inputtedPin && inputtedConfirmPin)
-  }
 }
