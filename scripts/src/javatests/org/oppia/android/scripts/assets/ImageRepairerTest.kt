@@ -6,6 +6,7 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
+import kotlin.test.assertFailsWith
 
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -78,6 +79,15 @@ class ImageRepairerTest {
     }.toByteArray()
 
     assertThat(imageRepairer.hasTransparentPixels(imageData, "png")).isTrue()
+  }
+
+  @Test
+  fun testHasTransparentPixels_invalidImageData_throwsError() {
+    val invalidImageData = "not-a-valid-image".toByteArray()
+
+    assertFailsWith<IllegalStateException> {
+      imageRepairer.hasTransparentPixels(invalidImageData, "png")
+    }
   }
 
   private fun createPngImageData(

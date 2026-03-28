@@ -3,6 +3,8 @@ package org.oppia.android.scripts.gae.compat
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.Companion.checkMathTagsForLatex
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagHasInvalidContent
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagMissingContent
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagMissingRawLatex
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContainerId
 
@@ -43,17 +45,18 @@ class StructureCompatibilityCheckerTest {
   }
 
   @Test
-  fun testCheckMathTagsForLatex_mathTagWithMissingContent_returnsNoFailures() {
+  fun testCheckMathTagsForLatex_mathTagWithMissingContent_returnsMissingContentFailure() {
     val html =
       "<oppia-noninteractive-math></oppia-noninteractive-math>"
 
     val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
 
-    assertThat(failures).isEmpty()
+    assertThat(failures).hasSize(1)
+    assertThat(failures.first()).isInstanceOf(MathTagMissingContent::class.java)
   }
 
   @Test
-  fun testCheckMathTagsForLatex_multipleMathTags_oneMissingContent_returnsNoFailures() {
+  fun testCheckMathTagsForLatex_multipleMathTags_oneMissingContent_returnsSingleFailure() {
     val validTag = buildMathTagHtml(rawLatex = "x^2")
     val invalidTag =
       "<oppia-noninteractive-math></oppia-noninteractive-math>"
@@ -61,7 +64,22 @@ class StructureCompatibilityCheckerTest {
 
     val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
 
-    assertThat(failures).isEmpty()
+    assertThat(failures).hasSize(1)
+    assertThat(failures.first()).isInstanceOf(MathTagMissingContent::class.java)
+  }
+
+  @Test
+  fun testCheckMathTagsForLatex_mathTagWithMalformedContent_returnsInvalidContentFailure() {
+    val malformedContent =
+      "{&amp;quot;raw_latex&amp;quot;:&amp;quot;x^2&amp;quot;"
+    val html =
+      "<oppia-noninteractive-math math_content-with-value=\"$malformedContent\">" +
+        "</oppia-noninteractive-math>"
+
+    val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
+
+    assertThat(failures).hasSize(1)
+    assertThat(failures.first()).isInstanceOf(MathTagHasInvalidContent::class.java)
   }
 
   @Test
