@@ -193,24 +193,25 @@ class MavenDependenciesRetriever(
   ): Deferred<MavenDependencyList> {
     return CoroutineScope(scriptBgDispatcher).async {
       val candidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
-      val undoneCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
+      val undoneCandidates = candidates.filter { it.latestPomFileText == null }.toMutableList()
       var attemptCount = 0
       while (undoneCandidates.isNotEmpty() && attemptCount < 10) {
         println(
           "Attempt ${++attemptCount} to download POM files for" +
             " ${undoneCandidates.size}/${candidates.size} Maven artifacts..."
         )
-        undoneCandidates -= undoneCandidates.map { pomCandidate ->
+        val completedCandidates = undoneCandidates.map { pomCandidate ->
           CoroutineScope(scriptBgDispatcher).async {
             // Run blocking I/O operations on the I/O thread pool.
             withContext(Dispatchers.IO) {
               pomCandidate to mavenArtifactPropertyFetcher.scrapeText(pomCandidate.pomFileUrl)
             }
           }
-        }.awaitAll().mapNotNullTo(mutableSetOf()) { (pomCandidate, pomFileText) ->
+        }.awaitAll().mapNotNull { (pomCandidate, pomFileText) ->
           // Map back to the original failing candidate, and try to update its text.
           pomCandidate.takeIf { pomFileText != null }?.also { it.latestPomFileText = pomFileText }
         }
+        undoneCandidates.removeAll(completedCandidates)
       }
       check(undoneCandidates.isEmpty()) {
         "Failed to download ${undoneCandidates.size}/${candidates.size} POM files:" +
@@ -304,12 +305,15 @@ class MavenDependenciesRetriever(
       }.mapValues { (_, coordUrlToRepoUrlPairs) -> coordUrlToRepoUrlPairs.map { it.second } }
 
     val coordCandidates = mavenInstallJson.artifacts.map { (partialCoord, artifact) ->
-      val coord = MavenCoordinate.parseFrom("$partialCoord:${artifact.version}")
-      val repoUrls =
-        artifactPartialCoordToRepoUrls[partialCoord]
-          ?: artifactPartialCoordToRepoUrls["$partialCoord:aar"]
-          ?: artifactPartialCoordToRepoUrls["$partialCoord:jar"]
-          ?: error("Failed to find repositories for Maven coordinate: $partialCoord")
+      val resolvedCoordKey =
+        when {
+          artifactPartialCoordToRepoUrls[partialCoord] != null -> partialCoord
+          artifactPartialCoordToRepoUrls["$partialCoord:aar"] != null -> "$partialCoord:aar"
+          artifactPartialCoordToRepoUrls["$partialCoord:jar"] != null -> "$partialCoord:jar"
+          else -> error("Failed to find repositories for Maven coordinate: $partialCoord")
+        }
+      val coord = MavenCoordinate.parseFrom("$resolvedCoordKey:${artifact.version}")
+      val repoUrls = artifactPartialCoordToRepoUrls[resolvedCoordKey]!!
       val urlCandidates = repoUrls.map { repoUrl ->
         ArtifactUrlCandidate(repoUrl, coord.computeArtifactUrl(repoUrl))
       }
