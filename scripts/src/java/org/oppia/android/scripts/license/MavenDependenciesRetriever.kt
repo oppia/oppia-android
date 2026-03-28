@@ -305,7 +305,11 @@ class MavenDependenciesRetriever(
 
     val coordCandidates = mavenInstallJson.artifacts.map { (partialCoord, artifact) ->
       val coord = MavenCoordinate.parseFrom("$partialCoord:${artifact.version}")
-      val repoUrls = artifactPartialCoordToRepoUrls.getValue(partialCoord)
+      val repoUrls =
+        artifactPartialCoordToRepoUrls[partialCoord]
+          ?: artifactPartialCoordToRepoUrls["$partialCoord:aar"]
+          ?: artifactPartialCoordToRepoUrls["$partialCoord:jar"]
+          ?: error("Failed to find repositories for Maven coordinate: $partialCoord")
       val urlCandidates = repoUrls.map { repoUrl ->
         ArtifactUrlCandidate(repoUrl, coord.computeArtifactUrl(repoUrl))
       }
