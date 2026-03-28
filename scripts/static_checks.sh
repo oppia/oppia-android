@@ -104,7 +104,7 @@ echo ""
 echo "********************************"
 echo "Running maven dependencies update checks"
 echo "********************************"
-bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
+bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto
 echo ""
 
 # License Texts Check

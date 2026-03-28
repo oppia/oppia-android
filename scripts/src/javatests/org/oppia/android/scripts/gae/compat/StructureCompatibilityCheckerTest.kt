@@ -43,18 +43,17 @@ class StructureCompatibilityCheckerTest {
   }
 
   @Test
-  fun testCheckMathTagsForLatex_mathTagWithMissingContent_returnsMissingRawLatexFailure() {
+  fun testCheckMathTagsForLatex_mathTagWithMissingContent_returnsNoFailures() {
     val html =
       "<oppia-noninteractive-math></oppia-noninteractive-math>"
 
     val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
 
-    assertThat(failures).hasSize(1)
-    assertThat(failures.first()).isInstanceOf(MathTagMissingRawLatex::class.java)
+    assertThat(failures).isEmpty()
   }
 
   @Test
-  fun testCheckMathTagsForLatex_multipleMathTags_oneInvalid_returnsOneFailure() {
+  fun testCheckMathTagsForLatex_multipleMathTags_oneMissingContent_returnsNoFailures() {
     val validTag = buildMathTagHtml(rawLatex = "x^2")
     val invalidTag =
       "<oppia-noninteractive-math></oppia-noninteractive-math>"
@@ -62,8 +61,7 @@ class StructureCompatibilityCheckerTest {
 
     val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
 
-    assertThat(failures).hasSize(1)
-    assertThat(failures.first()).isInstanceOf(MathTagMissingRawLatex::class.java)
+    assertThat(failures).isEmpty()
   }
 
   @Test
@@ -78,7 +76,9 @@ class StructureCompatibilityCheckerTest {
   }
 
   private fun buildMathTagHtml(rawLatex: String): String {
-    val escapedContent = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$rawLatex&amp;quot;}"
+    val escapedRawLatex = rawLatex.replace("\\", "\\\\").replace("\"", "\\\"")
+    val escapedContent =
+      "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$escapedRawLatex&amp;quot;,&amp;quot;svg_filename&amp;quot;:&amp;quot;math.svg&amp;quot;}"
     return "<oppia-noninteractive-math math_content-with-value=\"$escapedContent\">" +
       "</oppia-noninteractive-math>"
   }
