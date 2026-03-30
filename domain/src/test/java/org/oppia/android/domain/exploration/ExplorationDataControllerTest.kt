@@ -206,7 +206,10 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
-    // The first events should be starting a card then the exploration (it's out of order).
+    // Starting an exploration will log a bunch of analytics events, but the order is a bit specific
+    // in that the event for starting a specific card is actually logged before the exploration
+    // event. This doesn't necessarily have a significant impact on analytics but it does cause a
+    // bit of ordering quirkiness in tests. See next test as well.
     val events = fakeAnalyticsEventLogger.getOldestEvents(2)
     assertThat(events).hasSize(2)
     assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isFalse()
@@ -216,7 +219,8 @@ class ExplorationDataControllerTest {
   fun testReplayExploration_logsStartExplorationEventWithIsReplayTrue() {
     replayExploration(TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
 
-    // The first events should be starting a card then the exploration (it's out of order).
+    // The second event is the exploration start event due to some out-of-order event logging. See
+    // the previous test for a longer explanation as to why this is the case.
     val events = fakeAnalyticsEventLogger.getOldestEvents(2)
     assertThat(events).hasSize(2)
     assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isTrue()
