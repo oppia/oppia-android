@@ -192,9 +192,11 @@ http_archive(
 )
 
 # Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
+# This is done such that it should satisfiy the requirement for pre-fetching but cause an actual
+# build failure for any real dependencies on the target.
 bind(
     name = "python_headers",
-    actual = "//tools/python:_empty_python_headers_do_not_depend",
+    actual = "@bazel_tools//tools/cpp:malloc",
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
