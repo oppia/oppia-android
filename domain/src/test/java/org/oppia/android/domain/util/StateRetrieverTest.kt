@@ -654,6 +654,22 @@ class StateRetrieverTest {
     assertThat(state.linkedSkillId).isEqualTo("test_skill_id_2")
   }
 
+  @Test
+  fun testParseState_withoutCardIsCheckpoint_doesNotSetIsCheckpoint() {
+    val state = loadStateFromJson(stateName = "Fractions", explorationName = TEST_EXPLORATION_ID_2)
+
+    assertThat(state.isCheckpoint).isFalse()
+  }
+
+  @Test
+  fun testParseState_withCardIsCheckpoint_setsNotSetIsCheckpoint() {
+    val state = loadStateFromJson(
+      stateName = "MultipleChoice", explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    assertThat(state.isCheckpoint).isTrue()
+  }
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.

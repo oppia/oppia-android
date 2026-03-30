@@ -58,6 +58,9 @@ class StateRetriever @Inject constructor() {
       stateJson.optString("linked_skill_id").takeIf {
         it.isNotEmpty() && it != "null"
       }?.let { linkedSkillId = it }
+      if (stateJson.has("card_is_checkpoint")) {
+        isCheckpoint = stateJson.getBoolean("card_is_checkpoint")
+      }
     }.build()
 
   // Creates an interaction from JSON
