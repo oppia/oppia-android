@@ -265,6 +265,24 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testEphemeralState_submitNonInitialStateAnswer_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeMultipleChoiceState()
+
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    val ephemeralState = submitPrototypeState3Answer()
+
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(ephemeralState.showContinueButtonAnimation).isTrue()
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs)
+      .isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+  }
+
+  @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val profileId2 = LegacyProfileId.newBuilder().setInternalId(1).build()
