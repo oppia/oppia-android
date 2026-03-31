@@ -838,7 +838,6 @@ TEST_DEPS = [
         ":data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "21",
