@@ -9,8 +9,9 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import org.oppia.android.scripts.common.ExitProcessWrapper
-import java.io.File
+import kotlin.system.exitProcess
 
 private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
 private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
@@ -74,7 +75,7 @@ private fun printUsageAndExit(): Nothing {
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
 private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (lowercase(Locale.US)) {
+  return when (toLowerCase(Locale.US)) {
     "false" -> false
     "true" -> true
     else -> null

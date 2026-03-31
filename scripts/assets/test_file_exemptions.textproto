@@ -4887,3 +4887,27 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ReturnToQuestionButtonListener.kt"
   test_file_not_required: true
 }
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/ExitProcessWrapper.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeTerminalController.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeTerminalControllerModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalController.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalControllerImpl.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalControllerModule.kt"
+  test_file_not_required: true
+}
