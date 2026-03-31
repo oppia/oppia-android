@@ -4,9 +4,9 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileId
 
 /** Migrates [LegacyProfileId] to the new [ProfileId] proto structure. */
-fun LegacyProfileId.migrate(): ProfileId =
+fun LegacyProfileId.toProfileId(): ProfileId =
   ProfileId.newBuilder().mergeFrom(this.toByteString()).build()
 
 /** Converts [ProfileId] back to [LegacyProfileId] for compatibility during migration. */
-fun ProfileId.toLegacy(): LegacyProfileId =
+fun ProfileId.toLegacyProfileId(): LegacyProfileId =
   LegacyProfileId.newBuilder().mergeFrom(this.toByteString()).build()
