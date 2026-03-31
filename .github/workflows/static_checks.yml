@@ -8,9 +8,12 @@ on:
   push:
     branches:
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -18,9 +21,9 @@ jobs:
     name: Check CODEOWNERS & Repository files
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - uses: mszostok/codeowners-validator@v0.5.1
+      - uses: mszostok/codeowners-validator@v0.7.4
         with:
           checks: "duppatterns,files,syntax"
           experimental_checks: "notowned"
@@ -28,7 +31,7 @@ jobs:
   check_base_branch:
     name: Check base branch
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     steps:
       - name: "Branch is not based on develop or release branch"
         if: ${{ github.base_ref != 'develop' && !startsWith(github.base_ref, 'release-') }}
@@ -50,7 +53,7 @@ jobs:
     name: Lint Tests
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Create oppia android tools directory
         run: mkdir -p $HOME/oppia-android-tools
@@ -97,7 +100,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -106,7 +109,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -219,7 +222,7 @@ jobs:
     name: Maven Dependencies Checks
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
