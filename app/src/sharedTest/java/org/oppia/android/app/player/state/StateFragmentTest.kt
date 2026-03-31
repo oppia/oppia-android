@@ -5833,8 +5833,9 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
     // Simulate previous app instance with feature flag disabled.
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     executeInPreviousAppInstance { _ ->
-      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+      // No additional state needs to be arranged since the flag is already disabled.
     }
 
     // In the current app instance, keep feature flag off and verify button is not shown.
@@ -5856,8 +5857,9 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn_flashbackButtonShown() {
     // Simulate previous app instance with feature flag disabled.
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     executeInPreviousAppInstance { _ ->
-      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+      // No additional state needs to be arranged since the flag is already disabled.
     }
 
     // In the current app instance, enable feature flag and verify button is shown.
@@ -5880,8 +5882,9 @@ class StateFragmentTest {
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
     // Simulate previous app instance with feature flag enabled.
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     executeInPreviousAppInstance { _ ->
-      TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+      // No additional state needs to be arranged since the flag is already enabled.
     }
 
     // In the current app instance, feature flag should still be on.
@@ -7165,6 +7168,10 @@ class StateFragmentTest {
         .setApplication(testApplication)
         .build()
     )
+
+    // Resetting after the previous instance is important so that the next (main) app instance
+    // can set its own flags.
+    TestPlatformParameterModule.reset()
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
