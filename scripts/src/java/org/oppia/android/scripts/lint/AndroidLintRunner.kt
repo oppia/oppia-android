@@ -16,8 +16,8 @@ import java.lang.Module
 import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import kotlin.concurrent.thread
-import kotlin.system.exitProcess
 import com.android.tools.lint.Main as LintCli
 
 /** The default timeout duration for executing external processes. */
@@ -136,7 +136,7 @@ fun main(vararg args: String) {
     e.printStackTrace()
     exitCode = 1
   } finally {
-    exitProcess(exitCode)
+    ExitProcessWrapper().exitProcess(exitCode)
   }
 }
 
@@ -415,7 +415,7 @@ class AndroidLintRunner(
       val wrapper = LintTimeoutWrapper(cliArgs, DEFAULT_PROCESS_TIMEOUT_MINUTES)
       wrapper.runWithTimeout()
     } catch (e: IllegalStateException) {
-      exitProcess(1)
+      ExitProcessWrapper().exitProcess(1)
     }
 
     // Allow exit code 1(ISSUES_FOUND) since it indicates issues with

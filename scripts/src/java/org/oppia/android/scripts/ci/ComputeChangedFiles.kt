@@ -7,10 +7,8 @@ import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompresse
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import java.io.File
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 private const val COMPUTE_ALL_FILES_PREFIX = "compute_all_files="
 private const val MAX_FILE_COUNT_PER_LARGE_SHARD = 50
@@ -70,7 +68,7 @@ private fun printUsageAndExit(): Nothing {
       " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
       " <compute_all_files=true/false>"
   )
-  exitProcess(1)
+  ExitProcessWrapper().exitProcess(1)
 }
 
 /** Utility used to compute changed files. */

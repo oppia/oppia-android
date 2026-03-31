@@ -2,8 +2,8 @@ package org.oppia.android.scripts.ci
 
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.proto.AffectedTestsBucket
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import java.io.File
-import kotlin.system.exitProcess
 
 /**
  * The main entrypoint for retrieving the list of affected tests from a particular encoded Base64
@@ -50,5 +50,5 @@ private fun printUsageAndExit(): Nothing {
       " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
       " <path_to_test_target_list_output_file>"
   )
-  exitProcess(1)
+  ExitProcessWrapper().exitProcess(1)
 }

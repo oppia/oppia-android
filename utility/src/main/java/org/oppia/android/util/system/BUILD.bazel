@@ -56,3 +56,34 @@ kt_android_library(
         ":oppia_clock_injector",
     ],
 )
+
+kt_android_library(
+    name = "terminal_controller",
+    srcs = [
+        "TerminalController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "terminal_controller_impl",
+    srcs = [
+        "TerminalControllerImpl.kt",
+    ],
+    deps = [
+        ":terminal_controller",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "terminal_controller_module",
+    srcs = [
+        "TerminalControllerModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":terminal_controller_impl",
+        "//:dagger",
+    ],
+)

@@ -9,8 +9,8 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 import java.io.File
 import java.util.Locale
-import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
+import org.oppia.android.scripts.common.ExitProcessWrapper
+import java.io.File
 
 private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
 private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
@@ -69,7 +69,7 @@ private fun printUsageAndExit(): Nothing {
       " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
       " <compute_all_tests=true/false>"
   )
-  exitProcess(1)
+  ExitProcessWrapper().exitProcess(1)
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.

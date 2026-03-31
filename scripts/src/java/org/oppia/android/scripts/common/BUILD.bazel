@@ -101,6 +101,13 @@ kt_jvm_library(
     ],
 )
 
+kt_jvm_library(
+    name = "exit_process_wrapper",
+    testonly = True,
+    srcs = ["ExitProcessWrapper.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
 genrule(
     name = "_sdk_info_properties",
     srcs = [],

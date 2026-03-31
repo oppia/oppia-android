@@ -27,8 +27,8 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.system.TerminalController
 import javax.inject.Inject
-import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -42,7 +42,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val accessibilityService: AccessibilityService,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val terminalController: TerminalController
 ) {
   private var internalProfileId = -1
   private var profileId = LegacyProfileId.getDefaultInstance()
@@ -267,7 +268,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
       // End the process forcibly since the app is not designed to recover from major on-disk state
       // changes that happen from underneath it (like deleting all profiles).
-      exitProcess(0)
+      terminalController.exitProcess(0)
     }
   }
 

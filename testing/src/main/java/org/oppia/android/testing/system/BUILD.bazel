@@ -1,0 +1,30 @@
+"""
+System-related testing utilities.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_terminal_controller",
+    srcs = [
+        "FakeTerminalController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    srcs = [
+        "FakeTerminalControllerModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":fake_terminal_controller",
+        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
+        "//:dagger",
+    ],
+)

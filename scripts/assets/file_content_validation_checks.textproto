@@ -5,6 +5,13 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "kotlin\\.system\\.exitProcess|exitProcess\\("
+  failure_message: "Please use TerminalController (in the app) or ExitProcessWrapper (in scripts) instead of direct exitProcess() for better code coverage."
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/system/TerminalControllerImpl.kt"
+  exempted_file_name: "scripts/src/java/org/oppia/android/scripts/common/ExitProcessWrapper.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "announceForAccessibility\\("
   failure_message: "Please use AccessibilityService instead."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"

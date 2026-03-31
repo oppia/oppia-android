@@ -7,9 +7,8 @@ import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCo
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
 import org.oppia.android.scripts.proto.TestFileExemptions
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 /**
  * The main entrypoint for retrieving the list of changed files from a particular encoded Base64
@@ -119,7 +118,7 @@ private fun printUsageAndExit(): Nothing {
       " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
       " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
   )
-  exitProcess(1)
+  ExitProcessWrapper().exitProcess(1)
 }
 
 private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
