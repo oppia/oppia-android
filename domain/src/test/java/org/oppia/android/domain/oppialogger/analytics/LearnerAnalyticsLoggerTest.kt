@@ -654,6 +654,35 @@ class LearnerAnalyticsLoggerTest {
       hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
       hasVersionThat().isEqualTo(5)
       hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasIsReplayThat().isFalse()
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logStartExploration_forReplayedExploration_logsEventWithIsReplay() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5, isReplay = true)
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasStartExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasIsReplayThat().isTrue()
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
         hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
@@ -2296,9 +2325,10 @@ class LearnerAnalyticsLoggerTest {
     learnerId: String? = TEST_LEARNER_ID,
     classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
-    storyId: String = TEST_STORY_ID
+    storyId: String = TEST_STORY_ID,
+    isReplay: Boolean = false
   ) = beginExploration(
-    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId
+    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId, isReplay
   )
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }

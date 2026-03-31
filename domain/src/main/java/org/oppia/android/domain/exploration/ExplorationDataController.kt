@@ -89,7 +89,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -121,7 +122,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint,
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -151,7 +153,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true, // Implied since only checkpoints can be restarted.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = true
+      isRestart = true,
+      isReplay = false
     )
   }
 
@@ -184,7 +187,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = true
     )
   }
 
@@ -212,6 +216,7 @@ class ExplorationDataController @Inject constructor(
    * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
    *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
    *     instance.
+   * @param isReplay whether the user is replaying this lesson after having previously completed it
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
@@ -223,7 +228,8 @@ class ExplorationDataController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -233,7 +239,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint,
-      isRestart
+      isRestart,
+      isReplay
     )
   }
 

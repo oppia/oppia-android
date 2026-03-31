@@ -166,7 +166,8 @@ class ExplorationProgressController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
     val sessionId = UUID.randomUUID().toString().also {
@@ -185,6 +186,7 @@ class ExplorationProgressController @Inject constructor(
         shouldSavePartialProgress,
         explorationCheckpoint,
         isRestart,
+        isReplay,
         ephemeralStateFlow,
         sessionId,
         beginExplorationResultFlow
@@ -511,6 +513,7 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
+                  message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
                   // in the following 3 cases.
                   //  - New exploration is started.
@@ -1346,6 +1349,7 @@ class ExplorationProgressController @Inject constructor(
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val isRestart: Boolean,
+    val isReplay: Boolean,
     val isResume: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
@@ -1395,7 +1399,8 @@ class ExplorationProgressController @Inject constructor(
         exploration,
         explorationProgress.currentClassroomId,
         explorationProgress.currentTopicId,
-        explorationProgress.currentStoryId
+        explorationProgress.currentStoryId,
+        isReplay
       )
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
@@ -1510,6 +1515,7 @@ class ExplorationProgressController @Inject constructor(
       val shouldSavePartialProgress: Boolean,
       val explorationCheckpoint: ExplorationCheckpoint,
       val isRestart: Boolean,
+      val isReplay: Boolean,
       val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
