@@ -246,7 +246,8 @@ class LessonDownloader(
       coroutineDispatcher,
       imageDownloader,
       forcedVersions = downloadListVersions,
-      downloadConfig = downloadConfig
+      downloadConfig = downloadConfig,
+      filterInvalidTopics = true
     )
   }
   private val textFormat by lazy { TextFormat.printer() }

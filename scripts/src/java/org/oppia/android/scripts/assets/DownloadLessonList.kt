@@ -102,7 +102,8 @@ class LessonListDownloader(
       scriptBgDispatcher,
       imageDownloader,
       forcedVersions = null, // Always load latest when creating the pin versions list.
-      downloadConfig = downloadConfig
+      downloadConfig = downloadConfig,
+      filterInvalidTopics = false // Do this during the main download instead.
     )
   }
 
