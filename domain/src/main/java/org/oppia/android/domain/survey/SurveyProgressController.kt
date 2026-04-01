@@ -117,6 +117,7 @@ class SurveyProgressController @Inject constructor(
     questionsListDataProvider: DataProvider<List<SurveyQuestion>>
   ): DataProvider<Any?> {
     val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralSurveyQuestion>()
+    mostRecentCommandQueue?.close()
     val sessionId = UUID.randomUUID().toString().also {
       mostRecentSessionId = it
       mostRecentEphemeralQuestionFlow = ephemeralQuestionFlow
@@ -265,6 +266,7 @@ class SurveyProgressController @Inject constructor(
     sendCommandForOperation(message) {
       "Failed to schedule command for finishing the survey session."
     }
+    mostRecentCommandQueue?.close()
     return endSessionResultFlow.convertToSessionProvider(END_SESSION_RESULT_PROVIDER_ID)
   }
 
@@ -320,7 +322,6 @@ class SurveyProgressController @Inject constructor(
             } finally {
               // Ensure the actor ends since the session requires no further message processing.
             }
-            break
           }
         }
       }

@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
  */
 class ExitProcessWrapper {
   /** Exits the process with the specified [exitCode]. */
-  fun exitProcess(exitCode: Int): Nothing {
+  fun exitProcess(exitCode: Int) {
     kotlin.system.exitProcess(exitCode)
   }
 }

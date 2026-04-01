@@ -1,0 +1,27 @@
+"""
+Tests corresponding to system utilities such as the terminal controller.
+"""
+
+load("//testing:oppia_test.bzl", "oppia_test")
+
+oppia_test(
+    name = "TerminalControllerTest",
+    srcs = ["TerminalControllerTest.kt"],
+    test_class = "org.oppia.android.util.system.TerminalControllerTest",
+    deps = [
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
+    ],
+)
+
+oppia_test(
+    name = "TerminalControllerImplTest",
+    srcs = ["TerminalControllerImplTest.kt"],
+    test_class = "org.oppia.android.util.system.TerminalControllerImplTest",
+    deps = [
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller_impl",
+    ],
+)

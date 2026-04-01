@@ -93,3 +93,12 @@ kt_jvm_test(
         "//third_party:org_mockito_mockito-core",
     ],
 )
+
+kt_jvm_test(
+    name = "ExitProcessWrapperTest",
+    srcs = ["ExitProcessWrapperTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:exit_process_wrapper",
+        "//third_party:com_google_truth_truth",
+    ],
+)
