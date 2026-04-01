@@ -118,7 +118,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
   @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  fun CreateAdminPinScreen(initialState: CreateAdminPinUiState) {
+  private fun CreateAdminPinScreen(initialState: CreateAdminPinUiState) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current

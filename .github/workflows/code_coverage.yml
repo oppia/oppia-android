@@ -10,9 +10,12 @@ on:
     branches:
       # Push events on develop branch
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -21,7 +24,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.3.0
         with:
           workflow: unit_tests.yml
           sha: auto
@@ -36,7 +39,7 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -45,7 +48,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -86,15 +89,33 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      - name: Check PR for [RunAllTests]
+        id: check_pr
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" == *"[RunAllTests]"* ]]; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
+
+      # Search all PR commit messages included in the merge group for any that require running all tests upon merging.
+      - name: Check merge group for [RunAllTests]
+        id: check_mg
+        if: ${{ github.event_name == 'merge_group' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MESSAGES=$(gh api repos/${{ github.repository }}/compare/${{ github.event.merge_group.base_sha }}...${{ github.sha }} --jq '.commits[].commit.message')
+          if echo "$MESSAGES" | grep -Fq "[RunAllTests]"; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
+
       - name: Compute file matrix
         id: compute-file-matrix
         env:
-          compute_all_files: ${{ contains(github.event.pull_request.title, '[RunAllTests]') }}
+          compute_all_files: ${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
           # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request. Defer to origin/develop outside a PR (such as develop's main CI runs).
-          base_commit_hash: ${{ github.event.pull_request.base.sha || 'origin/develop' }}
+          base_commit_hash: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/develop' }}
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
-        # comma-separated list of test targets for the matrix.
+        # comma-separated list of test targets for the matrix. Note that the extra fetch is to
+        # enusre that the base commit is fully fetched locally so that it can be diffed against.
         run: |
+          git fetch origin $base_commit_hash --depth=1
           bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
           FILE_BUCKET_LIST=$(cat ./changed_files.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
@@ -118,14 +139,14 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -174,7 +195,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: test_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -219,22 +240,7 @@ jobs:
 
       - name: Build Oppia Tests
         run: |
-          # Attempt to build 5 times in case there are flaky builds.
-          # TODO(#3759): Remove this once there are no longer app test build failures.
-          i=0
-          # Disable exit-on-first-failure.
-          set +e
-          while [ $i -ne 5 ]; do
-            i=$(( $i+1 ))
-            echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going --target_pattern_file=bazel_targets.txt
-          done
-          # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
-          last_error_code=$?
-          # Reenable exit-on-first-failure.
-          set -e
-          # Exit only if the most recent exit was a failure (by using a subshell).
-          (exit $last_error_code)
+          bazel build --keep_going --target_pattern_file=bazel_targets.txt
 
       - name: Run Oppia Coverage
         env:
@@ -244,14 +250,14 @@ jobs:
           bazel run //scripts:run_coverage -- $(pwd) $CHANGED_FILES --format=PROTO --processTimeout=15
 
       - name: Upload Coverage Report Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
           path: coverage_reports
 
       - name: Upload bazel target file
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: code-coverage-bazel-targets-${{ env.SHARD_NAME }}
           path: bazel_targets.txt
@@ -266,10 +272,10 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Download Coverage Report Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: coverage-report-artifact
           pattern: coverage-report-*
@@ -286,7 +292,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -303,7 +309,7 @@ jobs:
           bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
 
       - name: Upload Generated Markdown Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
