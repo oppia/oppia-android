@@ -109,11 +109,43 @@ private fun Long.toFormattedDuration(): String {
 }
 
 /**
+ * Gradle-specific checks that are irrelevant for Bazel-based projects.
+ * These never produce findings but still consume analysis time.
+ * Disabling them is a free optimization.
+ */
+private val IRRELEVANT_GRADLE_CHECKS = setOf(
+  "GradleCompatible",
+  "GradleDependency",
+  "GradleDeprecated",
+  "GradleDeprecatedConfiguration",
+  "GradleDynamicVersion",
+  "GradleGetter",
+  "GradleIdeError",
+  "GradleLikelyBug",
+  "GradlePath",
+  "GradlePluginVersion",
+  "AndroidGradlePluginVersion",
+  "AnnotationProcessorOnCompilePath",
+  "EditedTargetSdkVersion",
+  "ExpiredTargetSdkVersion",
+  "ExpiringTargetSdkVersion",
+  "MinSdkTooLow",
+  "NewerVersionAvailable",
+  "OutdatedLibrary",
+  "SimilarGradleDependency",
+  "UseTomlInstead",
+  "WrongGradleMethod",
+  "JCenter",
+  "JcenterRepositoryObsolete"
+)
+
+/**
  * The main entrypoint to analyze the codebase for Android Lint issues.
  *
  * Usage:
  *   bazel run //scripts:android_lint_check -- <path_to_repository_root>
  *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>] [--timer]
+ *   [--incremental] [--no-java-sources] [--checks=<check1,check2>] [--list-checks]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
@@ -121,12 +153,17 @@ private fun Long.toFormattedDuration(): String {
  * - --group_by_severity: Optional flag to group issues by severity
  * - --processTimeout=<minutes>: Process timeout in minutes
  * - --timer: Optional flag to display elapsed time during execution
+ * - --incremental: Run only on source files changed since develop (fast local mode)
+ * - --no-java-sources: Exclude all Java/Kotlin source files (resource-only checks)
+ * - --checks=<ids>: Run only the specified comma-separated check IDs
+ * - --list-checks: List all available checks and exit
  *
  * Examples:
  *   bazel run //scripts:android_lint_check -- $(pwd)
  *   bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
  *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=20
  *   bazel run //scripts:android_lint_check -- $(pwd) --timer
+ *   bazel run //scripts:android_lint_check -- $(pwd) --incremental --timer
  */
 fun main(vararg args: String) {
   var exitCode = 0
@@ -172,7 +209,29 @@ fun executeAndroidLintAnalysis(vararg args: String) {
       ?.split(",")
       ?: emptyList()
 
+    val incremental = args.contains("--incremental")
     val includeSourceFiles = !args.contains("--no-java-sources")
+
+    // When --incremental, find changed source files via git diff.
+    val changedFiles: Set<String>? = if (incremental) {
+      val commandExecutor = CommandExecutorImpl(
+        scriptBgDispatcher,
+        processTimeout = processTimeout,
+        processTimeoutUnit = TimeUnit.MINUTES
+      )
+      val result = commandExecutor.executeCommand(
+        repoRoot,
+        "git", "diff", "--name-only", "develop", "--", "*.kt", "*.java"
+      )
+      result.output.filter { it.isNotBlank() }.toSet().also { files ->
+        println("Incremental mode: ${files.size} changed source file(s) detected.")
+        files.forEach { println("  - $it") }
+      }
+    } else if (!includeSourceFiles) {
+      emptySet() // --no-java-sources: exclude all source files
+    } else {
+      null // null means include all source files
+    }
 
     val workingDirectory = Files.createTempDirectory("lint_analysis").toFile()
     val timer = if (showTimer) {
@@ -200,10 +259,11 @@ fun executeAndroidLintAnalysis(vararg args: String) {
         exemptionProtoPath = exemptionProtoPath,
         groupByIssueSeverity = groupByIssueSeverity,
         timer = timer,
-        reportUnusedEnum = checks.isEmpty(),
+        reportUnusedEnum = checks.isEmpty() && !incremental,
         listChecks = listChecks,
         checks = checks,
-        includeSourceFiles = includeSourceFiles
+        changedFiles = changedFiles,
+        additionalDisabledChecks = IRRELEVANT_GRADLE_CHECKS
       )
 
       lintAnalyzer.runAnalysis()
@@ -235,7 +295,8 @@ class AndroidLintAnalyzer(
   private val reportUnusedEnum: Boolean = true,
   private val listChecks: Boolean = false,
   private val checks: List<String> = emptyList(),
-  private val includeSourceFiles: Boolean = true
+  private val changedFiles: Set<String>? = null,
+  private val additionalDisabledChecks: Set<String> = emptySet()
 ) {
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
@@ -286,7 +347,7 @@ class AndroidLintAnalyzer(
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
       kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion),
-      suppressLintIssues = suppressLintIssues,
+      suppressLintIssues = suppressLintIssues + additionalDisabledChecks,
       listChecks = listChecks,
       checks = checks
     )
@@ -300,7 +361,7 @@ class AndroidLintAnalyzer(
       repoRoot = repoRoot,
       workingDirectory = workingDirectory,
       commandExecutor = commandExecutor,
-      includeSourceFiles = includeSourceFiles
+      changedFiles = changedFiles
     )
     return lintProjectDescription.generateProjectDescriptionXml()
   }
