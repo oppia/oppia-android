@@ -276,16 +276,22 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("123")
 
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the length error is shown for the PIN field.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("123")
 
+      // Verify that the length error is shown for the confirm PIN field.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
@@ -303,6 +309,7 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("123")
 
       composeRule
@@ -311,6 +318,7 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("456")
 
       composeRule
@@ -330,11 +338,13 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       // Enter a too-short confirm PIN.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("12")
 
       composeRule
@@ -364,7 +374,9 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .assertIsNotEnabled()
 
-      composeRule.onNodeWithText(enterPinNode).performTextInput("345")
+      composeRule.onNodeWithText(enterPinNode)
+        .performClick()
+        .performTextInput("345")
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
@@ -372,6 +384,7 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       // Enter matching confirm PIN; continue should be enabled now.
@@ -388,14 +401,17 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performImeAction()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -409,10 +425,12 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("12345")
 
       composeRule
@@ -445,6 +463,7 @@ class CreateAdminPinFragmentTest {
       // Try to input non-digit characters.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("abc12def")
 
       // Should only accept the digits.
@@ -462,6 +481,7 @@ class CreateAdminPinFragmentTest {
       // Try to input non-digit characters.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("abc12def")
 
       // Should only accept the digits.
@@ -479,7 +499,10 @@ class CreateAdminPinFragmentTest {
       // Try to input more than 5 digits.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
         .performTextInput("123456789")
+
+      testCoroutineDispatchers.runCurrent()
 
       // Should only accept the first 5 digits.
       composeRule
@@ -496,6 +519,7 @@ class CreateAdminPinFragmentTest {
       // Try to input more than 5 digits.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
         .performTextInput("123456789")
 
       // Should only accept the first 5 digits.
