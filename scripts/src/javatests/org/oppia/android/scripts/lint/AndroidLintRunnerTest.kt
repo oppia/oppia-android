@@ -676,6 +676,86 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testPrepareLintArguments_withListChecks_returnsListArguments() {
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
+    val lintRunner = AndroidLintRunner(
+      reportFile,
+      projectFile,
+      tempFolder.root,
+      "${tempFolder.root}/$pathToProtoBinary"
+    )
+
+    val result = lintRunner.prepareLintArguments(
+      jdkHome,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      emptySet(),
+      listChecks = true
+    )
+
+    assertThat(result).asList().contains("--list")
+    assertThat(result).asList().doesNotContain("-Wall")
+  }
+
+  @Test
+  fun testPrepareLintArguments_withSpecificChecks_includesCheckArgument() {
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
+    val lintRunner = AndroidLintRunner(
+      reportFile,
+      projectFile,
+      tempFolder.root,
+      "${tempFolder.root}/$pathToProtoBinary"
+    )
+
+    val result = lintRunner.prepareLintArguments(
+      jdkHome,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      emptySet(),
+      checks = listOf("HardcodedText", "IconDensities")
+    )
+
+    assertThat(result).asList().contains("--check")
+    val checkIndex = result.indexOf("--check")
+    assertThat(result[checkIndex + 1]).isEqualTo("HardcodedText,IconDensities")
+  }
+
+  @Test
+  fun testPrepareLintArguments_withCombinedDisabledChecks_includesAllInDisableList() {
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
+    val lintRunner = AndroidLintRunner(
+      reportFile,
+      projectFile,
+      tempFolder.root,
+      "${tempFolder.root}/$pathToProtoBinary"
+    )
+    val suppressIssues = setOf("MissingTranslation", "GradleOverrides")
+    val additionalDisabled = setOf("GradleCompatible", "GradleDependency")
+    val combinedSet = suppressIssues + additionalDisabled
+
+    val result = lintRunner.prepareLintArguments(
+      jdkHome,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      combinedSet
+    )
+
+    assertThat(result).asList().contains("--disable")
+    val disableIndex = result.indexOf("--disable")
+    val disabledStr = result[disableIndex + 1]
+    assertThat(disabledStr).contains("MissingTranslation")
+    assertThat(disabledStr).contains("GradleOverrides")
+    assertThat(disabledStr).contains("GradleCompatible")
+    assertThat(disabledStr).contains("GradleDependency")
+  }
+
+  @Test
   fun testAndroidLintAnalyzer_withDuplicateStringResources_issueIsSuppressed() {
     setupProjectWithDuplicateStringIssue()
 
