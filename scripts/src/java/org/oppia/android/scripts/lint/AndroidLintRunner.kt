@@ -121,21 +121,15 @@ private val IRRELEVANT_GRADLE_CHECKS = setOf(
   "GradleDynamicVersion",
   "GradleGetter",
   "GradleIdeError",
-  "GradleLikelyBug",
   "GradlePath",
   "GradlePluginVersion",
   "AndroidGradlePluginVersion",
   "AnnotationProcessorOnCompilePath",
-  "EditedTargetSdkVersion",
   "ExpiredTargetSdkVersion",
   "ExpiringTargetSdkVersion",
   "MinSdkTooLow",
   "NewerVersionAvailable",
   "OutdatedLibrary",
-  "SimilarGradleDependency",
-  "UseTomlInstead",
-  "WrongGradleMethod",
-  "JCenter",
   "JcenterRepositoryObsolete"
 )
 
