@@ -825,6 +825,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
     "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
     "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+    "//app/src/main/java/org/oppia/android/app/utility/imageloading:thumbnail_content_provider",
     "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
 ]
 
