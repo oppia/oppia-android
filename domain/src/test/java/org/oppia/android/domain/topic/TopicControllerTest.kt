@@ -1,5 +1,8 @@
 package org.oppia.android.domain.topic
 
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -32,7 +35,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TopicController.ChapterNotFoundException
-import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -58,9 +60,6 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
