@@ -68,10 +68,9 @@ fun main(vararg args: String) {
           }
         }
         filePath.endsWith(".kt") -> filePath
-        else -> null
+        else -> throw IllegalArgumentException("Unsupported file path: $filePath")
       }
     }
-    .filterNotNull()
     .distinct()
 
   println("Running coverage analysis for the files: $filePathList")
