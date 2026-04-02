@@ -27,8 +27,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
+        android:textAlignment="textStart"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textColorLink="@color/component_color_shared_link_text_color"
+        android:textDirection="ltr"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

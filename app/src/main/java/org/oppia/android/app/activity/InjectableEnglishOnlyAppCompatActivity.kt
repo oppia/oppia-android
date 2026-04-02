@@ -8,12 +8,13 @@ import org.oppia.android.app.translation.AppLanguageWatcherMixin
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
  *
- * This should be extended by all activities which should be system localized or use the
- * device default language.
+ * This should be extended by activities which should always display in English regardless of the
+ * user's selected app or system language (e.g. policies pages which show canonical English
+ * content).
  */
-abstract class InjectableSystemLocalizedAppCompatActivity : InjectableAppCompatActivity() {
+abstract class InjectableEnglishOnlyAppCompatActivity : InjectableAppCompatActivity() {
 
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(ActivityLanguageMode.USE_SYSTEM_LANGUAGE)
+    appLanguageWatcherMixin.initialize(ActivityLanguageMode.USE_ENGLISH)
   }
 }
