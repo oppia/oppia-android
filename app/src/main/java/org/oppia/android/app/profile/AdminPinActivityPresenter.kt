@@ -156,5 +156,4 @@ class AdminPinActivityPresenter @Inject constructor(
       false
     }
   }
-
 }
