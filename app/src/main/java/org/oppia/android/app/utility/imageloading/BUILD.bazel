@@ -11,7 +11,7 @@ kt_android_library(
     ],
     manifest = "AndroidManifest.xml",
     visibility = [
-        "//:oppia_binary_visibility",
+        "//:oppia_debug_visibility",
     ],
     deps = [
         "//app",

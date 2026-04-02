@@ -36,14 +36,18 @@ class ThumbnailContentProviderTest {
 
   @Test
   fun testOpenFile_validThumbnail_returnsFileDescriptor() {
-    val uri = Uri.parse("content://org.oppia.android.provider.gcs/entity/id/assets/image/baker.img")
+    val uri = Uri.parse(
+      "content://org.oppia.android.provider.gcs/entity/id/assets/image/baker.img"
+    )
     val pfd = provider.openFile(uri, "r")
     assertThat(pfd).isNotNull()
   }
 
   @Test
   fun testOpenFile_invalidThumbnail_returnsDefaultFileDescriptor() {
-    val uri = Uri.parse("content://org.oppia.android.provider.gcs/entity/id/assets/image/invalid.img")
+    val uri = Uri.parse(
+      "content://org.oppia.android.provider.gcs/entity/id/assets/image/invalid.img"
+    )
     val pfd = provider.openFile(uri, "r")
     assertThat(pfd).isNotNull()
   }
