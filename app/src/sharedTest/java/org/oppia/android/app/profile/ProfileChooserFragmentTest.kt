@@ -449,7 +449,7 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_chooser_add)))
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -465,7 +465,8 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileLoginActivity::class.java.name))
@@ -481,7 +482,8 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
 
       // Launch should be to ProfileLoginActivity; while we don't assert extras directly here,
@@ -1175,27 +1177,27 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfileButton_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfilePrompt_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfilePrompt_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_prompt)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 

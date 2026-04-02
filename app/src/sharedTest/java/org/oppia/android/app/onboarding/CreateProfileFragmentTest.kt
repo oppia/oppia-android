@@ -758,14 +758,14 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       // Provide a valid nickname to bypass nickname validation.
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("1"), closeSoftKeyboard())
+        .perform(appendText("1"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -779,18 +779,18 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_mismatchedConfirmPin_showsConfirmError() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+        .perform(appendText("111"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -804,18 +804,18 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_validPinAndConfirmPin_noErrorShownOnContinue() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -833,18 +833,18 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_validNameAndPins_continueButtonClicked_showsSuccessDialog() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -866,7 +866,7 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_validName_pinCheckboxChecked_pinNotEntered_showsErrorOnContinue() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
@@ -883,7 +883,7 @@ class CreateProfileFragmentTest {
   fun testAddLearner_validName_pinCheckboxCheckedThenUnchecked_doesNotShowErrorOnContinue() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       // Check the checkbox.
@@ -908,7 +908,7 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_validName_pinCheckboxChecked_pinClearsErrorsOnTextChange() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
@@ -920,7 +920,7 @@ class CreateProfileFragmentTest {
       onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.add_profile_error_pin_length)).check(matches(not(isDisplayed())))
@@ -931,18 +931,18 @@ class CreateProfileFragmentTest {
   fun testAddLearnerFlow_validName_pinCheckboxChecked_confirmPinClearsErrorsOnTextChange() {
     launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
       onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+        .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.add_profile_activity_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(editTextInputAction.appendText("234"), closeSoftKeyboard())
+        .perform(appendText("234"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -951,7 +951,7 @@ class CreateProfileFragmentTest {
       onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
 
       onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(editTextInputAction.appendText("12"), closeSoftKeyboard())
+        .perform(appendText("12"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.add_profile_error_pin_confirm_wrong))
