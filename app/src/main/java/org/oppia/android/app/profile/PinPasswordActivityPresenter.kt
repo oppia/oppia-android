@@ -27,8 +27,8 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.system.TerminalController
 import javax.inject.Inject
+import org.oppia.android.util.system.TerminalController
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"

@@ -8,8 +8,8 @@ import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBin
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
-import org.oppia.android.util.system.TerminalController
 import javax.inject.Inject
+import org.oppia.android.util.system.TerminalController
 
 /** Tag for displaying [ForceDownloadRemoteParametersDialogFragment]. */
 const val TAG_FORCE_DOWNLOAD_DIALOG = "FORCE_DOWNLOAD_DIALOG_TAG"

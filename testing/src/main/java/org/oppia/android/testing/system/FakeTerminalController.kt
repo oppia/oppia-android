@@ -1,8 +1,8 @@
 package org.oppia.android.testing.system
 
-import org.oppia.android.util.system.TerminalController
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.system.TerminalController
 
 /**
  * Fake implementation of [TerminalController] that throws an [ExitException] instead of exiting
@@ -15,5 +15,6 @@ class FakeTerminalController @Inject constructor() : TerminalController {
   }
 
   /** Exception thrown when the process is requested to exit in tests. */
-  class ExitException(val exitCode: Int) : RuntimeException("Process exit requested with code: $exitCode")
+  class ExitException(val exitCode: Int) :
+    RuntimeException("Process exit requested with code: $exitCode")
 }

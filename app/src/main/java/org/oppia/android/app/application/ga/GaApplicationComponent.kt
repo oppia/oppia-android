@@ -1,6 +1,7 @@
 package org.oppia.android.app.application.ga
 
 import dagger.Component
+import javax.inject.Singleton
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
@@ -62,8 +63,8 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
+import org.oppia.android.util.system.TerminalControllerModule
 import org.oppia.android.util.threading.DispatcherModule
-import javax.inject.Singleton
 
 /**
  * Root Dagger component for general availability versions of the application.
@@ -99,7 +100,8 @@ import javax.inject.Singleton
     PerformanceMetricsConfigurationsModule::class, GaBuildFlavorModule::class,
     ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
-    ExplorationProgressModule::class, AuthenticationModule::class
+    ExplorationProgressModule::class, AuthenticationModule::class,
+    TerminalControllerModule::class
   ]
 )
 interface GaApplicationComponent : ApplicationComponent {

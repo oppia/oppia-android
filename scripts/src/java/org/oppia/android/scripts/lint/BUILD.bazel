@@ -20,6 +20,7 @@ kt_jvm_library(
         ":lint_reporter_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:exit_process_wrapper",
         "//third_party:com_android_tools_lint_lint",
         "//third_party:com_google_guava_guava_jre",
     ],

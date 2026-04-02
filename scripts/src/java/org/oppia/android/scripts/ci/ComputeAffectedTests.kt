@@ -11,7 +11,6 @@ import java.io.File
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import org.oppia.android.scripts.common.ExitProcessWrapper
-import kotlin.system.exitProcess
 
 private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
 private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50

@@ -321,6 +321,7 @@ class SurveyProgressController @Inject constructor(
               controllerState.completeSurveyImpl(message.callbackFlow)
             } finally {
               // Ensure the actor ends since the session requires no further message processing.
+              break
             }
           }
         }

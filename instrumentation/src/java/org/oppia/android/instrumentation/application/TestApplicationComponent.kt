@@ -1,6 +1,7 @@
 package org.oppia.android.instrumentation.application
 
 import dagger.Component
+import javax.inject.Singleton
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
@@ -46,6 +47,7 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.system.FakeTerminalControllerModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
@@ -62,7 +64,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
-import javax.inject.Singleton
 
 /**
  * Root Dagger component for the test application. All application-scoped modules should be included
@@ -102,7 +103,7 @@ import javax.inject.Singleton
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class,
     ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
-    TestAuthenticationModule::class
+    TestAuthenticationModule::class, FakeTerminalControllerModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {
