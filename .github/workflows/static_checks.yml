@@ -173,7 +173,14 @@ jobs:
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
         if:  ${{ !cancelled() }}
         run: |
-          bazel run //scripts:android_lint_check -- $(pwd)
+          bazel run //scripts:android_lint_check -- $(pwd) --mode=full
+
+      - name: Lint Check Catalog Consistency
+        # Verifies that LintCheckCatalog is in sync with the linter's actual check list.
+        # This always runs regardless of other changes to catch drift after lint upgrades.
+        if:  ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:android_lint_check -- $(pwd) --mode=check-script-consistency
 
       - name: Testfile Presence Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,

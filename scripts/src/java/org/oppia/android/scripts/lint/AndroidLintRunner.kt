@@ -108,56 +108,39 @@ private fun Long.toFormattedDuration(): String {
   return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
-/**
- * Gradle-specific checks that are irrelevant for Bazel-based projects.
- * These never produce findings but still consume analysis time.
- * Disabling them is a free optimization.
- */
-private val IRRELEVANT_GRADLE_CHECKS = setOf(
-  "GradleCompatible",
-  "GradleDependency",
-  "GradleDeprecated",
-  "GradleDeprecatedConfiguration",
-  "GradleDynamicVersion",
-  "GradleGetter",
-  "GradleIdeError",
-  "GradlePath",
-  "GradlePluginVersion",
-  "AndroidGradlePluginVersion",
-  "AnnotationProcessorOnCompilePath",
-  "ExpiredTargetSdkVersion",
-  "ExpiringTargetSdkVersion",
-  "MinSdkTooLow",
-  "NewerVersionAvailable",
-  "OutdatedLibrary",
-  "JcenterRepositoryObsolete"
-)
+/** Valid execution modes for the lint script. */
+private val VALID_MODES = setOf("fast", "full", "list-checks", "check-script-consistency")
 
 /**
  * The main entrypoint to analyze the codebase for Android Lint issues.
  *
  * Usage:
  *   bazel run //scripts:android_lint_check -- <path_to_repository_root>
- *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>] [--timer]
- *   [--incremental] [--no-java-sources] [--checks=<check1,check2>] [--list-checks]
+ *   [--mode=<fast|full|list-checks|check-script-consistency>]
+ *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>]
+ *   [--timer] [--checks=<check1,check2>]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
+ * - --mode=<mode>: Execution mode (default: full)
+ *   - fast: Runs checks that don't need full source context. Uses git diff to detect
+ *     changed files and skips project-scoped checks. Best for local pre-push validation.
+ *   - full: Runs the entire suite of checks with the full project description.
+ *     This is what CI should use.
+ *   - list-checks: Lists all available lint checks and exits.
+ *   - check-script-consistency: Compares the checks cataloged in LintCheckCatalog
+ *     against the linter's actual check list. Fails if any are missing or unrecognized.
  * - --proto=<path_to_proto_binary>: Relative path to the exemption .pb file.
  * - --group_by_severity: Optional flag to group issues by severity
  * - --processTimeout=<minutes>: Process timeout in minutes
  * - --timer: Optional flag to display elapsed time during execution
- * - --incremental: Run only on source files changed since develop (fast local mode)
- * - --no-java-sources: Exclude all Java/Kotlin source files (resource-only checks)
  * - --checks=<ids>: Run only the specified comma-separated check IDs
- * - --list-checks: List all available checks and exit
  *
  * Examples:
  *   bazel run //scripts:android_lint_check -- $(pwd)
- *   bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
- *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=20
- *   bazel run //scripts:android_lint_check -- $(pwd) --timer
- *   bazel run //scripts:android_lint_check -- $(pwd) --incremental --timer
+ *   bazel run //scripts:android_lint_check -- $(pwd) --mode=fast --timer
+ *   bazel run //scripts:android_lint_check -- $(pwd) --mode=list-checks
+ *   bazel run //scripts:android_lint_check -- $(pwd) --checks=HardcodedText
  */
 fun main(vararg args: String) {
   var exitCode = 0
@@ -183,6 +166,12 @@ fun executeAndroidLintAnalysis(vararg args: String) {
       "Repository root path does not exist: ${args[0]}"
     }
 
+    val mode = args.find { it.startsWith("--mode=") }
+      ?.substringAfter("=") ?: "full"
+    require(mode in VALID_MODES) {
+      "Invalid mode: $mode. Valid modes: ${VALID_MODES.joinToString(", ")}"
+    }
+
     val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
       val path = option.substringAfter("=")
       require(path.endsWith(".pb")) {
@@ -197,17 +186,21 @@ fun executeAndroidLintAnalysis(vararg args: String) {
       ?.substringAfter("=")
       ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
-    val listChecks = args.contains("--list-checks")
     val checks = args.find { it.startsWith("--checks=") }
       ?.substringAfter("=")
       ?.split(",")
       ?: emptyList()
 
-    val incremental = args.contains("--incremental")
-    val includeSourceFiles = !args.contains("--no-java-sources")
+    // Handle check-script-consistency mode separately.
+    if (mode == "check-script-consistency") {
+      runCheckScriptConsistency(repoRoot, scriptBgDispatcher, processTimeout)
+      return@use
+    }
 
-    // When --incremental, find changed source files via git diff.
-    val changedFiles: Set<String>? = if (incremental) {
+    val isListChecksMode = mode == "list-checks"
+
+    // In fast mode, find changed source files via git diff.
+    val changedFiles: Set<String>? = if (LintCheckCatalog.useIncrementalSources(mode)) {
       val commandExecutor = CommandExecutorImpl(
         scriptBgDispatcher,
         processTimeout = processTimeout,
@@ -218,11 +211,9 @@ fun executeAndroidLintAnalysis(vararg args: String) {
         "git", "diff", "--name-only", "develop", "--", "*.kt", "*.java"
       )
       result.output.filter { it.isNotBlank() }.toSet().also { files ->
-        println("Incremental mode: ${files.size} changed source file(s) detected.")
-        files.forEach { println("  - $it") }
+        println("Fast mode: ${files.size} changed source file(s) detected.")
+        files.forEach { file -> println("  - $file") }
       }
-    } else if (!includeSourceFiles) {
-      emptySet() // --no-java-sources: exclude all source files
     } else {
       null // null means include all source files
     }
@@ -239,6 +230,7 @@ fun executeAndroidLintAnalysis(vararg args: String) {
     try {
       timer?.clearLine()
       println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+      println("Running in '$mode' mode.")
 
       val commandExecutor = CommandExecutorImpl(
         scriptBgDispatcher,
@@ -253,11 +245,11 @@ fun executeAndroidLintAnalysis(vararg args: String) {
         exemptionProtoPath = exemptionProtoPath,
         groupByIssueSeverity = groupByIssueSeverity,
         timer = timer,
-        reportUnusedEnum = checks.isEmpty() && !incremental,
-        listChecks = listChecks,
+        reportUnusedEnum = checks.isEmpty() && LintCheckCatalog.reportUnusedEnum(mode),
+        listChecks = isListChecksMode,
         checks = checks,
         changedFiles = changedFiles,
-        additionalDisabledChecks = IRRELEVANT_GRADLE_CHECKS
+        additionalDisabledChecks = LintCheckCatalog.getChecksToDisable(mode)
       )
 
       lintAnalyzer.runAnalysis()
@@ -268,6 +260,110 @@ fun executeAndroidLintAnalysis(vararg args: String) {
       }
     }
   }
+}
+
+/**
+ * Runs the check-script-consistency mode.
+ *
+ * Queries the linter for its full list of supported checks and compares against
+ * [LintCheckCatalog.allKnownChecks]. Fails if any checks are missing from the catalog
+ * (newly added by a lint upgrade) or if the catalog contains checks that the linter
+ * doesn't recognize (removed/renamed).
+ */
+private fun runCheckScriptConsistency(
+  repoRoot: File,
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  processTimeout: Long
+) {
+  println("Running check-script-consistency mode...")
+  val commandExecutor = CommandExecutorImpl(
+    scriptBgDispatcher,
+    processTimeout = processTimeout,
+    processTimeoutUnit = TimeUnit.MINUTES
+  )
+
+  val workingDirectory = Files.createTempDirectory("lint_consistency").toFile()
+  val reportFile = File(workingDirectory, "unused-report.xml")
+  val projectFile = File(workingDirectory, "unused-project.xml")
+  val lintRunner = AndroidLintRunner(
+    reportFile = reportFile,
+    projectDescriptionFile = projectFile,
+    repoRoot = repoRoot,
+    exemptionProtoPath = DEFAULT_PROTO_BINARY_PATH
+  )
+
+  val sdkProperties = AndroidBuildSdkProperties()
+  val bazelInfo = BazelClient(repoRoot, commandExecutor).retrieveBazelInfo()
+  val javaConfig = JavaConfiguration(bazelInfo)
+
+  val cliArgs = lintRunner.prepareLintArguments(
+    jdkHome = javaConfig.getJdkHome(),
+    javaVersion = javaConfig.getVersion(),
+    buildSdkVersion = sdkProperties.buildSdkVersion.toString(),
+    kotlinCompilerVersion = sdkProperties.kotlinCompilerVersion,
+    suppressLintIssues = emptySet(),
+    listChecks = true
+  )
+
+  // Capture lint --list output by redirecting System.out before LintCli construction.
+  // LintCli (com.android.tools.lint.Main) captures System.out during its constructor,
+  // so the redirect must happen before instantiation.
+  val linterChecks = mutableSetOf<String>()
+  val originalOut = System.out
+  val capturedOutput = java.io.ByteArrayOutputStream()
+  System.setOut(java.io.PrintStream(capturedOutput, true))
+  try {
+    LintCli().run(cliArgs)
+  } finally {
+    System.setOut(originalOut)
+  }
+
+  // The --list output format is: "CheckId": Description
+  // Lint wraps output at a fixed column width and adds indentation on continuation
+  // lines, which splits check IDs (e.g., "ConvertT\n    oWebp":).
+  // We strip all whitespace between quotes to reconstruct wrapped IDs.
+  val rawOutput = capturedOutput.toString()
+  // Remove all whitespace within quoted strings to rejoin wrapped check IDs.
+  val cleanOutput = rawOutput.replace(Regex("\\s+"), "")
+  val checkPattern = Regex("\"(\\w+)\":")
+  checkPattern.findAll(cleanOutput).forEach { match ->
+    linterChecks.add(match.groupValues[1])
+  }
+
+  val catalogChecks = LintCheckCatalog.allKnownChecks
+  val missingFromCatalog = linterChecks.filter { it !in catalogChecks }.toSet()
+  val extraInCatalog = catalogChecks.filter { it !in linterChecks }.toSet()
+
+  var failed = false
+  if (missingFromCatalog.isNotEmpty()) {
+    println(
+      "ERROR: ${missingFromCatalog.size} check(s) exist in lint " +
+        "but are NOT in LintCheckCatalog:"
+    )
+    for (check in missingFromCatalog.sorted()) { println("  + $check") }
+    println("Add these to the appropriate bucket in LintCheckCatalog.kt.")
+    failed = true
+  }
+  if (extraInCatalog.isNotEmpty()) {
+    println(
+      "ERROR: ${extraInCatalog.size} check(s) are in LintCheckCatalog " +
+        "but NOT recognized by lint:"
+    )
+    for (check in extraInCatalog.sorted()) { println("  - $check") }
+    println("Remove these from LintCheckCatalog.kt.")
+    failed = true
+  }
+
+  if (failed) {
+    throw IllegalStateException(
+      "LintCheckCatalog is out of sync with the linter. See above for details."
+    )
+  }
+
+  println(
+    "CHECK PASSED: LintCheckCatalog (${catalogChecks.size} checks) " +
+      "is consistent with lint (${linterChecks.size} checks)."
+  )
 }
 
 /**
