@@ -84,6 +84,9 @@ message State {
 
   // Corresponds to the global skill ID being taught/evaluated by the interaction of this state.
   string linked_skill_id = 9;
+
+  // Indicates whether the card represented by this state was marked as a checkpoint by an editor.
+  bool is_checkpoint = 10;
 }
 
 // Structure for customization args for ParamChange objects.
