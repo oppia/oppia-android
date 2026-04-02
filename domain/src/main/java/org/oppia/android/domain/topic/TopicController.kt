@@ -454,12 +454,18 @@ class TopicController @Inject constructor(
           chapterBuilder.chapterPlayState =
             storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
         } else {
-          val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
-          if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
+          if (chapterIndex == 0) {
+            // First chapter with no progress recorded: mark as NOT_STARTED.
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
           } else {
-            chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-            chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
+            val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
+            if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
+              chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+            } else {
+              chapterBuilder.chapterPlayState =
+                ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+              chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
+            }
           }
         }
         storyBuilder.setChapter(chapterIndex, chapterBuilder)

@@ -76,6 +76,7 @@ class TopicControllerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var topicController: TopicController
+  @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -208,6 +209,20 @@ class TopicControllerTest {
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_recordProgressForSecondChapterOnly_firstChapterIsNotStarted() {
+    markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters()
+
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
 
   @Test
@@ -1086,6 +1101,25 @@ class TopicControllerTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  /**
+   * Marks the second chapter of fractions story 0 as in-progress saved without completing the
+   * prerequisite first chapter. This is a specialized version of
+   * [StoryProgressTestHelper.markInProgressSavedFractionsStory0Exp1] that intentionally omits the
+   * call to [StoryProgressTestHelper.markCompletedFractionsStory0Exp0], in order to reproduce the
+   * IndexOutOfBoundsException that occurs when chapterIndex == 0 and the code tries to access
+   * chapterIndex - 1.
+   */
+  private fun markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters() {
+    val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
+      profileId1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      lastPlayedTimestamp = fakeOppiaClock.getCurrentTimeMs()
+    )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   private fun markFractionsStory0Chapter0AsCompleted() {
