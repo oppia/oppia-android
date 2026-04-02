@@ -49,21 +49,30 @@ kt_android_library(
     name = "injectable_auto_localized_app_compat_activity",
     srcs = ["InjectableAutoLocalizedAppCompatActivity.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [":injectable_app_compat_activity"],
+    deps = [
+        ":injectable_app_compat_activity",
+        "//model/src/main/proto:languages_java_proto_lite",
+    ],
 )
 
 kt_android_library(
     name = "injectable_system_localized_app_compat_activity",
     srcs = ["InjectableSystemLocalizedAppCompatActivity.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [":injectable_app_compat_activity"],
+    deps = [
+        ":injectable_app_compat_activity",
+        "//model/src/main/proto:languages_java_proto_lite",
+    ],
 )
 
 kt_android_library(
     name = "injectable_english_only_app_compat_activity",
     srcs = ["InjectableEnglishOnlyAppCompatActivity.kt"],
     visibility = ["//app:app_visibility"],
-    deps = [":injectable_app_compat_activity"],
+    deps = [
+        ":injectable_app_compat_activity",
+        "//model/src/main/proto:languages_java_proto_lite",
+    ],
 )
 
 kt_android_library(

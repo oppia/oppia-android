@@ -37,6 +37,25 @@ enum OppiaLanguage {
   NIGERIAN_PIDGIN = 8;
 }
 
+// Defines the forced language mode for an activity, determining how its locale is resolved.
+// This is used to specify whether an activity should follow the user's app language, the system
+// language, or always use English (e.g. for policies pages whose content is canonical English).
+enum ForcedActivityLanguageMode {
+  // Default value; unspecified mode. This should not be used in practice.
+  FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED = 0;
+
+  // Use the user's selected app language (or system default if none is selected).
+  USE_APP_LANGUAGE = 1;
+
+  // Use the system's default language, ignoring the user's app language selection.
+  USE_SYSTEM_LANGUAGE = 2;
+
+  // Force English locale, regardless of system or app language settings.
+  // Used for activities displaying canonical English content such as Terms of Service
+  // and Privacy Policy.
+  USE_ENGLISH = 3;
+}
+
 // The list of regions explicitly supported natively by the Android app. Note that the app is not
 // automatically unsupported in countries not on this list. Countries absent from this list may
 // default to default system behavior for certain localization situations (such as date & time
