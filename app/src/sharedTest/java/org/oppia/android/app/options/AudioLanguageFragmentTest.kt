@@ -54,10 +54,12 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
 import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -94,12 +96,14 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -133,8 +137,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
 class AudioLanguageFragmentTest {
-  // TODO(#6022): Add tests for validating that when an unsupported language was previously
-  //  selected, it goes back to English
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 1
@@ -150,6 +152,10 @@ class AudioLanguageFragmentTest {
   lateinit var context: Context
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -296,16 +302,6 @@ class AudioLanguageFragmentTest {
           targetViewId = R.id.language_text_view
         )
       ).check(matches(withText("العربية")))
-
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(scrollToPosition<RecyclerView.ViewHolder>(4))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.audio_language_recycler_view,
-          position = 4,
-          targetViewId = R.id.language_text_view
-        )
-      ).check(matches(withText("हिन्दी")))
     }
   }
 
@@ -699,6 +695,24 @@ class AudioLanguageFragmentTest {
       ).check(
         matches(withContentDescription(R.string.arabic_language_display_name_content_description))
       )
+    }
+  }
+
+  @Test
+  fun testFragment_withHindiLanguagePreviouslySet_defaultsBackToEnglish() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
+
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    val updateProvider = profileManagementController.updateAudioLanguage(
+      profileId,
+      HINDI_AUDIO_LANGUAGE
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      testCoroutineDispatchers.runCurrent()
+
+      verifyEnglishIsSelected()
     }
   }
 
