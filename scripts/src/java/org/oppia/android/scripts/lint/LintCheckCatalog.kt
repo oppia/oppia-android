@@ -4,22 +4,20 @@ package org.oppia.android.scripts.lint
  * Catalog of all lint checks known to the version of Android Lint used by this project.
  *
  * Every check is classified into exactly one of four buckets:
- * 1. [gradleChecksToIgnore] — Gradle-specific checks irrelevant in a Bazel project.
- * 2. [checksNotNeedingSources] — XML, resource, icon, and manifest checks that operate
- *    without any Java/Kotlin source files.
- * 3. [checksForIncrementalSources] — Source-file-scoped checks that can run on only changed
- *    files (incremental).
- * 4. [checksRequiringFullProject] — Cross-file or classpath-dependent checks that need the
- *    full project description.
+ * 1. Gradle-specific checks irrelevant in a Bazel project.
+ * 2. XML, resource, icon, and manifest checks that operate without any Java/Kotlin
+ *    source files.
+ * 3. Source-file-scoped checks that can run on only changed files (incremental).
+ * 4. Cross-file or classpath-dependent checks that need the full project description.
  *
  * The union of all four sets equals [allKnownChecks]. A consistency mode
- * ([--mode=check-script-consistency]) compares this catalog against the linter's actual
+ * (--mode=check-script-consistency) compares this catalog against the linter's actual
  * check list to catch additions or removals after lint version upgrades.
  */
 object LintCheckCatalog {
 
   /** Gradle-specific checks that are irrelevant for Bazel-based projects. */
-  val gradleChecksToIgnore = setOf(
+  private val gradleChecksToIgnore = setOf(
     "AndroidGradlePluginVersion",
     "AnnotationProcessorOnCompilePath",
     "DataBindingWithoutKapt",
@@ -50,7 +48,7 @@ object LintCheckCatalog {
    * non-source artifacts. They can run with an empty source file list and still produce
    * valid findings.
    */
-  val checksNotNeedingSources = setOf(
+  private val checksNotNeedingSources = setOf(
     // XML / Layout / Resource checks
     "AdapterViewChildren",
     "AllCaps",
@@ -134,7 +132,7 @@ object LintCheckCatalog {
    * These analyze individual `.kt`/`.java` files and do not require cross-file
    * resolution. They are safe to run with a filtered (incremental) source file list.
    */
-  val checksForIncrementalSources = setOf(
+  private val checksForIncrementalSources = setOf(
     "AccidentalOctal",
     "AddJavascriptInterface",
     "AllowAllHostnameVerifier",
@@ -200,7 +198,7 @@ object LintCheckCatalog {
    * These require cross-file analysis, classpath resolution, or manifest-to-source
    * cross-referencing. They cannot run incrementally.
    */
-  val checksRequiringFullProject = setOf(
+  private val checksRequiringFullProject = setOf(
     "CutPasteId",
     "DuplicateIncludedIds",
     "SwitchIntDef"
@@ -215,32 +213,20 @@ object LintCheckCatalog {
   }
 
   /**
-   * Returns the set of check IDs to disable for a given mode.
+   * Returns the set of check IDs to disable when running a full analysis.
    *
-   * @param mode the execution mode ("fast", "full", or "list-checks")
-   * @return the set of check IDs to pass to `--disable`
+   * In full mode, only Gradle-specific checks are disabled since they are irrelevant
+   * for Bazel-based builds.
    */
-  fun getChecksToDisable(mode: String): Set<String> {
-    return when (mode) {
-      "fast" -> gradleChecksToIgnore + checksRequiringFullProject
-      "full" -> gradleChecksToIgnore
-      else -> emptySet()
-    }
-  }
+  fun computeChecksToDisableInFullRun(): Set<String> = gradleChecksToIgnore
 
   /**
-   * Returns whether incremental source file filtering should be used for this mode.
+   * Returns the set of check IDs to disable when running an incremental analysis.
    *
-   * In "fast" mode, only changed source files (vs develop) are included.
-   * In "full" mode, all source files are included.
+   * In incremental mode, Gradle-specific checks and project-scoped checks are disabled
+   * since project-scoped checks require full cross-file context that isn't available
+   * when analyzing only changed files.
    */
-  fun useIncrementalSources(mode: String): Boolean = mode == "fast"
-
-  /**
-   * Returns whether unused enum reporting should be enabled for this mode.
-   *
-   * Disabled in "fast" mode since incremental runs may produce false positives for
-   * unused enum checks.
-   */
-  fun reportUnusedEnum(mode: String): Boolean = mode == "full"
+  fun computeChecksToDisableInIncrementalRun(): Set<String> =
+    gradleChecksToIgnore + checksRequiringFullProject
 }

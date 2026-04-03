@@ -94,25 +94,137 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testExecuteAndroidLintAnalysis_noArguments_throwsException() {
-    val exception = assertThrows<IllegalArgumentException> {
-      executeAndroidLintAnalysis()
-    }
+  fun testLintMode_fromString_fast_returnsFast() {
+    assertThat(LintMode.fromString("fast")).isEqualTo(LintMode.FAST)
+  }
 
-    assertThat(exception).hasMessageThat().contains(
-      "<path_to_repository_root argument> is required: \$(pwd)"
+  @Test
+  fun testLintMode_fromString_full_returnsFull() {
+    assertThat(LintMode.fromString("full")).isEqualTo(LintMode.FULL)
+  }
+
+  @Test
+  fun testLintMode_fromString_listChecks_returnsListChecks() {
+    assertThat(LintMode.fromString("list-checks")).isEqualTo(LintMode.LIST_CHECKS)
+  }
+
+  @Test
+  fun testLintMode_fromString_checkScriptConsistency_returnsCheckScriptConsistency() {
+    assertThat(LintMode.fromString("check-script-consistency"))
+      .isEqualTo(LintMode.CHECK_SCRIPT_CONSISTENCY)
+  }
+
+  @Test
+  fun testLintMode_fromString_invalidMode_returnsNull() {
+    assertThat(LintMode.fromString("invalid")).isNull()
+  }
+
+  @Test
+  fun testLintMode_validModeNames_containsAllModes() {
+    val names = LintMode.validModeNames()
+
+    assertThat(names).containsExactly(
+      "fast", "full", "list-checks", "check-script-consistency"
     )
   }
 
   @Test
-  fun testExecuteAndroidLintAnalysis_nonExistentPath_throwsException() {
-    val nonExistentPath = File(tempFolder.root, "nonexistent").absolutePath
+  fun testLintOrchestrator_parseLintListOutput_extractsCheckIds() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    val lines = listOf(
+      "\"HardcodedText\": Hardcoded text",
+      "\"NewApi\": Calling new methods",
+      "\"CheckResult\": Ignoring results"
+    )
 
-    val exception = assertThrows<IllegalArgumentException> {
-      executeAndroidLintAnalysis(nonExistentPath)
+    val checks = orchestrator.parseLintListOutput(lines)
+
+    assertThat(checks).containsExactly("HardcodedText", "NewApi", "CheckResult")
+  }
+
+  @Test
+  fun testLintOrchestrator_parseLintListOutput_emptyOutput_returnsEmpty() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+
+    val checks = orchestrator.parseLintListOutput(emptyList())
+
+    assertThat(checks).isEmpty()
+  }
+
+  @Test
+  fun testLintOrchestrator_parseLintListOutput_handlesWrappedCheckIds() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    // Simulate lint wrapping a check ID across lines
+    val lines = listOf(
+      "\"ConvertT",
+      "    oWebp\": Convert to WebP format"
+    )
+
+    val checks = orchestrator.parseLintListOutput(lines)
+
+    assertThat(checks).contains("ConvertToWebp")
+  }
+
+  @Test
+  fun testLintOrchestrator_validateCatalogConsistency_matchingChecks_passes() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    val checks = setOf("CheckA", "CheckB", "CheckC")
+
+    // Should not throw
+    orchestrator.validateCatalogConsistency(checks, checks)
+
+    val output = outputStream.toString()
+    assertThat(output).contains("CHECK PASSED")
+  }
+
+  @Test
+  fun testLintOrchestrator_validateCatalogConsistency_missingChecks_throws() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    val linterChecks = setOf("CheckA", "CheckB", "CheckC")
+    val catalogChecks = setOf("CheckA", "CheckB")
+
+    val exception = assertThrows<IllegalStateException> {
+      orchestrator.validateCatalogConsistency(linterChecks, catalogChecks)
     }
 
-    assertThat(exception).hasMessageThat().contains("Repository root path does not exist")
+    assertThat(exception).hasMessageThat().contains("out of sync")
+  }
+
+  @Test
+  fun testLintOrchestrator_validateCatalogConsistency_extraChecks_throws() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    val linterChecks = setOf("CheckA")
+    val catalogChecks = setOf("CheckA", "CheckB")
+
+    val exception = assertThrows<IllegalStateException> {
+      orchestrator.validateCatalogConsistency(linterChecks, catalogChecks)
+    }
+
+    assertThat(exception).hasMessageThat().contains("out of sync")
   }
 
   @Test
