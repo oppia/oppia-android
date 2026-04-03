@@ -16,32 +16,25 @@ class NumberWithUnitsTokenizer private constructor() {
     /**
      * Tokenizes a string input into a sequence of [Token] objects.
      *
-     * @param input the string to tokenize
-     * @return a [Sequence] of [Token] objects representing the parsed input
-     */
-    fun tokenize(input: String): Sequence<Token> = tokenize(input.toCharArray().asSequence())
-
-    /**
-     * Tokenizes a sequence of characters into a sequence of [Token] objects.
-     *
      * This method processes characters one by one, identifying tokens based on the first
      * character encountered. It handles whitespace automatically and delegates to specific
      * tokenization methods based on the character type.
      *
-     * @param input the sequence of characters to tokenize
+     * @param input the string to tokenize
      * @return a [Sequence] of [Token] objects
      */
-    private fun tokenize(input: Sequence<Char>): Sequence<Token> {
-      val chars = input.toPeekableIterator()
+    fun tokenize(input: String): Sequence<Token> {
+      val chars = input.toCharArray().asSequence().toPeekableIterator()
       return generateSequence {
         chars.consumeWhitespace()
 
         when (chars.peek()) {
           in '0'..'9' -> tokenizeIntegerOrRealNumber(chars)
-          in 'a'..'z', in 'A'..'Z' -> tokenizeUnit(chars)
+          in 'a'..'z', in 'A'..'Z' -> tokenizeUnit(input, chars)
           '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MinusSymbol(startIndex, endIndex)
           }
+
           '/' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.DivideSymbol(startIndex, endIndex)
           }
@@ -52,7 +45,7 @@ class NumberWithUnitsTokenizer private constructor() {
             Token.DollarPrefixUnit(startIndex, endIndex)
           }
           '¢' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.CentSuffixUnit(startIndex, endIndex)
+            rawUnitToken(input, startIndex, endIndex)
           }
           '^' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.ExponentiationSymbol(startIndex, endIndex)
@@ -150,62 +143,60 @@ class NumberWithUnitsTokenizer private constructor() {
      * @param chars the [PeekableIterator] positioned at the start of a unit
      * @return the appropriate [Token] representing the unit or an [Token.InvalidToken]
      */
-    private fun tokenizeUnit(chars: PeekableIterator<Char>): Token {
+    private fun tokenizeUnit(input: String, chars: PeekableIterator<Char>): Token {
       val startIndex = chars.getRetrievalCount()
 
       return when (chars.next()) {
         'a' -> {
           when (chars.peek()) {
             'm' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "ampere",
                 startIndex,
                 chars
-              ) { start, end -> Token.AmpereUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
+
             't' -> {
               tokenizeExpectedUnit(
                 "atto",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.ATTO, start, end) }
+              ) { start, end -> Token.SiPrefix("a", start, end) }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.ATTO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("a", startIndex, chars.getRetrievalCount())
           }
         }
         'c' -> {
           when (chars.peek()) {
             'a' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "candela",
                 startIndex,
                 chars
-              ) { start, end -> Token.CandelaUnit(start, end) }
-
-              token
+              ) { start, end -> rawUnitToken(input, start, end) }
             }
             'c' -> {
               chars.next()
-              Token.CubicCentimeterUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'd' -> {
               chars.next()
-              Token.CandelaUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'e' -> {
               chars.next()
               when (chars.peek()) {
                 'l' -> {
-                  val token = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "celsius",
                     startIndex,
                     chars
-                  ) { start, end -> Token.CelsiusUnit(start, end) }
-
-                  token
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
 
                 'n' -> {
@@ -219,13 +210,15 @@ class NumberWithUnitsTokenizer private constructor() {
                             "centi",
                             startIndex,
                             chars
-                          ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.CENTI, start, end) }
+                          ) { start, end -> Token.SiPrefix("c", start, end) }
                         }
+
                         's' -> {
                           chars.next()
-                          Token.CentSuffixUnit(startIndex, chars.getRetrievalCount())
+                          rawUnitToken(input, startIndex, chars.getRetrievalCount())
                         }
-                        else -> Token.CentSuffixUnit(startIndex, chars.getRetrievalCount())
+
+                        else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
                       }
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -243,26 +236,29 @@ class NumberWithUnitsTokenizer private constructor() {
                     "cuin",
                     startIndex,
                     chars
-                  ) { start, end -> Token.CubicInchUnit(start, end) }
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
                 'f' -> {
                   tokenizeExpectedUnit(
                     "cuft",
                     startIndex,
                     chars
-                  ) { start, end -> Token.CubicFootUnit(start, end) }
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
+
                 'y' -> {
                   tokenizeExpectedUnit(
                     "cuyd",
                     startIndex,
                     chars
-                  ) { start, end -> Token.CubicYardUnit(start, end) }
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.CENTI, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("c", startIndex, chars.getRetrievalCount())
           }
         }
         'd' -> {
@@ -272,7 +268,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 "da",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.DECA, start, end) }
+              ) { start, end -> Token.SiPrefix("da", start, end) }
             }
             'e' -> {
               chars.next()
@@ -285,14 +281,14 @@ class NumberWithUnitsTokenizer private constructor() {
                         "deca",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.DECA, start, end) }
+                      ) { start, end -> Token.SiPrefix("da", start, end) }
                     }
                     'i' -> {
                       tokenizeExpectedUnit(
                         "deci",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.DECI, start, end) }
+                      ) { start, end -> Token.SiPrefix("d", start, end) }
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
@@ -302,37 +298,40 @@ class NumberWithUnitsTokenizer private constructor() {
                   when (chars.peek()) {
                     'C' -> {
                       chars.next()
-                      Token.CelsiusUnit(startIndex, chars.getRetrievalCount())
+                      rawUnitToken(input, startIndex, chars.getRetrievalCount())
                     }
                     'r' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "degree",
                         startIndex,
                         chars
-                      ) { start, end -> Token.DegreeUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
                     else -> {
-                      Token.DegreeUnit(startIndex, chars.getRetrievalCount())
+                      rawUnitToken(input, startIndex, chars.getRetrievalCount())
                     }
                   }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
+
             'o' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "dollar",
                 startIndex,
                 chars
-              ) { start, end -> Token.DollarSuffixUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.DECI, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("d", startIndex, chars.getRetrievalCount())
           }
         }
         'e' -> {
@@ -342,7 +341,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 "exa",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.EXA, start, end) }
+              ) { start, end -> Token.SiPrefix("E", start, end) }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -353,38 +352,36 @@ class NumberWithUnitsTokenizer private constructor() {
               chars.next()
               when (chars.peek()) {
                 'e' -> {
-                  val token = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "feet",
                     startIndex,
                     chars
-                  ) { start, end -> Token.FootUnit(start, end) }
-
-                  token
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
                 'm' -> {
                   tokenizeExpectedUnit(
                     "femto",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.FEMTO, start, end) }
+                  ) { start, end -> Token.SiPrefix("f", start, end) }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
             'o' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "foot",
                 startIndex,
                 chars
-              ) { start, end -> Token.FootUnit(start, end) }
-
-              token
+              ) { start, end -> rawUnitToken(input, start, end) }
             }
+
             't' -> {
               chars.next()
-              Token.FootUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.FEMTO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("f", startIndex, chars.getRetrievalCount())
           }
         }
         'g' -> {
@@ -394,7 +391,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 "Giga",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.GIGA, start, end) }
+              ) { start, end -> Token.SiPrefix("G", start, end) }
             }
             'r' -> {
               chars.next()
@@ -404,34 +401,36 @@ class NumberWithUnitsTokenizer private constructor() {
                   chars.next()
                   when (chars.peek()) {
                     'i' -> {
-
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "grain",
                         startIndex,
                         chars
-                      ) { start, end -> Token.GrainUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
 
                     'm' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "gram",
                         startIndex,
                         chars
-                      ) { start, end -> Token.GramUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
+
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
                 }
-                else -> Token.GrainUnit(startIndex, chars.getRetrievalCount())
+
+                else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.GramUnit(startIndex, chars.getRetrievalCount())
+
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'h' -> {
@@ -444,39 +443,44 @@ class NumberWithUnitsTokenizer private constructor() {
                     "hertz",
                     startIndex,
                     chars
-                  ) { start, end -> Token.HertzUnit(start, end) }
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
                 'c' -> {
                   tokenizeExpectedUnit(
                     "hecto",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.HECTO, start, end) }
+                  ) { start, end -> Token.SiPrefix("h", start, end) }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
+
             'o' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "hour",
                 startIndex,
                 chars
-              ) { start, end -> Token.HourUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, end ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, end)
+              }
             }
+
             'r' -> {
               chars.next()
               when (chars.peek()) {
                 's' -> {
                   chars.next()
-                  Token.HourUnit(startIndex, chars.getRetrievalCount())
+                  rawUnitToken(input, startIndex, chars.getRetrievalCount())
                 }
-                else -> Token.HourUnit(startIndex, chars.getRetrievalCount())
+
+                else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.HourUnit(startIndex, chars.getRetrievalCount())
+
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'i' -> {
@@ -486,20 +490,20 @@ class NumberWithUnitsTokenizer private constructor() {
 
               when (chars.peek()) {
                 'c' -> {
-                  val token = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "inch",
                     startIndex,
                     chars
-                  ) { start, end -> Token.InchUnit(start, end) }
-
-                  if (chars.peek() == 'e') {
-                    chars.next()
-                    if (chars.peek() == 's') chars.next()
+                  ) { start, _ ->
+                    if (chars.peek() == 'e') {
+                      chars.next()
+                      if (chars.peek() == 's') chars.next()
+                    }
+                    rawUnitToken(input, start, chars.getRetrievalCount())
                   }
-
-                  token
                 }
-                else -> Token.InchUnit(startIndex, chars.getRetrievalCount())
+
+                else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
               }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -508,14 +512,14 @@ class NumberWithUnitsTokenizer private constructor() {
         'j' -> {
           when (chars.peek()) {
             'o' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "joule",
                 startIndex,
                 chars
-              ) { start, end -> Token.JouleUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -527,23 +531,25 @@ class NumberWithUnitsTokenizer private constructor() {
                 "kelvin",
                 startIndex,
                 chars
-              ) { start, end -> Token.KelvinUnit(start, end) }
+              ) { start, end -> rawUnitToken(input, start, end) }
             }
+
             'i' -> {
               tokenizeExpectedUnit(
                 "kilo",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.KILO, start, end) }
+              ) { start, end -> Token.SiPrefix("k", start, end) }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.KILO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("k", startIndex, chars.getRetrievalCount())
           }
         }
         'l' -> {
           when (chars.peek()) {
             't' -> {
               chars.next()
-              Token.LiterUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'i' -> {
               chars.next()
@@ -552,63 +558,67 @@ class NumberWithUnitsTokenizer private constructor() {
                   chars.next()
                   when (chars.peek()) {
                     'e' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "liter",
                         startIndex,
                         chars
-                      ) { start, end -> Token.LiterUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
+
                     'r' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "litre",
                         startIndex,
                         chars
-                      ) { start, end -> Token.LiterUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
+
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
+
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'm' -> {
           when (chars.peek()) {
             '2' -> {
               chars.next()
-              Token.SquareMeterUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             '3' -> {
               chars.next()
-              Token.CubicMeterUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'e' -> {
               chars.next()
               when (chars.peek()) {
                 't' -> {
-                  val token = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "meter",
                     startIndex,
                     chars
-                  ) { start, end -> Token.MeterUnit(start, end) }
-
-                  if (chars.peek() == 's') chars.next()
-                  token
+                  ) { start, _ ->
+                    if (chars.peek() == 's') chars.next()
+                    rawUnitToken(input, start, chars.getRetrievalCount())
+                  }
                 }
                 'g' -> {
                   tokenizeExpectedUnit(
                     "mega",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.MEGA, start, end) }
+                  ) { start, end -> Token.SiPrefix("M", start, end) }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
@@ -620,20 +630,22 @@ class NumberWithUnitsTokenizer private constructor() {
                   chars.next()
                   when (chars.peek()) {
                     'u' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "minute",
                         startIndex,
                         chars
-                      ) { start, end -> Token.MinuteUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
+
                     's' -> {
                       chars.next()
-                      Token.MinuteUnit(startIndex, chars.getRetrievalCount())
+                      rawUnitToken(input, startIndex, chars.getRetrievalCount())
                     }
-                    else -> Token.MinuteUnit(startIndex, chars.getRetrievalCount())
+
+                    else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
                   }
                 }
                 'l' -> {
@@ -641,14 +653,14 @@ class NumberWithUnitsTokenizer private constructor() {
                     "milli",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.MILLI, start, end) }
+                  ) { start, end -> Token.SiPrefix("m", start, end) }
                 }
                 'c' -> {
                   tokenizeExpectedUnit(
                     "micro",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.MICRO, start, end) }
+                  ) { start, end -> Token.SiPrefix("u", start, end) }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
@@ -660,70 +672,73 @@ class NumberWithUnitsTokenizer private constructor() {
                   chars.next()
                   when (chars.peek()) {
                     'e' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "mole",
                         startIndex,
                         chars
-                      ) { start, end -> Token.MoleUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
-                    else -> Token.MoleUnit(startIndex, chars.getRetrievalCount())
+
+                    else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
                   }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.MeterUnit(startIndex, chars.getRetrievalCount())
+
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'n' -> {
           when (chars.peek()) {
             'e' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "newton",
                 startIndex,
                 chars
-              ) { start, end -> Token.NewtonUnit(start, end) }
-
-              token
+              ) { start, end -> rawUnitToken(input, start, end) }
             }
+
             'a' -> {
               tokenizeExpectedUnit(
                 "nano",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.NANO, start, end) }
+              ) { start, end -> Token.SiPrefix("n", start, end) }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.NANO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("n", startIndex, chars.getRetrievalCount())
           }
         }
         'o' -> {
           when (chars.peek()) {
             'h' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "ohm",
                 startIndex,
                 chars
-              ) { start, end -> Token.OhmUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             'u' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "ounce",
                 startIndex,
                 chars
-              ) { start, end -> Token.OunceUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             'z' -> {
               chars.next()
-              Token.OunceUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -731,18 +746,19 @@ class NumberWithUnitsTokenizer private constructor() {
         'p' -> {
           when (chars.peek()) {
             'a' -> {
-              val paisaToken = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "pais",
                 startIndex,
                 chars
-              ) { start, end -> Token.PaisaSuffixUnit(start, end) }
+              ) { start, _ ->
+                when (chars.peek()) {
+                  'a', 'e' -> {
+                    chars.next()
+                    rawUnitToken(input, start, chars.getRetrievalCount())
+                  }
 
-              when (chars.peek()) {
-                'a', 'e' -> {
-                  chars.next()
-                  paisaToken
+                  else -> Token.InvalidToken(start, chars.getRetrievalCount())
                 }
-                else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
             'i' -> {
@@ -750,16 +766,18 @@ class NumberWithUnitsTokenizer private constructor() {
                 "pico",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.PICO, start, end) }
+              ) { start, end -> Token.SiPrefix("p", start, end) }
             }
+
             'e' -> {
               tokenizeExpectedUnit(
                 "peta",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.PETA, start, end) }
+              ) { start, end -> Token.SiPrefix("P", start, end) }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.PICO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("p", startIndex, chars.getRetrievalCount())
           }
         }
         'r' -> {
@@ -768,37 +786,37 @@ class NumberWithUnitsTokenizer private constructor() {
               chars.next()
               when (chars.peek()) {
                 'd' -> {
-                  val token = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "rad",
                     startIndex,
                     chars
-                  ) { start, end -> Token.RadianUnit(start, end) }
-
-                  if (chars.peek() == 'i') {
-                    val radianToken = tokenizeExpectedUnit(
-                      "radian",
-                      startIndex,
-                      chars
-                    ) { start, end -> Token.RadianUnit(start, end) }
-
-                    if (chars.peek() == 's') chars.next()
-                    radianToken
-                  } else {
-                    token
+                  ) { radStart, end ->
+                    if (chars.peek() == 'i') {
+                      tokenizeExpectedUnit(
+                        "radian",
+                        startIndex,
+                        chars
+                      ) { radianStart, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, radianStart, chars.getRetrievalCount())
+                      }
+                    } else {
+                      rawUnitToken(input, radStart, end)
+                    }
                   }
                 }
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
             'u' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "rupee",
                 startIndex,
                 chars
-              ) { start, end -> Token.RupeeSuffixUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -813,14 +831,14 @@ class NumberWithUnitsTokenizer private constructor() {
                   when (chars.peek()) {
                     't' -> {
                       chars.next()
-                      Token.SquareFootUnit(startIndex, chars.getRetrievalCount())
+                      rawUnitToken(input, startIndex, chars.getRetrievalCount())
                     }
                     'e' -> {
                       tokenizeExpectedUnit(
                         "sqfeet",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SquareFootUnit(start, end) }
+                      ) { start, end -> rawUnitToken(input, start, end) }
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
@@ -830,21 +848,21 @@ class NumberWithUnitsTokenizer private constructor() {
                     "sqinch",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SquareInchUnit(start, end) }
+                  ) { start, end -> rawUnitToken(input, start, end) }
                 }
                 'y' -> {
                   chars.next()
                   when (chars.peek()) {
                     'd' -> {
                       chars.next()
-                      Token.SquareYardUnit(startIndex, chars.getRetrievalCount())
+                      rawUnitToken(input, startIndex, chars.getRetrievalCount())
                     }
                     'a' -> {
                       tokenizeExpectedUnit(
                         "sqyard",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SquareYardUnit(start, end) }
+                      ) { start, end -> rawUnitToken(input, start, end) }
                     }
                     else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
@@ -859,32 +877,34 @@ class NumberWithUnitsTokenizer private constructor() {
                   chars.next()
                   when (chars.peek()) {
                     'o' -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "second",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SecondUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
 
                     else -> {
-                      val token = tokenizeExpectedUnit(
+                      tokenizeExpectedUnit(
                         "sec",
                         startIndex,
                         chars
-                      ) { start, end -> Token.SecondUnit(start, end) }
-
-                      if (chars.peek() == 's') chars.next()
-                      token
+                      ) { start, _ ->
+                        if (chars.peek() == 's') chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
                     }
                   }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SecondUnit(startIndex, chars.getRetrievalCount())
+
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         't' -> {
@@ -894,7 +914,7 @@ class NumberWithUnitsTokenizer private constructor() {
                 "tera",
                 startIndex,
                 chars
-              ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.TERA, start, end) }
+              ) { start, end -> Token.SiPrefix("T", start, end) }
             }
 
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
@@ -903,32 +923,32 @@ class NumberWithUnitsTokenizer private constructor() {
         'w' -> {
           when (chars.peek()) {
             'a' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "watt",
                 startIndex,
                 chars
-              ) { start, end -> Token.WattUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
         'u' -> {
-          Token.SiPrefix(Token.SiPrefixValue.MICRO, startIndex, chars.getRetrievalCount())
+          Token.SiPrefix("u", startIndex, chars.getRetrievalCount())
         }
         'v' -> {
           when (chars.peek()) {
             'o' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "volt",
                 startIndex,
                 chars
-              ) { start, end -> Token.VoltUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
@@ -936,18 +956,18 @@ class NumberWithUnitsTokenizer private constructor() {
         'y' -> {
           when (chars.peek()) {
             'a' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "yard",
                 startIndex,
                 chars
-              ) { start, end -> Token.YardUnit(start, end) }
-
-              if (chars.peek() == 's') chars.next()
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
             'd' -> {
               chars.next()
-              Token.YardUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'o' -> {
               chars.next()
@@ -957,19 +977,22 @@ class NumberWithUnitsTokenizer private constructor() {
                     "yocto",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.YOCTO, start, end) }
+                  ) { start, end -> Token.SiPrefix("y", start, end) }
                 }
+
                 't' -> {
                   tokenizeExpectedUnit(
                     "yotta",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.YOTTA, start, end) }
+                  ) { start, end -> Token.SiPrefix("Y", start, end) }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.YOCTO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("y", startIndex, chars.getRetrievalCount())
           }
         }
         'z' -> {
@@ -982,112 +1005,124 @@ class NumberWithUnitsTokenizer private constructor() {
                     "zepto",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.ZEPTO, start, end) }
+                  ) { start, end -> Token.SiPrefix("z", start, end) }
                 }
+
                 't' -> {
                   tokenizeExpectedUnit(
                     "zetta",
                     startIndex,
                     chars
-                  ) { start, end -> Token.SiPrefix(Token.SiPrefixValue.ZETTA, start, end) }
+                  ) { start, end -> Token.SiPrefix("Z", start, end) }
                 }
+
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.ZEPTO, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("z", startIndex, chars.getRetrievalCount())
           }
         }
         'A' -> {
           when (chars.peek()) {
             // Ampere must be lowercase
             'm' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.AmpereUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'C' -> {
-          val token = tokenizeExpectedUnit(
+          tokenizeExpectedUnit(
             "Cent",
             startIndex,
             chars
-          ) { start, end -> Token.CentSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next()
-
-          token
+          ) { start, _ ->
+            if (chars.peek() == 's') chars.next()
+            rawUnitToken(input, start, chars.getRetrievalCount())
+          }
         }
+
         'D' -> {
-          val token = tokenizeExpectedUnit(
+          tokenizeExpectedUnit(
             "Dollar",
             startIndex,
             chars
-          ) { start, end -> Token.DollarSuffixUnit(start, end) }
-          if (chars.peek() == 's') chars.next()
-
-          token
+          ) { start, _ ->
+            if (chars.peek() == 's') chars.next()
+            rawUnitToken(input, start, chars.getRetrievalCount())
+          }
         }
-        'E' -> Token.SiPrefix(Token.SiPrefixValue.EXA, startIndex, chars.getRetrievalCount())
-        'G' -> Token.SiPrefix(Token.SiPrefixValue.GIGA, startIndex, chars.getRetrievalCount())
+
+        'E' -> Token.SiPrefix("E", startIndex, chars.getRetrievalCount())
+        'G' -> Token.SiPrefix("G", startIndex, chars.getRetrievalCount())
         'H' -> {
           when (chars.peek()) {
             'z' -> {
               chars.next()
-              Token.HertzUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
+
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
+
         'J' -> {
           when (chars.peek()) {
             // Joule must be lowercase
             'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.JouleUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
         'K' -> {
           when (chars.peek()) {
             // Kelvin must be lowercase
             'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.KelvinUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
+
         'L' -> {
           when (chars.peek()) {
             'i', 't' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.LiterUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
-        'M' -> Token.SiPrefix(Token.SiPrefixValue.MEGA, startIndex, chars.getRetrievalCount())
+
+        'M' -> Token.SiPrefix("M", startIndex, chars.getRetrievalCount())
         'N' -> {
           when (chars.peek()) {
             // Newton must be lowercase
             'e' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.NewtonUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
+
         'P' -> {
           when (chars.peek()) {
             'a' -> {
               chars.next()
               when (chars.peek()) {
                 'i' -> {
-                  val paisaToken = tokenizeExpectedUnit(
+                  tokenizeExpectedUnit(
                     "Pais",
                     startIndex,
                     chars
-                  ) { start, end -> Token.PaisaSuffixUnit(start, end) }
+                  ) { start, _ ->
+                    when (chars.peek()) {
+                      'a', 'e' -> {
+                        chars.next()
+                        rawUnitToken(input, start, chars.getRetrievalCount())
+                      }
 
-                  when (chars.peek()) {
-                    'a', 'e' -> {
-                      chars.next()
-                      paisaToken
+                      else -> Token.InvalidToken(start, chars.getRetrievalCount())
                     }
-
-                    else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
                   }
                 }
-                else -> Token.PascalUnit(startIndex, chars.getRetrievalCount())
+
+                else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
               }
             }
-            else -> Token.SiPrefix(Token.SiPrefixValue.PETA, startIndex, chars.getRetrievalCount())
+
+            else -> Token.SiPrefix("P", startIndex, chars.getRetrievalCount())
           }
         }
         'R' -> {
@@ -1096,27 +1131,30 @@ class NumberWithUnitsTokenizer private constructor() {
               Token.RupeePrefixUnit(startIndex, chars.getRetrievalCount())
             }
             'u' -> {
-              val token = tokenizeExpectedUnit(
+              tokenizeExpectedUnit(
                 "Rupee",
                 startIndex,
                 chars
-              ) { start, end -> Token.RupeeSuffixUnit(start, end) }
-              if (chars.peek() == 's') chars.next()
-
-              token
+              ) { start, _ ->
+                if (chars.peek() == 's') chars.next()
+                rawUnitToken(input, start, chars.getRetrievalCount())
+              }
             }
+
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
-        'T' -> Token.SiPrefix(Token.SiPrefixValue.TERA, startIndex, chars.getRetrievalCount())
+
+        'T' -> Token.SiPrefix("T", startIndex, chars.getRetrievalCount())
         'U' -> {
           when (chars.next()) {
             'S' -> {
               when (chars.next()) {
-                'D' -> Token.DollarSuffixUnit(startIndex, chars.getRetrievalCount())
+                'D' -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
                 else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
               }
             }
+
             else -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
           }
         }
@@ -1124,18 +1162,20 @@ class NumberWithUnitsTokenizer private constructor() {
           when (chars.peek()) {
             // Watt must be lowercase
             'a' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.WattUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
+
         'V' -> {
           when (chars.peek()) {
             // Volt must be lowercase
             'o' -> Token.InvalidToken(startIndex, chars.getRetrievalCount())
-            else -> Token.VoltUnit(startIndex, chars.getRetrievalCount())
+            else -> rawUnitToken(input, startIndex, chars.getRetrievalCount())
           }
         }
-        'Y' -> Token.SiPrefix(Token.SiPrefixValue.YOTTA, startIndex, chars.getRetrievalCount())
-        'Z' -> Token.SiPrefix(Token.SiPrefixValue.ZETTA, startIndex, chars.getRetrievalCount())
+
+        'Y' -> Token.SiPrefix("Y", startIndex, chars.getRetrievalCount())
+        'Z' -> Token.SiPrefix("Z", startIndex, chars.getRetrievalCount())
         else -> {
           Token.InvalidToken(startIndex, chars.getRetrievalCount())
         }
@@ -1248,304 +1288,20 @@ class NumberWithUnitsTokenizer private constructor() {
         override val endIndex: Int
       ) : Token()
 
-      /** Represents a dollar currency suffix, e.g. 'USD' or 'dollar'. */
-      class DollarSuffixUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cent currency suffix, e.g. 'cent' or 'cents'. */
-      class CentSuffixUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a rupee currency suffix, e.g. 'rupee' or 'rupees'. */
-      class RupeeSuffixUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a paisa currency suffix, e.g. 'paisa' or 'paise'. */
-      class PaisaSuffixUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
       /**
-       * Represents an SI prefix (e.g. "kilo", "milli", "mega").
+       * Represents an SI prefix (e.g. "k", "M", "m").
        *
-       * @property prefixValue the specific SI prefix this token represents
+       * @property prefix the symbolic SI prefix representation used by parser composition
        */
       class SiPrefix(
-        val prefixValue: SiPrefixValue,
+        val prefix: String,
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
-      /** Enumerates all recognized SI prefixes. */
-      enum class SiPrefixValue {
-        /** Represents the SI prefix deca (10^1). */
-        DECA,
-
-        /** Represents the SI prefix hecto (10^2). */
-        HECTO,
-
-        /** Represents the SI prefix kilo (10^3). */
-        KILO,
-
-        /** Represents the SI prefix mega (10^6). */
-        MEGA,
-
-        /** Represents the SI prefix giga (10^9). */
-        GIGA,
-
-        /** Represents the SI prefix tera (10^12). */
-        TERA,
-
-        /** Represents the SI prefix peta (10^15). */
-        PETA,
-
-        /** Represents the SI prefix exa (10^18). */
-        EXA,
-
-        /** Represents the SI prefix zetta (10^21). */
-        ZETTA,
-
-        /** Represents the SI prefix yotta (10^24). */
-        YOTTA,
-
-        /** Represents the SI prefix deci (10^-1). */
-        DECI,
-
-        /** Represents the SI prefix centi (10^-2). */
-        CENTI,
-
-        /** Represents the SI prefix milli (10^-3). */
-        MILLI,
-
-        /** Represents the SI prefix micro (10^-6). */
-        MICRO,
-
-        /** Represents the SI prefix nano (10^-9). */
-        NANO,
-
-        /** Represents the SI prefix pico (10^-12). */
-        PICO,
-
-        /** Represents the SI prefix femto (10^-15). */
-        FEMTO,
-
-        /** Represents the SI prefix atto (10^-18). */
-        ATTO,
-
-        /** Represents the SI prefix zepto (10^-21). */
-        ZEPTO,
-
-        /** Represents the SI prefix yocto (10^-24). */
-        YOCTO
-      }
-
-      /** Represents a meter unit. */
-      class MeterUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents an inch unit. */
-      class InchUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a foot unit. */
-      class FootUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a yard unit. */
-      class YardUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a gram unit. */
-      class GramUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a grain unit. */
-      class GrainUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents an ounce unit. */
-      class OunceUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a square meter unit. */
-      class SquareMeterUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a square inch unit. */
-      class SquareInchUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a square foot unit. */
-      class SquareFootUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a square yard unit. */
-      class SquareYardUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cubic meter unit. */
-      class CubicMeterUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a liter unit. */
-      class LiterUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cubic centimeter unit (cc). */
-      class CubicCentimeterUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cubic inch unit. */
-      class CubicInchUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cubic foot unit. */
-      class CubicFootUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a cubic yard unit. */
-      class CubicYardUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a kelvin unit. */
-      class KelvinUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a celsius unit. */
-      class CelsiusUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a radian unit. */
-      class RadianUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a degree unit. */
-      class DegreeUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a second unit. */
-      class SecondUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a minute unit. */
-      class MinuteUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents an hour unit. */
-      class HourUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a hertz unit. */
-      class HertzUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a mole unit. */
-      class MoleUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a candela unit. */
-      class CandelaUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a newton unit. */
-      class NewtonUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a joule unit. */
-      class JouleUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a watt unit. */
-      class WattUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a pascal unit. */
-      class PascalUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents an ampere unit. */
-      class AmpereUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a volt unit. */
-      class VoltUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents an ohm unit. */
-      class OhmUnit(
+      /** Represents any recognized unit using its original matched input substring. */
+      class Unit(
+        val unit: String,
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
@@ -1553,6 +1309,10 @@ class NumberWithUnitsTokenizer private constructor() {
       /** Represents an invalid character that doesn't fit any of the other [Token] types. */
       class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
     }
+
+    /** Converts a string to a [Token.Unit]. */
+    private fun rawUnitToken(input: String, startIndex: Int, endIndex: Int): Token.Unit =
+      Token.Unit(input.substring(startIndex, endIndex), startIndex, endIndex)
 
     /**
      * Converts a string to a Double, ensuring the result is finite (not infinite or NaN).

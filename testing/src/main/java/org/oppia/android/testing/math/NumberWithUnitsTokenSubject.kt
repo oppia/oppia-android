@@ -104,19 +104,19 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a dollar suffix unit.
    *
-   * @throws AssertionError if the token is not a [Token.DollarSuffixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isDollarSuffixUnit() {
-    actual.asVerifiedType<Token.DollarSuffixUnit>()
+    assertUnitIn("dollar", "dollars", "Dollar", "Dollars", "USD")
   }
 
   /**
    * Verifies that the token is a cent suffix unit.
    *
-   * @throws AssertionError if the token is not a [Token.CentSuffixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCentSuffixUnit() {
-    actual.asVerifiedType<Token.CentSuffixUnit>()
+    assertUnitIn("cent", "cents", "Cent", "Cents", "¢")
   }
 
   /**
@@ -131,19 +131,19 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a rupee suffix unit.
    *
-   * @throws AssertionError if the token is not a [Token.RupeeSuffixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isRupeeSuffixUnit() {
-    actual.asVerifiedType<Token.RupeeSuffixUnit>()
+    assertUnitIn("rupee", "rupees", "Rupee", "Rupees")
   }
 
   /**
    * Verifies that the token is a paisa suffix unit.
    *
-   * @throws AssertionError if the token is not a [Token.PaisaSuffixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isPaisaSuffixUnit() {
-    actual.asVerifiedType<Token.PaisaSuffixUnit>()
+    assertUnitIn("paisa", "paise", "Paisa", "Paise")
   }
 
   // Length Units
@@ -151,37 +151,37 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a meter unit.
    *
-   * @throws AssertionError if the token is not a [Token.MeterUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isMeterUnit() {
-    actual.asVerifiedType<Token.MeterUnit>()
+    assertUnitIn("m", "meter", "meters")
   }
 
   /**
    * Verifies that the token is an inch unit.
    *
-   * @throws AssertionError if the token is not a [Token.InchUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isInchUnit() {
-    actual.asVerifiedType<Token.InchUnit>()
+    assertUnitIn("in", "inch", "inches")
   }
 
   /**
    * Verifies that the token is a foot unit.
    *
-   * @throws AssertionError if the token is not a [Token.FootUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isFootUnit() {
-    actual.asVerifiedType<Token.FootUnit>()
+    assertUnitIn("ft", "foot", "feet")
   }
 
   /**
    * Verifies that the token is a yard unit.
    *
-   * @throws AssertionError if the token is not a [Token.YardUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isYardUnit() {
-    actual.asVerifiedType<Token.YardUnit>()
+    assertUnitIn("yd", "yard", "yards")
   }
 
   // Mass Units
@@ -189,28 +189,28 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a gram unit.
    *
-   * @throws AssertionError if the token is not a [Token.GramUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isGramUnit() {
-    actual.asVerifiedType<Token.GramUnit>()
+    assertUnitIn("g", "gram", "grams")
   }
 
   /**
    * Verifies that the token is a grain unit.
    *
-   * @throws AssertionError if the token is not a [Token.GrainUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isGrainUnit() {
-    actual.asVerifiedType<Token.GrainUnit>()
+    assertUnitIn("gr", "grain", "grains")
   }
 
   /**
    * Verifies that the token is an ounce unit.
    *
-   * @throws AssertionError if the token is not a [Token.OunceUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isOunceUnit() {
-    actual.asVerifiedType<Token.OunceUnit>()
+    assertUnitIn("oz", "ounce", "ounces")
   }
 
   // Area Units
@@ -218,37 +218,37 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a square meter unit.
    *
-   * @throws AssertionError if the token is not a [Token.SquareMeterUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isSquareMeterUnit() {
-    actual.asVerifiedType<Token.SquareMeterUnit>()
+    assertUnitIn("m2")
   }
 
   /**
    * Verifies that the token is a square inch unit.
    *
-   * @throws AssertionError if the token is not a [Token.SquareInchUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isSquareInchUnit() {
-    actual.asVerifiedType<Token.SquareInchUnit>()
+    assertUnitIn("sqin", "sqinch")
   }
 
   /**
    * Verifies that the token is a square foot unit.
    *
-   * @throws AssertionError if the token is not a [Token.SquareFootUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isSquareFootUnit() {
-    actual.asVerifiedType<Token.SquareFootUnit>()
+    assertUnitIn("sqft", "sqfeet")
   }
 
   /**
    * Verifies that the token is a square yard unit.
    *
-   * @throws AssertionError if the token is not a [Token.SquareYardUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isSquareYardUnit() {
-    actual.asVerifiedType<Token.SquareYardUnit>()
+    assertUnitIn("sqyd", "sqyard")
   }
 
   // Volume Units
@@ -256,55 +256,55 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a cubic meter unit.
    *
-   * @throws AssertionError if the token is not a [Token.CubicMeterUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCubicMeterUnit() {
-    actual.asVerifiedType<Token.CubicMeterUnit>()
+    assertUnitIn("m3")
   }
 
   /**
    * Verifies that the token is a liter unit.
    *
-   * @throws AssertionError if the token is not a [Token.LiterUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isLiterUnit() {
-    actual.asVerifiedType<Token.LiterUnit>()
+    assertUnitIn("l", "L", "lt", "liter", "liters", "litre", "litres")
   }
 
   /**
    * Verifies that the token is a cubic centimeter unit.
    *
-   * @throws AssertionError if the token is not a [Token.CubicCentimeterUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCubicCentimeterUnit() {
-    actual.asVerifiedType<Token.CubicCentimeterUnit>()
+    assertUnitIn("cc")
   }
 
   /**
    * Verifies that the token is a cubic inch unit.
    *
-   * @throws AssertionError if the token is not a [Token.CubicInchUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCubicInchUnit() {
-    actual.asVerifiedType<Token.CubicInchUnit>()
+    assertUnitIn("cuin")
   }
 
   /**
    * Verifies that the token is a cubic foot unit.
    *
-   * @throws AssertionError if the token is not a [Token.CubicFootUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCubicFootUnit() {
-    actual.asVerifiedType<Token.CubicFootUnit>()
+    assertUnitIn("cuft")
   }
 
   /**
    * Verifies that the token is a cubic yard unit.
    *
-   * @throws AssertionError if the token is not a [Token.CubicYardUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCubicYardUnit() {
-    actual.asVerifiedType<Token.CubicYardUnit>()
+    assertUnitIn("cuyd")
   }
 
   // Temperature Units
@@ -312,19 +312,19 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a kelvin unit.
    *
-   * @throws AssertionError if the token is not a [Token.KelvinUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isKelvinUnit() {
-    actual.asVerifiedType<Token.KelvinUnit>()
+    assertUnitIn("K", "kelvin")
   }
 
   /**
    * Verifies that the token is a celsius unit.
    *
-   * @throws AssertionError if the token is not a [Token.CelsiusUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCelsiusUnit() {
-    actual.asVerifiedType<Token.CelsiusUnit>()
+    assertUnitIn("degC", "celsius")
   }
 
   // Angle Units
@@ -332,19 +332,19 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a radian unit.
    *
-   * @throws AssertionError if the token is not a [Token.RadianUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isRadianUnit() {
-    actual.asVerifiedType<Token.RadianUnit>()
+    assertUnitIn("rad", "radian", "radians")
   }
 
   /**
    * Verifies that the token is a degree unit.
    *
-   * @throws AssertionError if the token is not a [Token.DegreeUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isDegreeUnit() {
-    actual.asVerifiedType<Token.DegreeUnit>()
+    assertUnitIn("deg", "degree", "degrees")
   }
 
   // Time Units
@@ -352,28 +352,28 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a second unit.
    *
-   * @throws AssertionError if the token is not a [Token.SecondUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isSecondUnit() {
-    actual.asVerifiedType<Token.SecondUnit>()
+    assertUnitIn("s", "sec", "secs", "second", "seconds")
   }
 
   /**
    * Verifies that the token is a minute unit.
    *
-   * @throws AssertionError if the token is not a [Token.MinuteUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isMinuteUnit() {
-    actual.asVerifiedType<Token.MinuteUnit>()
+    assertUnitIn("min", "mins", "minute", "minutes")
   }
 
   /**
    * Verifies that the token is an hour unit.
    *
-   * @throws AssertionError if the token is not a [Token.HourUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isHourUnit() {
-    actual.asVerifiedType<Token.HourUnit>()
+    assertUnitIn("h", "hr", "hrs", "hour", "hours")
   }
 
   // Frequency Units
@@ -381,10 +381,10 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a hertz unit.
    *
-   * @throws AssertionError if the token is not a [Token.HertzUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isHertzUnit() {
-    actual.asVerifiedType<Token.HertzUnit>()
+    assertUnitIn("Hz", "hertz")
   }
 
   // SI Base Units
@@ -392,19 +392,19 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a mole unit.
    *
-   * @throws AssertionError if the token is not a [Token.MoleUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isMoleUnit() {
-    actual.asVerifiedType<Token.MoleUnit>()
+    assertUnitIn("mol", "mole", "moles")
   }
 
   /**
    * Verifies that the token is a candela unit.
    *
-   * @throws AssertionError if the token is not a [Token.CandelaUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isCandelaUnit() {
-    actual.asVerifiedType<Token.CandelaUnit>()
+    assertUnitIn("cd", "candela")
   }
 
   // Derived SI Units
@@ -412,64 +412,64 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a newton unit.
    *
-   * @throws AssertionError if the token is not a [Token.NewtonUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isNewtonUnit() {
-    actual.asVerifiedType<Token.NewtonUnit>()
+    assertUnitIn("N", "newton", "newtons")
   }
 
   /**
    * Verifies that the token is a joule unit.
    *
-   * @throws AssertionError if the token is not a [Token.JouleUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isJouleUnit() {
-    actual.asVerifiedType<Token.JouleUnit>()
+    assertUnitIn("J", "joule", "joules")
   }
 
   /**
    * Verifies that the token is a watt unit.
    *
-   * @throws AssertionError if the token is not a [Token.WattUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isWattUnit() {
-    actual.asVerifiedType<Token.WattUnit>()
+    assertUnitIn("W", "watt", "watts")
   }
 
   /**
    * Verifies that the token is a pascal unit.
    *
-   * @throws AssertionError if the token is not a [Token.PascalUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isPascalUnit() {
-    actual.asVerifiedType<Token.PascalUnit>()
+    assertUnitIn("Pa", "pascal", "pascals")
   }
 
   /**
    * Verifies that the token is an ampere unit.
    *
-   * @throws AssertionError if the token is not a [Token.AmpereUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isAmpereUnit() {
-    actual.asVerifiedType<Token.AmpereUnit>()
+    assertUnitIn("A", "ampere", "amperes")
   }
 
   /**
    * Verifies that the token is a volt unit.
    *
-   * @throws AssertionError if the token is not a [Token.VoltUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isVoltUnit() {
-    actual.asVerifiedType<Token.VoltUnit>()
+    assertUnitIn("V", "volt", "volts")
   }
 
   /**
    * Verifies that the token is an ohm unit.
    *
-   * @throws AssertionError if the token is not a [Token.OhmUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isOhmUnit() {
-    actual.asVerifiedType<Token.OhmUnit>()
+    assertUnitIn("ohm", "ohms")
   }
 
   /**
@@ -484,12 +484,31 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a SI prefix with the expected value.
    *
-   * @param expectedValue the expected [Token.SiPrefixValue] to match
+   * @param expectedValue the expected SI prefix symbol (for example, "k" or "M")
    * @throws AssertionError if the token is not a [Token.SiPrefix] or doesn't have the expected value
    */
-  fun isSiPrefixWithValue(expectedValue: Token.SiPrefixValue) {
+  fun isSiPrefixWithValue(expectedValue: String) {
     val siPrefix = actual.asVerifiedType<Token.SiPrefix>()
-    Truth.assertThat(siPrefix.prefixValue).isEqualTo(expectedValue)
+    Truth.assertThat(siPrefix.prefix).isEqualTo(expectedValue)
+  }
+
+  /**
+   * Verifies that the token is a [Token.Unit] with exactly the specified raw value.
+   *
+   * @param expectedValue the exact raw unit text expected from tokenization
+   * @throws AssertionError if the token is not a [Token.Unit] or has a different raw value
+   */
+  fun isUnitWithRawValue(expectedValue: String) {
+    val unit = actual.asVerifiedType<Token.Unit>()
+    Truth.assertThat(unit.unit).isEqualTo(expectedValue)
+  }
+
+  /**
+   * Verifies that the token is a [Token.Unit] whose raw value is in [expectedRawValues].
+   */
+  private fun assertUnitIn(vararg expectedRawValues: String) {
+    val unit = actual.asVerifiedType<Token.Unit>()
+    Truth.assertThat(expectedRawValues.toList()).contains(unit.unit)
   }
 
   companion object {

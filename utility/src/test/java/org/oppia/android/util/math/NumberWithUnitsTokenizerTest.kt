@@ -303,7 +303,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
     assertThat(tokens[2]).isInvalidToken()
   }
 
@@ -379,7 +379,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).isNotEmpty()
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOTTA)
+    assertThat(tokens[1]).isSiPrefixWithValue("Y")
   }
 
   @Test
@@ -401,7 +401,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("G")
   }
 
   @Test
@@ -424,7 +424,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("G")
     assertThat(tokens[2]).isInvalidToken()
   }
 
@@ -466,7 +466,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
     assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
 
@@ -526,7 +526,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 M3").toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
     assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(3)
   }
 
@@ -593,7 +593,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
+    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
     assertThat(tokens[3]).isInchUnit() // in
   }
 
@@ -612,7 +612,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
+    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
     assertThat(tokens[3]).isFootUnit() // ft
   }
 
@@ -631,7 +631,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO) // u
+    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
     assertThat(tokens[3]).isYardUnit() // yd
   }
 
@@ -757,6 +757,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
     assertThat(tokens[1]).isMinuteUnit()
   }
 
@@ -768,7 +769,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
   }
 
   @Test
@@ -815,7 +816,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isHourUnit()
-    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.ZEPTO)
+    assertThat(tokens[2]).isSiPrefixWithValue("z")
   }
 
   @Test
@@ -846,7 +847,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
     assertThat(tokens[2]).isInvalidToken()
   }
 
@@ -1031,7 +1032,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.DECA)
+    assertThat(tokens[1]).isSiPrefixWithValue("da")
   }
 
   @Test
@@ -1043,7 +1044,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.HECTO)
+    assertThat(tokens[1]).isSiPrefixWithValue("h")
   }
 
   @Test
@@ -1054,7 +1055,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
   }
 
   @Test
@@ -1065,7 +1066,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MEGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("M")
   }
 
   @Test
@@ -1076,7 +1077,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.GIGA)
+    assertThat(tokens[1]).isSiPrefixWithValue("G")
   }
 
   @Test
@@ -1087,7 +1088,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.TERA)
+    assertThat(tokens[1]).isSiPrefixWithValue("T")
   }
 
   @Test
@@ -1098,7 +1099,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.PETA)
+    assertThat(tokens[1]).isSiPrefixWithValue("P")
   }
 
   @Test
@@ -1109,7 +1110,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.EXA)
+    assertThat(tokens[1]).isSiPrefixWithValue("E")
   }
 
   @Test
@@ -1120,7 +1121,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ZETTA)
+    assertThat(tokens[1]).isSiPrefixWithValue("Z")
   }
 
   @Test
@@ -1131,7 +1132,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOTTA)
+    assertThat(tokens[1]).isSiPrefixWithValue("Y")
   }
 
   @Test
@@ -1142,7 +1143,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.DECI)
+    assertThat(tokens[1]).isSiPrefixWithValue("d")
   }
 
   @Test
@@ -1153,7 +1154,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.CENTI)
+    assertThat(tokens[1]).isSiPrefixWithValue("c")
   }
 
   @Test
@@ -1165,7 +1166,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+    assertThat(tokens[1]).isSiPrefixWithValue("m")
   }
 
   @Test
@@ -1176,7 +1177,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO)
+    assertThat(tokens[1]).isSiPrefixWithValue("u")
   }
 
   @Test
@@ -1187,7 +1188,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.NANO)
+    assertThat(tokens[1]).isSiPrefixWithValue("n")
   }
 
   @Test
@@ -1198,7 +1199,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.PICO)
+    assertThat(tokens[1]).isSiPrefixWithValue("p")
   }
 
   @Test
@@ -1209,7 +1210,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.FEMTO)
+    assertThat(tokens[1]).isSiPrefixWithValue("f")
   }
 
   @Test
@@ -1220,7 +1221,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ATTO)
+    assertThat(tokens[1]).isSiPrefixWithValue("a")
   }
 
   @Test
@@ -1231,7 +1232,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.ZEPTO)
+    assertThat(tokens[1]).isSiPrefixWithValue("z")
   }
 
   @Test
@@ -1242,7 +1243,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.YOCTO)
+    assertThat(tokens[1]).isSiPrefixWithValue("y")
   }
 
   @Test
@@ -1275,7 +1276,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isMeterUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isHourUnit()
@@ -1352,7 +1353,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isMeterUnit()
@@ -1379,7 +1380,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(9)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isLeftParenthesisSymbol()
@@ -1398,7 +1399,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[1]).isJouleUnit()
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[4]).isSiPrefixWithValue("k")
     assertThat(tokens[5]).isGramUnit()
     assertThat(tokens[6]).isMultiplySymbol()
     assertThat(tokens[7]).isKelvinUnit()
@@ -1429,7 +1430,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(10)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(12.50)
     assertThat(tokens[1]).isLeftParenthesisSymbol()
-    assertThat(tokens[2]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[2]).isSiPrefixWithValue("k")
     assertThat(tokens[3]).isGramUnit()
     assertThat(tokens[4]).isMultiplySymbol()
     assertThat(tokens[5]).isMeterUnit()
@@ -1471,7 +1472,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(13)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isLeftParenthesisSymbol()
@@ -1491,7 +1492,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isMeterUnit()
@@ -1573,7 +1574,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(500)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isWattUnit()
     assertThat(tokens[3]).isMultiplySymbol()
     assertThat(tokens[4]).isHourUnit()
@@ -1596,7 +1597,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.4)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isHertzUnit()
   }
 
@@ -1665,10 +1666,10 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+    assertThat(tokens[1]).isSiPrefixWithValue("m")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isSiPrefixWithValue(Token.SiPrefixValue.MILLI)
+    assertThat(tokens[4]).isSiPrefixWithValue("m")
     assertThat(tokens[5]).isLiterUnit()
   }
 
@@ -1678,7 +1679,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.MICRO)
+    assertThat(tokens[1]).isSiPrefixWithValue("u")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isLiterUnit()
@@ -1690,7 +1691,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(50)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.NANO)
+    assertThat(tokens[1]).isSiPrefixWithValue("n")
     assertThat(tokens[2]).isMeterUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isSecondUnit()
@@ -1739,7 +1740,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isMeterUnit()
@@ -1753,7 +1754,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[1]).isSiPrefixWithValue("k")
     assertThat(tokens[2]).isGramUnit()
     assertThat(tokens[3]).isDivideSymbol()
     assertThat(tokens[4]).isMeterUnit()
@@ -1855,7 +1856,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
     assertThat(tokens[6]).isDivideSymbol()
-    assertThat(tokens[7]).isSiPrefixWithValue(Token.SiPrefixValue.KILO)
+    assertThat(tokens[7]).isSiPrefixWithValue("k")
     assertThat(tokens[8]).isGramUnit()
     assertThat(tokens[9]).isExponentiationSymbol()
     assertThat(tokens[10]).isPositiveIntegerWhoseValue().isEqualTo(2)
