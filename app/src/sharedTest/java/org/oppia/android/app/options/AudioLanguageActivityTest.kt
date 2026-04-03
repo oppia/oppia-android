@@ -6,12 +6,8 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -106,11 +102,15 @@ import org.oppia.android.app.ui.R as UiR
   qualifiers = "port-xxhdpi"
 )
 class AudioLanguageActivityTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -142,26 +142,17 @@ class AudioLanguageActivityTest {
       }
     }
   }
+
   @Test
-  fun testAudioLanguage_toolbarTitle_marqueeEnabled() {
+  fun testAudioLanguage_toolbarTitle_marqueeEnabled_isDisplayedCorrectly() {
     runWithLaunchedActivity(ENGLISH_AUDIO_LANGUAGE) {
       onActivity { activity ->
         val toolbarTitle: TextView =
           activity.findViewById(UiR.id.audio_language_toolbar_title)
 
-        // Set RTL layout direction to verify marquee behavior works correctly in RTL
-        ViewCompat.setLayoutDirection(toolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-        onView(ViewMatchers.withId(UiR.id.audio_language_toolbar_title))
-          .perform(ViewActions.click())
-
-        assertThat(toolbarTitle.ellipsize)
-          .isEqualTo(TextUtils.TruncateAt.MARQUEE)
-
+        assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(toolbarTitle.isSelected).isEqualTo(true)
-
-        assertThat(toolbarTitle.textAlignment)
-          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(toolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }

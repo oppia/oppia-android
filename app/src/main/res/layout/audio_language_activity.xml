@@ -34,6 +34,7 @@
           android:focusable="true"
           android:focusableInTouchMode="true"
           android:marqueeRepeatLimit="marquee_forever"
+          android:textAlignment="viewStart"
           android:singleLine="true"
           android:text="@string/audio_language_activity_title"
           android:textAppearance="@style/ToolbarTextAppearance" />
