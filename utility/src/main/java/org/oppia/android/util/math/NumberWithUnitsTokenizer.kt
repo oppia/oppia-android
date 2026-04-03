@@ -38,21 +38,19 @@ class NumberWithUnitsTokenizer private constructor() {
           '/' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.DivideSymbol(startIndex, endIndex)
           }
-          '₹' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.RupeePrefixUnit(startIndex, endIndex)
-          }
-          '$' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.DollarPrefixUnit(startIndex, endIndex)
-          }
-          '¢' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+
+          '₹', '$', '¢' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             rawUnitToken(input, startIndex, endIndex)
           }
+
           '^' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.ExponentiationSymbol(startIndex, endIndex)
           }
+
           '*' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MultiplySymbol(startIndex, endIndex)
           }
+
           '(' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.LeftParenthesisSymbol(startIndex, endIndex)
           }
@@ -1128,7 +1126,7 @@ class NumberWithUnitsTokenizer private constructor() {
         'R' -> {
           when (chars.next()) {
             's' -> {
-              Token.RupeePrefixUnit(startIndex, chars.getRetrievalCount())
+              rawUnitToken(input, startIndex, chars.getRetrievalCount())
             }
             'u' -> {
               tokenizeExpectedUnit(
@@ -1272,18 +1270,6 @@ class NumberWithUnitsTokenizer private constructor() {
 
       /** Represents a right parenthesis symbol, i.e. ')'. */
       class RightParenthesisSymbol(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a dollar currency prefix, e.g. '$'. */
-      class DollarPrefixUnit(
-        override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token()
-
-      /** Represents a rupee currency prefix, e.g. 'Rs' or '₹'. */
-      class RupeePrefixUnit(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()

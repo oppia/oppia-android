@@ -95,10 +95,10 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a dollar prefix unit.
    *
-   * @throws AssertionError if the token is not a [Token.DollarPrefixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isDollarPrefixUnit() {
-    actual.asVerifiedType<Token.DollarPrefixUnit>()
+    assertUnitIn("$")
   }
 
   /**
@@ -122,10 +122,10 @@ class NumberWithUnitsTokenSubject(
   /**
    * Verifies that the token is a rupee prefix unit.
    *
-   * @throws AssertionError if the token is not a [Token.RupeePrefixUnit]
+   * @throws AssertionError if the token is not a [Token.Unit] with one of this method's accepted raw values
    */
   fun isRupeePrefixUnit() {
-    actual.asVerifiedType<Token.RupeePrefixUnit>()
+    assertUnitIn("₹", "Rs")
   }
 
   /**
