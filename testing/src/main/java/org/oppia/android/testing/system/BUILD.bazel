@@ -6,10 +6,11 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "fake_terminal_controller",
+    testonly = True,
     srcs = [
         "FakeTerminalController.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
         "//third_party:javax_inject_javax_inject",
@@ -18,10 +19,11 @@ kt_android_library(
 
 kt_android_library(
     name = "test_module",
+    testonly = True,
     srcs = [
         "FakeTerminalControllerModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":fake_terminal_controller",
         "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
