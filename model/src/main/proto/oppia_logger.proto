@@ -396,6 +396,9 @@ message EventLog {
 
     // Defined attributes that are common among all learner analytics related event log contexts.
     LearnerDetailsContext learner_details = 7;
+
+    // Indicates whether the exploration is currently being replayed by a user who has previously completed it.
+    bool is_replay = 10;
   }
 
   // Represents the event context for switching a lesson's content language mid-lesson. Note that

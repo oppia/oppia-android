@@ -79,6 +79,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -148,6 +149,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
@@ -165,8 +167,9 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -197,6 +200,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -215,7 +219,6 @@ class StateFragmentTest {
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var translationController: TranslationController
@@ -256,6 +259,7 @@ class StateFragmentTest {
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
+  //  15. Add tests to check drag and drop answers are persisted when orientation changes.
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
@@ -2571,21 +2575,61 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Start exploring")))
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
+  fun testStateFragment_arabic_continueInteraction_buttonIsInArabic() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      // App strings aren't being translated, so the button label stays the same.
-      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
+      // The button label is translated using the exploration's written translations.
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("ابدأ الاستكشاف")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_defaultContinueInteraction_buttonShowsDefaultText() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText
+      // (old-style). The button should display the default "Continue" text from app resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText(R.string.state_continue_button)))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_arabicAppLang_defaultContinueInteraction_buttonShowsTranslatedDefault() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    forceDefaultLocale(Locale("ar", "EG"))
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The fractions exploration starts with a Continue interaction that has no custom buttonText.
+      // With Arabic app language, the button should display the Arabic translation of the default
+      // "Continue" text from the app's string resources.
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button))
+        .check(matches(withText("استمرار")))
     }
   }
 
@@ -5941,6 +5985,60 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_moveFromState2ToState3_submittedAnswerShowsState3Answer() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // State 2: submit "1/2" (fraction answer).
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+      clickContinueNavigationButton()
+
+      // State 3: RecyclerView recycles State 2's submitted answer view.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Regression test for #5935: submitted answer must show State 3's answer, not "1/2" from
+      // State 2's recycled view.
+      scrollToViewType(SUBMITTED_ANSWER)
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitFractionAnswerInState2_moveToState3_feedbackShowsState3Feedback() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // State 2: submit "1/2" and verify feedback is shown.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      clickContinueNavigationButton()
+
+      // State 3: RecyclerView recycles State 2's feedback view.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Regression test for #5935: feedback must be visible and correspond to State 3, not carry
+      // over stale content from State 2's recycled feedback view.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
@@ -6658,7 +6756,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      replaceText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -6724,6 +6822,11 @@ class StateFragmentTest {
       profileId, allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
   }
 
   private fun verifyContentContains(expectedHtml: String) {
@@ -6851,9 +6954,36 @@ class StateFragmentTest {
           explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
         )
       ) { "Failed to create audio data source." }
+      val dataSource3 = checkNotNull(
+        createAudioDataSource(
+          explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-en-nb3k4zuyir.mp3"
+        )
+      ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource3, IOException("Test does not have networking"))
     }
+    setUpShadowMediaPlayerProvider()
+  }
+
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
   }
 
   private fun setUpTestApplicationComponent() {

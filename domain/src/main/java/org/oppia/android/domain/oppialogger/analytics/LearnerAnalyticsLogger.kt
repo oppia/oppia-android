@@ -70,6 +70,7 @@ class LearnerAnalyticsLogger @Inject constructor(
    * @param exploration the [Exploration] for which a play session is starting
    * @param topicId the ID of the topic to which the story indicated by [storyId] belongs
    * @param storyId the ID of the story to which [exploration] belongs
+   * @param isReplay whether the exploration is being replayed
    */
   fun beginExploration(
     installationId: String?,
@@ -78,7 +79,8 @@ class LearnerAnalyticsLogger @Inject constructor(
     exploration: Exploration,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
+    isReplay: Boolean
   ): ExplorationAnalyticsLogger {
     return ExplorationAnalyticsLogger(
       installationId,
@@ -89,6 +91,7 @@ class LearnerAnalyticsLogger @Inject constructor(
       storyId,
       exploration.id,
       exploration.version,
+      isReplay,
       oppiaLogger,
       analyticsController,
       loggingIdentifierController
@@ -193,6 +196,7 @@ class LearnerAnalyticsLogger @Inject constructor(
     storyId: String,
     explorationId: String,
     explorationVersion: Int,
+    isReplay: Boolean,
     private val oppiaLogger: OppiaLogger,
     private val analyticsController: AnalyticsController,
     private val loggingIdentifierController: LoggingIdentifierController
@@ -222,6 +226,7 @@ class LearnerAnalyticsLogger @Inject constructor(
           this.storyId = storyId
           this.explorationVersion = explorationVersion
           this.learnerDetails = learnerDetails
+          this.isReplay = isReplay
         }.build()
       }?.ensureNonEmpty()
     }
