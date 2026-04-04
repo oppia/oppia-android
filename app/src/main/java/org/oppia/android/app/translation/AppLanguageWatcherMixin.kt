@@ -75,14 +75,21 @@ class AppLanguageWatcherMixin @Inject constructor(
         translationController.getSystemLanguageLocale()
       ForcedActivityLanguageMode.USE_ENGLISH ->
         translationController.getEnglishLocale()
-      ForcedActivityLanguageMode.USE_APP_LANGUAGE,
-      ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
-      ForcedActivityLanguageMode.UNRECOGNIZED -> {
+      ForcedActivityLanguageMode.USE_APP_LANGUAGE -> {
         if (currentUserProfileId == null) {
           translationController.getSystemLanguageLocale()
         } else {
           translationController.getAppLanguageLocale(currentUserProfileId)
         }
+      }
+      ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
+      ForcedActivityLanguageMode.UNRECOGNIZED -> {
+        oppiaLogger.w(
+          "AppLanguageWatcherMixin",
+          "Unexpected ForcedActivityLanguageMode: $forcedActivityLanguageMode. " +
+            "Falling back to system language."
+        )
+        translationController.getSystemLanguageLocale()
       }
     }
 
