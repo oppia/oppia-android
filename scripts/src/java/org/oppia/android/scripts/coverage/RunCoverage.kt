@@ -60,7 +60,7 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1)
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
-    .map { filePath ->
+    .mapNotNull { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
           checkNotNull(findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)) {
@@ -68,7 +68,7 @@ fun main(vararg args: String) {
           }
         }
         filePath.endsWith(".kt") -> filePath
-        else -> throw IllegalArgumentException("Unsupported file path: $filePath")
+        else -> null
       }
     }
     .distinct()
