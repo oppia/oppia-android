@@ -137,53 +137,64 @@ message NumberUnitExpression {
     GRAIN = 6;
     OUNCE = 7;
 
-    // Volume unit
-    LITER = 8;
+    // Area units
+    SQUARE_METER = 8;
+    SQUARE_INCH = 9;
+    SQUARE_FOOT = 10;
+    SQUARE_YARD = 11;
 
-    // Time units
-    SECOND = 9;
-    MINUTE = 10;
-    HOUR = 11;
+    // Volume unit
+    CUBIC_METER = 12;
+    LITER = 13;
+    CUBIC_CENTIMETER = 14;
+    CUBIC_INCH = 15;
+    CUBIC_FOOT = 16;
+    CUBIC_YARD = 17;
 
     // Temperature units
-    KELVIN = 12;
-    CELSIUS = 13;
-
-    // Frequency units
-    HERTZ = 14;
+    KELVIN = 18;
+    CELSIUS = 19;
 
     // Angle units
-    RADIAN = 15;
-    DEGREE = 16;
+    RADIAN = 20;
+    DEGREE = 21;
+
+    // Time units
+    SECOND = 22;
+    MINUTE = 23;
+    HOUR = 24;
+
+    // Frequency units
+    HERTZ = 25;
 
     // Amount of substance
-    MOLE = 17;
+    MOLE = 26;
 
     // Luminous intensity
-    CANDELA = 18;
+    CANDELA = 27;
 
     // Force
-    NEWTON = 19;
+    NEWTON = 28;
 
     // Energy
-    JOULE = 20;
+    JOULE = 29;
 
     // Power
-    WATT = 21;
+    WATT = 30;
 
     // Pressure
-    PASCAL = 22;
+    PASCAL = 31;
 
     // Electricity
-    AMPERE = 23;
-    VOLT = 24;
-    OHM = 25;
+    AMPERE = 32;
+    VOLT = 33;
+    OHM = 34;
 
     // Currency units
-    DOLLAR = 26;
-    CENT = 27;
-    RUPEE = 28;
-    PAISA = 29;
+    DOLLAR = 35;
+    CENT = 36;
+    RUPEE = 37;
+    PAISA = 38;
   }
 
   // The specific unit value.

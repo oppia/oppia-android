@@ -1,139 +1,151 @@
 package org.oppia.android.testing.math
 
+import com.google.common.truth.ComparableSubject
 import com.google.common.truth.DoubleSubject
 import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
-import com.google.common.truth.IterableSubject
-import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.google.common.truth.extensions.proto.LiteProtoSubject
-import org.oppia.android.app.model.NumberUnit
-import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.NumberUnitExpression
+import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
-import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 
 // TODO(#6151): Add tests for this class.
 
 /**
- * Truth subject for verifying properties of [NumberWithUnits]s.
+ * Truth subject for verifying properties of [NumberWithUnitsExpression]s.
  *
  * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
- * [NumberWithUnits] proto can be verified through inherited methods.
+ * [NumberWithUnitsExpression] proto can be verified through inherited methods.
  *
  * Call [assertThat] to create the subject.
  */
 class NumberWithUnitsSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: NumberWithUnits
+  private val actual: NumberWithUnitsExpression
 ) : LiteProtoSubject(metadata, actual) {
 
   /**
-   * Verifies that the number type is [NumberWithUnits.NumberTypeCase.REAL] and returns a
+   * Verifies that the number type is [NumberWithUnitsExpression.NumberTypeCase.REAL] and returns
+   * a
    * [DoubleSubject] to test the real value.
    *
-   * This method will fail if the underlying [NumberWithUnits] does not have a real number type.
+   * This method will fail if the underlying [NumberWithUnitsExpression] does not have a real
+   * number type.
    */
   fun hasRealValueThat(): DoubleSubject {
-    assertWithMessage("Expected number type to be REAL, not: ${actual.numberTypeCase}")
+    assertWithMessage(
+      "Expected number type to be REAL, not: ${actual.numberTypeCase}"
+    )
       .that(actual.numberTypeCase)
-      .isEqualTo(NumberWithUnits.NumberTypeCase.REAL)
+      .isEqualTo(NumberWithUnitsExpression.NumberTypeCase.REAL)
     return assertThat(actual.real)
   }
 
   /**
-   * Verifies that the number type is [NumberWithUnits.NumberTypeCase.FRACTION] and returns a
+   * Verifies that the number type is [NumberWithUnitsExpression.NumberTypeCase.FRACTION] and
+   * returns a
    * [FractionSubject] to test the fraction value.
    *
-   * This method will fail if the underlying [NumberWithUnits] does not have a fraction number type.
+   * This method will fail if the underlying [NumberWithUnitsExpression] does not have a fraction
+   * number type.
    */
   fun hasFractionValueThat(): FractionSubject {
-    assertWithMessage("Expected number type to be FRACTION, not: ${actual.numberTypeCase}")
+    assertWithMessage(
+      "Expected number type to be FRACTION, not: ${actual.numberTypeCase}"
+    )
       .that(actual.numberTypeCase)
-      .isEqualTo(NumberWithUnits.NumberTypeCase.FRACTION)
+      .isEqualTo(NumberWithUnitsExpression.NumberTypeCase.FRACTION)
     return assertThat(actual.fraction)
   }
 
   /**
-   * Returns an [IntegerSubject] to test [NumberWithUnits.getUnitCount].
-   *
-   * This method never fails since the underlying property defaults to 0 if there are no units
-   * defined.
+   * Returns an [IntegerSubject] to test the total unit count across the expression format.
    */
-  fun hasUnitCountThat(): IntegerSubject = assertThat(actual.unitCount)
+  fun hasUnitCountThat(): IntegerSubject = assertThat(allUnits().size)
 
-  /**
-   * Returns an [IterableSubject] to test the unit names of [NumberWithUnits.getUnitList].
-   *
-   * This is useful for verifying which units are present without relying on indices. For example:
-   * ```
-   * hasUnitNamesThat().containsExactly("meter", "second")
-   * ```
-   */
-  fun hasUnitNamesThat(): IterableSubject = assertThat(actual.unitList.map { it.unit })
+  fun hasPrefixThat(): NumberUnitSubject {
+    val units = when (actual.expressionFormatCase) {
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
+        actual.prefixValueExpression.prefixUnitsList
 
-  /**
-   * Returns a [NumberUnitSubject] for the [NumberUnit] whose [NumberUnit.getUnit] matches the
-   * specified [unitName].
-   *
-   * This provides a more robust way to verify unit properties without relying on index-based
-   * access. For example:
-   * ```
-   * hasUnit("meter").hasExponentThat().isEqualTo(1)
-   * hasUnit("second").hasExponentThat().isEqualTo(-2)
-   * ```
-   *
-   * This method will fail if no unit with the given name is found in the [NumberWithUnits].
-   */
-  fun hasUnit(unitName: String): NumberUnitSubject {
-    val matchingUnit = actual.unitList.firstOrNull { it.unit == unitName }
-    assertWithMessage(
-      "Expected to find unit with name '$unitName', but only found: " +
-        actual.unitList.map { it.unit }
-    ).that(matchingUnit).isNotNull()
-    return NumberUnitSubject.assertThat(matchingUnit!!)
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_SUFFIX_EXPRESSION ->
+        actual.prefixValueSuffixExpression.prefixUnitsList
+
+      else -> emptyList()
+    }
+    assertWithMessage("Expected to find at least one prefix unit, but found none")
+      .that(units)
+      .isNotEmpty()
+    return NumberUnitSubject.assertThat(units.first())
   }
 
-  /**
-   * Returns a [NumberUnitSubject] to test the [NumberUnit] at the specified [index] in
-   * [NumberWithUnits.getUnitList].
-   *
-   * This method throws if the index doesn't correspond to a valid unit. Callers should first verify
-   * the unit count using [hasUnitCountThat].
-   *
-   * Prefer [hasUnit] for name-based lookup when the order of units is not significant.
-   */
-  fun unit(index: Int): NumberUnitSubject {
-    assertWithMessage("Expected unit index $index to be valid for unit count ${actual.unitCount}")
+  fun hasSuffixWithIndexThat(index: Int): NumberUnitSubject {
+    val units = when (actual.expressionFormatCase) {
+      NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->
+        actual.valueSuffixExpression.suffixUnitsList
+
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_SUFFIX_EXPRESSION ->
+        actual.prefixValueSuffixExpression.suffixUnitsList
+
+      else -> emptyList()
+    }
+    assertWithMessage("Expected to find at least one suffix unit, but found none")
+      .that(units)
+      .isNotEmpty()
+    assertWithMessage("Expected suffix unit index to be non-negative, but was: $index")
       .that(index)
-      .isLessThan(actual.unitCount)
-    return NumberUnitSubject.assertThat(actual.unitList[index])
+      .isAtLeast(0)
+    assertWithMessage("Expected suffix unit index $index to be valid for suffix unit count ${units.size}")
+      .that(index)
+      .isLessThan(units.size)
+    return NumberUnitSubject.assertThat(units[index])
+  }
+
+  private fun allUnits(): List<NumberUnitExpression> {
+    return when (actual.expressionFormatCase) {
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
+        actual.prefixValueExpression.prefixUnitsList
+
+      NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->
+        actual.valueSuffixExpression.suffixUnitsList
+
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_SUFFIX_EXPRESSION ->
+        actual.prefixValueSuffixExpression.prefixUnitsList +
+          actual.prefixValueSuffixExpression.suffixUnitsList
+
+      else -> emptyList()
+    }
   }
 
   /**
-   * Truth subject for verifying properties of [NumberUnit]s.
+   * Truth subject for verifying properties of [NumberUnitExpression]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
-   * [NumberUnit] proto can be verified through inherited methods.
+   * [NumberUnitExpression] proto can be verified through inherited methods.
    *
    * Call [NumberUnitSubject.assertThat] to create the subject.
    */
   class NumberUnitSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: NumberUnit
+    private val actual: NumberUnitExpression
   ) : LiteProtoSubject(metadata, actual) {
 
     /**
-     * Returns a [StringSubject] to test [NumberUnit.getUnit].
-     *
-     * This method never fails since the underlying property defaults to an empty string if it's not
-     * defined in the unit.
+     * Returns a [ComparableSubject] to test [NumberUnitExpression.getUnit].
      */
-    fun hasUnitThat(): StringSubject = assertThat(actual.unit)
+    fun hasUnitThat(): ComparableSubject<NumberUnitExpression.Unit> = assertThat(actual.unit)
 
     /**
-     * Returns an [IntegerSubject] to test [NumberUnit.getExponent].
+     * Returns a [ComparableSubject] to test [NumberUnitExpression.getSiPrefix].
+     */
+    fun hasSiPrefixThat(): ComparableSubject<NumberUnitExpression.SiPrefix> =
+      assertThat(actual.siPrefix)
+
+    /**
+     * Returns an [IntegerSubject] to test [NumberUnitExpression.getExponent].
      *
      * This method never fails since the underlying property defaults to 0 if it's not defined in
      * the unit.
@@ -142,19 +154,20 @@ class NumberWithUnitsSubject private constructor(
 
     companion object {
       /**
-       * Returns a new [NumberUnitSubject] to verify aspects of the specified [NumberUnit] value.
+       * Returns a new [NumberUnitSubject] to verify aspects of the specified
+       * [NumberUnitExpression] value.
        */
-      fun assertThat(actual: NumberUnit): NumberUnitSubject =
+      fun assertThat(actual: NumberUnitExpression): NumberUnitSubject =
         assertAbout(::NumberUnitSubject).that(actual)
     }
   }
 
   companion object {
     /**
-     * Returns a new [NumberWithUnitsSubject] to verify aspects of the specified [NumberWithUnits]
-     * value.
+     * Returns a new [NumberWithUnitsSubject] to verify aspects of the specified
+     * [NumberWithUnitsExpression] value.
      */
-    fun assertThat(actual: NumberWithUnits): NumberWithUnitsSubject =
+    fun assertThat(actual: NumberWithUnitsExpression): NumberWithUnitsSubject =
       assertAbout(::NumberWithUnitsSubject).that(actual)
   }
 }

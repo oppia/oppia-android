@@ -4,7 +4,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.NumberUnitExpression.SiPrefix
+import org.oppia.android.app.model.NumberUnitExpression.Unit
+import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.robolectric.annotation.Config
@@ -59,7 +61,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -69,7 +74,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(99.99)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -79,7 +87,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(-50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -94,7 +105,10 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(2)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -104,8 +118,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -123,7 +144,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(500.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -133,7 +157,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(10.5)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -151,7 +178,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -161,7 +191,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cent").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CENT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -171,7 +204,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -181,7 +217,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("paise").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PAISA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -191,7 +230,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -201,7 +243,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("g").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -211,7 +256,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -221,7 +269,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(300.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("K").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -231,7 +282,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(25.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("degC").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CELSIUS)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -241,7 +295,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -251,7 +308,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -261,7 +321,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -271,7 +334,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(101325.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("Pa").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -281,7 +347,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("A").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -291,7 +360,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(220.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -301,7 +373,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ohm").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OHM)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -311,7 +386,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("Hz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HERTZ)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -321,7 +399,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("mol").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -331,7 +412,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CANDELA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -341,7 +425,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rad").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -351,7 +438,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(90.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("deg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DEGREE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -361,7 +451,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -371,7 +464,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(12.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("in").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -381,7 +477,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(6.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -391,7 +490,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("yd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -401,7 +503,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("gr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -411,7 +516,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -421,7 +529,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(25.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqin").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -431,7 +542,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -441,7 +555,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqyd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -451,7 +568,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(250.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cc").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_CENTIMETER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -461,7 +581,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cuin").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -471,7 +594,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cuft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -481,7 +607,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cuyd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -491,7 +620,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(20.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m2").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -501,7 +633,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m3").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -511,7 +646,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(30.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("min").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MINUTE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -521,7 +659,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -531,7 +672,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(3.14)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -541,7 +685,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(273.15)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("K").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -551,7 +698,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(-10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -561,7 +711,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(-3.5)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -576,7 +730,10 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(2)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -591,7 +748,11 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(4)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -609,7 +770,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -620,8 +785,12 @@ class NumberWithUnitsParserTest {
       hasRealValueThat().isEqualTo(100.0)
       // Tokenizer treats each 'm' as MeterUnit; abbreviation "mm" is not milli+meter.
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("m")
-      unit(1).hasUnitThat().isEqualTo("m")
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+      }
     }
   }
 
@@ -631,7 +800,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cm").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.CENTI)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -642,8 +815,12 @@ class NumberWithUnitsParserTest {
       hasRealValueThat().isEqualTo(500.0)
       // Tokenizer treats 'm' as MeterUnit and 'g' as GramUnit; abbreviation "mg" is not milli+gram.
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("m")
-      unit(1).hasUnitThat().isEqualTo("g")
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+      }
     }
   }
 
@@ -653,7 +830,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("MW").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MEGA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -663,7 +844,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("GHz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HERTZ)
+        hasSiPrefixThat().isEqualTo(SiPrefix.GIGA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -673,7 +858,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ns").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.NANO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -683,7 +872,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("um").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MICRO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -693,7 +886,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ps").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.PICO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -703,7 +900,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("fm").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.FEMTO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -714,8 +915,12 @@ class NumberWithUnitsParserTest {
       hasRealValueThat().isEqualTo(1013.0)
       // Tokenizer treats 'h' as HourUnit and 'Pa' as PascalUnit; abbreviated "hPa" is not hecto+Pa.
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("hr")
-      unit(1).hasUnitThat().isEqualTo("Pa")
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+      }
     }
   }
 
@@ -725,7 +930,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dam").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.DECA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -735,7 +944,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dl").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.DECI)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -745,7 +958,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("TW").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasSiPrefixThat().isEqualTo(SiPrefix.TERA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -755,7 +972,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("PJ").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.PETA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -765,7 +986,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("EJ").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.EXA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -775,7 +1000,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ZJ").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.ZETTA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -785,7 +1014,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("YJ").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.YOTTA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -795,7 +1028,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(500.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("as").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.ATTO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -805,7 +1042,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("zs").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.ZEPTO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -815,7 +1056,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ys").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.YOCTO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -825,7 +1070,11 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("kl").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -836,8 +1085,12 @@ class NumberWithUnitsParserTest {
       hasRealValueThat().isEqualTo(10.0)
       // Tokenizer treats first 'm' as MeterUnit then "mol" as MoleUnit.
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("m")
-      unit(1).hasUnitThat().isEqualTo("mol")
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+      }
     }
   }
 
@@ -855,7 +1108,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
     }
   }
 
@@ -865,7 +1121,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -875,7 +1134,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(3)
+      }
     }
   }
 
@@ -901,8 +1163,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -912,9 +1181,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -924,8 +1203,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -935,8 +1220,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(9.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -946,8 +1237,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1000.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-3)
+      }
     }
   }
 
@@ -965,9 +1263,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -977,9 +1285,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1005,9 +1323,18 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1017,9 +1344,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -1029,8 +1366,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -1040,7 +1383,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1050,7 +1396,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1060,7 +1409,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(200.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1110,8 +1462,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1121,9 +1480,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1177,7 +1546,10 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(100)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1199,7 +1571,10 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(4)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1209,7 +1584,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1219,7 +1597,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1229,7 +1610,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(500.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("g").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1239,7 +1623,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(6.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1249,7 +1636,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1259,7 +1649,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(12.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("in").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1269,7 +1662,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(12.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("in").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1279,7 +1675,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("yd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1289,7 +1688,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("yd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1299,7 +1701,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1309,7 +1714,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1319,7 +1727,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1329,7 +1740,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1339,7 +1753,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("A").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1349,7 +1766,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(220.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1359,7 +1779,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(220.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1369,7 +1792,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("ohm").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OHM)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1379,7 +1805,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1389,7 +1818,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("Hz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HERTZ)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1399,7 +1831,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(300.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("K").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1409,7 +1844,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(25.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("degC").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CELSIUS)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1419,7 +1857,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rad").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1429,7 +1870,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rad").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1439,7 +1883,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(90.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("deg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DEGREE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1449,7 +1896,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(90.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("deg").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DEGREE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1459,7 +1909,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1469,7 +1922,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(60.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1479,7 +1935,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(30.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("min").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MINUTE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1489,7 +1948,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(30.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("min").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MINUTE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1499,7 +1961,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1509,7 +1974,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1519,7 +1987,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("mol").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1529,7 +2000,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(2.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("mol").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1539,7 +2013,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CANDELA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1549,7 +2026,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1559,7 +2039,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1569,7 +2052,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("gr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1579,7 +2065,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("gr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAIN)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1589,7 +2078,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1599,7 +2091,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1609,7 +2104,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1619,7 +2117,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1629,7 +2130,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("Pa").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1639,7 +2143,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(20.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqft").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1649,7 +2156,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(30.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqin").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_INCH)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1659,7 +2169,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(40.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("sqyd").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_YARD)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1669,7 +2182,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cent").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CENT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1679,7 +2195,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1689,7 +2208,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1699,7 +2221,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cent").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CENT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1709,7 +2234,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("cent").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CENT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1719,7 +2247,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1729,7 +2260,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1739,7 +2273,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("paise").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PAISA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1749,7 +2286,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("paise").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PAISA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1759,7 +2299,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("paise").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PAISA)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1769,7 +2312,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1779,7 +2325,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(0.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1789,7 +2338,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(0.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1799,7 +2351,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(-0.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1809,7 +2364,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1000000.0)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1819,7 +2377,10 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-6).of(0.001)
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1829,8 +2390,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1840,9 +2407,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
     }
   }
 
@@ -1852,10 +2429,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1865,8 +2455,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kN").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1876,8 +2473,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kW").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -1887,8 +2491,16 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("MJ").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MEGA)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1898,8 +2510,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("GW").hasExponentThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasSiPrefixThat().isEqualTo(SiPrefix.GIGA)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1909,8 +2528,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kN").hasExponentThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -1920,8 +2546,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("kN").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1931,9 +2564,20 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("cm").hasExponentThat().isEqualTo(-2)
-      hasUnit("kN").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.CENTI)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1943,8 +2587,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(88.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1954,8 +2604,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(32.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -1965,8 +2621,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("in").hasExponentThat().isEqualTo(1)
-      hasUnit("min").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.INCH)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.MINUTE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1976,8 +2638,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("yd").hasExponentThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.YARD)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1987,8 +2655,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
-      hasUnit("cuin").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_INCH)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -1998,8 +2672,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("gr").hasExponentThat().isEqualTo(1)
-      hasUnit("cc").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAIN)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_CENTIMETER)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2009,8 +2689,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
-      hasUnit("sqft").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2020,8 +2706,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m2").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2031,8 +2723,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m3").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2042,8 +2741,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(20.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("l").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.LITER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2053,8 +2758,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("cc").hasExponentThat().isEqualTo(1)
-      hasUnit("min").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_CENTIMETER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.MINUTE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2064,8 +2775,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("sqft").hasExponentThat().isEqualTo(1)
-      hasUnit("hr").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2075,8 +2792,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(15.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("cuft").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2087,10 +2810,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2101,10 +2837,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2115,11 +2864,27 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(8.0)
       hasUnitCountThat().isEqualTo(5)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("mol").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 4).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2129,11 +2894,27 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(5)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
-      hasUnit("A").hasExponentThat().isEqualTo(1)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 4).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2143,12 +2924,31 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(6)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("cd").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
-      hasUnit("mol").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.CANDELA)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 4).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 5).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2158,10 +2958,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2171,9 +2984,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
     }
   }
 
@@ -2183,10 +3006,22 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2196,8 +3031,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2207,10 +3048,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(3.14)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2220,8 +3074,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(-9.81)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2231,9 +3091,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-5).of(-2.5)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2243,9 +3113,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-6).of(0.001)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2255,9 +3135,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isWithin(1e-2).of(999999.99)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("m").hasExponentThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(3)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2271,9 +3161,19 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(2)
       }
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2287,8 +3187,15 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(2)
       }
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-3)
+      }
     }
   }
 
@@ -2302,10 +3209,23 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(4)
       }
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2319,11 +3239,27 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(7)
       }
       hasUnitCountThat().isEqualTo(5)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("mol").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 4).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2333,10 +3269,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2346,11 +3295,27 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(5)
-      hasUnit("rupee").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.RUPEE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2363,10 +3328,23 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(4)
       }
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("dollar").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2376,8 +3354,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(5)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(5)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2387,8 +3371,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-4)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-4)
+      }
     }
   }
 
@@ -2398,9 +3388,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-4)
-      hasUnit("s").hasExponentThat().isEqualTo(-5)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-4)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-5)
+      }
     }
   }
 
@@ -2410,8 +3410,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(0)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(0)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2421,8 +3427,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(0)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(0)
+      }
     }
   }
 
@@ -2433,10 +3445,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(2)
-      hasUnit("A").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2447,9 +3472,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("A").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2458,14 +3493,23 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("1 kg m^2/(s^3 A)")
     assertThat(result).apply {
       hasUnitCountThat().isEqualTo(4)
-      unit(0).hasUnitThat().isEqualTo("kg")
-      unit(0).hasExponentThat().isEqualTo(1)
-      unit(1).hasUnitThat().isEqualTo("m")
-      unit(1).hasExponentThat().isEqualTo(2)
-      unit(2).hasUnitThat().isEqualTo("s")
-      unit(2).hasExponentThat().isEqualTo(-3)
-      unit(3).hasUnitThat().isEqualTo("A")
-      unit(3).hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2474,12 +3518,25 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("1 kg m^2 cd/(s^3 A mol)")
     assertThat(result).apply {
       hasUnitCountThat().isEqualTo(6)
-      unit(0).hasUnitThat().isEqualTo("kg")
-      unit(1).hasUnitThat().isEqualTo("m")
-      unit(2).hasUnitThat().isEqualTo("cd")
-      unit(3).hasUnitThat().isEqualTo("s")
-      unit(4).hasUnitThat().isEqualTo("A")
-      unit(5).hasUnitThat().isEqualTo("mol")
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.CANDELA)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+      }
+      hasSuffixWithIndexThat(index = 4).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+      }
+      hasSuffixWithIndexThat(index = 5).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+      }
     }
   }
 
@@ -2488,16 +3545,27 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("$10 kg m/(s^2 K)")
     assertThat(result).apply {
       hasUnitCountThat().isEqualTo(5)
-      unit(0).hasUnitThat().isEqualTo("dollar")
-      unit(0).hasExponentThat().isEqualTo(1)
-      unit(1).hasUnitThat().isEqualTo("kg")
-      unit(1).hasExponentThat().isEqualTo(1)
-      unit(2).hasUnitThat().isEqualTo("m")
-      unit(2).hasExponentThat().isEqualTo(1)
-      unit(3).hasUnitThat().isEqualTo("s")
-      unit(3).hasExponentThat().isEqualTo(-2)
-      unit(4).hasUnitThat().isEqualTo("K")
-      unit(4).hasExponentThat().isEqualTo(-1)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2508,9 +3576,18 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
-      hasUnit("K").hasExponentThat().isEqualTo(-4)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-4)
+      }
     }
   }
 
@@ -2521,8 +3598,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1000.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2533,9 +3616,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2546,9 +3639,18 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(200.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2559,8 +3661,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("Pa").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2571,8 +3679,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2583,8 +3697,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
     }
   }
 
@@ -2595,8 +3716,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(3.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("rad").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2607,8 +3734,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("rad").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2619,8 +3752,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2631,8 +3770,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(72.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2643,8 +3788,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1360.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2655,8 +3806,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(42000.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2667,8 +3825,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(18.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("mol").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.MOLE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2679,8 +3844,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("cd").hasExponentThat().isEqualTo(1)
-      hasUnit("rad").hasExponentThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.CANDELA)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.RADIAN)
+        hasExponentThat().isEqualTo(2)
+      }
     }
   }
 
@@ -2691,10 +3862,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2705,10 +3889,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(1)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2719,10 +3916,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2732,8 +3942,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2743,9 +3959,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2755,8 +3981,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(50.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("N").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -2766,9 +3998,18 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(200.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2778,9 +4019,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(4186.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("J").hasExponentThat().isEqualTo(1)
-      hasUnit("kg").hasExponentThat().isEqualTo(-1)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2790,8 +4041,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(88.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("ft").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.FOOT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2801,8 +4058,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("oz").hasExponentThat().isEqualTo(1)
-      hasUnit("cuin").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.OUNCE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.CUBIC_INCH)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2812,8 +4075,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("V").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2823,8 +4092,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1000.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-3)
+      }
     }
   }
 
@@ -2834,8 +4110,15 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("MW").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MEGA)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2936,9 +4219,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2948,10 +4241,23 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(4)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(2)
-      hasUnit("s").hasExponentThat().isEqualTo(-3)
-      hasUnit("A").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-3)
+      }
+      hasSuffixWithIndexThat(index = 3).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -2961,9 +4267,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(5.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2975,10 +4291,14 @@ class NumberWithUnitsParserTest {
       hasRealValueThat().isEqualTo(1.0)
       // Parser does not simplify, both m occurrences appear
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("m")
-      unit(0).hasExponentThat().isEqualTo(1)
-      unit(1).hasUnitThat().isEqualTo("m")
-      unit(1).hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -2988,10 +4308,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(2)
-      unit(0).hasUnitThat().isEqualTo("m")
-      unit(0).hasExponentThat().isEqualTo(1)
-      unit(1).hasUnitThat().isEqualTo("m")
-      unit(1).hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
@@ -3001,11 +4325,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      unit(1).hasUnitThat().isEqualTo("s")
-      unit(1).hasExponentThat().isEqualTo(-1)
-      unit(2).hasUnitThat().isEqualTo("s")
-      unit(2).hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -3015,9 +4347,19 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(0.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("kg").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-2)
+      }
     }
   }
 
@@ -3027,8 +4369,14 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(-0.0)
       hasUnitCountThat().isEqualTo(2)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
-      hasUnit("s").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -3038,9 +4386,18 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(0.0)
       hasUnitCountThat().isEqualTo(3)
-      hasUnit("W").hasExponentThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(-2)
-      hasUnit("K").hasExponentThat().isEqualTo(-1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(-1)
+      }
     }
   }
 
@@ -3054,13 +4411,16 @@ class NumberWithUnitsParserTest {
         hasDenominatorThat().isEqualTo(0)
       }
       hasUnitCountThat().isEqualTo(1)
-      hasUnit("m").hasExponentThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
     }
   }
 
   private fun parseNumberWithUnitsExpectingSuccess(
     expression: String
-  ): NumberWithUnits {
+  ): NumberWithUnitsExpression {
     val parsingResult = parseNumberWithUnits(expression)
     return expectSuccessfulParsingResult(parsingResult)
   }
@@ -3074,17 +4434,17 @@ class NumberWithUnitsParserTest {
 
   private fun parseNumberWithUnits(
     expression: String,
-  ): NumberWithUnitsParsingResult<NumberWithUnits> {
+  ): NumberWithUnitsParsingResult<NumberWithUnitsExpression> {
     return NumberWithUnitsParser.parseNumberWithUnits(expression)
   }
 
   private fun expectSuccessfulParsingResult(
-    result: NumberWithUnitsParsingResult<NumberWithUnits>
-  ): NumberWithUnits {
+    result: NumberWithUnitsParsingResult<NumberWithUnitsExpression>
+  ): NumberWithUnitsExpression {
     assertThat(result).isInstanceOf(
       NumberWithUnitsParsingResult.Success::class.java
     )
-    return (result as NumberWithUnitsParsingResult.Success<NumberWithUnits>).result
+    return (result as NumberWithUnitsParsingResult.Success<NumberWithUnitsExpression>).result
   }
 
   private fun <T> expectFailingParsingResult(
