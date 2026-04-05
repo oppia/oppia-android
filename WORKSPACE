@@ -34,7 +34,7 @@ http_archive(
     build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
     sha256 = HTTP_DEPENDENCY_VERSIONS["zlib"]["sha"],
     strip_prefix = "zlib-" + HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
-    url = "https://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    url = "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
 )
 
 # Oppia's backend proto API definitions.

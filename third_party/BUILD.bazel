@@ -65,8 +65,7 @@ java_library(
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//visibility:public"],
     exports = [
-        "//third_party:com_squareup_moshi_moshi",
-        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 

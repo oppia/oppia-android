@@ -999,26 +999,6 @@ class MavenDependenciesRetrieverTest {
   }
 
   @Test
-  fun testGenerateDepsListFromMavenInstall_aarRepoFallback_usesAarCoordinate() {
-    val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
-    writeMavenInstallJson(mavenInstallFile)
-
-    val mavenListDependencies = runBlocking {
-      retriever.generateDependenciesListFromMavenInstallAsync(
-        "${tempFolder.root}/third_party/maven_install.json",
-        listOf(ACTIVITY_DEP)
-      ).await()
-    }
-
-    assertThat(mavenListDependencies).containsExactly(
-      MavenListDependency(
-        coord = DEP_WITH_AAR_REPO_FALLBACK.coordStrToMavenCoord(),
-        repoUrls = listOf(GOOGLE_MAVEN_URL)
-      )
-    )
-  }
-
-  @Test
   fun testMavenCoordinate_parseFrom_oneComponent_throwsException() {
     val exception = assertThrows<IllegalStateException>() {
       MavenDependenciesRetriever.MavenCoordinate.parseFrom("androidx.lifecycle")
@@ -1525,17 +1505,13 @@ class MavenDependenciesRetrieverTest {
           },
           "io.fabric.sdk.android:fabric": {
             "version": "1.4.7"
-          },
-          "androidx.activity:activity": {
-            "version": "1.4.0"
           }
         },
         "repositories": {
           "$GOOGLE_MAVEN_URL": [
             "androidx.databinding:databinding-adapters",
             "com.google.firebase:firebase-analytics",
-            "io.fabric.sdk.android:fabric",
-            "androidx.activity:activity:aar"
+            "io.fabric.sdk.android:fabric"
           ],
           "$PUBLIC_MAVEN_URL": [
             "com.github.bumptech.glide:annotations",
@@ -1625,7 +1601,6 @@ class MavenDependenciesRetrieverTest {
       on { isValidArtifactFileUrl(eq(IO_FABRIC_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(GLIDE_ANNOTATIONS_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
-      on { isValidArtifactFileUrl(eq(ACTIVITY_ARTIFACT_AAR_URL)) }.thenReturn(true)
     }
   }
 
@@ -1648,7 +1623,6 @@ class MavenDependenciesRetrieverTest {
       "com.github.bumptech.glide:annotations:4.11.0"
     private const val DEP_WITH_DIRECT_LINK_ONLY_LICENSE =
       "com.google.firebase:firebase-analytics:17.5.0"
-    private const val DEP_WITH_AAR_REPO_FALLBACK = "androidx.activity:activity:aar:1.4.0"
     private const val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
 
     private const val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
@@ -1661,7 +1635,6 @@ class MavenDependenciesRetrieverTest {
     private const val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
     private const val FIREBASE_DEP = "com_google_firebase_firebase_analytics"
     private const val IO_FABRIC_DEP = "io_fabric_sdk_android_fabric"
-    private const val ACTIVITY_DEP = "androidx_activity_activity"
 
     private const val GOOGLE_MAVEN_URL = "https://maven.google.com"
     private const val PUBLIC_MAVEN_URL = "https://repo1.maven.org/maven2"
@@ -1699,11 +1672,5 @@ class MavenDependenciesRetrieverTest {
         "/firebase-analytics-$FIREBASE_ANALYTICS_VERSION"
     private const val FIREBASE_ANALYTICS_POM_URL = "$FIREBASE_ANALYTICS_BASE_URL.pom"
     private const val FIREBASE_ANALYTICS_ARTIFACT_URL = "$FIREBASE_ANALYTICS_BASE_URL.jar"
-
-    private const val ACTIVITY_VERSION = "1.4.0"
-    private const val ACTIVITY_BASE_URL =
-      "$GOOGLE_MAVEN_URL/androidx/activity/activity/$ACTIVITY_VERSION" +
-        "/activity-$ACTIVITY_VERSION"
-    private const val ACTIVITY_ARTIFACT_AAR_URL = "$ACTIVITY_BASE_URL.aar"
   }
 }

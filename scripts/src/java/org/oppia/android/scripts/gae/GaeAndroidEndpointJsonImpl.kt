@@ -37,8 +37,8 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestStat
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicContentProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
-import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.android.scripts.proto.DownloadListVersions
+import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
@@ -72,7 +72,8 @@ class GaeAndroidEndpointJsonImpl(
   private val coroutineDispatcher: CoroutineDispatcher,
   private val imageDownloader: ImageDownloader,
   private val forcedVersions: DownloadListVersions?,
-  private val downloadConfig: DownloadConfig
+  private val downloadConfig: DownloadConfig,
+  private val filterInvalidTopics: Boolean
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
     AndroidActivityHandlerService(
@@ -129,7 +130,7 @@ class GaeAndroidEndpointJsonImpl(
           forcedVersions = forcedVersions
         )
       converterInitializer = ConverterInitializer(
-        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig
+        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig, filterInvalidTopics
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -143,7 +144,7 @@ class GaeAndroidEndpointJsonImpl(
         topicRepository.downloadConstructedCompleteTopicAsync(
           topicId, topicCountsTracker.topicStructureCountMap.getValue(topicId).metricsCallbacks
         ).also { tracker.reportDownloaded("${topicId}_$index") }
-      }.awaitAll().associateBy { it.topic.id }
+      }.awaitAll().filterNotNull().associateBy { it.topic.id }
 
       if (downloadQuestions) {
         val questions = activityService.fetchLatestQuestionsAsync().await()
@@ -742,7 +743,8 @@ class GaeAndroidEndpointJsonImpl(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val topicDependencies: Map<String, Set<String>>,
     private val imageDownloader: ImageDownloader,
-    private val downloadConfig: DownloadConfig
+    private val downloadConfig: DownloadConfig,
+    private val filterInvalidTopics: Boolean
   ) {
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
@@ -758,10 +760,8 @@ class GaeAndroidEndpointJsonImpl(
     suspend fun getTopicPackRepository(constraints: CompatibilityConstraints): TopicPackRepository =
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
-    private suspend fun initializeLocalizationTracker(): LocalizationTracker {
-      return LocalizationTracker.createTracker(imageDownloader, downloadConfig)
-        .also { this.localizationTracker = it }
-    }
+    private suspend fun initializeLocalizationTracker(): LocalizationTracker =
+      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also { this.localizationTracker = it }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
@@ -773,7 +773,7 @@ class GaeAndroidEndpointJsonImpl(
       constraints: CompatibilityConstraints
     ): TopicPackRepository {
       return TopicPackRepository(
-        activityService, coroutineDispatcher, getLocalizationTracker(), constraints
+        activityService, coroutineDispatcher, getLocalizationTracker(), constraints, filterInvalidTopics
       )
     }
   }

@@ -5,6 +5,10 @@ concept_cards {
     html: "Hello. Welcome to Oppia."
     content_id: "explanation"
   }
+  worked_example {
+    html: "This is the first example."
+    content_id: "test_skill_content_id_1"
+  }
   recorded_voiceover {
     key: "explanation"
     value {
@@ -169,6 +173,10 @@ concept_cards {
     html: "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
     content_id: "explanation"
   }
+  worked_example {
+    html: "Worked example with <i>rich text</i>."
+    content_id: "worked_example_1"
+  }
   recorded_voiceover {
     key: "explanation"
     value {
@@ -306,6 +314,14 @@ concept_cards {
   explanation {
     html: "Explanation without rich text."
     content_id: "explanation"
+  }
+  worked_example {
+    html: "Worked example without rich text."
+    content_id: "worked_example_1"
+  }
+  worked_example {
+    html: "Second worked example."
+    content_id: "worked_example_2"
   }
   recorded_voiceover {
     key: "explanation"
@@ -570,6 +586,10 @@ concept_cards {
     html: "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p><p><oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;UxTGIJqaHMLa&amp;quot;\" text-with-value=\"&amp;quot;Learn more.&amp;quot;\"></oppia-noninteractive-skillreview></p>"
     content_id: "explanation"
   }
+  worked_example {
+    html: "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
+    content_id: "worked_example_1"
+  }
   recorded_voiceover {
     key: "explanation"
     value {
@@ -615,6 +635,10 @@ concept_cards {
   explanation {
     html: "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
     content_id: "explanation"
+  }
+  worked_example {
+    html: "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
+    content_id: "worked_example_1"
   }
   recorded_voiceover {
     key: "explanation"

@@ -386,12 +386,13 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetConceptCard_validSkill_containsWorkedExampleTranslationContentId() {
+  fun testGetConceptCard_validSkill_returnsCardWithCorrectWorkedExample() {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
-      .containsKey("test_skill_content_id_1")
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
+      .isEqualTo("This is the first example.")
   }
 
   @Test
@@ -412,7 +413,7 @@ class TopicControllerTest {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    val contentId = "test_skill_content_id_1"
+    val contentId = ephemeralConceptCard.conceptCard.getWorkedExample(0).contentId
     val translationsMap = ephemeralConceptCard.conceptCard.writtenTranslationMap
     assertThat(translationsMap).containsKey(contentId)
     val translations = translationsMap.getValue(contentId).translationMappingMap
@@ -438,7 +439,7 @@ class TopicControllerTest {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    val contentId = "test_skill_content_id_1"
+    val contentId = ephemeralConceptCard.conceptCard.getWorkedExample(0).contentId
     val voiceoversMap = ephemeralConceptCard.conceptCard.recordedVoiceoverMap
     assertThat(voiceoversMap).containsKey(contentId)
     val voiceovers = voiceoversMap.getValue(contentId).voiceoverMappingMap
@@ -480,12 +481,13 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetConceptCard_validSecondSkill_containsWorkedExampleTranslationContentId() {
+  fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextWorkedExample() {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
-      .containsKey("worked_example_1")
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
+      .isEqualTo("Worked example with <i>rich text</i>.")
   }
 
   @Test
@@ -522,14 +524,15 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetConceptCard_validThirdSkillDifferentTopic_containsMultipleWorkedExampleContentIds() {
+  fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithMultipleWorkedExamples() {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
-      .containsKey("worked_example_1")
-    assertThat(ephemeralConceptCard.conceptCard.writtenTranslationMap)
-      .containsKey("worked_example_2")
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(2)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
+      .isEqualTo("Worked example without rich text.")
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(1).html)
+      .isEqualTo("Second worked example.")
   }
 
   @Test

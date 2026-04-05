@@ -72,14 +72,14 @@ echo ""
 echo "********************************"
 echo "Running Accessibility label checks"
 echo "********************************"
-bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.textproto app/src/main/AndroidManifest.xml
+bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 echo ""
 
 # Run KDoc Validation Check
 echo "********************************"
 echo "Running KDoc validation checks"
 echo "********************************"
-bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.textproto
+bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 echo ""
 
 # Run String resource validation check
@@ -104,7 +104,7 @@ echo ""
 echo "********************************"
 echo "Running maven dependencies update checks"
 echo "********************************"
-bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto
+bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
 echo ""
 
 # License Texts Check
@@ -118,5 +118,5 @@ echo ""
 echo "********************************"
 echo "Running TODO correctness checks"
 echo "********************************"
-bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.textproto
+bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
 echo ""
