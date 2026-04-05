@@ -98,9 +98,9 @@ class NumberWithUnitsSubject private constructor(
     assertWithMessage("Expected suffix unit index to be non-negative, but was: $index")
       .that(index)
       .isAtLeast(0)
-    assertWithMessage("Expected suffix unit index $index to be valid for suffix unit count ${units.size}")
-      .that(index)
-      .isLessThan(units.size)
+    assertWithMessage(
+      "Expected suffix unit index $index to be valid for suffix unit count ${units.size}"
+    ).that(index).isLessThan(units.size)
     return NumberUnitSubject.assertThat(units[index])
   }
 

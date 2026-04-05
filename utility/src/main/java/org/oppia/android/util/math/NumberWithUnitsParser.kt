@@ -81,10 +81,11 @@ class NumberWithUnitsParser private constructor(
       if (suffixUnits.any { isCurrencyUnit(it.unit) }) {
         return NumberWithUnitsParsingError.DuplicateCurrencyError.toFailure()
       }
-      expressionBuilder.prefixValueSuffixExpression = PrefixValueSuffixExpression.newBuilder().apply {
-        addPrefixUnits(prefixUnit)
-        addAllSuffixUnits(suffixUnits)
-      }.build()
+      expressionBuilder.prefixValueSuffixExpression =
+        PrefixValueSuffixExpression.newBuilder().apply {
+          addPrefixUnits(prefixUnit)
+          addAllSuffixUnits(suffixUnits)
+        }.build()
     } else {
       expressionBuilder.prefixValueExpression = PrefixValueExpression.newBuilder().apply {
         addPrefixUnits(prefixUnit)
@@ -208,7 +209,7 @@ class NumberWithUnitsParser private constructor(
     // Optional: division_operator , denominator_expression
     if (tokens.peek() is Token.DivideSymbol) {
       tokens.next() // consume '/'
-      val denomResult = parseDenominatorExpression()
+      val denomResult = parseDenominatorExp()
       if (denomResult is NumberWithUnitsParsingResult.Failure) return denomResult
       allUnits.addAll((denomResult as NumberWithUnitsParsingResult.Success).result)
     }
@@ -223,7 +224,7 @@ class NumberWithUnitsParser private constructor(
    *     ( left_paren , units_multiplied , right_paren ) | units_multiplied ;
    * ```
    */
-  private fun parseDenominatorExpression(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
+  private fun parseDenominatorExp(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
     val hasParens = tokens.peek() is Token.LeftParenthesisSymbol
     if (hasParens) tokens.next() // consume '('
 
@@ -293,7 +294,10 @@ class NumberWithUnitsParser private constructor(
       val expToken = tokens.peek()
       if (expToken is Token.PositiveInteger) {
         tokens.next()
-        val exponentMultiplier = if (negativeExponent) -expToken.parsedValue else expToken.parsedValue
+        val exponentMultiplier = if (negativeExponent)
+          -expToken.parsedValue
+        else
+          expToken.parsedValue
         finalExponent *= exponentMultiplier
       } else {
         return NumberWithUnitsParsingError.MissingExponentError.toFailure()

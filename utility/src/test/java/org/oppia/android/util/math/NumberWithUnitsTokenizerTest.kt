@@ -9,7 +9,6 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.NumberWithUnitsTokenSubject.Companion.assertThat
-import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
 import org.robolectric.annotation.Config
 
 /** Tests for [NumberWithUnitsTokenizer]. */
