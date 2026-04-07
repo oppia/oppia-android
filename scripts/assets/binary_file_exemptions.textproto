@@ -1,7 +1,6 @@
 # Exemptions for binary files that are expected to be present in the repository.
 # Each exempted file uses its full relative path from the repository root.
 # Entries are maintained in lexicographical order.
-
 binary_file_exemption {
   exempted_file_path: ".gitsecret/keys/pubring.kbx"
 }

@@ -340,13 +340,6 @@ BINARY_FILE_EXEMPTION_ASSETS = generate_binary_file_assets_list_from_text_protos
     binary_file_exemptions_name = ["binary_file_exemptions"],
 )
 
-kt_jvm_library(
-    name = "binary_file_check_assets",
-    testonly = True,
-    data = BINARY_FILE_EXEMPTION_ASSETS,
-    visibility = [":oppia_script_test_visibility"],
-)
-
 kt_jvm_binary(
     name = "binary_file_check",
     testonly = True,
