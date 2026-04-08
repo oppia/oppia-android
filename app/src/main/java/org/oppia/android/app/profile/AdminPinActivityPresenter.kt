@@ -65,6 +65,7 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.pinErrorMsg.set("")
           adminViewModel.savedPin.set(it)
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -79,6 +80,7 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.confirmPinErrorMsg.set("")
           adminViewModel.savedConfirmPin.set(it)
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -103,6 +105,7 @@ class AdminPinActivityPresenter @Inject constructor(
         failed = true
       }
       if (failed) {
+        updateSubmitButtonState()
         return@setOnClickListener
       }
       val profileId =
@@ -155,5 +158,13 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       false
     }
+
+    updateSubmitButtonState()
+  }
+
+  private fun updateSubmitButtonState() {
+    val hasPinError = !adminViewModel.pinErrorMsg.get().isNullOrEmpty()
+    val hasConfirmPinError = !adminViewModel.confirmPinErrorMsg.get().isNullOrEmpty()
+    adminViewModel.isButtonActive.set(!hasPinError && !hasConfirmPinError)
   }
 }

@@ -366,6 +366,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -400,6 +401,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -445,6 +447,7 @@ class AdminPinActivityTest {
             )
           )
         )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -517,6 +520,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -528,6 +532,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -794,6 +799,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -837,6 +843,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -915,6 +922,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -927,6 +935,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -1016,6 +1025,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -1057,6 +1067,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
