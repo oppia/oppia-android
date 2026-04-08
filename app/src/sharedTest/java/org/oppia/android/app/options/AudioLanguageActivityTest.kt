@@ -92,7 +92,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.ui.R as UiR
 
 /** Tests for [AudioLanguageActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -148,7 +147,7 @@ class AudioLanguageActivityTest {
     runWithLaunchedActivity(ENGLISH_AUDIO_LANGUAGE) {
       onActivity { activity ->
         val toolbarTitle: TextView =
-          activity.findViewById(UiR.id.audio_language_toolbar_title)
+          activity.findViewById(R.id.audio_language_toolbar_title)
 
         assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(toolbarTitle.isSelected).isEqualTo(true)
