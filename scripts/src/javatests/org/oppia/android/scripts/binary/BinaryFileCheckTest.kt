@@ -52,7 +52,6 @@ class BinaryFileCheckTest {
 
   @Test
   fun testCheck_textprotoFile_passes() {
-    // This was the original false positive case from issue #5847.
     createRepoFile(
       "example.textproto",
       """
@@ -140,9 +139,9 @@ class BinaryFileCheckTest {
     val checkPassed = runScript()
 
     assertThat(checkPassed).isFalse()
-    assertThat(outContent.toString()).contains("Files with unrecognized extensions: 1")
+    assertThat(outContent.toString()).contains("Binary files found: 1")
     assertThat(outContent.toString()).contains("file.xyz (.xyz)")
-    assertThat(outContent.toString()).contains("add their extension to the ALLOWED_TEXT_EXTENSIONS")
+    assertThat(outContent.toString()).contains("please add an exemption to")
   }
 
   @Test
@@ -155,7 +154,7 @@ class BinaryFileCheckTest {
     val checkPassed = runScript()
 
     assertThat(checkPassed).isFalse()
-    assertThat(outContent.toString()).contains("Files with unrecognized extensions: 1")
+    assertThat(outContent.toString()).contains("Binary files found: 1")
     assertThat(outContent.toString()).contains("icon.png (.png)")
   }
 
@@ -228,7 +227,7 @@ class BinaryFileCheckTest {
     val checkPassed = runScript()
 
     assertThat(checkPassed).isFalse()
-    assertThat(outContent.toString()).contains("Files with unrecognized extensions: 1")
+    assertThat(outContent.toString()).contains("Binary files found: 1")
     assertThat(outContent.toString()).contains("bad.xyz")
     assertThat(outContent.toString()).contains("Files with binary content: 1")
     assertThat(outContent.toString()).contains("corrupt.kt")

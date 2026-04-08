@@ -113,7 +113,7 @@ class BinaryFileCheck(
 
     if (unknownExtensionFiles.isNotEmpty()) {
       println(
-        "========== Files with unrecognized extensions: ${unknownExtensionFiles.size} =========="
+        "========== Binary files found: ${unknownExtensionFiles.size} =========="
       )
       unknownExtensionFiles.forEach { file ->
         val ext = file.extension
@@ -121,9 +121,10 @@ class BinaryFileCheck(
       }
       println()
       println(
-        "If these are text files, add their extension to the ALLOWED_TEXT_EXTENSIONS list in" +
-          " BinaryFileCheck.kt. If they are legitimate binary files, add their full path to" +
-          " scripts/assets/binary_file_exemptions.textproto."
+        "If you meant to add these files, please add an exemption to" +
+          " scripts/assets/binary_file_exemptions.textproto." +
+          " If these are text files, add their extension to the" +
+          " ALLOWED_TEXT_EXTENSIONS list in BinaryFileCheck.kt."
       )
       println()
     }
