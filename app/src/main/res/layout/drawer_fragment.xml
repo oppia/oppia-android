@@ -65,20 +65,19 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
+            android:contentDescription="@string/developer_options_icon_content_description"
             app:srcCompat="@drawable/ic_baseline_code_24"
-            app:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
-            android:contentDescription="@string/developer_options_icon_content_description" />
+            app:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_shared_primary_dark_text_color}" />
 
           <TextView
             android:id="@+id/developer_options_text_view"
+            style="@style/AdministratorControlsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/developer_options"
-            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_text_color : @color/component_color_shared_primary_dark_text_color}"
-            android:textSize="14sp" />
+            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_text_color : @color/component_color_shared_primary_dark_text_color}" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,9 +97,9 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            app:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}"
+            android:contentDescription="@string/administrator_controls_icon_content_description"
             app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
-            android:contentDescription="@string/administrator_controls_icon_content_description" />
+            app:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_shared_primary_dark_text_color}" />
 
           <TextView
             android:id="@+id/administrator_controls_text_view"
@@ -108,6 +107,7 @@
             android:text="@string/administrator_controls"
             android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_shared_primary_dark_text_color}" />
         </LinearLayout>
+
       </LinearLayout>
     </androidx.core.widget.NestedScrollView>
   </com.google.android.material.navigation.NavigationView>
