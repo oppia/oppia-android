@@ -16,7 +16,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
@@ -544,7 +543,7 @@ class AudioFragmentTest {
 
   @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testAudioFragment_changeNetworkToCellular_reloadMainContent_showsWarningAndKeepsPlayingAudio() {
+  fun testAudioFragment_changeNetworkToCellular_reloadContent_showsWarningAndKeepsPlayingAudio() {
     addMediaInfo()
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
@@ -631,7 +630,6 @@ class AudioFragmentTest {
       )
     }
   }
-
 
   @Test
   fun testFragment_initialLoad_audioControlsAreDisplayed() {

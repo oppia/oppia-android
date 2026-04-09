@@ -227,7 +227,8 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
     val currentConnectionStatus =
-      networkConnectionUtil.getCurrentConnectionStatus() as? NetworkConnectionUtil.ProdConnectionStatus
+      networkConnectionUtil.getCurrentConnectionStatus()
+        as? NetworkConnectionUtil.ProdConnectionStatus
         ?: NetworkConnectionUtil.ProdConnectionStatus.NONE
     val previousConnectionStatus = lastKnownConnectionStatus
     val hasConnectionStatusChanged = previousConnectionStatus != currentConnectionStatus
@@ -391,7 +392,9 @@ class AudioFragmentPresenter @Inject constructor(
   private fun showCellularDataUsageWarningDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_title))
-      .setMessage(resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_description))
+      .setMessage(
+        resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_description)
+      )
       .setPositiveButton(
         resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_okay_button)
       ) { dialog, _ ->
