@@ -5832,15 +5832,9 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
-    // Simulate previous app instance with feature flag disabled.
-    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     executeInPreviousAppInstance { _ ->
-      // No additional state needs to be arranged since the flag is already disabled.
-    }
+      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
 
-    // In the current app instance, keep feature flag off and verify button is not shown.
-    setUpTestWithFlashbackFeatureOff()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       navigateToPrototypeRatioInputState()
@@ -5849,20 +5843,11 @@ class StateFragmentTest {
       typeRatioExpression("4:8")
       clickSubmitAnswerButton()
 
-      // Verify flashback button is NOT shown (flag is off).
+      // Verify flashback button is NOT shown.
       onView(withId(R.id.flashback_button)).check(doesNotExist())
     }
-  }
 
-  @Test
-  fun testFlashback_featureFlagOff_thenFeatureFlagOn_flashbackButtonShown() {
-    // Simulate previous app instance with feature flag disabled.
-    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
-    executeInPreviousAppInstance { _ ->
-      // No additional state needs to be arranged since the flag is already disabled.
-    }
-
-    // In the current app instance, enable feature flag and verify button is shown.
+    // In the current app instance, keep feature flag on and verify button is shown.
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5873,18 +5858,31 @@ class StateFragmentTest {
       typeRatioExpression("4:8")
       clickSubmitAnswerButton()
 
-      // Verify flashback button IS shown (flag was toggled on).
+      // Verify flashback button is visible.
       scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
     }
   }
 
+
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
-    // Simulate previous app instance with feature flag enabled.
-    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     executeInPreviousAppInstance { _ ->
-      // No additional state needs to be arranged since the flag is already enabled.
+      TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:8")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button IS shown.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
     }
 
     // In the current app instance, feature flag should still be on.
