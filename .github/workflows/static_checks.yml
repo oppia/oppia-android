@@ -215,6 +215,13 @@ jobs:
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
 
+      - name: Binary File Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:binary_file_check -- $(pwd) scripts/assets/binary_file_exemptions.pb
+
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
