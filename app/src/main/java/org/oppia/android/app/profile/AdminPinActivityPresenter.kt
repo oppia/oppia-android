@@ -96,7 +96,7 @@ class AdminPinActivityPresenter @Inject constructor(
         )
         failed = true
       }
-      if (inputPin != confirmPin) {
+      if (!failed && inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
           resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_confirm_wrong
