@@ -58,6 +58,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
+  private var lastKnownConnectionStatus: NetworkConnectionUtil.ProdConnectionStatus? = null
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -222,7 +223,40 @@ class AudioFragmentPresenter @Inject constructor(
     audioViewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
+    maybeLoadMainContentAudio(allowAutoPlay, reloadingContent)
+
+  private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
+    val currentConnectionStatus =
+      networkConnectionUtil.getCurrentConnectionStatus() as? NetworkConnectionUtil.ProdConnectionStatus
+        ?: NetworkConnectionUtil.ProdConnectionStatus.NONE
+    val previousConnectionStatus = lastKnownConnectionStatus
+    val hasConnectionStatusChanged = previousConnectionStatus != currentConnectionStatus
+
+    if (reloadingContent) {
+      when (currentConnectionStatus) {
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+          if (hasConnectionStatusChanged) {
+            showOfflineDialog()
+          }
+          lastKnownConnectionStatus = currentConnectionStatus
+          return
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+          if (
+            hasConnectionStatusChanged &&
+            previousConnectionStatus == NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+          ) {
+            showCellularDataUsageWarningDialog()
+          }
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+        }
+      }
+    }
+
+    lastKnownConnectionStatus = currentConnectionStatus
     audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+  }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
     audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
@@ -352,6 +386,17 @@ class AudioFragmentPresenter @Inject constructor(
     }
     val dialogFragment = CellularAudioDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
+  }
+
+  private fun showCellularDataUsageWarningDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setTitle(resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_description))
+      .setPositiveButton(
+        resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_okay_button)
+      ) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
   }
 
   private fun showOfflineDialog() {
