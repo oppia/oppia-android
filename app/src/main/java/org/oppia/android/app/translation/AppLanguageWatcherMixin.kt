@@ -38,8 +38,8 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    *
-   * @param forcedActivityLanguageMode the [ForcedActivityLanguageMode] indicating how the locale
-   *     should be resolved for this activity
+   * @param forcedActivityLanguageMode the [ForcedActivityLanguageMode] that indicates how the
+   *     locale should be resolved for this activity.
    */
   fun initialize(forcedActivityLanguageMode: ForcedActivityLanguageMode) {
     if (!appLanguageLocaleHandler.isInitialized()) {
@@ -81,15 +81,6 @@ class AppLanguageWatcherMixin @Inject constructor(
         } else {
           translationController.getAppLanguageLocale(currentUserProfileId)
         }
-      }
-      ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
-      ForcedActivityLanguageMode.UNRECOGNIZED -> {
-        oppiaLogger.w(
-          "AppLanguageWatcherMixin",
-          "Unexpected ForcedActivityLanguageMode: $forcedActivityLanguageMode. " +
-            "Falling back to system language."
-        )
-        translationController.getSystemLanguageLocale()
       }
     }
 

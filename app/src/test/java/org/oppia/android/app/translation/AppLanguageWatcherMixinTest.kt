@@ -248,21 +248,6 @@ class AppLanguageWatcherMixinTest {
   }
 
   @Test
-  fun testMixin_initialized_withUnspecifiedMode_fallsBackToSystemLanguage() {
-    profileTestHelper.initializeProfiles()
-    runAlongsideTestActivity { mixin ->
-      mixin.initialize(ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED)
-      testCoroutineDispatchers.runCurrent()
-
-      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
-
-      // Unspecified mode should deterministically fall back to system language.
-      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
-      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
-    }
-  }
-
-  @Test
   fun testMixin_initialized_noProfileLoggedIn_initializesSystemLanguage() {
     runAlongsideTestActivity { mixin ->
       mixin.initialize(ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE)
