@@ -45,11 +45,10 @@ class PoliciesFragmentPresenter @Inject constructor(
       scrollPosition = it.getInt(KEY_SCROLL_Y, 0)
     }
 
-    // Policy content is always in English, so force LTR layout direction and left gravity
+    // Policy content is always in English, so force LTR text direction and left gravity
     // to ensure proper alignment of all content including list items (<li> tags) even when
     // the app is set to an RTL language.
     binding.policyDescriptionTextView.apply {
-      layoutDirection = View.LAYOUT_DIRECTION_LTR
       textDirection = View.TEXT_DIRECTION_LTR
       gravity = Gravity.START
     }
