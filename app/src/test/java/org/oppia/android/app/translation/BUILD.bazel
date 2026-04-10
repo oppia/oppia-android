@@ -2,6 +2,7 @@
 Tests for language & locale UI utilities.
 """
 
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -184,5 +185,14 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+    ],
+)
+
+kt_jvm_test(
+    name = "ForcedActivityLanguageModeTest",
+    srcs = ["ForcedActivityLanguageModeTest.kt"],
+    deps = [
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
     ],
 )

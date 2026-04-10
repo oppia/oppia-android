@@ -1,4 +1,4 @@
-package org.oppia.android.app.model
+package org.oppia.android.app.translation
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

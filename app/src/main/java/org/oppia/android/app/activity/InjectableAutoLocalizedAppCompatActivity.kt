@@ -1,8 +1,8 @@
 package org.oppia.android.app.activity
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
+import org.oppia.android.app.translation.ForcedActivityLanguageMode
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent

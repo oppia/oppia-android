@@ -2,7 +2,6 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -11,6 +10,18 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+
+/** Defines how an activity should resolve its locale. */
+enum class ForcedActivityLanguageMode {
+  /** Use the user's selected app language, or the system default if no app language is set. */
+  USE_APP_LANGUAGE,
+
+  /** Use the system's default language, ignoring the user's app language selection. */
+  USE_SYSTEM_LANGUAGE,
+
+  /** Force English locale, regardless of system or app language settings. */
+  USE_ENGLISH
+}
 
 /**
  * Activity mixin for automatically monitoring & recreating the activity whenever the current app
@@ -39,7 +50,7 @@ class AppLanguageWatcherMixin @Inject constructor(
    * situations.
    *
    * @param forcedActivityLanguageMode the [ForcedActivityLanguageMode] that indicates how the
-   *     locale should be resolved for this activity.
+   *     locale should be resolved for an activity.
    */
   fun initialize(forcedActivityLanguageMode: ForcedActivityLanguageMode) {
     if (!appLanguageLocaleHandler.isInitialized()) {
