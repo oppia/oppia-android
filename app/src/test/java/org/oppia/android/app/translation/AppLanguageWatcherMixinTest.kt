@@ -261,6 +261,15 @@ class AppLanguageWatcherMixinTest {
     }
   }
 
+  @Test
+  fun testForcedActivityLanguageMode_values_containsExpectedModes() {
+    assertThat(ForcedActivityLanguageMode.values().asList()).containsExactly(
+      ForcedActivityLanguageMode.USE_APP_LANGUAGE,
+      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE,
+      ForcedActivityLanguageMode.USE_ENGLISH
+    ).inOrder()
+  }
+
   private fun updateAppLanguageTo(language: OppiaLanguage) {
     val updateLanguageSelection = AppLanguageSelection.newBuilder().apply {
       selectedLanguage = language
