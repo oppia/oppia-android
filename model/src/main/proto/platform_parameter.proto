@@ -149,6 +149,9 @@ enum FeatureFlagId {
 
   // Corresponds to a topic activity feature that enables the practice tab.
   TOPIC_PRACTICE_TAB = 18;
+
+  // Corresponds to a feature enabling edge-to-edge display support for Android 15+ compatibility.
+  EDGE_TO_EDGE = 19;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to

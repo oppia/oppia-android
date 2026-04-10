@@ -73,3 +73,8 @@ feature_flag_definition {
   remote_server_name: "android_enable_topic_practice_tab"
   default_is_enabled: false
 }
+feature_flag_definition {
+  id: EDGE_TO_EDGE
+  remote_server_name: "android_enable_edge_to_edge"
+  default_is_enabled: true
+}

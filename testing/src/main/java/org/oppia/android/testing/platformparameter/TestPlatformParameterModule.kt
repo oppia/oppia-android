@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDGE_TO_EDGE
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
@@ -148,6 +149,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableTopicPracticeTab(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
+    }
+
+    fun forceEnableEdgeToEdge(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(EDGE_TO_EDGE, value)
     }
 
     fun reset() {

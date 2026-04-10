@@ -5,6 +5,7 @@ import dagger.Provides
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
@@ -100,6 +101,11 @@ class FeatureFlagBindingModule {
   @EnableTopicPracticeTab
   fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
+
+  @Provides
+  @EnableEdgeToEdge
+  fun provideEnableEdgeToEdge(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.EDGE_TO_EDGE)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
