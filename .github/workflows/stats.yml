@@ -212,6 +212,8 @@ jobs:
         run: |
           cd head
           git log -n 1
+          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
+          bazel shutdown
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_with_changes.aab
           cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_with_changes.aab
@@ -224,6 +226,8 @@ jobs:
         run: |
           cd base
           git log -n 1
+          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
+          bazel shutdown
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_without_changes.aab
           cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_without_changes.aab
