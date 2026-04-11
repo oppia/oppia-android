@@ -90,10 +90,18 @@ jobs:
       - name: Check Bazel environment
         run: bazel info
 
-      - name: Build Oppia ${{ matrix.flavor }} AAB
-        run: |
-          if [[ "${{ matrix.flavor }}" == "dev" ]]; then
-            bazel build -- //:oppia_${{ matrix.flavor }}
-          else
-            bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
-          fi
+      - name: Build Oppia dev AAB
+        if: matrix.flavor == 'dev'
+        run: bazel build -- //:oppia_dev
+
+      - name: Build Oppia ${{ matrix.flavor }} deployable AAB
+        if: matrix.flavor != 'dev'
+        run: bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}_deployable
+
+      - name: Shutdown Bazel to free memory
+        if: matrix.flavor != 'dev'
+        run: bazel shutdown
+
+      - name: Build Oppia ${{ matrix.flavor }} final AAB
+        if: matrix.flavor != 'dev'
+        run: bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
