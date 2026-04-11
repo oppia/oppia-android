@@ -1,14 +1,15 @@
 package org.oppia.android.scripts.ci
 
+import java.io.File
+import java.util.Locale
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
-import org.oppia.android.scripts.common.ExitProcessWrapper
-import java.io.File
 
 private const val COMPUTE_ALL_FILES_PREFIX = "compute_all_files="
 private const val MAX_FILE_COUNT_PER_LARGE_SHARD = 50

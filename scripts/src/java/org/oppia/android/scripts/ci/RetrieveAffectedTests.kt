@@ -1,9 +1,9 @@
 package org.oppia.android.scripts.ci
 
+import java.io.File
+import org.oppia.android.scripts.common.ExitProcessWrapper
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.proto.AffectedTestsBucket
-import org.oppia.android.scripts.common.ExitProcessWrapper
-import java.io.File
 
 /**
  * The main entrypoint for retrieving the list of affected tests from a particular encoded Base64

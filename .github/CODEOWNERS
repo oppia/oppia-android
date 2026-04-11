@@ -87,6 +87,8 @@
 /testing/src/*/java/org/oppia/android/testing/robolectric/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/threading/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/time/ @oppia/android-dev-workflow-reviewers
+/testing/src/*/java/org/oppia/android/testing/system/ @oppia/android-dev-workflow-reviewers
+
 
 # All domain and utility-specific shared test infrastructure.
 /testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt @oppia/android-app-infrastructure-reviewers
