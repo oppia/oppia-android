@@ -93,8 +93,6 @@ class ExplorationStorageModuleTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
   }
 
   // TODO(#89): Move this to a common test application component.
