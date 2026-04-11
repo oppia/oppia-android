@@ -5832,19 +5832,22 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
+    setUpTest()
     executeInPreviousAppInstance { _ ->
       TestPlatformParameterModule.forceEnableFlashbackSupport(false)
 
-      startPlayingExploration()
+      launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+        startPlayingExploration()
 
-      navigateToPrototypeRatioInputState()
+        navigateToPrototypeRatioInputState()
 
-      // Submit wrong answer.
-      typeRatioExpression("4:8")
-      clickSubmitAnswerButton()
+        // Submit wrong answer.
+        typeRatioExpression("4:8")
+        clickSubmitAnswerButton()
 
-      // Verify flashback button is NOT shown.
-      onView(withId(R.id.flashback_button)).check(doesNotExist())
+        // Verify flashback button is NOT shown.
+        onView(withId(R.id.flashback_button)).check(doesNotExist())
+      }
     }
 
     // In the current app instance, keep feature flag on and verify button is shown.
@@ -5866,23 +5869,25 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
+    setUpTest()
     executeInPreviousAppInstance { _ ->
       TestPlatformParameterModule.forceEnableFlashbackSupport(true)
 
-      startPlayingExploration()
+      launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+        startPlayingExploration()
 
-      navigateToPrototypeRatioInputState()
+        navigateToPrototypeRatioInputState()
 
-      // Submit wrong answer.
-      typeRatioExpression("4:8")
-      clickSubmitAnswerButton()
+        // Submit wrong answer.
+        typeRatioExpression("4:8")
+        clickSubmitAnswerButton()
 
-      // Verify flashback button IS shown.
-      scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+        // Verify flashback button IS shown.
+        scrollToViewType(FLASHBACK_BUTTON)
+        onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+      }
     }
 
     // In the current app instance, feature flag should still be on.
@@ -5909,7 +5914,6 @@ class StateFragmentTest {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
-
       // Submit Multiple choice answer.
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
