@@ -1,8 +1,13 @@
 package org.oppia.android.app.administratorcontrols
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -17,6 +22,8 @@ import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -24,7 +31,8 @@ import javax.inject.Inject
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
@@ -47,6 +55,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       R.layout.administrator_controls_activity
     )
     setUpNavigationDrawer()
+    if (enableEdgeToEdge.value) {
+      applyEdgeToEdgeInsets()
+    }
     this.lastLoadedFragment = lastLoadedFragment
     this.selectedProfileId = selectedProfileId
     this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
@@ -197,6 +208,42 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Sets the title of the extra controls in multipane tablet mode. */
   fun setExtraControlsTitle(title: String) {
     binding.extraControlsTitle?.text = title
+  }
+
+  private fun applyEdgeToEdgeInsets() {
+    val toolbar = binding.administratorControlsActivityToolbar
+    val contentLayout = toolbar.parent as android.widget.LinearLayout
+    val statusBarBackground = View(activity).apply {
+      setBackgroundColor(
+        ContextCompat.getColor(
+          activity,
+          R.color.component_color_shared_activity_status_bar_color
+        )
+      )
+    }
+    contentLayout.addView(statusBarBackground, 0)
+    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
+      val systemBars = insets.getInsets(
+        WindowInsetsCompat.Type.systemBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
+      view.layoutParams.height = systemBars.top
+      view.requestLayout()
+      insets
+    }
+    ViewCompat.setOnApplyWindowInsetsListener(
+      binding.administratorControlsActivityDrawerLayout
+    ) { view, insets ->
+      val systemBars = insets.getInsets(
+        WindowInsetsCompat.Type.systemBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
+      view.updatePadding(bottom = systemBars.bottom)
+      insets
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      activity.window.isNavigationBarContrastEnforced = false
+    }
   }
 
   /** Saves the state of the views on configuration changes. */

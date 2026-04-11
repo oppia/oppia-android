@@ -1,5 +1,6 @@
 package org.oppia.android.app.help
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
@@ -7,6 +8,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.activity.ActivityScope
@@ -24,13 +29,16 @@ import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
 class HelpActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var toolbar: Toolbar
@@ -61,12 +69,18 @@ class HelpActivityPresenter @Inject constructor(
       activity.setContentView(R.layout.help_activity)
       setUpToolbar()
       setUpNavigationDrawer()
+      if (enableEdgeToEdge.value) {
+        applyEdgeToEdgeInsets(R.id.help_activity_drawer_layout)
+      }
     } else {
       activity.setContentView(R.layout.help_without_drawer_activity)
       setUpToolbar()
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
+      }
+      if (enableEdgeToEdge.value) {
+        applyEdgeToEdgeInsets(drawerLayoutId = null)
       }
     }
     val titleTextView =
@@ -353,5 +367,41 @@ class HelpActivityPresenter @Inject constructor(
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
+  }
+
+  private fun applyEdgeToEdgeInsets(drawerLayoutId: Int?) {
+    val statusBarBackground = View(activity).apply {
+      setBackgroundColor(
+        ContextCompat.getColor(
+          activity,
+          R.color.component_color_shared_activity_status_bar_color
+        )
+      )
+    }
+    val contentLayout = toolbar.parent as android.widget.LinearLayout
+    contentLayout.addView(statusBarBackground, 0)
+    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
+      val systemBars = insets.getInsets(
+        WindowInsetsCompat.Type.systemBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
+      view.layoutParams.height = systemBars.top
+      view.requestLayout()
+      insets
+    }
+    if (drawerLayoutId != null) {
+      val drawerLayout = activity.findViewById<DrawerLayout>(drawerLayoutId)
+      ViewCompat.setOnApplyWindowInsetsListener(drawerLayout) { view, insets ->
+        val systemBars = insets.getInsets(
+          WindowInsetsCompat.Type.systemBars() or
+            WindowInsetsCompat.Type.displayCutout()
+        )
+        view.updatePadding(bottom = systemBars.bottom)
+        insets
+      }
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      activity.window.isNavigationBarContrastEnforced = false
+    }
   }
 }
