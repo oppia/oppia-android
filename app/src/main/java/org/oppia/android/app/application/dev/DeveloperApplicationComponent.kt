@@ -64,7 +64,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
-import org.oppia.android.util.system.TerminalControllerModule
+import org.oppia.android.util.system.AppTerminationManagerModule
 import org.oppia.android.util.threading.DispatcherModule
 
 /**
@@ -102,7 +102,7 @@ import org.oppia.android.util.threading.DispatcherModule
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     DeveloperBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-    AuthenticationModule::class, TerminalControllerModule::class
+    AuthenticationModule::class, AppTerminationManagerModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

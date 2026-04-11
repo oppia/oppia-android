@@ -4892,22 +4892,22 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeTerminalController.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeAppTerminationManager.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeTerminalControllerModule.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeAppTerminationManagerModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalController.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/AppTerminationManager.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalControllerImpl.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/AppTerminationManagerImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/TerminalControllerModule.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/AppTerminationManagerModule.kt"
   test_file_not_required: true
 }

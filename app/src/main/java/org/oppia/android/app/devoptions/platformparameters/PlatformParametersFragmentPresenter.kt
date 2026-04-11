@@ -30,8 +30,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.system.AppTerminationManager
 import javax.inject.Inject
-import org.oppia.android.util.system.TerminalController
 
 /** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
@@ -50,7 +50,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-  private val terminalController: TerminalController
+  private val appTerminationManager: AppTerminationManager
 ) {
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -473,6 +473,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
     // App is terminated to ensure a fresh restart and kill all the current process
     // so that ProcessState can be reinitialised on the fresh restart.
-    terminalController.exitProcess(0)
+    appTerminationManager.forceCloseApp()
   }
 }

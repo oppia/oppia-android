@@ -8,8 +8,8 @@ import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBin
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
+import org.oppia.android.util.system.AppTerminationManager
 import javax.inject.Inject
-import org.oppia.android.util.system.TerminalController
 
 /** Tag for displaying [ForceDownloadRemoteParametersDialogFragment]. */
 const val TAG_FORCE_DOWNLOAD_DIALOG = "FORCE_DOWNLOAD_DIALOG_TAG"
@@ -18,7 +18,7 @@ const val TAG_FORCE_DOWNLOAD_DIALOG = "FORCE_DOWNLOAD_DIALOG_TAG"
 @ActivityScope
 class DeveloperOptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val terminalController: TerminalController
+  private val appTerminationManager: AppTerminationManager
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
@@ -82,6 +82,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     activity.startActivity(intent)
     // App is terminated to ensure a fresh restart and kill all the current process
     // so that ProcessState can be reinitialised on the fresh restart.
-    terminalController.exitProcess(0)
+    appTerminationManager.forceCloseApp()
   }
 }

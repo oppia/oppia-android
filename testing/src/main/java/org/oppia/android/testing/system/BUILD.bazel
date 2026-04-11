@@ -5,14 +5,14 @@ System-related testing utilities.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "fake_terminal_controller",
+    name = "fake_app_termination_manager",
     testonly = True,
     srcs = [
-        "FakeTerminalController.kt",
+        "FakeAppTerminationManager.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
+        "//utility/src/main/java/org/oppia/android/util/system:app_termination_manager",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -21,12 +21,12 @@ kt_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
-        "FakeTerminalControllerModule.kt",
+        "FakeAppTerminationManagerModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":fake_terminal_controller",
-        "//utility/src/main/java/org/oppia/android/util/system:terminal_controller",
+        ":fake_app_termination_manager",
+        "//utility/src/main/java/org/oppia/android/util/system:app_termination_manager",
         "//:dagger",
     ],
 )

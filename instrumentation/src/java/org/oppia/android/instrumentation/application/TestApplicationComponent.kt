@@ -47,7 +47,7 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.system.FakeTerminalControllerModule
+import org.oppia.android.testing.system.FakeAppTerminationManagerModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
@@ -103,7 +103,7 @@ import org.oppia.android.util.threading.DispatcherModule
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class,
     ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
-    TestAuthenticationModule::class, FakeTerminalControllerModule::class
+    TestAuthenticationModule::class, FakeAppTerminationManagerModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

@@ -58,32 +58,32 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "terminal_controller",
+    name = "app_termination_manager",
     srcs = [
-        "TerminalController.kt",
+        "AppTerminationManager.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(
-    name = "terminal_controller_impl",
+    name = "app_termination_manager_impl",
     srcs = [
-        "TerminalControllerImpl.kt",
+        "AppTerminationManagerImpl.kt",
     ],
     deps = [
-        ":terminal_controller",
+        ":app_termination_manager",
         "//third_party:javax_inject_javax_inject",
     ],
 )
 
 kt_android_library(
-    name = "terminal_controller_module",
+    name = "app_termination_manager_module",
     srcs = [
-        "TerminalControllerModule.kt",
+        "AppTerminationManagerModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":terminal_controller_impl",
+        ":app_termination_manager_impl",
         "//:dagger",
     ],
 )
