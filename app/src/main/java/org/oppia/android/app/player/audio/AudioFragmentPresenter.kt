@@ -29,7 +29,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -59,7 +58,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private var lastKnownConnectionStatus: ConnectionStatus? = null
+  private var lastKnownConnectionStatus: NetworkConnectionUtil.ProdConnectionStatus? = null
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -226,11 +225,19 @@ class AudioFragmentPresenter @Inject constructor(
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
     maybeLoadMainContentAudio(allowAutoPlay, reloadingContent)
 
+  private fun getCurrentProdConnectionStatusOrNull(): NetworkConnectionUtil.ProdConnectionStatus? {
+    return when (val currentConnectionStatus = networkConnectionUtil.getCurrentConnectionStatus()) {
+      is NetworkConnectionUtil.ProdConnectionStatus -> currentConnectionStatus
+      else -> null
+    }
+  }
+
   private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
-    val currentConnectionStatus =
-      networkConnectionUtil.getCurrentConnectionStatus()
-        as? NetworkConnectionUtil.ProdConnectionStatus
-        ?: NetworkConnectionUtil.ProdConnectionStatus.NONE
+    val currentConnectionStatus = getCurrentProdConnectionStatusOrNull()
+      ?: run {
+        audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+        return
+      }
     val previousConnectionStatus = lastKnownConnectionStatus
     val hasConnectionStatusChanged = previousConnectionStatus != currentConnectionStatus
 
