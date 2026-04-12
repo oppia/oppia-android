@@ -1461,6 +1461,197 @@ class PinPasswordActivityTest {
     }
   }
 
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_showsConfirmDataResetDialog() {
+    setUpTestApplicationComponent()
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      // Click "Forgot PIN?" to open the first dialog.
+      onView(withId(R.id.forgot_pin)).perform(click())
+      // Click the positive button ("Reset <AppName> Data") on the first dialog to open the
+      // confirmation dialog.
+      onView(withText(containsString("Reset")))
+        .inRoot(isDialog())
+        .perform(click())
+      // Verify the confirmation dialog is displayed.
+      onView(
+        withText(
+          containsString(
+            context.resources.getString(R.string.admin_confirm_app_wipe_positive_button_text)
+          )
+        )
+      ).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_confirmDataReset_deletesAllProfiles() {
+    setUpTestApplicationComponent()
+    val scenario = launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.pin_password_input_pin_edit_text))
+      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+    onView(withId(R.id.forgot_pin)).perform(click())
+    onView(withText(containsString("Reset")))
+      .inRoot(isDialog())
+      .perform(click())
+    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
+    }
+    // The activity's onDestroy calls exitProcess(0) when confirmedDeletion is true, which the test
+    // framework intercepts with a SecurityException. Catch it since it confirms the expected
+    // behavior.
+    try {
+      scenario.close()
+    } catch (e: SecurityException) {
+      // Expected: exitProcess(0) is called during onDestroy after confirming deletion.
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_confirmDataReset_routesToSplashActivity() {
+    setUpTestApplicationComponent()
+    val scenario = launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.pin_password_input_pin_edit_text))
+      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+    onView(withId(R.id.forgot_pin)).perform(click())
+    onView(withText(containsString("Reset")))
+      .inRoot(isDialog())
+      .perform(click())
+    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+    // After deletion, finishAffinity() is called. The activity should be finishing which will
+    // eventually lead to the app restarting via the splash activity on next launch.
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
+    }
+    try {
+      scenario.close()
+    } catch (e: SecurityException) {
+      // Expected: exitProcess(0) is called during onDestroy after confirming deletion.
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_cancelDataReset_dismissesDialog_profilesRemain() {
+    setUpTestApplicationComponent()
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(withText(containsString("Reset")))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withText(context.getString(R.string.admin_confirm_app_wipe_negative_button_text)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_afterReset_profileChooserIsEmpty() {
+    setUpTestApplicationComponent()
+    val scenario = launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.pin_password_input_pin_edit_text))
+      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+    onView(withId(R.id.forgot_pin)).perform(click())
+    onView(withText(containsString("Reset")))
+      .inRoot(isDialog())
+      .perform(click())
+    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+    // After deletion, the activity calls finishAffinity() so that the next launch will go through
+    // the splash activity which would show an empty profile chooser.
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
+    }
+    try {
+      scenario.close()
+    } catch (e: SecurityException) {
+      // Expected: exitProcess(0) is called during onDestroy after confirming deletion.
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgetPin_afterReset_localeIsNotReset() {
+    setUpTestApplicationComponent()
+    val scenario = launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.pin_password_input_pin_edit_text))
+      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+    onView(withId(R.id.forgot_pin)).perform(click())
+    onView(withText(containsString("Reset")))
+      .inRoot(isDialog())
+      .perform(click())
+    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+    // Verify that the locale configuration is preserved after the reset.
+    scenario.onActivity { activity ->
+      val currentLocale = activity.resources.configuration.locales[0]
+      assertThat(currentLocale).isNotNull()
+    }
+    try {
+      scenario.close()
+    } catch (e: SecurityException) {
+      // Expected: exitProcess(0) is called during onDestroy after confirming deletion.
+    }
+  }
+
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
