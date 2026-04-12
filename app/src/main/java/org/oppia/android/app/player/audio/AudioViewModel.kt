@@ -227,6 +227,7 @@ class AudioViewModel @Inject constructor(
   fun pauseAudio() = audioPlayerController.pause(isFromExplicitUserAction = false)
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
+  fun abortPendingLoad() = audioPlayerController.abortPendingLoad()
 
   fun computeAudioUnavailabilityString(languageName: String): String {
     return resourceHandler.getStringInLocaleWithWrapping(

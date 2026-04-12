@@ -29,6 +29,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -58,7 +59,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private var lastKnownConnectionStatus: NetworkConnectionUtil.ProdConnectionStatus? = null
+  private var lastKnownConnectionStatus: ConnectionStatus? = null
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -238,6 +239,7 @@ class AudioFragmentPresenter @Inject constructor(
         NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
           if (hasConnectionStatusChanged) {
             showOfflineDialog()
+            audioViewModel.abortPendingLoad()
           }
           lastKnownConnectionStatus = currentConnectionStatus
           return
@@ -247,7 +249,7 @@ class AudioFragmentPresenter @Inject constructor(
             hasConnectionStatusChanged &&
             previousConnectionStatus == NetworkConnectionUtil.ProdConnectionStatus.LOCAL
           ) {
-            showCellularDataUsageWarningDialog()
+            showCellularDataDialogFragment()
           }
         }
         NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
@@ -387,19 +389,6 @@ class AudioFragmentPresenter @Inject constructor(
     }
     val dialogFragment = CellularAudioDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
-  }
-
-  private fun showCellularDataUsageWarningDialog() {
-    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_title))
-      .setMessage(
-        resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_description)
-      )
-      .setPositiveButton(
-        resourceHandler.getStringInLocale(R.string.cellular_data_alert_dialog_okay_button)
-      ) { dialog, _ ->
-        dialog.dismiss()
-      }.create().show()
   }
 
   private fun showOfflineDialog() {

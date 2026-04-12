@@ -275,6 +275,19 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
+  /** Aborts any in-flight load and moves playback to a failure state. */
+  fun abortPendingLoad() {
+    audioLock.withLock {
+      prepared = false
+      completed = false
+      nextUpdateJob?.cancel()
+      nextUpdateJob = null
+      mediaPlayer.reset()
+    }
+    playProgress.value =
+      AsyncResult.Failure(AudioPlayerException("Audio load aborted before preparation"))
+  }
+
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
 }
