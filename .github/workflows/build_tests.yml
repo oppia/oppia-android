@@ -18,12 +18,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_oppia_aab:
-    name: Build Oppia AAB (${{ matrix.flavor }} flavor)
+  build_oppia_dev_aab:
+    name: Build Oppia AAB (dev flavor)
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        flavor: [dev, alpha, beta, ga]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -91,17 +88,118 @@ jobs:
         run: bazel info
 
       - name: Build Oppia dev AAB
-        if: matrix.flavor == 'dev'
         run: bazel build -- //:oppia_dev
 
-      - name: Build Oppia ${{ matrix.flavor }} deployable AAB
-        if: matrix.flavor != 'dev'
-        run: bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}_deployable
+  # This job pre-builds the deployable (pre-Proguard-map) AABs for all Proguard-enabled flavors in
+  # one shot. Building them together is more memory-efficient since Bazel shares intermediate
+  # artifacts across flavors. The resulting Bazel disk cache is uploaded as a workflow artifact so
+  # that the finalize jobs can skip all heavy compilation & Proguard work.
+  build_proguarded_bases:
+    name: Build Proguarded base AABs (alpha, beta, ga)
+    runs-on: ubuntu-24.04
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Shutdown Bazel to free memory
-        if: matrix.flavor != 'dev'
-        run: bazel shutdown
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - uses: actions/cache@v5
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
+
+      - name: Build all deployable AABs
+        run: >-
+          bazel build --compilation_mode=opt --
+          //:oppia_alpha_deployable
+          //:oppia_beta_deployable
+          //:oppia_ga_deployable
+
+      - name: Upload Bazel cache for finalize jobs
+        uses: actions/upload-artifact@v7
+        with:
+          name: bazel-cache-proguarded
+          path: ~/.bazel_cache
+          retention-days: 1
+
+  # Each finalize job downloads the Bazel cache produced by build_proguarded_bases and runs only the
+  # lightweight final packaging step (bundling the Proguard map into the already-built deployable
+  # AAB). This starts with a fresh JVM so there is no accumulated memory pressure from the heavy
+  # compilation + Proguard work, which avoids OOM crashes (error code 14).
+  finalize_proguarded_aab:
+    name: Finalize Oppia AAB (${{ matrix.flavor }} flavor)
+    needs: build_proguarded_bases
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        flavor: [alpha, beta, ga]
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Download Bazel cache from base build
+        uses: actions/download-artifact@v8
+        with:
+          name: bazel-cache-proguarded
+          path: ~/.bazel_cache
+
+      - name: Configure Bazel to use the downloaded cache
+        run: |
+          echo "Using $HOME/.bazel_cache as Bazel's cache path"
+          echo "build --disk_cache=$HOME/.bazel_cache" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
 
       - name: Build Oppia ${{ matrix.flavor }} final AAB
-        if: matrix.flavor != 'dev'
         run: bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}

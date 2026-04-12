@@ -29,8 +29,11 @@ jobs:
           CURRENT_OPEN_PR_INFO="$(gh pr list --json number,baseRefName,headRefName,headRepository,headRepositoryOwner | tr -d '[:space:]')"
           echo "matrix={\"prInfo\": $CURRENT_OPEN_PR_INFO}" >> "$GITHUB_OUTPUT"
 
-  build_stats:
-    name: Build Stats
+  # This job builds the deployable (pre-Proguard-map) AABs for both head and base branches, then
+  # uploads the Bazel disk cache so that the finalize job can build finals with a fresh JVM,
+  # avoiding OOM crashes (error code 14).
+  build_stats_deployables:
+    name: Build Stats (deployable AABs)
     needs: find_open_pull_requests
     runs-on: ubuntu-24.04
     # Reduce parallelization due to high build times, and allow individual PRs to fail.
@@ -204,6 +207,163 @@ jobs:
           ref: ${{ env.PR_HEAD_REF_NAME }}
           path: head
 
+      - name: Build deployable AABs (feature branch)
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        run: |
+          cd head
+          git log -n 1
+          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
+          bazel shutdown
+
+      - name: Build deployable AABs (base branch)
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        run: |
+          cd base
+          git log -n 1
+          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
+          bazel shutdown
+
+      - name: Upload Bazel cache for finalize job
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
+          path: ~/.bazel_cache
+          retention-days: 1
+
+  # Each finalize job downloads the Bazel cache produced by build_stats_deployables and runs only
+  # the lightweight final packaging steps (bundling the Proguard map into the already-built
+  # deployable AABs). This starts with a fresh JVM so there is no accumulated memory pressure.
+  finalize_stats_and_report:
+    name: Finalize Stats & Report
+    needs: [find_open_pull_requests, build_stats_deployables]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.find_open_pull_requests.outputs.matrix) }}
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      # Re-check whether this PR has new commits (lightweight GitHub API calls).
+      - name: Find the latest APK & AAB Analysis Comment
+        uses: actions/github-script@v8
+        id: find_latest_apk_aab_comment
+        with:
+           script: |
+             const comments = await github.paginate(github.rest.issues.listComments, {
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               issue_number: ${{ matrix.prInfo.number }},
+             });
+
+             for (let i = comments.length - 1; i >= 0; i--) {
+               if (comments[i].body.includes("# APK & AAB differences analysis")) {
+                 const latestComment = comments[i];
+                 const commentBody = latestComment.body;
+                 const commentDate = latestComment.created_at;
+
+                 require('fs').writeFileSync('latest_aab_comment_body.log', commentBody, 'utf8');
+                 core.setOutput("latest_aab_comment_created_at", commentDate);
+
+                 return
+               }
+             }
+
+      - name: Track Commits following the latest APK & AAB Analysis Comment
+        uses: actions/github-script@v8
+        id: track_commits
+        with:
+           script: |
+             const commits = await github.paginate(github.rest.pulls.listCommits, {
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               pull_number: ${{ matrix.prInfo.number }},
+             });
+
+             const latestCommentDate = "${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}";
+             const recentCommits = commits.filter(commit => {
+               const commitDate = new Date(commit.commit.committer.date);
+               return commitDate > new Date("${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}");
+             });
+
+             const recentCommitsCount = recentCommits.length;
+             if(recentCommitsCount > 0 || !latestCommentDate) {
+               core.setOutput("new_commits", "true");
+             } else {
+               console.log("No new commits since the last APK & AAB report; Skipping redundant analysis.");
+               core.setOutput("new_commits", "false");
+             }
+
+      - name: Compute PR head owner/repo reference
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        env:
+          PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
+          PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
+        run: |
+          echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
+
+      - name: Set up Bazel
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Download Bazel cache from deployable build
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
+          path: ~/.bazel_cache
+
+      - name: Configure Bazel to use the downloaded cache
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        run: |
+          echo "Using $HOME/.bazel_cache as Bazel's cache path"
+          echo "build --disk_cache=$HOME/.bazel_cache" >> $HOME/.bazelrc
+        shell: bash
+
+      # This checks out the actual true develop branch separately to ensure that the stats check is
+      # run from the latest develop rather than the base branch (which might be different for
+      # chained PRs).
+      - name: Check out develop repository
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: actions/checkout@v6
+        with:
+          path: develop
+
+      - name: Set up build environment
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        uses: ./develop/.github/actions/set-up-android-bazel-build-environment
+
+      - name: Check Bazel environment
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        run: |
+          cd develop
+          bazel info
+
+      - name: Check out base repository and branch
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        env:
+          PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ env.PR_BASE_REF_NAME }}
+          path: base
+
+      - name: Check out head repository and branch
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        env:
+          PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          repository: ${{ env.PR_HEAD }}
+          ref: ${{ env.PR_HEAD_REF_NAME }}
+          path: head
+
       # Note that Bazel is shutdown between builds since multiple Bazel servers will otherwise end
       # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
       # worker resources.
@@ -212,8 +372,6 @@ jobs:
         run: |
           cd head
           git log -n 1
-          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
-          bazel shutdown
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_with_changes.aab
           cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_with_changes.aab
@@ -226,8 +384,6 @@ jobs:
         run: |
           cd base
           git log -n 1
-          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
-          bazel shutdown
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_beta //:oppia_ga
           cp bazel-bin/oppia_dev.aab ../develop/oppia_dev_without_changes.aab
           cp bazel-bin/oppia_alpha.aab ../develop/oppia_alpha_without_changes.aab
