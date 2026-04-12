@@ -23,7 +23,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.3.1",
-    "androidx.compose.compiler:compiler": "1.1.1",
+    "androidx.compose.compiler:compiler": "1.4.7",
     "androidx.compose.foundation:foundation": "1.1.1",
     "androidx.compose.foundation:foundation-layout": "1.1.1",
     "androidx.compose.material:material": "1.1.1",
@@ -75,24 +75,24 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.gms:google-services": "4.3.10",
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
-    "com.google.protobuf:protobuf-javalite": "3.17.3",
+    "com.google.protobuf:protobuf-javalite": "3.25.4",
     "com.squareup.moshi:moshi-kotlin": "1.13.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
     "com.squareup.retrofit2:converter-moshi": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "io.fabric.sdk.android:fabric": "1.4.7",
-    "javax.annotation:javax.annotation-api:jar": "1.3.2",
+    "javax.annotation:javax.annotation-api": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.6.10",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.10",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "1.6.4",
     "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.4",
-    "org.jetbrains:annotations:jar": "13.0",
+    "org.jetbrains:annotations": "13.0",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
@@ -114,8 +114,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.android.tools.lint:lint": "30.3.1",
     "com.android.tools.lint:lint-tests": "30.3.1",
     "com.github.bumptech.glide:mocks": "4.11.0",
-    "com.google.protobuf:protobuf-java": "3.17.3",
-    "com.google.protobuf:protobuf-java-util": "3.17.3",
+    "com.google.protobuf:protobuf-java": "3.25.4",
+    "com.google.protobuf:protobuf-java-util": "3.25.4",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
@@ -145,6 +145,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",
     },
+    "bazel_features": {
+        "sha": "4fd9922d464686820ffd8fcefa28ccffa147f7cdc6b6ac0d8b07fde565c65d66",
+        "version": "1.25.0",
+    },
     "guava_android": {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
@@ -154,7 +158,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "31.0.1",
     },
     "oppia_proto_api": {
-        "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
+        "version": "bd37234b0645d6ecb17dfad35460d0b41da2ec69",
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
@@ -165,20 +169,24 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.7",
     },
     "rules_java": {
-        "sha": "c73336802d0b4882e40770666ad055212df4ea62cfa6edf9cb0f9d29828a0934",
-        "version": "5.3.5",
+        "sha": "4018e97c93f97680f1650ffd2a7530245b864ac543fd24fae8c02ba447cb2864",
+        "version": "7.3.1",
     },
     "rules_jvm": {
-        "sha": "c4cd0fd413b43785494b986fdfeec5bb47eddca196af5a2a98061faab83ed7b2",
-        "version": "5.1",
+        "sha": "3c41eae4226a7dfdce7b213bc541557b8475c92da71e2233ec7c306630243a65",
+        "version": "6.9",
     },
     "rules_kotlin": {
-        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
-        "version": "v1.7.1",
+        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b0",
+        "version": "2.1.3",
+    },
+    "rules_license": {
+        "sha": "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",
+        "version": "1.0.0",
     },
     "rules_proto": {
-        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
-        "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+        "sha": "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
+        "version": "7.1.0",
     },
     "zlib": {
         "sha": "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
@@ -187,9 +195,8 @@ HTTP_DEPENDENCY_VERSIONS = {
 }
 
 MAVEN_REPOSITORIES = [
-    "https://maven.fabric.io/public",
-    "https://maven.google.com",
     "https://repo1.maven.org/maven2",
+    "https://maven.google.com",
 ]
 
 def get_maven_dependencies():

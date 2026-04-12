@@ -68,7 +68,7 @@ class AndroidLintRunnerTest {
     tempFolder.newFile(pathToProtoBinary)
     val sdkProperties = AndroidBuildSdkProperties()
     buildSdkVersion = sdkProperties.buildSdkVersion.toString()
-    kotlinVersion = sdkProperties.kotlinCompilerVersion.substringBeforeLast('.')
+    kotlinVersion = sdkProperties.kotlinLanguageVersion
     workingDirectory = tempFolder.newFolder("lint_analysis")
     reportfile = File(workingDirectory, "lint-report.xml")
     bazelBinFolder = tempFolder.newFolder("bazel-bin")

@@ -178,6 +178,8 @@ private class LatexImageSpan(
         override fun draw(canvas: Canvas) {}
         override fun setAlpha(alpha: Int) {}
         override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated("Deprecated in Java")
         override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
 
         init {
