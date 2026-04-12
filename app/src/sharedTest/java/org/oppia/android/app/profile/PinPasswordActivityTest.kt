@@ -1472,7 +1472,7 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+        .perform(appendText(""), closeSoftKeyboard())
       // Click "Forgot PIN?" to open the first dialog.
       onView(withId(R.id.forgot_pin)).perform(click())
       // Click the positive button ("Reset <AppName> Data") on the first dialog to open the
@@ -1503,7 +1503,7 @@ class PinPasswordActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.pin_password_input_pin_edit_text))
-      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      .perform(appendText(""), closeSoftKeyboard())
     onView(withId(R.id.forgot_pin)).perform(click())
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
@@ -1537,7 +1537,7 @@ class PinPasswordActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.pin_password_input_pin_edit_text))
-      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      .perform(appendText(""), closeSoftKeyboard())
     onView(withId(R.id.forgot_pin)).perform(click())
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
@@ -1570,7 +1570,7 @@ class PinPasswordActivityTest {
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+        .perform(appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(withText(containsString("Reset")))
         .inRoot(isDialog())
@@ -1597,7 +1597,7 @@ class PinPasswordActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.pin_password_input_pin_edit_text))
-      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      .perform(appendText(""), closeSoftKeyboard())
     onView(withId(R.id.forgot_pin)).perform(click())
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
@@ -1630,7 +1630,7 @@ class PinPasswordActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.pin_password_input_pin_edit_text))
-      .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      .perform(appendText(""), closeSoftKeyboard())
     onView(withId(R.id.forgot_pin)).perform(click())
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
