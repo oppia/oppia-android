@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -49,10 +49,12 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -84,11 +86,12 @@ import javax.inject.Singleton
 class ExplorationDataControllerTest {
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -195,6 +198,60 @@ class ExplorationDataControllerTest {
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
+  }
+
+  @Test
+  fun testStartPlayingNewExploration_logsStartExplorationEvent() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    // Starting an exploration will log a bunch of analytics events, but the order is a bit specific
+    // in that the event for starting a specific card is actually logged before the exploration
+    // event. This doesn't necessarily have a significant impact on analytics but it does cause a
+    // bit of ordering quirkiness in tests. See next test as well.
+    val events = fakeAnalyticsEventLogger.getOldestEvents(2)
+    assertThat(events).hasSize(2)
+    assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isFalse()
+  }
+
+  @Test
+  fun testReplayExploration_logsStartExplorationEventWithIsReplayTrue() {
+    replayExploration(TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+
+    // The second event is the exploration start event due to some out-of-order event logging. See
+    // the previous test for a longer explanation as to why this is the case.
+    val events = fakeAnalyticsEventLogger.getOldestEvents(2)
+    assertThat(events).hasSize(2)
+    assertThat(events[1]).hasStartExplorationContextThat().hasIsReplayThat().isTrue()
+  }
+
+  @Test
+  fun testResumeExploration_logsResumeExplorationEvent() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    stopExploration(isCompletion = false)
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    resumeExploration(TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+
+    val event = fakeAnalyticsEventLogger.getOldestEvent()
+    assertThat(event).hasResumeExplorationContext()
+  }
+
+  @Test
+  fun testRestartExploration_logsStartOverExplorationEvent() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    stopExploration(isCompletion = false)
+    fakeAnalyticsEventLogger.clearAllEvents()
+
+    restartExploration(TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+
+    val event = fakeAnalyticsEventLogger.getOldestEvent()
+    assertThat(event).hasStartOverExplorationContext()
   }
 
   @Test
@@ -427,6 +484,20 @@ class ExplorationDataControllerTest {
   private fun stopExploration(isCompletion: Boolean = true) {
     val stopProvider = explorationDataController.stopPlayingExploration(isCompletion)
     monitorFactory.waitForNextSuccessfulResult(stopProvider)
+  }
+
+  private fun resumeExploration(
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
+    val checkpoint = retrieveExplorationCheckpoint(explorationId)
+    val resumeProvider =
+      explorationDataController.resumeExploration(
+        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
+      )
+    monitorFactory.waitForNextSuccessfulResult(resumeProvider)
   }
 
   // TODO(#89): Move this to a common test application component.

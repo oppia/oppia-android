@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.COMPLETED_STORY_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -21,7 +21,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId = intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
     completedStoryListActivityPresenter.handleOnCreate(profileId)
   }
 
@@ -30,7 +30,7 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, CompletedStoryListActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)

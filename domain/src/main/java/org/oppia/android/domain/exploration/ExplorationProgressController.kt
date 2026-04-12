@@ -24,7 +24,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -135,7 +135,7 @@ class ExplorationProgressController @Inject constructor(
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -159,14 +159,15 @@ class ExplorationProgressController @Inject constructor(
    * [submitAnswer].
    */
   internal fun beginExplorationAsync(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
     val sessionId = UUID.randomUUID().toString().also {
@@ -185,6 +186,7 @@ class ExplorationProgressController @Inject constructor(
         shouldSavePartialProgress,
         explorationCheckpoint,
         isRestart,
+        isReplay,
         ephemeralStateFlow,
         sessionId,
         beginExplorationResultFlow
@@ -467,7 +469,7 @@ class ExplorationProgressController @Inject constructor(
    *     language
    */
   fun updateWrittenTranslationContentLanguageMidLesson(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     selection: WrittenTranslationLanguageSelection
   ): DataProvider<Any> {
     return translationController.updateWrittenTranslationContentLanguage(
@@ -511,6 +513,7 @@ class ExplorationProgressController @Inject constructor(
                 ControllerState(
                   ExplorationProgress(),
                   message.isRestart,
+                  message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
                   // in the following 3 cases.
                   //  - New exploration is started.
@@ -624,7 +627,7 @@ class ExplorationProgressController @Inject constructor(
 
   private suspend fun ControllerState.beginExplorationImpl(
     beginExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -1164,7 +1167,7 @@ class ExplorationProgressController @Inject constructor(
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.
     if (!explorationProgress.shouldSavePartialProgress) return
-    val profileId: ProfileId = explorationProgress.currentProfileId
+    val profileId: LegacyProfileId = explorationProgress.currentProfileId
     val topicId: String = explorationProgress.currentTopicId
     val storyId: String = explorationProgress.currentStoryId
     val explorationId: String = explorationProgress.currentExplorationId
@@ -1230,7 +1233,7 @@ class ExplorationProgressController @Inject constructor(
    *     unsuccessfully
    */
   private suspend fun ControllerState.processSaveCheckpointResult(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1291,7 +1294,7 @@ class ExplorationProgressController @Inject constructor(
     interactionId == "Continue"
 
   private fun markExplorationAsInProgressSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1307,7 +1310,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun markExplorationAsInProgressNotSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1346,12 +1349,13 @@ class ExplorationProgressController @Inject constructor(
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val isRestart: Boolean,
+    val isReplay: Boolean,
     val isResume: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,
     private val installationId: String?,
-    private val profileId: ProfileId,
+    private val profileId: LegacyProfileId,
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
@@ -1395,7 +1399,8 @@ class ExplorationProgressController @Inject constructor(
         exploration,
         explorationProgress.currentClassroomId,
         explorationProgress.currentTopicId,
-        explorationProgress.currentStoryId
+        explorationProgress.currentStoryId,
+        isReplay
       )
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
@@ -1502,7 +1507,7 @@ class ExplorationProgressController @Inject constructor(
 
     /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
-      val profileId: ProfileId,
+      val profileId: LegacyProfileId,
       val classroomId: String,
       val topicId: String,
       val storyId: String,
@@ -1510,6 +1515,7 @@ class ExplorationProgressController @Inject constructor(
       val shouldSavePartialProgress: Boolean,
       val explorationCheckpoint: ExplorationCheckpoint,
       val isRestart: Boolean,
+      val isReplay: Boolean,
       val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
@@ -1627,7 +1633,7 @@ class ExplorationProgressController @Inject constructor(
      * the app (e.g. that an exploration is considered 'in-progress' in such circumstances).
      */
     data class ProcessSavedCheckpointResult(
-      val profileId: ProfileId,
+      val profileId: LegacyProfileId,
       val topicId: String,
       val storyId: String,
       val explorationId: String,

@@ -19,7 +19,7 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
@@ -54,7 +54,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -69,7 +69,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -121,16 +121,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
     }
-      .registerViewBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = ViewType.VIEW_TYPE_TITLE_TEXT,
-        inflateView = { parent ->
-          TopicLessonsTitleBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { _, _ -> }
+        inflateDataBinding = TopicLessonsTitleBinding::inflate,
+        setViewModel = { _, _ -> }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_STORY_ITEM,
@@ -363,7 +357,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,

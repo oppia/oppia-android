@@ -47,6 +47,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -54,7 +55,6 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
@@ -1073,7 +1073,7 @@ class SplashActivityTest {
   fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = IntroActivityParams.newBuilder()
@@ -1095,7 +1095,7 @@ class SplashActivityTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
       profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     )
@@ -1122,7 +1122,7 @@ class SplashActivityTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
       profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     )
@@ -1154,7 +1154,7 @@ class SplashActivityTest {
   fun testSplashActivity_onboardingV2_partiallyOnboardedAdmin_routesToAdminIntroActivity() {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfile()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = AdminIntroActivityParams.newBuilder()

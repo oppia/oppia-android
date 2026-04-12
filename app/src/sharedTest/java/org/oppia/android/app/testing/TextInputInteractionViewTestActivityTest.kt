@@ -70,7 +70,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -113,9 +113,6 @@ class TextInputInteractionViewTestActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -154,7 +151,7 @@ class TextInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "abc"
         )
       )
@@ -175,7 +172,7 @@ class TextInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "abc"
         )
       )

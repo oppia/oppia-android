@@ -14,8 +14,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarketFitAnswer
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.UserTypeAnswer
@@ -77,7 +77,7 @@ class SurveyProgressControllerTest {
   @Inject
   lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
 
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {

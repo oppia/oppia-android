@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -97,17 +96,11 @@ class SelectionInteractionView @JvmOverloads constructor(
     return when (selectionItemInputType) {
       SelectionItemInputType.CHECKBOXES ->
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
-          .registerViewBinder(
-            inflateView = { parent ->
-              bindingInterface.provideSelectionInteractionViewInflatedView(
-                LayoutInflater.from(parent.context),
-                parent,
-                /* attachToParent= */ false
-              )
-            },
-            bindView = { view, viewModel ->
+          .registerViewDataBinderWithSameModelType(
+            inflateDataBinding = bindingInterface::provideSelectionInteractionViewInflatedView,
+            setViewModel = { binding, viewModel ->
               bindingInterface.provideSelectionInteractionViewModel(
-                view,
+                binding,
                 viewModel,
                 htmlParserFactory,
                 resourceBucketName,
@@ -120,17 +113,12 @@ class SelectionInteractionView @JvmOverloads constructor(
           .build()
       SelectionItemInputType.RADIO_BUTTONS ->
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
-          .registerViewBinder(
-            inflateView = { parent ->
-              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
-                LayoutInflater.from(parent.context),
-                parent,
-                /* attachToParent= */ false
-              )
-            },
-            bindView = { view, viewModel ->
+          .registerViewDataBinderWithSameModelType(
+            inflateDataBinding =
+              bindingInterface::provideMultipleChoiceInteractionItemsInflatedView,
+            setViewModel = { binding, viewModel ->
               bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
-                view,
+                binding,
                 viewModel,
                 htmlParserFactory,
                 resourceBucketName,

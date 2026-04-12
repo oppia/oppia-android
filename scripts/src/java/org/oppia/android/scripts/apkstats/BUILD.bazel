@@ -16,6 +16,7 @@ kt_jvm_library(
         ":apk_analyzer_client",
         ":bundle_tool_client",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
     ],
 )
 

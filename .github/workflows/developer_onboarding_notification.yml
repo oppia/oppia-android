@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set Environment Variables
         env:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Count Merged Pull Requests
         id: count_merged_pull_requests
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -41,13 +41,13 @@ jobs:
             core.exportVariable('PR_COUNT', prCount);
 
       - name: Comment on the Merged Pull Request
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prCount = parseInt(process.env.PR_COUNT);
             const author = process.env.AUTHOR;
-            const mention = 'adhiamboperes'; 
+            const mention = 'adhiamboperes';
             const prNumber = context.payload.pull_request.number;
 
             let message;
@@ -62,7 +62,7 @@ jobs:
               `This means you may be eligible to join the Oppia dev team as a collaborator! 🎉 If you're interested, please fill out [this form](https://forms.gle/NxPjimCMqsSTNUgu5) and become an even more integral part of the community. 🌱\n\n` +
               `Looking forward to seeing even more contributions from you. The developer onboarding lead: @${mention} is here if you need any help! Keep up the great work! 🚀`;
             }
-              
+
             if (prCount === 1 || prCount === 2) {
               await github.rest.issues.createComment({
                 owner: process.env.OWNER,

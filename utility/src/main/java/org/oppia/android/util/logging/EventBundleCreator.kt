@@ -455,6 +455,7 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("session_id", sessionId)
         store.putNonSensitiveValue("exploration_version", explorationVersion.toString())
         store.putNonSensitiveValue("state_name", stateName)
+        store.putNonSensitiveValue("is_replay", isReplay.toString())
         store.putProperties("learner_details", learnerDetails, ::LearnerDetailsContext)
       }
     }
@@ -670,8 +671,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallEventContext>(activityName, value) {
       override fun RetrofitCallEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
       }
     }
@@ -683,8 +682,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallFailedEventContext>(activityName, value) {
       override fun RetrofitCallFailedEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
         store.putNonSensitiveValue("error_message", errorMessage)
       }

@@ -34,7 +34,10 @@ http_archive(
     build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
     sha256 = HTTP_DEPENDENCY_VERSIONS["zlib"]["sha"],
     strip_prefix = "zlib-" + HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
-    url = "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    urls = [
+        "https://github.com/madler/zlib/releases/download/v{0}/zlib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["zlib"]["version"]),
+        "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    ],
 )
 
 # Oppia's backend proto API definitions.
@@ -186,6 +189,14 @@ http_archive(
     sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
+)
+
+# Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
+# This is done such that it should satisfiy the requirement for pre-fetching but cause an actual
+# build failure for any real dependencies on the target.
+bind(
+    name = "python_headers",
+    actual = "@bazel_tools//tools/cpp:malloc",
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")

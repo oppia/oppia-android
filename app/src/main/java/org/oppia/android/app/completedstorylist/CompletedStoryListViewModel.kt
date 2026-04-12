@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -27,7 +27,7 @@ class CompletedStoryListViewModel @Inject constructor(
   @StoryHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
   /** [profileId] needs to be set before any of the live data members can be accessed. */
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
 
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
     topicController.getCompletedStoryList(profileId).toLiveData()
@@ -43,7 +43,7 @@ class CompletedStoryListViewModel @Inject constructor(
   }
 
   /** Sets internalProfileId to this ViewModel. */
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

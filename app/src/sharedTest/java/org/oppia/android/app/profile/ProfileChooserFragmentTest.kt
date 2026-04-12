@@ -51,8 +51,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -149,8 +149,8 @@ class ProfileChooserFragmentTest {
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
-  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
-  private val testProfileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  private val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val testProfileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -1488,40 +1488,133 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooser_afterDataReset_showsEmptyProfileList() {
+  fun testProfileChooser_afterDataReset_showsAdminProfile() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = false)
-    // Call deleteAllProfiles to simulate a data reset. Note: deleteAllProfiles() intentionally does
-    // not update the in-memory cache (per its documentation) since the app is expected to
-    // force-close and restart afterward. This test verifies the operation itself doesn't crash the
-    // activity lifecycle.
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
     profileManagementController.deleteAllProfiles()
-    testCoroutineDispatchers.advanceUntilIdle()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use { scenario ->
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-        assertThat(activity).isNotNull()
-      }
+      // In v1 onboarding flow, deleteAllProfiles() does not update the in-memory cache
+      // (the app is expected to be forcibly closed after deletion), so the admin profile
+      // is still shown in the recycler view.
+      onView(withId(R.id.profile_recycler_view))
+        .check(matches(isDisplayed()))
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
     }
   }
 
   @Test
-  fun testProfileChooser_afterDataReset_selectingProfile_doesNotCrash() {
+  fun testProfileChooser_enableOnboardingV2_afterDataReset_showsEmptyProfileList() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v2 onboarding flow, the profile list is empty after data reset.
+      onView(withId(R.id.profiles_list))
+        .check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profiles_list,
+          position = 0,
+          targetViewId = R.id.profile_name_text
+        )
+      ).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_selectingAdminProfile_doesNotCrash() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
-    // Delete all profiles to simulate a data reset.
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
     profileManagementController.deleteAllProfiles()
-    testCoroutineDispatchers.advanceUntilIdle()
-    // Verify the activity can launch and a profile can be interacted with without crashing. The
-    // in-memory cache may still have stale profile data since deleteAllProfiles() intentionally
-    // skips in-memory cache updates.
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use { scenario ->
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-        assertThat(activity).isNotNull()
-      }
+      // In v1 onboarding flow, the admin profile is still displayed due to in-memory
+      // cache. Verify that the admin profile is present and clickable without crashing.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_classroomsEnabled_selectingAdminProfile_doesNotCrash() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow with classrooms enabled, the admin profile is still
+      // displayed due to in-memory cache. Verify it is clickable and navigates
+      // to ClassroomListActivity.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ClassroomListActivity::class.java.name))
     }
   }
 

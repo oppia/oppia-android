@@ -3,7 +3,7 @@ package org.oppia.android.domain.exploration
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.translation.TranslationController
@@ -35,7 +35,10 @@ class ExplorationDataController @Inject constructor(
   private val translationController: TranslationController
 ) {
   /** Returns an [EphemeralExploration] given an ID. */
-  fun getExplorationById(profileId: ProfileId, id: String): DataProvider<EphemeralExploration> {
+  fun getExplorationById(
+    profileId: LegacyProfileId,
+    id: String
+  ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(profileId)
     val explorationProvider = dataProviders.createInMemoryDataProviderAsync(
@@ -86,7 +89,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -118,7 +122,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint,
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -148,7 +153,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true, // Implied since only checkpoints can be restarted.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = true
+      isRestart = true,
+      isReplay = false
     )
   }
 
@@ -181,7 +187,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = true
     )
   }
 
@@ -209,6 +216,7 @@ class ExplorationDataController @Inject constructor(
    * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
    *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
    *     instance.
+   * @param isReplay whether the user is replaying this lesson after having previously completed it
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
@@ -220,17 +228,19 @@ class ExplorationDataController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint,
-      isRestart
+      isRestart,
+      isReplay
     )
   }
 
@@ -257,7 +267,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @return a [DataProvider] that indicates the success or failure of the retrieve operation
    */
-  fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =
+  fun getOldestExplorationDetailsDataProvider(profileId: LegacyProfileId) =
     explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(profileId)
 
   /**
@@ -268,7 +278,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @param explorationId the ID of the exploration whose checkpoint has to be deleted
    */
-  fun deleteExplorationProgressById(profileId: ProfileId, explorationId: String) {
+  fun deleteExplorationProgressById(profileId: LegacyProfileId, explorationId: String) {
     explorationCheckpointController.deleteSavedExplorationCheckpoint(
       profileId,
       explorationId

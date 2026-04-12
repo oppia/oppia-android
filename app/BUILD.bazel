@@ -537,6 +537,7 @@ kt_android_library(
     manifest = "src/main/ViewModelsManifest.xml",
     visibility = [
         "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+        "//app/src/test/java/org/oppia/android/app/player/audio:__pkg__",
     ],
     deps = [
         ":annotations",
@@ -544,6 +545,7 @@ kt_android_library(
         ":resources",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+        "//app/src/main/java/org/oppia/android/app/utility/lifecycle:lifecycle_safe_timer_factory",
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
@@ -836,7 +838,6 @@ TEST_DEPS = [
         ":data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "21",

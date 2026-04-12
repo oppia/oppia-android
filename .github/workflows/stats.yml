@@ -19,7 +19,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Compute PR matrix
         id: compute-pull-request-matrix
@@ -42,8 +42,8 @@ jobs:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - name: Find the latest APK & AAB Analysis Comment 
-        uses: actions/github-script@v6
+      - name: Find the latest APK & AAB Analysis Comment
+        uses: actions/github-script@v8
         id: find_latest_apk_aab_comment
         with:
            script: |
@@ -51,7 +51,7 @@ jobs:
                owner: context.repo.owner,
                repo: context.repo.repo,
                issue_number: ${{ matrix.prInfo.number }},
-             });            
+             });
 
              for (let i = comments.length - 1; i >= 0; i--) {
                if (comments[i].body.includes("# APK & AAB differences analysis")) {
@@ -61,13 +61,13 @@ jobs:
 
                  require('fs').writeFileSync('latest_aab_comment_body.log', commentBody, 'utf8');
                  core.setOutput("latest_aab_comment_created_at", commentDate);
-                
+
                  return
                }
              }
 
       - name: Track Commits following the latest APK & AAB Analysis Comment
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         id: track_commits
         with:
            script: |
@@ -76,13 +76,13 @@ jobs:
                repo: context.repo.repo,
                pull_number: ${{ matrix.prInfo.number }},
              });
-            
+
              const latestCommentDate = "${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}";
              const recentCommits = commits.filter(commit => {
                const commitDate = new Date(commit.commit.committer.date);
                return commitDate > new Date("${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}");
              });
-            
+
              const recentCommitsCount = recentCommits.length;
              if(recentCommitsCount > 0 || !latestCommentDate) {
                core.setOutput("new_commits", "true");
@@ -90,7 +90,7 @@ jobs:
                console.log("No new commits since the last APK & AAB report; Skipping redundant analysis.");
                core.setOutput("new_commits", "false");
              }
-          
+
       - name: Compute PR head owner/repo reference
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
@@ -98,7 +98,7 @@ jobs:
           PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
         run: |
           echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
-         
+
       - name: Print PR information for this run
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
@@ -120,7 +120,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         id: cache
         with:
@@ -169,7 +169,7 @@ jobs:
       # chained PRs).
       - name: Check out develop repository
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: develop
 
@@ -187,7 +187,7 @@ jobs:
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ env.PR_BASE_REF_NAME }}
@@ -197,7 +197,7 @@ jobs:
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           repository: ${{ env.PR_HEAD }}
@@ -266,12 +266,12 @@ jobs:
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ env.PR_NUMBER }}
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}

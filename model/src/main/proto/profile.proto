@@ -32,7 +32,7 @@ message DeviceSettings{
 // Structure for a single profile.
 message Profile {
   // Unique ID given to each profile.
-  ProfileId id = 1;
+  LegacyProfileId id = 1;
 
   // Name of the user.
   string name = 2;
@@ -127,13 +127,24 @@ message ProfileAvatar {
   }
 }
 
+// TODO(#5440): Delete once migration to Profile Id is completed.
 // Opaque data structure to pass ID.
-message ProfileId {
+message LegacyProfileId {
   /**
    * Unique ID used to identify a single profile.
    * Should not be used directory outside of the profile system.
    */
   int32 internal_id = 1;
+}
+
+// Opaque wrapper for passing profile identifiers between components.
+message ProfileId {
+  /**
+   * Internal identifier for a specific profile. This ID is only meaningful within
+   * the profile system and should not be accessed or used directly by external components.
+   * Optional to allow for uninitialized or invalid profile references.
+   */
+  optional int32 internal_id = 1;
 }
 
 // Used in BindableAdapter for ProfileChooserFragment.

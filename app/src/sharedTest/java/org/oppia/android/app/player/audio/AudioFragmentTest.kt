@@ -49,7 +49,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -110,7 +110,9 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -154,6 +156,10 @@ class AudioFragmentTest {
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
+
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL =
@@ -164,7 +170,7 @@ class AudioFragmentTest {
       "2mzzFVDLuAj8/assets/audio/content-hi-2hn6btuei5.mp3"
 
   private var internalProfileId = 0
-  private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private var profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -282,6 +288,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -334,6 +341,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -361,6 +369,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -389,6 +398,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -439,6 +449,146 @@ class AudioFragmentTest {
 
         assertThat(receivedProfileId).isEqualTo(profileId)
       }
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_clickPlayPauseWhenPlaying_pausesAudioWithoutNetworkCheck() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_pause_description)
+          )
+        )
+      )
+
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_clickPlayPauseWhenPausedWithNoNetwork_showsOfflineDialog() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAudioFragment_clickPlayPauseWhenPausedWithCellularNoDataPermission_showsOfflineDialog() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_initialLoad_audioControlsAreDisplayed() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_progress_seek_bar)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_initialLoad_showsPlayButton() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
+  // TODO(#2417): Need a fake audio library to run this test on espresso
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testFragment_afterLanguageChange_audioStillLoads() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_language_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
     }
   }
 

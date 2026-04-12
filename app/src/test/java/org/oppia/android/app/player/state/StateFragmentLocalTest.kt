@@ -70,10 +70,10 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -140,7 +140,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -172,8 +172,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
-import org.robolectric.shadows.util.DataSource
-import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -190,22 +188,18 @@ class StateFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  private val AUDIO_URL_1 =
-    createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
-  private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
-
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var editTextInputAction: EditTextInputAction
+
   @Inject lateinit var accessibilityManager: FakeAccessibilityService
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -225,7 +219,18 @@ class StateFragmentLocalTest {
         .setSourceExecutor(executorService)
     )
     profileTestHelper.initializeProfiles()
-    ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+
+    // Set up a MediaInfoProvider to handle any audio DataSource that the explorations may use.
+    // This is necessary because explorations have many audio files (voiceovers for content,
+    // feedback, hints, solutions) and registering each individually is impractical.
+    ShadowMediaPlayer.setMediaInfoProvider { _ ->
+      // Return a generic MediaInfo for any DataSource. The tests don't actually play audio,
+      // they just need the MediaPlayer to not crash when setDataSource is called.
+      ShadowMediaPlayer.MediaInfo(
+        /* duration= */ 10_000,
+        /* preparationDelay= */ 0
+      )
+    }
   }
 
   @After
@@ -1317,8 +1322,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_summary)).check(
         matches(
           withContentDescription(
-            "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
+            "Start by dividing the cake into equal parts:" +
+              "\nThree of the four equal parts are red. So, the answer is 3/4."
           )
         )
       )
@@ -2643,7 +2648,7 @@ class StateFragmentLocalTest {
   }
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
-    onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
+    onView(withId(interactionViewId)).perform(appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -2881,7 +2886,7 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {

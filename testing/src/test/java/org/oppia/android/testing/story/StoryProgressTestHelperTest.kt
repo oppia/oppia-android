@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
@@ -84,8 +84,12 @@ class StoryProgressTestHelperTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId0: ProfileId by lazy { ProfileId.newBuilder().setInternalId(0).build() }
-  private val profileId1: ProfileId by lazy { ProfileId.newBuilder().setInternalId(1).build() }
+  private val profileId0: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(0).build()
+  }
+  private val profileId1: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(1).build()
+  }
 
   @Before
   fun setUp() {
@@ -1671,7 +1675,7 @@ class StoryProgressTestHelperTest {
     assertThat(exp2.isStartedNotCompleted()).isFalse()
   }
 
-  private fun getTopic(profileId: ProfileId, topicId: String): Topic =
+  private fun getTopic(profileId: LegacyProfileId, topicId: String): Topic =
     monitorFactory.waitForNextSuccessfulResult(topicController.getTopic(profileId, topicId)).topic
 
   private fun Topic.getStory(storyId: String): StorySummary {
@@ -1717,7 +1721,7 @@ class StoryProgressTestHelperTest {
 
   private fun ChapterSummary.isCompleted(): Boolean = chapterPlayState == ChapterPlayState.COMPLETED
 
-  private fun getTopicProgressDatabase(profileId: ProfileId): TopicProgressDatabase {
+  private fun getTopicProgressDatabase(profileId: LegacyProfileId): TopicProgressDatabase {
     // Hacky way to retrieve the current progress database.
     val persistentCacheStore =
       persistentCacheStoreFactory.createPerProfile(

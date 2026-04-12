@@ -18,10 +18,10 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -76,19 +76,20 @@ class TopicControllerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var topicController: TopicController
+  @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private lateinit var profileId1: ProfileId
-  private lateinit var profileId2: ProfileId
+  private lateinit var profileId1: LegacyProfileId
+  private lateinit var profileId2: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
-    profileId2 = ProfileId.newBuilder().setInternalId(2).build()
+    profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    profileId2 = LegacyProfileId.newBuilder().setInternalId(2).build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
@@ -208,6 +209,20 @@ class TopicControllerTest {
 
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_recordProgressForSecondChapterOnly_firstChapterIsNotStarted() {
+    markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters()
+
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
 
   @Test
@@ -1088,6 +1103,25 @@ class TopicControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * Marks the second chapter of fractions story 0 as in-progress saved without completing the
+   * prerequisite first chapter. This is a specialized version of
+   * [StoryProgressTestHelper.markInProgressSavedFractionsStory0Exp1] that intentionally omits the
+   * call to [StoryProgressTestHelper.markCompletedFractionsStory0Exp0], in order to reproduce the
+   * IndexOutOfBoundsException that occurs when chapterIndex == 0 and the code tries to access
+   * chapterIndex - 1.
+   */
+  private fun markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters() {
+    val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
+      profileId1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      lastPlayedTimestamp = fakeOppiaClock.getCurrentTimeMs()
+    )
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
   private fun markFractionsStory0Chapter0AsCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId1,
@@ -1128,7 +1162,7 @@ class TopicControllerTest {
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
