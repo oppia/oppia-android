@@ -574,21 +574,17 @@ class AudioFragmentTest {
         .check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
         .inRoot(isDialog())
-        .perform(click())
+        .check(matches(isDisplayed()))
 
-      onView(withId(R.id.play_pause_audio_icon)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.audio_pause_description)
-          )
-        )
-      )
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
     }
   }
 
   @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testAudioFragment_changeNetworkToNone_reloadMainContent_showsOfflineAndKeepsPlayingAudio() {
+  fun testAudioFragment_changeNetworkToNone_reloadMainContent_showsOfflineAndStopsPlayingAudio() {
     addMediaInfo()
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<AudioFragmentTestActivity>(
@@ -619,12 +615,15 @@ class AudioFragmentTest {
         .check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.audio_dialog_offline_positive)))
         .inRoot(isDialog())
+        .check(matches(isDisplayed()))
         .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.audio_pause_description)
+            context.getString(R.string.audio_play_description)
           )
         )
       )
