@@ -2,6 +2,9 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -98,11 +101,15 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AudioLanguageActivityTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -131,6 +138,20 @@ class AudioLanguageActivityTest {
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
         assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
+      }
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_toolbarTitle_marqueeEnabled_isDisplayedCorrectly() {
+    runWithLaunchedActivity(ENGLISH_AUDIO_LANGUAGE) {
+      onActivity { activity ->
+        val toolbarTitle: TextView =
+          activity.findViewById(R.id.audio_language_toolbar_title)
+
+        assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(toolbarTitle.isSelected).isEqualTo(true)
+        assertThat(toolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
