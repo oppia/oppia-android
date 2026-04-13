@@ -8,6 +8,7 @@ is_published: true
 has_practice_questions: true
 topic_thumbnail {
   thumbnail_filename: "child_with_fractions_homework.img"
+  background_color_rgb: 13032666
 }
 written_translations {
   key: "title"

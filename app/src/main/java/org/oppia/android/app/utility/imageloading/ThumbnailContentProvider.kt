@@ -15,7 +15,7 @@ import java.io.FileOutputStream
  *
  * In developer builds, thumbnail image loading is redirected from Google Cloud Storage to this
  * content provider via the `content://org.oppia.android.provider.gcs` URI scheme. When a thumbnail
- * filename (e.g., `baker.img`) is requested, this provider maps it to the corresponding local
+ * filename (e.g., baker.img) is requested, this provider maps it to the corresponding local
  * SVG asset and returns its content directly.
  *
  * This allows proto lessons with `thumbnail_filename` placeholders to successfully load thumbnails
@@ -23,6 +23,7 @@ import java.io.FileOutputStream
  */
 class ThumbnailContentProvider : ContentProvider() {
 
+  /** Companion object for [ThumbnailContentProvider]. */
   companion object {
     private const val AUTHORITY = "org.oppia.android.provider.gcs"
     private const val THUMBNAIL_MATCH = 1
@@ -32,7 +33,7 @@ class ThumbnailContentProvider : ContentProvider() {
     }
 
     /**
-     * Maps thumbnail filenames (e.g., "baker.img") to their corresponding drawable resource IDs.
+     * Maps thumbnail filenames (e.g., baker.img) to their corresponding drawable resource IDs.
      *
      * This mapping must be kept in sync with the `thumbnail_filename` values defined in the
      * textproto asset files.

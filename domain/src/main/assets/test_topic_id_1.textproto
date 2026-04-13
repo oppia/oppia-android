@@ -4,6 +4,7 @@ is_published: true
 has_practice_questions: false
 topic_thumbnail {
   thumbnail_filename: "duck_and_chicken.img"
+  background_color_rgb: 13032666
 }
 written_translations {
   key: "title"
