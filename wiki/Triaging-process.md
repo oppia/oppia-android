@@ -2,10 +2,11 @@
 This wiki outlines the steps to triage new and existing issues. This ensures that all issues are being effectively tracked and prioritized.
 
 ###  First-stage triage - Steps to triage incoming issues coming into Oppia-Android as a whole:
-The Dev Workflow team lead (currently Ben) should do the following every week for any [filed issues that aren’t assigned to a project](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+no%3Aproject):
+The Dev Workflow team lead should do the following every week for any [filed issues that aren’t assigned to a project](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+no%3Aproject):
 
 - Check that the issue is written clearly enough. Request clarification if needed.
-- Assign the issue to the appropriate task force, if applicable. Otherwise, assign it to the relevant team (CLAM, Dev Workflow) based on which type of user it affects.
+- Assign it to the relevant team (CLAM, Dev Workflow) based on which type of user it affects.
+- Remove the "triage needed" label.
 - If you’re not sure how to categorise an issue, feel free to ping Sean (@seanlip) for help!
 
 ### Second-stage triage - Steps to triage incoming issues for each team:
@@ -13,7 +14,7 @@ Team leads should do an audit every week to categorise new issues in their GitHu
 
 1. Verify that the issue lies within the scope of the team (see definitions below).
     - If not, assign the issue to the appropriate project/team.
-2. Determine whether the issue is a bug or a enhancement
+2. Determine whether the issue is a bug or an enhancement
     - If the issue is a feature request (enhancement), contact the relevant PM (product manager) for the team and ask them to take a look and decide whether it needs to be worked upon. (See the list of PMs [below](#pm-contacts-for-each-team).)
     - If the issue is a bug, add the **Bug** label.
 3. (For simple UI issues) Make sure the bug is reproducible
@@ -28,7 +29,11 @@ Team leads should do an audit every week to categorise new issues in their GitHu
             - **Moderate**: blocks or represents a secondary user journey – e.g. end user changing a profile picture, developer easily seeing the output of frontend tests at the bottom of the CI log.
             - **Minor**: Neither of the others, relates to “polish”.
 
-        ![image](https://user-images.githubusercontent.com/73544247/202834180-e26198bb-bc54-4fc9-9471-9348b439e5a2.png)
+        | # of users affected / Severity | Severe | Moderate | Minor |
+        | :--- | :--- | :--- | :--- |
+        | **(roughly) > 60%** | High | Medium | Low |
+        | **(roughly) 5-60%** | High | Low | Low |
+        | **(roughly) < 5%** | Medium | Low | Low |
 
     - ‘Work’ defines how hard it would be to solve/resolve a particular issue. This is generally correlated with the amount of ambiguity in the task. We use the following rough system for assigning this label:
         - **Work: Low**: Solution is clear and broken into good-first-issue-sized chunks.
@@ -44,12 +49,15 @@ Team leads should do an audit every week to categorise new issues in their GitHu
     - Other issues go in the ‘backlog’ bucket.
     - Any issue with an external dependency that the team cannot resolve by itself (example: missing mocks) goes in the ‘blocked’ bucket, and the reason should be specified in the ‘Issue specific status’ field (using free-text). Team leads should ensure an issue spends as little time here as possible.
 
-6. Determine if the issue is potentially a good first issue
+6. Assign context labels to the issue, if relevant:
+    - Bugs and feature requests which are primarily about documentation (either repository MD files like the README or the project's wiki) should have the "Affects: documentation" label.
+    - Bugs and feature requests which require production lesson assets to investigate and fix/address should have the "Requires production assets" label attached.
+
+8. Determine if the issue is potentially a good first issue
     - If the issue seems like something a new contributor to Oppia-Android can take up, make sure to add enough information in the issue description for a new contributor to start work on that issue then ask Ben or Adhiambo to add the Good First Issue label. (Note: typically these are “Work: Low” issues.)
         - For such good first issues, also assign purple “technology: Kotlin”, “technology: Bazel”, “technology: Xml”, etc. labels as appropriate. This helps new contributors identify issues that they would find approachable.
 
-7. After triaging all issues, make sure the issues in the 'Priority' and 'High Priority' buckets are sorted based on severity/priority (high to low).
-
+9. After triaging all issues, make sure the issues in the 'Priority' and 'High Priority' buckets are sorted based on severity/priority (high to low).
 
 ## PM contacts for each team
 - **CLaM**:
