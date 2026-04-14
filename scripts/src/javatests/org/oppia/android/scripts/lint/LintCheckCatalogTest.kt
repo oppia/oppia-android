@@ -36,6 +36,8 @@ class LintCheckCatalogTest {
     assertThat(disabled).doesNotContain("NewApi")
     assertThat(disabled).doesNotContain("HardcodedText")
     assertThat(disabled).doesNotContain("CheckResult")
+    // UnusedAttribute must run in full mode — it needs all sources to avoid false positives.
+    assertThat(disabled).doesNotContain("UnusedAttribute")
   }
 
   @Test
@@ -53,6 +55,8 @@ class LintCheckCatalogTest {
     assertThat(disabled).contains("CutPasteId")
     assertThat(disabled).contains("DuplicateIncludedIds")
     assertThat(disabled).contains("SwitchIntDef")
+    // UnusedAttribute requires full sources to avoid false positives.
+    assertThat(disabled).contains("UnusedAttribute")
   }
 
   @Test

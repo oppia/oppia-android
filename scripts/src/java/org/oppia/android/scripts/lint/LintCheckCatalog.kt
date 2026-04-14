@@ -183,7 +183,6 @@ object LintCheckCatalog {
     "StopShip",
     "SupportAnnotationUsage",
     "UniqueConstants",
-    "UnusedAttribute",
     "UseCheckPermission",
     "UseOfBundledGooglePlayServices",
     "UsingC2DM",
@@ -195,13 +194,18 @@ object LintCheckCatalog {
   /**
    * Cross-file or classpath-dependent checks that need the full project description.
    *
-   * These require cross-file analysis, classpath resolution, or manifest-to-source
-   * cross-referencing. They cannot run incrementally.
+   * These require cross-file analysis, classpath resolution, manifest-to-source
+   * cross-referencing, or must inspect the full source corpus to avoid false positives.
+   * They cannot run incrementally.
    */
   private val checksRequiringFullProject = setOf(
     "CutPasteId",
     "DuplicateIncludedIds",
-    "SwitchIntDef"
+    "SwitchIntDef",
+    // UnusedAttribute checks whether a custom XML attribute is referenced anywhere in the
+    // codebase. Running it on a subset of changed files produces false positives because
+    // usages in unchanged files are invisible to the checker.
+    "UnusedAttribute"
   )
 
   /** Union of all categorized checks. */
