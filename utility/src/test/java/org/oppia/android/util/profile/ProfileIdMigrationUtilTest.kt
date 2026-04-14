@@ -13,17 +13,33 @@ import org.robolectric.annotation.LooperMode
 class ProfileIdMigrationUtilTest {
 
   @Test
-  fun testMigrate_legacyProfileIdWithValidId_migratesCorrectly() {
+  fun testPreservingZero_legacyProfileIdWithValidId_migratesCorrectly() {
     val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(5).build()
-    val profileId = legacyProfileId.toProfileId()
+    val profileId = legacyProfileId.toProfileIdPreservingZero()
     assertThat(profileId.hasInternalId()).isTrue()
     assertThat(profileId.internalId).isEqualTo(5)
   }
 
   @Test
-  fun testMigrate_legacyProfileIdWithZeroId_convertsToNull() {
+  fun testPreservingZero_legacyProfileIdWithZeroId_preservesZero() {
     val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
-    val profileId = legacyProfileId.toProfileId()
+    val profileId = legacyProfileId.toProfileIdPreservingZero()
+    assertThat(profileId.hasInternalId()).isTrue()
+    assertThat(profileId.internalId).isEqualTo(0)
+  }
+
+  @Test
+  fun testUnsetIfZero_legacyProfileIdWithValidId_migratesCorrectly() {
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(5).build()
+    val profileId = legacyProfileId.toProfileIdUnsetIfZero()
+    assertThat(profileId.hasInternalId()).isTrue()
+    assertThat(profileId.internalId).isEqualTo(5)
+  }
+
+  @Test
+  fun testUnsetIfZero_legacyProfileIdWithZeroId_convertsToUnset() {
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    val profileId = legacyProfileId.toProfileIdUnsetIfZero()
     assertThat(profileId.hasInternalId()).isFalse()
   }
 
