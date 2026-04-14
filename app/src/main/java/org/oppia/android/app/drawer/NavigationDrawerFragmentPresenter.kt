@@ -130,6 +130,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       insets
     }
 
+    // Override the inner NavigationView's insets listener to prevent ScrimInsetsFrameLayout's
+    // constructor-set listener from storing insets and drawing the default #4000 scrim in
+    // system bar inset areas. Setting fitsSystemWindows=false alone is not sufficient because
+    // the OnApplyWindowInsetsListener set in ScrimInsetsFrameLayout's constructor is
+    // independent of the fitsSystemWindows flag.
+    ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentDrawerNavView) { _, insets ->
+      insets
+    }
+
     // Handle bottom padding for the navigation bar.
     ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
       val systemBarInsets = insets.getInsets(
