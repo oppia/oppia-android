@@ -2,6 +2,7 @@
 General-purpose mathematics utilities, especially for supporting math-based interactions.
 """
 
+load("@rules_android//android:rules.bzl", "android_library")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 android_library(

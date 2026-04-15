@@ -2,6 +2,7 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
+load("@rules_android//android:rules.bzl", "android_library")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
 

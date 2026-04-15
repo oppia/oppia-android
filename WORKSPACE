@@ -7,6 +7,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
+# rules_android setup
+http_archive(
+    name = "rules_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_android"]["sha"],
+    strip_prefix = "rules_android-%s" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"],
+    urls = ["https://github.com/bazelbuild/rules_android/archive/v%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"]],
+)
+
+load("@rules_android//android:rules.bzl", "android_sdk_repository")
+
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
 # TODO(#1542): Sync Android SDK version with the manifest.

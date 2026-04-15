@@ -168,6 +168,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "50ad3e99f9793e19d96218ec9f5d46c039ce28e9e2e0e55be2916b5bfd0554b0",
         "version": "4.7",
     },
+    "rules_android": {
+        "sha": "cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b7a7806",
+        "version": "0.1.1",
+    },
     "rules_java": {
         "sha": "4018e97c93f97680f1650ffd2a7530245b864ac543fd24fae8c02ba447cb2864",
         "version": "7.3.1",

@@ -5,6 +5,7 @@ Dagger graph.
 Specific application implementations can be found in subpackages.
 """
 
+load("@rules_android//android:rules.bzl", "android_library")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
