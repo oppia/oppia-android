@@ -216,7 +216,7 @@ object LintCheckCatalog {
    *
    * These are defaulted to requiring the full project description to ensure correctness
    * until they can be individually audited and moved to a more specific bucket.
-   * TODO(#XXXX): Audit these checks and move them to the appropriate bucket above.
+   * TODO(#5886): Audit these checks and move them to the appropriate bucket above.
    */
   private val checksPendingCategorization = setOf(
     "AaptCrash",
