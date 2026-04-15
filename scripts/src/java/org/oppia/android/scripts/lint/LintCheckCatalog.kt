@@ -520,10 +520,12 @@ object LintCheckCatalog {
   /**
    * Returns the set of check IDs to disable when running a full analysis.
    *
-   * In full mode, only Gradle-specific checks are disabled since they are irrelevant
-   * for Bazel-based builds.
+   * In full mode, Gradle-specific checks are disabled since they are irrelevant for Bazel-based
+   * builds. Checks pending categorization are also disabled until they've been individually
+   * audited and moved to the appropriate bucket.
    */
-  fun computeChecksToDisableInFullRun(): Set<String> = gradleChecksToIgnore
+  fun computeChecksToDisableInFullRun(): Set<String> =
+    gradleChecksToIgnore + checksPendingCategorization
 
   /**
    * Returns the set of check IDs to disable when running an incremental analysis.
