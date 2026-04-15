@@ -126,7 +126,21 @@ object LintCheckCatalog {
     "LocalSuppress",
     "LockedOrientationActivity",
     "NonResizeableActivity",
-    "SourceLockedOrientationActivity"
+    "SourceLockedOrientationActivity",
+    // Vector / drawable checks with active exemptions
+    "VectorPath",
+    "VectorRaster",
+    // Manifest / version checks with active exemptions
+    "MissingVersion",
+    "RedundantLabel",
+    // Layout/UI checks with active exemptions
+    "UseCompoundDrawables",
+    "KeyboardInaccessibleWidget",
+    "InconsistentLayout",
+    "Overdraw",
+    // Typography checks with active exemptions
+    "TypographyDashes",
+    "TypographyQuotes"
   )
 
   /**
@@ -191,7 +205,10 @@ object LintCheckCatalog {
     "UsingC2DM",
     "ValidFragment",
     "VulnerableCordovaVersion",
-    "WeekBasedYear"
+    "WeekBasedYear",
+    // Checks with active exemptions requiring source analysis
+    "NotifyDataSetChanged",
+    "CustomSplashScreen"
   )
 
   /**
@@ -208,7 +225,10 @@ object LintCheckCatalog {
     // UnusedAttribute checks whether a custom XML attribute is referenced anywhere in the
     // codebase. Running it on a subset of changed files produces false positives because
     // usages in unchanged files are invisible to the checker.
-    "UnusedAttribute"
+    "UnusedAttribute",
+    // Registered checks cross-file to see if a declared component is referenced in the
+    // manifest. This requires the full manifest + source corpus.
+    "Registered"
   )
 
   /**
@@ -229,7 +249,7 @@ object LintCheckCatalog {
     "BrokenIterator",
     "ConstantLocale",
     "ConvertToWebp",
-    "CustomSplashScreen",
+    // CustomSplashScreen moved to checksForIncrementalSources (has active exemptions)
     "CustomX509TrustManager",
     "DalvikOverride",
     "DataExtractionRules",
@@ -261,7 +281,7 @@ object LintCheckCatalog {
     "InOrMmUsage",
     "IncompatibleMediaBrowserServiceCompatVersion",
     "IncludeLayoutParam",
-    "InconsistentLayout",
+    // InconsistentLayout moved to checksNotNeedingSources (has active exemptions)
     "InefficientWeight",
     "InflateParams",
     "InnerclassSeparator",
@@ -281,7 +301,7 @@ object LintCheckCatalog {
     "InvalidWearFeatureAttribute",
     "JavascriptInterface",
     "JobSchedulerService",
-    "KeyboardInaccessibleWidget",
+    // KeyboardInaccessibleWidget moved to checksNotNeedingSources (has active exemptions)
     "KotlinNullnessAnnotation",
     "KotlinPropertyAccess",
     "LabelFor",
@@ -320,7 +340,7 @@ object LintCheckCatalog {
     "MissingPrefix",
     "MissingQuantity",
     "MissingTranslation",
-    "MissingVersion",
+    // MissingVersion moved to checksNotNeedingSources (has active exemptions)
     "MockLocation",
     "MotionLayoutInvalidSceneFileReference",
     "MotionLayoutMissingId",
@@ -339,14 +359,14 @@ object LintCheckCatalog {
     "NotSibling",
     "NotificationId0",
     "NotificationTrampoline",
-    "NotifyDataSetChanged",
+    // NotifyDataSetChanged moved to checksForIncrementalSources (has active exemptions)
     "ObjectAnimatorBinding",
     "ObsoleteLayoutParam",
     "OldTargetApi",
     "OnClick",
     "OpenForTesting",
     "Orientation",
-    "Overdraw",
+    // Overdraw moved to checksNotNeedingSources (has active exemptions)
     "OverrideAbstract",
     "PackagedPrivateKey",
     "ParcelClassLoader",
@@ -366,9 +386,9 @@ object LintCheckCatalog {
     "QueryPermissionsNeeded",
     "Range",
     "RecyclerView",
-    "RedundantLabel",
+    // RedundantLabel moved to checksNotNeedingSources (has active exemptions)
     "RedundantNamespace",
-    "Registered",
+    // Registered moved to checksRequiringFullProject (has active exemptions)
     "RelativeOverlap",
     "RemoteViewLayout",
     "RequiredSize",
@@ -423,11 +443,11 @@ object LintCheckCatalog {
     "TrustAllX509TrustManager",
     "TrulyRandom",
     "Typos",
-    "TypographyDashes",
+    // TypographyDashes moved to checksNotNeedingSources (has active exemptions)
     "TypographyEllipsis",
     "TypographyFractions",
     "TypographyOther",
-    "TypographyQuotes",
+    // TypographyQuotes moved to checksNotNeedingSources (has active exemptions)
     "UastImplementation",
     "UniquePermission",
     "UnknownId",
@@ -446,7 +466,7 @@ object LintCheckCatalog {
     "UnusedResources",
     "UsableSpace",
     "UseAlpha2",
-    "UseCompoundDrawables",
+    // UseCompoundDrawables moved to checksNotNeedingSources (has active exemptions)
     "UseSparseArrays",
     "UseValueOf",
     "UselessLeaf",
@@ -455,8 +475,8 @@ object LintCheckCatalog {
     "UsingHttp",
     "ValidRestrictions",
     "VectorDrawableCompat",
-    "VectorPath",
-    "VectorRaster",
+    // VectorPath moved to checksNotNeedingSources (has active exemptions)
+    // VectorRaster moved to checksNotNeedingSources (has active exemptions)
     "ViewBindingType",
     "ViewConstructor",
     "ViewHolder",
