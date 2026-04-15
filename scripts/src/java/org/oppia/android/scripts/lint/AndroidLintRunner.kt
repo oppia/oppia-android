@@ -347,76 +347,17 @@ class LintOrchestrator(
   /**
    * Runs the check-script-consistency mode.
    *
-   * Queries the linter for its full list of supported checks via [CommandExecutor]
-   * and compares against [LintCheckCatalog.allKnownChecks]. Fails if any checks are
-   * missing from the catalog (newly added by a lint upgrade) or if the catalog contains
-   * checks that the linter doesn't recognize (removed/renamed).
+   * Compares the catalog's manually-curated [LintCheckCatalog.allKnownChecks] against the
+   * authoritative [LintCheckCatalog.registryChecks] (sourced from [BuiltinIssueRegistry]).
+   * Fails if any checks are missing from the catalog (newly added by a lint upgrade) or
+   * if the catalog contains checks that the registry doesn't recognize (removed/renamed).
    */
   fun runCheckScriptConsistency() {
     println("Running check-script-consistency mode...")
 
-    val workingDirectory = Files.createTempDirectory("lint_consistency").toFile()
-    val reportFile = File(workingDirectory, "unused-report.xml")
-    val projectFile = File(workingDirectory, "unused-project.xml")
-    val lintRunner = AndroidLintRunner(
-      reportFile = reportFile,
-      projectDescriptionFile = projectFile,
-      repoRoot = repoRoot,
-      exemptionProtoPath = DEFAULT_PROTO_BINARY_PATH
-    )
-
-    val sdkProperties = AndroidBuildSdkProperties()
-    val bazelInfo = BazelClient(repoRoot, commandExecutor).retrieveBazelInfo()
-    val javaConfig = JavaConfiguration(bazelInfo)
-
-    val cliArgs = lintRunner.prepareLintArguments(
-      jdkHome = javaConfig.getJdkHome(),
-      javaVersion = javaConfig.getVersion(),
-      buildSdkVersion = sdkProperties.buildSdkVersion.toString(),
-      kotlinCompilerVersion = sdkProperties.kotlinCompilerVersion,
-      suppressLintIssues = emptySet(),
-      listChecks = true
-    )
-
-    // Capture lint --list output by temporarily redirecting System.out.
-    // This is necessary because LintCli (com.android.tools.lint.Main) captures
-    // System.out during its constructor, and the Bazel deploy JAR classpath
-    // cannot be used to launch lint as a subprocess via CommandExecutor.
-    // The redirect is scoped to a minimal try/finally block to ensure System.out
-    // is always restored, even if LintCli throws.
-    val capturedOutput = java.io.ByteArrayOutputStream()
-    val originalOut = System.out
-    System.setOut(java.io.PrintStream(capturedOutput, true))
-    try {
-      LintCli().run(cliArgs)
-    } finally {
-      System.setOut(originalOut)
-    }
-
-    val linterChecks = parseLintListOutput(
-      capturedOutput.toString().lines()
-    )
+    val registryChecks = LintCheckCatalog.registryChecks
     val catalogChecks = LintCheckCatalog.allKnownChecks
-    validateCatalogConsistency(linterChecks, catalogChecks)
-  }
-
-  /**
-   * Parses the output lines from `lint --list` and extracts check IDs.
-   *
-   * The `--list` output format is: `"CheckId": Description`
-   * Lint wraps output at a fixed column width and adds indentation on continuation
-   * lines, which can split check IDs across lines. We rejoin these by stripping all
-   * whitespace before matching.
-   *
-   * @param outputLines the raw output lines from the lint --list command
-   * @return the set of check IDs found in the output
-   */
-  fun parseLintListOutput(outputLines: List<String>): Set<String> {
-    val rawOutput = outputLines.joinToString("\n")
-    // Remove all whitespace within quoted strings to rejoin wrapped check IDs.
-    val cleanOutput = rawOutput.replace(Regex("\\s+"), "")
-    val checkPattern = Regex("\"(\\w+)\":")
-    return checkPattern.findAll(cleanOutput).map { it.groupValues[1] }.toSet()
+    validateCatalogConsistency(registryChecks, catalogChecks)
   }
 
   /**

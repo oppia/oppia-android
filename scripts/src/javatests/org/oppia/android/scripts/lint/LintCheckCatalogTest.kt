@@ -104,4 +104,27 @@ class LintCheckCatalogTest {
     assertThat(LintCheckCatalog.allKnownChecks).contains("GradleDependency")
     assertThat(LintCheckCatalog.allKnownChecks).contains("AndroidGradlePluginVersion")
   }
+
+  @Test
+  fun testRegistryChecks_isNotEmpty() {
+    assertThat(LintCheckCatalog.registryChecks).isNotEmpty()
+  }
+
+  @Test
+  fun testRegistryChecks_containsMoreChecksThanLintList() {
+    // BuiltinIssueRegistry includes dynamically-loaded checks that lint --list misses.
+    assertThat(LintCheckCatalog.registryChecks.size).isGreaterThan(152)
+  }
+
+  @Test
+  fun testAllKnownChecks_matchesRegistryChecks() {
+    val catalogChecks = LintCheckCatalog.allKnownChecks
+    val registryChecks = LintCheckCatalog.registryChecks
+
+    val missingFromCatalog = registryChecks - catalogChecks
+    val extraInCatalog = catalogChecks - registryChecks
+
+    assertThat(missingFromCatalog).isEmpty()
+    assertThat(extraInCatalog).isEmpty()
+  }
 }

@@ -34,6 +34,9 @@ kt_jvm_library(
         "LintCheckCatalog.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//third_party:com_android_tools_lint_lint-checks",
+    ],
 )
 
 kt_jvm_library(

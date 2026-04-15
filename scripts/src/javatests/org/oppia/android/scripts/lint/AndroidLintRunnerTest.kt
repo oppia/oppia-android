@@ -129,55 +129,6 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testLintOrchestrator_parseLintListOutput_extractsCheckIds() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    val lines = listOf(
-      "\"HardcodedText\": Hardcoded text",
-      "\"NewApi\": Calling new methods",
-      "\"CheckResult\": Ignoring results"
-    )
-
-    val checks = orchestrator.parseLintListOutput(lines)
-
-    assertThat(checks).containsExactly("HardcodedText", "NewApi", "CheckResult")
-  }
-
-  @Test
-  fun testLintOrchestrator_parseLintListOutput_emptyOutput_returnsEmpty() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-
-    val checks = orchestrator.parseLintListOutput(emptyList())
-
-    assertThat(checks).isEmpty()
-  }
-
-  @Test
-  fun testLintOrchestrator_parseLintListOutput_handlesWrappedCheckIds() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    // Simulate lint wrapping a check ID across lines
-    val lines = listOf(
-      "\"ConvertT",
-      "    oWebp\": Convert to WebP format"
-    )
-
-    val checks = orchestrator.parseLintListOutput(lines)
-
-    assertThat(checks).contains("ConvertToWebp")
-  }
-
-  @Test
   fun testLintOrchestrator_validateCatalogConsistency_matchingChecks_passes() {
     val orchestrator = LintOrchestrator(
       repoRoot = tempFolder.root,
