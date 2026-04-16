@@ -490,7 +490,6 @@ object LintCheckCatalog {
   )
 
 
-
   /** Union of all categorized checks. */
   val allKnownChecks: Set<String> by lazy {
     gradleChecksToIgnore +
