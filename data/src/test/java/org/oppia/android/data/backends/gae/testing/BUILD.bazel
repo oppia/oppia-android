@@ -44,6 +44,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )
 
 oppia_android_test(

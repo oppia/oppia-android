@@ -29,6 +29,7 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
         "//third_party:moshi",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )
 
 kt_android_library(
@@ -43,4 +44,5 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
         "//third_party:moshi",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )

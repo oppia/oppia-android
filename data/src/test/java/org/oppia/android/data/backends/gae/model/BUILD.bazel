@@ -18,4 +18,5 @@ oppia_android_test(
         "//third_party:moshi",
         "//third_party:robolectric_android-all",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )

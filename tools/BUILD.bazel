@@ -5,12 +5,12 @@ using java_plugin).
 """
 
 load("@rules_java//java:defs.bzl", "java_plugin")
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_ksp_plugin")
 
-java_plugin(
+kt_ksp_plugin(
     name = "moshi_annotation_processor_plugin",
-    generates_api = True,
-    processor_class = "com.squareup.moshi.kotlin.codegen.apt.JsonClassCodegenProcessor",
-    visibility = ["//third_party:__pkg__"],
+    processor_class = "com.squareup.moshi.kotlin.codegen.ksp.JsonClassSymbolProcessorProvider",
+    visibility = ["//visibility:public"],
     deps = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
         "//third_party:com_squareup_moshi_moshi-kotlin-codegen",

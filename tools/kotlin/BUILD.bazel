@@ -36,6 +36,7 @@ kt_kotlinc_options(
         ":errors_as_warnings": "report",
     }),
     x_optin = ["kotlin.RequiresOptIn"],
+    x_use_k2 = False,
 )
 
 # TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
@@ -58,8 +59,8 @@ define_kt_toolchain(
 
 kt_compiler_plugin(
     name = "jetpack_compose_compiler_plugin",
-    id = "androidx.compose.compiler",
+    id = "androidx.compose.compiler.plugins.kotlin",
     target_embedded_compiler = True,
     visibility = ["//app:app_visibility"],
-    deps = ["//third_party:androidx_compose_compiler_compiler"],
+    deps = ["//third_party:org_jetbrains_kotlin_kotlin-compose-compiler-plugin-embeddable"],
 )

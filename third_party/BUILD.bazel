@@ -60,9 +60,10 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-java_library(
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
     name = "moshi",
-    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//visibility:public"],
     exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin",

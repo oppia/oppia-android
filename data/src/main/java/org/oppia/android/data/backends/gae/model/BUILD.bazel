@@ -20,4 +20,5 @@ kt_android_library(
     deps = [
         "//third_party:moshi",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )

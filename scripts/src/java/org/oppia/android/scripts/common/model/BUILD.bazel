@@ -10,4 +10,5 @@ kt_jvm_library(
     srcs = ["GitHubIssue.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )
