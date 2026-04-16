@@ -184,6 +184,70 @@ class TestFontScaleConfigurationUtilActivityTest {
     }
   }
 
+  @Test
+  fun testFontScaleConfigurationUtil_smallTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_mediumTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_text_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_largeTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_extraLargeTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(

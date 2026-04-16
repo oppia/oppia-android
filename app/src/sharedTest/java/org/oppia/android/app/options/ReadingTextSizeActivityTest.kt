@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ReadingTextSize.LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -72,6 +76,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -127,6 +132,53 @@ class ReadingTextSizeActivityTest {
         assertThat(title).isEqualTo(context.getString(R.string.reading_text_size_activity_title))
       }
     }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_initialTextSize_backNavigation_returnsCorrectResult() {
+    val intent =
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
+    val scenario = ActivityScenario.launch<ReadingTextSizeActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+
+    // Trigger back press — the activity calls setResult(RESULT_OK, ...) then finish().
+    scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+    testCoroutineDispatchers.runCurrent()
+
+    val result = scenario.result
+    assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+    val resultBundle = result.resultData.getProtoExtra(
+      MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+      ReadingTextSizeActivityResultBundle.getDefaultInstance()
+    )
+    assertThat(resultBundle.selectedReadingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_newTextSizeSelected_backNavigation_returnsUpdatedResult() {
+    val intent =
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE)
+    val scenario = ActivityScenario.launch<ReadingTextSizeActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+
+    // Change selection before pressing back.
+    scenario.onActivity { activity ->
+      val fragment = activity.supportFragmentManager
+        .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+      fragment.readingTextSizeFragmentPresenter.onTextSizeSelected(LARGE_TEXT_SIZE)
+    }
+
+    // Trigger back press — result should report the updated selection.
+    scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+    testCoroutineDispatchers.runCurrent()
+
+    val result = scenario.result
+    assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+    val resultBundle = result.resultData.getProtoExtra(
+      MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+      ReadingTextSizeActivityResultBundle.getDefaultInstance()
+    )
+    assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
   }
 
   private fun setUpTestApplicationComponent() {
