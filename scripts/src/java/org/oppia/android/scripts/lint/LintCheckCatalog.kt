@@ -259,7 +259,9 @@ object LintCheckCatalog {
     "AnimatorKeep",
     "InternalInsetResource",
     "NonConstantResourceId",
-    "InvalidVectorPath"
+    "InvalidVectorPath",
+    "UnknownId",
+    "UnknownIdInLayout"
   )
 
   /**
