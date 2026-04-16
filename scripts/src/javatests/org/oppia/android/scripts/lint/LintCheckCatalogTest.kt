@@ -36,7 +36,8 @@ class LintCheckCatalogTest {
     assertThat(disabled).doesNotContain("NewApi")
     assertThat(disabled).doesNotContain("HardcodedText")
     assertThat(disabled).doesNotContain("CheckResult")
-    // UnusedAttribute must run in full mode — it needs all sources to avoid false positives.
+    // UnusedAttribute is an API-level compatibility check (not a custom-attr usage scanner) and
+    // runs on XML only — it does not need full sources and is not disabled in full runs.
     assertThat(disabled).doesNotContain("UnusedAttribute")
   }
 
@@ -52,11 +53,15 @@ class LintCheckCatalogTest {
   fun testComputeChecksToDisableInIncrementalRun_containsProjectScopedChecks() {
     val disabled = LintCheckCatalog.computeChecksToDisableInIncrementalRun()
 
-    assertThat(disabled).contains("CutPasteId")
-    assertThat(disabled).contains("DuplicateIncludedIds")
     assertThat(disabled).contains("SwitchIntDef")
-    // UnusedAttribute requires full sources to avoid false positives.
-    assertThat(disabled).contains("UnusedAttribute")
+    assertThat(disabled).contains("Registered")
+    assertThat(disabled).contains("UnusedResources")
+    // CutPasteId is a single-file source check — it belongs in incremental, not full project.
+    assertThat(disabled).doesNotContain("CutPasteId")
+    // DuplicateIncludedIds is a pure XML check — no sources needed, not full project.
+    assertThat(disabled).doesNotContain("DuplicateIncludedIds")
+    // UnusedAttribute is an API-level XML check (ApiDetector) — not a cross-source scanner.
+    assertThat(disabled).doesNotContain("UnusedAttribute")
   }
 
   @Test
