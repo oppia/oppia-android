@@ -256,6 +256,8 @@ object LintCheckCatalog {
     "NamespaceTypo",
     "RedundantNamespace",
     "UnusedNamespace",
+    // UnusedAttribute (via ApiDetector) flags XML attributes used at an API level higher than
+    // minSdkVersion. It is a pure XML compatibility check — not a custom-attr usage scanner.
     "UnusedAttribute",
     "Typos",
     "UnusedIds",
