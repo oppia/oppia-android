@@ -147,11 +147,13 @@ jobs:
         run: bazel info
 
       - name: Build all deployable AABs
-        run: >-
-          bazel build --compilation_mode=opt --
-          //:oppia_alpha_deployable
-          //:oppia_beta_deployable
-          //:oppia_ga_deployable
+        run: |
+          for flavor in alpha beta ga; do
+            echo "=== Building //:oppia_${flavor}_deployable ==="
+            bazel build --compilation_mode=opt -- //:oppia_${flavor}_deployable
+            echo "=== Shutting down Bazel to free memory ==="
+            bazel shutdown
+          done
 
       - name: Upload Bazel cache for finalize jobs
         uses: actions/upload-artifact@v7

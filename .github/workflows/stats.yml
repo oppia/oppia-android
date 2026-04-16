@@ -212,16 +212,24 @@ jobs:
         run: |
           cd head
           git log -n 1
-          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
-          bazel shutdown
+          for flavor in alpha beta ga; do
+            echo "=== Building //:oppia_${flavor}_deployable ==="
+            bazel build -- //:oppia_${flavor}_deployable
+            echo "=== Shutting down Bazel to free memory ==="
+            bazel shutdown
+          done
 
       - name: Build deployable AABs (base branch)
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd base
           git log -n 1
-          bazel build -- //:oppia_alpha_deployable //:oppia_beta_deployable //:oppia_ga_deployable
-          bazel shutdown
+          for flavor in alpha beta ga; do
+            echo "=== Building //:oppia_${flavor}_deployable ==="
+            bazel build -- //:oppia_${flavor}_deployable
+            echo "=== Shutting down Bazel to free memory ==="
+            bazel shutdown
+          done
 
       - name: Upload Bazel cache for finalize job
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
