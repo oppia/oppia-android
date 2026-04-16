@@ -164,7 +164,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.compose.compiler:compiler:1.1.1"
+  artifact_name: "org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable:2.1.0"
   artifact_version: "1.1.1"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -1677,7 +1677,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi:1.13.0"
+  artifact_name: "com.squareup.moshi:moshi:1.15.0"
   artifact_version: "1.13.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -1688,7 +1688,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi-kotlin:1.13.0"
+  artifact_name: "com.squareup.moshi:moshi-kotlin:1.15.0"
   artifact_version: "1.13.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -1699,7 +1699,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
+  artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
   artifact_version: "1.13.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -1966,7 +1966,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.9.0"
   artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
@@ -1977,7 +1977,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.0"
   artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
@@ -1988,7 +1988,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"
   artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"
@@ -1999,7 +1999,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
   artifact_version: "1.6.21"
   license {
     license_name: "The Apache License, Version 2.0"

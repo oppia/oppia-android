@@ -33,3 +33,10 @@
 # https://github.com/Kotlin/kotlinx.coroutines/pull/2997, specifically:
 # https://github.com/Kotlin/kotlinx.coroutines/blob/3574c2/kotlinx-coroutines-core/jvm/src/internal/ExceptionsConstructor.kt#L17.
 -dontwarn kotlinx.coroutines.internal.ClassValueCtorCache
+
+# Workarounds for Kotlin 1.9 metadata/stdlib incompatibilities with older ProGuard versions
+-dontwarn kotlin.collections.AbstractIterator$WhenMappings
+-dontwarn kotlin.collections.AbstractMap$toString$1
+-dontwarn kotlin.io.path.PathsKt__PathRecursiveFunctionsKt**
+-dontwarn kotlin.jvm.internal.TypeReference$asString$args$1
+-dontwarn kotlin.text.StringsKt__StringsKt$rangesDelimitedBy$2

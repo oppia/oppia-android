@@ -69,6 +69,14 @@ git_repository(
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
 
+# Declare rules_kotlin before initializeDepsForWorkspace to override the version
+# pulled in by protobuf_deps.
+http_archive(
+    name = "io_bazel_rules_kotlin",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
+)
+
 initializeDepsForWorkspace()
 
 load("@oppia_proto_api//repo:toolchains.bzl", "initializeToolchainsForWorkspace")
@@ -96,13 +104,6 @@ bazel_features_deps()
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-http_archive(
-    name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
-)
 
 load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
 

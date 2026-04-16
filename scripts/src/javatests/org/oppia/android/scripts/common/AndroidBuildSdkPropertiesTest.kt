@@ -33,6 +33,6 @@ class AndroidBuildSdkPropertiesTest {
   fun testKotlinLanguageVersion_isTheCorrectVersion() {
     val properties = AndroidBuildSdkProperties()
 
-    assertThat(properties.kotlinLanguageVersion).isEqualTo("1.6")
+    assertThat(properties.kotlinLanguageVersion).isEqualTo("1.9")
   }
 }
