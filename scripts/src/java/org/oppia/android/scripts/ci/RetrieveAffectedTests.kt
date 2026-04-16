@@ -2,6 +2,7 @@ package org.oppia.android.scripts.ci
 
 import java.io.File
 import org.oppia.android.scripts.common.ExitProcessWrapper
+import org.oppia.android.scripts.common.ExitProcessWrapperImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.proto.AffectedTestsBucket
 
@@ -28,27 +29,46 @@ import org.oppia.android.scripts.proto.AffectedTestsBucket
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
-    printUsageAndExit()
+    printUsageAndExit(ExitProcessWrapperImpl())
   }
 
   val protoBase64 = args[0]
   val bucketNameOutputFile = File(args[1])
   val testTargetsOutputFile = File(args[2])
-  val affectedTestsBucket =
-    AffectedTestsBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
-  bucketNameOutputFile.printWriter().use { writer ->
-    writer.println(affectedTestsBucket.cacheBucketName)
-  }
-  testTargetsOutputFile.printWriter().use { writer ->
-    writer.println(affectedTestsBucket.affectedTestTargetsList.joinToString(separator = " "))
-  }
+  RetrieveAffectedTests(ExitProcessWrapperImpl())
+    .retrieve(protoBase64, bucketNameOutputFile, testTargetsOutputFile)
 }
 
-private fun printUsageAndExit(): Nothing {
+private fun printUsageAndExit(exitProcessWrapper: ExitProcessWrapper): Nothing {
   println(
     "Usage: bazel run //scripts:retrieve_affected_tests --" +
       " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
       " <path_to_test_target_list_output_file>"
   )
-  ExitProcessWrapper().exitProcess(1)
+  exitProcessWrapper.forceCloseScript(1)
+}
+
+/** Utility for retrieving affected tests from a bucket. */
+class RetrieveAffectedTests(private val exitProcessWrapper: ExitProcessWrapper) {
+  /**
+   * Retrieves affected tests and prints them to output files.
+   *
+   * @param protoBase64 the encoded proto string
+   * @param bucketNameOutputFile the file to print the bucket name to
+   * @param testTargetsOutputFile the file to print the test targets to
+   */
+  fun retrieve(
+    protoBase64: String,
+    bucketNameOutputFile: File,
+    testTargetsOutputFile: File
+  ) {
+    val affectedTestsBucket =
+      AffectedTestsBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
+    bucketNameOutputFile.printWriter().use { writer ->
+      writer.println(affectedTestsBucket.cacheBucketName)
+    }
+    testTargetsOutputFile.printWriter().use { writer ->
+      writer.println(affectedTestsBucket.affectedTestTargetsList.joinToString(separator = " "))
+    }
+  }
 }

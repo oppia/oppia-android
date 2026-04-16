@@ -1,12 +1,12 @@
-package org.oppia.android.testing.system
+package org.oppia.android.util.system.testing
 
 import dagger.Binds
 import dagger.Module
 import org.oppia.android.util.system.AppTerminationManager
 
-/** Dagger module for [FakeAppTerminationManager]. */
+/** Test Dagger module for binding [FakeAppTerminationManager] as [AppTerminationManager]. */
 @Module
-interface FakeAppTerminationManagerModule {
+interface AppTerminationManagerTestModule {
   @Binds
   fun bindAppTerminationManager(impl: FakeAppTerminationManager): AppTerminationManager
 }

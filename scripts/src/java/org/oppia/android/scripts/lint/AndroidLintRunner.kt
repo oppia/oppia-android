@@ -17,7 +17,7 @@ import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ExitProcessWrapper
+import org.oppia.android.scripts.common.ExitProcessWrapperImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /** The default timeout duration for executing external processes. */
@@ -131,17 +131,17 @@ private fun Long.toFormattedDuration(): String {
 fun main(vararg args: String) {
   var exitCode = 0
   try {
-    executeAndroidLintAnalysis(*args)
+    executeAndroidLintAnalysis(ExitProcessWrapperImpl(), *args)
   } catch (e: Exception) {
     e.printStackTrace()
     exitCode = 1
   } finally {
-    ExitProcessWrapper().exitProcess(exitCode)
+    ExitProcessWrapperImpl().forceCloseScript(exitCode)
   }
 }
 
 /** Executes Android Lint analysis with given arguments and handles setup, and execution. */
-fun executeAndroidLintAnalysis(vararg args: String) {
+fun executeAndroidLintAnalysis(exitProcessWrapper: ExitProcessWrapper, vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     require(args.isNotEmpty()) {
       "<path_to_repository_root argument> is required: \$(pwd)"
@@ -259,7 +259,8 @@ class AndroidLintAnalyzer(
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
       timer = timer,
-      reportUnusedEnum = reportUnusedEnum
+      reportUnusedEnum = reportUnusedEnum,
+      exitProcessWrapper = exitProcessWrapper
     )
     val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
@@ -379,6 +380,7 @@ class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
   private val repoRoot: File,
+  private val exitProcessWrapper: ExitProcessWrapper,
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
   private val timer: ElapsedTimeDisplayer? = null,
@@ -415,7 +417,7 @@ class AndroidLintRunner(
       val wrapper = LintTimeoutWrapper(cliArgs, DEFAULT_PROCESS_TIMEOUT_MINUTES)
       wrapper.runWithTimeout()
     } catch (e: IllegalStateException) {
-      ExitProcessWrapper().exitProcess(1)
+      exitProcessWrapper.forceCloseScript(1)
     }
 
     // Allow exit code 1(ISSUES_FOUND) since it indicates issues with

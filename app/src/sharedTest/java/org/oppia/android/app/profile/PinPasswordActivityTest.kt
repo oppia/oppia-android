@@ -117,6 +117,9 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
+import org.oppia.android.util.system.AppTerminationManager
+import org.oppia.android.util.system.testing.AppTerminationManagerTestModule
+import org.oppia.android.util.system.testing.FakeAppTerminationManager
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -141,6 +144,11 @@ class PinPasswordActivityTest {
   private val adminPin = "12345"
   private val adminId = 0
   private val userId = 1
+
+  @Inject
+  lateinit var appTerminationManager: AppTerminationManager
+  private val fakeAppTerminationManager: FakeAppTerminationManager
+    get() = appTerminationManager as FakeAppTerminationManager
 
   @Before
   fun setUp() {
@@ -757,6 +765,38 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasNoErrorText()))
     }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_forgotPin_confirmReset_callsForceCloseApp() {
+    setUpTestApplicationComponent()
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(withText(context.getString(R.string.pin_password_forgot_title)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.admin_forgot_pin_reset_app_data_button_text, getAppName())))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.admin_confirm_app_wipe_title, getAppName())))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+    // After activity is destroyed, forceCloseApp should have been called in handleOnDestroy().
+    assertThat(fakeAppTerminationManager.isAppClosed()).isTrue()
   }
 
   @Test
@@ -1474,6 +1514,7 @@ class PinPasswordActivityTest {
       ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
       AlgebraicExpressionInputModule::class,
+      AppTerminationManagerTestModule::class,
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,

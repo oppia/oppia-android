@@ -1,5 +1,5 @@
 """
-System-related testing utilities.
+Testing utilities for system components such as the app termination manager.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
@@ -21,7 +21,7 @@ kt_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
-        "FakeAppTerminationManagerModule.kt",
+        "AppTerminationManagerTestModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [

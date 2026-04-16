@@ -7,6 +7,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ExitProcessWrapper
+import org.oppia.android.scripts.common.ExitProcessWrapperImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -40,7 +41,7 @@ private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
  */
 fun main(args: Array<String>) {
   if (args.size < 4) {
-    printUsageAndExit()
+    printUsageAndExit(ExitProcessWrapperImpl())
   }
 
   val pathToRoot = args[0]
@@ -58,18 +59,18 @@ fun main(args: Array<String>) {
       )
   }
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    ComputeAffectedTests(scriptBgDispatcher)
+    ComputeAffectedTests(scriptBgDispatcher, ExitProcessWrapperImpl())
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllTestsSetting)
   }
 }
 
-private fun printUsageAndExit(): Nothing {
+private fun printUsageAndExit(exitProcessWrapper: ExitProcessWrapper): Nothing {
   println(
     "Usage: bazel run //scripts:compute_affected_tests --" +
       " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
       " <compute_all_tests=true/false>"
   )
-  ExitProcessWrapper().exitProcess(1)
+  exitProcessWrapper.forceCloseScript(1)
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
@@ -84,6 +85,7 @@ private fun String.toBooleanStrictOrNull(): Boolean? {
 /** Utility used to compute affected test targets. */
 class ComputeAffectedTests(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val exitProcessWrapper: ExitProcessWrapper,
   val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
   val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
   val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,

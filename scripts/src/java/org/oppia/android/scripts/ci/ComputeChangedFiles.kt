@@ -5,6 +5,7 @@ import java.util.Locale
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ExitProcessWrapper
+import org.oppia.android.scripts.common.ExitProcessWrapperImpl
 import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.toCompressedBase64
 import org.oppia.android.scripts.common.RepositoryFile
@@ -39,7 +40,7 @@ private const val MAX_FILE_COUNT_PER_SMALL_SHARD = 15
  */
 fun main(args: Array<String>) {
   if (args.size < 4) {
-    printUsageAndExit()
+    printUsageAndExit(ExitProcessWrapperImpl())
   }
 
   val pathToRoot = args[0]
@@ -58,23 +59,24 @@ fun main(args: Array<String>) {
   }
   println("Compute All Files Setting set to: $computeAllFilesSetting")
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    ComputeChangedFiles(scriptBgDispatcher)
+    ComputeChangedFiles(scriptBgDispatcher, ExitProcessWrapperImpl())
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllFilesSetting)
   }
 }
 
-private fun printUsageAndExit(): Nothing {
+private fun printUsageAndExit(exitProcessWrapper: ExitProcessWrapper): Nothing {
   println(
     "Usage: bazel run //scripts:compute_changed_files --" +
       " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
       " <compute_all_files=true/false>"
   )
-  ExitProcessWrapper().exitProcess(1)
+  exitProcessWrapper.forceCloseScript(1)
 }
 
 /** Utility used to compute changed files. */
 class ComputeChangedFiles(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val exitProcessWrapper: ExitProcessWrapper,
   val maxFileCountPerLargeShard: Int = MAX_FILE_COUNT_PER_LARGE_SHARD,
   val maxFileCountPerMediumShard: Int = MAX_FILE_COUNT_PER_MEDIUM_SHARD,
   val maxFileCountPerSmallShard: Int = MAX_FILE_COUNT_PER_SMALL_SHARD,

@@ -4892,11 +4892,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeAppTerminationManager.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/system/FakeAppTerminationManagerModule.kt"
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/ExitProcessWrapperImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4908,6 +4904,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/AppTerminationManagerModule.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/AppTerminationManagerProdModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/testing/FakeAppTerminationManager.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/testing/AppTerminationManagerTestModule.kt"
   test_file_not_required: true
 }

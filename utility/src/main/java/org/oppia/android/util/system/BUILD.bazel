@@ -77,9 +77,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "app_termination_manager_module",
+    name = "app_termination_manager_prod_module",
     srcs = [
-        "AppTerminationManagerModule.kt",
+        "AppTerminationManagerProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [

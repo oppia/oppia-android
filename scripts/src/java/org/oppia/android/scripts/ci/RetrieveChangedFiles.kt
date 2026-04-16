@@ -6,6 +6,7 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ExitProcessWrapper
+import org.oppia.android.scripts.common.ExitProcessWrapperImpl
 import org.oppia.android.scripts.common.ProtoStringEncoder.Companion.mergeFromCompressedBase64
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
@@ -37,7 +38,7 @@ import org.oppia.android.scripts.proto.TestFileExemptions
  */
 fun main(args: Array<String>) {
   if (args.size < 5) {
-    printUsageAndExit()
+    printUsageAndExit(ExitProcessWrapperImpl())
   }
 
   val repoRoot = args[0]
@@ -47,14 +48,47 @@ fun main(args: Array<String>) {
   val fileListOutputFile = File(args[3])
   val fileTestTargetsListOutputFile = File(args[4])
 
-  val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
-  val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProto)
-      .testFileExemptionList
-      .associateBy { it.exemptedFilePath }
-  }
-
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    RetrieveChangedFiles(scriptBgDispatcher, ExitProcessWrapperImpl())
+      .retrieve(
+        rootDirectory,
+        protoBase64,
+        bucketNameOutputFile,
+        fileListOutputFile,
+        fileTestTargetsListOutputFile
+      )
+  }
+}
+
+private fun printUsageAndExit(exitProcessWrapper: ExitProcessWrapper): Nothing {
+  println(
+    "Usage: bazel run //scripts:retrieve_changed_files --" +
+      " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
+      " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
+  )
+  exitProcessWrapper.forceCloseScript(1)
+}
+
+/** Utility for retrieving changed files from a bucket. */
+class RetrieveChangedFiles(
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
+  private val exitProcessWrapper: ExitProcessWrapper
+) {
+  /** Retrieves changed files and prints them to output files. */
+  fun retrieve(
+    rootDirectory: File,
+    protoBase64: String,
+    bucketNameOutputFile: File,
+    fileListOutputFile: File,
+    fileTestTargetsListOutputFile: File
+  ) {
+    val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
+    val testFileExemptionList by lazy {
+      loadTestFileExemptionsProto(testFileExemptionTextProto)
+        .testFileExemptionList
+        .associateBy { it.exemptedFilePath }
+    }
+
     val commandExecutor: CommandExecutor =
       CommandExecutorImpl(
         scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
@@ -88,44 +122,35 @@ fun main(args: Array<String>) {
       writer.println(changedFilesTestTargetWithoutSuffix.joinToString(separator = " "))
     }
   }
-}
 
-private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
-  val possibleTestFilePaths = when {
-    filePath.startsWith("scripts/") -> {
-      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+  private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
+    val possibleTestFilePaths = when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+      }
+      filePath.startsWith("app/") -> {
+        listOf(
+          filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
+        )
+      }
+      else -> {
+        listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+      }
     }
-    filePath.startsWith("app/") -> {
-      listOf(
-        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-      )
-    }
-    else -> {
-      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
-    }
+
+    return possibleTestFilePaths
+      .map { File(rootDirectory, it) }
+      .filter(File::exists)
+      .map { it.toRelativeString(rootDirectory) }
   }
 
-  return possibleTestFilePaths
-    .map { File(rootDirectory, it) }
-    .filter(File::exists)
-    .map { it.toRelativeString(rootDirectory) }
-}
-
-private fun printUsageAndExit(): Nothing {
-  println(
-    "Usage: bazel run //scripts:retrieve_changed_files --" +
-      " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
-      " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
-  )
-  ExitProcessWrapper().exitProcess(1)
-}
-
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
+  private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
+    return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+      TestFileExemptions.newBuilder().also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
+    }
   }
 }
