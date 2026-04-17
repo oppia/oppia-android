@@ -51,7 +51,6 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         ":injectable_app_compat_activity",
-        "//model/src/main/proto:languages_java_proto_lite",
     ],
 )
 
@@ -61,7 +60,6 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         ":injectable_app_compat_activity",
-        "//model/src/main/proto:languages_java_proto_lite",
     ],
 )
 
@@ -71,7 +69,6 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         ":injectable_app_compat_activity",
-        "//model/src/main/proto:languages_java_proto_lite",
     ],
 )
 
