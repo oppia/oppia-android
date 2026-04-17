@@ -668,7 +668,8 @@ class NumberWithUnitsParser private constructor(
       NumberWithUnitsParsingResult.Success(operation(result))
     }
 
-    /** Transforms the successful result of [this] using [operation], or returns the failure if
+    /**
+     * Transforms the successful result of [this] using [operation], or returns the failure if
      * [this] is a failure. The difference between this and [map] is that [operation] can also
      * return a failure, which will be returned by this method if it occurs.
      */
