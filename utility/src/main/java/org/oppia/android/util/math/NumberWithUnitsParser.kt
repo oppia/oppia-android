@@ -137,8 +137,11 @@ class NumberWithUnitsParser private constructor(
     return when (val firstToken = tokens.peek()) {
       is Token.PositiveRealNumber -> {
         tokens.next()
-        val value = if (isNegative) -firstToken.parsedValue else firstToken.parsedValue
-        expressionBuilder.real = value
+        expressionBuilder.real = if (isNegative) {
+          -firstToken.parsedValue
+        } else {
+          firstToken.parsedValue
+        }
         NumberWithUnitsParsingResult.Success(Unit)
       }
 
