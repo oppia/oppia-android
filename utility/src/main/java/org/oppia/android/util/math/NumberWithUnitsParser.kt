@@ -247,7 +247,8 @@ class NumberWithUnitsParser private constructor(
     return parseUnitWithExponent().flatMap { firstUnit ->
       units.add(firstUnit)
 
-      var currentResult: NumberWithUnitsParsingResult<Unit> = NumberWithUnitsParsingResult.Success(Unit)
+      var currentResult: NumberWithUnitsParsingResult<Unit> =
+        NumberWithUnitsParsingResult.Success(Unit)
       // Continue consuming units while we see suffix units (but not '/', ')' or end)
       while (isAtSuffixUnit() && !currentResult.isFailure()) {
         currentResult = currentResult.flatMap {
@@ -654,7 +655,8 @@ class NumberWithUnitsParser private constructor(
       NumberWithUnitsParsingResult.Failure(this)
 
     /** Returns whether [this] result is a failure. */
-    private fun <T> NumberWithUnitsParsingResult<T>.isFailure() = this is NumberWithUnitsParsingResult.Failure
+    private fun <T> NumberWithUnitsParsingResult<T>.isFailure() =
+      this is NumberWithUnitsParsingResult.Failure
 
     /**
      * Transforms the successful result of [this] using [operation], or returns the failure if
@@ -662,7 +664,9 @@ class NumberWithUnitsParser private constructor(
      */
     private fun <T1, T2> NumberWithUnitsParsingResult<T1>.map(
       operation: (T1) -> T2
-    ): NumberWithUnitsParsingResult<T2> = flatMap { result -> NumberWithUnitsParsingResult.Success(operation(result)) }
+    ): NumberWithUnitsParsingResult<T2> = flatMap { result ->
+      NumberWithUnitsParsingResult.Success(operation(result))
+    }
 
     /** Transforms the successful result of [this] using [operation], or returns the failure if
      * [this] is a failure. The difference between this and [map] is that [operation] can also
