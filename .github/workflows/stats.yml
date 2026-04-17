@@ -236,7 +236,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
-          path: ~/.bazel_cache
+          path: ${{ env.CACHE_DIRECTORY }}
           retention-days: 1
 
   # Each finalize job downloads the Bazel cache produced by build_stats_deployables and runs only
@@ -323,13 +323,16 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
-          path: ~/.bazel_cache
+          path: ${{ env.CACHE_DIRECTORY }}
 
       - name: Configure Bazel to use the downloaded cache
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          echo "Using $HOME/.bazel_cache as Bazel's cache path"
-          echo "build --disk_cache=$HOME/.bazel_cache" >> $HOME/.bazelrc
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
       # This checks out the actual true develop branch separately to ensure that the stats check is
