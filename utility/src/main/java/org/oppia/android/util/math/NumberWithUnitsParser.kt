@@ -65,33 +65,30 @@ class NumberWithUnitsParser private constructor(
     val prefixUnit = parseCurrencyPrefixUnit()
       ?: return NumberWithUnitsParsingError.GenericError.toFailure()
     val expressionBuilder = NumberWithUnitsExpression.newBuilder()
-    val numberResult = parseNumber(expressionBuilder)
-    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult
 
-    // Optional compound_unit
-    if (isAtSuffixUnit()) {
-      val compoundUnits = parseCompoundUnit()
-      if (compoundUnits is NumberWithUnitsParsingResult.Failure) {
-        return compoundUnits
-      }
-      val suffixUnits = (compoundUnits as NumberWithUnitsParsingResult.Success).result
-
-      // Check for duplicate currency: a currency prefix was already added, so if any suffix
-      // unit is also a currency unit the expression is ambiguous (e.g. "$5 dollars").
-      if (suffixUnits.any { isCurrencyUnit(it.unit) }) {
-        return NumberWithUnitsParsingError.DuplicateCurrencyError.toFailure()
-      }
-      expressionBuilder.prefixValueSuffixExpression =
-        PrefixValueSuffixExpression.newBuilder().apply {
+    return parseNumber(expressionBuilder).flatMap {
+      if (isAtSuffixUnit()) {
+        parseCompoundUnit().maybeFail { suffixUnits ->
+          // Check for duplicate currency: a currency prefix was already added, so if any suffix
+          // unit is also a currency unit the expression is ambiguous (e.g. "$5 dollars").
+          if (suffixUnits.any { isCurrencyUnit(it.unit) }) {
+            NumberWithUnitsParsingError.DuplicateCurrencyError
+          } else null
+        }.map { suffixUnits ->
+          expressionBuilder.prefixValueSuffixExpression =
+            PrefixValueSuffixExpression.newBuilder().apply {
+              addPrefixUnits(prefixUnit)
+              addAllSuffixUnits(suffixUnits)
+            }.build()
+          expressionBuilder.build()
+        }
+      } else {
+        expressionBuilder.prefixValueExpression = PrefixValueExpression.newBuilder().apply {
           addPrefixUnits(prefixUnit)
-          addAllSuffixUnits(suffixUnits)
         }.build()
-    } else {
-      expressionBuilder.prefixValueExpression = PrefixValueExpression.newBuilder().apply {
-        addPrefixUnits(prefixUnit)
-      }.build()
+        NumberWithUnitsParsingResult.Success(expressionBuilder.build())
+      }
     }
-    return NumberWithUnitsParsingResult.Success(expressionBuilder.build())
   }
 
   /**
@@ -102,23 +99,20 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseSuffixFormattedValue(): NumberWithUnitsParsingResult<NumberWithUnitsExpression> {
     val expressionBuilder = NumberWithUnitsExpression.newBuilder()
-    val numberResult = parseNumber(expressionBuilder)
-    if (numberResult is NumberWithUnitsParsingResult.Failure) return numberResult
-
-    // compound_unit is required
-    if (!isAtSuffixUnit()) {
-      return NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+    return parseNumber(expressionBuilder).flatMap {
+      // compound_unit is required
+      if (!isAtSuffixUnit()) {
+        NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+      } else {
+        parseCompoundUnit().map { suffixUnits ->
+          expressionBuilder.apply {
+            valueSuffixExpression = ValueSuffixExpression.newBuilder().apply {
+              addAllSuffixUnits(suffixUnits)
+            }.build()
+          }.build()
+        }
+      }
     }
-
-    val compoundUnits = parseCompoundUnit()
-    if (compoundUnits is NumberWithUnitsParsingResult.Failure) return compoundUnits
-    val suffixUnits = (compoundUnits as NumberWithUnitsParsingResult.Success).result
-    val expression = expressionBuilder.apply {
-      valueSuffixExpression = ValueSuffixExpression.newBuilder().apply {
-        addAllSuffixUnits(suffixUnits)
-      }.build()
-    }.build()
-    return NumberWithUnitsParsingResult.Success(expression)
   }
 
   /**
@@ -136,18 +130,11 @@ class NumberWithUnitsParser private constructor(
   private fun parseNumber(
     expressionBuilder: NumberWithUnitsExpression.Builder
   ): NumberWithUnitsParsingResult<Unit> {
-    var isNegative = false
-    if (tokens.peek() is Token.MinusSymbol) {
-      tokens.next() // consume '-'
-      isNegative = true
-    }
+    val isNegative = if (tokens.peek() is Token.MinusSymbol) {
+      true.also { tokens.next() } // consume '-'
+    } else false
 
-    val firstToken = tokens.peek()
-    if (firstToken !is Token.PositiveInteger && firstToken !is Token.PositiveRealNumber) {
-      return NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError.toFailure()
-    }
-
-    return when (firstToken) {
+    return when (val firstToken = tokens.peek()) {
       is Token.PositiveRealNumber -> {
         tokens.next()
         val value = if (isNegative) -firstToken.parsedValue else firstToken.parsedValue
@@ -179,17 +166,16 @@ class NumberWithUnitsParser private constructor(
             NumberWithUnitsParsingError.MissingDenominatorError.toFailure()
           }
         } else {
-          val value = if (isNegative) {
+          expressionBuilder.real = if (isNegative) {
             -firstToken.parsedValue.toDouble()
           } else {
             firstToken.parsedValue.toDouble()
           }
-          expressionBuilder.real = value
           NumberWithUnitsParsingResult.Success(Unit)
         }
       }
 
-      else -> NumberWithUnitsParsingError.NumberExpectedError.toFailure()
+      else -> NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError.toFailure()
     }
   }
 
@@ -200,21 +186,20 @@ class NumberWithUnitsParser private constructor(
    * ```
    */
   private fun parseCompoundUnit(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
-    val numeratorUnits = parseUnitsMultiplied()
-    if (numeratorUnits is NumberWithUnitsParsingResult.Failure) return numeratorUnits
+    return parseUnitsMultiplied().flatMap { numeratorUnits ->
+      val allUnits = numeratorUnits.toMutableList()
 
-    val allUnits =
-      (numeratorUnits as NumberWithUnitsParsingResult.Success).result.toMutableList()
-
-    // Optional: division_operator , denominator_expression
-    if (tokens.peek() is Token.DivideSymbol) {
-      tokens.next() // consume '/'
-      val denomResult = parseDenominatorExp()
-      if (denomResult is NumberWithUnitsParsingResult.Failure) return denomResult
-      allUnits.addAll((denomResult as NumberWithUnitsParsingResult.Success).result)
+      // Optional: division_operator , denominator_expression
+      if (tokens.peek() is Token.DivideSymbol) {
+        tokens.next() // consume '/'
+        parseDenominatorExp().map { denomUnits ->
+          allUnits.addAll(denomUnits)
+          allUnits
+        }
+      } else {
+        NumberWithUnitsParsingResult.Success(allUnits)
+      }
     }
-
-    return NumberWithUnitsParsingResult.Success(allUnits)
   }
 
   /**
@@ -232,21 +217,20 @@ class NumberWithUnitsParser private constructor(
       return NumberWithUnitsParsingError.UnitExpectedAfterDivisionError.toFailure()
     }
 
-    val unitsResult = parseUnitsMultiplied()
-    if (unitsResult is NumberWithUnitsParsingResult.Failure) return unitsResult
-
-    if (hasParens) {
-      if (tokens.peek() !is Token.RightParenthesisSymbol) {
-        return NumberWithUnitsParsingError.UnbalancedParenthesesError.toFailure()
+    return parseUnitsMultiplied().flatMap { units ->
+      if (hasParens) {
+        if (tokens.peek() !is Token.RightParenthesisSymbol) {
+          return@flatMap NumberWithUnitsParsingError.UnbalancedParenthesesError.toFailure()
+        }
+        tokens.next() // consume ')'
       }
-      tokens.next() // consume ')'
-    }
 
-    // Negate exponents for denominator units
-    val negated = (unitsResult as NumberWithUnitsParsingResult.Success).result.map { unit ->
-      unit.toBuilder().setExponent(-unit.exponent).build()
+      // Negate exponents for denominator units
+      val negated = units.map { unit ->
+        unit.toBuilder().setExponent(-unit.exponent).build()
+      }
+      NumberWithUnitsParsingResult.Success(negated)
     }
-    return NumberWithUnitsParsingResult.Success(negated)
   }
 
   /**
@@ -257,18 +241,21 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseUnitsMultiplied(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
     val units = mutableListOf<NumberUnitExpression>()
-    val firstUnit = parseUnitWithExponent()
-    if (firstUnit is NumberWithUnitsParsingResult.Failure) return firstUnit
-    units.add((firstUnit as NumberWithUnitsParsingResult.Success).result)
+    return parseUnitWithExponent().flatMap { firstUnit ->
+      units.add(firstUnit)
 
-    // Continue consuming units while we see suffix units (but not '/', ')' or end)
-    while (isAtSuffixUnit()) {
-      val nextUnit = parseUnitWithExponent()
-      if (nextUnit is NumberWithUnitsParsingResult.Failure) return nextUnit
-      units.add((nextUnit as NumberWithUnitsParsingResult.Success).result)
+      var currentResult: NumberWithUnitsParsingResult<Unit> = NumberWithUnitsParsingResult.Success(Unit)
+      // Continue consuming units while we see suffix units (but not '/', ')' or end)
+      while (isAtSuffixUnit() && !currentResult.isFailure()) {
+        currentResult = currentResult.flatMap {
+          parseUnitWithExponent().map { nextUnit ->
+            units.add(nextUnit)
+            Unit
+          }
+        }
+      }
+      currentResult.map { units }
     }
-
-    return NumberWithUnitsParsingResult.Success(units)
   }
 
   /**
@@ -278,34 +265,33 @@ class NumberWithUnitsParser private constructor(
    * ```
    */
   private fun parseUnitWithExponent(): NumberWithUnitsParsingResult<NumberUnitExpression> {
-    val parsedUnitResult = parseSuffixUnit()
-    if (parsedUnitResult is NumberWithUnitsParsingResult.Failure) return parsedUnitResult
-    val parsedUnit = (parsedUnitResult as NumberWithUnitsParsingResult.Success).result
-    var finalExponent = parsedUnit.exponent
-    if (tokens.peek() is Token.ExponentiationSymbol) {
-      tokens.next() // consume '^'
+    return parseSuffixUnit().flatMap { parsedUnit ->
+      var finalExponent = parsedUnit.exponent
+      if (tokens.peek() is Token.ExponentiationSymbol) {
+        tokens.next() // consume '^'
 
-      var negativeExponent = false
-      if (tokens.peek() is Token.MinusSymbol) {
-        tokens.next() // consume '-'
-        negativeExponent = true
-      }
+        var negativeExponent = false
+        if (tokens.peek() is Token.MinusSymbol) {
+          tokens.next() // consume '-'
+          negativeExponent = true
+        }
 
-      val expToken = tokens.peek()
-      if (expToken is Token.PositiveInteger) {
-        tokens.next()
-        val exponentMultiplier = if (negativeExponent)
-          -expToken.parsedValue
-        else
-          expToken.parsedValue
-        finalExponent *= exponentMultiplier
-      } else {
-        return NumberWithUnitsParsingError.MissingExponentError.toFailure()
+        val expToken = tokens.peek()
+        if (expToken is Token.PositiveInteger) {
+          tokens.next()
+          val exponentMultiplier = if (negativeExponent)
+            -expToken.parsedValue
+          else
+            expToken.parsedValue
+          finalExponent *= exponentMultiplier
+        } else {
+          return@flatMap NumberWithUnitsParsingError.MissingExponentError.toFailure()
+        }
       }
+      NumberWithUnitsParsingResult.Success(
+        parsedUnit.toBuilder().setExponent(finalExponent).build()
+      )
     }
-    return NumberWithUnitsParsingResult.Success(
-      parsedUnit.toBuilder().setExponent(finalExponent).build()
-    )
   }
 
   /**
@@ -664,6 +650,30 @@ class NumberWithUnitsParser private constructor(
     private fun NumberWithUnitsParsingError.toFailure(): NumberWithUnitsParsingResult<Nothing> =
       NumberWithUnitsParsingResult.Failure(this)
 
+    /** Returns whether [this] result is a failure. */
+    private fun <T> NumberWithUnitsParsingResult<T>.isFailure() = this is NumberWithUnitsParsingResult.Failure
+
+    /**
+     * Transforms the successful result of [this] using [operation], or returns the failure if
+     * [this] is a failure.
+     */
+    private fun <T1, T2> NumberWithUnitsParsingResult<T1>.map(
+      operation: (T1) -> T2
+    ): NumberWithUnitsParsingResult<T2> = flatMap { result -> NumberWithUnitsParsingResult.Success(operation(result)) }
+
+    /** Transforms the successful result of [this] using [operation], or returns the failure if
+     * [this] is a failure. The difference between this and [map] is that [operation] can also
+     * return a failure, which will be returned by this method if it occurs.
+     */
+    private fun <T1, T2> NumberWithUnitsParsingResult<T1>.flatMap(
+      operation: (T1) -> NumberWithUnitsParsingResult<T2>
+    ): NumberWithUnitsParsingResult<T2> {
+      return when (this) {
+        is NumberWithUnitsParsingResult.Success -> operation(result)
+        is NumberWithUnitsParsingResult.Failure -> error.toFailure()
+      }
+    }
+
     /**
      * Potentially changes [this] result into a failure based on the provided [operation].
      * The operation is only called if [this] result is currently successful; the returned result
@@ -671,15 +681,8 @@ class NumberWithUnitsParser private constructor(
      */
     private fun <T> NumberWithUnitsParsingResult<T>.maybeFail(
       operation: (T) -> NumberWithUnitsParsingError?
-    ): NumberWithUnitsParsingResult<T> {
-      return when (this) {
-        is NumberWithUnitsParsingResult.Success -> {
-          val error = operation(result)
-          error?.toFailure() ?: this
-        }
-
-        is NumberWithUnitsParsingResult.Failure -> this
-      }
+    ): NumberWithUnitsParsingResult<T> = flatMap { result ->
+      operation(result)?.toFailure() ?: this
     }
   }
 }
