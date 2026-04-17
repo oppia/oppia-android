@@ -72,8 +72,7 @@ class GaeAndroidEndpointJsonImpl(
   private val coroutineDispatcher: CoroutineDispatcher,
   private val imageDownloader: ImageDownloader,
   private val forcedVersions: DownloadListVersions?,
-  private val downloadConfig: DownloadConfig,
-  private val filterInvalidTopics: Boolean
+  private val downloadConfig: DownloadConfig
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
     AndroidActivityHandlerService(
@@ -130,7 +129,7 @@ class GaeAndroidEndpointJsonImpl(
           forcedVersions = forcedVersions
         )
       converterInitializer = ConverterInitializer(
-        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig, filterInvalidTopics
+        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -144,7 +143,7 @@ class GaeAndroidEndpointJsonImpl(
         topicRepository.downloadConstructedCompleteTopicAsync(
           topicId, topicCountsTracker.topicStructureCountMap.getValue(topicId).metricsCallbacks
         ).also { tracker.reportDownloaded("${topicId}_$index") }
-      }.awaitAll().filterNotNull().associateBy { it.topic.id }
+      }.awaitAll().associateBy { it.topic.id }
 
       if (downloadQuestions) {
         val questions = activityService.fetchLatestQuestionsAsync().await()
@@ -743,8 +742,7 @@ class GaeAndroidEndpointJsonImpl(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val topicDependencies: Map<String, Set<String>>,
     private val imageDownloader: ImageDownloader,
-    private val downloadConfig: DownloadConfig,
-    private val filterInvalidTopics: Boolean
+    private val downloadConfig: DownloadConfig
   ) {
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
@@ -773,7 +771,7 @@ class GaeAndroidEndpointJsonImpl(
       constraints: CompatibilityConstraints
     ): TopicPackRepository {
       return TopicPackRepository(
-        activityService, coroutineDispatcher, getLocalizationTracker(), constraints, filterInvalidTopics
+        activityService, coroutineDispatcher, getLocalizationTracker(), constraints
       )
     }
   }

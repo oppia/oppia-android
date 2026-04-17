@@ -2,8 +2,8 @@ package org.oppia.android.scripts.gae.proto
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
-import kotlin.test.assertFailsWith
 
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -38,8 +38,10 @@ class LocalizationTrackerTest {
       "<oppia-noninteractive-math math_content-with-value=\"" +
         "{&amp;quot;raw_latex&amp;quot;:&amp;quot;x^2&amp;quot;\"></oppia-noninteractive-math>"
 
-    assertFailsWith<Exception> {
+    val exception = assertThrows<IllegalStateException> {
       extractMathContentsFromHtml(html)
     }
+
+    assertThat(exception).hasMessageThat().contains("Failed to parse content value from:")
   }
 }

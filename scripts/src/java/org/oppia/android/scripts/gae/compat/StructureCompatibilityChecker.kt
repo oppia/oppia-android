@@ -669,9 +669,15 @@ class StructureCompatibilityChecker(
           return@mapNotNull MathTagMissingContent(contentId, origin)
         }
 
-        val parsedMathContent = runCatching {
-          extractMathContentsFromHtml(tag).singleOrNull()
-        }.getOrNull() ?: return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        val parsedMathContents = try {
+          extractMathContentsFromHtml(tag)
+        } catch (_: IllegalStateException) {
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        }
+        if (parsedMathContents.size != 1) {
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        }
+        val parsedMathContent = parsedMathContents.single()
 
         if (parsedMathContent.rawLatex.isBlank()) {
           MathTagMissingRawLatex(contentId, origin)

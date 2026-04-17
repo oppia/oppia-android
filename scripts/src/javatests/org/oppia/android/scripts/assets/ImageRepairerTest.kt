@@ -2,11 +2,11 @@ package org.oppia.android.scripts.assets
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.oppia.android.testing.assertThrows
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
-import kotlin.test.assertFailsWith
 
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -85,9 +85,11 @@ class ImageRepairerTest {
   fun testHasTransparentPixels_invalidImageData_throwsError() {
     val invalidImageData = "not-a-valid-image".toByteArray()
 
-    assertFailsWith<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       imageRepairer.hasTransparentPixels(invalidImageData, "png")
     }
+
+    assertThat(exception).hasMessageThat().contains("Failed to read image data")
   }
 
   private fun createPngImageData(
