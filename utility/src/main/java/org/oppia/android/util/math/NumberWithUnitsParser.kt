@@ -283,10 +283,11 @@ class NumberWithUnitsParser private constructor(
         val expToken = tokens.peek()
         if (expToken is Token.PositiveInteger) {
           tokens.next()
-          val exponentMultiplier = if (negativeExponent)
+          val exponentMultiplier = if (negativeExponent) {
             -expToken.parsedValue
-          else
+          } else {
             expToken.parsedValue
+          }
           finalExponent *= exponentMultiplier
         } else {
           return@flatMap NumberWithUnitsParsingError.MissingExponentError.toFailure()
