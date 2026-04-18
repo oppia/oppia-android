@@ -3,6 +3,7 @@ Imports required data-binding annotation processor.
 """
 
 load("@rules_java//java:defs.bzl", "java_plugin")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 java_plugin(
     name = "compiler_annotation_processor",
@@ -12,4 +13,17 @@ java_plugin(
     deps = [
         "@bazel_tools//src/tools/android/java/com/google/devtools/build/android:all_android_tools",
     ],
+)
+
+kt_jvm_library(
+    name = "r8_wrapper_lib",
+    srcs = ["OppiaR8Wrapper.kt"],
+    deps = ["//third_party:com_android_tools_r8"],
+)
+
+java_binary(
+    name = "r8_compat_proguard",
+    main_class = "org.oppia.android.tools.android.OppiaR8WrapperKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = [":r8_wrapper_lib"],
 )

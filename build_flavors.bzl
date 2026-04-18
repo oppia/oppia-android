@@ -19,17 +19,10 @@ AVAILABLE_FLAVORS = [
 _PRODUCTION_PROGUARD_SPECS = [
     "config/proguard/android-proguard-rules.pro",
     "config/proguard/androidx-proguard-rules.pro",
-    "config/proguard/firebase-components-proguard-rules.pro",
     "config/proguard/glide-proguard-rules.pro",
-    "config/proguard/google-play-services-proguard-rules.pro",
     "config/proguard/guava-proguard-rules.pro",
     "config/proguard/kotlin-proguard-rules.pro",
-    "config/proguard/kotlinpoet-javapoet-proguard-rules.pro",
-    "config/proguard/material-proguard-rules.pro",
-    "config/proguard/moshi-proguard-rules.pro",
-    "config/proguard/okhttp-proguard-rules.pro",
     "config/proguard/oppia-prod-proguard-rules.pro",
-    "config/proguard/protobuf-proguard-rules.pro",
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.

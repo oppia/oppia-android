@@ -11,9 +11,6 @@
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile, LineNumberTable
 
-# Attempt at least three optimization passes to further reduce APK size.
--optimizationpasses 3
-
 # Ensure serializable classes still work per:
 # https://www.guardsquare.com/manual/configuration/examples#serializable.
 -keepclassmembers class * implements java.io.Serializable {
@@ -61,15 +58,3 @@
 -keepclassmembers class * implements android.os.Parcelable {
   public static *** CREATOR;
 }
-
-# Disable some optimizations which trigger a bug in Proguard when trying to simplify enums to ints.
-# See https://sourceforge.net/p/proguard/bugs/720/ for context.
--optimizations !class/unboxing/enum
-
-# Disable some optimizations which trigger a bug in Proguard when using annotations on methods. See
-# https://sourceforge.net/p/proguard/bugs/688/ for context.
--optimizations !class/merging/*
-
-# Disable some field optimizations that can incorrectly remove if-not-null checks (see
-# https://stackoverflow.com/a/59764770 for a related issue to the one Oppia runs into).
--optimizations !field/propagation/value

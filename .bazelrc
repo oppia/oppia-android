@@ -11,6 +11,9 @@ build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_
 # reduce code smell & potential bugs during development.
 build --javacopt="-Werror"
 
+# Use R8 instead of Proguard for minification and resource shrinking.
+build --proguard_top=//tools/android:r8_compat_proguard
+
 # TODO: Remove this.
 # Disable warnings about incompatible source values since these can't be avoided in Bazel 6.x.
 build --javacopt="-Xlint:-options" --host_javacopt="-Xlint:-options"
