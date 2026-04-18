@@ -25,6 +25,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
@@ -169,6 +170,100 @@ class ReadingTextSizeActivityTest {
         ReadingTextSizeActivityResultBundle.getDefaultInstance()
       )
       assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_smallTextSize_backNavigation_returnsSmallResult() {
+    // Verify that launching with SMALL_TEXT_SIZE and pressing back without changing the selection
+    // returns the SMALL_TEXT_SIZE proto value in the result bundle.
+    runWithLaunchedActivity(initialSize = SMALL_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_largeTextSize_backNavigation_returnsLargeResult() {
+    // Verify that launching with LARGE_TEXT_SIZE and pressing back without changing the selection
+    // returns the LARGE_TEXT_SIZE proto value in the result bundle.
+    runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_extraLargeTextSize_backNavigation_returnsExtraLargeResult() {
+    // Verify that launching with EXTRA_LARGE_TEXT_SIZE and pressing back without changing the
+    // selection returns the EXTRA_LARGE_TEXT_SIZE proto value in the result bundle.
+    runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(EXTRA_LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_mediumSize_changesToSmall_backNavigation_returnsSmallResult() {
+    // Verify that changing from MEDIUM_TEXT_SIZE to SMALL_TEXT_SIZE before pressing back returns
+    // SMALL_TEXT_SIZE in the result bundle (proto enum round-trip for MEDIUM → SMALL path).
+    runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
+      selectTextSize(SMALL_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_extraLargeSize_toMedium_backNavigation_returnsMediumResult() {
+    // Verify that changing from EXTRA_LARGE_TEXT_SIZE to MEDIUM_TEXT_SIZE before pressing back
+    // returns MEDIUM_TEXT_SIZE in the result bundle (proto enum round-trip for EXTRA_LARGE → MEDIUM).
+    runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
+      selectTextSize(MEDIUM_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     }
   }
 
