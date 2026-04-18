@@ -322,7 +322,7 @@ class NumberWithUnitsParser private constructor(
         if (baseUnit != null) {
           tokens.next()
           NumberWithUnitsParsingResult.Success(
-            baseUnit.toBuilder().setSiPrefix(prefix).build()
+            createUnitExpression(baseUnit, siPrefix = prefix)
           )
         } else {
           NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(token.prefix).toFailure()
@@ -333,7 +333,7 @@ class NumberWithUnitsParser private constructor(
         val parsedUnit = parseAnyUnit(tokens.peek())
         if (parsedUnit != null) {
           tokens.next()
-          NumberWithUnitsParsingResult.Success(parsedUnit)
+          NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
         } else {
           NumberWithUnitsParsingError.UnitExpectedError.toFailure()
         }
@@ -353,222 +353,73 @@ class NumberWithUnitsParser private constructor(
     return createUnitExpression(currencyUnit)
   }
 
-  private fun parsePrefixableBaseUnit(token: Token?): NumberUnitExpression? {
-    val parsed = parseAnyUnit(token) ?: return null
-    return when (parsed.unit) {
-      NumberUnitExpression.Unit.METER,
-      NumberUnitExpression.Unit.GRAM,
-      NumberUnitExpression.Unit.LITER,
-      NumberUnitExpression.Unit.RADIAN,
-      NumberUnitExpression.Unit.DEGREE,
-      NumberUnitExpression.Unit.SECOND,
-      NumberUnitExpression.Unit.HERTZ,
-      NumberUnitExpression.Unit.MOLE,
-      NumberUnitExpression.Unit.CANDELA,
-      NumberUnitExpression.Unit.NEWTON,
-      NumberUnitExpression.Unit.JOULE,
-      NumberUnitExpression.Unit.WATT,
-      NumberUnitExpression.Unit.PASCAL,
-      NumberUnitExpression.Unit.AMPERE,
-      NumberUnitExpression.Unit.VOLT,
-      NumberUnitExpression.Unit.OHM -> parsed
+  private fun parsePrefixableBaseUnit(token: Token?): NumberUnitExpression.Unit? {
+    val unit = parseAnyUnit(token) ?: return null
+    return if (unit.isPrefixable()) unit else null
+  }
 
+  private fun parseAnyUnit(token: Token?): NumberUnitExpression.Unit? {
+    val raw = (token as? Token.Unit)?.unit ?: return null
+    return when (raw) {
+      "m", "meter", "meters" -> NumberUnitExpression.Unit.METER
+      "m2" -> NumberUnitExpression.Unit.SQUARE_METER
+      "m3" -> NumberUnitExpression.Unit.CUBIC_METER
+      "in", "inch", "inches" -> NumberUnitExpression.Unit.INCH
+      "sqin", "sqinch" -> NumberUnitExpression.Unit.SQUARE_INCH
+      "cuin" -> NumberUnitExpression.Unit.CUBIC_INCH
+      "ft", "foot", "feet" -> NumberUnitExpression.Unit.FOOT
+      "sqft", "sqfeet" -> NumberUnitExpression.Unit.SQUARE_FOOT
+      "cuft" -> NumberUnitExpression.Unit.CUBIC_FOOT
+      "yd", "yard", "yards" -> NumberUnitExpression.Unit.YARD
+      "sqyd", "sqyard" -> NumberUnitExpression.Unit.SQUARE_YARD
+      "cuyd" -> NumberUnitExpression.Unit.CUBIC_YARD
+      "g", "gram", "grams" -> NumberUnitExpression.Unit.GRAM
+      "gr", "grain", "grains" -> NumberUnitExpression.Unit.GRAIN
+      "oz", "ounce", "ounces" -> NumberUnitExpression.Unit.OUNCE
+      "l", "L", "lt", "liter", "litre", "liters", "litres" -> NumberUnitExpression.Unit.LITER
+      "cc" -> NumberUnitExpression.Unit.CUBIC_CENTIMETER
+      "s", "sec", "secs", "second", "seconds" -> NumberUnitExpression.Unit.SECOND
+      "min", "mins", "minute", "minutes" -> NumberUnitExpression.Unit.MINUTE
+      "h", "hr", "hrs", "hour", "hours" -> NumberUnitExpression.Unit.HOUR
+      "K", "kelvin" -> NumberUnitExpression.Unit.KELVIN
+      "degC", "celsius" -> NumberUnitExpression.Unit.CELSIUS
+      "Hz", "hertz" -> NumberUnitExpression.Unit.HERTZ
+      "rad", "radian", "radians" -> NumberUnitExpression.Unit.RADIAN
+      "deg", "degree", "degrees" -> NumberUnitExpression.Unit.DEGREE
+      "mol", "mole", "moles" -> NumberUnitExpression.Unit.MOLE
+      "cd", "candela" -> NumberUnitExpression.Unit.CANDELA
+      "N", "newton", "newtons" -> NumberUnitExpression.Unit.NEWTON
+      "J", "joule", "joules" -> NumberUnitExpression.Unit.JOULE
+      "W", "watt", "watts" -> NumberUnitExpression.Unit.WATT
+      "Pa", "pascal", "pascals" -> NumberUnitExpression.Unit.PASCAL
+      "A", "ampere", "amperes" -> NumberUnitExpression.Unit.AMPERE
+      "V", "volt", "volts" -> NumberUnitExpression.Unit.VOLT
+      "ohm", "ohms" -> NumberUnitExpression.Unit.OHM
+      "USD", "dollar", "dollars", "Dollar", "Dollars" -> NumberUnitExpression.Unit.DOLLAR
+      "¢", "cent", "cents", "Cent", "Cents" -> NumberUnitExpression.Unit.CENT
+      "rupee", "rupees", "Rupee", "Rupees" -> NumberUnitExpression.Unit.RUPEE
+      "paisa", "paise", "Paisa", "Paise" -> NumberUnitExpression.Unit.PAISA
       else -> null
     }
   }
 
-  private fun parseAnyUnit(token: Token?): NumberUnitExpression? {
-    val raw = (token as? Token.Unit)?.unit ?: return null
-    return parseMeterUnit(raw)
-      ?: parseInchUnit(raw)
-      ?: parseFootUnit(raw)
-      ?: parseYardUnit(raw)
-      ?: parseGramUnit(raw)
-      ?: parseGrainUnit(raw)
-      ?: parseOunceUnit(raw)
-      ?: parseLiterUnit(raw)
-      ?: parseSecondUnit(raw)
-      ?: parseMinuteUnit(raw)
-      ?: parseHourUnit(raw)
-      ?: parseKelvinUnit(raw)
-      ?: parseCelsiusUnit(raw)
-      ?: parseHertzUnit(raw)
-      ?: parseRadianUnit(raw)
-      ?: parseDegreeUnit(raw)
-      ?: parseMoleUnit(raw)
-      ?: parseCandelaUnit(raw)
-      ?: parseNewtonUnit(raw)
-      ?: parseJouleUnit(raw)
-      ?: parseWattUnit(raw)
-      ?: parsePascalUnit(raw)
-      ?: parseAmpereUnit(raw)
-      ?: parseVoltUnit(raw)
-      ?: parseOhmUnit(raw)
-      ?: parseDollarUnit(raw)
-      ?: parseCentUnit(raw)
-      ?: parseRupeeUnit(raw)
-      ?: parsePaisaUnit(raw)
-  }
-
-  private fun parseMeterUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "m", "meter", "meters" -> createUnitExpression(NumberUnitExpression.Unit.METER)
-    "m2" -> createUnitExpression(NumberUnitExpression.Unit.SQUARE_METER)
-    "m3" -> createUnitExpression(NumberUnitExpression.Unit.CUBIC_METER)
-    else -> null
-  }
-
-  private fun parseInchUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "in", "inch", "inches" -> createUnitExpression(NumberUnitExpression.Unit.INCH)
-    "sqin", "sqinch" -> createUnitExpression(NumberUnitExpression.Unit.SQUARE_INCH)
-    "cuin" -> createUnitExpression(NumberUnitExpression.Unit.CUBIC_INCH)
-    else -> null
-  }
-
-  private fun parseFootUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "ft", "foot", "feet" -> createUnitExpression(NumberUnitExpression.Unit.FOOT)
-    "sqft", "sqfeet" -> createUnitExpression(NumberUnitExpression.Unit.SQUARE_FOOT)
-    "cuft" -> createUnitExpression(NumberUnitExpression.Unit.CUBIC_FOOT)
-    else -> null
-  }
-
-  private fun parseYardUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "yd", "yard", "yards" -> createUnitExpression(NumberUnitExpression.Unit.YARD)
-    "sqyd", "sqyard" -> createUnitExpression(NumberUnitExpression.Unit.SQUARE_YARD)
-    "cuyd" -> createUnitExpression(NumberUnitExpression.Unit.CUBIC_YARD)
-    else -> null
-  }
-
-  private fun parseGramUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "g", "gram", "grams" -> createUnitExpression(NumberUnitExpression.Unit.GRAM)
-    else -> null
-  }
-
-  private fun parseGrainUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "gr", "grain", "grains" -> createUnitExpression(NumberUnitExpression.Unit.GRAIN)
-    else -> null
-  }
-
-  private fun parseOunceUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "oz", "ounce", "ounces" -> createUnitExpression(NumberUnitExpression.Unit.OUNCE)
-    else -> null
-  }
-
-  private fun parseLiterUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "l", "L", "lt", "liter", "litre", "liters", "litres" ->
-      createUnitExpression(NumberUnitExpression.Unit.LITER)
-
-    "cc" -> createUnitExpression(NumberUnitExpression.Unit.CUBIC_CENTIMETER)
-
-    else -> null
-  }
-
-  private fun parseSecondUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "s", "sec", "secs", "second", "seconds" ->
-      createUnitExpression(NumberUnitExpression.Unit.SECOND)
-
-    else -> null
-  }
-
-  private fun parseMinuteUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "min", "mins", "minute", "minutes" -> createUnitExpression(NumberUnitExpression.Unit.MINUTE)
-    else -> null
-  }
-
-  private fun parseHourUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "h", "hr", "hrs", "hour", "hours" -> createUnitExpression(NumberUnitExpression.Unit.HOUR)
-    else -> null
-  }
-
-  private fun parseKelvinUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "K", "kelvin" -> createUnitExpression(NumberUnitExpression.Unit.KELVIN)
-    else -> null
-  }
-
-  private fun parseCelsiusUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "degC", "celsius" -> createUnitExpression(NumberUnitExpression.Unit.CELSIUS)
-    else -> null
-  }
-
-  private fun parseHertzUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "Hz", "hertz" -> createUnitExpression(NumberUnitExpression.Unit.HERTZ)
-    else -> null
-  }
-
-  private fun parseRadianUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "rad", "radian", "radians" -> createUnitExpression(NumberUnitExpression.Unit.RADIAN)
-    else -> null
-  }
-
-  private fun parseDegreeUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "deg", "degree", "degrees" -> createUnitExpression(NumberUnitExpression.Unit.DEGREE)
-    else -> null
-  }
-
-  private fun parseMoleUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "mol", "mole", "moles" -> createUnitExpression(NumberUnitExpression.Unit.MOLE)
-    else -> null
-  }
-
-  private fun parseCandelaUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "cd", "candela" -> createUnitExpression(NumberUnitExpression.Unit.CANDELA)
-    else -> null
-  }
-
-  private fun parseNewtonUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "N", "newton", "newtons" -> createUnitExpression(NumberUnitExpression.Unit.NEWTON)
-    else -> null
-  }
-
-  private fun parseJouleUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "J", "joule", "joules" -> createUnitExpression(NumberUnitExpression.Unit.JOULE)
-    else -> null
-  }
-
-  private fun parseWattUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "W", "watt", "watts" -> createUnitExpression(NumberUnitExpression.Unit.WATT)
-    else -> null
-  }
-
-  private fun parsePascalUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "Pa", "pascal", "pascals" -> createUnitExpression(NumberUnitExpression.Unit.PASCAL)
-    else -> null
-  }
-
-  private fun parseAmpereUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "A", "ampere", "amperes" -> createUnitExpression(NumberUnitExpression.Unit.AMPERE)
-    else -> null
-  }
-
-  private fun parseVoltUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "V", "volt", "volts" -> createUnitExpression(NumberUnitExpression.Unit.VOLT)
-    else -> null
-  }
-
-  private fun parseOhmUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "ohm", "ohms" -> createUnitExpression(NumberUnitExpression.Unit.OHM)
-    else -> null
-  }
-
-  private fun parseDollarUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "USD", "dollar", "dollars", "Dollar", "Dollars" ->
-      createUnitExpression(NumberUnitExpression.Unit.DOLLAR)
-
-    else -> null
-  }
-
-  private fun parseCentUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "¢", "cent", "cents", "Cent", "Cents" -> createUnitExpression(NumberUnitExpression.Unit.CENT)
-    else -> null
-  }
-
-  private fun parseRupeeUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "rupee", "rupees", "Rupee", "Rupees" -> createUnitExpression(NumberUnitExpression.Unit.RUPEE)
-    else -> null
-  }
-
-  private fun parsePaisaUnit(raw: String): NumberUnitExpression? = when (raw) {
-    "paisa", "paise", "Paisa", "Paise" -> createUnitExpression(NumberUnitExpression.Unit.PAISA)
-    else -> null
+  private fun NumberUnitExpression.Unit.isPrefixable(): Boolean {
+    return this == NumberUnitExpression.Unit.METER ||
+      this == NumberUnitExpression.Unit.GRAM ||
+      this == NumberUnitExpression.Unit.LITER ||
+      this == NumberUnitExpression.Unit.RADIAN ||
+      this == NumberUnitExpression.Unit.DEGREE ||
+      this == NumberUnitExpression.Unit.SECOND ||
+      this == NumberUnitExpression.Unit.HERTZ ||
+      this == NumberUnitExpression.Unit.MOLE ||
+      this == NumberUnitExpression.Unit.CANDELA ||
+      this == NumberUnitExpression.Unit.NEWTON ||
+      this == NumberUnitExpression.Unit.JOULE ||
+      this == NumberUnitExpression.Unit.WATT ||
+      this == NumberUnitExpression.Unit.PASCAL ||
+      this == NumberUnitExpression.Unit.AMPERE ||
+      this == NumberUnitExpression.Unit.VOLT ||
+      this == NumberUnitExpression.Unit.OHM
   }
 
   private fun parseSiPrefix(symbol: String): NumberUnitExpression.SiPrefix? = when (symbol) {
