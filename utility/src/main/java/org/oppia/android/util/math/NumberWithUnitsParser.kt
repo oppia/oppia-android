@@ -32,7 +32,7 @@ class NumberWithUnitsParser private constructor(
     }
     val nextToken = tokens.peek()
     val result = when {
-      isCurrencyPrefixToken(nextToken) -> parsePrefixFormattedValue()
+      nextToken.isCurrencyPrefixToken() -> parsePrefixFormattedValue()
       nextToken is Token.PositiveInteger ||
         nextToken is Token.PositiveRealNumber ||
         nextToken is Token.MinusSymbol -> parseSuffixFormattedValue()
@@ -71,7 +71,7 @@ class NumberWithUnitsParser private constructor(
         parseCompoundUnit().maybeFail { suffixUnits ->
           // Check for duplicate currency: a currency prefix was already added, so if any suffix
           // unit is also a currency unit the expression is ambiguous (e.g. "$5 dollars").
-          if (suffixUnits.any { isCurrencyUnit(it.unit) }) {
+          if (suffixUnits.any { it.unit.isCurrencyUnit() }) {
             NumberWithUnitsParsingError.DuplicateCurrencyError
           } else null
         }.map { suffixUnits ->
@@ -451,14 +451,14 @@ class NumberWithUnitsParser private constructor(
     return token is Token.SiPrefix || parseAnyUnit(token) != null
   }
 
-  private fun isCurrencyUnit(unit: NumberUnitExpression.Unit): Boolean =
-    unit == NumberUnitExpression.Unit.DOLLAR ||
-      unit == NumberUnitExpression.Unit.CENT ||
-      unit == NumberUnitExpression.Unit.RUPEE ||
-      unit == NumberUnitExpression.Unit.PAISA
+  private fun NumberUnitExpression.Unit.isCurrencyUnit(): Boolean =
+    this == NumberUnitExpression.Unit.DOLLAR ||
+      this == NumberUnitExpression.Unit.CENT ||
+      this == NumberUnitExpression.Unit.RUPEE ||
+      this == NumberUnitExpression.Unit.PAISA
 
-  private fun isCurrencyPrefixToken(token: Token?): Boolean {
-    val rawUnit = (token as? Token.Unit)?.unit ?: return false
+  private fun Token?.isCurrencyPrefixToken(): Boolean {
+    val rawUnit = (this as? Token.Unit)?.unit ?: return false
     return rawUnit == "$" || rawUnit == "₹" || rawUnit == "Rs"
   }
 
