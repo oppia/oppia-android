@@ -64,9 +64,8 @@ class NumberWithUnitsParser private constructor(
   private fun parsePrefixFormattedValue(): NumberWithUnitsParsingResult<NumberWithUnitsExpression> {
     val prefixUnit = parseCurrencyPrefixUnit()
       ?: return NumberWithUnitsParsingError.GenericError.toFailure()
-    val expressionBuilder = NumberWithUnitsExpression.newBuilder()
 
-    return parseNumber(expressionBuilder).flatMap {
+    return parseNumber().flatMap { expressionBuilder ->
       if (isAtSuffixUnit()) {
         parseCompoundUnit().maybeFail { suffixUnits ->
           // Check for duplicate currency: a currency prefix was already added, so if any suffix
@@ -98,8 +97,7 @@ class NumberWithUnitsParser private constructor(
    * ```
    */
   private fun parseSuffixFormattedValue(): NumberWithUnitsParsingResult<NumberWithUnitsExpression> {
-    val expressionBuilder = NumberWithUnitsExpression.newBuilder()
-    return parseNumber(expressionBuilder).flatMap {
+    return parseNumber().flatMap { expressionBuilder ->
       // compound_unit is required
       if (!isAtSuffixUnit()) {
         NumberWithUnitsParsingError.UnitExpectedError.toFailure()
@@ -127,12 +125,12 @@ class NumberWithUnitsParser private constructor(
    * literal at this stage. Unit division (for example `m/s`) is parsed later as part of
    * `compound_unit`.
    */
-  private fun parseNumber(
-    expressionBuilder: NumberWithUnitsExpression.Builder
-  ): NumberWithUnitsParsingResult<Unit> {
+  private fun parseNumber(): NumberWithUnitsParsingResult<NumberWithUnitsExpression.Builder> {
     val isNegative = if (tokens.peek() is Token.MinusSymbol) {
       true.also { tokens.next() } // consume '-'
     } else false
+
+    val expressionBuilder = NumberWithUnitsExpression.newBuilder()
 
     return when (val firstToken = tokens.peek()) {
       is Token.PositiveRealNumber -> {
@@ -142,7 +140,7 @@ class NumberWithUnitsParser private constructor(
         } else {
           firstToken.parsedValue
         }
-        NumberWithUnitsParsingResult.Success(Unit)
+        NumberWithUnitsParsingResult.Success(expressionBuilder)
       }
 
       is Token.PositiveInteger -> {
@@ -164,7 +162,7 @@ class NumberWithUnitsParser private constructor(
               denominator = denomToken.parsedValue
             }.build()
             expressionBuilder.fraction = fraction
-            NumberWithUnitsParsingResult.Success(Unit)
+            NumberWithUnitsParsingResult.Success(expressionBuilder)
           } else {
             NumberWithUnitsParsingError.MissingDenominatorError.toFailure()
           }
@@ -174,7 +172,7 @@ class NumberWithUnitsParser private constructor(
           } else {
             firstToken.parsedValue.toDouble()
           }
-          NumberWithUnitsParsingResult.Success(Unit)
+          NumberWithUnitsParsingResult.Success(expressionBuilder)
         }
       }
 
@@ -274,11 +272,9 @@ class NumberWithUnitsParser private constructor(
       if (tokens.peek() is Token.ExponentiationSymbol) {
         tokens.next() // consume '^'
 
-        var negativeExponent = false
-        if (tokens.peek() is Token.MinusSymbol) {
-          tokens.next() // consume '-'
-          negativeExponent = true
-        }
+        val negativeExponent = if (tokens.peek() is Token.MinusSymbol) {
+          true.also { tokens.next() } // consume '-'
+        } else false
 
         val expToken = tokens.peek()
         if (expToken is Token.PositiveInteger) {
