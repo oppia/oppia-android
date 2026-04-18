@@ -29,6 +29,7 @@ import org.oppia.android.app.model.ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSize.TEXT_SIZE_UNSPECIFIED
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -264,6 +265,65 @@ class ReadingTextSizeActivityTest {
         ReadingTextSizeActivityResultBundle.getDefaultInstance()
       )
       assertThat(resultBundle.selectedReadingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "ar-port-xxhdpi")
+  fun testReadingTextSizeActivity_arabicLocale_largeTextSize_backNavigation_returnsLargeResult() {
+    // Verify that the proto-based selection mechanism returns the correct ReadingTextSize enum even
+    // in non-English locales (Arabic here), directly exercising the core fix in PR #4411 where
+    // string-based matching broke for non-English languages.
+    runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "ar-port-xxhdpi")
+  fun testReadingTextSizeActivity_arabicLocale_newTextSizeSelected_backNavigation_returnsResult() {
+    // Verify that changing the selection to EXTRA_LARGE_TEXT_SIZE in a non-English locale and
+    // pressing back returns the updated enum value, not a string-matched display value.
+    runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
+      selectTextSize(EXTRA_LARGE_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(EXTRA_LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_unspecifiedTextSize_backNavigation_returnsUnspecifiedResult() {
+    // Verify the else/fallback branch: launching with READING_TEXT_SIZE_UNSPECIFIED and pressing
+    // back returns the unspecified value (no silent coercion by the activity to a different size).
+    runWithLaunchedActivity(initialSize = TEXT_SIZE_UNSPECIFIED) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(TEXT_SIZE_UNSPECIFIED)
     }
   }
 
