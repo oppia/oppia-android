@@ -70,7 +70,7 @@ class HelpActivityPresenter @Inject constructor(
       setUpToolbar()
       setUpNavigationDrawer()
       if (enableEdgeToEdge.value) {
-        applyEdgeToEdgeInsets(R.id.help_activity_drawer_layout)
+        applyEdgeToEdgeInsets()
       }
     } else {
       activity.setContentView(R.layout.help_without_drawer_activity)
@@ -80,7 +80,7 @@ class HelpActivityPresenter @Inject constructor(
         activity.finish()
       }
       if (enableEdgeToEdge.value) {
-        applyEdgeToEdgeInsets(drawerLayoutId = null)
+        applyEdgeToEdgeInsets()
       }
     }
     val titleTextView =
@@ -369,7 +369,7 @@ class HelpActivityPresenter @Inject constructor(
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
 
-  private fun applyEdgeToEdgeInsets(drawerLayoutId: Int?) {
+  private fun applyEdgeToEdgeInsets() {
     val statusBarBackground = View(activity).apply {
       setBackgroundColor(
         ContextCompat.getColor(
@@ -389,16 +389,19 @@ class HelpActivityPresenter @Inject constructor(
       view.requestLayout()
       insets
     }
-    if (drawerLayoutId != null) {
-      val drawerLayout = activity.findViewById<DrawerLayout>(drawerLayoutId)
-      ViewCompat.setOnApplyWindowInsetsListener(drawerLayout) { view, insets ->
-        val systemBars = insets.getInsets(
-          WindowInsetsCompat.Type.systemBars() or
-            WindowInsetsCompat.Type.displayCutout()
-        )
-        view.updatePadding(bottom = systemBars.bottom)
-        insets
-      }
+    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
+    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
+    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
+      val systemBars = insets.getInsets(
+        WindowInsetsCompat.Type.systemBars() or
+          WindowInsetsCompat.Type.displayCutout()
+      )
+      view.updatePadding(
+        left = systemBars.left,
+        right = systemBars.right,
+        bottom = systemBars.bottom
+      )
+      insets
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       activity.window.isNavigationBarContrastEnforced = false

@@ -139,12 +139,19 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       insets
     }
 
-    // Handle bottom padding for the navigation bar.
+    // The drawer panel slides from the start edge and never reaches the end edge, so only
+    // apply start-side padding (for system bars or cutouts on the drawer's own edge) and
+    // bottom padding. Applying end-side padding would incorrectly shrink the drawer content.
     ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
       val systemBarInsets = insets.getInsets(
         WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
       )
-      view.updatePadding(bottom = systemBarInsets.bottom)
+      val isRtl = ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
+      view.updatePadding(
+        left = if (isRtl) 0 else systemBarInsets.left,
+        right = if (isRtl) systemBarInsets.right else 0,
+        bottom = systemBarInsets.bottom
+      )
       insets
     }
   }

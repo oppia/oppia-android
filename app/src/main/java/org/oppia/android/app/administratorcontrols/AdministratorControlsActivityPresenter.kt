@@ -231,14 +231,18 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       view.requestLayout()
       insets
     }
-    ViewCompat.setOnApplyWindowInsetsListener(
-      binding.administratorControlsActivityDrawerLayout
-    ) { view, insets ->
+    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
+    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
+    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
       val systemBars = insets.getInsets(
         WindowInsetsCompat.Type.systemBars() or
           WindowInsetsCompat.Type.displayCutout()
       )
-      view.updatePadding(bottom = systemBars.bottom)
+      view.updatePadding(
+        left = systemBars.left,
+        right = systemBars.right,
+        bottom = systemBars.bottom
+      )
       insets
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

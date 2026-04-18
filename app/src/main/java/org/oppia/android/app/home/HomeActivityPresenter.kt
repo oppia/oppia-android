@@ -98,13 +98,17 @@ class HomeActivityPresenter @Inject constructor(
       insets
     }
 
-    val drawerLayout =
-      activity.findViewById<DrawerLayout>(R.id.home_activity_drawer_layout)
-    ViewCompat.setOnApplyWindowInsetsListener(drawerLayout) { view, insets ->
+    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
+    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
+    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
       val systemBarInsets = insets.getInsets(
         WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
       )
-      view.updatePadding(bottom = systemBarInsets.bottom)
+      view.updatePadding(
+        left = systemBarInsets.left,
+        right = systemBarInsets.right,
+        bottom = systemBarInsets.bottom
+      )
       insets
     }
 
