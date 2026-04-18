@@ -202,7 +202,6 @@ private val attributeIds = listOf(
   "@+id/topic_name_text_view",
   "@+id/lesson_count_text_view",
   "@+id/multiple_choice_content_text_view",
-  "@+id/language_text_view",
   "@+id/welcome_text_view",
   "@+id/app_version_text_view",
   "@+id/app_last_update_date_text_view",
@@ -253,3 +252,4 @@ private val attributeIds = listOf(
   "@+id/extra_controls_title",
   "@+id/view_all_text_view"
 )
+
