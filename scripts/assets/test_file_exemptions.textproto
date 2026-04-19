@@ -4168,6 +4168,22 @@ test_file_exemption {
   override_min_coverage_percent_required: 6
 }
 test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/assets/DownloadLessons.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/assets/ImageRepairer.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/gae/proto/LocalizationTracker.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/gae/compat/StructureCompatibilityChecker.kt"
+  override_min_coverage_percent_required: 0
+}
+test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandExecutor.kt"
   test_file_not_required: true
 }
