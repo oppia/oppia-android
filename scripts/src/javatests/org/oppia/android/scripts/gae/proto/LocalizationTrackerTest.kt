@@ -2,8 +2,8 @@ package org.oppia.android.scripts.gae.proto
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
+import org.oppia.android.testing.assertThrows
 
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")

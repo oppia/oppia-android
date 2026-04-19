@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.gae
 
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -759,7 +759,9 @@ class GaeAndroidEndpointJsonImpl(
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
     private suspend fun initializeLocalizationTracker(): LocalizationTracker =
-      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also { this.localizationTracker = it }
+      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also {
+        this.localizationTracker = it
+      }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
