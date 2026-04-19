@@ -36,6 +36,8 @@ jobs:
     name: Build Stats (deployable AABs)
     needs: find_open_pull_requests
     runs-on: ubuntu-24.04
+    outputs:
+      new_commits: ${{ steps.track_commits.outputs.new_commits }}
     # Reduce parallelization due to high build times, and allow individual PRs to fail.
     strategy:
       fail-fast: false
@@ -95,7 +97,6 @@ jobs:
              }
 
       - name: Compute PR head owner/repo reference
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
           PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
@@ -245,6 +246,7 @@ jobs:
   finalize_stats_and_report:
     name: Finalize Stats & Report
     needs: [find_open_pull_requests, build_stats_deployables]
+    if: ${{ needs.build_stats_deployables.outputs.new_commits == 'true' }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -254,58 +256,7 @@ jobs:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      # Re-check whether this PR has new commits (lightweight GitHub API calls).
-      - name: Find the latest APK & AAB Analysis Comment
-        uses: actions/github-script@v8
-        id: find_latest_apk_aab_comment
-        with:
-           script: |
-             const comments = await github.paginate(github.rest.issues.listComments, {
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               issue_number: ${{ matrix.prInfo.number }},
-             });
-
-             for (let i = comments.length - 1; i >= 0; i--) {
-               if (comments[i].body.includes("# APK & AAB differences analysis")) {
-                 const latestComment = comments[i];
-                 const commentBody = latestComment.body;
-                 const commentDate = latestComment.created_at;
-
-                 require('fs').writeFileSync('latest_aab_comment_body.log', commentBody, 'utf8');
-                 core.setOutput("latest_aab_comment_created_at", commentDate);
-
-                 return
-               }
-             }
-
-      - name: Track Commits following the latest APK & AAB Analysis Comment
-        uses: actions/github-script@v8
-        id: track_commits
-        with:
-           script: |
-             const commits = await github.paginate(github.rest.pulls.listCommits, {
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               pull_number: ${{ matrix.prInfo.number }},
-             });
-
-             const latestCommentDate = "${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}";
-             const recentCommits = commits.filter(commit => {
-               const commitDate = new Date(commit.commit.committer.date);
-               return commitDate > new Date("${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}");
-             });
-
-             const recentCommitsCount = recentCommits.length;
-             if(recentCommitsCount > 0 || !latestCommentDate) {
-               core.setOutput("new_commits", "true");
-             } else {
-               console.log("No new commits since the last APK & AAB report; Skipping redundant analysis.");
-               core.setOutput("new_commits", "false");
-             }
-
       - name: Compute PR head owner/repo reference
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
           PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
@@ -313,20 +264,17 @@ jobs:
           echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
 
       - name: Set up Bazel
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
       - name: Download Bazel cache from deployable build
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: actions/download-artifact@v8
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
           path: ${{ env.CACHE_DIRECTORY }}
 
       - name: Configure Bazel to use the downloaded cache
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -339,23 +287,19 @@ jobs:
       # run from the latest develop rather than the base branch (which might be different for
       # chained PRs).
       - name: Check out develop repository
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: actions/checkout@v6
         with:
           path: develop
 
       - name: Set up build environment
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: ./develop/.github/actions/set-up-android-bazel-build-environment
 
       - name: Check Bazel environment
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd develop
           bazel info
 
       - name: Check out base repository and branch
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
         uses: actions/checkout@v6
@@ -365,7 +309,6 @@ jobs:
           path: base
 
       - name: Check out head repository and branch
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
         uses: actions/checkout@v6
@@ -379,7 +322,6 @@ jobs:
       # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
       # worker resources.
       - name: Build Oppia dev, alpha, beta, and GA (feature branch)
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd head
           git log -n 1
@@ -391,7 +333,6 @@ jobs:
           bazel shutdown
 
       - name: Build Oppia dev, alpha, beta, and GA (base branch)
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd base
           git log -n 1
@@ -403,7 +344,6 @@ jobs:
           bazel shutdown
 
       - name: Run stats analysis tool (develop branch)
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd develop
           git log -n 1
@@ -417,7 +357,6 @@ jobs:
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         id: compute-comment-body
@@ -434,7 +373,6 @@ jobs:
           cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v5
@@ -443,7 +381,6 @@ jobs:
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
       - uses: actions/upload-artifact@v7
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
           path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}
