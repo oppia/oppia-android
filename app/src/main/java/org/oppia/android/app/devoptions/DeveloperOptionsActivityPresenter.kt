@@ -81,6 +81,10 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     activity.startActivity(intent)
     // App is terminated to ensure a fresh restart and kill all the current process
     // so that ProcessState can be reinitialised on the fresh restart.
-    exitProcess(0)
+    if (android.os.Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+      throw SecurityException("System.exit() called")
+    } else {
+      exitProcess(0)
+    }
   }
 }

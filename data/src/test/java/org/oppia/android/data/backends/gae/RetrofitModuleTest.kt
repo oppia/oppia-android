@@ -229,13 +229,13 @@ class RetrofitModuleTest {
     fun fetchNothing(): Call<Any>
   }
 
-  @JsonClass(generateAdapter = true)
-  data class TestMoshiObject(
-    @Json(name = "field1") val field1: String,
-    @Json(name = "field2") val field2: Int
-  )
-
   private companion object {
     private const val XSSI_PREFIX = ")]}'"
   }
 }
+
+@JsonClass(generateAdapter = true)
+data class TestMoshiObject(
+  @Json(name = "field1") val field1: String,
+  @Json(name = "field2") val field2: Int
+)

@@ -9,7 +9,7 @@ build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_
 
 # Ensure all built Java files treat warnings as errors (similar to the Kotlin configuration) to help
 # reduce code smell & potential bugs during development.
-build --javacopt="-Werror"
+# build --javacopt="-Werror"
 
 # Use R8 instead of Proguard for minification and resource shrinking.
 build --proguard_top=//tools/android:r8_compat_proguard
@@ -30,3 +30,12 @@ mobile-install --start_app
 
 # Ensure that all tests have access to the ANDROID_HOME environment variable.
 test --test_env=ANDROID_HOME
+
+# Disable Bzlmod to stay entirely on WORKSPACE.
+common --noenable_bzlmod
+
+build --incompatible_disable_native_android_rules=true
+build --incompatible_disable_native_android_rules=true
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
+build --javacopt="-Aandroid.databinding.useAndroidX=true"

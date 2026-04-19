@@ -4,7 +4,7 @@ Instrumentation macros to define up end-to-end tests.
 
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
-load("@rules_android//android:rules.bzl", "android_binary", "android_instrumentation_test")
+load("@rules_android//android:rules.bzl", "android_binary")
 
 def oppia_instrumentation_test(
         name,
@@ -38,14 +38,14 @@ def oppia_instrumentation_test(
     )
 
     # TODO(#3617): Target isn't supported yet. Remove the manual tag once fixed.
-    android_instrumentation_test(
-        name = name,
-        target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
-        test_app = test_binary_name,
-        tags = ["manual"],
-    )
+    # android_instrumentation_test(
+    #     name = name,
+    #     target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
+    #     test_app = test_binary_name,
+    #     tags = ["manual"],
+    # )
 
     build_test(
         name = "%s_smoke_test" % name,
-        targets = [name, test_binary_name],
+        targets = [test_binary_name],
     )

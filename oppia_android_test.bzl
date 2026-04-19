@@ -3,6 +3,7 @@ Central macros pertaining to setting up tests across the codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@rules_android//android:rules.bzl", "android_local_test")
 
 # TODO(#1620): Remove layer-specific test macros.
 def oppia_android_layer_level_test(
@@ -85,12 +86,22 @@ def oppia_android_test(
         assets_dir = assets_dir,
         plugins = plugins,
     )
-    native.android_local_test(
+    kwargs.pop("enable_data_binding", False)
+
+    data = kwargs.pop("data", [])
+    data.append("//third_party:custom_robolectric_deps")
+
+    jvm_flags = kwargs.pop("jvm_flags", [])
+    jvm_flags.append("-Drobolectric-deps.properties=third_party/robolectric-deps.properties")
+
+    android_local_test(
         name = name,
         custom_package = custom_package,
         test_class = test_class,
         manifest = test_manifest,
         deps = [":" + name + "_lib"] + deps,
+        data = data,
+        jvm_flags = jvm_flags,
         **kwargs
     )
 

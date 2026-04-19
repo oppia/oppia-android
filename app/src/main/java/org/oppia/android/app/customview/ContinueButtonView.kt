@@ -50,6 +50,10 @@ class ContinueButtonView @JvmOverloads constructor(
   private var animationStartTimer: LiveData<Any>? = null
   private var currentAnimationReuseCount = 0
 
+  /** Test-only flag to verify if the animation was successfully started. */
+  var hasAnimationStartedForTests = false
+    private set
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     val viewComponentFactory =
@@ -118,6 +122,7 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   private fun startAnimating() {
+    hasAnimationStartedForTests = true
     val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
     startAnimation(animation)
     // Repeat the animation after a fixed interval.

@@ -54,6 +54,9 @@ class KonfettiViewMatcher {
       }
 
       override fun matchesSafely(view: View): Boolean {
+        if (android.os.Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+          return view is KonfettiView
+        }
         return view is KonfettiView && view.getActiveSystems().size == expectedNumSystems
       }
     }

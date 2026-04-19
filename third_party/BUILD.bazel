@@ -16,6 +16,22 @@ load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
+exports_files([
+    "rules_android_r8_min_sdk.patch",
+    "robolectric_gen_deps.patch",
+])
+
+genrule(
+    name = "custom_robolectric_deps",
+    srcs = ["@robolectric//bazel:properties"],
+    outs = ["robolectric-deps.properties"],
+    cmd = "cat $(location @robolectric//bazel:properties) > $@ && " +
+          "sed -n 's/-i7/-i2/p' $(location @robolectric//bazel:properties) >> $@ && " +
+          "sed -n 's/-i7/-i4/p' $(location @robolectric//bazel:properties) >> $@ && " +
+          "sed -n 's/-i7/-i6/p' $(location @robolectric//bazel:properties) >> $@",
+    visibility = ["//visibility:public"],
+)
+
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization
 # potential in managing multiple Maven repositories.
@@ -91,7 +107,7 @@ alias(
 
 # Creates an alias for Guava Android to support maven_install's override of Guava. This ensures that
 # Guava-Android is always used in builds, even if dependencies request a newer version of Guava-JRE.
-android_library(
+java_library(
     name = "com_google_guava_guava",
     visibility = ["//visibility:public"],
     exports = [
@@ -106,7 +122,7 @@ android_library(
 
 java_library(
     name = "com_google_guava_guava_jre",
-    visibility = ["//scripts:__subpackages__"],
+    visibility = ["//visibility:public"],
     exports = [
         "//third_party:com_google_errorprone_error_prone_annotations",
         "//third_party:com_google_guava_failureaccess",
@@ -137,4 +153,11 @@ java_binary(
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
     runtime_deps = [":android_bundletool"],
+)
+
+java_import(
+    name = "android_sdk_jar_only",
+    jars = ["@androidsdk//:platforms/android-35/android.jar"],
+    neverlink = True,
+    visibility = ["//visibility:public"],
 )

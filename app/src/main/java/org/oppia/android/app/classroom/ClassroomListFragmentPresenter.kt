@@ -102,6 +102,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private lateinit var binding: ClassroomListFragmentBinding
   private lateinit var classroomListViewModel: ClassroomListViewModel
   private val profileId = activity.intent.extractCurrentUserProfileId()
+  private var refreshKey = androidx.compose.runtime.mutableStateOf(0)
 
   /** Creates and returns the view for the [ClassroomListFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -191,6 +192,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   }
 
   private fun refreshComposeView() {
+    refreshKey.value++
     binding.composeView.apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
@@ -209,6 +211,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
       classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty() +
         classroomListViewModel.topicList
       )
+      .also { refreshKey.value } // Read the state to track recomposition
       .groupBy { it::class }
     val topicListSpanCount = integerResource(id = R.integer.home_span_count)
     val listState = rememberLazyListState()

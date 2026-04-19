@@ -1,3 +1,4 @@
+load("@rules_android//android:rules.bzl", "android_binary")
 """
 Macros pertaining to building & managing Android app bundles.
 """
@@ -345,7 +346,7 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
     raw_module_zip_name = "%s_raw_module_zip" % name
     language_restricted_module_zip_name = "%s_lang_restricted_module_zip" % name
     deployable_aab_name = "%s_deployable" % name
-    native.android_binary(
+    android_binary(
         name = binary_name,
         tags = ["manual"],
         proguard_generate_mapping = proguard_generate_mapping,

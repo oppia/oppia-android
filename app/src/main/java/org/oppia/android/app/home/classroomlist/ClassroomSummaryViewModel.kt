@@ -33,8 +33,9 @@ class ClassroomSummaryViewModel(
   // ClassroomListViewModel will only rebind when the actual data in the data list changes,
   // rather than when the ViewModel object changes.
   override fun equals(other: Any?): Boolean {
-    return other is ClassroomSummaryViewModel
+    return other is ClassroomSummaryViewModel &&
+      other.classroomSummary.classroomId == this.classroomSummary.classroomId
   }
 
-  override fun hashCode() = Objects.hash()
+  override fun hashCode() = Objects.hash(classroomSummary.classroomId)
 }

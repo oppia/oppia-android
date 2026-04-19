@@ -177,6 +177,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import org.oppia.android.testing.time.FakeOppiaClock
+
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
  * emulator.
@@ -188,6 +190,7 @@ class StateFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
@@ -205,6 +208,7 @@ class StateFragmentLocalTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
@@ -332,7 +336,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
       onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
@@ -359,7 +363,7 @@ class StateFragmentLocalTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       scrollToViewType(CONTINUE_INTERACTION)
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
       onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
     }
   }
@@ -2911,6 +2915,11 @@ class StateFragmentLocalTest {
     }
 
     override fun matchesSafely(view: View): Boolean {
+      if (view is org.oppia.android.app.customview.ContinueButtonView) {
+        if (view.hasAnimationStartedForTests) {
+          return true
+        }
+      }
       return view.animation?.hasStarted() ?: false
     }
   }

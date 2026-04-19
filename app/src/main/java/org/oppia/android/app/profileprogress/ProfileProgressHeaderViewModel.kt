@@ -44,11 +44,13 @@ class ProfileProgressHeaderViewModel(
     completedStoryCount.set(storyCount)
   }
 
-  fun clickOnCompletedStoryCount() {
+  @Suppress("UNUSED_PARAMETER")
+  fun clickOnCompletedStoryCount(v: View) {
     routeToCompletedStoryListListener.routeToCompletedStory()
   }
 
-  fun clickOnOngoingTopicCount() {
+  @Suppress("UNUSED_PARAMETER")
+  fun clickOnOngoingTopicCount(v: View) {
     routeToOngoingTopicListListener.routeToOngoingTopic()
   }
 

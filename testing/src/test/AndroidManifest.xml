@@ -5,6 +5,7 @@
     android:targetSdkVersion="30" />
 
   <application>
+    <activity android:name=".TextInputActionTestActivity"></activity>
     <provider
         android:name="androidx.startup.InitializationProvider"
         android:authorities="${applicationId}.androidx-startup"

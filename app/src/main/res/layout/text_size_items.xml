@@ -41,6 +41,6 @@
       android:fontFamily="sans-serif"
       android:text="@{viewModel.textSizeName}"
       android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="@{viewModel.textSize}" />
+      app:oppiaTextSize="@{viewModel.textSize}" />
   </LinearLayout>
 </layout>

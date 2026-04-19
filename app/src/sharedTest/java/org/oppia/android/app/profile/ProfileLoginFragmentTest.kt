@@ -541,7 +541,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_adminUser_declineDataReset_dismissesTheDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    launch(ProfileLoginActivity::class.java).use { scenario ->
+    ActivityScenario.launchActivityForResult(ProfileLoginActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNodeWithText(
@@ -583,7 +583,7 @@ class ProfileLoginFragmentTest {
   fun testFragment_adminUser_confirmDataReset_closesTheApp() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    launch(ProfileLoginActivity::class.java).use { scenario ->
+    ActivityScenario.launchActivityForResult(ProfileLoginActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNodeWithText(

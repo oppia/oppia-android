@@ -32,6 +32,7 @@ class MathExpressionParserFragmentPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = fragment
       viewModel = this@MathExpressionParserFragmentPresenter.viewModel
+      executePendingBindings()
     }
     viewModel.initialize(binding.mathExpressionParseResultTextView)
     return binding.root

@@ -22,8 +22,8 @@ class DragAndDropItemFacilitator(
     target: RecyclerView.ViewHolder
   ): Boolean {
     onItemDragListener.onItemDragged(
-      source.adapterPosition,
-      target.adapterPosition,
+      source.bindingAdapterPosition,
+      target.bindingAdapterPosition,
       recyclerView.adapter!!
     )
     return true

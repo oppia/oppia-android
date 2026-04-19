@@ -31,7 +31,6 @@ _FLAVOR_METADATA = {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
-        "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
@@ -45,7 +44,6 @@ _FLAVOR_METADATA = {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
-        "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
@@ -60,7 +58,6 @@ _FLAVOR_METADATA = {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
-        "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
@@ -75,7 +72,6 @@ _FLAVOR_METADATA = {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
-        "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
@@ -230,7 +226,7 @@ def define_oppia_aab_binary_flavor(flavor):
             "minSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["min_sdk_version"],
             "targetSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["target_sdk_version"],
         },
-        multidex = _FLAVOR_METADATA[flavor]["multidex"],
+        multidex = "native",
         proguard_generate_mapping = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
         shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
