@@ -259,11 +259,12 @@ class LessonDownloader(
     val downloadDeferred = CoroutineScope(coroutineDispatcher).async {
       downloadAllLessons(outputDir, failOnError)
     }
-    val exceptionResult = runBlocking {
-      runCatching { downloadDeferred.await() }.also { shutdownBlocking() }
-    }
-    if (exceptionResult.isFailure) {
-      throw IllegalStateException("Failed to download lessons.", exceptionResult.exceptionOrNull())
+    try {
+      runBlocking { downloadDeferred.await() }
+    } catch (e: Exception) {
+      throw IllegalStateException("Failed to download lessons.", e)
+    } finally {
+      shutdownBlocking()
     }
   }
 
