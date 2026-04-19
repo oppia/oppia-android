@@ -269,12 +269,23 @@ jobs:
           version: 6.5.0
 
       - name: Download Bazel cache from deployable build
+        id: download_cache
+        continue-on-error: true
         uses: actions/download-artifact@v8
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
           path: ${{ env.CACHE_DIRECTORY }}
 
+      # If the artifact wasn't uploaded (e.g. build_stats_deployables skipped
+      # this PR because new_commits was 'false'), skip all remaining steps.
+      - name: Skip if no artifact available
+        if: ${{ steps.download_cache.outcome != 'success' }}
+        run: |
+          echo "::warning::No Bazel cache artifact found for PR ${{ matrix.prInfo.number }}; skipping finalize."
+          echo "SKIP_FINALIZE=true" >> "$GITHUB_ENV"
+
       - name: Configure Bazel to use the downloaded cache
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -287,19 +298,23 @@ jobs:
       # run from the latest develop rather than the base branch (which might be different for
       # chained PRs).
       - name: Check out develop repository
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         uses: actions/checkout@v6
         with:
           path: develop
 
       - name: Set up build environment
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         uses: ./develop/.github/actions/set-up-android-bazel-build-environment
 
       - name: Check Bazel environment
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         run: |
           cd develop
           bazel info
 
       - name: Check out base repository and branch
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         env:
           PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
         uses: actions/checkout@v6
@@ -309,6 +324,7 @@ jobs:
           path: base
 
       - name: Check out head repository and branch
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         env:
           PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
         uses: actions/checkout@v6
@@ -322,6 +338,7 @@ jobs:
       # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
       # worker resources.
       - name: Build Oppia dev, alpha, beta, and GA (feature branch)
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         run: |
           cd head
           git log -n 1
@@ -333,6 +350,7 @@ jobs:
           bazel shutdown
 
       - name: Build Oppia dev, alpha, beta, and GA (base branch)
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         run: |
           cd base
           git log -n 1
@@ -344,6 +362,7 @@ jobs:
           bazel shutdown
 
       - name: Run stats analysis tool (develop branch)
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         run: |
           cd develop
           git log -n 1
@@ -357,6 +376,7 @@ jobs:
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         id: compute-comment-body
@@ -373,6 +393,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
+        if: ${{ env.SKIP_FINALIZE != 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v5
@@ -380,7 +401,8 @@ jobs:
           issue-number: ${{ env.PR_NUMBER }}
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
-      - uses: actions/upload-artifact@v7
+      - if: ${{ env.SKIP_FINALIZE != 'true' }}
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
           path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}
