@@ -130,7 +130,12 @@ class GaeAndroidEndpointJsonImpl(
           forcedVersions = forcedVersions
         )
       converterInitializer = ConverterInitializer(
-        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig, filterInvalidTopics
+        activityService,
+        coroutineDispatcher,
+        topicDependencies,
+        imageDownloader,
+        downloadConfig,
+        filterInvalidTopics
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -775,7 +780,11 @@ class GaeAndroidEndpointJsonImpl(
       constraints: CompatibilityConstraints
     ): TopicPackRepository {
       return TopicPackRepository(
-        activityService, coroutineDispatcher, getLocalizationTracker(), constraints, filterInvalidTopics
+        activityService,
+        coroutineDispatcher,
+        getLocalizationTracker(),
+        constraints,
+        filterInvalidTopics
       )
     }
   }
