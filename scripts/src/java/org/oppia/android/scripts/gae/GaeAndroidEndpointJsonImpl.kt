@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.gae
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -37,8 +37,8 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestStat
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicContentProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
-import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.android.scripts.proto.DownloadConfig
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
