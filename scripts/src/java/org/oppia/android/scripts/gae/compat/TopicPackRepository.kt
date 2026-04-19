@@ -43,7 +43,8 @@ class TopicPackRepository(
   private val androidService: AndroidActivityHandlerService,
   private val coroutineDispatcher: CoroutineDispatcher,
   localizationTracker: LocalizationTracker,
-  private val constraints: StructureCompatibilityChecker.CompatibilityConstraints
+  private val constraints: StructureCompatibilityChecker.CompatibilityConstraints,
+  private val filterInvalidTopics: Boolean
 ) {
   private val textCollector by lazy { SubtitledHtmlCollector(localizationTracker) }
   private val compatibilityChecker by lazy {
@@ -59,7 +60,7 @@ class TopicPackRepository(
   fun downloadConstructedCompleteTopicAsync(
     topicId: String,
     metricCallbacks: MetricCallbacks
-  ): Deferred<CompleteTopicPack> {
+  ): Deferred<CompleteTopicPack?> {
     // TODO:
     // Algorithm: pick the newest transitive closure of a topic & its dependencies such that all
     // structures within the closure are compatible with the app.
@@ -77,7 +78,25 @@ class TopicPackRepository(
     return CoroutineScope(coroutineDispatcher).async {
       when (val result = tryCreateCompatiblePack(topicId, metricCallbacks)) {
         is LoadResult.Pending -> error("Pack result should not be pending for topic: $topicId.")
-        is LoadResult.Success -> result.value
+        is LoadResult.Success -> {
+          val topicPack = result.value
+          return@async when {
+            // Hacky way to filter out incomplete topics.
+            filterInvalidTopics && topicPack.subtopicPages.isEmpty() -> {
+              println("Topic is published but has no subtopics: $topicId.")
+              null
+            }
+            filterInvalidTopics && topicPack.stories.isEmpty() -> {
+              println("Topic is published but has no stories: $topicId.")
+              null
+            }
+            filterInvalidTopics && topicPack.explorations.isEmpty() -> {
+              println("Topic is published but has no explorations: $topicId.")
+              null
+            }
+            else -> topicPack
+          }
+        }
         is LoadResult.Failure -> {
           error(
             "Failed to load complete topic pack with ID: $topicId. Encountered failures:" +

@@ -254,8 +254,9 @@ object DtoProtoToLegacyProtoConverter {
         dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
       putAllWrittenTranslations(dto.localizations.toTranslationMappings(imageReferenceReplacements))
       this.translatableTitle = dto.localizations.extractDefaultSubtitledHtml(dto.name)
+      val downloadableTopicIds = dto.topicIdsList.filter { it in topicSummaryMap }
       putAllTopicPrerequisites(
-        dto.topicIdsList.associateWith { topicId ->
+        downloadableTopicIds.associateWith { topicId ->
           ClassroomRecord.TopicIdList.newBuilder().apply {
             addAllTopicIds(topicSummaryMap.getValue(topicId).prerequisiteTopicIdsList)
           }.build()
