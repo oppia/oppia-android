@@ -16,10 +16,9 @@ Change-Id: I44246c89092a6d64e53157b386d730a3069048e7
  rules/android_binary/r8.bzl | 18 +++++++++++++++---
  1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/rules/android_binary/r8.bzl b/rules/android_binary/r8.bzl
 index 973bc4d19..624295d99 100644
---- a/rules/android_binary/r8.bzl
-+++ b/rules/android_binary/r8.bzl
+--- rules/android_binary/r8.bzl
++++ rules/android_binary/r8.bzl
 @@ -18,6 +18,7 @@ load("//rules:acls.bzl", "acls")
  load("//rules:android_neverlink_aspect.bzl", "StarlarkAndroidNeverlinkInfo")
  load("//rules:common.bzl", "common")

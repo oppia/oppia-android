@@ -1,0 +1,191 @@
+--- BUILD
++++ BUILD
+@@ -85,3 +85,16 @@ alias(
+     name = "androidsdk_has_androidsdk",
+     actual = "@androidsdk//:has_androidsdk",
+ )
++
++genrule(
++    name = "generate_api_versions_jar",
++    outs = ["api-versions.jar"],
++    cmd = "echo '<?xml version=\"1.0\" encoding=\"utf-8\"?><api></api>' > api-versions.xml && zip -q $@ api-versions.xml",
++    visibility = ["//visibility:public"],
++)
++
++java_import(
++    name = "api_versions_import",
++    jars = ["api-versions.jar"],
++    visibility = ["//visibility:public"],
++)
+
+--- defs.bzl
++++ defs.bzl
+@@ -43,6 +43,7 @@ def rules_android_workspace():
+         name = "android_ide_common_30_1_3",
+         aar_import_bzl_label = "@rules_android//rules:rules.bzl",
+         artifacts = [
++            "com.squareup:javapoet:1.13.0",
+             "com.android.tools.layoutlib:layoutlib-api:30.1.3",
+             "com.android.tools.build:manifest-merger:30.1.3",
+             "com.android.tools:common:30.1.3",
+@@ -57,8 +58,8 @@ def rules_android_workspace():
+             # These technically aren't needed, but the protobuf version pulled
+             # in by these older deps has compatibility issues with the newer
+             # protobuf runtimes.
+-            "com.google.protobuf:protobuf-java:4.33.4",
+-            "com.google.protobuf:protobuf-java-util:4.33.4",
++            "com.google.protobuf:protobuf-java:4.29.0-RC2",
++            "com.google.protobuf:protobuf-java-util:4.29.0-RC2",
+         ],
+         repositories = [
+             "https://maven.google.com",
+@@ -70,6 +71,7 @@ def rules_android_workspace():
+     maven_install(
+         name = "rules_android_maven",
+         artifacts = [
++            "com.squareup:javapoet:1.13.0",
+             "androidx.privacysandbox.tools:tools:1.0.0-alpha06",
+             "androidx.privacysandbox.tools:tools-apigenerator:1.0.0-alpha06",
+             "androidx.privacysandbox.tools:tools-apipackager:1.0.0-alpha06",
+@@ -94,8 +96,8 @@ def rules_android_workspace():
+             "jakarta.inject:jakarta.inject-api:2.0.1",
+             "junit:junit:4.13.2",
+             "com.beust:jcommander:1.82",
+-            "com.google.protobuf:protobuf-java:4.33.4",
+-            "com.google.protobuf:protobuf-java-util:4.33.4",
++            "com.google.protobuf:protobuf-java:4.29.0-RC2",
++            "com.google.protobuf:protobuf-java-util:4.29.0-RC2",
+             "com.google.code.findbugs:jsr305:3.0.2",
+             "androidx.databinding:databinding-compiler:8.7.0",
+             "org.ow2.asm:asm:9.6",
+@@ -147,11 +149,12 @@ def rules_android_workspace():
+         # the presubmit maven artifact consistency checker to pass.
+         name = "bazel_worker_maven",
+         artifacts = [ # bazel worker api
++            "com.squareup:javapoet:1.13.0",
+             "com.google.code.gson:gson:2.10.1",  # bazel worker api
+             "com.google.errorprone:error_prone_annotations:2.23.0",  # bazel worker api
+             "com.google.guava:guava:33.0.0-jre",  # bazel worker api
+-            "com.google.protobuf:protobuf-java:4.33.4",  # bazel worker api
+-            "com.google.protobuf:protobuf-java-util:4.33.4",  # bazel worker api
++            "com.google.protobuf:protobuf-java:4.29.0-RC2",  # bazel worker api
++            "com.google.protobuf:protobuf-java-util:4.29.0-RC2",  # bazel worker api
+             "junit:junit:4.13.2",  # bazel worker api
+             "org.mockito:mockito-core:5.4.0",  # bazel worker api
+             "com.google.truth:truth:1.4.0",  # bazel worker api
+
+--- prereqs.bzl
++++ prereqs.bzl
+@@ -63,7 +63,7 @@ def rules_android_prereqs(dev_mode = False):
+         url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/%s/rules_jvm_external-%s.tar.gz" % (RULES_JVM_EXTERNAL_TAG, RULES_JVM_EXTERNAL_TAG),
+     )
+ 
+-    PROTOBUF_VERSION = "33.4"
++    PROTOBUF_VERSION = "27.1"
+     PROTOBUF_HASH = "bc670a4e34992c175137ddda24e76562bb928f849d712a0e3c2fb2e19249bea1"
+     maybe(
+         http_archive,
+
+--- rules/android_binary/rule.bzl
++++ rules/android_binary/rule.bzl
+@@ -45,6 +45,9 @@ def _outputs(name, proguard_generate_mapping, _package_name, _generate_proguard_
+     # predeclared proguard outputs will be generated. If the proguard_specs attribute resolves to an
+     # empty list eventually, we do not use it in the dexing. If user explicitly tries to request it,
+     # it will fail.
++    if _generate_proguard_outputs:
++        if proguard_generate_mapping:
++            outputs["proguard_map"] = "%{name}_proguard.map"
+     if not acls.use_r8(label) and _generate_proguard_outputs:
+         outputs["proguard_jar"] = "%{name}_proguard.jar"
+         outputs["proguard_config"] = "%{name}_proguard.config"
+
+--- rules/data_binding.bzl
++++ rules/data_binding.bzl
+@@ -52,7 +52,7 @@ _NO_RESOURCES_PATH = "/tmp/no_resources"
+ 
+ def _copy_annotation_file(ctx, output_dir, annotation_template):
+     annotation_out = ctx.actions.declare_file(
+-        output_dir + "/android/databinding/layouts/DataBindingInfo.java",
++        output_dir + "/androidx/databinding/layouts/DataBindingInfo.java",
+     )
+     _utils.copy_file(ctx, annotation_template, annotation_out)
+     return annotation_out
+@@ -67,7 +67,7 @@ def _gen_sources(ctx, output_dir, java_package, deps, layout_info, data_binding_
+     args.add("-classInfoOut", class_info)
+     args.add("-sourceOut", srcjar)
+     args.add("-zipSourceOutput", "true")
+-    args.add("-useAndroidX", "false")
++    args.add("-useAndroidX", "true")
+ 
+     if deps:
+         if type(deps[0].class_infos) == "depset":
+@@ -148,7 +148,7 @@ def _get_javac_opts(
+     javac_opts.append("-Aandroid.databinding.dependencyArtifactsDir=" +
+                       dependency_artifacts_dir)
+     javac_opts.append("-Aandroid.databinding.aarOutDir=" + aar_out_dir)
+-    javac_opts.append("-Aandroid.databinding.sdkDir=/not/used")
++    javac_opts.append("-Aandroid.databinding.sdkDir=/tmp/androidsdk")
+     javac_opts.append("-Aandroid.databinding.artifactType=" + artifact_type)
+     javac_opts.append("-Aandroid.databinding.exportClassListOutFile=" +
+                       "/tmp/exported_classes")
+@@ -254,11 +254,11 @@ def _process(
+     if defines_resources:
+         # Outputs of the Data Binding annotation processor.
+         br_out = ctx.actions.declare_file(
+-            output_dir + "bin-files/%s-br.bin" % java_package,
++            output_dir + "bin-files/%s--br.bin" % java_package,
+         )
+         db_info[_JAVA_ANNOTATION_PROCESSOR_ADDITIONAL_OUTPUTS].append(br_out)
+         setter_store_out = ctx.actions.declare_file(
+-            output_dir + "bin-files/%s-setter_store.json" % java_package,
++            output_dir + "bin-files/%s--setter_store.json" % java_package,
+         )
+         db_info[_JAVA_ANNOTATION_PROCESSOR_ADDITIONAL_OUTPUTS].append(
+             setter_store_out,
+
+--- rules/data_binding_annotation_template.txt
++++ rules/data_binding_annotation_template.txt
+@@ -1,6 +1,6 @@
+-package android.databinding.layouts;
++package androidx.databinding.layouts;
+ 
+-import android.databinding.BindingBuildInfo;
++import androidx.databinding.BindingBuildInfo;
+ 
+ /**
+  * Template for the file that feeds data binding's annotation processor. The
+
+--- src/tools/java/com/google/devtools/build/android/BUILD
++++ src/tools/java/com/google/devtools/build/android/BUILD
+@@ -43,6 +43,6 @@ run_singlejar(
+         "android/databinding/",
+         "org/antlr/",
+         "org/apache/commons/",
+-        "org/mozilla",
++        "org/mozilla", "kotlin/", "kotlinx/", "com/beust/jcommander/", "com/google/gson/", "javax/xml/bind/", "javax/activation/", "com/sun/xml/", "org/glassfish/", "com/sun/istack/", "com/google/common/", "androidx/databinding/", "com/android/tools/build/jetifier/", "default.config", "default.generated.config",
+     ],
+ )
+
+--- tools/android/BUILD
++++ tools/android/BUILD
+@@ -58,10 +58,12 @@ java_binary(
+ java_plugin(
+     name = "compiler_annotation_processor",
+     generates_api = True,
++    data = ["@androidsdk//:sdk"],
+     processor_class = "android.databinding.annotationprocessor.ProcessDataBinding",
+     visibility = ["//visibility:public"],
+     deps = [
+         "//src/tools/java/com/google/devtools/build/android:databinding_exec_jar",
++        "//:api_versions_import",
+     ],
+ )
+ 
+@@ -305,5 +307,7 @@ java_binary(
+     visibility = ["//visibility:public"],
+     runtime_deps = [
+         "//src/tools/java/com/google/devtools/build/android:databinding_exec_jar",
++        "//:api_versions_import",
++        "@rules_android_maven//:com_squareup_javapoet",
+     ],
+ )

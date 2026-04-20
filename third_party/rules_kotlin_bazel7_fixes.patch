@@ -1,0 +1,20 @@
+--- kotlin/internal/jvm/android.bzl
++++ kotlin/internal/jvm/android.bzl
+@@ -21,7 +21,7 @@ load(
+     _kt_jvm_library = "kt_jvm_library",
+ )
+ 
+-_ANDROID_SDK_JAR = "%s" % Label("//third_party:android_sdk")
++_ANDROID_SDK_JAR = "@//third_party:android_sdk_jar_only"
+ 
+ def _kt_android_artifact(
+         name,
+@@ -51,7 +51,7 @@ def _kt_android_artifact(
+         visibility = ["//visibility:private"],
+         exports = base_deps,
+         deps = deps if enable_data_binding else [],
+-        enable_data_binding = enable_data_binding,
++        enable_data_binding = enable_data_binding, javacopts = kwargs.pop("javacopts", []) + ["-Aandroid.databinding.useAndroidX=true"],
+         tags = tags,
+         exec_properties = exec_properties,
+         **kwargs

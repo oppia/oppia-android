@@ -1,0 +1,19 @@
+--- androidsvg/BUILD.bazel
++++ androidsvg/BUILD.bazel
+@@ -1,3 +1,4 @@
++load("@rules_android//rules:rules.bzl", "android_library", "aar_import", "android_binary")
+ load("@rules_java//java:defs.bzl", "java_library")
+ 
+ android_library(
+
+--- androidsvg/src/main/java/com/caverock/androidsvg/parser/ParserHelper.java
++++ androidsvg/src/main/java/com/caverock/androidsvg/parser/ParserHelper.java
+@@ -645,7 +645,7 @@ public class ParserHelper {
+        style.fontVariantLigatures = LIGATURES_NORMAL;
+        style.fontVariantPosition = POSITION_ALL_OFF;
+        style.fontVariantCaps = CAPS_ALL_OFF;
+-       if (fontVariantSmallCaps == Boolean.TRUE)
++       if (Boolean.TRUE.equals(fontVariantSmallCaps))
+           style.fontVariantCaps = CSSFontFeatureSettings.makeSmallCaps();
+        style.fontVariantNumeric =  NUMERIC_ALL_OFF;
+        style.fontVariantEastAsian =  EAST_ASIAN_ALL_OFF;

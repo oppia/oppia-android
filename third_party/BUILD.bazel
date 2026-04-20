@@ -16,7 +16,13 @@ load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
-exports_files(["rules_android_r8_min_sdk.patch"])
+exports_files([
+    "androidsvg_bazel7_fixes.patch",
+    "rules_android_bazel7_fixes.patch",
+    "rules_android_r8_min_sdk.patch",
+    "rules_kotlin_bazel7_fixes.patch",
+    "tools_android_bazel7_fixes.patch",
+])
 
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization

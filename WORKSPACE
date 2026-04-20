@@ -52,30 +52,10 @@ go_register_toolchains(version = "1.24.12")
 
 http_archive(
     name = "rules_android",
-    patch_args = ["-p1"],
-    patch_cmds = [
-        "sed -i 's/args.add(\"-useAndroidX\", \"false\")/args.add(\"-useAndroidX\", \"true\")/g' rules/data_binding.bzl",
-        "sed -i 's/PROTOBUF_VERSION = \"33.4\"/PROTOBUF_VERSION = \"27.1\"/g' prereqs.bzl",
-        "sed -i 's/4\\.33\\.4/4.29.0-RC2/g' defs.bzl",
-        "sed -i 's/\"org\\/mozilla\",/\"org\\/mozilla\", \"kotlin\\/\", \"kotlinx\\/\", \"com\\/beust\\/jcommander\\/\", \"com\\/google\\/gson\\/\", \"javax\\/xml\\/bind\\/\", \"javax\\/activation\\/\", \"com\\/sun\\/xml\\/\", \"org\\/glassfish\\/\", \"com\\/sun\\/istack\\/\", \"com\\/google\\/common\\/\", \"androidx\\/databinding\\/\", \"com\\/android\\/tools\\/build\\/jetifier\\/\", \"default.config\", \"default.generated.config\",/g' src/tools/java/com/google/devtools/build/android/BUILD",
-        "sed -i 's/\"@androidsdk\\/\\/:aapt2\"/\"@androidsdk\\/\\/:aapt2_binary\"/g' toolchains/android/BUILD",
-        "sed -i 's/android.databinding.BindingBuildInfo/androidx.databinding.BindingBuildInfo/g' rules/data_binding_annotation_template.txt",
-        "sed -i 's/package android.databinding.layouts;/package androidx.databinding.layouts;/g' rules/data_binding_annotation_template.txt",
-        "sed -i 's/\"\\/android\\/databinding\\/layouts\\/DataBindingInfo.java\"/\"\\/androidx\\/databinding\\/layouts\\/DataBindingInfo.java\"/g' rules/data_binding.bzl",
-        "sed -i 's/\",\"\\.join(deps_pkgs)/\",\"\\.join(deps_pkgs \\+ \\[\"org.oppia.android.app.databinding.adapters-\", \"org.oppia.android.app.customview.interaction-\", \"androidx.databinding.adapters-\", \"androidx.databinding.library.baseAdapters-\"\\])/g' rules/data_binding.bzl",
-        "echo '<?xml version=\"1.0\" encoding=\"utf-8\"?><api></api>' > api-versions.xml",
-        "zip api-versions.jar api-versions.xml",
-        "echo 'java_import(name = \"api_versions_import\", jars = [\"api-versions.jar\"], visibility = [\"//visibility:public\"])' >> BUILD",
-        "sed -i '/artifacts = \\[/a \\            \"com.squareup:javapoet:1.13.0\",' defs.bzl",
-        "python3 -c \"import re; content = open('tools/android/BUILD').read(); content = re.sub(r'name = \\\"compiler_annotation_processor\\\"[\\\\s\\\\S]*?deps = \\\\[[\\\\s\\\\S]*?\\\\],', 'name = \\\"compiler_annotation_processor\\\",\\n    generates_api = True,\\n    data = [\\\"@androidsdk//:sdk\\\"],\\n    processor_class = \\\"android.databinding.annotationprocessor.ProcessDataBinding\\\",\\n    visibility = [\\\"//visibility:public\\\"],\\n    deps = [\\n        \\\"//src/tools/java/com/google/devtools/build/android:databinding_exec_jar\\\",\\n        \\\"//:api_versions_import\\\",\\n    ],', content); content = re.sub(r'name = \\\"databinding_exec\\\"[\\\\s\\\\S]*?runtime_deps = \\\\[[\\\\s\\\\S]*?\\\\],', 'name = \\\"databinding_exec\\\",\\n    main_class = \\\"android.databinding.AndroidDataBinding\\\",\\n    visibility = [\\\"//visibility:public\\\"],\\n    runtime_deps = [\\n        \\\"//src/tools/java/com/google/devtools/build/android:databinding_exec_jar\\\",\\n        \\\"//:api_versions_import\\\",\\n        \\\"@rules_android_maven//:com_squareup_javapoet\\\",\\n    ],', content); open('tools/android/BUILD', 'w').write(content)\"",
-        "sed -i 's/if not acls\\.use_r8(label) and _generate_proguard_outputs:/if _generate_proguard_outputs:\\n        if proguard_generate_mapping:\\n            outputs[\"proguard_map\"] = \"%{name}_proguard.map\"\\n    if not acls.use_r8(label) and _generate_proguard_outputs:/g' rules/android_binary/rule.bzl",
-        "sed -i 's/ctx\\.actions\\.declare_file(ctx\\.label\\.name \\+ \"_proguard\\.map\")/getattr(ctx.outputs, \"proguard_map\", None) or ctx.actions.declare_file(ctx.label.name + \"_proguard.map\")/g' rules/android_binary/r8.bzl",
-        "sed -i 's/sdkDir=\\/not\\/used/sdkDir=\\/tmp\\/androidsdk/g' rules/data_binding.bzl",
-        "sed -i 's/%s-br\\.bin/%s--br.bin/g' rules/data_binding.bzl",
-        "sed -i 's/%s-setter_store\\.json/%s--setter_store.json/g' rules/data_binding.bzl",
-        "sed -i 's/%s-layoutinfo\\.bin/%s--layoutinfo.bin/g' rules/data_binding.bzl",
+    patches = [
+        "//third_party:rules_android_bazel7_fixes.patch",
+        "//third_party:rules_android_r8_min_sdk.patch",
     ],
-    patches = ["//third_party:rules_android_r8_min_sdk.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_android"]["sha"],
     strip_prefix = "rules_android-%s" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"],
     urls = ["https://github.com/bazelbuild/rules_android/releases/download/v{0}/rules_android-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"])],
@@ -112,10 +92,7 @@ http_archive(
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",
-    patch_cmds = [
-        "sed -i 's/_ANDROID_SDK_JAR = \"%s\" % Label(\"\\/\\/third_party:android_sdk\")/_ANDROID_SDK_JAR = \"@\\/\\/third_party:android_sdk_jar_only\"/g' kotlin/internal/jvm/android.bzl",
-        "sed -i 's/enable_data_binding = enable_data_binding,/enable_data_binding = enable_data_binding, javacopts = kwargs.pop(\"javacopts\", \\[\\]) + \\[\"-Aandroid.databinding.useAndroidX=true\"\\],/g' kotlin/internal/jvm/android.bzl",
-    ],
+    patches = ["//third_party:rules_kotlin_bazel7_fixes.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
     url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
 )
@@ -191,11 +168,7 @@ robolectric_repositories()
 # Add support for Firebase Crashlytics
 http_archive(
     name = "tools_android",
-    patch_cmds = [
-        "find . -name 'BUILD*' -exec sed -i '1s|^|load(\"@rules_android//rules:rules.bzl\", \"android_library\", \"aar_import\", \"android_binary\")\\n|' {} +",
-        "find . -name '*.bzl' -exec sed -i 's/native\\.android_library/android_library/g' {} +",
-        "find . -name '*.bzl' -exec sed -i '1s|^|load(\"@rules_android//rules:rules.bzl\", \"android_library\")\\n|' {} +",
-    ],
+    patches = ["//third_party:tools_android_bazel7_fixes.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["tools_android"]["sha"],
     strip_prefix = "tools_android-%s" % HTTP_DEPENDENCY_VERSIONS["tools_android"]["version"],
     url = "https://github.com/bazelbuild/tools_android/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["tools_android"]["version"],
@@ -211,10 +184,7 @@ git_repository(
     name = "androidsvg",
     commit = "5bc9c7553e94c3476e8ea32baea3c77567228fcd",
     # TODO: Move to actual repo.
-    patch_cmds = [
-        "find . -name 'BUILD*' -exec sed -i '1s|^|load(\"@rules_android//rules:rules.bzl\", \"android_library\", \"aar_import\", \"android_binary\")\\n|' {} +",
-        "sed -i 's/fontVariantSmallCaps == Boolean.TRUE/Boolean.TRUE.equals(fontVariantSmallCaps)/g' androidsvg/src/main/java/com/caverock/androidsvg/parser/ParserHelper.java",
-    ],
+    patches = ["//third_party:androidsvg_bazel7_fixes.patch"],
     remote = "https://github.com/oppia/androidsvg",
     shallow_since = "1686304726 -0700",
 )
@@ -240,11 +210,6 @@ git_repository(
     commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
     remote = "https://github.com/oppia/archive-patcher",
     shallow_since = "1642022460 -0800",
-)
-
-bind(
-    name = "databinding_annotation_processor",
-    actual = "//tools/android:compiler_annotation_processor",
 )
 
 http_archive(
