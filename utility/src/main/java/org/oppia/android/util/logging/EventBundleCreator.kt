@@ -455,6 +455,7 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("session_id", sessionId)
         store.putNonSensitiveValue("exploration_version", explorationVersion.toString())
         store.putNonSensitiveValue("state_name", stateName)
+        store.putNonSensitiveValue("is_replay", isReplay.toString())
         store.putProperties("learner_details", learnerDetails, ::LearnerDetailsContext)
       }
     }

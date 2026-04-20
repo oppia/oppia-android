@@ -60,16 +60,17 @@ fun main(vararg args: String) {
   val filePathList = args.drop(1)
     .takeWhile { !it.startsWith("--") }
     .map { it.trim(',', '[', ']') }
-    .map { filePath ->
+    .mapNotNull { filePath ->
       when {
         filePath.endsWith("Test.kt") -> {
-          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+          checkNotNull(findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)) {
+            "No source file found for test path: $filePath"
+          }
         }
         filePath.endsWith(".kt") -> filePath
         else -> null
       }
     }
-    .filterNotNull()
     .distinct()
 
   println("Running coverage analysis for the files: $filePathList")

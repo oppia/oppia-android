@@ -1,0 +1,17 @@
+"""
+Libraries corresponding to binary file checks, such as ensuring that no unexpected binary files
+are present in the repository.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "binary_file_check_lib",
+    testonly = True,
+    srcs = ["BinaryFileCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
+    ],
+)
