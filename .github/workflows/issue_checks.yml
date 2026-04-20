@@ -19,7 +19,7 @@ jobs:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.5.0
+          version: 7.7.1
 
       - name: Pre-build required scripts
         id: pre-build-scripts

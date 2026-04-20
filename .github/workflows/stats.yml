@@ -112,7 +112,7 @@ jobs:
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: 6.5.0
+          version: 7.7.1
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
