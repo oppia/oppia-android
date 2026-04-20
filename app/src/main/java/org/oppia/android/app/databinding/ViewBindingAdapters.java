@@ -10,17 +10,6 @@ import androidx.databinding.BindingAdapter;
 /** Holds all custom binding adapters that set miscellaneous values. */
 public final class ViewBindingAdapters {
 
-  @BindingAdapter({"isClickable", "android:onClick"})
-  public static void setClickableAndOnClick(@NonNull View view, boolean isClickable, View.OnClickListener listener) {
-    view.setOnClickListener(listener);
-    view.setClickable(isClickable);
-  }
-
-  @BindingAdapter("isClickable")
-  public static void setIsClickable(@NonNull View view, boolean isClickable) {
-    view.setClickable(isClickable);
-  }
-
   /**
    * BindingAdapter to set the height of a View. If this value is calculated in data fetching, the
    * layout will require a default value since binding adapters aren't called until after initial

@@ -18,6 +18,11 @@ public class MissingAndroidXAdapters {
     view.setOnCheckedChangeListener(listener);
   }
 
+  @BindingAdapter("android:clickable")
+  public static void setIsClickable(View view, boolean isClickable) {
+    view.setClickable(isClickable);
+  }
+
   @BindingAdapter("android:onClick")
   public static void setOnClick(View view, View.OnClickListener listener) {
     view.setOnClickListener(listener);
@@ -82,5 +87,10 @@ public class MissingAndroidXAdapters {
     List<InputFilter> newFilters = new ArrayList<>(Arrays.asList(filters));
     newFilters.add(new LengthFilter(length));
     view.setFilters(newFilters.toArray(new InputFilter[0]));
+  }
+
+  @BindingAdapter("android:textSize")
+  public static void setOppiaTextSize(TextView textView, float textSizeInPx) {
+    textView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
   }
 }

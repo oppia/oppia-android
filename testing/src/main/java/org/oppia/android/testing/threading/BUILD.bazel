@@ -72,7 +72,7 @@ kt_android_library(
         ":test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
-        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_annotation_annotation-jvm",
     ],
 )
 
@@ -104,7 +104,7 @@ kt_android_library(
         "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
-        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_annotation_annotation-jvm",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
     ],

@@ -27,22 +27,3 @@ java_binary(
     visibility = ["//visibility:public"],
     runtime_deps = [":r8_wrapper_lib"],
 )
-
-toolchain(
-    name = "legacy_sdk_toolchain",
-    toolchain = "@androidsdk//:sdk-35",
-    toolchain_type = "@bazel_tools//tools/android:sdk_toolchain_type",
-)
-
-genrule(
-    name = "databinding_api_jar_gen",
-    srcs = ["@android_tools//:all_android_tools_deploy.jar"],
-    outs = ["databinding_api.jar"],
-    cmd = "mkdir -p tmp && cd tmp && unzip -q ../$< android/databinding/BindingBuildInfo.class android/databinding/BindingAdapter.class android/databinding/InverseBindingAdapter.class && zip -q ../$@ -r android/databinding/BindingBuildInfo.class android/databinding/BindingAdapter.class android/databinding/InverseBindingAdapter.class",
-)
-
-java_import(
-    name = "databinding_api",
-    jars = [":databinding_api.jar"],
-    visibility = ["//visibility:public"],
-)

@@ -19,11 +19,6 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
-  @BindingAdapter("oppiaTextSize")
-  public static void setOppiaTextSize(@NonNull TextView textView, float textSizeInPx) {
-    textView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
-  }
-
   /** Binds date text with relative time. */
   @BindingAdapter("profileCreatedTime")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {

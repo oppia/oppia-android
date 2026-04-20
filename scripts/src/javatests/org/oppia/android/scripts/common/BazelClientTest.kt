@@ -340,27 +340,27 @@ class BazelClientTest {
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     createAndroidLibrary(
-      artifactName = "androidx.annotation:annotation:1.1.0",
+      artifactName = "androidx.annotation:annotation-jvm:1.8.0",
       buildFile = thirdPartyBuild
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList).contains("@maven//:androidx_annotation_annotation")
+    assertThat(thirdPartyDependenciesList).contains("@maven//:androidx_annotation_annotation-jvm")
   }
 
   @Test
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("androidx.annotation:annotation:1.1.0")
+      listOf("androidx.annotation:annotation-jvm:1.8.0")
     )
     tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = ":androidx_annotation_annotation"
+      dependencyName = ":androidx_annotation_annotation-jvm"
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
@@ -369,14 +369,14 @@ class BazelClientTest {
       buildFile = thirdPartyBuild
     )
     createAndroidLibrary(
-      artifactName = "androidx.annotation:annotation:1.1.0",
+      artifactName = "androidx.annotation:annotation-jar:1.8.0",
       buildFile = testBazelWorkspace.rootBuildFile
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
-    assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation")
+    assertThat(thirdPartyDependenciesList).doesNotContain("@maven//:androidx_annotation_annotation-jvm")
   }
 
   @Test
@@ -720,7 +720,7 @@ class BazelClientTest {
   fun testRetrieveTargetModuleDependencies_forTargetWithMixedDependencies_returnsAllFileTypes() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("junit:junit:4.12", "androidx.annotation:annotation:1.1.0")
+      listOf("junit:junit:4.12", "androidx.annotation:annotation-jvm:1.8.0")
     )
 
     val libA = testBazelWorkspace.createLibrary("LibA")
@@ -736,7 +736,7 @@ class BazelClientTest {
         deps = [
             "${libA.first}",
             artifact("junit:junit:4.12"),
-            artifact("androidx.annotation:annotation:1.1.0"),
+            artifact("androidx.annotation:annotation-jvm:1.8.0"),
         ],
         visibility = ["//visibility:public"],
     )
@@ -755,7 +755,7 @@ class BazelClientTest {
       "MixedDepsLib.kt",
     )
     assertThat(dependencies.any { it.contains("junit-4.12.jar") }).isTrue()
-    assertThat(dependencies.any { it.contains("annotation-1.1.0.jar") }).isTrue()
+    assertThat(dependencies.any { it.contains("annotation-1.8.0.jar") }).isTrue()
   }
 
   @Test

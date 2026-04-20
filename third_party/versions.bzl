@@ -21,7 +21,6 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 # This list should contain only production (non-test) dependencies.
 MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
-    "androidx.annotation:annotation": "1.1.0",
     "androidx.annotation:annotation-jvm": "1.8.0",
     "androidx.appcompat:appcompat": "1.3.1",
     "org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable": "2.1.0",
@@ -136,8 +135,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.6.4",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
-    "org.robolectric:annotations": "4.12.1",
-    "org.robolectric:robolectric": "4.12.1",
+    "org.robolectric:annotations": "4.16.1",
+    "org.robolectric:robolectric": "4.16.1",
     "org.snakeyaml:snakeyaml-engine": "2.6",
 }
 
@@ -171,8 +170,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "3.11.0",
     },
     "robolectric": {
-        "sha": "1ea1cfe67848decf959316e80dd69af2bbaa359ae2195efe1366cbdf3e968356",
-        "version": "4.11.1",
+        "sha": "4fbae88d4d39f81816d8863cdfb68094fb65ddc4bb1dabfe072b863e4eeaae27",
+        "version": "4.16.1",
     },
     "rules_android": {
         "sha": "7c45b6aaa837fb6f2f23ad11387638cb00fa9f839a04ec564caac70a543a9cd5",
@@ -198,9 +197,9 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
         "version": "7.1.0",
     },
-    "zlib": {
-        "sha": "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
-        "version": "1.3.1",
+    "tools_android": {
+        "sha": "fb75ee79cb7223c11e65e5b1019c375538e1519806558aa18ec83a5466a1a7c5",
+        "version": "0.2",
     },
 }
 

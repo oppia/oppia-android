@@ -394,7 +394,6 @@ VIEWS = [
 
 # keep sorted
 BINDING_ADAPTERS = [
-    "src/main/java/org/oppia/android/app/databinding/adapters/MissingAndroidXAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/AppCompatCheckBoxBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ColorBindingAdapters.java",
@@ -409,6 +408,7 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/adapters/MissingAndroidXAdapters.java",
     "src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java",
 ]
 
@@ -443,9 +443,7 @@ android_library(
         "//app/src/main/java/org/oppia/android/app/testing/activity:__pkg__",
     ],
     deps = [
-        "//tools/android:databinding_api",
         ":annotations",
-        "@maven//:androidx_annotation_annotation_jvm",
         ":binding_adapters",
         ":resources",
         ":view_models",
@@ -456,7 +454,7 @@ android_library(
         "//model/src/main/proto:interaction_object_java_proto_lite",
         "//model/src/main/proto:thumbnail_java_proto_lite",
         "//model/src/main/proto:version_java_proto_lite",
-        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_annotation_annotation-jvm",
         "//third_party:androidx_compose_ui_ui",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_core_core",
@@ -500,7 +498,6 @@ kt_android_library(
     custom_package = "org.oppia.android.app.views",
     manifest = "src/main/ViewsManifest.xml",
     deps = [
-        "//tools/android:databinding_api",
         ":annotations",
         ":listeners",
         ":resources",
@@ -546,7 +543,6 @@ kt_android_library(
         "//app/src/test/java/org/oppia/android/app/player/audio:__pkg__",
     ],
     deps = [
-        "//tools/android:databinding_api",
         ":annotations",
         ":listeners",
         ":resources",
@@ -592,14 +588,12 @@ android_library(
     enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
-        "//tools/android:databinding_api",
         ":resources",
         ":view_models",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model/src/main/proto:thumbnail_java_proto_lite",
-        "//third_party:androidx_annotation_annotation",
-        "@maven//:androidx_annotation_annotation_jvm",
+        "//third_party:androidx_annotation_annotation-jvm",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
@@ -663,7 +657,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/survey:survey_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//third_party:androidx_activity_activity-compose",
-        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_annotation_annotation-jvm",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_compose_foundation_foundation",
         "//third_party:androidx_compose_foundation_foundation-layout",
@@ -795,7 +789,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-    "//third_party:androidx_annotation_annotation",
+    "//third_party:androidx_annotation_annotation-jvm",
     "//third_party:androidx_compose_ui_ui-test-junit4",
     "//third_party:androidx_core_core",
     "//third_party:androidx_databinding_databinding-adapters",

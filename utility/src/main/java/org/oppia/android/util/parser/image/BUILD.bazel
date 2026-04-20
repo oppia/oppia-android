@@ -195,7 +195,7 @@ kt_android_library(
     deps = [
         ":image_targets",
         ":text_picture_drawable",
-        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_annotation_annotation-jvm",
         "//third_party:com_github_bumptech_glide_glide",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
     ],

@@ -11,7 +11,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.AppLanguageActivityTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -65,7 +64,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.AppLanguageFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -119,7 +117,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.AudioLanguageActivityTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -173,7 +170,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.AudioLanguageFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -227,7 +223,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.OptionsActivityTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -281,7 +276,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.OptionsFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -335,7 +329,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.ReadingTextSizeActivityTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -389,7 +382,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.options.ReadingTextSizeFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [
