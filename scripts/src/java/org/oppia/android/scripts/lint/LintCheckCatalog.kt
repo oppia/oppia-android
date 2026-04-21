@@ -261,7 +261,6 @@ object LintCheckCatalog {
     // minSdkVersion. It is a pure XML compatibility check — not a custom-attr usage scanner.
     "UnusedAttribute",
     "Typos",
-    "UnusedIds",
     "InvalidId",
     "MissingId",
     "InvalidImeActionId",
@@ -387,7 +386,6 @@ object LintCheckCatalog {
     "LogConditional",
     "LogTagMismatch",
     "LongLogTag",
-    "MissingClass",
     "MissingInflatedId",
     "MissingPermission",
     "MutatingSharedPrefs",
@@ -480,9 +478,17 @@ object LintCheckCatalog {
     // Instantiatable checks whether classes referenced in XML (activities, services, fragments)
     // are actually instantiatable — requires cross-referencing manifest + sources.
     "Instantiatable",
+    // MissingClass checks whether classes referenced in the manifest or layouts actually exist
+    // in the project. In incremental mode, classes in unchanged or test modules are not in
+    // scope, producing false positives identical to Registered and Instantiatable.
+    "MissingClass",
     // UnusedResources requires scanning ALL source files to determine if a resource is
     // referenced anywhere. Cannot run on a subset.
     "UnusedResources",
+    // UnusedIds cross-references XML resource IDs against ALL Java/Kotlin source files to
+    // determine if an ID is actually referenced. Running on a partial source set produces
+    // false positives (IDs look unused because their referencing files are not in scope).
+    "UnusedIds",
     // WrongThreadInterprocedural requires whole-program call graph analysis.
     "WrongThreadInterprocedural",
     // StringFormatMatches cross-references string resources with format call sites.
