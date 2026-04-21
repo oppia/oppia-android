@@ -235,6 +235,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
     val currentConnectionStatus = getCurrentProdConnectionStatusOrNull()
       ?: run {
+        lastKnownConnectionStatus = null
         audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
         return
       }
@@ -246,8 +247,9 @@ class AudioFragmentPresenter @Inject constructor(
         NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
           if (hasConnectionStatusChanged) {
             showOfflineDialog()
-            audioViewModel.abortPendingLoad()
           }
+          // Always abort reload attempts while offline to avoid getting stuck in loading state.
+          audioViewModel.abortPendingLoad()
           lastKnownConnectionStatus = currentConnectionStatus
           return
         }
@@ -257,9 +259,11 @@ class AudioFragmentPresenter @Inject constructor(
             previousConnectionStatus == NetworkConnectionUtil.ProdConnectionStatus.LOCAL
           ) {
             showCellularDataDialogFragment()
+            return
           }
         }
         NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+          // no-op : no action needed for LOCAL connection
         }
       }
     }

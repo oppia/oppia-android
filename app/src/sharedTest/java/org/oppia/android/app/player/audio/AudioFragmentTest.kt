@@ -17,6 +17,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -516,7 +517,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_clickPlayPauseWhenPausedWithCellularNoDataPermission_showsOfflineDialog() {
+  fun testAudioFragment_clickPlayPauseWhenPausedWithCellularNoDataPermission_showsCellularDialog() {
     addMediaInfo()
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
     launch<AudioFragmentTestActivity>(

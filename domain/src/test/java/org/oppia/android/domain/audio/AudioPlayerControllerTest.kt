@@ -505,6 +505,43 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_preparePlayer_abortPendingLoad_capturesFailure() {
+    setUpMediaReadyApplication()
+    arrangeMediaPlayer()
+
+    audioPlayerController.abortPendingLoad()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
+  fun testController_pendingPlayer_abortPendingLoad_capturesFailure() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+
+    audioPlayerController.abortPendingLoad()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
+  fun testController_preparePlayer_abortPendingLoad_multipleTimes_doesNotThrow() {
+    setUpMediaReadyApplication()
+    arrangeMediaPlayer()
+
+    assertNoExceptionIsThrown {
+      audioPlayerController.abortPendingLoad()
+      audioPlayerController.abortPendingLoad()
+    }
+  }
+
+  @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows<IllegalStateException>() {
