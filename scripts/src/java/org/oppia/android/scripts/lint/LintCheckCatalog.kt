@@ -41,7 +41,10 @@ object LintCheckCatalog {
     "MinSdkTooLow",
     "NewerVersionAvailable",
     "OutdatedLibrary",
-    "RiskyLibrary"
+    "RiskyLibrary",
+    // StringShouldBeInt (GradleDetector) flags SDK version numbers written as strings in
+    // build.gradle. Irrelevant in Bazel — there are no Gradle files in this project.
+    "StringShouldBeInt"
   )
 
   /**
@@ -100,7 +103,6 @@ object LintCheckCatalog {
     "DevModeObsolete",
     "DuplicatePlatformClasses",
     "ExportedContentProvider",
-    "ExportedPreferenceActivity",
     "ExportedReceiver",
     "ExportedService",
     "FullBackupContent",
@@ -111,12 +113,8 @@ object LintCheckCatalog {
     "IntentFilterExportedReceiver",
     "IntentFilterUniqueDataAttributes",
     "InvalidWearFeatureAttribute",
-    "JobSchedulerService",
-    "MissingIntentFilterForMediaSearch",
     "MissingLeanbackLauncher",
     "MissingLeanbackSupport",
-    "MissingMediaBrowserServiceIntentFilter",
-    "MissingOnPlayFromSearch",
     "MissingTvBanner",
     "MotionLayoutInvalidSceneFileReference",
     "MotionLayoutMissingId",
@@ -244,6 +242,9 @@ object LintCheckCatalog {
     "PrivateResource",
     "ResourceCycle",
     "ResourceName",
+    // ReferenceType validates that resource alias types match in values/refs.xml — pure XML,
+    // not a Java/Kotlin source check.
+    "ReferenceType",
     "IllegalResourceRef",
     "InvalidResourceFolder",
     "LocaleFolder",
@@ -331,13 +332,11 @@ object LintCheckCatalog {
     "PackageManagerGetSignatures",
     "PendingBindings",
     "Recycle",
-    "ReferenceType",
     "SetTextI18n",
     "ShiftFlags",
     "ShortAlarm",
     "SimpleDateFormat",
     "StopShip",
-    "StringShouldBeInt",
     "SupportAnnotationUsage",
     "UniqueConstants",
     "UseCheckPermission",
@@ -487,7 +486,21 @@ object LintCheckCatalog {
     // WrongThreadInterprocedural requires whole-program call graph analysis.
     "WrongThreadInterprocedural",
     // StringFormatMatches cross-references string resources with format call sites.
-    "StringFormatMatches"
+    "StringFormatMatches",
+    // The following checks require both Java/Kotlin class hierarchy AND manifest data.
+    // In incremental mode, a manifest change may not include the corresponding source
+    // file in the changed-files list, causing false positives or missed findings.
+    // ExportedPreferenceActivity: identifies PreferenceActivity subclasses via class
+    // hierarchy, then checks if they are exported in the manifest.
+    "ExportedPreferenceActivity",
+    // JobSchedulerService: verifies the service class extends JobService AND that the
+    // manifest declares the BIND_JOB_SERVICE permission.
+    "JobSchedulerService",
+    // The three media checks identify MediaBrowserService/MediaBrowserServiceCompat
+    // subclasses via source, then validate intent-filter declarations in the manifest.
+    "MissingIntentFilterForMediaSearch",
+    "MissingMediaBrowserServiceIntentFilter",
+    "MissingOnPlayFromSearch"
   )
 
   /** Union of all categorized checks. */

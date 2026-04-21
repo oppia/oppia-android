@@ -56,6 +56,13 @@ class LintCheckCatalogTest {
     assertThat(disabled).contains("SwitchIntDef")
     assertThat(disabled).contains("Registered")
     assertThat(disabled).contains("UnusedResources")
+    // These checks need both class hierarchy (source) and manifest data. A manifest-only
+    // change in incremental mode would not include the source file, producing false results.
+    assertThat(disabled).contains("ExportedPreferenceActivity")
+    assertThat(disabled).contains("JobSchedulerService")
+    assertThat(disabled).contains("MissingIntentFilterForMediaSearch")
+    assertThat(disabled).contains("MissingMediaBrowserServiceIntentFilter")
+    assertThat(disabled).contains("MissingOnPlayFromSearch")
     // CutPasteId is a single-file source check — it belongs in incremental, not full project.
     assertThat(disabled).doesNotContain("CutPasteId")
     // DuplicateIncludedIds is a pure XML check — no sources needed, not full project.
