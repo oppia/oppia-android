@@ -204,6 +204,7 @@ class CreateProfileFragmentTest {
     }
   }
 
+  @Test
   fun testFragment_supervisorOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
       onView(withId(R.id.onboarding_steps_count))

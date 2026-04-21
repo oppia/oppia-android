@@ -190,7 +190,7 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withEmptyPin_showsBlankPinError() {
+  fun testFragment_clickContinue_withEmptyPin_showsBlankPinError_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -203,6 +203,10 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_blank_error))
         .assertIsDisplayed()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
     }
   }
 
@@ -224,6 +228,10 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
     }
   }
 
@@ -291,7 +299,7 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123")
 
-      // Verify that the length error is shown for the confirm PIN field.
+      // Verify that the mismatch error is shown for the confirm PIN field.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
@@ -374,6 +382,7 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .assertIsNotEnabled()
 
+      // Continue typing more digits.
       composeRule.onNodeWithText(enterPinNode)
         .performClick()
         .performTextInput("345")

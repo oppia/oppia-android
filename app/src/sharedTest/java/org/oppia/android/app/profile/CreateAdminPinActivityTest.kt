@@ -124,22 +124,25 @@ class CreateAdminPinActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createPinSetupActivityIntent().extractCurrentAppScreenName()
+    val screenName = createPinSetupActivityIntent(context).extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.CREATE_ADMIN_PIN_ACTIVITY)
   }
 
   @Test
   fun testActivity_hasCorrectActivityLabel() {
-    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent())
+    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent(context))
       .use { scenario ->
+        testCoroutineDispatchers.runCurrent()
         scenario?.onActivity { activity ->
           val title = activity.title
-          assertThat(title).isEqualTo(context.getString(R.string.create_admin_pin_activity_title))
+          assertThat(title).isEqualTo(
+            context.getString(R.string.create_admin_pin_activity_title)
+          )
         }
       }
   }
 
-  private fun createPinSetupActivityIntent(): Intent {
+  private fun createPinSetupActivityIntent(context: Context): Intent {
     val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     return CreateAdminPinActivity.createAdminPinActivityIntent(context, profileId)
   }
