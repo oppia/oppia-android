@@ -516,7 +516,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_clickPlayPauseWhenPausedWithCellularNoDataPermission_showsCellularDialog() {
+  fun testAudioFragment_clickPlayPauseWhenPausedWithCellularNoDataPermission_showsOfflineDialog() {
     addMediaInfo()
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
     launch<AudioFragmentTestActivity>(
