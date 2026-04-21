@@ -250,11 +250,10 @@ class TestFontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleConfigurationUtil_unspecifiedTextSize_defaultsToMediumDimension() {
-    // Verify the else->1.0f fallback branch in FontScaleConfigurationUtil: an unspecified text size
-    // should be treated identically to MEDIUM_TEXT_SIZE to avoid broken layouts.
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
     ).use {
+      // Verify that an unspecified text size defaults to the medium text size.
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(context.resources.getDimension(R.dimen.font_scale_content_text_size))
@@ -265,12 +264,11 @@ class TestFontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleConfigurationUtil_unspecifiedTextSize_afterRecreate_defaultsToMediumDimension() {
-    // Verify that the else->1.0f fallback survives activity recreation — consistent with the
-    // recreation behavior tested for the four named ReadingTextSize values.
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
     ).use { scenario ->
       scenario.recreate()
+      // Verify that an unspecified text size still defaults to the medium text size after recreate.
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(context.resources.getDimension(R.dimen.font_scale_content_text_size))

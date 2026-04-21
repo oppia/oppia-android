@@ -140,7 +140,7 @@ class ReadingTextSizeActivityTest {
   @Test
   fun testReadingTextSizeActivity_initialTextSize_backNavigation_returnsCorrectResult() {
     runWithLaunchedActivity {
-      // Trigger back press — the activity calls setResult(RESULT_OK, ...) then finish().
+      // Trigger back press.
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
 
@@ -176,8 +176,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_smallTextSize_backNavigation_returnsSmallResult() {
-    // Verify that launching with SMALL_TEXT_SIZE and pressing back without changing the selection
-    // returns the SMALL_TEXT_SIZE proto value in the result bundle.
     runWithLaunchedActivity(initialSize = SMALL_TEXT_SIZE) {
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
@@ -194,8 +192,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_largeTextSize_backNavigation_returnsLargeResult() {
-    // Verify that launching with LARGE_TEXT_SIZE and pressing back without changing the selection
-    // returns the LARGE_TEXT_SIZE proto value in the result bundle.
     runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
@@ -212,8 +208,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_extraLargeTextSize_backNavigation_returnsExtraLargeResult() {
-    // Verify that launching with EXTRA_LARGE_TEXT_SIZE and pressing back without changing the
-    // selection returns the EXTRA_LARGE_TEXT_SIZE proto value in the result bundle.
     runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
@@ -230,8 +224,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_mediumSize_changesToSmall_backNavigation_returnsSmallResult() {
-    // Verify that changing from MEDIUM_TEXT_SIZE to SMALL_TEXT_SIZE before pressing back returns
-    // SMALL_TEXT_SIZE in the result bundle (proto enum round-trip for MEDIUM → SMALL path).
     runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
       selectTextSize(SMALL_TEXT_SIZE)
 
@@ -250,8 +242,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_extraLargeSize_toMedium_backNavigation_returnsMediumResult() {
-    // Verify that changing from EXTRA_LARGE_TEXT_SIZE to MEDIUM_TEXT_SIZE before pressing back
-    // returns MEDIUM_TEXT_SIZE in the result bundle (proto enum round-trip for EXTRA_LARGE → MEDIUM).
     runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
       selectTextSize(MEDIUM_TEXT_SIZE)
 
@@ -271,9 +261,6 @@ class ReadingTextSizeActivityTest {
   @Test
   @Config(qualifiers = "ar-port-xxhdpi")
   fun testReadingTextSizeActivity_arabicLocale_largeTextSize_backNavigation_returnsLargeResult() {
-    // Verify that the proto-based selection mechanism returns the correct ReadingTextSize enum even
-    // in non-English locales (Arabic here), directly exercising the core fix in PR #4411 where
-    // string-based matching broke for non-English languages.
     runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
@@ -291,8 +278,6 @@ class ReadingTextSizeActivityTest {
   @Test
   @Config(qualifiers = "ar-port-xxhdpi")
   fun testReadingTextSizeActivity_arabicLocale_newTextSizeSelected_backNavigation_returnsResult() {
-    // Verify that changing the selection to EXTRA_LARGE_TEXT_SIZE in a non-English locale and
-    // pressing back returns the updated enum value, not a string-matched display value.
     runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
       selectTextSize(EXTRA_LARGE_TEXT_SIZE)
 
@@ -311,8 +296,6 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_unspecifiedTextSize_backNavigation_returnsUnspecifiedResult() {
-    // Verify the else/fallback branch: launching with READING_TEXT_SIZE_UNSPECIFIED and pressing
-    // back returns the unspecified value (no silent coercion by the activity to a different size).
     runWithLaunchedActivity(initialSize = TEXT_SIZE_UNSPECIFIED) {
       onActivity { it.onBackPressedDispatcher.onBackPressed() }
       testCoroutineDispatchers.runCurrent()
@@ -323,6 +306,7 @@ class ReadingTextSizeActivityTest {
         MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
         ReadingTextSizeActivityResultBundle.getDefaultInstance()
       )
+      // Verify that TEXT_SIZE_UNSPECIFIED is passed back unchanged.
       assertThat(resultBundle.selectedReadingTextSize).isEqualTo(TEXT_SIZE_UNSPECIFIED)
     }
   }
