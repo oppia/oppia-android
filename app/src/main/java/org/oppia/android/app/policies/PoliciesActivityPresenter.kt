@@ -8,22 +8,37 @@ import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [PoliciesActivity]. */
 class PoliciesActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   /** Handles onCreate() method of the [PoliciesActivity]. */
   fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.policies_activity)
     val toolbar = setUpToolbar(policiesActivityParams.policyPage)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     toolbar.setNavigationOnClickListener {
       activity.finish()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     if (getPoliciesFragment() == null) {

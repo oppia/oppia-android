@@ -1,19 +1,14 @@
 package org.oppia.android.app.devoptions
 
 import android.content.Intent
-import android.os.Build
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBinding
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -32,13 +27,20 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private lateinit var binding: DeveloperOptionsActivityBinding
 
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.developer_options_activity
     )
     setUpNavigationDrawer()
     if (enableEdgeToEdge.value) {
-      applyEdgeToEdgeInsets()
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        binding.developerOptionsActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     val previousFragment = getDeveloperOptionsFragment()
     if (previousFragment == null) {
@@ -81,46 +83,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   fun forceDownloadRemoteParameters() {
     val dialog = ForceDownloadRemoteParametersDialogFragment.newInstance()
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
-  }
-
-  private fun applyEdgeToEdgeInsets() {
-    val toolbar = binding.developerOptionsActivityToolbar
-    val contentLayout = toolbar.parent as android.widget.LinearLayout
-    val statusBarBackground = View(activity).apply {
-      setBackgroundColor(
-        ContextCompat.getColor(
-          activity,
-          R.color.component_color_shared_activity_status_bar_color
-        )
-      )
-    }
-    contentLayout.addView(statusBarBackground, 0)
-    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.layoutParams.height = systemBars.top
-      view.requestLayout()
-      insets
-    }
-    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
-    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
-    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.updatePadding(
-        left = systemBars.left,
-        right = systemBars.right,
-        bottom = systemBars.bottom
-      )
-      insets
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      activity.window.isNavigationBarContrastEnforced = false
-    }
   }
 
   /** Called when restart is triggered by [ForceDownloadRemoteParametersDialogFragment]. */

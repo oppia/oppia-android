@@ -18,6 +18,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -27,6 +28,8 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
@@ -39,6 +42,8 @@ class RevisionCardActivityPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   @Inject lateinit var accessibilityService: AccessibilityService
 
@@ -56,6 +61,9 @@ class RevisionCardActivityPresenter @Inject constructor(
     subtopicId: Int,
     subtopicListSize: Int
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<RevisionCardActivityBinding>(
       activity,
       R.layout.revision_card_activity
@@ -78,6 +86,13 @@ class RevisionCardActivityPresenter @Inject constructor(
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle
     activity.setSupportActionBar(revisionCardToolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        revisionCardToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     activity.supportActionBar?.setDisplayShowTitleEnabled(false)
 
     binding.revisionCardToolbar.setNavigationOnClickListener {

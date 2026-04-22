@@ -4,13 +4,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.forEach
-import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -36,6 +34,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
@@ -99,61 +98,16 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     setIfDeveloperOptionsMenuItemListener()
 
     if (enableEdgeToEdge.value) {
-      applyEdgeToEdgeInsetsToDrawer()
+      EdgeToEdgeHelper.applyToNavigationDrawer(
+        activity = activity,
+        drawerRoot = binding.root,
+        drawerContentLayout = binding.drawerNestedScrollView.getChildAt(0) as LinearLayout,
+        navigationView = binding.fragmentDrawerNavView,
+        statusBarColorRes = R.color.component_color_shared_slide_drawer_open_status_bar_color
+      )
     }
 
     return binding.root
-  }
-
-  private fun applyEdgeToEdgeInsetsToDrawer() {
-    // Disable fitsSystemWindows on the inner NavigationView since we handle insets manually.
-    binding.fragmentDrawerNavView.fitsSystemWindows = false
-
-    // Add a colored View behind the transparent status bar to match the drawer header color.
-    val drawerLinearLayout =
-      binding.drawerNestedScrollView.getChildAt(0) as android.widget.LinearLayout
-    val statusBarBackground = android.view.View(activity).apply {
-      setBackgroundColor(
-        androidx.core.content.ContextCompat.getColor(
-          activity,
-          R.color.component_color_shared_slide_drawer_open_status_bar_color
-        )
-      )
-    }
-    drawerLinearLayout.addView(statusBarBackground, 0)
-    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-      )
-      view.layoutParams.height = systemBars.top
-      view.requestLayout()
-      insets
-    }
-
-    // Override the inner NavigationView's insets listener to prevent ScrimInsetsFrameLayout's
-    // constructor-set listener from storing insets and drawing the default #4000 scrim in
-    // system bar inset areas. Setting fitsSystemWindows=false alone is not sufficient because
-    // the OnApplyWindowInsetsListener set in ScrimInsetsFrameLayout's constructor is
-    // independent of the fitsSystemWindows flag.
-    ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentDrawerNavView) { _, insets ->
-      insets
-    }
-
-    // The drawer panel slides from the start edge and never reaches the end edge, so only
-    // apply start-side padding (for system bars or cutouts on the drawer's own edge) and
-    // bottom padding. Applying end-side padding would incorrectly shrink the drawer content.
-    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-      val systemBarInsets = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-      )
-      val isRtl = ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
-      view.updatePadding(
-        left = if (isRtl) 0 else systemBarInsets.left,
-        right = if (isRtl) systemBarInsets.right else 0,
-        bottom = systemBarInsets.bottom
-      )
-      insets
-    }
   }
 
   // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)

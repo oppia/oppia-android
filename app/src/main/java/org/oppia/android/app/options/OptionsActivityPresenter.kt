@@ -1,15 +1,10 @@
 package org.oppia.android.app.options
 
-import android.os.Build
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -19,6 +14,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -41,13 +37,13 @@ class OptionsActivityPresenter @Inject constructor(
     selectedFragment: String,
     profileId: Int
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.option_activity)
       setUpToolbar()
       setUpNavigationDrawer()
-      if (enableEdgeToEdge.value) {
-        applyEdgeToEdgeInsets()
-      }
     } else {
       activity.setContentView(R.layout.options_without_drawer_activity)
       setUpToolbar()
@@ -55,9 +51,13 @@ class OptionsActivityPresenter @Inject constructor(
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
-      if (enableEdgeToEdge.value) {
-        applyEdgeToEdgeInsets()
-      }
+    }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
@@ -167,44 +167,5 @@ class OptionsActivityPresenter @Inject constructor(
   /** Sets the title for [OptionsActivity]. */
   fun setExtraOptionTitle(title: String) {
     activity.findViewById<TextView>(R.id.options_activity_selected_options_title).text = title
-  }
-
-  private fun applyEdgeToEdgeInsets() {
-    val statusBarBackground = View(activity).apply {
-      setBackgroundColor(
-        ContextCompat.getColor(
-          activity,
-          R.color.component_color_shared_activity_status_bar_color
-        )
-      )
-    }
-    val contentLayout = toolbar.parent as android.widget.LinearLayout
-    contentLayout.addView(statusBarBackground, 0)
-    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.layoutParams.height = systemBars.top
-      view.requestLayout()
-      insets
-    }
-    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
-    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
-    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.updatePadding(
-        left = systemBars.left,
-        right = systemBars.right,
-        bottom = systemBars.bottom
-      )
-      insets
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      activity.window.isNavigationBarContrastEnforced = false
-    }
   }
 }

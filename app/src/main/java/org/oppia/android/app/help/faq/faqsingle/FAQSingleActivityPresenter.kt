@@ -8,8 +8,11 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.FaqSingleActivityBinding
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */
@@ -18,12 +21,17 @@ class FAQSingleActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private lateinit var faqSingleActivityToolbar: Toolbar
 
   fun handleOnCreate(question: String, answer: String) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<FaqSingleActivityBinding>(
       activity,
       R.layout.faq_single_activity
@@ -40,6 +48,13 @@ class FAQSingleActivityPresenter @Inject constructor(
 
     binding.faqSingleActivityToolbar.setNavigationOnClickListener {
       (activity as FAQSingleActivity).finish()
+    }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        faqSingleActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     activity.findViewById<TextView>(R.id.faq_question_text_view).text = question
 

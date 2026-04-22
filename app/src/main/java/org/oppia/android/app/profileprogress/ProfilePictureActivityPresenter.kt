@@ -13,10 +13,13 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -25,15 +28,24 @@ import javax.inject.Inject
 class ProfilePictureActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
   private lateinit var profileId: LegacyProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_shared_profile_status_bar_color, activity, false
-    )
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    } else {
+      StatusBarColor.statusBarColorUpdate(
+        R.color
+          .component_color_shared_profile_status_bar_color,
+        activity,
+        false
+      )
+    }
     val binding = DataBindingUtil
       .setContentView<ProfilePictureActivityBinding>(
         activity,
@@ -48,10 +60,17 @@ class ProfilePictureActivityPresenter @Inject constructor(
     profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     subscribeToProfileLiveData()
-    setUpToolbar()
+    val toolbar = setUpToolbar()
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
   }
 
-  private fun setUpToolbar() {
+  private fun setUpToolbar(): Toolbar {
     val toolbar = activity.findViewById<View>(
       R.id.profile_picture_activity_toolbar
     ) as Toolbar
@@ -59,6 +78,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
     toolbar.setNavigationOnClickListener {
       activity.finish()
     }
+    return toolbar
   }
 
   private val profileLiveData: LiveData<Profile> by lazy {

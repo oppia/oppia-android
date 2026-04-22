@@ -33,6 +33,7 @@ import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -42,6 +43,8 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
@@ -62,7 +65,9 @@ class ExplorationActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val surveyGatingController: SurveyGatingController
+  private val surveyGatingController: SurveyGatingController,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   @Inject
   lateinit var accessibilityService: AccessibilityService
@@ -93,6 +98,9 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.exploration_activity
@@ -105,6 +113,13 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbar = binding.explorationToolbar
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        explorationToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
 
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.explorationToolbarTitle.setOnClickListener {

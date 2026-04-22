@@ -1,13 +1,8 @@
 package org.oppia.android.app.administratorcontrols
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -21,6 +16,7 @@ import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -50,13 +46,20 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     selectedProfileId: LegacyProfileId,
     isProfileDeletionDialogVisible: Boolean
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.administrator_controls_activity
     )
     setUpNavigationDrawer()
     if (enableEdgeToEdge.value) {
-      applyEdgeToEdgeInsets()
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        binding.administratorControlsActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     this.lastLoadedFragment = lastLoadedFragment
     this.selectedProfileId = selectedProfileId
@@ -208,46 +211,6 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Sets the title of the extra controls in multipane tablet mode. */
   fun setExtraControlsTitle(title: String) {
     binding.extraControlsTitle?.text = title
-  }
-
-  private fun applyEdgeToEdgeInsets() {
-    val toolbar = binding.administratorControlsActivityToolbar
-    val contentLayout = toolbar.parent as android.widget.LinearLayout
-    val statusBarBackground = View(activity).apply {
-      setBackgroundColor(
-        ContextCompat.getColor(
-          activity,
-          R.color.component_color_shared_activity_status_bar_color
-        )
-      )
-    }
-    contentLayout.addView(statusBarBackground, 0)
-    ViewCompat.setOnApplyWindowInsetsListener(statusBarBackground) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.layoutParams.height = systemBars.top
-      view.requestLayout()
-      insets
-    }
-    // Apply padding to the content area instead of the DrawerLayout. Adding left/right
-    // padding to DrawerLayout shrinks the drawer panel and hides the toolbar hamburger icon.
-    ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
-      val systemBars = insets.getInsets(
-        WindowInsetsCompat.Type.systemBars() or
-          WindowInsetsCompat.Type.displayCutout()
-      )
-      view.updatePadding(
-        left = systemBars.left,
-        right = systemBars.right,
-        bottom = systemBars.bottom
-      )
-      insets
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      activity.window.isNavigationBarContrastEnforced = false
-    }
   }
 
   /** Saves the state of the views on configuration changes. */
