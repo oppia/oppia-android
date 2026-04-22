@@ -14,19 +14,23 @@ class LintCheckCatalogTest {
   }
 
   @Test
-  fun testComputeChecksToDisableInFullRun_returnsNonEmptySet() {
+  fun testComputeChecksToDisableInFullRun_returnsEmptySet() {
     val disabled = LintCheckCatalog.computeChecksToDisableInFullRun()
 
-    assertThat(disabled).isNotEmpty()
+    // Full mode runs all checks — nothing is disabled. Gradle-specific checks produce no
+    // findings since there are no .gradle files in this Bazel project.
+    assertThat(disabled).isEmpty()
   }
 
   @Test
-  fun testComputeChecksToDisableInFullRun_containsGradleChecks() {
+  fun testComputeChecksToDisableInFullRun_doesNotDisableAnyChecks() {
     val disabled = LintCheckCatalog.computeChecksToDisableInFullRun()
 
-    assertThat(disabled).contains("GradleCompatible")
-    assertThat(disabled).contains("GradleDependency")
-    assertThat(disabled).contains("AndroidGradlePluginVersion")
+    // In full mode, even Gradle checks are allowed to run. They produce no findings
+    // because there are no .gradle files in this Bazel project.
+    assertThat(disabled).doesNotContain("GradleCompatible")
+    assertThat(disabled).doesNotContain("GradleDependency")
+    assertThat(disabled).doesNotContain("AndroidGradlePluginVersion")
   }
 
   @Test

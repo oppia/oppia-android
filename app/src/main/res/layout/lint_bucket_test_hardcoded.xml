@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lint bucket verification: triggers HardcodedText (checksNotNeedingSources). -->
+<!-- Suppressed via tools:ignore so full mode passes; fast mode output is the actual proof. -->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Hello World"
+    tools:ignore="HardcodedText" />
