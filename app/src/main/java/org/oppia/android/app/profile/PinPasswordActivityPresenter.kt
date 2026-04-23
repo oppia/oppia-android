@@ -17,6 +17,7 @@ import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -24,6 +25,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -42,7 +44,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val accessibilityService: AccessibilityService,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private var internalProfileId = -1
   private var profileId = LegacyProfileId.getDefaultInstance()
@@ -59,6 +62,9 @@ class PinPasswordActivityPresenter @Inject constructor(
     internalProfileId = args?.internalProfileId ?: -1
     profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity
@@ -72,6 +78,14 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     binding.pinPasswordToolbar.setNavigationOnClickListener {
       (activity as PinPasswordActivity).finish()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.pinPasswordToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     binding.showPin.setOnClickListener {

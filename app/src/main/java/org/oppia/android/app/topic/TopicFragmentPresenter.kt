@@ -18,9 +18,11 @@ import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -36,7 +38,8 @@ class TopicFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   @EnableTopicInfoTab private val enableTopicInfoTabFlag: PlatformParameterValue<Boolean>,
   @EnableTopicPracticeTab private val enableTopicPracticeTabFlag: PlatformParameterValue<Boolean>,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   @Inject
   lateinit var accessibilityService: AccessibilityService
@@ -92,6 +95,14 @@ class TopicFragmentPresenter @Inject constructor(
         classroomId,
         topicId,
         isConfigChanged
+      )
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.topicToolbar,
+        R.color.component_color_shared_activity_status_bar_color
       )
     }
 

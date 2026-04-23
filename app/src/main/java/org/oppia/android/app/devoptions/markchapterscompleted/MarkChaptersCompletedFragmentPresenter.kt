@@ -16,7 +16,10 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [MarkChaptersCompletedFragment]. */
@@ -27,7 +30,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val viewModel: MarkChaptersCompletedViewModel,
   private val modifyLessonProgressController: ModifyLessonProgressController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -109,6 +113,14 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       if (showConfirmationNotice && this.selectedExplorationIds.isNotEmpty()) {
         showConfirmationDialog()
       } else markChaptersAsCompleted()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.markChaptersCompletedToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     return binding.root

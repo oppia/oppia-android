@@ -11,7 +11,11 @@ import org.oppia.android.app.databinding.databinding.MarkTopicsCompletedTopicVie
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [MarkTopicsCompletedFragment]. */
@@ -21,7 +25,8 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: MarkTopicsCompletedViewModel,
   private val modifyLessonProgressController: ModifyLessonProgressController,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -86,6 +91,14 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
         selectedTopicIdList
       )
       activity.finish()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.markTopicsCompletedToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     return binding.root

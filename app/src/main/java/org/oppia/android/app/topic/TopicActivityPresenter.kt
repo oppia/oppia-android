@@ -8,7 +8,10 @@ import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -17,7 +20,10 @@ const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
-class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class TopicActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private lateinit var classroomId: String
   private lateinit var topicId: String
 
@@ -29,6 +35,9 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
   ) {
     this.topicId = topicId
     this.classroomId = classroomId
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.topic_activity)
 
     if (getTopicFragment() == null) {
