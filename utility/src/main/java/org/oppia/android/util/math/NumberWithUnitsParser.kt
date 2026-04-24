@@ -309,48 +309,51 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseSuffixUnit(): NumberWithUnitsParsingResult<NumberUnitExpression> {
     val token = tokens.peek()
-    if (token is Token.Unit && token.unit.isNotEmpty()) {
-      val unitStartIndex = token.extractUnitStartIndex()
+    if (token !is Token.Unit || token.unit.isEmpty()) {
+      return NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+    }
 
-      if (unitStartIndex == 0) {
-        // No SI prefix, so attempt to parse the entire token as a unit.
-        val parsedUnit = parseAnyUnit(token)
-        return if (parsedUnit != null) {
-          tokens.next()
-          NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
-        } else {
-          NumberWithUnitsParsingError.InvalidUnitError(token.unit).toFailure()
-        }
+    val unitStartIndex = token.extractUnitStartIndex()
+    if (unitStartIndex == 0) {
+      // No SI prefix, so attempt to parse the entire token as a unit.
+      val parsedUnit = parseAnyUnit(token)
+      return if (parsedUnit != null) {
+        NumberWithUnitsParsingResult.Success(parsedUnit)
       } else {
-        // SI prefix present, so attempt to parse the base unit after the prefix.
-        val siPrefixStr = token.unit.substring(0, unitStartIndex)
-        val siPrefix = parseSiPrefix(siPrefixStr)
-        val baseUnitStr = token.unit.substring(unitStartIndex)
-        val baseUnit = parseAnyUnit(
-          Token.Unit(baseUnitStr, token.startIndex + unitStartIndex, token.endIndex)
-        )
-        return if (baseUnit == null || !baseUnit.isPrefixable()) {
-          // Might not be SI prefix, but entirely unit. Attempt to parse entire token as unit
-          // before failing with UnitExpectedAfterSiPrefixError.
-          val parsedUnit = parseAnyUnit(token)
-          return if (parsedUnit != null) {
-            tokens.next()
-            NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
-          } else {
-            NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(siPrefixStr).toFailure()
-          }
-        } else {
-          tokens.next()
-          NumberWithUnitsParsingResult.Success(
-            createUnitExpression(
-              baseUnit,
-              siPrefix = siPrefix ?: NumberUnitExpression.SiPrefix.SI_PREFIX_UNSPECIFIED
-            ).toBuilder().build()
-          )
-        }
+        NumberWithUnitsParsingError.InvalidUnitError(token.unit).toFailure()
+      }.map { unit ->
+        tokens.next()
+        createUnitExpression(unit)
       }
     } else {
-      return NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+      // SI prefix present, so attempt to parse the base unit after the prefix.
+      val siPrefixStr = token.unit.substring(0, unitStartIndex)
+      val siPrefix = parseSiPrefix(siPrefixStr)
+      val baseUnitStr = token.unit.substring(unitStartIndex)
+      val baseUnit = parseAnyUnit(
+        Token.Unit(baseUnitStr, token.startIndex + unitStartIndex, token.endIndex)
+      )
+      return if (baseUnit == null || !baseUnit.isPrefixable()) {
+        // Might not be SI prefix, but entirely unit. Attempt to parse entire token as unit
+        // before failing with UnitExpectedAfterSiPrefixError.
+        val parsedUnit = parseAnyUnit(token)
+        if (parsedUnit != null) {
+          NumberWithUnitsParsingResult.Success(parsedUnit)
+        } else {
+          NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(siPrefixStr).toFailure()
+        }.map { unit ->
+          tokens.next()
+          createUnitExpression(unit)
+        }
+      } else {
+        NumberWithUnitsParsingResult.Success(baseUnit).map { unit ->
+          tokens.next()
+          createUnitExpression(
+            unit,
+            siPrefix = siPrefix ?: NumberUnitExpression.SiPrefix.SI_PREFIX_UNSPECIFIED
+          ).toBuilder().build()
+        }
+      }
     }
   }
 
