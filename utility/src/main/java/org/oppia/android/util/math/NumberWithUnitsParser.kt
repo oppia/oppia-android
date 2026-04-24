@@ -344,9 +344,8 @@ class NumberWithUnitsParser private constructor(
           NumberWithUnitsParsingResult.Success(
             createUnitExpression(
               baseUnit,
-              siPrefix = siPrefix ?: NumberUnitExpression.SiPrefix.SI_PREFIX_UNSPECIFIED)
-              .toBuilder()
-              .build()
+              siPrefix = siPrefix ?: NumberUnitExpression.SiPrefix.SI_PREFIX_UNSPECIFIED
+            ).toBuilder().build()
           )
         }
       }
