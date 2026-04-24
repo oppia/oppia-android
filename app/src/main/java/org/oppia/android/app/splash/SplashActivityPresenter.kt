@@ -37,6 +37,7 @@ import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
@@ -52,6 +53,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -159,7 +161,9 @@ class SplashActivityPresenter @Inject constructor(
     @EnableOnboardingFlowV2
     private val enableOnboardingFlowV2Provider: PlatformParameterValue<Boolean>,
     @EnableMultipleClassrooms
-    private val enableMultipleClassroomsProvider: PlatformParameterValue<Boolean>
+    private val enableMultipleClassroomsProvider: PlatformParameterValue<Boolean>,
+    @EnableEdgeToEdge
+    private val enableEdgeToEdge: PlatformParameterValue<Boolean>
   ) {
     private lateinit var startupMode: StartupMode
 
@@ -243,6 +247,13 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     fun subscribeToOnboardingFlow() {
+      if (enableEdgeToEdge.value) {
+        EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+        EdgeToEdgeHelper.applyToRootConstraintLayout(
+          activity,
+          R.color.component_color_shared_activity_status_bar_color
+        )
+      }
       val liveData = computeInitStateDataProvider().toLiveData()
       liveData.observe(
         activity,

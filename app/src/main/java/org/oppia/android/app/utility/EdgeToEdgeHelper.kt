@@ -1,11 +1,14 @@
 package org.oppia.android.app.utility
 
 import android.os.Build
+import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -14,8 +17,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 
 /**
- * Utility that dispatches edge-to-edge window insets to activity toolbars and the navigation
- * drawer while the `EnableEdgeToEdge` platform parameter gates the Android 15 rollout.
+ * Utility that dispatches edge-to-edge window insets to activity toolbars, the navigation
+ * drawer, and no-toolbar ConstraintLayout roots while the `EnableEdgeToEdge` platform parameter
+ * gates the Android 15 rollout.
  */
 object EdgeToEdgeHelper {
   /**
@@ -142,6 +146,67 @@ object EdgeToEdgeHelper {
     // Explicit 0-height; default is MATCH_PARENT which paints the whole screen until the inset
     // listener resizes the spacer.
     layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0)
+  }
+
+  /**
+   * Applies edge-to-edge insets for activities/fragments whose root is a no-toolbar
+   * [ConstraintLayout] (splash, onboarding, profile chooser). Paints the status-bar strip with
+   * [statusBarColorRes] and pads [rootLayout] on all four sides with the system-bar insets.
+   * Returns the spacer so the onboarding flow can recolor it on slide change.
+   */
+  fun applyToRootConstraintLayout(
+    activity: AppCompatActivity,
+    rootLayout: ConstraintLayout,
+    @ColorRes statusBarColorRes: Int
+  ): View {
+    val contentFrame = activity.findViewById<FrameLayout>(android.R.id.content)
+    val spacer = View(activity).apply {
+      setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
+    }
+    contentFrame.addView(
+      spacer,
+      FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 0, Gravity.TOP)
+    )
+
+    ViewCompat.setOnApplyWindowInsetsListener(spacer) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.layoutParams.height = bars.top
+      view.requestLayout()
+      insets
+    }
+    ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.updatePadding(
+        top = bars.top, left = bars.left, right = bars.right, bottom = bars.bottom
+      )
+      insets
+    }
+
+    disableDecorAncestorFits(activity)
+    applyRootInsetsIfAvailable(rootLayout) { bars ->
+      spacer.layoutParams.height = bars.top
+      spacer.requestLayout()
+      rootLayout.updatePadding(
+        top = bars.top, left = bars.left, right = bars.right, bottom = bars.bottom
+      )
+    }
+    disableNavBarContrast(activity)
+
+    return spacer
+  }
+
+  /**
+   * Overload of [applyToRootConstraintLayout] for call sites that cannot reach the binding (e.g.
+   * splash, where the inner presenter runs post-parameter-load). Resolves the root from the
+   * first child of `android.R.id.content`.
+   */
+  fun applyToRootConstraintLayout(
+    activity: AppCompatActivity,
+    @ColorRes statusBarColorRes: Int
+  ): View {
+    val content = activity.findViewById<FrameLayout>(android.R.id.content)
+    val rootLayout = content.getChildAt(0) as ConstraintLayout
+    return applyToRootConstraintLayout(activity, rootLayout, statusBarColorRes)
   }
 
   private fun WindowInsetsCompat.systemBarsWithCutout(): Insets = getInsets(
