@@ -783,13 +783,11 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("100 mm")
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(100.0)
-      // Tokenizer treats each 'm' as MeterUnit; abbreviation "mm" is not milli+meter.
-      hasUnitCountThat().isEqualTo(2)
+      hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
         hasUnitThat().isEqualTo(Unit.METER)
-      }
-      hasSuffixWithIndexThat(index = 1).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasExponentThat().isEqualTo(1)
       }
     }
   }
@@ -813,13 +811,11 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("500 mg")
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(500.0)
-      // Tokenizer treats 'm' as MeterUnit and 'g' as GramUnit; abbreviation "mg" is not milli+gram.
-      hasUnitCountThat().isEqualTo(2)
+      hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-      }
-      hasSuffixWithIndexThat(index = 1).apply {
         hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasExponentThat().isEqualTo(1)
       }
     }
   }
@@ -913,13 +909,11 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("1013 hPa")
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(1013.0)
-      // Tokenizer treats 'h' as HourUnit and 'Pa' as PascalUnit; abbreviated "hPa" is not hecto+Pa.
-      hasUnitCountThat().isEqualTo(2)
+      hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HOUR)
-      }
-      hasSuffixWithIndexThat(index = 1).apply {
         hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasSiPrefixThat().isEqualTo(SiPrefix.HECTO)
+        hasExponentThat().isEqualTo(1)
       }
     }
   }
@@ -1083,13 +1077,11 @@ class NumberWithUnitsParserTest {
     val result = parseNumberWithUnitsExpectingSuccess("10 mmol")
     assertThat(result).apply {
       hasRealValueThat().isEqualTo(10.0)
-      // Tokenizer treats first 'm' as MeterUnit then "mol" as MoleUnit.
-      hasUnitCountThat().isEqualTo(2)
+      hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-      }
-      hasSuffixWithIndexThat(index = 1).apply {
         hasUnitThat().isEqualTo(Unit.MOLE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasExponentThat().isEqualTo(1)
       }
     }
   }

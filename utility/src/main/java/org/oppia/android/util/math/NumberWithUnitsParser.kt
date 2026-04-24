@@ -308,36 +308,52 @@ class NumberWithUnitsParser private constructor(
    * @return the canonical unit name string
    */
   private fun parseSuffixUnit(): NumberWithUnitsParsingResult<NumberUnitExpression> {
-    return when (val token = tokens.peek()) {
-      is Token.SiPrefix -> {
-        tokens.next()
-        val prefix = parseSiPrefix(token.prefix)
-          ?: return NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(token.prefix)
-            .toFailure()
-        val baseUnit = parsePrefixableBaseUnit(tokens.peek())
-        if (baseUnit != null) {
-          tokens.next()
-          NumberWithUnitsParsingResult.Success(
-            createUnitExpression(baseUnit, siPrefix = prefix)
-          )
-        } else {
-          NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(token.prefix).toFailure()
-        }
-      }
+    val token = tokens.peek()
+    if (token is Token.Unit && token.unit.isNotEmpty()) {
+      val unitStartIndex = token.extractUnitStartIndex()
 
-      else -> {
-        val parsedUnit = parseAnyUnit(tokens.peek())
-        if (parsedUnit != null) {
+      if (unitStartIndex == 0) {
+        // No SI prefix, so attempt to parse the entire token as a unit.
+        val parsedUnit = parseAnyUnit(token)
+        return if (parsedUnit != null) {
           tokens.next()
           NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
         } else {
           NumberWithUnitsParsingError.UnitExpectedError.toFailure()
         }
+      } else {
+        // SI prefix present, so attempt to parse the base unit after the prefix.
+        val siPrefixStr = token.unit.substring(0, unitStartIndex)
+        val siPrefix = parseSiPrefix(siPrefixStr)
+        val baseUnitStr = token.unit.substring(unitStartIndex)
+        val baseUnit = parseAnyUnit(
+          Token.Unit(baseUnitStr, token.startIndex + unitStartIndex, token.endIndex)
+        )
+        return if (baseUnit == null || !baseUnit.isPrefixable()) {
+          // Might not be SI prefix, but entirely unit. Attempt to parse entire token as unit before failing with UnitExpectedAfterSiPrefixError.
+          val parsedUnit = parseAnyUnit(token)
+          return if (parsedUnit != null) {
+            tokens.next()
+            NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
+          } else {
+            NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(siPrefixStr).toFailure()
+          }
+        } else if (siPrefix == null) {
+          // return InvalidSiPrefixError
+          NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+        } else {
+          tokens.next()
+          NumberWithUnitsParsingResult.Success(
+            createUnitExpression(baseUnit, siPrefix = siPrefix)
+          )
+        }
       }
+    } else {
+      return NumberWithUnitsParsingError.UnitExpectedError.toFailure()
     }
   }
 
-  /** Parses a currency prefix token and returns it as a [NumberUnit] with exponent 1. */
+  /** Parses a currency prefix token and returns it as a [NumberUnitExpression] with exponent 1. */
   private fun parseCurrencyPrefixUnit(): NumberUnitExpression? {
     val rawUnit = (tokens.peek() as? Token.Unit)?.unit ?: return null
     val currencyUnit = when (rawUnit) {
@@ -418,33 +434,23 @@ class NumberWithUnitsParser private constructor(
       this == NumberUnitExpression.Unit.OHM
   }
 
-  private fun parseSiPrefix(symbol: String): NumberUnitExpression.SiPrefix? = when (symbol) {
-    "da" -> NumberUnitExpression.SiPrefix.DECA
-    "h" -> NumberUnitExpression.SiPrefix.HECTO
-    "k" -> NumberUnitExpression.SiPrefix.KILO
-    "M" -> NumberUnitExpression.SiPrefix.MEGA
-    "G" -> NumberUnitExpression.SiPrefix.GIGA
-    "T" -> NumberUnitExpression.SiPrefix.TERA
-    "P" -> NumberUnitExpression.SiPrefix.PETA
-    "E" -> NumberUnitExpression.SiPrefix.EXA
-    "Z" -> NumberUnitExpression.SiPrefix.ZETTA
-    "Y" -> NumberUnitExpression.SiPrefix.YOTTA
-    "d" -> NumberUnitExpression.SiPrefix.DECI
-    "c" -> NumberUnitExpression.SiPrefix.CENTI
-    "m" -> NumberUnitExpression.SiPrefix.MILLI
-    "u" -> NumberUnitExpression.SiPrefix.MICRO
-    "n" -> NumberUnitExpression.SiPrefix.NANO
-    "p" -> NumberUnitExpression.SiPrefix.PICO
-    "f" -> NumberUnitExpression.SiPrefix.FEMTO
-    "a" -> NumberUnitExpression.SiPrefix.ATTO
-    "z" -> NumberUnitExpression.SiPrefix.ZEPTO
-    "y" -> NumberUnitExpression.SiPrefix.YOCTO
-    else -> null
+  private fun Token.Unit.extractUnitStartIndex(): Int {
+    val match = Companion.SI_PREFIX_MAP.keys
+      .sortedByDescending { it.length }
+      .firstOrNull { prefix ->
+        this.unit.length > prefix.length && this.unit.startsWith(prefix)
+      }
+
+    return match?.length ?: 0
+  }
+
+  private fun parseSiPrefix(symbol: String): NumberUnitExpression.SiPrefix? {
+    return Companion.SI_PREFIX_MAP[symbol]
   }
 
   private fun isAtSuffixUnit(): Boolean {
     val token = tokens.peek() ?: return false
-    return token is Token.SiPrefix || parseAnyUnit(token) != null
+    return token is Token.Unit || parseAnyUnit(token) != null
   }
 
   private fun NumberUnitExpression.Unit.isCurrencyUnit(): Boolean =
@@ -540,5 +546,67 @@ class NumberWithUnitsParser private constructor(
     ): NumberWithUnitsParsingResult<T> = flatMap { result ->
       operation(result)?.toFailure() ?: this
     }
+
+    val SI_PREFIX_MAP = mapOf(
+      "da" to NumberUnitExpression.SiPrefix.DECA,
+      "deca" to NumberUnitExpression.SiPrefix.DECA,
+
+      "h" to NumberUnitExpression.SiPrefix.HECTO,
+      "hecto" to NumberUnitExpression.SiPrefix.HECTO,
+
+      "k" to NumberUnitExpression.SiPrefix.KILO,
+      "kilo" to NumberUnitExpression.SiPrefix.KILO,
+
+      "M" to NumberUnitExpression.SiPrefix.MEGA,
+      "mega" to NumberUnitExpression.SiPrefix.MEGA,
+
+      "G" to NumberUnitExpression.SiPrefix.GIGA,
+      "giga" to NumberUnitExpression.SiPrefix.GIGA,
+
+      "T" to NumberUnitExpression.SiPrefix.TERA,
+      "tera" to NumberUnitExpression.SiPrefix.TERA,
+
+      "P" to NumberUnitExpression.SiPrefix.PETA,
+      "peta" to NumberUnitExpression.SiPrefix.PETA,
+
+      "E" to NumberUnitExpression.SiPrefix.EXA,
+      "exa" to NumberUnitExpression.SiPrefix.EXA,
+
+      "Z" to NumberUnitExpression.SiPrefix.ZETTA,
+      "zetta" to NumberUnitExpression.SiPrefix.ZETTA,
+
+      "Y" to NumberUnitExpression.SiPrefix.YOTTA,
+      "yotta" to NumberUnitExpression.SiPrefix.YOTTA,
+
+      "d" to NumberUnitExpression.SiPrefix.DECI,
+      "deci" to NumberUnitExpression.SiPrefix.DECI,
+
+      "c" to NumberUnitExpression.SiPrefix.CENTI,
+      "centi" to NumberUnitExpression.SiPrefix.CENTI,
+
+      "m" to NumberUnitExpression.SiPrefix.MILLI,
+      "milli" to NumberUnitExpression.SiPrefix.MILLI,
+
+      "u" to NumberUnitExpression.SiPrefix.MICRO,
+      "micro" to NumberUnitExpression.SiPrefix.MICRO,
+
+      "n" to NumberUnitExpression.SiPrefix.NANO,
+      "nano" to NumberUnitExpression.SiPrefix.NANO,
+
+      "p" to NumberUnitExpression.SiPrefix.PICO,
+      "pico" to NumberUnitExpression.SiPrefix.PICO,
+
+      "f" to NumberUnitExpression.SiPrefix.FEMTO,
+      "femto" to NumberUnitExpression.SiPrefix.FEMTO,
+
+      "a" to NumberUnitExpression.SiPrefix.ATTO,
+      "atto" to NumberUnitExpression.SiPrefix.ATTO,
+
+      "z" to NumberUnitExpression.SiPrefix.ZEPTO,
+      "zepto" to NumberUnitExpression.SiPrefix.ZEPTO,
+
+      "y" to NumberUnitExpression.SiPrefix.YOCTO,
+      "yocto" to NumberUnitExpression.SiPrefix.YOCTO
+    )
   }
 }
