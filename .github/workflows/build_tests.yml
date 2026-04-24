@@ -22,7 +22,7 @@ jobs:
     name: Build Oppia AAB (dev flavor)
     runs-on: ubuntu-24.04
     env:
-      CACHE_DIRECTORY: ~/.bazel_cache
+      CACHE_DIRECTORY: /home/runner/.bazel_cache
     steps:
       - uses: actions/checkout@v6
         with:
@@ -62,8 +62,7 @@ jobs:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
           # See https://stackoverflow.com/a/27485157 for reference.
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          CACHE_SIZE_MB=$(du -smc $BAZEL_CACHE_DIR | grep total | cut -f1)
           echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
           # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
           # to only increase by a few hundred megabytes across changes for unrelated branches. This
@@ -72,16 +71,15 @@ jobs:
           # compressed cache).
           if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
             echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+            rm -rf $BAZEL_CACHE_DIR
           fi
 
       - name: Configure Bazel to use a local cache
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+          echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
+          echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
@@ -104,7 +102,7 @@ jobs:
       matrix:
         flavor: [alpha, beta, ga]
     env:
-      CACHE_DIRECTORY: ~/.bazel_cache
+      CACHE_DIRECTORY: /home/runner/.bazel_cache
     steps:
       - uses: actions/checkout@v6
         with:
@@ -132,21 +130,19 @@ jobs:
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          CACHE_SIZE_MB=$(du -smc $BAZEL_CACHE_DIR | grep total | cut -f1)
           echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
           if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
             echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+            rm -rf $BAZEL_CACHE_DIR
           fi
 
       - name: Configure Bazel to use a local cache
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+          echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
+          echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
@@ -176,7 +172,7 @@ jobs:
       matrix:
         flavor: [alpha, beta, ga]
     env:
-      CACHE_DIRECTORY: ~/.bazel_cache
+      CACHE_DIRECTORY: /home/runner/.bazel_cache
     steps:
       - uses: actions/checkout@v6
         with:
@@ -200,9 +196,8 @@ jobs:
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+          echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
+          echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
