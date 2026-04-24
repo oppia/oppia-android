@@ -56,6 +56,14 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
+  fun testParser_invalidUnit_returnsInvalidUnitError() {
+    val error = parseNumberWithUnitsExpectingFailure("42 invalid")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.InvalidUnitError::class.java)
+    val invalidUnitError = error as NumberWithUnitsParsingError.InvalidUnitError
+    assertThat(invalidUnitError.invalidUnit).isEqualTo("invalid")
+  }
+
+  @Test
   fun testParser_dollarPrefix_integer_parsesCorrectly() {
     val result = parseNumberWithUnitsExpectingSuccess("$100")
     assertThat(result).apply {
@@ -3175,6 +3183,7 @@ class NumberWithUnitsParserTest {
     assertThat(result).apply {
       hasFractionValueThat().apply {
         hasNegativePropertyThat().isFalse()
+        hasWholeNumberThat().isEqualTo(0)
         hasNumeratorThat().isEqualTo(1)
         hasDenominatorThat().isEqualTo(2)
       }

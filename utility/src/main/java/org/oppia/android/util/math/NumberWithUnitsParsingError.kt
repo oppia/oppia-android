@@ -17,6 +17,15 @@ sealed class NumberWithUnitsParsingError {
   data class InvalidTokenError(val invalidSymbol: String) : NumberWithUnitsParsingError()
 
   /**
+   * Indicates that an invalid unit was encountered while parsing.
+   *
+   * This is an irrecoverable error.
+   *
+   * @property invalidUnit the raw invalid unit that was encountered during parsing
+   */
+  data class InvalidUnitError(val invalidUnit: String) : NumberWithUnitsParsingError()
+
+  /**
    * Indicates that the input expression is empty or contains only whitespace.
    *
    * This is an irrecoverable error.

@@ -66,6 +66,10 @@ class NumberWithUnitsSubject private constructor(
    */
   fun hasUnitCountThat(): IntegerSubject = assertThat(allUnits().size)
 
+  /**
+   * Verifies that the expression format has at least one prefix unit and returns a
+   * [NumberUnitSubject].
+   */
   fun hasPrefixThat(): NumberUnitSubject {
     val units = when (actual.expressionFormatCase) {
       NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
@@ -82,6 +86,10 @@ class NumberWithUnitsSubject private constructor(
     return NumberUnitSubject.assertThat(units.first())
   }
 
+  /**
+   * Verifies that the expression format has at least one suffix unit and returns a
+   * [NumberUnitSubject] for the suffix unit at the specified index.
+   */
   fun hasSuffixWithIndexThat(index: Int): NumberUnitSubject {
     val units = when (actual.expressionFormatCase) {
       NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->

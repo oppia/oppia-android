@@ -319,7 +319,7 @@ class NumberWithUnitsParser private constructor(
           tokens.next()
           NumberWithUnitsParsingResult.Success(createUnitExpression(parsedUnit))
         } else {
-          NumberWithUnitsParsingError.UnitExpectedError.toFailure()
+          NumberWithUnitsParsingError.InvalidUnitError(token.unit).toFailure()
         }
       } else {
         // SI prefix present, so attempt to parse the base unit after the prefix.
@@ -330,7 +330,8 @@ class NumberWithUnitsParser private constructor(
           Token.Unit(baseUnitStr, token.startIndex + unitStartIndex, token.endIndex)
         )
         return if (baseUnit == null || !baseUnit.isPrefixable()) {
-          // Might not be SI prefix, but entirely unit. Attempt to parse entire token as unit before failing with UnitExpectedAfterSiPrefixError.
+          // Might not be SI prefix, but entirely unit. Attempt to parse entire token as unit
+          // before failing with UnitExpectedAfterSiPrefixError.
           val parsedUnit = parseAnyUnit(token)
           return if (parsedUnit != null) {
             tokens.next()
@@ -338,13 +339,14 @@ class NumberWithUnitsParser private constructor(
           } else {
             NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError(siPrefixStr).toFailure()
           }
-        } else if (siPrefix == null) {
-          // return InvalidSiPrefixError
-          NumberWithUnitsParsingError.UnitExpectedError.toFailure()
         } else {
           tokens.next()
           NumberWithUnitsParsingResult.Success(
-            createUnitExpression(baseUnit, siPrefix = siPrefix)
+            createUnitExpression(
+              baseUnit,
+              siPrefix = siPrefix ?: NumberUnitExpression.SiPrefix.SI_PREFIX_UNSPECIFIED)
+              .toBuilder()
+              .build()
           )
         }
       }
@@ -435,7 +437,7 @@ class NumberWithUnitsParser private constructor(
   }
 
   private fun Token.Unit.extractUnitStartIndex(): Int {
-    val match = Companion.SI_PREFIX_MAP.keys
+    val match = SI_PREFIX_MAP.keys
       .sortedByDescending { it.length }
       .firstOrNull { prefix ->
         this.unit.length > prefix.length && this.unit.startsWith(prefix)
