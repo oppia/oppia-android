@@ -90,13 +90,19 @@ jobs:
       - name: Build Oppia dev AAB
         run: bazel build -- //:oppia_dev
 
-  # This job pre-builds the deployable (pre-Proguard-map) AABs for all Proguard-enabled flavors in
-  # one shot. Building them together is more memory-efficient since Bazel shares intermediate
-  # artifacts across flavors. The resulting Bazel disk cache is uploaded as a workflow artifact so
-  # that the finalize jobs can skip all heavy compilation & Proguard work.
-  build_proguarded_bases:
-    name: Build Proguarded base AABs (alpha, beta, ga)
+  # Each of these jobs pre-builds the deployable (pre-Proguard-map) AAB for a single
+  # Proguard-enabled flavor on its own fresh runner. Building each flavor on a separate runner
+  # avoids OOM crashes that occur when all three are built sequentially on a single VM (even with
+  # bazel shutdown between them, memory accumulates across builds). The resulting Bazel disk cache
+  # is uploaded as a flavor-specific workflow artifact so that the corresponding finalize job can
+  # skip the heavy compilation & Proguard work.
+  build_proguarded_base:
+    name: Build Proguarded base AAB (${{ matrix.flavor }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [alpha, beta, ga]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -146,31 +152,27 @@ jobs:
       - name: Check Bazel environment
         run: bazel info
 
-      - name: Build all deployable AABs
-        run: |
-          for flavor in alpha beta ga; do
-            echo "=== Building //:oppia_${flavor}_deployable ==="
-            bazel build --compilation_mode=opt -- //:oppia_${flavor}_deployable
-            echo "=== Shutting down Bazel to free memory ==="
-            bazel shutdown
-          done
+      - name: Build deployable AAB (${{ matrix.flavor }})
+        run: bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}_deployable
 
-      - name: Upload Bazel cache for finalize jobs
+      - name: Upload Bazel cache for finalize job
         uses: actions/upload-artifact@v7
         with:
-          name: bazel-cache-proguarded
+          name: bazel-cache-proguarded-${{ matrix.flavor }}
           path: ${{ env.CACHE_DIRECTORY }}
           retention-days: 1
 
-  # Each finalize job downloads the Bazel cache produced by build_proguarded_bases and runs only the
-  # lightweight final packaging step (bundling the Proguard map into the already-built deployable
-  # AAB). This starts with a fresh JVM so there is no accumulated memory pressure from the heavy
-  # compilation + Proguard work, which avoids OOM crashes (error code 14).
+  # Each finalize job downloads the Bazel cache produced by the matching build_proguarded_base
+  # matrix job and runs only the lightweight final packaging step (bundling the Proguard map into
+  # the already-built deployable AAB). This starts with a fresh JVM so there is no accumulated
+  # memory pressure from the heavy compilation + Proguard work, which avoids OOM crashes
+  # (error code 14).
   finalize_proguarded_aab:
     name: Finalize Oppia AAB (${{ matrix.flavor }} flavor)
-    needs: build_proguarded_bases
+    needs: build_proguarded_base
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         flavor: [alpha, beta, ga]
     env:
@@ -191,7 +193,7 @@ jobs:
       - name: Download Bazel cache from base build
         uses: actions/download-artifact@v8
         with:
-          name: bazel-cache-proguarded
+          name: bazel-cache-proguarded-${{ matrix.flavor }}
           path: ${{ env.CACHE_DIRECTORY }}
 
       - name: Configure Bazel to use the downloaded cache
