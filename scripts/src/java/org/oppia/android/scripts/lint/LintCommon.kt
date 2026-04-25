@@ -42,7 +42,7 @@ data class LayerConfig(
   val srcFiles: List<String>,
   val testFiles: List<String>,
   val resourceDirs: List<String>,
-  val manifestFile: String,
+  val manifestFile: String?,
   val dependencies: List<String>,
   val aarFiles: List<AarFileInfo>,
   val jarFiles: List<String>,
