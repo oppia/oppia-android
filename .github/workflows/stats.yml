@@ -271,7 +271,7 @@ jobs:
       - name: Download Bazel cache from deployable build
         id: download_cache
         continue-on-error: true
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v7
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
           path: ${{ env.CACHE_DIRECTORY }}
