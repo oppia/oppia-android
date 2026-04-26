@@ -381,7 +381,6 @@ private class LayerConfigurationBuilder(
       LayerName.DATA to listOf(LayerName.UTILITY)
     )
     private const val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
-
     private const val TOP_LEVEL_MANIFEST_PATH = SdkConstants.FN_ANDROID_MANIFEST_XML
   }
 
