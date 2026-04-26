@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.app.activity.ActivityScope
@@ -58,6 +59,10 @@ class AdminPinActivityPresenter @Inject constructor(
 
     binding.adminPinToolbar.title = resourceHandler
       .getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
+    binding.adminPinWarningText.text = HtmlCompat.fromHtml(
+      resourceHandler.getStringInLocale(R.string.admin_pin_pin_description),
+      HtmlCompat.FROM_HTML_MODE_LEGACY
+    )
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
