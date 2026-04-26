@@ -80,6 +80,7 @@ jobs:
         run: |
           echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
           echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
+          echo "build --local_ram_resources=HOST_RAM*.5" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
@@ -120,8 +121,9 @@ jobs:
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ matrix.flavor }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ matrix.flavor }}-
             ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
             ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
             ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
@@ -143,6 +145,7 @@ jobs:
         run: |
           echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
           echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
+          echo "build --local_ram_resources=HOST_RAM*.5" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
@@ -198,6 +201,7 @@ jobs:
         run: |
           echo "Using $BAZEL_CACHE_DIR as Bazel's cache path"
           echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
+          echo "build --local_ram_resources=HOST_RAM*.5" >> $HOME/.bazelrc
         shell: bash
 
       - name: Check Bazel environment
