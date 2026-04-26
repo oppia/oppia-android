@@ -159,6 +159,7 @@ jobs:
         with:
           name: bazel-cache-proguarded-${{ matrix.flavor }}
           path: ${{ env.CACHE_DIRECTORY }}
+          include-hidden-files: true
           retention-days: 1
 
   # Each finalize job downloads the Bazel cache produced by the matching build_proguarded_base

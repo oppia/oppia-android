@@ -238,6 +238,7 @@ jobs:
         with:
           name: bazel-cache-stats-pr-${{ matrix.prInfo.number }}
           path: ${{ env.CACHE_DIRECTORY }}
+          include-hidden-files: true
           retention-days: 1
 
   # Each finalize job downloads the Bazel cache produced by build_stats_deployables and runs only
