@@ -302,7 +302,6 @@ class LintProjectDescription(
 
     appendLine("""    desugar="full">""")
 
-    // CHANGE 1: manifestFile nullable hai, sirf tab output karo jab exist kare
     config.manifestFile?.let { manifest ->
       appendLine("""    <manifest file="$manifest"/>""")
     }
@@ -383,7 +382,6 @@ private class LayerConfigurationBuilder(
     )
     private const val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
 
-    // CHANGE 2: Top-level fallback manifest path add kiya
     private const val TOP_LEVEL_MANIFEST_PATH = SdkConstants.FN_ANDROID_MANIFEST_XML
   }
 
@@ -465,7 +463,6 @@ private class LayerConfigurationBuilder(
     }
   }
 
-  // CHANGE 3: Crash nahi hoga — layer manifest nahi mila toh top-level try karo, warna null
   private fun findManifestFile(layer: LayerName): String? {
     val layerManifest = File(repoRoot, "${layer.layerName}/$ANDROID_MANIFEST_PATH")
     if (layerManifest.exists()) return layerManifest.absolutePath
