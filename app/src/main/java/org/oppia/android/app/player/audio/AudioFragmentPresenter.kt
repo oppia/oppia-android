@@ -58,7 +58,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
-  private var lastKnownConnectionStatus: NetworkConnectionUtil.ProdConnectionStatus? = null
+  private var lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -235,7 +235,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
     val currentConnectionStatus = getCurrentProdConnectionStatusOrNull()
       ?: run {
-        lastKnownConnectionStatus = null
+        lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
         audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
         return
       }

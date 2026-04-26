@@ -538,7 +538,12 @@ class AudioPlayerControllerTest {
     assertNoExceptionIsThrown {
       audioPlayerController.abortPendingLoad()
       audioPlayerController.abortPendingLoad()
+      audioPlayerController.abortPendingLoad()
     }
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
   }
 
   @Test
