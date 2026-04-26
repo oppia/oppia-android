@@ -8,6 +8,7 @@ load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
     "generate_android_lint_assets_list_from_text_protos",
+    "generate_binary_file_assets_list_from_text_protos",
     "generate_kdoc_validity_assets_list_from_text_protos",
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
@@ -332,4 +333,17 @@ kt_jvm_binary(
     data = ANDROID_LINT_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.lint.AndroidLintRunnerKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner"],
+)
+
+BINARY_FILE_EXEMPTION_ASSETS = generate_binary_file_assets_list_from_text_protos(
+    name = "binary_file_exemption_assets",
+    binary_file_exemptions_name = ["binary_file_exemptions"],
+)
+
+kt_jvm_binary(
+    name = "binary_file_check",
+    testonly = True,
+    data = BINARY_FILE_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.binary.BinaryFileCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/binary:binary_file_check_lib"],
 )
