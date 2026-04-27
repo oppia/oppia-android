@@ -29,14 +29,20 @@ object EdgeToEdgeHelper {
   /**
    * Applies edge-to-edge insets for activities whose root vertical `LinearLayout` directly
    * contains the [toolbar] (e.g. Home, Options). Inserts a status-bar spacer colored with
-   * [statusBarColorRes] at the top of that `LinearLayout`.
+   * [statusBarColorRes] at the top of that `LinearLayout`. If the parent is not a `LinearLayout`
+   * (e.g. `ConstraintLayout` in AdminPin / sw600dp AdminControls), pads the toolbar directly.
    */
   fun applyToToolbarContainer(
     activity: AppCompatActivity,
     toolbar: Toolbar,
     @ColorRes statusBarColorRes: Int
   ) {
-    val contentLayout = toolbar.parent as LinearLayout
+    val parent = toolbar.parent as View
+    if (parent !is LinearLayout) {
+      applyAsTopBar(activity, toolbar, statusBarColorRes)
+      return
+    }
+    val contentLayout: LinearLayout = parent
     val spacer = createStatusBarSpacer(activity, statusBarColorRes)
     contentLayout.addView(spacer, 0)
 
@@ -65,14 +71,20 @@ object EdgeToEdgeHelper {
    * Applies edge-to-edge insets for activities where the [toolbar] is wrapped in an app-bar
    * `LinearLayout` or `AppBarLayout` (e.g. AppLanguage, FAQ). Paints the wrapper with
    * [statusBarColorRes] and adds top padding equal to the status-bar inset; cutout-horizontal
-   * and navigation-bar-bottom padding is applied to `android.R.id.content`.
+   * and navigation-bar-bottom padding is applied to `android.R.id.content`. Same fallback as
+   * [applyToToolbarContainer] when the parent is not a `LinearLayout`.
    */
   fun applyToAppBarLayout(
     activity: AppCompatActivity,
     toolbar: Toolbar,
     @ColorRes statusBarColorRes: Int
   ) {
-    val appBarLayout = toolbar.parent as LinearLayout
+    val parent = toolbar.parent as View
+    if (parent !is LinearLayout) {
+      applyAsTopBar(activity, toolbar, statusBarColorRes)
+      return
+    }
+    val appBarLayout: LinearLayout = parent
     appBarLayout.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
     val contentRoot = activity.findViewById<View>(android.R.id.content)
 
@@ -132,6 +144,36 @@ object EdgeToEdgeHelper {
       )
       insets
     }
+  }
+
+  // Used when the toolbar's parent is not a LinearLayout (e.g. ConstraintLayout). A spacer
+  // at index 0 doesn't work without constraints, so paint the toolbar itself and pad its top
+  // by the status-bar inset. Cutout / nav-bar padding goes on android.R.id.content.
+  private fun applyAsTopBar(
+    activity: AppCompatActivity,
+    topBar: View,
+    @ColorRes statusBarColorRes: Int
+  ) {
+    topBar.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
+    val contentRoot = activity.findViewById<View>(android.R.id.content)
+
+    ViewCompat.setOnApplyWindowInsetsListener(topBar) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.updatePadding(top = bars.top)
+      insets
+    }
+    ViewCompat.setOnApplyWindowInsetsListener(contentRoot) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.setPadding(bars.left, 0, bars.right, bars.bottom)
+      insets
+    }
+
+    disableDecorAncestorFits(activity)
+    applyRootInsetsIfAvailable(topBar) { bars ->
+      topBar.updatePadding(top = bars.top)
+      contentRoot.setPadding(bars.left, 0, bars.right, bars.bottom)
+    }
+    disableNavBarContrast(activity)
   }
 
   private fun createStatusBarSpacer(
