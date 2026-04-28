@@ -189,6 +189,9 @@ class TestFontScaleConfigurationUtilActivityTest {
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE)
     ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
       scenario.recreate()
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -205,6 +208,9 @@ class TestFontScaleConfigurationUtilActivityTest {
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE)
     ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
       scenario.recreate()
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -221,6 +227,9 @@ class TestFontScaleConfigurationUtilActivityTest {
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE)
     ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
       scenario.recreate()
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -237,6 +246,9 @@ class TestFontScaleConfigurationUtilActivityTest {
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
     ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
       scenario.recreate()
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -267,8 +279,10 @@ class TestFontScaleConfigurationUtilActivityTest {
     launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
     ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
       scenario.recreate()
-      // Verify that an unspecified text size still defaults to the medium text size after recreate.
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(context.resources.getDimension(R.dimen.font_scale_content_text_size))
