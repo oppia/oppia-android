@@ -55,11 +55,11 @@ class ImageRepairer {
     val image = imageData.inputStream().use { ImageIO.read(it) }
       ?: error("Failed to read image data (extension: $extension, size: ${imageData.size} bytes)")
     if (!image.colorModel.hasAlpha()) return false
-    for (y in 0 until image.height) {
-      for (x in 0 until image.width) {
-        val alpha = (image.getRGB(x, y) shr 24) and 0xff
-        if (alpha < FULLY_OPAQUE_ALPHA) return true
-      }
+    val pixels =
+      image.getRGB(0, 0, image.width, image.height, /* rgbArray = */ null, 0, image.width)
+    for (pixel in pixels) {
+      val alpha = (pixel shr 24) and 0xff
+      if (alpha < FULLY_OPAQUE_ALPHA) return true
     }
     return false
   }
