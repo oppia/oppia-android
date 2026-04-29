@@ -37,8 +37,8 @@ import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestStat
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicContentProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicListProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestTopicSummaryProtoVersion
-import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.android.scripts.proto.DownloadConfig
+import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.api.ClientCompatibilityContextDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.StructureTypeCase.CONCEPT_CARD
@@ -130,7 +130,12 @@ class GaeAndroidEndpointJsonImpl(
           forcedVersions = forcedVersions
         )
       converterInitializer = ConverterInitializer(
-        activityService, coroutineDispatcher, topicDependencies, imageDownloader, downloadConfig, filterInvalidTopics
+        activityService,
+        coroutineDispatcher,
+        topicDependencies,
+        imageDownloader,
+        downloadConfig,
+        filterInvalidTopics
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -761,7 +766,9 @@ class GaeAndroidEndpointJsonImpl(
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
     private suspend fun initializeLocalizationTracker(): LocalizationTracker =
-      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also { this.localizationTracker = it }
+      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also {
+        this.localizationTracker = it
+      }
 
     private suspend fun initializeJsonToProtoConverter(): JsonToProtoConverter {
       return JsonToProtoConverter(getLocalizationTracker(), topicDependencies).also {
@@ -773,7 +780,11 @@ class GaeAndroidEndpointJsonImpl(
       constraints: CompatibilityConstraints
     ): TopicPackRepository {
       return TopicPackRepository(
-        activityService, coroutineDispatcher, getLocalizationTracker(), constraints, filterInvalidTopics
+        activityService,
+        coroutineDispatcher,
+        getLocalizationTracker(),
+        constraints,
+        filterInvalidTopics
       )
     }
   }

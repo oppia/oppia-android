@@ -259,11 +259,12 @@ class LessonDownloader(
     val downloadDeferred = CoroutineScope(coroutineDispatcher).async {
       downloadAllLessons(outputDir, failOnError)
     }
-    val exceptionResult = runBlocking {
-      runCatching { downloadDeferred.await() }.also { shutdownBlocking() }
-    }
-    if (exceptionResult.isFailure) {
-      throw IllegalStateException("Failed to download lessons.", exceptionResult.exceptionOrNull())
+    try {
+      runBlocking { downloadDeferred.await() }
+    } catch (e: Exception) {
+      throw IllegalStateException("Failed to download lessons.", e)
+    } finally {
+      shutdownBlocking()
     }
   }
 
@@ -786,6 +787,20 @@ class LessonDownloader(
       }
     }
 
+    val transparentImages = memoizedLoadedImageData.filter { (file, data) ->
+      imageRepairer.hasTransparentPixels(data, file.extension)
+    }.keys.toList()
+    println()
+    println(
+      "Transparent image check: ${transparentImages.size} image(s) found with transparency."
+    )
+    if (transparentImages.isNotEmpty()) {
+      println("Images with transparent pixels (may cause dark mode visibility issues):")
+      transparentImages.forEach { file ->
+        println("- ${file.name}")
+      }
+    }
+
     if (renamedImages.isNotEmpty() || convertedImages.isNotEmpty()) {
       println("WARNING: Images needed to be auto-fixed. Please verify that they are correct")
       println("(look at above output for specific images that require verification).")
@@ -793,7 +808,8 @@ class LessonDownloader(
 
     val hasAnyFailure = (
       issues.isNotEmpty() || imageDownloadFailures.isNotEmpty() ||
-        renamedImages.isNotEmpty() || convertedImages.isNotEmpty()
+        renamedImages.isNotEmpty() || convertedImages.isNotEmpty() ||
+        transparentImages.isNotEmpty()
       )
     if (hasAnyFailure && failOnError) {
       throw Exception(

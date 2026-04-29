@@ -644,12 +644,20 @@ class LocalizationTracker private constructor(
       Regex("<\\s*$CUSTOM_IMG_TAG.+?$CUSTOM_IMG_FILE_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
     }
     private val customMathTagRegex by lazy {
-      Regex("<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
+      Regex(
+        "<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\""
+      )
     }
     val VALID_LANGUAGE_TYPES = LanguageType.values().filter { it.isValid() }
 
-    suspend fun createTracker(imageDownloader: ImageDownloader, downloadConfig: DownloadConfig): LocalizationTracker =
-      LocalizationTracker(OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig)
+    suspend fun createTracker(
+      imageDownloader: ImageDownloader,
+      downloadConfig: DownloadConfig
+    ): LocalizationTracker {
+      return LocalizationTracker(
+        OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig
+      )
+    }
 
     fun String.resolveLanguageCode(): LanguageType {
       return when (lowercase()) {
@@ -696,14 +704,19 @@ class LocalizationTracker private constructor(
     }
 
     private fun collectMathSourcesFromHtml(html: String): Set<String> {
-      return customMathTagRegex.findAll(html)
-        .map { it.destructured }
-        .map { (match) -> match }
-        .map { it.replace("&amp;quot;", "\"") }
-        .map { MathContentValue.parseFromHtmlValue(it) }
+      return extractMathContentsFromHtml(html)
         .map { it.svgFilename }
         .filter { it.isNotEmpty() } // Ignore incorrect missing images.
         .toSet()
+    }
+
+    fun extractMathContentsFromHtml(html: String): List<MathContentValue> {
+      return customMathTagRegex.findAll(html)
+        .map { it.destructured }
+        .map { (match) -> match.replace("&amp;quot;", "\"") }
+        .map { mathContentJson ->
+          MathContentValue.parseFromHtmlValue(mathContentJson)
+        }.toList()
     }
   }
 }

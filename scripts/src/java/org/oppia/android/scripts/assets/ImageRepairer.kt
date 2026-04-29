@@ -50,6 +50,20 @@ class ImageRepairer {
     return areImagesEqual(image1, image2)
   }
 
+  fun hasTransparentPixels(imageData: ByteArray, extension: String): Boolean {
+    if (extension.equals("svg", ignoreCase = true)) return false
+    val image = imageData.inputStream().use { ImageIO.read(it) }
+      ?: error("Failed to read image data (extension: $extension, size: ${imageData.size} bytes)")
+    if (!image.colorModel.hasAlpha()) return false
+    val pixels =
+      image.getRGB(0, 0, image.width, image.height, /* rgbArray = */ null, 0, image.width)
+    for (pixel in pixels) {
+      val alpha = (pixel shr 24) and 0xff
+      if (alpha < FULLY_OPAQUE_ALPHA) return true
+    }
+    return false
+  }
+
   sealed class RepairedImage {
     data class RenderedSvg(
       val pngContents: List<Byte>,
@@ -75,6 +89,7 @@ class ImageRepairer {
     private val WIDTH_REGEX by lazy { "width_(\\d+)".toRegex() }
     private val HEIGHT_REGEX by lazy { "height_(\\d+)".toRegex() }
     private val TRANSPARENT = Color(/* r = */ 0, /* g = */ 0, /* b = */ 0, /* a = */ 0)
+    private const val FULLY_OPAQUE_ALPHA = 255
 
     private const val REFERENCE_MONITOR_PPI = 81.589f
     private const val RELATIVE_SIZE_ADJUSTMENT_FACTOR = 0.15f

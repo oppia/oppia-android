@@ -18,6 +18,7 @@ kt_jvm_library(
     ],
     visibility = [
         "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
+        "//scripts/src/javatests/org/oppia/android/scripts/gae/compat:__pkg__",
     ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/gae/json:api",

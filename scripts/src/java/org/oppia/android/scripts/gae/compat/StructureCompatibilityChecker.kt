@@ -3,6 +3,9 @@ package org.oppia.android.scripts.gae.compat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.AudioVoiceoverHasInvalidAudioFormat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlInTitleOrDescription
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlUnexpectedlyInUnicodeContent
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagHasInvalidContent
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagMissingContent
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MathTagMissingRawLatex
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MissingRequiredXlationLangForContentTranslation
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.MissingRequiredXlationLangForTitleOrDescFromWeb
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.StateHasInvalidInteractionId
@@ -42,6 +45,7 @@ import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
+import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.parseColorRgb
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContainerId
@@ -476,6 +480,21 @@ class StructureCompatibilityChecker(
       val stateName: String,
       override val origin: ContainerId
     ) : CompatibilityFailure()
+
+    data class MathTagMissingRawLatex(
+      val contentId: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class MathTagMissingContent(
+      val contentId: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class MathTagHasInvalidContent(
+      val contentId: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
   }
 
   private fun String.checkIsValidTopicId(origin: ContainerId): List<CompatibilityFailure> {
@@ -591,7 +610,9 @@ class StructureCompatibilityChecker(
       } ?: TextHasInvalidTags(contentId, extraTags, origin)
       listOf(failure)
     } else emptyList()
-    return tagFailures + checkHasValidImageReferences(origin, contentId)
+    return tagFailures +
+      checkHasValidImageReferences(origin, contentId) +
+      checkHasValidMathTags(origin, contentId)
   }
 
   private fun String.checkHasValidImageReferences(
@@ -608,6 +629,11 @@ class StructureCompatibilityChecker(
     )
   }
 
+  private fun String.checkHasValidMathTags(
+    origin: ContainerId,
+    contentId: String
+  ): List<CompatibilityFailure> = checkMathTagsForLatex(this, origin, contentId)
+
   private fun Int.checkIsValidStateSchemaVersion(origin: ContainerId): List<CompatibilityFailure> {
     return if (this > constraints.supportedStateSchemaVersion) {
       listOf(StateSchemaVersionTooNew(schemaVersion = this, origin))
@@ -623,12 +649,41 @@ class StructureCompatibilityChecker(
     } else emptyList()
   }
 
-  private companion object {
+  companion object {
     private val HTML_PRESENCE_REGEX = "</?.+?>".toRegex()
     // This regex is a simplification of the standard: https://www.w3.org/TR/xml/#NT-NameStartChar.
     private val HTML_TAG_REGEX = "<\\s*([^\\s/>]+)[^>]*?>".toRegex()
     private val IMAGE_TAG_REGEX = "<\\s*oppia-noninteractive-image.+?>".toRegex()
     private val IMAGE_FILE_PATH_REGEX = "filepath-with-value\\s*=\\s*\"(.+?)\"".toRegex()
+    private val MATH_TAG_REGEX = "<\\s*oppia-noninteractive-math\\b[^>]*?>".toRegex()
+    private val MATH_CONTENT_REGEX = "math_content-with-value\\s*=\\s*\"(.+?)\"".toRegex()
+
+    fun checkMathTagsForLatex(
+      html: String,
+      origin: ContainerId,
+      contentId: String
+    ): List<CompatibilityFailure> {
+      return MATH_TAG_REGEX.findAll(html).mapNotNull { tagMatch ->
+        val tag = tagMatch.value
+        if (MATH_CONTENT_REGEX.find(tag) == null) {
+          return@mapNotNull MathTagMissingContent(contentId, origin)
+        }
+
+        val parsedMathContents = try {
+          extractMathContentsFromHtml(tag)
+        } catch (_: IllegalStateException) {
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        }
+        if (parsedMathContents.size != 1) {
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        }
+        val parsedMathContent = parsedMathContents.single()
+
+        if (parsedMathContent.rawLatex.isBlank()) {
+          MathTagMissingRawLatex(contentId, origin)
+        } else null
+      }.toList()
+    }
 
     private fun String.checkTitleOrDescTextForHtml(
       origin: ContainerId
