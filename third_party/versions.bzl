@@ -32,7 +32,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.compose.ui:ui": "1.1.1",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
     "androidx.core:core": "1.9.0",
-   "androidx.core:core-ktx": "1.9.0",
+    "androidx.core:core-ktx": "1.9.0",
     "androidx.databinding:databinding-adapters": "3.4.2",
     "androidx.databinding:databinding-common": "3.4.2",
     "androidx.databinding:databinding-compiler": "3.4.2",
