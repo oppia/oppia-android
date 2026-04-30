@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.View
@@ -200,6 +201,9 @@ class AdminPinActivityTest {
         val boldSpans =
           (warningText as Spanned).getSpans(0, warningText.length, StyleSpan::class.java)
         assertThat(boldSpans).isNotEmpty()
+        val hasBoldStyle =
+          boldSpans.any { it.style == Typeface.BOLD || it.style == Typeface.BOLD_ITALIC }
+        assertThat(hasBoldStyle).isTrue()
       }
     }
   }
