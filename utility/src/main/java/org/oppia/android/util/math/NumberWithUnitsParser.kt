@@ -194,8 +194,7 @@ class NumberWithUnitsParser private constructor(
       if (tokens.peek() is Token.DivideSymbol) {
         tokens.next() // consume '/'
         parseDenominatorExp().map { denomUnits ->
-          allUnits.addAll(denomUnits)
-          allUnits
+          allUnits + denomUnits
         }
       } else {
         NumberWithUnitsParsingResult.Success(allUnits)
@@ -359,8 +358,8 @@ class NumberWithUnitsParser private constructor(
 
   /** Parses a currency prefix token and returns it as a [NumberUnitExpression] with exponent 1. */
   private fun parseCurrencyPrefixUnit(): NumberUnitExpression? {
-    val rawUnit = (tokens.peek() as? Token.Unit)?.unit ?: return null
-    val currencyUnit = when (rawUnit) {
+    val token = tokens.peek() as? Token.Unit ?: return null
+    val currencyUnit = when (token.unit) {
       "$" -> NumberUnitExpression.Unit.DOLLAR
       "₹", "Rs" -> NumberUnitExpression.Unit.RUPEE
       else -> return null
@@ -369,14 +368,8 @@ class NumberWithUnitsParser private constructor(
     return createUnitExpression(currencyUnit)
   }
 
-  private fun parsePrefixableBaseUnit(token: Token?): NumberUnitExpression.Unit? {
-    val unit = parseAnyUnit(token) ?: return null
-    return if (unit.isPrefixable()) unit else null
-  }
-
-  private fun parseAnyUnit(token: Token?): NumberUnitExpression.Unit? {
-    val raw = (token as? Token.Unit)?.unit ?: return null
-    return when (raw) {
+  private fun parseAnyUnit(token: Token.Unit): NumberUnitExpression.Unit? {
+    return when (token.unit) {
       "m", "meter", "meters" -> NumberUnitExpression.Unit.METER
       "m2" -> NumberUnitExpression.Unit.SQUARE_METER
       "m3" -> NumberUnitExpression.Unit.CUBIC_METER
@@ -453,8 +446,7 @@ class NumberWithUnitsParser private constructor(
   }
 
   private fun isAtSuffixUnit(): Boolean {
-    val token = tokens.peek() ?: return false
-    return token is Token.Unit || parseAnyUnit(token) != null
+    return tokens.peek() is Token.Unit
   }
 
   private fun NumberUnitExpression.Unit.isCurrencyUnit(): Boolean =
@@ -464,8 +456,8 @@ class NumberWithUnitsParser private constructor(
       this == NumberUnitExpression.Unit.PAISA
 
   private fun Token?.isCurrencyPrefixToken(): Boolean {
-    val rawUnit = (this as? Token.Unit)?.unit ?: return false
-    return rawUnit == "$" || rawUnit == "₹" || rawUnit == "Rs"
+    if (this !is Token.Unit) return false
+    return unit == "$" || unit == "₹" || unit == "Rs"
   }
 
   private fun createUnitExpression(
