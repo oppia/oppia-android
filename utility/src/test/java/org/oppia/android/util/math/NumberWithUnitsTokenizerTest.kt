@@ -27,7 +27,6 @@ class NumberWithUnitsTokenizerTest {
   @Test
   fun testTokenize_emptyString_producesNoTokens() {
     val tokens = NumberWithUnitsTokenizer.tokenize("").toList()
-
     assertThat(tokens).isEmpty()
   }
 
@@ -215,7 +214,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[0]).isUnitWithRawValue(input.substringBefore(" "))
     assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(expected.toInt())
   }
 
@@ -229,7 +228,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isRupeeSuffixUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -242,7 +241,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isPaisaSuffixUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -250,7 +249,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("$12.5").toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isDollarPrefixUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("$")
     assertThat(tokens[1]).isPositiveRealNumberWhoseValue().isEqualTo(12.5)
   }
 
@@ -265,7 +264,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isDollarSuffixUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -279,7 +278,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCentSuffixUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -291,7 +290,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -299,11 +298,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Meters", "input=20 Meters")
   fun testTokenize_incorrectMeterUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
-    assertThat(tokens).isNotEmpty()
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
-    assertThat(tokens[2]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -315,7 +313,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isInchUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -324,10 +322,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Inches", "input=20 Inches")
   fun testTokenize_incorrectInchUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
-    assertThat(tokens).isNotEmpty()
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -339,7 +337,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isFootUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -348,13 +346,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Feet", "input=20 Feet")
   fun testTokenize_incorrectFootUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
-    assertThat(tokens).isNotEmpty()
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -366,8 +361,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isYardUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("20 Yd", "input=20 Yd")
@@ -376,9 +372,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectYardUnits_parsesYottaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
-    assertThat(tokens).isNotEmpty()
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue("Y")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -390,7 +386,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isGramUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -399,8 +395,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectGramUnits_parsesGigaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue("G")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -412,7 +409,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isGrainUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -422,9 +419,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectGrainUnits_parsesGigaPrefixAndRemaining() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isSiPrefixWithValue("G")
-    assertThat(tokens[2]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -436,7 +433,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isOunceUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -446,8 +443,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectOunceUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -456,17 +454,16 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSquareMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m2")
   }
 
   @Test
-  fun testTokenize_incorrectSquareMeterUnits_parsesMegaPrefixAndInteger() {
+  fun testTokenize_incorrectSquareMeterUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 M2").toList()
 
-    assertThat(tokens).hasSize(3)
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
-    assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[1]).isUnitWithRawValue("M2")
   }
 
   @Test
@@ -477,7 +474,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSquareFootUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -486,8 +483,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectSquareFootUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -498,7 +496,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSquareYardUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -507,8 +505,9 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_incorrectSquareYardUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -517,16 +516,17 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCubicMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m3")
   }
 
+
   @Test
-  fun testTokenize_incorrectCubicMeterUnits_parsesMegaPrefixAndInteger() {
+  fun testTokenize_incorrectCubicMeterUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 M3").toList()
 
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
-    assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(3)
+    assertThat(tokens[1]).isUnitWithRawValue("M3")
   }
 
   @Test
@@ -542,8 +542,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isLiterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 Litre", "input=10 Litre")
@@ -553,9 +554,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Lt", "input=10 Lt")
   fun testTokenize_incorrectLiterUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -564,17 +566,17 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCubicCentimeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("cc")
   }
+
 
   @Test
   fun testTokenize_incorrectCubicCentimeterUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 CC").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    tokens.drop(1).forEach {
-      assertThat(it).isInvalidToken()
-    }
+    assertThat(tokens[1]).isUnitWithRawValue("CC")
   }
 
   @Test
@@ -583,17 +585,17 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCubicInchUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("cuin")
   }
+
 
   @Test
   fun testTokenize_incorrectCubicInchUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuin").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
-    assertThat(tokens[3]).isInchUnit() // in
+    assertThat(tokens[1]).isUnitWithRawValue("Cuin")
   }
 
   @Test
@@ -602,17 +604,16 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCubicFootUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("cuft")
   }
 
   @Test
   fun testTokenize_incorrectCubicFootUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuft").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
-    assertThat(tokens[3]).isFootUnit() // ft
+    assertThat(tokens[1]).isUnitWithRawValue("Cuft") // u
   }
 
   @Test
@@ -621,17 +622,16 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCubicYardUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("cuyd")
   }
 
   @Test
   fun testTokenize_incorrectCubicYardUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuyd").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken() // C
-    assertThat(tokens[2]).isSiPrefixWithValue("u") // u
-    assertThat(tokens[3]).isYardUnit() // yd
+    assertThat(tokens[1]).isUnitWithRawValue("Cuyd")
   }
 
   @Test
@@ -642,15 +642,16 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(310.15)
-    assertThat(tokens[1]).isKelvinUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
   fun testTokenize_incorrectKelvinUnits_uppercaseKelvin_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("310.15 Kelvin").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(310.15)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue("Kelvin")
   }
 
   @Test
@@ -661,18 +662,18 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(37)
-    assertThat(tokens[1]).isCelsiusUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
-  @Iteration("37 °C", "input=37 °C")
   @Iteration("37 C", "input=37 C")
   @Iteration("37 Celsius", "input=37 Celsius")
   fun testTokenize_incorrectCelsiusUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(37)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -684,7 +685,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isRadianUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -692,9 +693,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Radian", "input=10 Radian")
   fun testTokenize_incorrectRadianUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -706,19 +708,20 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isDegreeUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 Deg", "input=10 Deg")
   @Iteration("10 Degree", "input=10 Degree")
   @Iteration("10 Degrees", "input=10 Degrees")
-  @Iteration("10 °", "input=10 °")
   fun testTokenize_incorrectDegreeUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -732,8 +735,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSecondUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 S", "input=10 S")
@@ -741,9 +745,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Seconds", "input=10 Seconds")
   fun testTokenize_incorrectSecondUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -757,7 +762,6 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
-    assertThat(tokens[1]).isMinuteUnit()
   }
 
   @Test
@@ -766,9 +770,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Minutes", "input=10 Minutes")
   fun testTokenize_incorrectMinuteUnits_parsesMegaPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -779,10 +784,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 hours", "input=10 hours")
   fun testTokenize_correctHourUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isHourUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -792,9 +797,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Hours", "input=10 Hours")
   fun testTokenize_incorrectHourUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -802,28 +808,29 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 hertz", "input=10 hertz")
   fun testTokenize_correctHertzUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isHertzUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   fun testTokenize_incorrectHertzUnits_hz_parsesHourUnitAndZeptoPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 hz").toList()
-
-    assertThat(tokens).hasSize(3)
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isHourUnit()
-    assertThat(tokens[2]).isSiPrefixWithValue("z")
+    assertThat(tokens[1]).isUnitWithRawValue("hz")
   }
 
   @Test
   fun testTokenize_incorrectHertzUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Hertz").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue("Hertz")
   }
 
   @Test
@@ -832,10 +839,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 moles", "input=10 moles")
   fun testTokenize_correctMoleUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isMoleUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -844,10 +851,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Moles", "input=10 Moles")
   fun testTokenize_incorrectMoleUnits_parsesMegaPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
-    assertThat(tokens[2]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -855,10 +862,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 candela", "input=10 candela")
   fun testTokenize_correctCandelaUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isCandelaUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -867,9 +874,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Candela", "input=10 Candela")
   fun testTokenize_incorrectCandelaUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -877,18 +885,19 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 newton", "input=10 newton")
   fun testTokenize_correctNewtonUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
   fun testTokenize_incorrectNewtonUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Newton").toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue("Newton")
   }
 
   @Test
@@ -897,10 +906,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 joules", "input=10 joules")
   fun testTokenize_correctJouleUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isJouleUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -909,9 +918,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Joules", "input=10 Joules")
   fun testTokenize_incorrectJouleUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -920,10 +930,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("100 watts", "input=100 watts")
   fun testTokenize_correctWattUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -931,29 +941,32 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("100 Watts", "input=100 Watts")
   fun testTokenize_incorrectWattUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
   @Iteration("100 Pa", "input=100 Pa")
   fun testTokenize_correctPascalUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isPascalUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("100 pa", "input=100 pa")
   @Iteration("100 pascal", "input=100 pascal")
   fun testTokenize_incorrectPascalUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -962,20 +975,22 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 amperes", "input=10 amperes")
   fun testTokenize_correctAmpereUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isAmpereUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 Ampere", "input=10 Ampere")
   @Iteration("10 Amperes", "input=10 Amperes")
   fun testTokenize_incorrectAmpereUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -984,11 +999,12 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 volts", "input=10 volts")
   fun testTokenize_correctVoltUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isVoltUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 v", "input=10 v")
@@ -996,9 +1012,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Volts", "input=10 Volts")
   fun testTokenize_incorrectVoltUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1006,21 +1023,22 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 ohms", "input=10 ohms")
   fun testTokenize_correctOhmUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isOhmUnit()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
+
 
   @Test
   @Iteration("10 Ohm", "input=10 Ohm")
   @Iteration("10 Ohms", "input=10 Ohms")
-  @Iteration("10 Ω", "input=10 Ω")
   fun testTokenize_incorrectOhmUnits_parsesInvalidToken() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isInvalidToken()
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1028,22 +1046,21 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 da", "input=10 da")
   fun testTokenize_deca_parsesDecaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("da")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
   @Iteration("10 hecto", "input=10 hecto")
-  // Note: "h" is also the symbol for hour
-  // @Iteration("10 h", "input=10 h")
+  @Iteration("10 h", "input=10 h")
   fun testTokenize_hecto_parsesHectoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("h")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1051,10 +1068,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 k", "input=10 k")
   fun testTokenize_kilo_parsesKiloSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1062,10 +1079,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 M", "input=10 M")
   fun testTokenize_mega_parsesMegaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("M")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1073,10 +1090,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 G", "input=10 G")
   fun testTokenize_giga_parsesGigaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("G")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1084,10 +1101,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 T", "input=10 T")
   fun testTokenize_tera_parsesTeraSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("T")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1095,10 +1112,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 P", "input=10 P")
   fun testTokenize_peta_parsesPetaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("P")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1106,10 +1123,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 E", "input=10 E")
   fun testTokenize_exa_parsesExaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("E")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1117,10 +1134,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Z", "input=10 Z")
   fun testTokenize_zetta_parsesZettaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("Z")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1128,10 +1145,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Y", "input=10 Y")
   fun testTokenize_yotta_parsesYottaSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("Y")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1139,10 +1156,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 d", "input=10 d")
   fun testTokenize_deci_parsesDeciSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("d")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1150,22 +1167,21 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 c", "input=10 c")
   fun testTokenize_centi_parsesCentiSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("c")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
   @Iteration("10 milli", "input=10 milli")
-  // Note: "m" is also the symbol for meter
-  // @Iteration("10 m", "input=10 m")
+  @Iteration("10 m", "input=10 m")
   fun testTokenize_milli_parsesMilliSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("m")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1173,10 +1189,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 u", "input=10 u")
   fun testTokenize_micro_parsesMicroSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("u")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1184,10 +1200,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 n", "input=10 n")
   fun testTokenize_nano_parsesNanoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("n")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1195,10 +1211,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 p", "input=10 p")
   fun testTokenize_pico_parsesPicoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("p")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1206,10 +1222,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 f", "input=10 f")
   fun testTokenize_femto_parsesFemtoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("f")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1217,10 +1233,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 a", "input=10 a")
   fun testTokenize_atto_parsesAttoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("a")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1228,10 +1244,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 z", "input=10 z")
   fun testTokenize_zepto_parsesZeptoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("z")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1239,10 +1255,10 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 y", "input=10 y")
   fun testTokenize_yocto_parsesYoctoSiPrefix() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
-
+    
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("y")
+    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
   }
 
   @Test
@@ -1251,8 +1267,8 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(9.8)
-    assertThat(tokens[1]).isMeterUnit()
-    assertThat(tokens[2]).isSecondUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[2]).isUnitWithRawValue("s")
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isMinusSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
@@ -1264,21 +1280,20 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
   }
 
   @Test
   fun testTokenize_velocityKilometerPerHour_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("100 km/h").toList()
 
-    assertThat(tokens).hasSize(5)
+    assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isMeterUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isHourUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("km")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("h")
   }
 
   @Test
@@ -1287,9 +1302,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(9.8)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1300,9 +1315,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(20)
-    assertThat(tokens[1]).isDollarSuffixUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("dollars")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1312,10 +1327,10 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("$ 20 / m^2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isDollarPrefixUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("$")
     assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(20)
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1325,10 +1340,10 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 /m^2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("₹")
     assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(100)
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1338,9 +1353,9 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 m^-2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isRupeePrefixUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("₹")
     assertThat(tokens[1]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[2]).isUnitWithRawValue("m")
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isMinusSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
@@ -1350,14 +1365,13 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_kilogramPerMeterPerSecond_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / m / s").toList()
 
-    assertThat(tokens).hasSize(7)
+    assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isMeterUnit()
-    assertThat(tokens[5]).isDivideSymbol()
-    assertThat(tokens[6]).isSecondUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isDivideSymbol()
+    assertThat(tokens[5]).isUnitWithRawValue("s")
   }
 
   @Test
@@ -1366,43 +1380,41 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("N")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isDivideSymbol()
-    assertThat(tokens[5]).isSecondUnit()
+    assertThat(tokens[5]).isUnitWithRawValue("s")
   }
 
   @Test
   fun testTokenize_kilogramPerMeterTimesSecondWithParentheses_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / (m * s)").toList()
 
-    assertThat(tokens).hasSize(9)
+    assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isLeftParenthesisSymbol()
-    assertThat(tokens[5]).isMeterUnit()
-    assertThat(tokens[6]).isMultiplySymbol()
-    assertThat(tokens[7]).isSecondUnit()
-    assertThat(tokens[8]).isRightParenthesisSymbol()
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
+    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[5]).isMultiplySymbol()
+    assertThat(tokens[6]).isUnitWithRawValue("s")
+    assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
   @Test
   fun testTokenize_jouleWithUnitProductInParentheses_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("50 J / (kg * K)").toList()
 
-    assertThat(tokens).hasSize(9)
+    assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(50)
-    assertThat(tokens[1]).isJouleUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("J")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isSiPrefixWithValue("k")
-    assertThat(tokens[5]).isGramUnit()
-    assertThat(tokens[6]).isMultiplySymbol()
-    assertThat(tokens[7]).isKelvinUnit()
-    assertThat(tokens[8]).isRightParenthesisSymbol()
+    assertThat(tokens[4]).isUnitWithRawValue("kg")
+    assertThat(tokens[5]).isMultiplySymbol()
+    assertThat(tokens[6]).isUnitWithRawValue("K")
+    assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
   @Test
@@ -1411,14 +1423,14 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(10)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("W")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[4]).isUnitWithRawValue("m")
     assertThat(tokens[5]).isExponentiationSymbol()
     assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
     assertThat(tokens[7]).isMultiplySymbol()
-    assertThat(tokens[8]).isKelvinUnit()
+    assertThat(tokens[8]).isUnitWithRawValue("K")
     assertThat(tokens[9]).isRightParenthesisSymbol()
   }
 
@@ -1426,17 +1438,16 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_realNumberWithBracketedUnitsAndExponent_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("12.50 (kg * m)^-3").toList()
 
-    assertThat(tokens).hasSize(10)
+    assertThat(tokens).hasSize(9)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(12.50)
     assertThat(tokens[1]).isLeftParenthesisSymbol()
-    assertThat(tokens[2]).isSiPrefixWithValue("k")
-    assertThat(tokens[3]).isGramUnit()
-    assertThat(tokens[4]).isMultiplySymbol()
-    assertThat(tokens[5]).isMeterUnit()
-    assertThat(tokens[6]).isRightParenthesisSymbol()
-    assertThat(tokens[7]).isExponentiationSymbol()
-    assertThat(tokens[8]).isMinusSymbol()
-    assertThat(tokens[9]).isPositiveIntegerWhoseValue().isEqualTo(3)
+    assertThat(tokens[2]).isUnitWithRawValue("kg")
+    assertThat(tokens[3]).isMultiplySymbol()
+    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[5]).isRightParenthesisSymbol()
+    assertThat(tokens[6]).isExponentiationSymbol()
+    assertThat(tokens[7]).isMinusSymbol()
+    assertThat(tokens[8]).isPositiveIntegerWhoseValue().isEqualTo(3)
   }
 
   @Test
@@ -1445,9 +1456,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
     assertThat(tokens[4]).isRightParenthesisSymbol()
     assertThat(tokens[5]).isExponentiationSymbol()
     assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
@@ -1460,7 +1471,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
     assertThat(tokens[1]).isLeftParenthesisSymbol()
-    assertThat(tokens[2]).isMeterUnit()
+    assertThat(tokens[2]).isUnitWithRawValue("m")
     assertThat(tokens[3]).isRightParenthesisSymbol()
     assertThat(tokens[4]).isRightParenthesisSymbol()
   }
@@ -1469,34 +1480,32 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_complexNestedExpression_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("5 kg / ((m * s) * K)").toList()
 
-    assertThat(tokens).hasSize(13)
+    assertThat(tokens).hasSize(12)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isLeftParenthesisSymbol()
     assertThat(tokens[4]).isLeftParenthesisSymbol()
-    assertThat(tokens[5]).isLeftParenthesisSymbol()
-    assertThat(tokens[6]).isMeterUnit()
-    assertThat(tokens[7]).isMultiplySymbol()
-    assertThat(tokens[8]).isSecondUnit()
-    assertThat(tokens[9]).isRightParenthesisSymbol()
-    assertThat(tokens[10]).isMultiplySymbol()
-    assertThat(tokens[11]).isKelvinUnit()
-    assertThat(tokens[12]).isRightParenthesisSymbol()
+    assertThat(tokens[5]).isUnitWithRawValue("m")
+    assertThat(tokens[6]).isMultiplySymbol()
+    assertThat(tokens[7]).isUnitWithRawValue("s")
+    assertThat(tokens[8]).isRightParenthesisSymbol()
+    assertThat(tokens[9]).isMultiplySymbol()
+    assertThat(tokens[10]).isUnitWithRawValue("K")
+    assertThat(tokens[11]).isRightParenthesisSymbol()
   }
 
   @Test
   fun testTokenize_densityKilogramPerCubicMeter_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("1000 kg/m^3").toList()
 
-    assertThat(tokens).hasSize(7)
+    assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isMeterUnit()
-    assertThat(tokens[5]).isExponentiationSymbol()
-    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(3)
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(3)
   }
 
   @Test
@@ -1505,9 +1514,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.7)
-    assertThat(tokens[1]).isGramUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("g")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isCubicCentimeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("cc")
   }
 
   @Test
@@ -1516,7 +1525,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(101325)
-    assertThat(tokens[1]).isPascalUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("Pa")
   }
 
   @Test
@@ -1525,9 +1534,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("N")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1538,9 +1547,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(1.7)
-    assertThat(tokens[1]).isOhmUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("ohm")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
   }
 
   @Test
@@ -1549,9 +1558,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(500)
-    assertThat(tokens[1]).isVoltUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("V")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
   }
 
   @Test
@@ -1560,9 +1569,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
-    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("W")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1571,12 +1580,11 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_energyKilowattHour_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("500 kW * h").toList()
 
-    assertThat(tokens).hasSize(5)
+    assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(500)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isWattUnit()
-    assertThat(tokens[3]).isMultiplySymbol()
-    assertThat(tokens[4]).isHourUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("kW")
+    assertThat(tokens[2]).isMultiplySymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("h")
   }
 
   @Test
@@ -1585,19 +1593,18 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("N")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
   }
 
   @Test
   fun testTokenize_frequencyKilohertz_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("2.4 kHz").toList()
 
-    assertThat(tokens).hasSize(3)
+    assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.4)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isHertzUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("kHz")
   }
 
   @Test
@@ -1606,9 +1613,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(3.14)
-    assertThat(tokens[1]).isRadianUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("rad")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
   }
 
   @Test
@@ -1617,9 +1624,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(2.5)
-    assertThat(tokens[1]).isRadianUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("rad")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1630,9 +1637,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(0.5)
-    assertThat(tokens[1]).isMoleUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("mol")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isLiterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("L")
   }
 
   @Test
@@ -1641,9 +1648,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(18)
-    assertThat(tokens[1]).isGramUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("g")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMoleUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("mol")
   }
 
   @Test
@@ -1652,9 +1659,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1000)
-    assertThat(tokens[1]).isCandelaUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("cd")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1663,37 +1670,33 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_milligramPerMilliliter_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("5 milligram/millilitre").toList()
 
-    assertThat(tokens).hasSize(6)
+    assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(5)
-    assertThat(tokens[1]).isSiPrefixWithValue("m")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isSiPrefixWithValue("m")
-    assertThat(tokens[5]).isLiterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("milligram")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("millilitre")
   }
 
   @Test
   fun testTokenize_microgramPerLiter_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("100 ug/l").toList()
 
-    assertThat(tokens).hasSize(5)
+    assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(100)
-    assertThat(tokens[1]).isSiPrefixWithValue("u")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isLiterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("ug")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("l")
   }
 
   @Test
   fun testTokenize_nanometerPerSecond_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("50 nm/s").toList()
 
-    assertThat(tokens).hasSize(5)
+    assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(50)
-    assertThat(tokens[1]).isSiPrefixWithValue("n")
-    assertThat(tokens[2]).isMeterUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isSecondUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("nm")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
   }
 
   @Test
@@ -1702,9 +1705,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(14.7)
-    assertThat(tokens[1]).isOunceUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("oz")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isInchUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("in")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1715,9 +1718,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(60)
-    assertThat(tokens[1]).isYardUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("yd")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isHourUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("h")
   }
 
   @Test
@@ -1726,9 +1729,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(32)
-    assertThat(tokens[1]).isFootUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("ft")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
@@ -1737,28 +1740,26 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_compoundUnitWithExtraWhitespace_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("  10   kg  /  m  ^  2  ").toList()
 
-    assertThat(tokens).hasSize(7)
+    assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isMeterUnit()
-    assertThat(tokens[5]).isExponentiationSymbol()
-    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
 
   @Test
   fun testTokenize_compoundUnitWithNoWhitespace_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10kg/m^2").toList()
 
-    assertThat(tokens).hasSize(7)
+    assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
-    assertThat(tokens[1]).isSiPrefixWithValue("k")
-    assertThat(tokens[2]).isGramUnit()
-    assertThat(tokens[3]).isDivideSymbol()
-    assertThat(tokens[4]).isMeterUnit()
-    assertThat(tokens[5]).isExponentiationSymbol()
-    assertThat(tokens[6]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isDivideSymbol()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isExponentiationSymbol()
+    assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
 
   @Test
@@ -1767,7 +1768,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(10)
   }
@@ -1778,7 +1779,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isMinusSymbol()
     assertThat(tokens[4]).isPositiveIntegerWhoseValue().isEqualTo(10)
@@ -1790,11 +1791,11 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(9)
     assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(1)
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(2)
     assertThat(tokens[4]).isMultiplySymbol()
-    assertThat(tokens[5]).isSecondUnit()
+    assertThat(tokens[5]).isUnitWithRawValue("s")
     assertThat(tokens[6]).isExponentiationSymbol()
     assertThat(tokens[7]).isMinusSymbol()
     assertThat(tokens[8]).isPositiveIntegerWhoseValue().isEqualTo(1)
@@ -1810,7 +1811,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[2]).isPositiveIntegerWhoseValue().isEqualTo(10)
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isPositiveIntegerWhoseValue().isEqualTo(23)
-    assertThat(tokens[5]).isMoleUnit()
+    assertThat(tokens[5]).isUnitWithRawValue("mol")
     assertThat(tokens[6]).isExponentiationSymbol()
     assertThat(tokens[7]).isMinusSymbol()
     assertThat(tokens[8]).isPositiveIntegerWhoseValue().isEqualTo(1)
@@ -1831,7 +1832,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
-    assertThat(tokens[1]).isMeterUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("m")
   }
 
   @Test
@@ -1839,7 +1840,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m)").toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("m")
     assertThat(tokens[1]).isRightParenthesisSymbol()
   }
 
@@ -1847,18 +1848,17 @@ class NumberWithUnitsTokenizerTest {
   fun testTokenize_gravitationalConstant_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("6.674 N * m^2 / kg^2").toList()
 
-    assertThat(tokens).hasSize(11)
+    assertThat(tokens).hasSize(10)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(6.674)
-    assertThat(tokens[1]).isNewtonUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("N")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isMeterUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWhoseValue().isEqualTo(2)
     assertThat(tokens[6]).isDivideSymbol()
-    assertThat(tokens[7]).isSiPrefixWithValue("k")
-    assertThat(tokens[8]).isGramUnit()
-    assertThat(tokens[9]).isExponentiationSymbol()
-    assertThat(tokens[10]).isPositiveIntegerWhoseValue().isEqualTo(2)
+    assertThat(tokens[7]).isUnitWithRawValue("kg")
+    assertThat(tokens[8]).isExponentiationSymbol()
+    assertThat(tokens[9]).isPositiveIntegerWhoseValue().isEqualTo(2)
   }
 
   @Test
@@ -1867,12 +1867,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(4.186)
-    assertThat(tokens[1]).isJouleUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("J")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isGramUnit()
+    assertThat(tokens[4]).isUnitWithRawValue("g")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isCelsiusUnit()
+    assertThat(tokens[6]).isUnitWithRawValue("degC")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1882,12 +1882,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveRealNumberWhoseValue().isEqualTo(0.6)
-    assertThat(tokens[1]).isWattUnit()
+    assertThat(tokens[1]).isUnitWithRawValue("W")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isMeterUnit()
+    assertThat(tokens[4]).isUnitWithRawValue("m")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isKelvinUnit()
+    assertThat(tokens[6]).isUnitWithRawValue("K")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1906,7 +1906,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m^^2").toList()
 
     assertThat(tokens).hasSize(4)
-    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("m")
     assertThat(tokens[1]).isExponentiationSymbol()
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWhoseValue().isEqualTo(2)
@@ -1917,9 +1917,20 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m//s").toList()
 
     assertThat(tokens).hasSize(4)
-    assertThat(tokens[0]).isMeterUnit()
+    assertThat(tokens[0]).isUnitWithRawValue("m")
     assertThat(tokens[1]).isDivideSymbol()
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isSecondUnit()
+    assertThat(tokens[3]).isUnitWithRawValue("s")
+  }
+
+  @Test
+  @Iteration("10 °C", "input=10 °C")
+  @Iteration("10 °", "input=10 °")
+  @Iteration("10 Ω", "input=10 Ω")
+  fun testTokenize_unknownSymbols_parsesInvalidToken() {
+    val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
+    
+    assertThat(tokens[0]).isPositiveIntegerWhoseValue().isEqualTo(10)
+    assertThat(tokens[1]).isInvalidToken()
   }
 }
