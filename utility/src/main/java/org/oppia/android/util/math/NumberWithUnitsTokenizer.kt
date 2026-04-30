@@ -157,6 +157,7 @@ class NumberWithUnitsTokenizer private constructor() {
       return rawUnitToken(input, startIndex, chars.getRetrievalCount())
     }
 
+    /** Represents a token for parsing a number with units. */
     sealed class Token {
       /** The (inclusive) index in the input stream at which point this token begins. */
       abstract val startIndex: Int

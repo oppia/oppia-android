@@ -551,6 +551,10 @@ class NumberWithUnitsParser private constructor(
       operation(result)?.toFailure() ?: this
     }
 
+    /**
+     * Map of metric/SI prefix abbreviated and full names to their corresponding
+     * [NumberUnitExpression.SiPrefix] enum values.
+     */
     val SI_PREFIX_MAP = mapOf(
       "da" to NumberUnitExpression.SiPrefix.DECA,
       "deca" to NumberUnitExpression.SiPrefix.DECA,
