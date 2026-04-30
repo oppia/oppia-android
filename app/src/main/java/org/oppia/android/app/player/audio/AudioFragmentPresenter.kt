@@ -58,6 +58,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
+  private var lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -222,7 +223,54 @@ class AudioFragmentPresenter @Inject constructor(
     audioViewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
+    maybeLoadMainContentAudio(allowAutoPlay, reloadingContent)
+
+  private fun getCurrentProdConnectionStatusOrNull(): NetworkConnectionUtil.ProdConnectionStatus? {
+    return when (val currentConnectionStatus = networkConnectionUtil.getCurrentConnectionStatus()) {
+      is NetworkConnectionUtil.ProdConnectionStatus -> currentConnectionStatus
+      else -> null
+    }
+  }
+
+  private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
+    val currentConnectionStatus = getCurrentProdConnectionStatusOrNull()
+      ?: run {
+        lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
+        audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+        return
+      }
+    val previousConnectionStatus = lastKnownConnectionStatus
+    val hasConnectionStatusChanged = previousConnectionStatus != currentConnectionStatus
+
+    if (reloadingContent) {
+      when (currentConnectionStatus) {
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+          if (hasConnectionStatusChanged) {
+            showOfflineDialog()
+          }
+          // Always abort reload attempts while offline to avoid getting stuck in loading state.
+          audioViewModel.abortPendingLoad()
+          lastKnownConnectionStatus = currentConnectionStatus
+          return
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+          if (
+            hasConnectionStatusChanged &&
+            previousConnectionStatus == NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+          ) {
+            showCellularDataDialogFragment()
+            return
+          }
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+          // no-op : no action needed for LOCAL connection
+        }
+      }
+    }
+
+    lastKnownConnectionStatus = currentConnectionStatus
     audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+  }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
     audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
