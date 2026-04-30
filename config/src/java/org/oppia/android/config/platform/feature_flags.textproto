@@ -76,5 +76,5 @@ feature_flag_definition {
 feature_flag_definition {
   id: EDGE_TO_EDGE
   remote_server_name: "android_enable_edge_to_edge"
-  default_is_enabled: true
+  default_is_enabled: false
 }
