@@ -29,7 +29,7 @@ private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 15L
 private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
 /** Elapsed time displayer that shows running time of the script. */
-class ElapsedTimeDisplayer(
+private class ElapsedTimeDisplayer(
   private val coroutineScope: CoroutineScope,
   private val timeProvider: () -> Long = { System.currentTimeMillis() }
 ) {
@@ -324,7 +324,6 @@ class LintOrchestrator(
         commandExecutor = commandExecutor,
         exemptionProtoPath = exemptionProtoPath,
         groupByIssueSeverity = groupByIssueSeverity,
-        timer = timer,
         reportUnusedEnum = reportUnusedEnum,
         listChecks = isListChecksMode,
         checks = explicitChecks,
@@ -349,7 +348,7 @@ class LintOrchestrator(
    * Fails if any checks are missing from the catalog (newly added by a lint upgrade) or
    * if the catalog contains checks that the registry doesn't recognize (removed/renamed).
    */
-  fun runCheckScriptConsistency() {
+  private fun runCheckScriptConsistency() {
     println("Running check-script-consistency mode...")
 
     val registryChecks = loadLintRegistryChecks()
@@ -380,7 +379,7 @@ class LintOrchestrator(
    * @param catalogChecks the checks in [LintCheckCatalog]
    * @throws IllegalStateException if the catalog is out of sync
    */
-  fun validateCatalogConsistency(
+  private fun validateCatalogConsistency(
     linterChecks: Set<String>,
     catalogChecks: Set<String>
   ) {
@@ -429,7 +428,6 @@ class LintOrchestrator(
  * @param workingDirectory the temporary working directory for lint analysis
  * @param commandExecutor executes the specified command in the specified working directory
  * @param groupByIssueSeverity whether to group issues by severity in the output
- * @param timer optional elapsed time displayer for showing progress
  */
 class AndroidLintAnalyzer(
   private val repoRoot: File,
@@ -437,7 +435,6 @@ class AndroidLintAnalyzer(
   private val commandExecutor: CommandExecutor,
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
-  private val timer: ElapsedTimeDisplayer? = null,
   private val reportUnusedEnum: Boolean = true,
   private val listChecks: Boolean = false,
   private val checks: List<String> = emptyList(),
@@ -460,7 +457,6 @@ class AndroidLintAnalyzer(
       repoRoot = repoRoot,
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
-      timer = timer,
       reportUnusedEnum = reportUnusedEnum,
       listChecks = listChecks
     )
@@ -515,7 +511,7 @@ class AndroidLintAnalyzer(
  * preventing hangs by enforcing a timeout and interrupting the process if
  * it fails to complete.
  */
-class LintTimeoutWrapper(
+private class LintTimeoutWrapper(
   private val cliArgs: Array<String>,
   private val timeoutMinutes: Long
 ) {
@@ -581,7 +577,7 @@ class LintTimeoutWrapper(
  * @param timer optional elapsed time displayer for clearing display lines
  * @param reportUnusedEnum whether to report unused exemptions in the output
  */
-class AndroidLintRunner(
+private class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
   private val repoRoot: File,
