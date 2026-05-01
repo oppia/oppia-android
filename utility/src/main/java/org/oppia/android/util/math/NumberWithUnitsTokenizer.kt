@@ -145,13 +145,7 @@ class NumberWithUnitsTokenizer private constructor() {
      */
     private fun tokenizeUnit(input: String, chars: PeekableIterator<Char>): Token {
       val startIndex = chars.getRetrievalCount()
-      while (
-        chars.peek()?.let {
-          it in 'a'..'z' ||
-            it in 'A'..'Z' ||
-            it in '2'..'3' // Needed to tokenize units like m2 and m3
-        } == true
-      ) {
+      while (chars.peek() in VALID_UNIT_CHARACTERS) {
         chars.next()
       }
       return rawUnitToken(input, startIndex, chars.getRetrievalCount())
@@ -284,5 +278,14 @@ class NumberWithUnitsTokenizer private constructor() {
       }
       return true
     }
+
+    /**
+     * The set of characters that are valid within a unit token.
+     *
+     * This includes all ASCII letters (both cases) and the digits '2' and '3'
+     * which are needed to tokenize units like m2 (square meter) and m3 (cubic meter).
+     */
+    private val VALID_UNIT_CHARACTERS: Set<Char> =
+      ('a'..'z').toSet() + ('A'..'Z').toSet() + setOf('2', '3')
   }
 }
