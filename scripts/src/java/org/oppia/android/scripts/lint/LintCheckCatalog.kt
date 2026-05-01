@@ -1,8 +1,5 @@
 package org.oppia.android.scripts.lint
 
-import com.android.tools.lint.checks.BuiltinIssueRegistry
-import com.android.tools.lint.client.api.LintClient
-
 /**
  * Catalog of all lint checks known to the version of Android Lint used by this project.
  *
@@ -518,41 +515,46 @@ object LintCheckCatalog {
   }
 
   /**
-   * The complete set of check IDs from the lint JAR's [BuiltinIssueRegistry].
+   * Checks that are suppressed regardless of analysis mode, for project-specific reasons.
    *
-   * This is the authoritative source of truth for what checks are available at runtime.
-   * Unlike `lint --list` (which only reports ~152 checks), the registry includes all
-   * dynamically-loaded checks. The consistency mode validates that [allKnownChecks]
-   * matches this set.
+   * These are not part of the four categorization buckets — they are an orthogonal overlay
+   * that ensures certain checks are always disabled whether running fast or full mode.
    */
-  val registryChecks: Set<String> by lazy {
-    // LintClient.clientName must be initialized before BuiltinIssueRegistry can be
-    // instantiated, because some detectors (e.g. AssertDetector) check
-    // LintClient.isStudio() during static class initialization.
-    try {
-      LintClient.clientName
-    } catch (e: UninitializedPropertyAccessException) {
-      LintClient.clientName = LintClient.CLIENT_CLI
-    }
-    BuiltinIssueRegistry().issues.map { it.id }.toSet()
-  }
+  val checksAlwaysDisabled: Set<String> = setOf(
+    // Managed via TranslateWiki; safe to suppress in lint reports.
+    "MissingTranslation",
+    // Gradle-specific; project has migrated to Bazel so this is never applicable.
+    "GradleOverrides",
+    // Fixing requires tedious lambda refactoring; suppression preferred.
+    "SyntheticAccessor",
+    // Context-specific translations can legitimately differ; this is a false positive here.
+    "DuplicateStrings",
+    // TextViews are intentionally non-selectable to avoid user interaction conflicts.
+    "SelectableText",
+    // TODO(#5887): Re-enable once the AAR/JAR files issue is fixed.
+    "UnusedResources",
+    "UnusedAttribute",
+    "UnknownNullness",
+    "MergeRootFrame",
+    "OldTargetApi"
+  )
 
   /**
    * Returns the set of check IDs to disable when running a full analysis.
    *
-   * In full mode, no checks are disabled. All lint checks run against the full project
-   * definition. Gradle-specific checks are safe to run since there are no .gradle files
-   * in this Bazel project — they will naturally produce no findings.
+   * In full mode, only project-specific suppressed checks are disabled. All categorized
+   * lint checks run against the full project definition. Gradle-specific checks produce
+   * no findings since there are no .gradle files in this Bazel project.
    */
-  fun computeChecksToDisableInFullRun(): Set<String> = emptySet()
+  fun computeChecksToDisableInFullRun(): Set<String> = checksAlwaysDisabled
 
   /**
    * Returns the set of check IDs to disable when running an incremental analysis.
    *
-   * In incremental mode, Gradle-specific checks and project-scoped checks are disabled
-   * since project-scoped checks require full cross-file context that isn't available
-   * when analyzing only changed files.
+   * In incremental mode, project-specific suppressions, Gradle-specific checks, and
+   * project-scoped checks are all disabled since project-scoped checks require full
+   * cross-file context that isn't available when analyzing only changed files.
    */
   fun computeChecksToDisableInIncrementalRun(): Set<String> =
-    gradleChecksToIgnore + checksRequiringFullProject
+    checksAlwaysDisabled + gradleChecksToIgnore + checksRequiringFullProject
 }

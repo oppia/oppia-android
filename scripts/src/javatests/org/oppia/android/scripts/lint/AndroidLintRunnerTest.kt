@@ -77,7 +77,8 @@ class AndroidLintRunnerTest {
       workingDirectory = workingDirectory,
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
       repoRoot = tempFolder.root,
-      reportUnusedEnum = false
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
     fakeTime = 0L
@@ -120,8 +121,8 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testLintMode_validModeNames_containsAllModes() {
-    val names = LintMode.validModeNames()
+  fun testLintMode_argumentNames_containsAllModes() {
+    val names = LintMode.values().map { it.argumentName }
 
     assertThat(names).containsExactly(
       "fast", "full", "list-checks", "check-script-consistency"

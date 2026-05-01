@@ -1,6 +1,8 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import com.android.tools.lint.checks.BuiltinIssueRegistry
+import com.android.tools.lint.client.api.LintClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -110,29 +112,19 @@ private fun Long.toFormattedDuration(): String {
 }
 
 /** Execution modes for the lint script. */
-enum class LintMode {
+enum class LintMode(val argumentName: String) {
   /** Runs checks on only changed files, skipping project-scoped checks. */
-  FAST,
+  FAST("fast"),
   /** Runs the entire suite of checks with the full project description. */
-  FULL,
+  FULL("full"),
   /** Lists all available lint checks and exits. */
-  LIST_CHECKS,
+  LIST_CHECKS("list-checks"),
   /** Compares LintCheckCatalog against the linter's actual check list. */
-  CHECK_SCRIPT_CONSISTENCY;
+  CHECK_SCRIPT_CONSISTENCY("check-script-consistency");
 
   companion object {
     /** Parses a mode string (from --mode=) into a [LintMode], or null if invalid. */
-    fun fromString(value: String): LintMode? = when (value) {
-      "fast" -> FAST
-      "full" -> FULL
-      "list-checks" -> LIST_CHECKS
-      "check-script-consistency" -> CHECK_SCRIPT_CONSISTENCY
-      else -> null
-    }
-
-    /** Returns all valid mode strings for display in error messages. */
-    fun validModeNames(): List<String> =
-      listOf("fast", "full", "list-checks", "check-script-consistency")
+    fun fromString(value: String): LintMode? = values().find { it.argumentName == value }
   }
 }
 
@@ -183,7 +175,8 @@ fun main(vararg args: String) {
       ?.substringAfter("=") ?: "full"
     val mode = LintMode.fromString(modeStr)
       ?: error(
-        "Invalid mode: $modeStr. Valid modes: ${LintMode.validModeNames().joinToString(", ")}"
+        "Invalid mode: $modeStr. " +
+          "Valid modes: ${LintMode.values().joinToString(", ") { it.argumentName }}"
       )
 
     val processTimeout = args.find { it.startsWith("--processTimeout=") }
@@ -275,6 +268,10 @@ class LintOrchestrator(
   /**
    * Retrieves the set of changed `.kt` and `.java` files compared to the develop branch.
    *
+   * Note: This diffs against `develop` by default. In a multi-PR chain this will include
+   * changes from earlier branches, not just the current branch. This is generally fine
+   * because the full-mode CI run always analyzes the complete project regardless.
+   *
    * Uses [GitClient] to diff against develop, then filters locally by file extension.
    */
   fun retrieveChangedSourceFiles(): Set<String> {
@@ -309,7 +306,7 @@ class LintOrchestrator(
           "Running linter in 'full' mode with all repository files."
         LintMode.LIST_CHECKS ->
           "Running linter in 'list-checks' mode."
-        else -> ""
+        else -> error("Unexpected mode in runAnalysis: $mode")
       }
       println(modeDescription)
 
@@ -348,16 +345,32 @@ class LintOrchestrator(
    * Runs the check-script-consistency mode.
    *
    * Compares the catalog's manually-curated [LintCheckCatalog.allKnownChecks] against the
-   * authoritative [LintCheckCatalog.registryChecks] (sourced from [BuiltinIssueRegistry]).
+   * authoritative check list sourced from [BuiltinIssueRegistry].
    * Fails if any checks are missing from the catalog (newly added by a lint upgrade) or
    * if the catalog contains checks that the registry doesn't recognize (removed/renamed).
    */
   fun runCheckScriptConsistency() {
     println("Running check-script-consistency mode...")
 
-    val registryChecks = LintCheckCatalog.registryChecks
+    val registryChecks = loadLintRegistryChecks()
     val catalogChecks = LintCheckCatalog.allKnownChecks
     validateCatalogConsistency(registryChecks, catalogChecks)
+  }
+
+  /**
+   * Loads the complete set of check IDs from the lint JAR's [BuiltinIssueRegistry].
+   *
+   * [LintClient.clientName] must be initialized before [BuiltinIssueRegistry] can be
+   * instantiated, because some detectors (e.g. AssertDetector) check [LintClient.isStudio()]
+   * during static class initialization.
+   */
+  private fun loadLintRegistryChecks(): Set<String> {
+    try {
+      LintClient.clientName
+    } catch (e: UninitializedPropertyAccessException) {
+      LintClient.clientName = LintClient.CLIENT_CLI
+    }
+    return BuiltinIssueRegistry().issues.map { it.id }.toSet()
   }
 
   /**
@@ -396,7 +409,9 @@ class LintOrchestrator(
 
     if (failed) {
       throw IllegalStateException(
-        "LintCheckCatalog is out of sync with the linter. See above for details."
+        "LintCheckCatalog is out of sync with the linter. See above for details.\n" +
+          "For instructions on updating the catalog, see the Android Lint Check wiki: " +
+          "https://github.com/oppia/oppia-android/wiki/Android-Lint-Check"
       )
     }
 
@@ -432,25 +447,6 @@ class AndroidLintAnalyzer(
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
     private const val LINT_REPORT_FILE = "lint-report.xml"
-
-    private val suppressLintIssues = setOf(
-      // Managed via TranslateWiki, safe to suppress in lint reports.
-      "MissingTranslation",
-      // Gradle-specific; not relevant since project has migrated to Bazel.
-      "GradleOverrides",
-      // Fixing requires tedious lambda refactoring; suppression preferred.
-      "SyntheticAccessor",
-      // Allowed since context-specific translations may differ; false positive in lint.
-      "DuplicateStrings",
-      // TextViews are kept non-selectable to avoid conflicts with user interactions.
-      "SelectableText",
-      // TODO(#5887): Re-enable below checks once the AAR/JAR files issue is fixed.
-      "UnusedResources",
-      "UnusedAttribute",
-      "UnknownNullness",
-      "MergeRootFrame",
-      "OldTargetApi"
-    )
   }
 
   private val reportFile = File(workingDirectory, LINT_REPORT_FILE)
@@ -478,7 +474,7 @@ class AndroidLintAnalyzer(
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
       kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion),
-      suppressLintIssues = suppressLintIssues + additionalDisabledChecks,
+      suppressLintIssues = additionalDisabledChecks,
       listChecks = listChecks,
       checks = checks
     )

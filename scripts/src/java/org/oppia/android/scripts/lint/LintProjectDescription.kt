@@ -504,8 +504,7 @@ private class SourceFileCollector(
       changedFiles == null -> collectFilesFromDirectory(sourceDir)
       changedFiles.isEmpty() -> emptyList()
       else -> collectFilesFromDirectory(sourceDir).filter { absolutePath ->
-        val relativePath = File(absolutePath).relativeTo(repoRoot).path
-        changedFiles.contains(relativePath)
+        File(absolutePath).relativeTo(repoRoot).path in changedFiles
       }
     }
   }

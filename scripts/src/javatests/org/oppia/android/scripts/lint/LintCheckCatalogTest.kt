@@ -1,5 +1,7 @@
 package org.oppia.android.scripts.lint
 
+import com.android.tools.lint.checks.BuiltinIssueRegistry
+import com.android.tools.lint.client.api.LintClient
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -14,20 +16,21 @@ class LintCheckCatalogTest {
   }
 
   @Test
-  fun testComputeChecksToDisableInFullRun_returnsEmptySet() {
+  fun testComputeChecksToDisableInFullRun_containsAlwaysSuppressedChecks() {
     val disabled = LintCheckCatalog.computeChecksToDisableInFullRun()
 
-    // Full mode runs all checks — nothing is disabled. Gradle-specific checks produce no
-    // findings since there are no .gradle files in this Bazel project.
-    assertThat(disabled).isEmpty()
+    // Full mode disables the project-specific always-suppressed checks.
+    assertThat(disabled).contains("MissingTranslation")
+    assertThat(disabled).contains("SyntheticAccessor")
+    assertThat(disabled).contains("DuplicateStrings")
   }
 
   @Test
-  fun testComputeChecksToDisableInFullRun_doesNotDisableAnyChecks() {
+  fun testComputeChecksToDisableInFullRun_doesNotDisableGradleChecks() {
     val disabled = LintCheckCatalog.computeChecksToDisableInFullRun()
 
-    // In full mode, even Gradle checks are allowed to run. They produce no findings
-    // because there are no .gradle files in this Bazel project.
+    // Full mode does NOT disable Gradle-specific checks (they simply produce no findings
+    // since there are no .gradle files in this Bazel project).
     assertThat(disabled).doesNotContain("GradleCompatible")
     assertThat(disabled).doesNotContain("GradleDependency")
     assertThat(disabled).doesNotContain("AndroidGradlePluginVersion")
@@ -40,9 +43,6 @@ class LintCheckCatalogTest {
     assertThat(disabled).doesNotContain("NewApi")
     assertThat(disabled).doesNotContain("HardcodedText")
     assertThat(disabled).doesNotContain("CheckResult")
-    // UnusedAttribute is an API-level compatibility check (not a custom-attr usage scanner) and
-    // runs on XML only — it does not need full sources and is not disabled in full runs.
-    assertThat(disabled).doesNotContain("UnusedAttribute")
   }
 
   @Test
@@ -71,8 +71,14 @@ class LintCheckCatalogTest {
     assertThat(disabled).doesNotContain("CutPasteId")
     // DuplicateIncludedIds is a pure XML check — no sources needed, not full project.
     assertThat(disabled).doesNotContain("DuplicateIncludedIds")
-    // UnusedAttribute is an API-level XML check (ApiDetector) — not a cross-source scanner.
-    assertThat(disabled).doesNotContain("UnusedAttribute")
+  }
+
+  @Test
+  fun testComputeChecksToDisableInIncrementalRun_containsAlwaysSuppressedChecks() {
+    val disabled = LintCheckCatalog.computeChecksToDisableInIncrementalRun()
+
+    assertThat(disabled).contains("MissingTranslation")
+    assertThat(disabled).contains("SyntheticAccessor")
   }
 
   @Test
@@ -123,24 +129,39 @@ class LintCheckCatalogTest {
 
   @Test
   fun testRegistryChecks_isNotEmpty() {
-    assertThat(LintCheckCatalog.registryChecks).isNotEmpty()
+    assertThat(loadRegistryChecks()).isNotEmpty()
   }
 
   @Test
   fun testRegistryChecks_containsMoreChecksThanLintList() {
     // BuiltinIssueRegistry includes dynamically-loaded checks that lint --list misses.
-    assertThat(LintCheckCatalog.registryChecks.size).isGreaterThan(152)
+    assertThat(loadRegistryChecks().size).isGreaterThan(152)
   }
 
   @Test
   fun testAllKnownChecks_matchesRegistryChecks() {
     val catalogChecks = LintCheckCatalog.allKnownChecks
-    val registryChecks = LintCheckCatalog.registryChecks
+    val registryChecks = loadRegistryChecks()
 
     val missingFromCatalog = registryChecks - catalogChecks
     val extraInCatalog = catalogChecks - registryChecks
 
     assertThat(missingFromCatalog).isEmpty()
     assertThat(extraInCatalog).isEmpty()
+  }
+
+  /**
+   * Loads the complete set of check IDs from [BuiltinIssueRegistry] at runtime.
+   *
+   * [LintClient.clientName] must be initialized before [BuiltinIssueRegistry] can be
+   * instantiated (some detectors check [LintClient.isStudio] during static init).
+   */
+  private fun loadRegistryChecks(): Set<String> {
+    try {
+      LintClient.clientName
+    } catch (e: UninitializedPropertyAccessException) {
+      LintClient.clientName = LintClient.CLIENT_CLI
+    }
+    return BuiltinIssueRegistry().issues.map { it.id }.toSet()
   }
 }
