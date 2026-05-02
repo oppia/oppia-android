@@ -211,9 +211,15 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testLintOrchestrator_execute_fastMode_printsFastModeDescription() {
-    fakeCommandExecutor.registerHandler("git") { _, _, outputStream, _ ->
-      outputStream.println("app/src/main/java/org/oppia/android/app/SomeFile.kt")
-      0
+    // GitClient makes multiple git calls: merge-base first (expects exactly 1 line),
+    // then diffs for committed/staged/unstaged/untracked files.
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      if (args.contains("merge-base")) {
+        // Use print() not println() — FakeCommandExecutor splits on '\n', so println would
+        // produce ["hash", ""] (2 items), failing executeGitCommandWithOneLineOutput's check.
+        outputStream.print("abc1234567890abcdef")
+      }
+      0 // all other git calls (diff, ls-files) return empty output
     }
     val orchestrator = LintOrchestrator(
       repoRoot = tempFolder.root,
@@ -233,10 +239,23 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testLintOrchestrator_retrieveChangedSourceFiles_returnsOnlyKtAndJavaFiles() {
-    fakeCommandExecutor.registerHandler("git") { _, _, outputStream, _ ->
-      outputStream.println("app/src/main/java/SomeFile.kt")
-      outputStream.println("app/src/main/java/AnotherFile.java")
-      outputStream.println("app/src/main/res/layout/activity_main.xml")
+    // GitClient calls git merge-base first (must return exactly 1 line), then diffs.
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      when {
+        args.contains("merge-base") -> {
+          // print() not println() — avoids trailing empty string in FakeCommandExecutor output.
+          outputStream.print("abc1234567890abcdef")
+        }
+        args.contains("--name-only") && args.any { it.startsWith("HEAD..") } -> {
+          // Committed files diff — join with \n but no trailing newline.
+          outputStream.print(
+            "app/src/main/java/SomeFile.kt\n" +
+              "app/src/main/java/AnotherFile.java\n" +
+              "app/src/main/res/layout/activity_main.xml"
+          )
+        }
+        // staged, unstaged, untracked: empty output — filtered automatically
+      }
       0
     }
     val orchestrator = LintOrchestrator(
