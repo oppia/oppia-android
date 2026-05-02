@@ -210,6 +210,70 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testLintOrchestrator_execute_fastMode_printsFastModeDescription() {
+    fakeCommandExecutor.registerHandler("git") { _, _, outputStream, _ ->
+      outputStream.println("app/src/main/java/org/oppia/android/app/SomeFile.kt")
+      0
+    }
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+
+    try {
+      orchestrator.execute(LintMode.FAST)
+    } catch (_: Exception) {
+      // Expected — runAnalysis fails without real bazel/lint infra.
+    }
+
+    val output = outputStream.toString()
+    assertThat(output).contains("Running linter in 'fast' mode")
+  }
+
+  @Test
+  fun testLintOrchestrator_retrieveChangedSourceFiles_returnsOnlyKtAndJavaFiles() {
+    fakeCommandExecutor.registerHandler("git") { _, _, outputStream, _ ->
+      outputStream.println("app/src/main/java/SomeFile.kt")
+      outputStream.println("app/src/main/java/AnotherFile.java")
+      outputStream.println("app/src/main/res/layout/activity_main.xml")
+      0
+    }
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+
+    val changedFiles = orchestrator.retrieveChangedSourceFiles()
+
+    assertThat(changedFiles).containsExactly(
+      "app/src/main/java/SomeFile.kt",
+      "app/src/main/java/AnotherFile.java"
+    )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withListChecksMode_completesSuccessfully() {
+    setupProjectStructure()
+    val listChecksAnalyzer = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      listChecks = true
+    )
+
+    // In list-checks mode, lint prints available checks and exits 0 without reporting issues.
+    listChecksAnalyzer.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).doesNotContain("ANDROID LINT CHECK FAILED")
+  }
+
+  @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
     setupProjectStructure()
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
