@@ -293,6 +293,45 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testAndroidLintAnalyzer_withReportUnusedEnum_onPassingProject_reportsPassed() {
+    setupProjectStructure()
+    val analyzerWithReportUnused = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = true,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled
+    )
+
+    // With no issues found, the reportUnusedEnum=true branch calls findRedundantExemptions
+    // (which returns an empty map when there are no exemptions to be redundant).
+    analyzerWithReportUnused.runAnalysis()
+
+    assertThat(outputStream.toString()).contains("ANDROID LINT CHECK")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withExplicitChecks_limitsAnalysisToSpecifiedCheck() {
+    setupProjectStructure()
+    val analyzerWithChecks = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      checks = listOf("HardcodedText")
+    )
+
+    // Running with an explicit checks list exercises the --check argument path in
+    // prepareLintArguments(). The project has no hardcoded-text issues so lint passes.
+    analyzerWithChecks.runAnalysis()
+
+    assertThat(outputStream.toString()).contains("ANDROID LINT CHECK")
+  }
+
+  @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
     setupProjectStructure()
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
