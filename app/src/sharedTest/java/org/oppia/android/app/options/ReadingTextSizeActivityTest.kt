@@ -2,6 +2,9 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -12,9 +15,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import android.text.TextUtils
-import android.view.View
-import android.widget.TextView
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
