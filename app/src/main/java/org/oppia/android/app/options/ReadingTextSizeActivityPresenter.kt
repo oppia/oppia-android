@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.app.activity.ActivityScope
@@ -27,6 +28,10 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
 
   private fun setToolbar() {
     val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar)
+    activity.setSupportActionBar(readingTextSizeToolbar)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+    val toolbarTitle: TextView = activity.findViewById(R.id.reading_text_size_toolbar_title)
+    toolbarTitle.isSelected = true
     readingTextSizeToolbar.setNavigationOnClickListener {
       activity.onBackPressedDispatcher.onBackPressed()
     }

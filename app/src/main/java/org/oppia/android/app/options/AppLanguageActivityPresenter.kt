@@ -19,6 +19,9 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       activity,
       R.layout.app_language_activity,
     )
+    activity.setSupportActionBar(binding.appLanguageToolbar)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+    binding.appLanguageToolbarTitle.isSelected = true
     binding.appLanguageToolbar.setNavigationOnClickListener { activity.finish() }
     setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {

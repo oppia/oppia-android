@@ -20,8 +20,23 @@
         android:layout_gravity="end"
         android:background="@color/component_color_shared_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Widget.AppCompat.ActionBar"
-        app:titleTextAppearance="@style/ToolbarTextAppearance" />
+        android:theme="@style/Widget.AppCompat.ActionBar">
+
+        <TextView
+          android:id="@+id/faq_list_activity_toolbar_title"
+          style="@style/ToolbarTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="marquee"
+          android:focusable="true"
+          android:focusableInTouchMode="true"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:singleLine="true"
+          android:textAlignment="viewStart"
+          android:textAppearance="@style/ToolbarTextAppearance" />
+
+      </androidx.appcompat.widget.Toolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
