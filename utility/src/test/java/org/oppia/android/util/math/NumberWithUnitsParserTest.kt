@@ -207,6 +207,632 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
+  fun testParser_newtonMeterSuffix_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("50 Nm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(50.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_jouleSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("10 Js")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(10.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("5 Ws")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(5.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_newtonMilliampere_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("7 NmA")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(7.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withSiPrefix_kilogramMeter_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("3 kgm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(3.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_numberTouchingUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("12Nm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(12.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withExponent_returnsTrailingTokensError() {
+    // "Nm^2" is ambiguous (N*m^2 vs (N*m)^2), so the parser should fail.
+    // Decomposition produces [N, m], then "^2" remains unconsumed.
+    val error = parseNumberWithUnitsExpectingFailure("5 Nm^2")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.TrailingTokensError::class.java)
+  }
+
+  @Test
+  fun testParser_compoundUnit_inDenominator_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("10 m/Ns")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(10.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withDivision_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("10 Nm/s")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(10.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_spacedEquivalent_matchesCompound() {
+    // "N m" (space-separated) should produce the same result as "Nm" (compound).
+    val spacedResult = parseNumberWithUnitsExpectingSuccess("50 N m")
+    val compoundResult = parseNumberWithUnitsExpectingSuccess("50 Nm")
+    assertThat(compoundResult).apply {
+      hasRealValueThat().isEqualTo(50.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+    assertThat(spacedResult).apply {
+      hasRealValueThat().isEqualTo(50.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_completelyInvalid_returnsInvalidUnitError() {
+    val error = parseNumberWithUnitsExpectingFailure("5 xyz")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.InvalidUnitError::class.java)
+    val invalidUnitError = error as NumberWithUnitsParsingError.InvalidUnitError
+    assertThat(invalidUnitError.invalidUnit).isEqualTo("xyz")
+  }
+
+  @Test
+  fun testParser_compoundUnit_partiallyInvalid_returnsError() {
+    // "Nxyz" — "N" is valid (Newton), but "xyz" cannot be resolved.
+    // Decomposition requires size > 1, so single valid prefix with invalid rest fails.
+    val error = parseNumberWithUnitsExpectingFailure("5 Nxyz")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError::class.java)
+  }
+
+  @Test
+  fun testParser_compoundUnit_singleCharUnit_noDecomposition_parsesCorrectly() {
+    // Single-char tokens like "N" should still parse normally (no decomposition needed).
+    val result = parseNumberWithUnitsExpectingSuccess("10 N")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(10.0)
+      hasUnitCountThat().isEqualTo(1)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_mixedSpacedAndCompound_parsesCorrectly() {
+    // "Nm kg" — compound "Nm" followed by space-separated "kg".
+    val result = parseNumberWithUnitsExpectingSuccess("3 Nm kg")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(3.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_pascalAbbrevWithSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("100 Pas")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(100.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withCurrencyPrefix_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("$100 Nm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(100.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasPrefixThat().apply {
+        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_voltAmpere_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("220 VA")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(220.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_negativeNumber_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("-5 Nm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(-5.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_realNumber_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("3.14 Nm")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(3.14)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_fractionValue_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("1/2 Nm")
+    assertThat(result).apply {
+      hasFractionValueThat().apply {
+        hasNegativePropertyThat().isFalse()
+        hasWholeNumberThat().isEqualTo(0)
+        hasNumeratorThat().isEqualTo(1)
+        hasDenominatorThat().isEqualTo(2)
+      }
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_jouleKelvin_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("8 JK")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(8.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattMeter_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("12 Wm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(12.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_voltSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("6 Vs")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(6.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_pascalMeter_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("20 Pam")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(20.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_ampereSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("15 As")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(15.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_hertzSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("44 Hzs")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(44.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.HERTZ)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_kelvinMeter_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("300 Km")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(300.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_threeUnits_jouleKelvinSecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("2 JKs")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(2.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.KELVIN)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattAmpere_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("9 WA")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(9.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_voltAmpereNoSpace_parsesCorrectly() {
+    // Number touching compound unit without any space.
+    val result = parseNumberWithUnitsExpectingSuccess("110VA")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(110.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattKilogram_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("50 Wkg")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(50.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.WATT)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_jouleMillisecond_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("4 Jms")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(4.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasExponentThat().isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_pascalSecond_withDivision_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("10 Pas/m")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(10.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.PASCAL)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_voltMeter_inDenominator_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("5 A/Vm")
+    assertThat(result).apply {
+      hasRealValueThat().isEqualTo(5.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.AMPERE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.VOLT)
+        hasExponentThat().isEqualTo(-1)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattSecond_spacedEquivalent_matchesCompound() {
+    val spacedResult = parseNumberWithUnitsExpectingSuccess("5 W s")
+    val compoundResult = parseNumberWithUnitsExpectingSuccess("5 Ws")
+    assertThat(spacedResult).apply {
+      hasRealValueThat().isEqualTo(5.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+    assertThat(compoundResult).apply {
+      hasRealValueThat().isEqualTo(5.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_voltAmpere_spacedEquivalent_matchesCompound() {
+    val spacedResult = parseNumberWithUnitsExpectingSuccess("220 V A")
+    val compoundResult = parseNumberWithUnitsExpectingSuccess("220 VA")
+    assertThat(spacedResult).apply {
+      hasRealValueThat().isEqualTo(220.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+    assertThat(compoundResult).apply {
+      hasRealValueThat().isEqualTo(220.0)
+      hasUnitCountThat().isEqualTo(2)
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_jouleSecond_withExponent_returnsTrailingTokensError() {
+    val error = parseNumberWithUnitsExpectingFailure("5 Js^2")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.TrailingTokensError::class.java)
+  }
+
+  @Test
+  fun testParser_compoundUnit_wattPartiallyInvalid_returnsError() {
+    val error = parseNumberWithUnitsExpectingFailure("5 Wxyz")
+    assertThat(error).isInstanceOf(NumberWithUnitsParsingError::class.java)
+  }
+
+  @Test
   fun testParser_rupeeSuffix_parsesCorrectly() {
     val result = parseNumberWithUnitsExpectingSuccess("100 rupees")
     assertThat(result).apply {

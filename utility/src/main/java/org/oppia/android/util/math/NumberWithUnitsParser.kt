@@ -241,22 +241,48 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseUnitsMultiplied(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
     val units = mutableListOf<NumberUnitExpression>()
-    return parseUnitWithExponent().flatMap { firstUnit ->
-      units.add(firstUnit)
+    return parseUnitsFromNextToken().flatMap { firstUnits ->
+      units.addAll(firstUnits)
 
       var currentResult: NumberWithUnitsParsingResult<Unit> =
         NumberWithUnitsParsingResult.Success(Unit)
       // Continue consuming units while we see suffix units (but not '/', ')' or end)
       while (isAtSuffixUnit() && !currentResult.isFailure()) {
         currentResult = currentResult.flatMap {
-          parseUnitWithExponent().map { nextUnit ->
-            units.add(nextUnit)
+          parseUnitsFromNextToken().map { nextUnits ->
+            units.addAll(nextUnits)
             Unit
           }
         }
       }
       currentResult.map { units }
     }
+  }
+
+  /**
+   * Parses a single unit token, returning one or more [NumberUnitExpression]s.
+   *
+   * First attempts standard single-unit parsing (with optional exponent). If that fails due to
+   * an unrecognized unit, attempts to decompose the token into multiple known units.
+   */
+  private fun parseUnitsFromNextToken(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
+    val singleResult = parseUnitWithExponent()
+    if (singleResult !is NumberWithUnitsParsingResult.Failure) {
+      return singleResult.map { listOf(it) }
+    }
+
+    // Single-unit parsing failed. Try decomposing compound unit tokens.
+    val token = tokens.peek()
+    if (token is Token.Unit) {
+      val decomposed = tryDecomposeCompoundUnit(token.unit, token)
+      if (decomposed != null && decomposed.size > 1) {
+        tokens.next() // Consume the compound token.
+        return NumberWithUnitsParsingResult.Success(decomposed)
+      }
+    }
+
+    // Return the original single-unit error.
+    return NumberWithUnitsParsingResult.Failure(singleResult.error)
   }
 
   /**
@@ -292,6 +318,73 @@ class NumberWithUnitsParser private constructor(
         parsedUnit.toBuilder().setExponent(finalExponent).build()
       )
     }
+  }
+
+  /**
+   * Attempts to decompose a compound unit string into a list of individual [NumberUnitExpression]s.
+   *
+   * Each substring is first tried as a plain unit, then as an SI-prefix and base unit combination.
+   *
+   * @param unitStr the unit string to decompose
+   * @param originalToken the original [Token.Unit] (used for index tracking)
+   * @return the list of resolved units, or null if decomposition is not possible
+   */
+  private fun tryDecomposeCompoundUnit(
+    unitStr: String,
+    originalToken: Token.Unit
+  ): List<NumberUnitExpression>? {
+    if (unitStr.isEmpty()) return emptyList()
+
+    // Try longest prefix first to find the best match.
+    for (len in unitStr.length downTo 1) {
+      val candidate = unitStr.substring(0, len)
+      val resolved = resolveUnitSubstring(candidate, originalToken)
+      if (resolved != null) {
+        val remaining = unitStr.substring(len)
+        val remainingToken = Token.Unit(
+          remaining, originalToken.startIndex + len, originalToken.endIndex
+        )
+        val rest = tryDecomposeCompoundUnit(remaining, remainingToken)
+        if (rest != null) return listOf(resolved) + rest
+      }
+    }
+    return null
+  }
+
+  /**
+   * Tries to resolve a unit substring as either a plain unit or an SI-prefix and base unit.
+   *
+   * @param candidate the substring to resolve
+   * @param originalToken the original token (for index computation)
+   * @return the resolved [NumberUnitExpression], or null if not resolvable
+   */
+  private fun resolveUnitSubstring(
+    candidate: String,
+    originalToken: Token.Unit
+  ): NumberUnitExpression? {
+    val syntheticToken = Token.Unit(
+      candidate, originalToken.startIndex, originalToken.startIndex + candidate.length
+    )
+
+    // Try as a plain unit first.
+    val plainUnit = parseAnyUnit(syntheticToken)
+    if (plainUnit != null) return createUnitExpression(plainUnit)
+
+    // Try as SI-prefix and base unit.
+    val siPrefixIndex = syntheticToken.extractUnitStartIndex()
+    if (siPrefixIndex > 0 && siPrefixIndex < candidate.length) {
+      val siPrefixStr = candidate.substring(0, siPrefixIndex)
+      val siPrefix = parseSiPrefix(siPrefixStr)
+      val baseUnitStr = candidate.substring(siPrefixIndex)
+      val baseToken = Token.Unit(
+        baseUnitStr, syntheticToken.startIndex + siPrefixIndex, syntheticToken.endIndex
+      )
+      val baseUnit = parseAnyUnit(baseToken)
+      if (baseUnit != null && baseUnit.isPrefixable() && siPrefix != null) {
+        return createUnitExpression(baseUnit, siPrefix = siPrefix)
+      }
+    }
+    return null
   }
 
   /**
