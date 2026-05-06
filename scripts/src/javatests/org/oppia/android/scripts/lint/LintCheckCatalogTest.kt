@@ -132,7 +132,6 @@ class LintCheckCatalogTest {
     assertThat(loadRegistryChecks()).isNotEmpty()
   }
 
-
   @Test
   fun testAllKnownChecks_matchesRegistryChecks() {
     val catalogChecks = LintCheckCatalog.allKnownChecks
