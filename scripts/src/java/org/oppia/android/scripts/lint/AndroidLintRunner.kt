@@ -112,7 +112,7 @@ private fun Long.toFormattedDuration(): String {
 }
 
 /** Execution modes for the lint script. */
-enum class LintMode(val argumentName: String) {
+private enum class LintMode(val argumentName: String) {
   /** Runs checks on only changed files, skipping project-scoped checks. */
   FAST("fast"),
   /** Runs the entire suite of checks with the full project description. */
@@ -173,11 +173,6 @@ fun main(vararg args: String) {
 
     val modeStr = args.find { it.startsWith("--mode=") }
       ?.substringAfter("=") ?: "full"
-    val mode = LintMode.fromString(modeStr)
-      ?: error(
-        "Invalid mode: $modeStr. " +
-          "Valid modes: ${LintMode.values().joinToString(", ") { it.argumentName }}"
-      )
 
     val processTimeout = args.find { it.startsWith("--processTimeout=") }
       ?.substringAfter("=")
@@ -213,7 +208,7 @@ fun main(vararg args: String) {
         explicitChecks = checks
       )
 
-      orchestrator.execute(mode)
+      orchestrator.execute(modeStr)
     }
   } catch (e: Exception) {
     e.printStackTrace()
@@ -249,19 +244,26 @@ class LintOrchestrator(
 ) {
 
   /**
-   * Executes lint in the specified [mode].
+   * Executes lint in the specified mode.
    *
-   * @param mode the [LintMode] to run
+   * @param mode the mode string to run — one of `"fast"`, `"full"`, `"list-checks"`,
+   *   or `"check-script-consistency"`
+   * @throws IllegalArgumentException if [mode] is not a recognised lint mode
    */
-  fun execute(mode: LintMode) {
-    when (mode) {
+  fun execute(mode: String) {
+    val lintMode = LintMode.fromString(mode)
+      ?: throw IllegalArgumentException(
+        "Invalid lint mode: '$mode'. " +
+          "Valid modes: ${LintMode.values().joinToString(", ") { it.argumentName }}"
+      )
+    when (lintMode) {
       LintMode.CHECK_SCRIPT_CONSISTENCY -> runCheckScriptConsistency()
-      LintMode.LIST_CHECKS -> runAnalysis(mode, changedFiles = null)
+      LintMode.LIST_CHECKS -> runAnalysis(lintMode, changedFiles = null)
       LintMode.FAST -> {
         val changedFiles = retrieveChangedSourceFiles()
-        runAnalysis(mode, changedFiles)
+        runAnalysis(lintMode, changedFiles)
       }
-      LintMode.FULL -> runAnalysis(mode, changedFiles = null)
+      LintMode.FULL -> runAnalysis(lintMode, changedFiles = null)
     }
   }
 
@@ -364,11 +366,11 @@ class LintOrchestrator(
    * during static class initialization.
    */
   private fun loadLintRegistryChecks(): Set<String> {
-    try {
-      LintClient.clientName
-    } catch (e: UninitializedPropertyAccessException) {
-      LintClient.clientName = LintClient.CLIENT_CLI
-    }
+    // Always set clientName unconditionally. Some detectors (e.g. AssertDetector) check
+    // LintClient.isStudio() during static class initialization when BuiltinIssueRegistry is
+    // instantiated, so clientName must be set before that happens. Setting it to CLIENT_CLI
+    // is always safe and idempotent.
+    LintClient.clientName = LintClient.CLIENT_CLI
     return BuiltinIssueRegistry().issues.map { it.id }.toSet()
   }
 

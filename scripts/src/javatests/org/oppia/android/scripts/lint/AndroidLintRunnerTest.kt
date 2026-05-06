@@ -85,38 +85,98 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testLintMode_fromString_fast_returnsFast() {
-    assertThat(LintMode.fromString("fast")).isEqualTo(LintMode.FAST)
-  }
-
-  @Test
-  fun testLintMode_fromString_full_returnsFull() {
-    assertThat(LintMode.fromString("full")).isEqualTo(LintMode.FULL)
-  }
-
-  @Test
-  fun testLintMode_fromString_listChecks_returnsListChecks() {
-    assertThat(LintMode.fromString("list-checks")).isEqualTo(LintMode.LIST_CHECKS)
-  }
-
-  @Test
-  fun testLintMode_fromString_checkScriptConsistency_returnsCheckScriptConsistency() {
-    assertThat(LintMode.fromString("check-script-consistency"))
-      .isEqualTo(LintMode.CHECK_SCRIPT_CONSISTENCY)
-  }
-
-  @Test
-  fun testLintMode_fromString_invalidMode_returnsNull() {
-    assertThat(LintMode.fromString("invalid")).isNull()
-  }
-
-  @Test
-  fun testLintMode_argumentNames_containsAllModes() {
-    val names = LintMode.values().map { it.argumentName }
-
-    assertThat(names).containsExactly(
-      "fast", "full", "list-checks", "check-script-consistency"
+  fun testLintOrchestrator_execute_fastModeString_isAccepted() {
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      if (args.contains("merge-base")) outputStream.print("abc1234567890abcdef")
+      0
+    }
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
     )
+    // "fast" is a valid mode — execute() must not throw IllegalArgumentException.
+    try {
+      orchestrator.execute("fast")
+    } catch (e: IllegalArgumentException) {
+      throw AssertionError("execute(\"fast\") threw IAE: ${e.message}", e)
+    } catch (_: Exception) {
+      // Expected — lint analysis fails without real infra.
+    }
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_fullModeString_isAccepted() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    try {
+      orchestrator.execute("full")
+    } catch (e: IllegalArgumentException) {
+      throw AssertionError("execute(\"full\") threw IAE: ${e.message}", e)
+    } catch (_: Exception) { /* expected */ }
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_listChecksModeString_isAccepted() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    try {
+      orchestrator.execute("list-checks")
+    } catch (e: IllegalArgumentException) {
+      throw AssertionError("execute(\"list-checks\") threw IAE: ${e.message}", e)
+    } catch (_: Exception) { /* expected */ }
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_checkScriptConsistencyModeString_isAccepted() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    // check-script-consistency compares LintCheckCatalog against the live registry — should pass.
+    orchestrator.execute("check-script-consistency")
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_invalidModeString_throwsIllegalArgumentException() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+    val exception = assertThrows<IllegalArgumentException> {
+      orchestrator.execute("invalid-mode")
+    }
+    assertThat(exception).hasMessageThat().contains("invalid-mode")
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_allKnownModeStrings_areAccepted() {
+    // Verify that all four documented mode strings are accepted without an IAE.
+    val validModes = listOf("fast", "full", "list-checks", "check-script-consistency")
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      if (args.contains("merge-base")) outputStream.print("abc1234567890abcdef")
+      0
+    }
+    for (modeStr in validModes) {
+      val orchestrator = LintOrchestrator(
+        repoRoot = tempFolder.root,
+        commandExecutor = fakeCommandExecutor,
+        scriptBgDispatcher = scriptBgDispatcher
+      )
+      try {
+        orchestrator.execute(modeStr)
+      } catch (e: IllegalArgumentException) {
+        throw AssertionError("execute(\"$modeStr\") threw IAE unexpectedly: ${e.message}", e)
+      } catch (_: Exception) { /* expected for modes that need real infra */ }
+    }
   }
 
   @Test
@@ -128,7 +188,7 @@ class AndroidLintRunnerTest {
     )
 
     // Should not throw — the catalog is in sync with the built-in lint registry.
-    orchestrator.execute(LintMode.CHECK_SCRIPT_CONSISTENCY)
+    orchestrator.execute("check-script-consistency")
 
     val output = outputStream.toString()
     assertThat(output).contains("CHECK PASSED: LintCheckCatalog")
@@ -144,7 +204,7 @@ class AndroidLintRunnerTest {
     )
 
     try {
-      orchestrator.execute(LintMode.FULL)
+      orchestrator.execute("full")
     } catch (_: Exception) {
       // Expected — runAnalysis fails without real bazel/lint infra.
     }
@@ -162,7 +222,7 @@ class AndroidLintRunnerTest {
     )
 
     try {
-      orchestrator.execute(LintMode.LIST_CHECKS)
+      orchestrator.execute("list-checks")
     } catch (_: Exception) {
       // Expected — runAnalysis fails without real bazel/lint infra.
     }
@@ -180,7 +240,7 @@ class AndroidLintRunnerTest {
     )
 
     try {
-      orchestrator.execute(LintMode.FULL)
+      orchestrator.execute("full")
     } catch (_: Exception) {
       // Expected
     }
@@ -200,7 +260,7 @@ class AndroidLintRunnerTest {
     )
 
     try {
-      orchestrator.execute(LintMode.FULL)
+      orchestrator.execute("full")
     } catch (_: Exception) {
       // Expected
     }
@@ -228,7 +288,7 @@ class AndroidLintRunnerTest {
     )
 
     try {
-      orchestrator.execute(LintMode.FAST)
+      orchestrator.execute("fast")
     } catch (_: Exception) {
       // Expected — runAnalysis fails without real bazel/lint infra.
     }

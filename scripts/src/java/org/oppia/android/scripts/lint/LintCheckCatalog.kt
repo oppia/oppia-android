@@ -63,6 +63,9 @@ object LintCheckCatalog {
     "ButtonCase",
     "ButtonOrder",
     "ButtonStyle",
+    // Detects UTF-8 files that start with a byte-order mark (BOM). Applies to any text file
+    // (XML or source), but placed here because the check inspects raw bytes — no source-code
+    // AST context is needed. Source-file BOM is also enforced by .editorconfig / gitattributes.
     "ByteOrderMark",
     "ContentDescription",
     "CustomViewStyleable",
@@ -73,6 +76,9 @@ object LintCheckCatalog {
     "GridLayout",
     "HardcodedText",
     "InconsistentArrays",
+    // Detects Windows-style CRLF line endings. Applies to any text file (XML or source), but
+    // placed here because the check inspects raw bytes — no source-code AST context is needed.
+    // Source-file CRLF is also enforced by .gitattributes. Full mode covers all file types.
     "MangledCRLF",
     "MissingConstraints",
     "NotInterpolated",

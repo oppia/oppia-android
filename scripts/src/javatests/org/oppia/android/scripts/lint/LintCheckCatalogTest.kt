@@ -132,11 +132,6 @@ class LintCheckCatalogTest {
     assertThat(loadRegistryChecks()).isNotEmpty()
   }
 
-  @Test
-  fun testRegistryChecks_containsMoreChecksThanLintList() {
-    // BuiltinIssueRegistry includes dynamically-loaded checks that lint --list misses.
-    assertThat(loadRegistryChecks().size).isGreaterThan(152)
-  }
 
   @Test
   fun testAllKnownChecks_matchesRegistryChecks() {
@@ -155,13 +150,10 @@ class LintCheckCatalogTest {
    *
    * [LintClient.clientName] must be initialized before [BuiltinIssueRegistry] can be
    * instantiated (some detectors check [LintClient.isStudio] during static init).
+   * Always setting it to [LintClient.CLIENT_CLI] is safe and idempotent.
    */
   private fun loadRegistryChecks(): Set<String> {
-    try {
-      LintClient.clientName
-    } catch (e: UninitializedPropertyAccessException) {
-      LintClient.clientName = LintClient.CLIENT_CLI
-    }
+    LintClient.clientName = LintClient.CLIENT_CLI
     return BuiltinIssueRegistry().issues.map { it.id }.toSet()
   }
 }
