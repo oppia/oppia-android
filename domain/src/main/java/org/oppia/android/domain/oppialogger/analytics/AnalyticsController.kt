@@ -36,6 +36,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
@@ -157,14 +158,25 @@ class AnalyticsController @Inject constructor(
       this.context = context
       profileId?.let { this.profileId = it }
       resolveProfileOperation(
-        profileId, translationController::getAppLanguageSelection
-      )?.let { this.appLanguageSelection = it }
+        profileId
+      ) { translationController.getAppLanguageSelection(it.toProfileIdPreservingZero()) }
+        ?.let { this.appLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getWrittenTranslationContentLanguageSelection
-      )?.let { this.writtenTranslationLanguageSelection = it }
+        profileId
+      ) {
+        translationController.getWrittenTranslationContentLanguageSelection(
+          it.toProfileIdPreservingZero()
+        )
+      }
+        ?.let { this.writtenTranslationLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getAudioTranslationContentLanguageSelection
-      )?.let { this.audioTranslationLanguageSelection = it }
+        profileId
+      ) {
+        translationController.getAudioTranslationContentLanguageSelection(
+          it.toProfileIdPreservingZero()
+        )
+      }
+        ?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
 

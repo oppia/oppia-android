@@ -6,6 +6,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */
@@ -107,28 +108,35 @@ class ProfileTestHelper @Inject constructor(
   private fun logIntoProfile(internalProfileId: Int): DataProvider<Any?> {
     return profileManagementController.loginToProfile(
       LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+        .toProfileIdPreservingZero()
     )
   }
 
   /** Marks a profile as having finished the onboarding flow. */
   fun markProfileOnboardingEnded(profileId: LegacyProfileId): DataProvider<Any?> {
-    return profileManagementController.markProfileOnboardingEnded(profileId)
+    return profileManagementController.markProfileOnboardingEnded(
+      profileId.toProfileIdPreservingZero()
+    )
   }
 
   /** Marks a profile as having started the onboarding flow. */
   fun markProfileOnboardingStarted(profileId: LegacyProfileId): DataProvider<Any?> {
-    return profileManagementController.markProfileOnboardingStarted(profileId)
+    return profileManagementController.markProfileOnboardingStarted(
+      profileId.toProfileIdPreservingZero()
+    )
   }
 
   /** Updates the [ProfileType] of an existing profile. */
   fun updateProfileType(profileId: LegacyProfileId, profileType: ProfileType): DataProvider<Any?> {
-    return profileManagementController.updateProfileType(profileId, profileType)
+    return profileManagementController.updateProfileType(
+      profileId.toProfileIdPreservingZero(), profileType
+    )
   }
 
   /** Returns the continue button animation seen for profile. */
   fun getContinueButtonAnimationSeenStatus(profileId: LegacyProfileId): Boolean {
     return monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.getProfile(profileId)
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
     ).isContinueButtonAnimationSeen
   }
 
