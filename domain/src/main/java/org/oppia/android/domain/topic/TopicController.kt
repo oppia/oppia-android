@@ -45,6 +45,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -159,7 +160,9 @@ class TopicController @Inject constructor(
       ::combineTopicsAndTopicsProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return topicsCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_TOPICS_PROVIDER_ID
     ) { topics, locale ->
@@ -193,7 +196,9 @@ class TopicController @Inject constructor(
       ::combineStorySummaryAndStoryProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return storyCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_STORY_PROVIDER_ID
     ) { storySummary, locale -> storySummary.toEphemeral(locale) }
@@ -231,7 +236,9 @@ class TopicController @Inject constructor(
     }
 
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return chapterCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_CHAPTER_PROVIDER_ID
     ) { chapterSummary, locale -> chapterSummary.toEphemeral(locale) }
@@ -246,7 +253,7 @@ class TopicController @Inject constructor(
     skillId: String
   ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralConceptCard.newBuilder().apply {
         conceptCard = conceptCardRetriever.loadConceptCard(skillId)
@@ -268,7 +275,7 @@ class TopicController @Inject constructor(
     subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_REVISION_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralRevisionCard.newBuilder().apply {
         revisionCard = retrieveReviewCard(topicId, subtopicId)
@@ -288,7 +295,9 @@ class TopicController @Inject constructor(
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider, GET_COMPLETED_STORY_LIST_PROVIDER_ID
     ) { progressList, contentLocale ->
@@ -313,7 +322,9 @@ class TopicController @Inject constructor(
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider,
       GET_ONGOING_TOPIC_LIST_PROVIDER_ID,
