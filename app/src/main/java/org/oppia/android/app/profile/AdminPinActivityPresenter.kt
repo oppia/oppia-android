@@ -22,7 +22,6 @@ import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
-// Manages the state and interactions for Admin PIN entry and validation.
 @ActivityScope
 class AdminPinActivityPresenter @Inject constructor(
   private val context: Context,
