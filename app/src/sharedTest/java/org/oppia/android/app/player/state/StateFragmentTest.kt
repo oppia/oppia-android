@@ -5832,22 +5832,28 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
-    // In the previous app instance, the flashback feature flag is OFF.
-    executeInPreviousAppInstance { _ ->
-      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+    executeInPreviousAppInstance(
+      preSetup = { TestPlatformParameterModule.forceEnableFlashbackSupport(false) }
+    ) { _ ->
+      launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+        startPlayingExploration()
+        navigateToPrototypeRatioInputState()
+        // Submit wrong answer.
+        typeRatioExpression("4:8")
+        clickSubmitAnswerButton()
+        // Verify flashback button is NOT shown.
+        onView(withId(R.id.flashback_button)).check(doesNotExist())
+      }
     }
 
-    // In the current app instance, enable the feature flag and verify flashback button is shown.
+    // In the current app instance, keep feature flag on and verify button is shown.
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-
       navigateToPrototypeRatioInputState()
-
       // Submit wrong answer.
       typeRatioExpression("4:8")
       clickSubmitAnswerButton()
-
       // Verify flashback button is visible.
       scrollToViewType(FLASHBACK_BUTTON)
       onView(withId(R.id.flashback_button)).check(
@@ -5858,22 +5864,29 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
-    // In the previous app instance, the flashback feature flag is ON.
-    executeInPreviousAppInstance { _ ->
-      TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    executeInPreviousAppInstance(
+      preSetup = { TestPlatformParameterModule.forceEnableFlashbackSupport(true) }
+    ) { _ ->
+      launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+        startPlayingExploration()
+        navigateToPrototypeRatioInputState()
+        // Submit wrong answer.
+        typeRatioExpression("4:8")
+        clickSubmitAnswerButton()
+        // Verify flashback button IS shown (flag set in previous instance).
+        scrollToViewType(FLASHBACK_BUTTON)
+        onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+      }
     }
 
     // In the current app instance, flag should still be on.
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-
       navigateToPrototypeRatioInputState()
-
       // Submit wrong answer.
       typeRatioExpression("4:8")
       clickSubmitAnswerButton()
-
       // Verify flashback button IS shown (flag persisted across app instances).
       scrollToViewType(FLASHBACK_BUTTON)
       onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
@@ -7129,20 +7142,32 @@ class StateFragmentTest {
    * called before setUpTestApplicationComponent to avoid undefined behavior in production code.
    * This can be used to simulate arranging state in a "prior" run of the app.
    *
-   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
-   * used, not any class-level injected dependencies.
+   * The optional [preSetup] lambda runs before the component is built, allowing flags (e.g.
+   * feature flags via [TestPlatformParameterModule]) to be configured so that the previous app
+   * instance's component is initialized with the correct values.
+   *
+   * The [block] receives the built [TestApplicationComponent] and may use class-level injected
+   * dependencies (since this method injects them from the previous component) to perform UI
+   * operations such as launching activities and verifying state.
    */
-  private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
+  private fun executeInPreviousAppInstance(
+    preSetup: () -> Unit = {},
+    block: (TestApplicationComponent) -> Unit
+  ) {
     val testApplication = TestApplication()
     // The true application is hooked as a base context. This is to make sure the new application
     // can behave like a real Android application class (per Robolectric) without having a shared
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
-    block(
-      DaggerStateFragmentTest_TestApplicationComponent.builder()
-        .setApplication(testApplication)
-        .build()
-    )
+    preSetup()
+    val component = DaggerStateFragmentTest_TestApplicationComponent.builder()
+      .setApplication(testApplication)
+      .build()
+    component.inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
+    block(component)
+    testCoroutineDispatchers.unregisterIdlingResource()
 
     // Resetting after the previous instance is important so that the next (main) app instance
     // can set its own flags.
