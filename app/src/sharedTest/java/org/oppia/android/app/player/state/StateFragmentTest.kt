@@ -5832,9 +5832,10 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOff_thenFeatureFlagOn() {
-    // Set up the previous app instance with the flashback feature flag OFF.
-    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
-    executeInPreviousAppInstance { _ -> }
+    // In the previous app instance, the flashback feature flag is OFF.
+    executeInPreviousAppInstance { _ ->
+      TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+    }
 
     // In the current app instance, enable the feature flag and verify flashback button is shown.
     setUpTestWithFlashbackFeatureOn()
@@ -5857,9 +5858,10 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_featureFlagOn_persistsAcrossAppInstances() {
-    // Set up the previous app instance with the flashback feature flag ON.
-    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
-    executeInPreviousAppInstance { _ -> }
+    // In the previous app instance, the flashback feature flag is ON.
+    executeInPreviousAppInstance { _ ->
+      TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    }
 
     // In the current app instance, flag should still be on.
     setUpTestWithFlashbackFeatureOn()
