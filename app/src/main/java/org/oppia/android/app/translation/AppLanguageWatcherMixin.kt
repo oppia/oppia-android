@@ -77,7 +77,7 @@ class AppLanguageWatcherMixin @Inject constructor(
         translationController.getEnglishLocale()
       ForcedActivityLanguageMode.USE_APP_LANGUAGE,
       ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
-      null -> {
+      ForcedActivityLanguageMode.UNRECOGNIZED -> {
         if (currentUserProfileId == null) {
           translationController.getSystemLanguageLocale()
         } else {
