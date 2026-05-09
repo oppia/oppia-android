@@ -54,7 +54,7 @@ kt_jvm_library(
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:com_squareup_retrofit2_converter-moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -68,7 +68,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":script_background_coroutine_dispatcher",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -97,7 +97,7 @@ kt_jvm_library(
     srcs = ["ScriptBackgroundCoroutineDispatcher.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
