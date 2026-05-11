@@ -30,12 +30,9 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -81,6 +78,8 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController
 ) {
+  private var uiState by mutableStateOf(CreateAdminPinUiState.getDefaultInstance())
+
   /** Creates and returns the view for the [CreateAdminPinFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -94,8 +93,13 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
     return composeView
   }
 
+  /** Saves the current [CreateAdminPinUiState] into [outState] for recreation. */
+  fun handleSaveInstanceState(outState: Bundle) {
+    outState.putByteArray(UI_STATE_SAVED_INSTANCE_STATE_KEY, uiState.toByteArray())
+  }
+
   private fun createComposeView(composeView: ComposeView, savedInstanceState: Bundle?) {
-    val initialState = savedInstanceState
+    uiState = savedInstanceState
       ?.getByteArray(UI_STATE_SAVED_INSTANCE_STATE_KEY)
       ?.let { CreateAdminPinUiState.parseFrom(it) }
       ?: CreateAdminPinUiState.getDefaultInstance()
@@ -104,33 +108,32 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
         MaterialTheme {
-          CreateAdminPinScreen(initialState)
+          CreateAdminPinScreen(
+            uiState = uiState,
+            onPinChange = ::onPinChanged,
+            onConfirmPinChange = ::onConfirmPinChanged,
+            onBackClick = ::onBackClicked,
+            onSubmit = ::onSubmit
+          )
         }
       }
     }
   }
 
-  // Saver that serializes CreateAdminPinUiState to/from its proto byte representation.
-  private val createAdminPinUiStateSaver = Saver<CreateAdminPinUiState, ByteArray>(
-    save = { it.toByteArray() },
-    restore = { CreateAdminPinUiState.parseFrom(it) }
-  )
-
   @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  private fun CreateAdminPinScreen(initialState: CreateAdminPinUiState) {
+  private fun CreateAdminPinScreen(
+    uiState: CreateAdminPinUiState,
+    onPinChange: (String) -> Unit,
+    onConfirmPinChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onSubmit: () -> Unit
+  ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val orientation = LocalConfiguration.current.orientation
-    val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
-    val stepCountIsVisible by remember(orientation) {
-      derivedStateOf { isPortrait }
-    }
-
-    var uiState by rememberSaveable(stateSaver = createAdminPinUiStateSaver) {
-      mutableStateOf(initialState)
-    }
+    val stepCountIsVisible = orientation == Configuration.ORIENTATION_PORTRAIT
 
     LaunchedEffect(Unit) {
       focusRequester.requestFocus()
@@ -152,7 +155,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
       CreateAdminPinInputField(
         value = uiState.pin,
-        onValueChange = { onPinChanged(uiState, it) { newState -> uiState = newState } },
+        onValueChange = onPinChange,
         label = resourceHandler
           .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_enter_pin_label),
         error = computePinError(uiState.pin),
@@ -163,15 +166,13 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
       CreateAdminPinInputField(
         value = uiState.confirmPin,
-        onValueChange = {
-          onConfirmPinChanged(uiState, it) { newState -> uiState = newState }
-        },
+        onValueChange = onConfirmPinChange,
         label = resourceHandler
           .getStringInLocaleWithWrapping(R.string.create_admin_pin_activity_confirm_pin_label),
         error = computeConfirmPinError(uiState.pin, uiState.confirmPin),
         focusManager = focusManager,
         imeAction = ImeAction.Done,
-        onDone = { onSubmit(uiState) { newState -> uiState = newState } }
+        onDone = onSubmit
       )
 
       CreateAdminPinErrorText(
@@ -187,8 +188,8 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
       }
 
       CreateAdminPinNavigationButtons(
-        onBackClick = { activity.finish() },
-        onContinueClick = { onSubmit(uiState) { newState -> uiState = newState } },
+        onBackClick = onBackClick,
+        onContinueClick = onSubmit,
         isContinueEnabled =
           validatePins(uiState.pin, uiState.confirmPin) is PinValidationResult.Valid
       )
@@ -355,53 +356,40 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun onPinChanged(
-    uiState: CreateAdminPinUiState,
-    newValue: String,
-    updateState: (CreateAdminPinUiState) -> Unit
-  ) {
+  private fun onPinChanged(newValue: String) {
     if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-      updateState(
-        uiState.toBuilder()
-          .setPin(newValue)
-          .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
-          .build()
-      )
+      uiState = uiState.toBuilder()
+        .setPin(newValue)
+        .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
+        .build()
     }
   }
 
-  private fun onConfirmPinChanged(
-    uiState: CreateAdminPinUiState,
-    newValue: String,
-    updateState: (CreateAdminPinUiState) -> Unit
-  ) {
+  private fun onConfirmPinChanged(newValue: String) {
     if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-      updateState(
-        uiState.toBuilder()
-          .setConfirmPin(newValue)
-          .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
-          .build()
-      )
+      uiState = uiState.toBuilder()
+        .setConfirmPin(newValue)
+        .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
+        .build()
     }
   }
 
-  private fun onSubmit(
-    uiState: CreateAdminPinUiState,
-    updateState: (CreateAdminPinUiState) -> Unit
-  ) {
+  private fun onBackClicked() {
+    activity.finish()
+  }
+
+  private fun onSubmit() {
     when (val result = validatePins(uiState.pin, uiState.confirmPin)) {
       PinValidationResult.Valid -> {
-        updateState(uiState.toBuilder().setShowError(false).build())
+        uiState = uiState.toBuilder().setShowError(false).build()
         updatePin(uiState.pin)
       }
 
       is PinValidationResult.Invalid -> {
-        updateState(
-          uiState.toBuilder()
-            .setShowError(true)
-            .setErrorMessage(resourceHandler.getStringInLocaleWithWrapping(result.errorMessageId))
-            .build()
-        )
+        uiState = uiState.toBuilder()
+          .setShowError(true)
+          .setErrorMessage(resourceHandler.getStringInLocaleWithWrapping(result.errorMessageId))
+          .build()
       }
     }
   }
