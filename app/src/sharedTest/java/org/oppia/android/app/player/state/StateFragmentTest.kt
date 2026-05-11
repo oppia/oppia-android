@@ -197,6 +197,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -5335,7 +5336,9 @@ class StateFragmentTest {
 
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
-      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        profileId.toProfileIdPreservingZero()
+      )
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -6810,7 +6813,7 @@ class StateFragmentTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()

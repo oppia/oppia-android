@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -339,7 +340,7 @@ class ExplorationActivityLocalTest {
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
       profileManagementController.updateSurveyLastShownTimestamp(
-        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
       )
 
       onView(withText(R.string.survey_onboarding_title_text))
