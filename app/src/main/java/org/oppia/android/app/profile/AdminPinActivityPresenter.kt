@@ -19,6 +19,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -28,7 +29,8 @@ class AdminPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val adminViewModel: AdminPinViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val htmlParserFactory: HtmlParser.Factory
 ) {
 
   private var inputtedPin = false
@@ -58,6 +60,12 @@ class AdminPinActivityPresenter @Inject constructor(
 
     binding.adminPinToolbar.title = resourceHandler
       .getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
+    binding.adminPinWarningText.text = htmlParserFactory.create(
+      displayLocale = resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      resourceHandler.getStringInLocale(R.string.admin_pin_pin_description),
+      binding.adminPinWarningText
+    )
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {

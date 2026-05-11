@@ -2,9 +2,13 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -176,6 +180,30 @@ class AdminPinActivityTest {
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
         assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
+      }
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_warningText_isBoldFormatted() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val warningText = activity.findViewById<TextView>(R.id.admin_pin_warning_text).text
+
+        assertThat(warningText).isInstanceOf(Spanned::class.java)
+        val boldSpans =
+          (warningText as Spanned).getSpans(0, warningText.length, StyleSpan::class.java)
+        assertThat(boldSpans).isNotEmpty()
+        val hasBoldStyle =
+          boldSpans.any { it.style == Typeface.BOLD || it.style == Typeface.BOLD_ITALIC }
+        assertThat(hasBoldStyle).isTrue()
       }
     }
   }
