@@ -32,10 +32,6 @@ class AdminPinActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val htmlParserFactory: HtmlParser.Factory
 ) {
-
-  private var inputtedPin = false
-  private var inputtedConfirmPin = false
-
   private val args by lazy {
     activity.intent.getProtoExtra(
       ADMIN_PIN_ACTIVITY_PARAMS_KEY,
@@ -73,13 +69,11 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedPin.get() == it
         ) {
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
         } else {
           adminViewModel.pinErrorMsg.set("")
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -90,13 +84,11 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedConfirmPin.get() == it
         ) {
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
         } else {
           adminViewModel.confirmPinErrorMsg.set("")
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -112,7 +104,7 @@ class AdminPinActivityPresenter @Inject constructor(
         )
         failed = true
       }
-      if (inputPin != confirmPin) {
+      if (!failed && inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
           resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_confirm_wrong
@@ -121,6 +113,7 @@ class AdminPinActivityPresenter @Inject constructor(
         failed = true
       }
       if (failed) {
+        updateSubmitButtonState()
         return@setOnClickListener
       }
       val profileId =
@@ -173,9 +166,13 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       false
     }
+
+    updateSubmitButtonState()
   }
 
-  private fun setValidPin() {
-    adminViewModel.isButtonActive.set(inputtedPin && inputtedConfirmPin)
+  private fun updateSubmitButtonState() {
+    val hasPinError = !adminViewModel.pinErrorMsg.get().isNullOrEmpty()
+    val hasConfirmPinError = !adminViewModel.confirmPinErrorMsg.get().isNullOrEmpty()
+    adminViewModel.isButtonActive.set(!hasPinError && !hasConfirmPinError)
   }
 }
