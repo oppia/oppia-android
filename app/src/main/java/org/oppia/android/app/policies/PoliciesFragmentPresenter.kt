@@ -48,10 +48,8 @@ class PoliciesFragmentPresenter @Inject constructor(
     // Policy content is always in English, so force LTR text direction and left gravity
     // to ensure proper alignment of all content including list items (<li> tags) even when
     // the app is set to an RTL language.
-    binding.policyDescriptionTextView.apply {
-      textDirection = View.TEXT_DIRECTION_LTR
-      gravity = Gravity.START
-    }
+    setUpPolicyTextView(binding.policyDescriptionTextView)
+    setUpPolicyTextView(binding.policyWebLinkTextView)
 
     setUpContentForTextViews(policiesFragmentArguments.policyPage, binding)
 
@@ -107,6 +105,13 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsLinks = true,
       supportsConceptCards = false
     )
+  }
+
+  private fun setUpPolicyTextView(textView: android.widget.TextView) {
+    textView.apply {
+      textDirection = View.TEXT_DIRECTION_LTR
+      gravity = Gravity.START
+    }
   }
 
   override fun onPolicyPageLinkClicked(policyType: PolicyType) {
