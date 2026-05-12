@@ -459,7 +459,14 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
   /** Sealed class for the PIN validation result. */
   private sealed class PinValidationResult {
+    /** Indicates that both PIN fields are non-empty, correctly sized, and match each other. */
     object Valid : PinValidationResult()
+
+    /**
+     * Indicates that validation failed.
+     *
+     * @property errorMessageId the string resource ID of the error message to display to the user.
+     */
     data class Invalid(@StringRes val errorMessageId: Int) : PinValidationResult()
   }
 }

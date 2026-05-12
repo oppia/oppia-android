@@ -217,12 +217,6 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
-        .performClick()
-
-      composeRule.waitForIdle()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
@@ -249,21 +243,11 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performClick()
-
-      composeRule.waitForIdle()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performClick()
-
-      composeRule.waitForIdle()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performTextInput("54321")
 
       composeRule
@@ -284,11 +268,6 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performClick()
-
-      composeRule.waitForIdle()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("123")
 
       composeRule
@@ -310,8 +289,6 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performClick()
         .performTextInput("123")
-
-      composeRule.waitForIdle()
 
       // Verify that the length error is shown for the PIN field.
       composeRule
@@ -344,8 +321,6 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123")
 
-      composeRule.waitForIdle()
-
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
@@ -354,8 +329,6 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performClick()
         .performTextInput("456")
-
-      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
@@ -406,8 +379,6 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(enterPinNode)
         .performClick()
         .performTextInput("12")
-
-      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
