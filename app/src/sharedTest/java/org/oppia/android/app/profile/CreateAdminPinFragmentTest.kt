@@ -217,6 +217,12 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
+
+      composeRule.waitForIdle()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
 
       composeRule
@@ -242,7 +248,19 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
+
+      composeRule.waitForIdle()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+        .performClick()
+
+      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
@@ -262,6 +280,12 @@ class CreateAdminPinFragmentTest {
   fun testFragment_inputThreeDigitPin_showsPinLengthError_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+        .performClick()
+
+      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
@@ -287,7 +311,7 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123")
 
-      testCoroutineDispatchers.runCurrent()
+      composeRule.waitForIdle()
 
       // Verify that the length error is shown for the PIN field.
       composeRule
@@ -320,6 +344,8 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123")
 
+      composeRule.waitForIdle()
+
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
@@ -328,6 +354,8 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performClick()
         .performTextInput("456")
+
+      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
@@ -355,6 +383,8 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("12")
 
+      composeRule.waitForIdle()
+
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
@@ -366,13 +396,18 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinue() {
+  fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinueButton() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       // Start with a short PIN to trigger length error.
       val enterPinNode = context.getString(R.string.create_admin_pin_activity_enter_pin_label)
-      composeRule.onNodeWithText(enterPinNode).performTextInput("12")
+      composeRule
+        .onNodeWithText(enterPinNode)
+        .performClick()
+        .performTextInput("12")
+
+      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
@@ -387,6 +422,8 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("345")
 
+      composeRule.waitForIdle()
+
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
         .assertDoesNotExist()
@@ -395,6 +432,8 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
         .performClick()
         .performTextInput("12345")
+
+      composeRule.waitForIdle()
 
       // Enter matching confirm PIN; continue should be enabled now.
       composeRule
