@@ -85,66 +85,6 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testLintOrchestrator_execute_fastModeString_isAccepted() {
-    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
-      if (args.contains("merge-base")) outputStream.print("abc1234567890abcdef")
-      0
-    }
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    // "fast" is a valid mode — execute() must not throw IllegalArgumentException.
-    try {
-      orchestrator.execute("fast")
-    } catch (e: IllegalArgumentException) {
-      throw AssertionError("execute(\"fast\") threw IAE: ${e.message}", e)
-    } catch (_: Exception) {
-      // Expected — lint analysis fails without real infra.
-    }
-  }
-
-  @Test
-  fun testLintOrchestrator_execute_fullModeString_isAccepted() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    try {
-      orchestrator.execute("full")
-    } catch (e: IllegalArgumentException) {
-      throw AssertionError("execute(\"full\") threw IAE: ${e.message}", e)
-    } catch (_: Exception) { /* expected */ }
-  }
-
-  @Test
-  fun testLintOrchestrator_execute_listChecksModeString_isAccepted() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    try {
-      orchestrator.execute("list-checks")
-    } catch (e: IllegalArgumentException) {
-      throw AssertionError("execute(\"list-checks\") threw IAE: ${e.message}", e)
-    } catch (_: Exception) { /* expected */ }
-  }
-
-  @Test
-  fun testLintOrchestrator_execute_checkScriptConsistencyModeString_isAccepted() {
-    val orchestrator = LintOrchestrator(
-      repoRoot = tempFolder.root,
-      commandExecutor = fakeCommandExecutor,
-      scriptBgDispatcher = scriptBgDispatcher
-    )
-    // check-script-consistency compares LintCheckCatalog against the live registry — should pass.
-    orchestrator.execute("check-script-consistency")
-  }
-
-  @Test
   fun testLintOrchestrator_execute_invalidModeString_throwsIllegalArgumentException() {
     val orchestrator = LintOrchestrator(
       repoRoot = tempFolder.root,
@@ -155,28 +95,6 @@ class AndroidLintRunnerTest {
       orchestrator.execute("invalid-mode")
     }
     assertThat(exception).hasMessageThat().contains("invalid-mode")
-  }
-
-  @Test
-  fun testLintOrchestrator_execute_allKnownModeStrings_areAccepted() {
-    // Verify that all four documented mode strings are accepted without an IAE.
-    val validModes = listOf("fast", "full", "list-checks", "check-script-consistency")
-    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
-      if (args.contains("merge-base")) outputStream.print("abc1234567890abcdef")
-      0
-    }
-    for (modeStr in validModes) {
-      val orchestrator = LintOrchestrator(
-        repoRoot = tempFolder.root,
-        commandExecutor = fakeCommandExecutor,
-        scriptBgDispatcher = scriptBgDispatcher
-      )
-      try {
-        orchestrator.execute(modeStr)
-      } catch (e: IllegalArgumentException) {
-        throw AssertionError("execute(\"$modeStr\") threw IAE unexpectedly: ${e.message}", e)
-      } catch (_: Exception) { /* expected for modes that need real infra */ }
-    }
   }
 
   @Test

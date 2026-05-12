@@ -82,7 +82,7 @@ Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-and
 ### Run Android Lint Analysis
 
 ```sh
-bazel run //scripts:android_lint_check -- <path_to_repository_root> [--mode=<mode>] [--proto=<path>] [--group_by_severity] [--processTimeout=<minutes>]
+bazel run //scripts:android_lint_check -- <path_to_repository_root> [--mode=<mode>] [--proto=<path>] [--checks=<check_ids>] [--group_by_severity] [--processTimeout=<minutes>]
 ```
 Example: `bazel run //scripts:android_lint_check -- $(pwd) --mode=fast`
 
@@ -90,6 +90,7 @@ Example: `bazel run //scripts:android_lint_check -- $(pwd) --mode=fast`
 - `<path_to_repository_root>`: The root path of the repository (required)
 - `[--mode=<mode>]`: Execution mode — `fast` (default), `full`, `list-checks`, or `check-script-consistency` (see [Lint Execution Modes](#lint-execution-modes))
 - `[--proto=<path_to_proto_binary>]`: Optional relative path to the exemption .pb file (defaults to `scripts/assets/android_lint_exemptions.pb`)
+- `[--checks=<check_ids>]`: Optional comma-separated list of check IDs to run (e.g. `HardcodedText,ByteOrderMark`). When specified, only these checks are run.
 - `[--group_by_severity]`: Optional flag to group issues by severity level
 - `[--processTimeout=<minutes>]`: Optional process timeout in minutes (defaults to 10 minutes)
 
@@ -441,7 +442,7 @@ Update `LintCheckCatalog.kt` whenever:
 - **`checksNotNeedingSources`** — The check only inspects XML files, resources, drawables, icons, or manifest content. It does not require any Kotlin/Java source context to produce correct findings.
 - **`checksForIncrementalSources`** — The check inspects Kotlin/Java source files on a per-file basis. It must not require cross-file analysis (class hierarchy resolution, global symbol lookup, etc.) to produce correct results on a partial file set.
 - **`checksRequiringFullProject`** — The check resolves class hierarchies, verifies manifest-to-source consistency, or otherwise requires the complete project definition to avoid false positives or missed findings.
-- **`gradleChecksToIgnore`** — The check is part of `GradleDetector` or requires Gradle files. Since this project uses Bazel, these files don't exist and the check can never fire.
+- **`gradleChecksToIgnore`** — The check requires Gradle files. Since this project uses Bazel, these files don't exist and the check can never fire.
 
 # CI Integration and Static Checks
 
