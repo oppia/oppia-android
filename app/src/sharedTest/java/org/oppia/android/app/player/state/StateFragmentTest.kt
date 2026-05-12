@@ -6823,7 +6823,7 @@ class StateFragmentTest {
 
   private fun enableInLessonLanguageSwitching() {
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId, allowInLessonQuickLanguageSwitching = true
+      profileId.toProfileIdPreservingZero(), allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
