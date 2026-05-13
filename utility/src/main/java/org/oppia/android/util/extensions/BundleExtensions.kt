@@ -74,4 +74,3 @@ fun Bundle.getStringFromBundle(key: String): String? = getString(key)
 private inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? =
   BundleCompat.getSerializable(this, name, T::class.java)
 
-

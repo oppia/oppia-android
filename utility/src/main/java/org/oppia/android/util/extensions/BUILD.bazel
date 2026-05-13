@@ -1,9 +1,7 @@
 """
 General purposes utilities to manage extensions
 """
-
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
-
 kt_android_library(
     name = "bundle_extensions",
     srcs = [
@@ -11,10 +9,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        "//third_party:androidx_core_core",
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
-
 kt_android_library(
     name = "context_extensions",
     srcs = [
@@ -25,7 +23,6 @@ kt_android_library(
         "//third_party:com_google_protobuf_protobuf-javalite",
     ],
 )
-
 kt_android_library(
     name = "string_extensions",
     srcs = [
@@ -33,7 +30,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
 )
-
 kt_android_library(
     name = "iterable_extensions",
     srcs = [
