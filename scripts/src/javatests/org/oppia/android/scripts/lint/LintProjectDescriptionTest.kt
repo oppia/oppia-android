@@ -179,16 +179,16 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_missingManifest_throwsException() {
+  fun testGenerateProjectDescriptionXml_missingManifest_noManifestTagInXml() {
     val appManifest = File(tempFolder.root, "app/src/main/AndroidManifest.xml")
     appManifest.delete()
     setupFakeCommandExecutor()
 
-    val exception = assertThrows<IllegalArgumentException> {
-      lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
-    }
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
 
-    assertThat(exception.message).contains("Manifest file not found")
+    val manifestCount = xmlContent.split("<manifest file=").size - 1
+    assertThat(manifestCount).isEqualTo(4)
   }
 
   @Test
