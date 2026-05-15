@@ -251,7 +251,7 @@ class AppLanguageWatcherMixinTest {
     }.build()
     val updateProvider =
       translationController.updateAppLanguage(
-        ProfileId.getDefaultInstance(), updateLanguageSelection
+        ProfileId.newBuilder().setInternalId(0).build(), updateLanguageSelection
       )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
