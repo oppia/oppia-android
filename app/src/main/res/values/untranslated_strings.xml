@@ -139,6 +139,8 @@
   <string name="hindi_localized_language_name" translatable="false">हिन्दी</string>
   <string name="portuguese_localized_language_name" translatable="false">Português</string>
   <string name="brazilian_portuguese_localized_language_name" translatable="false">Português</string>
+  <string name="spanish_localized_language_name" translatable="false">Español</string>
+  <string name="latin_american_spanish_localized_language_name" translatable="false">Español</string>
   <string name="swahili_localized_language_name" translatable="false">Kiswahili</string>
   <string name="nigerian_pidgin_localized_language_name" translatable="false">Naijá</string>
 </resources>

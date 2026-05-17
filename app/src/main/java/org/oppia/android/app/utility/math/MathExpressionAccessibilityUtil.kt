@@ -30,7 +30,9 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.SPANISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
+import org.oppia.android.app.model.OppiaLanguage.LATIN_AMERICAN_SPANISH
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
 import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
@@ -74,6 +76,7 @@ class MathExpressionAccessibilityUtil @Inject constructor(
     return when (language) {
       ENGLISH -> expression.toHumanReadableEnglishString(divAsFraction)
       ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN,
+      SPANISH, LATIN_AMERICAN_SPANISH,
       LANGUAGE_UNSPECIFIED, UNRECOGNIZED -> null
     }
   }
@@ -93,6 +96,7 @@ class MathExpressionAccessibilityUtil @Inject constructor(
     return when (language) {
       ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
       ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN,
+      SPANISH, LATIN_AMERICAN_SPANISH,
       LANGUAGE_UNSPECIFIED, UNRECOGNIZED -> null
     }
   }

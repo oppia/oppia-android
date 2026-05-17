@@ -101,11 +101,14 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   fun getAudioLanguageFromOppiaLanguage(oppiaLanguage: OppiaLanguage): AudioLanguage {
     return when (oppiaLanguage) {
       OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
-      OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+      OppiaLanguage.PORTUGUESE, OppiaLanguage.SPANISH, OppiaLanguage.SWAHILI ->
+        AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
       OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
       OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
       OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+      OppiaLanguage.LATIN_AMERICAN_SPANISH ->
+        AudioLanguage.LATIN_AMERICAN_SPANISH_LANGUAGE
       OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
     }
   }

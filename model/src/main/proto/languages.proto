@@ -35,6 +35,12 @@ enum OppiaLanguage {
   // IETF BCP 47 language tag: pcm (as of RFC 5646 since pcm was introduced in ISO 639-3). However,
   // since Android doesn't support pcm natively the app uses pcm-NG for app string translations.
   NIGERIAN_PIDGIN = 8;
+
+  // Corresponds to the Spanish (español) macro language. IETF BCP 47 language tag: es.
+  SPANISH = 9;
+
+  // Corresponds to the Latin American Spanish variant. IETF BCP 47 language tag: es-419.
+  LATIN_AMERICAN_SPANISH = 10;
 }
 
 // The list of regions explicitly supported natively by the Android app. Note that the app is not
@@ -66,6 +72,9 @@ enum OppiaRegion {
   // Corresponds to Nigeria (Jamhuriyar Tarayyar Najeriya / Ọ̀hàńjíkọ̀ Ọ̀hànézè Naìjíríyà / Orílẹ̀-èdè
   // Olómìniira Àpapọ̀ Nàìjíríà). IETF BCP 47 region tag: NG (per ISO 3166).
   NIGERIA = 5;
+
+  // Corresponds to Latin America (UN M.49 numeric-3 area code 419). IETF BCP 47 region tag: 419.
+  LATIN_AMERICA = 6;
 }
 
 // Defines the list of supported languages in the app.

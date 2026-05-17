@@ -117,6 +117,39 @@ language_definitions {
   }
 }
 language_definitions {
+  language: SPANISH
+  min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "es"
+    }
+  }
+}
+language_definitions {
+  language: LATIN_AMERICAN_SPANISH
+  fallback_macro_language: SPANISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "es-419"
+    }
+    android_resources_language_id {
+      language_code: "es"
+      region_code: "US"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "es"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "es-419"
+    }
+  }
+}
+language_definitions {
   language: SWAHILI
   min_android_sdk_version: 1
   app_string_id {
