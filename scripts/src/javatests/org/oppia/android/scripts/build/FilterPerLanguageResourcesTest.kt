@@ -45,7 +45,8 @@ class FilterPerLanguageResourcesTest {
   private val STR_RESOURCE_1_EN_PT = StringResource(mapOf("" to "en str1", "pt-BR" to "pt str1"))
   private val STR_RESOURCE_2_EN_SW_PCM =
     StringResource(mapOf("" to "en str2", "sw" to "sw str2", "pcm" to "pcm str 3"))
-  private val STR_RESOURCE_3_EN_ES419 = StringResource(mapOf("" to "en str3", "es-419" to "es str3"))
+  private val STR_RESOURCE_3_EN_ES419 =
+    StringResource(mapOf("" to "en str3", "es-419" to "es str3"))
   private val COLOR_RESOURCE_0_EN_PT = ColorResource(mapOf("" to "0xDEF", "pt-BR" to "0xABC"))
   private val RESOURCE_TABLE_EN_PT_SW_PCM =
     createResourceTable(
@@ -75,7 +76,8 @@ class FilterPerLanguageResourcesTest {
   private val SUPPORTED_LANGUAGES_EN_PT = createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE)
   private val SUPPORTED_LANGUAGES_EN_PT_SW_PCM =
     createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
-  private val SUPPORTED_LANGUAGES_EN_ES419 = createSupportedLanguages(ENGLISH, LATIN_AMERICAN_SPANISH)
+  private val SUPPORTED_LANGUAGES_EN_ES419 =
+    createSupportedLanguages(ENGLISH, LATIN_AMERICAN_SPANISH)
   private val SUPPORTED_LANGUAGES_EN_AR = createSupportedLanguages(ENGLISH, ARABIC)
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
