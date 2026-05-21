@@ -18,6 +18,8 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -100,6 +102,16 @@ class FeatureFlagBindingModule {
   @EnableTopicPracticeTab
   fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
+
+  @Provides
+  @LoadLessonProtosFromAssets
+  fun provideLoadLessonProtosFromAssets(processState: PlatformParameterProcessState): PlatformParameterValue<Boolean> =
+    processState.retrieveFeatureFlag(FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS)
+
+  @Provides
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(processState: PlatformParameterProcessState): PlatformParameterValue<Boolean> =
+    processState.retrieveFeatureFlag(FeatureFlagId.LOAD_IMAGES_FROM_ASSETS)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

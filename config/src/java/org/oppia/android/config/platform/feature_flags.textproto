@@ -26,7 +26,7 @@ feature_flag_definition {
 feature_flag_definition {
   id: PERFORMANCE_METRICS_COLLECTION
   remote_server_name: "android_enable_performance_metrics_collection"
-  default_is_enabled: false
+  default_is_enabled: true
 }
 feature_flag_definition {
   id: SPOTLIGHT_UI
@@ -71,5 +71,15 @@ feature_flag_definition {
 feature_flag_definition {
   id: TOPIC_PRACTICE_TAB
   remote_server_name: "android_enable_topic_practice_tab"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: LOAD_LESSON_PROTOS_FROM_ASSETS
+  remote_server_name: "android_enable_load_lesson_protos_from_assets"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: LOAD_IMAGES_FROM_ASSETS
+  remote_server_name: "android_enable_load_images_from_assets"
   default_is_enabled: false
 }

@@ -12,6 +12,8 @@ order to build with Bazel.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
+load("//app:google_services.bzl", "download_google_services_json")
+load("//scripts:retrieve_license_texts.bzl", "retrieve_license_texts")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 package(default_visibility = [
@@ -422,7 +424,10 @@ android_library(
     resource_files = glob(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,
-    ),
+    ) + select({
+        "//config:download_license_texts_enabled": [":production_third_party_dependencies_xml"],
+        "//conditions:default": ["//app/src/main/java/org/oppia/android/app/application/dev:res/values/third_party_dependencies.xml"],
+    }),
     visibility = ["//app:__subpackages__"],
     deps = ["//third_party:com_google_android_material_material"],
 )
@@ -850,21 +855,39 @@ TEST_DEPS = [
     deps = TEST_DEPS,
 ) for test_file_path in glob(["src/*est/java/org/oppia/android/app/**/*Test.kt"])]
 
+# Targets for Third-Party Dependency Licenses
+retrieve_license_texts(
+    name = "production_third_party_dependencies_xml",
+    output_file = "res/values/third_party_dependencies.xml",
+)
+
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
 # Package for all Firebase dependencies.
 # To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
 # to your build rule's dependency list.
 
-GOOGLE_SERVICES_RESOURCES = google_services_xml(
+download_google_services_json(
+    name = "production_google_services_json",
+)
+
+DEVELOPER_GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.android",
     google_services_json = "google-services.json",
+)
+
+PRODUCTION_GOOGLE_SERVICES_RESOURCES = google_services_xml(
+    package_name = "org.oppia.android",
+    google_services_json = "google-services-production.json",
 )
 
 crashlytics_android_library(
     name = "crashlytics",
     package_name = "org.oppia.android",
     build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
-    resource_files = GOOGLE_SERVICES_RESOURCES,
+    resource_files = select({
+        "//config:download_firebase_config_enabled": PRODUCTION_GOOGLE_SERVICES_RESOURCES,
+        "//conditions:default": DEVELOPER_GOOGLE_SERVICES_RESOURCES,
+    }),
 )
 
 android_library(

@@ -1,12 +1,13 @@
 package org.oppia.android.scripts.build
 
-import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.GitClient
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.w3c.dom.Document
+import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.io.File
 import java.io.StringWriter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
@@ -17,7 +18,8 @@ private const val USAGE_STRING =
     "</absolute/path/to/input/AndroidManifest.xml:Path> " +
     "</absolute/path/to/output/AndroidManifest.xml:Path> " +
     "<build_flavor:String> <major_app_version:Int> <minor_app_version:Int> <version_code:Int> " +
-    "<application_relative_qualified_class:String> <base_develop_branch_reference:String>"
+    "<application_relative_qualified_class:String> </absolute/path/to/stable-status.txt:Path> " +
+    "<enable_firebase_analytics:Boolean> <enable_app_expiration:Boolean>"
 
 /**
  * The main entrypoint for transforming an AndroidManifest to include both a version code and
@@ -34,15 +36,17 @@ private const val USAGE_STRING =
  * compute a build hash.
  *
  * Usage:
- *   bazel run //scripts:transform_android_manifest -- <root_path>> \\
- *     <input_manifest_path> \\
- *     <output_manifest_path> \\
- *     <build_flavor> \\
- *     <major_app_version> \\
- *     <minor_app_version> \\
- *     <version_code> \\
- *     <qualified_application_class_relative_to_app_package> \\
- *     <base_develop_branch_reference>
+ *   bazel run //scripts:transform_android_manifest -- <root_path>> \
+ *     <input_manifest_path> \
+ *     <output_manifest_path> \
+ *     <build_flavor> \
+ *     <major_app_version> \
+ *     <minor_app_version> \
+ *     <version_code> \
+ *     <qualified_application_class_relative_to_app_package> \
+ *     <base_develop_branch_reference> \
+ *     <enable_firebase_analytics> \
+ *     <enable_app_expiration>
  *
  * Arguments:
  * - root_path: directory path to the root of the Oppia Android repository.
@@ -54,14 +58,16 @@ private const val USAGE_STRING =
  * - version_code: the next version code to use.
  * - base_develop_branch_reference: the reference to the local develop branch that should be use.
  *     Generally, this is 'origin/develop'.
+ * - enable_firebase_analytics: whether to enable Firebase Analytics.
+ * - enable_app_expiration: whether to enable app expiration.
  *
  * Example:
- *   bazel run //scripts:transform_android_manifest -- $(pwd) \\
- *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 6 \\
- *     .app.application.alpha.AlphaOppiaApplication origin/develop
+ *   bazel run //scripts:transform_android_manifest -- $(pwd) \
+ *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 6 \
+ *     .app.application.alpha.AlphaOppiaApplication origin/develop false false
  */
 fun main(args: Array<String>) {
-  check(args.size >= 9) { USAGE_STRING }
+  check(args.size >= 11) { USAGE_STRING }
 
   val repoRoot = File(args[0]).also { if (!it.exists()) error("File doesn't exist: ${args[0]}") }
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -78,7 +84,13 @@ fun main(args: Array<String>) {
       minorVersion = args[5].toIntOrNull() ?: error(USAGE_STRING),
       versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
       relativelyQualifiedApplicationClass = args[7],
-      baseDevelopBranchReference = args[8],
+      stableStatusFile = File(args[8]).also {
+        if (!it.exists()) {
+          error("File doesn't exist: ${args[8]}")
+        }
+      },
+      enableFirebaseAnalytics = args[9].toBoolean(),
+      enableAppExpiration = args[10].toBoolean(),
       scriptBgDispatcher
     ).generateAndOutputNewManifest()
   }
@@ -93,11 +105,11 @@ private class TransformAndroidManifest(
   private val minorVersion: Int,
   private val versionCode: Int,
   private val relativelyQualifiedApplicationClass: String,
-  private val baseDevelopBranchReference: String,
+  private val stableStatusFile: File,
+  private val enableFirebaseAnalytics: Boolean,
+  private val enableAppExpiration: Boolean,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
-  private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
-  private val gitClient by lazy { GitClient(repoRoot, baseDevelopBranchReference, commandExecutor) }
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
   private val transformerFactory by lazy { TransformerFactory.newInstance() }
 
@@ -111,9 +123,17 @@ private class TransformAndroidManifest(
     val versionCodeAttribute = manifestDocument.createAttribute("android:versionCode").apply {
       value = versionCode.toString()
     }
+
+    // Extract the stamped git commit hash from Bazel's stable-status.txt file
+    val commitHash = stableStatusFile.readLines()
+      .find { it.startsWith("STABLE_BUILD_GIT_COMMIT") }
+      ?.substringAfter("STABLE_BUILD_GIT_COMMIT")
+      ?.trim()
+      ?: error("Failed to find STABLE_BUILD_GIT_COMMIT in stable status file: ${stableStatusFile.path}")
+
     val versionNameAttribute = manifestDocument.createAttribute("android:versionName").apply {
       value = computeVersionName(
-        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.currentCommit
+        buildFlavor, majorVersion, minorVersion, commitHash = commitHash
       )
     }
     val applicationNameAttribute = manifestDocument.createAttribute("android:name").apply {
@@ -139,8 +159,43 @@ private class TransformAndroidManifest(
       setNamedItem(replaceNameAttribute)
     }
 
+    if (enableFirebaseAnalytics) {
+      println("WARNING: Firebase Analytics and Crashlytics are ENABLED in this build.")
+      updateMetaData(applicationNode, "firebase_analytics_collection_deactivated", "false")
+      updateMetaData(applicationNode, "firebase_crashlytics_collection_enabled", "true")
+    } else {
+      updateMetaData(applicationNode, "firebase_analytics_collection_deactivated", "true")
+      updateMetaData(applicationNode, "firebase_crashlytics_collection_enabled", "false")
+    }
+
+    if (enableAppExpiration) {
+      val expirationDate = LocalDate.now().plusMonths(12)
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+      val expirationDateString = expirationDate.format(formatter)
+      updateMetaData(applicationNode, "automatic_app_expiration_enabled", "true")
+      updateMetaData(applicationNode, "expiration_date", expirationDateString)
+    } else {
+      updateMetaData(applicationNode, "automatic_app_expiration_enabled", "false")
+    }
+
     // Output the new transformed manifest.
     outputManifestFile.writeText(manifestDocument.toSource())
+  }
+
+  private fun updateMetaData(applicationNode: Node, name: String, value: String) {
+    val metaDataNode = applicationNode.childNodes.asSequence()
+      .filter { it.nodeName == "meta-data" }
+      .find { it.attributes?.getNamedItem("android:name")?.nodeValue == name }
+    if (metaDataNode != null) {
+      metaDataNode.attributes.getNamedItem("android:value")?.nodeValue = value
+      val document = metaDataNode.ownerDocument
+      val replaceAttr = document.createAttribute("tools:replace").apply {
+        nodeValue = "android:value"
+      }
+      metaDataNode.attributes.setNamedItem(replaceAttr)
+    } else {
+      error("Failed to find meta-data tag with name '$name' in manifest application node.")
+    }
   }
 
   // The format here is defined as part of the app's release process.

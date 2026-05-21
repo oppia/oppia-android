@@ -11,6 +11,8 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Tests for the transform_android_manifest utility.
@@ -28,7 +30,14 @@ class TransformAndroidManifestTest {
       "</absolute/path/to/input/AndroidManifest.xml:Path> " +
       "</absolute/path/to/output/AndroidManifest.xml:Path> " +
       "<build_flavor:String> <major_app_version:Int> <minor_app_version:Int> <version_code:Int> " +
-      "<application_relative_qualified_class:String> <base_develop_branch_reference:String>"
+      "<application_relative_qualified_class:String> </absolute/path/to/stable-status.txt:Path> " +
+      "<enable_firebase_analytics:Boolean> <enable_app_expiration:Boolean>"
+
+  private fun createStableStatusFile(commitHash: String): File {
+    val file = File(tempFolder.root, "stable-status.txt")
+    file.writeText("STABLE_BUILD_GIT_COMMIT $commitHash\n")
+    return file
+  }
 
   private val TEST_MANIFEST_FILE_NAME = "AndroidManifest.xml"
   private val TRANSFORMED_MANIFEST_FILE_NAME = "TransformedAndroidManifest.xml"
@@ -52,7 +61,12 @@ class TransformAndroidManifestTest {
       xmlns:tools="http://schemas.android.com/tools"
       package="org.oppia.android">
       <application
-        android:name=".different.CustomApplication" />
+        android:name=".different.CustomApplication">
+        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+        <meta-data android:name="automatic_app_expiration_enabled" android:value="false" />
+        <meta-data android:name="expiration_date" android:value="2020-09-01" />
+      </application>
     </manifest>
     """.trimIndent()
 
@@ -222,9 +236,55 @@ class TransformAndroidManifestTest {
   }
 
   @Test
+  fun testUtility_nineArgs_failsWithUsageString() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "develop"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testUtility_tenArgs_failsWithUsageString() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "develop",
+        "false"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
   fun testUtility_allArgs_nonIntMajorVersion_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -236,7 +296,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -247,6 +309,7 @@ class TransformAndroidManifestTest {
   fun testUtility_allArgs_nonIntMinorVersion_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -258,7 +321,9 @@ class TransformAndroidManifestTest {
         "minor_version",
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -269,6 +334,7 @@ class TransformAndroidManifestTest {
   fun testUtility_allArgs_nonIntVersionCode_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -280,7 +346,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         "version_code",
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -291,6 +359,7 @@ class TransformAndroidManifestTest {
   fun testUtility_allArgs_rootDoesNotExist_failsWithError() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -302,7 +371,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -312,6 +383,7 @@ class TransformAndroidManifestTest {
   @Test
   fun testUtility_allArgs_manifestDoesNotExist_failsWithError() {
     initializeEmptyGitRepository()
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -323,7 +395,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -336,6 +410,7 @@ class TransformAndroidManifestTest {
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_MANIFEST)
     }
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -347,7 +422,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -362,6 +439,7 @@ class TransformAndroidManifestTest {
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION)
     }
+    val stableStatusFile = createStableStatusFile("dummy_hash")
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -373,7 +451,9 @@ class TransformAndroidManifestTest {
         MINOR_VERSION,
         VERSION_CODE,
         APPLICATION_RELATIVE_QUALIFIED_CLASS,
-        "develop"
+        stableStatusFile.absolutePath,
+        "false",
+        "false"
       )
     }
 
@@ -393,6 +473,7 @@ class TransformAndroidManifestTest {
     testGitRepository.checkoutNewBranch("release-branch")
     testGitRepository.commit(message = "Release-only commit, e.g. a cherry-pick", allowEmpty = true)
     val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val stableStatusFile = createStableStatusFile(latestCommit)
 
     runScript(
       tempFolder.root.absolutePath,
@@ -403,7 +484,9 @@ class TransformAndroidManifestTest {
       MINOR_VERSION,
       VERSION_CODE,
       APPLICATION_RELATIVE_QUALIFIED_CLASS,
-      "develop"
+      stableStatusFile.absolutePath,
+      "false",
+      "false"
     )
 
     val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
@@ -415,6 +498,135 @@ class TransformAndroidManifestTest {
       )
     assertThat(transformedManifest)
       .containsMatch("<application android:name=\"$APPLICATION_RELATIVE_QUALIFIED_CLASS\"")
+  }
+
+  @Test
+  fun testUtility_enableAnalyticsFalse_analyticsDisabledInManifest() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+    }
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val stableStatusFile = createStableStatusFile(latestCommit)
+
+    runScript(
+      tempFolder.root.absolutePath,
+      manifestFile.absolutePath,
+      File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+      BUILD_FLAVOR,
+      MAJOR_VERSION,
+      MINOR_VERSION,
+      VERSION_CODE,
+      APPLICATION_RELATIVE_QUALIFIED_CLASS,
+      stableStatusFile.absolutePath,
+      "false",
+      "false"
+    )
+
+    val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"firebase_analytics_collection_deactivated\" android:value=\"true\""
+    )
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"firebase_crashlytics_collection_enabled\" android:value=\"false\""
+    )
+  }
+
+  @Test
+  fun testUtility_enableAnalyticsTrue_analyticsEnabledInManifest() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+    }
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val stableStatusFile = createStableStatusFile(latestCommit)
+
+    runScript(
+      tempFolder.root.absolutePath,
+      manifestFile.absolutePath,
+      File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+      BUILD_FLAVOR,
+      MAJOR_VERSION,
+      MINOR_VERSION,
+      VERSION_CODE,
+      APPLICATION_RELATIVE_QUALIFIED_CLASS,
+      stableStatusFile.absolutePath,
+      "true",
+      "false"
+    )
+
+    val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"firebase_analytics_collection_deactivated\" android:value=\"false\""
+    )
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"firebase_crashlytics_collection_enabled\" android:value=\"true\""
+    )
+  }
+
+  @Test
+  fun testUtility_enableExpirationFalse_expirationDisabledInManifest() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+    }
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val stableStatusFile = createStableStatusFile(latestCommit)
+
+    runScript(
+      tempFolder.root.absolutePath,
+      manifestFile.absolutePath,
+      File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+      BUILD_FLAVOR,
+      MAJOR_VERSION,
+      MINOR_VERSION,
+      VERSION_CODE,
+      APPLICATION_RELATIVE_QUALIFIED_CLASS,
+      stableStatusFile.absolutePath,
+      "false",
+      "false"
+    )
+
+    val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"automatic_app_expiration_enabled\" android:value=\"false\""
+    )
+  }
+
+  @Test
+  fun testUtility_enableExpirationTrue_expirationEnabledAndDefinedInManifest() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+    }
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val stableStatusFile = createStableStatusFile(latestCommit)
+
+    runScript(
+      tempFolder.root.absolutePath,
+      manifestFile.absolutePath,
+      File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+      BUILD_FLAVOR,
+      MAJOR_VERSION,
+      MINOR_VERSION,
+      VERSION_CODE,
+      APPLICATION_RELATIVE_QUALIFIED_CLASS,
+      stableStatusFile.absolutePath,
+      "false",
+      "true"
+    )
+
+    val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"automatic_app_expiration_enabled\" android:value=\"true\""
+    )
+
+    val expectedExpirationDate = LocalDate.now().plusMonths(12)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val expectedDateString = expectedExpirationDate.format(formatter)
+    assertThat(transformedManifest).containsMatch(
+      "<meta-data android:name=\"expiration_date\" android:value=\"$expectedDateString\""
+    )
   }
 
   /** Runs the transform_android_manifest utility. */

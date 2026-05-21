@@ -52,6 +52,7 @@ kt_android_library(
         ":annotations",
         ":asset_repository",
         "//:dagger",
+        "//utility",
     ],
 )
 

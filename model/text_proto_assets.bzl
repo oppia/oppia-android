@@ -104,6 +104,7 @@ def gen_binary_proto_from_text(name, proto_type_name, input_file, output_file, p
         input_file = input_file,
         output_file = output_file,
         proto_deps = proto_deps,
+        visibility = ["//visibility:public"],
     )
     return output_file
 
