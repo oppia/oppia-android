@@ -24,7 +24,7 @@ class NumberWithUnitsTokenSubject(
    * @return an [IntegerSubject] to verify the integer value
    * @throws AssertionError if the token is not a [Token.PositiveInteger]
    */
-  fun isPositiveIntegerWhoseValue(): IntegerSubject {
+  fun isPositiveIntegerWithValueThat(): IntegerSubject {
     return Truth.assertThat(actual.asVerifiedType<Token.PositiveInteger>().parsedValue)
   }
 
@@ -34,7 +34,7 @@ class NumberWithUnitsTokenSubject(
    * @return a [DoubleSubject] to verify the real number value
    * @throws AssertionError if the token is not a [Token.PositiveRealNumber]
    */
-  fun isPositiveRealNumberWhoseValue(): DoubleSubject {
+  fun isPositiveRealNumberWithValueThat(): DoubleSubject {
     return Truth.assertThat(actual.asVerifiedType<Token.PositiveRealNumber>().parsedValue)
   }
 
@@ -110,14 +110,6 @@ class NumberWithUnitsTokenSubject(
   fun isUnitWithRawValue(expectedValue: String) {
     val unit = actual.asVerifiedType<Token.Unit>()
     Truth.assertThat(unit.unit).isEqualTo(expectedValue)
-  }
-
-  /**
-   * Verifies that the token is a [Token.Unit] whose raw value is in [expectedRawValues].
-   */
-  private fun assertUnitIn(vararg expectedRawValues: String) {
-    val unit = actual.asVerifiedType<Token.Unit>()
-    Truth.assertThat(expectedRawValues.toList()).contains(unit.unit)
   }
 
   companion object {
