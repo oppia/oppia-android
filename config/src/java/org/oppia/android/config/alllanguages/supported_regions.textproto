@@ -37,3 +37,11 @@ region_definitions {
   languages: ENGLISH
   languages: NIGERIAN_PIDGIN
 }
+region_definitions {
+  region: LATIN_AMERICA
+  region_id {
+    ietf_region_tag: "419"
+  }
+  languages: SPANISH
+  languages: LATIN_AMERICAN_SPANISH
+}

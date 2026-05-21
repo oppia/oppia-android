@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.xml
 
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.scripts.xml.StringResourceParser.StringFile
-import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage
 import java.io.File
 
 /**
@@ -25,7 +25,7 @@ fun main(vararg args: String) {
   val repoPath = "${args[0]}/"
   val repoRoot = File(repoPath)
 
-  data class Finding(val language: TranslationLanguage, val file: File, val errorLine: String)
+  data class Finding(val language: OppiaLanguage, val file: File, val errorLine: String)
   val parser = StringResourceParser(repoRoot)
   val baseFile = parser.retrieveBaseStringFile()
   val otherTranslations = parser.retrieveAllNonEnglishTranslations()

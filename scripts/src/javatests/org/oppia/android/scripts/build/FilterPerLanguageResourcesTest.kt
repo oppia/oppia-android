@@ -45,10 +45,15 @@ class FilterPerLanguageResourcesTest {
   private val STR_RESOURCE_1_EN_PT = StringResource(mapOf("" to "en str1", "pt-BR" to "pt str1"))
   private val STR_RESOURCE_2_EN_SW_PCM =
     StringResource(mapOf("" to "en str2", "sw" to "sw str2", "pcm" to "pcm str 3"))
+  private val STR_RESOURCE_3_EN_ES = StringResource(mapOf("" to "en str3", "es-419" to "es str3"))
   private val COLOR_RESOURCE_0_EN_PT = ColorResource(mapOf("" to "0xDEF", "pt-BR" to "0xABC"))
   private val RESOURCE_TABLE_EN_PT_SW_PCM =
     createResourceTable(
       STR_RESOURCE_0_EN, STR_RESOURCE_1_EN_PT, STR_RESOURCE_2_EN_SW_PCM, COLOR_RESOURCE_0_EN_PT
+    )
+  private val RESOURCE_TABLE_EN_PT_SW_PCM_ES =
+    createResourceTable(
+      STR_RESOURCE_0_EN, STR_RESOURCE_1_EN_PT, STR_RESOURCE_2_EN_SW_PCM, STR_RESOURCE_3_EN_ES, COLOR_RESOURCE_0_EN_PT
     )
 
   private val ENGLISH =
@@ -63,10 +68,16 @@ class FilterPerLanguageResourcesTest {
     createLanguageSupportDefinition(language = OppiaLanguage.ARABIC, languageCode = "ar")
   private val NIGERIAN_PIDGIN =
     createLanguageSupportDefinition(language = OppiaLanguage.NIGERIAN_PIDGIN, languageCode = "pcm")
+  private val LATIN_AMERICAN_SPANISH =
+    createLanguageSupportDefinition(
+      language = OppiaLanguage.LATIN_AMERICAN_SPANISH, languageCode = "es", regionCode = "419"
+    )
   private val SUPPORTED_LANGUAGES_EN = createSupportedLanguages(ENGLISH)
   private val SUPPORTED_LANGUAGES_EN_PT = createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE)
   private val SUPPORTED_LANGUAGES_EN_PT_SW_PCM =
     createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
+  private val SUPPORTED_LANGUAGES_EN_PT_SW_PCM_ES =
+    createSupportedLanguages(ENGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN, LATIN_AMERICAN_SPANISH)
   private val SUPPORTED_LANGUAGES_EN_AR = createSupportedLanguages(ENGLISH, ARABIC)
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -200,6 +211,21 @@ class FilterPerLanguageResourcesTest {
     // All resources should be kept.
     val presentLanguages = readSupportedResourceLanguagesFromZip(fileName = "output.zip")
     assertThat(presentLanguages).containsExactly("", "pt-BR", "sw", "pcm")
+  }
+
+  @Test
+  fun testUtility_resourceTable_allSupportedLanguagesIncludingSpanish_keepsEverything() {
+    createZipWith(
+      fileName = "input.zip",
+      resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM_ES,
+      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT_SW_PCM_ES
+    )
+
+    runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
+
+    // All resources including Spanish should be kept.
+    val presentLanguages = readSupportedResourceLanguagesFromZip(fileName = "output.zip")
+    assertThat(presentLanguages).containsExactly("", "pt-BR", "sw", "pcm", "es-419")
   }
 
   @Test
