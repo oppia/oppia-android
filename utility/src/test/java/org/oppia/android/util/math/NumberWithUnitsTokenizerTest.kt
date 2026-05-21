@@ -214,7 +214,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isUnitWithRawValue(input.substringBefore(" "))
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo(input.substringBefore(" "))
     assertThat(tokens[1]).isPositiveIntegerWithValueThat().isEqualTo(expected.toInt())
   }
 
@@ -228,7 +228,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -241,7 +241,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -249,7 +249,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("$12.5").toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isUnitWithRawValue("$")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("$")
     assertThat(tokens[1]).isPositiveRealNumberWithValueThat().isEqualTo(12.5)
   }
 
@@ -264,7 +264,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -278,7 +278,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -290,7 +290,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -301,7 +301,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -313,7 +313,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -325,7 +325,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -337,7 +337,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -349,7 +349,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -361,7 +361,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -373,7 +373,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -385,7 +385,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -396,7 +396,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -408,7 +408,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -420,7 +420,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -432,7 +432,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -444,7 +444,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -453,7 +453,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("m2")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m2")
   }
 
   @Test
@@ -462,7 +462,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("M2")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("M2")
   }
 
   @Test
@@ -473,7 +473,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -484,7 +484,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -495,7 +495,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -506,7 +506,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -515,7 +515,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("m3")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m3")
   }
 
   @Test
@@ -524,7 +524,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("M3")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("M3")
   }
 
   @Test
@@ -540,7 +540,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -554,7 +554,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -563,7 +563,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("cc")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("cc")
   }
 
   @Test
@@ -572,7 +572,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("CC")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("CC")
   }
 
   @Test
@@ -581,7 +581,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("cuin")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("cuin")
   }
 
   @Test
@@ -590,7 +590,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("Cuin")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Cuin")
   }
 
   @Test
@@ -599,7 +599,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("cuft")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("cuft")
   }
 
   @Test
@@ -608,7 +608,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("Cuft") // u
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Cuft") // u
   }
 
   @Test
@@ -617,7 +617,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("cuyd")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("cuyd")
   }
 
   @Test
@@ -626,7 +626,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("Cuyd")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Cuyd")
   }
 
   @Test
@@ -637,7 +637,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(310.15)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -646,7 +646,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(310.15)
-    assertThat(tokens[1]).isUnitWithRawValue("Kelvin")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Kelvin")
   }
 
   @Test
@@ -657,7 +657,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(37)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -668,7 +668,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(37)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -680,7 +680,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -691,7 +691,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -703,7 +703,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -715,7 +715,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -729,7 +729,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -741,7 +741,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -754,7 +754,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -766,7 +766,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -780,7 +780,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -793,7 +793,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -804,7 +804,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -813,7 +813,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("hz")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("hz")
   }
 
   @Test
@@ -822,7 +822,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("Hertz")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Hertz")
   }
 
   @Test
@@ -834,7 +834,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -846,7 +846,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -857,7 +857,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -869,7 +869,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -880,7 +880,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -889,7 +889,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("Newton")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Newton")
   }
 
   @Test
@@ -901,7 +901,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -913,7 +913,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -925,7 +925,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -936,7 +936,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -946,7 +946,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -957,7 +957,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -969,7 +969,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -980,7 +980,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -992,7 +992,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1004,7 +1004,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1015,7 +1015,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1026,7 +1026,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1037,7 +1037,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1048,7 +1048,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1059,7 +1059,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1070,7 +1070,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1081,7 +1081,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1092,7 +1092,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1103,7 +1103,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1114,7 +1114,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1125,7 +1125,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1136,7 +1136,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1147,7 +1147,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1158,7 +1158,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1169,7 +1169,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1180,7 +1180,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1191,7 +1191,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1202,7 +1202,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1213,7 +1213,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1224,7 +1224,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1235,7 +1235,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1246,7 +1246,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue(input.substringAfter(" "))
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo(input.substringAfter(" "))
   }
 
   @Test
@@ -1255,8 +1255,8 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(9.8)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
-    assertThat(tokens[2]).isUnitWithRawValue("s")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
+    assertThat(tokens[2]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isMinusSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
@@ -1268,9 +1268,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test
@@ -1279,9 +1279,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue("km")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("km")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("h")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("h")
   }
 
   @Test
@@ -1290,9 +1290,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(9.8)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1303,9 +1303,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(20)
-    assertThat(tokens[1]).isUnitWithRawValue("dollars")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("dollars")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1315,10 +1315,10 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("$ 20 / m^2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isUnitWithRawValue("$")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("$")
     assertThat(tokens[1]).isPositiveIntegerWithValueThat().isEqualTo(20)
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1328,10 +1328,10 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 /m^2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isUnitWithRawValue("₹")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("₹")
     assertThat(tokens[1]).isPositiveIntegerWithValueThat().isEqualTo(100)
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1341,9 +1341,9 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("₹ 100 m^-2").toList()
 
     assertThat(tokens).hasSize(6)
-    assertThat(tokens[0]).isUnitWithRawValue("₹")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("₹")
     assertThat(tokens[1]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[2]).isUnitWithRawValue("m")
+    assertThat(tokens[2]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isMinusSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
@@ -1355,11 +1355,11 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(5)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isDivideSymbol()
-    assertThat(tokens[5]).isUnitWithRawValue("s")
+    assertThat(tokens[5]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test
@@ -1368,11 +1368,11 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("N")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("N")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isDivideSymbol()
-    assertThat(tokens[5]).isUnitWithRawValue("s")
+    assertThat(tokens[5]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test
@@ -1381,12 +1381,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(5)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isUnitWithRawValue("s")
+    assertThat(tokens[6]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1396,12 +1396,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(50)
-    assertThat(tokens[1]).isUnitWithRawValue("J")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("J")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("kg")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isUnitWithRawValue("K")
+    assertThat(tokens[6]).isUnitWithRawValueThat().isEqualTo("K")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1411,14 +1411,14 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(10)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(5)
-    assertThat(tokens[1]).isUnitWithRawValue("W")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("W")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[5]).isExponentiationSymbol()
     assertThat(tokens[6]).isPositiveIntegerWithValueThat().isEqualTo(2)
     assertThat(tokens[7]).isMultiplySymbol()
-    assertThat(tokens[8]).isUnitWithRawValue("K")
+    assertThat(tokens[8]).isUnitWithRawValueThat().isEqualTo("K")
     assertThat(tokens[9]).isRightParenthesisSymbol()
   }
 
@@ -1429,9 +1429,9 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(9)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(12.50)
     assertThat(tokens[1]).isLeftParenthesisSymbol()
-    assertThat(tokens[2]).isUnitWithRawValue("kg")
+    assertThat(tokens[2]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[3]).isMultiplySymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[5]).isRightParenthesisSymbol()
     assertThat(tokens[6]).isExponentiationSymbol()
     assertThat(tokens[7]).isMinusSymbol()
@@ -1444,9 +1444,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(7)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[4]).isRightParenthesisSymbol()
     assertThat(tokens[5]).isExponentiationSymbol()
     assertThat(tokens[6]).isPositiveIntegerWithValueThat().isEqualTo(2)
@@ -1459,7 +1459,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
     assertThat(tokens[1]).isLeftParenthesisSymbol()
-    assertThat(tokens[2]).isUnitWithRawValue("m")
+    assertThat(tokens[2]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[3]).isRightParenthesisSymbol()
     assertThat(tokens[4]).isRightParenthesisSymbol()
   }
@@ -1470,16 +1470,16 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(12)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(5)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
     assertThat(tokens[4]).isLeftParenthesisSymbol()
-    assertThat(tokens[5]).isUnitWithRawValue("m")
+    assertThat(tokens[5]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[6]).isMultiplySymbol()
-    assertThat(tokens[7]).isUnitWithRawValue("s")
+    assertThat(tokens[7]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[8]).isRightParenthesisSymbol()
     assertThat(tokens[9]).isMultiplySymbol()
-    assertThat(tokens[10]).isUnitWithRawValue("K")
+    assertThat(tokens[10]).isUnitWithRawValueThat().isEqualTo("K")
     assertThat(tokens[11]).isRightParenthesisSymbol()
   }
 
@@ -1489,9 +1489,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1000)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(3)
   }
@@ -1502,9 +1502,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(2.7)
-    assertThat(tokens[1]).isUnitWithRawValue("g")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("g")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("cc")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("cc")
   }
 
   @Test
@@ -1513,7 +1513,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(101325)
-    assertThat(tokens[1]).isUnitWithRawValue("Pa")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Pa")
   }
 
   @Test
@@ -1522,9 +1522,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue("N")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("N")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1535,9 +1535,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(1.7)
-    assertThat(tokens[1]).isUnitWithRawValue("ohm")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("ohm")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
   }
 
   @Test
@@ -1546,9 +1546,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(500)
-    assertThat(tokens[1]).isUnitWithRawValue("V")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("V")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
   }
 
   @Test
@@ -1557,9 +1557,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1000)
-    assertThat(tokens[1]).isUnitWithRawValue("W")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("W")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1570,9 +1570,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(500)
-    assertThat(tokens[1]).isUnitWithRawValue("kW")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kW")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("h")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("h")
   }
 
   @Test
@@ -1581,9 +1581,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue("N")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("N")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
   }
 
   @Test
@@ -1592,7 +1592,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(2.4)
-    assertThat(tokens[1]).isUnitWithRawValue("kHz")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kHz")
   }
 
   @Test
@@ -1601,9 +1601,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(3.14)
-    assertThat(tokens[1]).isUnitWithRawValue("rad")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("rad")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test
@@ -1612,9 +1612,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(2.5)
-    assertThat(tokens[1]).isUnitWithRawValue("rad")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("rad")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1625,9 +1625,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(0.5)
-    assertThat(tokens[1]).isUnitWithRawValue("mol")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("mol")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("L")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("L")
   }
 
   @Test
@@ -1636,9 +1636,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(18)
-    assertThat(tokens[1]).isUnitWithRawValue("g")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("g")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("mol")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("mol")
   }
 
   @Test
@@ -1647,9 +1647,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1000)
-    assertThat(tokens[1]).isUnitWithRawValue("cd")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("cd")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1660,9 +1660,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(5)
-    assertThat(tokens[1]).isUnitWithRawValue("milligram")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("milligram")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("millilitre")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("millilitre")
   }
 
   @Test
@@ -1671,9 +1671,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(100)
-    assertThat(tokens[1]).isUnitWithRawValue("ug")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("ug")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("l")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("l")
   }
 
   @Test
@@ -1682,9 +1682,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(50)
-    assertThat(tokens[1]).isUnitWithRawValue("nm")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("nm")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test
@@ -1693,9 +1693,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(14.7)
-    assertThat(tokens[1]).isUnitWithRawValue("oz")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("oz")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("in")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("in")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1706,9 +1706,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(60)
-    assertThat(tokens[1]).isUnitWithRawValue("yd")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("yd")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("h")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("h")
   }
 
   @Test
@@ -1717,9 +1717,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(32)
-    assertThat(tokens[1]).isUnitWithRawValue("ft")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("ft")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1730,9 +1730,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1743,9 +1743,9 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(6)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValue("kg")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1756,7 +1756,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(4)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWithValueThat().isEqualTo(10)
   }
@@ -1767,7 +1767,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(5)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isMinusSymbol()
     assertThat(tokens[4]).isPositiveIntegerWithValueThat().isEqualTo(10)
@@ -1779,11 +1779,11 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(9)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(1)
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWithValueThat().isEqualTo(2)
     assertThat(tokens[4]).isMultiplySymbol()
-    assertThat(tokens[5]).isUnitWithRawValue("s")
+    assertThat(tokens[5]).isUnitWithRawValueThat().isEqualTo("s")
     assertThat(tokens[6]).isExponentiationSymbol()
     assertThat(tokens[7]).isMinusSymbol()
     assertThat(tokens[8]).isPositiveIntegerWithValueThat().isEqualTo(1)
@@ -1799,7 +1799,7 @@ class NumberWithUnitsTokenizerTest {
     assertThat(tokens[2]).isPositiveIntegerWithValueThat().isEqualTo(10)
     assertThat(tokens[3]).isExponentiationSymbol()
     assertThat(tokens[4]).isPositiveIntegerWithValueThat().isEqualTo(23)
-    assertThat(tokens[5]).isUnitWithRawValue("mol")
+    assertThat(tokens[5]).isUnitWithRawValueThat().isEqualTo("mol")
     assertThat(tokens[6]).isExponentiationSymbol()
     assertThat(tokens[7]).isMinusSymbol()
     assertThat(tokens[8]).isPositiveIntegerWithValueThat().isEqualTo(1)
@@ -1820,7 +1820,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isLeftParenthesisSymbol()
-    assertThat(tokens[1]).isUnitWithRawValue("m")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("m")
   }
 
   @Test
@@ -1828,7 +1828,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m)").toList()
 
     assertThat(tokens).hasSize(2)
-    assertThat(tokens[0]).isUnitWithRawValue("m")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[1]).isRightParenthesisSymbol()
   }
 
@@ -1838,13 +1838,13 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(10)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(6.674)
-    assertThat(tokens[1]).isUnitWithRawValue("N")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("N")
     assertThat(tokens[2]).isMultiplySymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("m")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[4]).isExponentiationSymbol()
     assertThat(tokens[5]).isPositiveIntegerWithValueThat().isEqualTo(2)
     assertThat(tokens[6]).isDivideSymbol()
-    assertThat(tokens[7]).isUnitWithRawValue("kg")
+    assertThat(tokens[7]).isUnitWithRawValueThat().isEqualTo("kg")
     assertThat(tokens[8]).isExponentiationSymbol()
     assertThat(tokens[9]).isPositiveIntegerWithValueThat().isEqualTo(2)
   }
@@ -1855,12 +1855,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(4.186)
-    assertThat(tokens[1]).isUnitWithRawValue("J")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("J")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("g")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("g")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isUnitWithRawValue("degC")
+    assertThat(tokens[6]).isUnitWithRawValueThat().isEqualTo("degC")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1870,12 +1870,12 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(8)
     assertThat(tokens[0]).isPositiveRealNumberWithValueThat().isEqualTo(0.6)
-    assertThat(tokens[1]).isUnitWithRawValue("W")
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("W")
     assertThat(tokens[2]).isDivideSymbol()
     assertThat(tokens[3]).isLeftParenthesisSymbol()
-    assertThat(tokens[4]).isUnitWithRawValue("m")
+    assertThat(tokens[4]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[5]).isMultiplySymbol()
-    assertThat(tokens[6]).isUnitWithRawValue("K")
+    assertThat(tokens[6]).isUnitWithRawValueThat().isEqualTo("K")
     assertThat(tokens[7]).isRightParenthesisSymbol()
   }
 
@@ -1894,7 +1894,7 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m^^2").toList()
 
     assertThat(tokens).hasSize(4)
-    assertThat(tokens[0]).isUnitWithRawValue("m")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[1]).isExponentiationSymbol()
     assertThat(tokens[2]).isExponentiationSymbol()
     assertThat(tokens[3]).isPositiveIntegerWithValueThat().isEqualTo(2)
@@ -1905,10 +1905,10 @@ class NumberWithUnitsTokenizerTest {
     val tokens = NumberWithUnitsTokenizer.tokenize("m//s").toList()
 
     assertThat(tokens).hasSize(4)
-    assertThat(tokens[0]).isUnitWithRawValue("m")
+    assertThat(tokens[0]).isUnitWithRawValueThat().isEqualTo("m")
     assertThat(tokens[1]).isDivideSymbol()
     assertThat(tokens[2]).isDivideSymbol()
-    assertThat(tokens[3]).isUnitWithRawValue("s")
+    assertThat(tokens[3]).isUnitWithRawValueThat().isEqualTo("s")
   }
 
   @Test

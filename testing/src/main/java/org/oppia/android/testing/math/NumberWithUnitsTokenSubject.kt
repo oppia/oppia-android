@@ -3,6 +3,7 @@ package org.oppia.android.testing.math
 import com.google.common.truth.DoubleSubject
 import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
+import com.google.common.truth.StringSubject
 import com.google.common.truth.Subject
 import com.google.common.truth.Truth
 import org.oppia.android.util.math.NumberWithUnitsTokenizer
@@ -102,14 +103,13 @@ class NumberWithUnitsTokenSubject(
   }
 
   /**
-   * Verifies that the token is a [Token.Unit] with exactly the specified raw value.
+   * Verifies that the token is a [Token.Unit] and returns a [StringSubject] for its raw value.
    *
-   * @param expectedValue the exact raw unit text expected from tokenization
-   * @throws AssertionError if the token is not a [Token.Unit] or has a different raw value
+   * @return a [StringSubject] to verify the raw unit text
+   * @throws AssertionError if the token is not a [Token.Unit]
    */
-  fun isUnitWithRawValue(expectedValue: String) {
-    val unit = actual.asVerifiedType<Token.Unit>()
-    Truth.assertThat(unit.unit).isEqualTo(expectedValue)
+  fun isUnitWithRawValueThat(): StringSubject {
+    return Truth.assertThat(actual.asVerifiedType<Token.Unit>().unit)
   }
 
   companion object {
