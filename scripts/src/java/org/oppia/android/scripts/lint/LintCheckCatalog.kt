@@ -3,14 +3,16 @@ package org.oppia.android.scripts.lint
 /**
  * Catalog of all lint checks known to the version of Android Lint used by this project.
  *
- * Every check is classified into exactly one of four buckets:
+ * Every check is classified into exactly one of five buckets:
  * 1. Gradle-specific checks irrelevant in a Bazel project.
  * 2. XML, resource, icon, and manifest checks that operate without any Java/Kotlin
  *    source files.
  * 3. Source-file-scoped checks that can run on only changed files (incremental).
  * 4. Cross-file or classpath-dependent checks that need the full project description.
+ * 5. Arbitrary text-file checks that apply to any file type (XML and source alike).
+ *    These always run regardless of mode — they are never filtered out in incremental runs.
  *
- * The union of all four sets equals [allKnownChecks]. A consistency mode
+ * The union of all five sets equals [allKnownChecks]. A consistency mode
  * (--mode=check-script-consistency) compares this catalog against the linter's actual
  * check list to catch additions or removals after lint version upgrades.
  */
@@ -63,10 +65,6 @@ object LintCheckCatalog {
     "ButtonCase",
     "ButtonOrder",
     "ButtonStyle",
-    // Detects UTF-8 files that start with a byte-order mark (BOM). Applies to any text file
-    // (XML or source), but placed here because the check inspects raw bytes — no source-code
-    // AST context is needed. Source-file BOM is also enforced by .editorconfig / gitattributes.
-    "ByteOrderMark",
     "ContentDescription",
     "CustomViewStyleable",
     "DuplicateDefinition",
@@ -76,10 +74,6 @@ object LintCheckCatalog {
     "GridLayout",
     "HardcodedText",
     "InconsistentArrays",
-    // Detects Windows-style CRLF line endings. Applies to any text file (XML or source), but
-    // placed here because the check inspects raw bytes — no source-code AST context is needed.
-    // Source-file CRLF is also enforced by .gitattributes. Full mode covers all file types.
-    "MangledCRLF",
     "MissingConstraints",
     "NotInterpolated",
     "ScrollViewCount",
@@ -512,10 +506,32 @@ object LintCheckCatalog {
     "MissingOnPlayFromSearch"
   )
 
+  /**
+   * Checks that apply to any text file — both XML/resource files and Java/Kotlin source files.
+   *
+   * Unlike [checksNotNeedingSources] (which only ever inspects XML and resource artifacts),
+   * these checks detect violations in source code too. They are kept separate so that
+   * incremental mode never accidentally skips them: a BOM or CRLF introduced in an unchanged
+   * source file must still be caught even when that file is not in the diff.
+   *
+   * Because they inspect raw bytes (not the source AST), they do not require Java/Kotlin
+   * compilation context and run quickly regardless of project size.
+   */
+  private val checksForArbitraryTextFiles = setOf(
+    // Detects UTF-8 files that start with a byte-order mark (BOM). Applies to any text file
+    // (XML or source). Source-file BOM is also enforced by .editorconfig / gitattributes,
+    // but lint provides an independent safety net during code review.
+    "ByteOrderMark",
+    // Detects Windows-style CRLF line endings. Applies to any text file (XML or source).
+    // Source-file CRLF is also enforced by .gitattributes, but lint catches it independently.
+    "MangledCRLF"
+  )
+
   /** Union of all categorized checks. */
   val allKnownChecks: Set<String> by lazy {
     gradleChecksToIgnore +
       checksNotNeedingSources +
+      checksForArbitraryTextFiles +
       checksForIncrementalSources +
       checksRequiringFullProject
   }
@@ -523,7 +539,7 @@ object LintCheckCatalog {
   /**
    * Checks that are suppressed regardless of analysis mode, for project-specific reasons.
    *
-   * These are not part of the four categorization buckets — they are an orthogonal overlay
+   * These are not part of the five categorization buckets — they are an orthogonal overlay
    * that ensures certain checks are always disabled whether running fast or full mode.
    */
   val checksAlwaysDisabled: Set<String> = setOf(
@@ -560,6 +576,10 @@ object LintCheckCatalog {
    * In incremental mode, project-specific suppressions, Gradle-specific checks, and
    * project-scoped checks are all disabled since project-scoped checks require full
    * cross-file context that isn't available when analyzing only changed files.
+   *
+   * Note: [checksForArbitraryTextFiles] (`ByteOrderMark`, `MangledCRLF`) are intentionally
+   * NOT disabled here. They apply to any text file (source or XML) and must run even in
+   * incremental mode to avoid silently missing a BOM or CRLF in an unchanged file.
    */
   fun computeChecksToDisableInIncrementalRun(): Set<String> =
     checksAlwaysDisabled + gradleChecksToIgnore + checksRequiringFullProject

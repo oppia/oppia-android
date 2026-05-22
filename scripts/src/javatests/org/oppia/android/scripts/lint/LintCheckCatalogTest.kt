@@ -144,6 +144,35 @@ class LintCheckCatalogTest {
     assertThat(extraInCatalog).isEmpty()
   }
 
+  @Test
+  fun testAllKnownChecks_containsArbitraryTextFileChecks() {
+    // ByteOrderMark and MangledCRLF must be in allKnownChecks even though they moved from
+    // checksNotNeedingSources to the new checksForArbitraryTextFiles bucket.
+    assertThat(LintCheckCatalog.allKnownChecks).contains("ByteOrderMark")
+    assertThat(LintCheckCatalog.allKnownChecks).contains("MangledCRLF")
+  }
+
+  @Test
+  fun testComputeChecksToDisableInIncrementalRun_doesNotDisableArbitraryTextFileChecks() {
+    val disabled = LintCheckCatalog.computeChecksToDisableInIncrementalRun()
+
+    // ByteOrderMark and MangledCRLF must NEVER be disabled in incremental mode — they apply
+    // to any text file (including source), so they must run even when only a subset of source
+    // files is in scope to avoid silently missing a BOM/CRLF in an unchanged file.
+    assertThat(disabled).doesNotContain("ByteOrderMark")
+    assertThat(disabled).doesNotContain("MangledCRLF")
+  }
+
+  @Test
+  fun testComputeChecksToDisableInFullRun_doesNotDisableArbitraryTextFileChecks() {
+    val disabled = LintCheckCatalog.computeChecksToDisableInFullRun()
+
+    // ByteOrderMark and MangledCRLF are not project-specific suppressions, so they must
+    // run in full mode too.
+    assertThat(disabled).doesNotContain("ByteOrderMark")
+    assertThat(disabled).doesNotContain("MangledCRLF")
+  }
+
   /**
    * Loads the complete set of check IDs from [BuiltinIssueRegistry] at runtime.
    *

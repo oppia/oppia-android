@@ -314,6 +314,197 @@ class AndroidLintRunnerTest {
     assertThat(outputStream.toString()).contains("ANDROID LINT CHECK")
   }
 
+  // -----------------------------------------------------------------------
+  // Comment 1 tests: Validate allow-list and per-mode behavior with real violations
+  // -----------------------------------------------------------------------
+
+  @Test
+  fun testAndroidLintAnalyzer_withExplicitChecks_matchingViolation_detectsIssue() {
+    // Setup: project contains an RtlHardcoded violation (android:layout_alignParentRight).
+    setupProjectWithRtlHardCoded()
+
+    // Run lint with checks=["RtlHardcoded"] — the violation matches the allow-list → FAIL.
+    val analyzerMatchingCheck = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      checks = listOf("RtlHardcoded")
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      analyzerMatchingCheck.runAnalysis()
+    }
+
+    // The RtlHardcoded check is in the allow-list and a violation exists — must be detected.
+    // LintAnalysisReporter prints check IDs as UPPER_SNAKE_CASE (e.g. RTL_HARDCODED).
+    val output = outputStream.toString()
+    assertThat(output).contains("RTL_HARDCODED")
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withExplicitChecks_nonMatchingCheck_ignoresIssue() {
+    // Setup: project contains an RtlHardcoded violation.
+    setupProjectWithRtlHardCoded()
+
+    // Run lint with checks=["HardcodedText"] — the allow-list does NOT include RtlHardcoded,
+    // so even though a violation exists it should NOT be reported → PASS.
+    val analyzerNonMatchingCheck = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      checks = listOf("HardcodedText")
+    )
+
+    // Lint should pass — RtlHardcoded is outside the allow-list scope.
+    analyzerNonMatchingCheck.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).doesNotContain("RtlHardcoded")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_fastMode_withXmlIssue_noChangedSourceFiles_detectsXmlCheck() {
+    // Setup: project has an RtlHardcoded XML violation.
+    setupProjectWithRtlHardCoded()
+
+    // FAST mode with an empty changed-files set: source files are excluded from the project
+    // description, but XML/resource checks (like RtlHardcoded) are in checksNotNeedingSources
+    // so they are NOT disabled. The violation must still be detected.
+    val fastModeAnalyzer = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.computeChecksToDisableInIncrementalRun(),
+      changedFiles = emptySet() // FAST mode: no changed source files
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      fastModeAnalyzer.runAnalysis()
+    }
+
+    val output = outputStream.toString()
+    // LintAnalysisReporter prints check IDs as UPPER_SNAKE_CASE.
+    assertThat(output).contains("RTL_HARDCODED")
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_fullMode_withXmlIssue_detectsXmlCheck() {
+    // Setup: project has an RtlHardcoded XML violation.
+    setupProjectWithRtlHardCoded()
+
+    // FULL mode (changedFiles=null): the entire project is analyzed. XML checks must fire.
+    val fullModeAnalyzer = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.computeChecksToDisableInFullRun(),
+      changedFiles = null // FULL mode: all files
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      fullModeAnalyzer.runAnalysis()
+    }
+
+    val output = outputStream.toString()
+    // LintAnalysisReporter prints check IDs as UPPER_SNAKE_CASE.
+    assertThat(output).contains("RTL_HARDCODED")
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_fastMode_withSourceIssue_changedFileIncluded_detectsIssue() {
+    // Setup: project has a NewApi violation in a .kt source file.
+    setupProjectWithNewApi()
+    val violatingFile = "app/src/main/java/org/oppia/android/app/NewApiUsage.kt"
+
+    // FAST mode with the violating file in the changed set — it will be included in the
+    // project description, so NewApi (a checksForIncrementalSources check) must fire.
+    val fastModeWithFile = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.computeChecksToDisableInIncrementalRun(),
+      changedFiles = setOf(violatingFile) // file IS in the changed set
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      fastModeWithFile.runAnalysis()
+    }
+
+    val output = outputStream.toString()
+    assertThat(output).contains("NewApi")
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_fastMode_withSourceIssue_fileNotInChangedSet_doesNotDetectIssue() {
+    // Setup: project has a NewApi violation in a .kt source file.
+    setupProjectWithNewApi()
+
+    // FAST mode with an EMPTY changed set — the violating source file is NOT included in
+    // the project description. NewApi cannot fire on a file that isn't in scope → PASS.
+    val fastModeWithoutFile = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.computeChecksToDisableInIncrementalRun(),
+      changedFiles = emptySet() // FAST mode: violating file NOT in changed set
+    )
+
+    // Lint should pass — NewApi cannot find a violation if the file is not in scope.
+    fastModeWithoutFile.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).doesNotContain("NewApi")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  // -----------------------------------------------------------------------
+  // Comment 2 tests: Restore exit-code coverage via black-box approach
+  // -----------------------------------------------------------------------
+
+  @Test
+  fun testAndroidLintAnalyzer_withMissingExemptionProto_throwsRequireException() {
+    // Tests the runLint() → reportLintIssues() path where post-lint processing fails.
+    // Provides a non-existent proto path to trigger a require() failure after lint completes,
+    // exercising the exception propagation path through runAnalysis().
+    // This is the black-box equivalent of the removed testRunLint_withProjectDescription_
+    // withNonExistentFilePath_throwsInternalIssue white-box test.
+    setupProjectStructure() // Clean project so lint itself passes (exit code 0)
+    val nonExistentProtoPath = "${tempFolder.root}/nonexistent_dir/missing.pb"
+    val analyzerWithMissingProto = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = nonExistentProtoPath,
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled
+    )
+
+    // Lint runs successfully (exit code 0) but the exemption proto is missing,
+    // so require() in reportLintIssues() throws an IllegalArgumentException.
+    assertThrows<IllegalArgumentException> {
+      analyzerWithMissingProto.runAnalysis()
+    }
+  }
+
   @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
     setupProjectStructure()
