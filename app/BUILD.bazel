@@ -12,7 +12,7 @@ order to build with Bazel.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
-load("//app:google_services.bzl", "download_google_services_json")
+load("//app:google_services.bzl", "prepare_google_services_json")
 load("//scripts:retrieve_license_texts.bzl", "retrieve_license_texts")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
@@ -865,28 +865,22 @@ retrieve_license_texts(
 # To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
 # to your build rule's dependency list.
 
-download_google_services_json(
-    name = "production_google_services_json",
+prepare_google_services_json(
+    name = "processed_google_services_json",
+    developer_google_services_file = "google-services.json",
+    output_file = "google_services_processed.json",
 )
 
-DEVELOPER_GOOGLE_SERVICES_RESOURCES = google_services_xml(
+GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.android",
-    google_services_json = "google-services.json",
-)
-
-PRODUCTION_GOOGLE_SERVICES_RESOURCES = google_services_xml(
-    package_name = "org.oppia.android",
-    google_services_json = "google-services-production.json",
+    google_services_json = "google_services_processed.json",
 )
 
 crashlytics_android_library(
     name = "crashlytics",
     package_name = "org.oppia.android",
     build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
-    resource_files = select({
-        "//config:download_firebase_config_enabled": PRODUCTION_GOOGLE_SERVICES_RESOURCES,
-        "//conditions:default": DEVELOPER_GOOGLE_SERVICES_RESOURCES,
-    }),
+    resource_files = GOOGLE_SERVICES_RESOURCES,
 )
 
 android_library(

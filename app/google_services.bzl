@@ -3,6 +3,7 @@ Macro and rule corresponding to production Firebase google-services.json downloa
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 def _download_google_services_json_impl(ctx):
     output_file = ctx.outputs.output_file
@@ -46,22 +47,38 @@ _download_google_services_json = rule(
         "app_id_flag": attr.label(
             mandatory = True,
         ),
-    },
-    outputs = {
-        "output_file": "google-services-production.json",
+        "output_file": attr.output(
+            mandatory = True,
+        ),
     },
     implementation = _download_google_services_json_impl,
 )
 
-def download_google_services_json(name):
+def prepare_google_services_json(name, developer_google_services_file, output_file):
     """
-    Downloads the production google-services.json file from Firebase using local CLI login credentials.
+    Prepares a google_services_config.json file for use in google_services_xml() setups.
+
+    If configured, this will remotely download the production configuration file.
 
     Args:
         name: str. A unique name for this target.
+        developer_google_services_file: label. The developer configuration file to fall back to.
+        output_file: str. The name of the configuration output file that should be produced.
     """
+    prod_file_name = "_%s_production_google_services.json" % name
     _download_google_services_json(
-        name = name,
+        name = "%s_download_production_google_services" % name,
         project_id_flag = "//config:firebase_project_id",
         app_id_flag = "//config:firebase_app_id",
+        output_file = prod_file_name,
+        tags = ["manual"],  # To ensure //... doesn't trigger a failure for an unconfigured environment.
+    )
+
+    copy_file(
+        name = name,
+        src = select({
+            "//config:download_firebase_config_enabled": prod_file_name,
+            "//conditions:default": developer_google_services_file,
+        }),
+        out = output_file
     )
