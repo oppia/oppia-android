@@ -42,19 +42,6 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "caching_prod_module",
-    srcs = [
-        "CachingModule.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":annotations",
-        ":asset_repository",
-        "//:dagger",
-        "//utility",
-    ],
-)
 
 kt_android_library(
     name = "asset_prod_module",

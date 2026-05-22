@@ -24,6 +24,7 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.safeForEach
@@ -61,7 +62,7 @@ class ClassroomController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
 ) {
   /** Returns the list of [ClassroomSummary]s currently tracked by the app. */
   fun getClassroomList(profileId: LegacyProfileId): DataProvider<ClassroomList> {
@@ -77,7 +78,7 @@ class ClassroomController @Inject constructor(
    * Returns the list of [ClassroomRecord]s currently available in the app.
    */
   fun getClassrooms(): List<ClassroomRecord> {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.loadProtoFromLocalAssets(
         assetName = "classrooms",
         baseMessage = ClassroomIdList.getDefaultInstance()
@@ -91,7 +92,7 @@ class ClassroomController @Inject constructor(
    * Returns the [ClassroomRecord] associated with the given [classroomId].
    */
   fun getClassroomById(classroomId: String): ClassroomRecord {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.tryLoadProtoFromLocalAssets(
         assetName = classroomId,
         defaultMessage = ClassroomRecord.getDefaultInstance()
@@ -128,7 +129,7 @@ class ClassroomController @Inject constructor(
   private fun createClassroomList(
     contentLocale: OppiaLocale.ContentLocale
   ): ClassroomList {
-    return if (loadLessonProtosFromAssets)
+    return if (loadLessonProtosFromAssets.value)
       loadClassroomListFromProto(contentLocale)
     else
       loadClassroomListFromJson(contentLocale)
@@ -184,7 +185,7 @@ class ClassroomController @Inject constructor(
   }
 
   private fun createClassroomSummary(classroomId: String): ClassroomSummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val classroomRecord = assetRepository.loadProtoFromLocalAssets(
         assetName = classroomId,
         baseMessage = ClassroomRecord.getDefaultInstance()
@@ -244,7 +245,7 @@ class ClassroomController @Inject constructor(
   }
 
   private fun getTopicIdListFromClassroomRecord(classroomId: String): ClassroomRecord.TopicIdList {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val classroomRecord = assetRepository.loadProtoFromLocalAssets(
         assetName = classroomId,
         baseMessage = ClassroomRecord.getDefaultInstance()
@@ -288,7 +289,7 @@ class ClassroomController @Inject constructor(
   }
 
   private fun createTopicSummary(topicId: String, classroomId: String): TopicSummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
           assetName = topicId,

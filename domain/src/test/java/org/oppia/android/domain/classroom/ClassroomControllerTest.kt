@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,7 +73,13 @@ class ClassroomControllerTest {
   fun setUp() {
     profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -363,9 +370,6 @@ class ClassroomControllerTest {
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
 
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl

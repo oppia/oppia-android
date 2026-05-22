@@ -12,6 +12,7 @@ import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
@@ -19,13 +20,13 @@ import javax.inject.Inject
 class RevisionCardRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a [RevisionCard] given a subtopic ID in the specific topic, loaded from the filesystem.
    */
   fun loadRevisionCard(topicId: String, subtopicId: Int): RevisionCard {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val subtopicRecord = assetRepository.loadProtoFromLocalAssets(
         assetName = "${topicId}_$subtopicId",
         baseMessage = SubtopicRecord.getDefaultInstance()

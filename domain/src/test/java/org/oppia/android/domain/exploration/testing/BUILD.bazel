@@ -44,6 +44,7 @@ oppia_android_test(
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",

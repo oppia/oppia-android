@@ -20,6 +20,8 @@ import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
+import org.oppia.android.app.model.FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS
+import org.oppia.android.app.model.FeatureFlagId.LOAD_IMAGES_FROM_ASSETS
 import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
 import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
 import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
@@ -148,6 +150,16 @@ class TestPlatformParameterModule {
 
     fun forceEnableTopicPracticeTab(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
+    }
+
+    /** Helper to configure whether lesson protos should be loaded from assets in tests. */
+    fun forceLoadLessonProtosFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_LESSON_PROTOS_FROM_ASSETS, value)
+    }
+
+    /** Helper to configure whether images should be loaded from assets in tests. */
+    fun forceLoadImagesFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_IMAGES_FROM_ASSETS, value)
     }
 
     fun reset() {

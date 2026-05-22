@@ -16,6 +16,7 @@ import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
@@ -23,13 +24,13 @@ import javax.inject.Inject
 class ConceptCardRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a [ConceptCard] corresponding to the specified skill ID, loaded from the filesystem.
    */
   fun loadConceptCard(skillId: String): ConceptCard {
-    val conceptCard = if (loadLessonProtosFromAssets) {
+    val conceptCard = if (loadLessonProtosFromAssets.value) {
       val conceptCardList =
         assetRepository.loadProtoFromLocalAssets(
           assetName = "skills",

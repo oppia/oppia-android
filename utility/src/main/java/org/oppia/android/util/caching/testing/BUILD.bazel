@@ -4,18 +4,6 @@ Testing utilities corresponding asset caching utilities.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-kt_android_library(
-    name = "caching_test_module",
-    testonly = True,
-    srcs = [
-        "CachingTestModule.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//:dagger",
-        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
-    ],
-)
 
 kt_android_library(
     name = "asset_test_no_op_module",

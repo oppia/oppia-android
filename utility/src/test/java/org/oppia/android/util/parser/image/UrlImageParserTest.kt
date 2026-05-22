@@ -1,5 +1,7 @@
 package org.oppia.android.util.parser.image
 
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import android.app.Application
 import android.content.Context
 import android.graphics.Color
@@ -19,11 +21,11 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
@@ -305,14 +307,16 @@ class UrlImageParserTest {
   @Component(
     modules = [
       AssetModule::class,
-      CachingTestModule::class,
       FakeOppiaClockModule::class,
       ImageParsingModule::class,
+      PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class,
       LocaleProdModule::class,
       LoggerModule::class,
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
+      TestLogReportingModule::class,
       TestModule::class
     ]
   )

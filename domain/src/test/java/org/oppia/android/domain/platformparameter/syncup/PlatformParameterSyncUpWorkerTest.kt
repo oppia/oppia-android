@@ -17,6 +17,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +28,7 @@ import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestO
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -108,6 +109,11 @@ class PlatformParameterSyncUpWorkerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -145,7 +151,7 @@ class PlatformParameterSyncUpWorkerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,

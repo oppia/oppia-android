@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import org.oppia.android.util.parser.svg.ScalableVectorGraphic
@@ -27,7 +28,7 @@ import javax.inject.Singleton
 @Singleton
 class GlideImageLoader @Inject constructor(
   context: Context,
-  @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
+  @LoadImagesFromAssets private val loadImagesFromAssets: PlatformParameterValue<Boolean>,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
   private val glide by lazy { Glide.with(context) }
@@ -100,7 +101,7 @@ class GlideImageLoader @Inject constructor(
   }
 
   private fun loadImage(imageUrl: String): Any = when {
-    loadImagesFromAssets -> object : ImageAssetFetcher {
+    loadImagesFromAssets.value -> object : ImageAssetFetcher {
       override fun fetchImage(): ByteArray =
         assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
 

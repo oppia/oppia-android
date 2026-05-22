@@ -39,6 +39,7 @@ kt_android_library(
         ":image_targets",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
+        "//utility",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
