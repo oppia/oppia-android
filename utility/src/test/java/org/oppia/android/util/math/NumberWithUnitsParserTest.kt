@@ -9,6 +9,19 @@ import org.oppia.android.app.model.NumberUnitExpression.Unit
 import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
+import org.oppia.android.util.math.NumberWithUnitsParsingError.DuplicateCurrencyError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.EmptyExpressionError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.InvalidTokenError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.InvalidUnitError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.MissingDenominatorError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.MissingExponentError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.NumberExpectedError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.TrailingTokensError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.UnbalancedParenthesesError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterDivisionError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError
+import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedError
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -22,44 +35,44 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_emptyString_returnsEmptyExpressionError() {
     val error = parseNumberWithUnitsExpectingFailure("")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.EmptyExpressionError::class.java)
+    assertThat(error).isInstanceOf(EmptyExpressionError::class.java)
   }
 
   @Test
   fun testParser_whitespaceOnly_returnsEmptyExpressionError() {
     val error = parseNumberWithUnitsExpectingFailure("   ")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.EmptyExpressionError::class.java)
+    assertThat(error).isInstanceOf(EmptyExpressionError::class.java)
   }
 
   @Test
   fun testParser_integerOnly_noUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("42")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.UnitExpectedError::class.java)
+    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
   }
 
   @Test
   fun testParser_realNumberOnly_noUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("3.14")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.UnitExpectedError::class.java)
+    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
   }
 
   @Test
   fun testParser_negativeIntegerOnly_noUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("-5")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.UnitExpectedError::class.java)
+    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
   }
 
   @Test
   fun testParser_negativeRealOnly_noUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("-2.5")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.UnitExpectedError::class.java)
+    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
   }
 
   @Test
   fun testParser_invalidUnit_returnsInvalidUnitError() {
     val error = parseNumberWithUnitsExpectingFailure("42 invalid")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.InvalidUnitError::class.java)
-    val invalidUnitError = error as NumberWithUnitsParsingError.InvalidUnitError
+    assertThat(error).isInstanceOf(InvalidUnitError::class.java)
+    val invalidUnitError = error as InvalidUnitError
     assertThat(invalidUnitError.invalidUnit).isEqualTo("invalid")
   }
 
@@ -141,9 +154,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_dollarPrefix_noNumber_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("$ kg")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError::class.java
-    )
+    assertThat(error).isInstanceOf(NumberExpectedAfterCurrencyPrefixError::class.java)
   }
 
   @Test
@@ -175,9 +186,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_rupeePrefix_noNumber_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("₹ kg")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError::class.java
-    )
+    assertThat(error).isInstanceOf(NumberExpectedAfterCurrencyPrefixError::class.java)
   }
 
   @Test
@@ -315,7 +324,7 @@ class NumberWithUnitsParserTest {
     // "Nm^2" is ambiguous (N*m^2 vs (N*m)^2), so the parser should fail.
     // Decomposition produces [N, m], then "^2" remains unconsumed.
     val error = parseNumberWithUnitsExpectingFailure("5 Nm^2")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.TrailingTokensError::class.java)
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
@@ -378,8 +387,8 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_compoundUnit_completelyInvalid_returnsInvalidUnitError() {
     val error = parseNumberWithUnitsExpectingFailure("5 xyz")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.InvalidUnitError::class.java)
-    val invalidUnitError = error as NumberWithUnitsParsingError.InvalidUnitError
+    assertThat(error).isInstanceOf(InvalidUnitError::class.java)
+    val invalidUnitError = error as InvalidUnitError
     assertThat(invalidUnitError.invalidUnit).isEqualTo("xyz")
   }
 
@@ -388,7 +397,7 @@ class NumberWithUnitsParserTest {
     // "Nxyz" — "N" is valid (Newton), but "xyz" cannot be resolved.
     // Decomposition requires size > 1, so single valid prefix with invalid rest fails.
     val error = parseNumberWithUnitsExpectingFailure("5 Nxyz")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError::class.java)
+    assertThat(error).isInstanceOf(InvalidUnitError::class.java)
   }
 
   @Test
@@ -823,13 +832,13 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_compoundUnit_jouleSecond_withExponent_returnsTrailingTokensError() {
     val error = parseNumberWithUnitsExpectingFailure("5 Js^2")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError.TrailingTokensError::class.java)
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
   fun testParser_compoundUnit_wattPartiallyInvalid_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("5 Wxyz")
-    assertThat(error).isInstanceOf(NumberWithUnitsParsingError::class.java)
+    assertThat(error).isInstanceOf(InvalidUnitError::class.java)
   }
 
   @Test
@@ -1393,9 +1402,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_fractionMissingDenominator_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("1/ m")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingDenominatorError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingDenominatorError::class.java)
   }
 
   @Test
@@ -1723,9 +1730,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_siPrefixAlone_noBaseUnit_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("5 kilo")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterSiPrefixError::class.java)
   }
 
   @Test
@@ -1770,17 +1775,13 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_unitWithMissingExponent_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m^")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingExponentError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
   }
 
   @Test
   fun testParser_unitWithExponentNegativeButNoValue_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m^-")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingExponentError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
   }
 
   @Test
@@ -1878,9 +1879,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_divisionWithNoUnitAfter_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m/")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterDivisionError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterDivisionError::class.java)
   }
 
   @Test
@@ -1930,17 +1929,13 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_unbalancedParenthesis_missingClose_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("5 m/(s")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnbalancedParenthesesError::class.java
-    )
+    assertThat(error).isInstanceOf(UnbalancedParenthesesError::class.java)
   }
 
   @Test
   fun testParser_emptyParenthesizedDenominator_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("5 m/()")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterDivisionError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterDivisionError::class.java)
   }
 
   @Test
@@ -2045,41 +2040,31 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_invalidTokenAtStart_returnsInvalidTokenError() {
     val error = parseNumberWithUnitsExpectingFailure("@100 m")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.InvalidTokenError::class.java
-    )
+    assertThat(error).isInstanceOf(InvalidTokenError::class.java)
   }
 
   @Test
   fun testParser_unitAlone_noNumber_returnsNumberExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("kg")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.NumberExpectedError::class.java
-    )
+    assertThat(error).isInstanceOf(NumberExpectedError::class.java)
   }
 
   @Test
   fun testParser_parenthesisAtStart_returnsNumberExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("(10 m)")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.NumberExpectedError::class.java
-    )
+    assertThat(error).isInstanceOf(NumberExpectedError::class.java)
   }
 
   @Test
   fun testParser_trailingNumber_returnsTrailingTokensError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m 5")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.TrailingTokensError::class.java
-    )
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
   fun testParser_dollarPrefixWithTrailingInvalid_returnsTrailingTokensError() {
     val error = parseNumberWithUnitsExpectingFailure("$100 @")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.TrailingTokensError::class.java
-    )
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
@@ -2125,41 +2110,31 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_dollarPrefixWithDollarSuffix_returnsDuplicateCurrencyError() {
     val error = parseNumberWithUnitsExpectingFailure("$100 dollars")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.DuplicateCurrencyError::class.java
-    )
+    assertThat(error).isInstanceOf(DuplicateCurrencyError::class.java)
   }
 
   @Test
   fun testParser_rupeePrefixWithRupeeSuffix_returnsDuplicateCurrencyError() {
     val error = parseNumberWithUnitsExpectingFailure("₹100 rupees")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.DuplicateCurrencyError::class.java
-    )
+    assertThat(error).isInstanceOf(DuplicateCurrencyError::class.java)
   }
 
   @Test
   fun testParser_dollarPrefixWithCentSuffix_returnsDuplicateCurrencyError() {
     val error = parseNumberWithUnitsExpectingFailure("$50 cents")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.DuplicateCurrencyError::class.java
-    )
+    assertThat(error).isInstanceOf(DuplicateCurrencyError::class.java)
   }
 
   @Test
   fun testParser_rupeePrefixWithPaiseSuffix_returnsDuplicateCurrencyError() {
     val error = parseNumberWithUnitsExpectingFailure("₹50 paise")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.DuplicateCurrencyError::class.java
-    )
+    assertThat(error).isInstanceOf(DuplicateCurrencyError::class.java)
   }
 
   @Test
   fun testParser_dollarPrefixWithDollarSuffixAmongPhysicalUnits_returnsDuplicateCurrencyError() {
     val error = parseNumberWithUnitsExpectingFailure("$10 kg dollars")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.DuplicateCurrencyError::class.java
-    )
+    assertThat(error).isInstanceOf(DuplicateCurrencyError::class.java)
   }
 
   @Test
@@ -2182,9 +2157,7 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_fractionOnlyNoUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("1/2")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
   }
 
   @Test
@@ -4753,91 +4726,69 @@ class NumberWithUnitsParserTest {
   fun testParser_doubleDivision_returnsTrailingTokensError() {
     // "10 m/s/kg" → after parsing m/s, the second '/' is a trailing token
     val error = parseNumberWithUnitsExpectingFailure("10 m/s/kg")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.TrailingTokensError::class.java
-    )
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
   fun testParser_divisionWithNoNumeratorUnit_returnsUnitExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("10 /s")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingDenominatorError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingDenominatorError::class.java)
   }
 
   @Test
   fun testParser_emptyParenthesesInDenominator_compoundUnit_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 kg m/()")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterDivisionError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterDivisionError::class.java)
   }
 
   @Test
   fun testParser_unbalancedParenthesis_complexCompound_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 kg m/(s^2 A")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnbalancedParenthesesError::class.java
-    )
+    assertThat(error).isInstanceOf(UnbalancedParenthesesError::class.java)
   }
 
   @Test
   fun testParser_missingExponentInCompound_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 kg m^/s")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingExponentError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
   }
 
   @Test
   fun testParser_missingExponentInDenominator_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m/s^")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingExponentError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
   }
 
   @Test
   fun testParser_missingExponentNegativeSignInDenominator_returnsError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m/s^-")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.MissingExponentError::class.java
-    )
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
   }
 
   @Test
   fun testParser_siPrefixWithoutBaseUnitInCompound_returnsError() {
     // "10 m/kilo" → k recognized as SI prefix but "ilo" is not valid
     val error = parseNumberWithUnitsExpectingFailure("5 m/kilo")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterSiPrefixError::class.java)
   }
 
   @Test
   fun testParser_divisionAfterParenthesizedDenominator_returnsTrailingTokensError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m/(s) /kg")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.TrailingTokensError::class.java
-    )
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
   fun testParser_trailingNumberAfterCompound_returnsTrailingTokensError() {
     val error = parseNumberWithUnitsExpectingFailure("10 m/s 5")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.TrailingTokensError::class.java
-    )
+    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
   }
 
   @Test
   fun testParser_numberInDenominator_returnsTrailingTokensError() {
     // "10 m/3" → '3' is not a unit
     val error = parseNumberWithUnitsExpectingFailure("10 m/3")
-    assertThat(error).isInstanceOf(
-      NumberWithUnitsParsingError.UnitExpectedAfterDivisionError::class.java
-    )
+    assertThat(error).isInstanceOf(UnitExpectedAfterDivisionError::class.java)
   }
 
   @Test
