@@ -256,6 +256,10 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
 
+# Release changelog files and certificate infrastructure for release automation.
+/config/changelogs/ @oppia/android-dev-workflow-reviewers
+/config/certificate/ @oppia/android-dev-workflow-reviewers
+
 # Specific manifest files specifically required for Bazel builds or the Android lint tool.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
