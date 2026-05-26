@@ -3,7 +3,7 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "generate_universal_apk", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
@@ -46,7 +46,6 @@ _FLAVOR_METADATA = {
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
-        "version_code": OPPIA_DEV_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "alpha": {
@@ -62,7 +61,6 @@ _FLAVOR_METADATA = {
             "//config/src/java/org/oppia/android/config:all_languages_config",
             "//config/src/java/org/oppia/android/config:alpha_feature_flags_override_config",
         ],
-        "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "beta": {
@@ -78,7 +76,6 @@ _FLAVOR_METADATA = {
             "//config/src/java/org/oppia/android/config:beta_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
-        "version_code": OPPIA_BETA_VERSION_CODE,
         "application_class": ".app.application.beta.BetaOppiaApplication",
     },
     "ga": {
@@ -94,7 +91,6 @@ _FLAVOR_METADATA = {
             "//config/src/java/org/oppia/android/config:ga_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
-        "version_code": OPPIA_GA_VERSION_CODE,
         "application_class": ".app.application.ga.GaOppiaApplication",
     },
 }
@@ -105,7 +101,6 @@ def _transform_android_manifest_impl(ctx):
     build_flavor = ctx.attr.build_flavor
     major_version = ctx.attr.major_version
     minor_version = ctx.attr.minor_version
-    version_code = ctx.attr.version_code
     application_relative_qualified_class = ctx.attr.application_relative_qualified_class
     enable_firebase_analytics = ctx.attr.enable_firebase_analytics
     enable_app_expiration = ctx.attr.enable_app_expiration
@@ -118,7 +113,6 @@ def _transform_android_manifest_impl(ctx):
         build_flavor,
         "%s" % major_version,
         "%s" % minor_version,
-        "%s" % version_code,
         "%s" % application_relative_qualified_class,
         ctx.info_file.path,  # Path to the stable status file containing the Git commit hash.
         "true" if enable_firebase_analytics else "false",
@@ -152,7 +146,6 @@ _transform_android_manifest = rule(
         "build_flavor": attr.string(mandatory = True),
         "major_version": attr.int(mandatory = True),
         "minor_version": attr.int(mandatory = True),
-        "version_code": attr.int(mandatory = True),
         "application_relative_qualified_class": attr.string(mandatory = True),
         "enable_firebase_analytics": attr.bool(mandatory = True),
         "enable_app_expiration": attr.bool(mandatory = True),
@@ -172,14 +165,13 @@ def transform_android_manifest(
         build_flavor,
         major_version,
         minor_version,
-        version_code,
         application_relative_qualified_class,
         enable_firebase_analytics,
         enable_app_expiration):
     """
     Generates a new transformation of the specified AndroidManifest.xml.
 
-    The transformed version of the manifest include an explicitly specified version code and
+    The transformed version of the manifest include computed version code and
     computed version name based on the specified major/minor version, flavor, and the most recent
     develop branch hash.
 
@@ -191,7 +183,6 @@ def transform_android_manifest(
         build_flavor: str. The specific release flavor of this build of the app.
         major_version: int. The major version of the app.
         minor_version: int. The minor version of the app.
-        version_code: int. The version code of this flavor of the app.
         application_relative_qualified_class: String. The relatively qualified main application
             class of the app for this build flavor.
         enable_firebase_analytics: bool. Whether to enable Firebase Analytics.
@@ -204,7 +195,6 @@ def transform_android_manifest(
         build_flavor = build_flavor,
         major_version = major_version,
         minor_version = minor_version,
-        version_code = version_code,
         application_relative_qualified_class = application_relative_qualified_class,
         enable_firebase_analytics = enable_firebase_analytics,
         enable_app_expiration = enable_app_expiration,
@@ -233,7 +223,6 @@ def define_oppia_aab_binary_flavor(flavor):
         build_flavor = flavor,
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
-        version_code = _FLAVOR_METADATA[flavor]["version_code"],
         enable_app_expiration = _FLAVOR_METADATA[flavor]["enable_app_expiration"],
         enable_firebase_analytics = select({
             "//config:firebase_analytics_enabled": True,
