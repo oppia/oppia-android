@@ -1,0 +1,18 @@
+"""
+Libraries for Oppia Android release automation scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "derive_version_name_for_commit_lib",
+    testonly = True,
+    srcs = [
+        "DeriveVersionNameForCommit.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+    ],
+)

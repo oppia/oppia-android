@@ -347,3 +347,12 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.binary.BinaryFileCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/binary:binary_file_check_lib"],
 )
+
+kt_jvm_binary(
+    name = "derive_version_name_for_commit",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.release.DeriveVersionNameForCommitKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:derive_version_name_for_commit_lib",
+    ],
+)
