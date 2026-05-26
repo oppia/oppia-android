@@ -168,6 +168,7 @@ class AudioFragmentPresenter @Inject constructor(
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> "pt"
       AudioLanguage.ARABIC_LANGUAGE -> "ar"
       AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> "pcm"
+      AudioLanguage.SPANISH_AUDIO_LANGUAGE -> "es"
       AudioLanguage.NO_AUDIO, AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
     }

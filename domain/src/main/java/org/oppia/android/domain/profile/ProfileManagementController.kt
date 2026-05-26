@@ -856,12 +856,14 @@ class ProfileManagementController @Inject constructor(
     ).transform(GET_AUDIO_LANGUAGE_PROVIDER_ID) { oppiaLanguage ->
       when (oppiaLanguage) {
         OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
-        OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+        OppiaLanguage.PORTUGUESE, OppiaLanguage.SPANISH,
+        OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
         OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
         OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
         OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
         OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+        OppiaLanguage.LATIN_AMERICAN_SPANISH -> AudioLanguage.SPANISH_AUDIO_LANGUAGE
       }
     }
   }
@@ -886,6 +888,7 @@ class ProfileManagementController @Inject constructor(
         AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> OppiaLanguage.BRAZILIAN_PORTUGUESE
         AudioLanguage.ARABIC_LANGUAGE -> OppiaLanguage.ARABIC
         AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE -> OppiaLanguage.NIGERIAN_PIDGIN
+        AudioLanguage.SPANISH_AUDIO_LANGUAGE -> OppiaLanguage.LATIN_AMERICAN_SPANISH
       }
     }.build()
     // The transformation is needed to reinterpreted the result of the update to 'Any?'.

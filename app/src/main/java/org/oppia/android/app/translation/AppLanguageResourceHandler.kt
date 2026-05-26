@@ -158,6 +158,7 @@ class AppLanguageResourceHandler @Inject constructor(
       AudioLanguage.ARABIC_LANGUAGE -> getLocalizedDisplayName("ar", "EG")
       AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE ->
         resources.getString(R.string.nigerian_pidgin_localized_language_name)
+      AudioLanguage.SPANISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("es", "419")
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
     }
@@ -183,6 +184,10 @@ class AppLanguageResourceHandler @Inject constructor(
       OppiaLanguage.HINGLISH -> resources.getString(R.string.hinglish_localized_language_name)
       OppiaLanguage.NIGERIAN_PIDGIN ->
         resources.getString(R.string.nigerian_pidgin_localized_language_name)
+      OppiaLanguage.SPANISH ->
+        resources.getString(R.string.spanish_localized_language_name)
+      OppiaLanguage.LATIN_AMERICAN_SPANISH ->
+        resources.getString(R.string.latin_american_spanish_localized_language_name)
     }
   }
 

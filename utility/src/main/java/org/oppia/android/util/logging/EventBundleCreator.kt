@@ -953,6 +953,8 @@ class EventBundleCreator @Inject constructor(
       OppiaLanguage.BRAZILIAN_PORTUGUESE -> "Brazilian Portuguese"
       OppiaLanguage.SWAHILI -> "Swahili"
       OppiaLanguage.NIGERIAN_PIDGIN -> "Nigerian Pidgin"
+      OppiaLanguage.SPANISH -> "Spanish"
+      OppiaLanguage.LATIN_AMERICAN_SPANISH -> "Latin American Spanish"
       OppiaLanguage.UNRECOGNIZED -> "unrecognized_language"
     }
   }

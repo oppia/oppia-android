@@ -83,6 +83,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
         "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
         "ar" -> AudioLanguage.ARABIC_LANGUAGE
         "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+        "es", "es-419" -> AudioLanguage.SPANISH_AUDIO_LANGUAGE
         else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       }
       if (languageCode == "hi-en") {

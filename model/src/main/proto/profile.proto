@@ -179,6 +179,7 @@ enum AudioLanguage {
   BRAZILIAN_PORTUGUESE_LANGUAGE = 6;
   ARABIC_LANGUAGE = 7;
   NIGERIAN_PIDGIN_LANGUAGE = 8;
+  SPANISH_AUDIO_LANGUAGE = 9;
 }
 
 // Indicates the state of the app with regards to the number and type of existing profiles.
