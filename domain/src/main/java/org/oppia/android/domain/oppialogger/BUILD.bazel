@@ -69,3 +69,19 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
+
+kt_android_library(
+    name = "age_signals",
+    srcs = [
+        "AgeSignalsImporter.kt",
+        "AgeSignalsModule.kt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":oppia_logger",
+        ":startup_listener",
+        "//:dagger",
+        "//third_party:com_google_android_play_age-signals",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

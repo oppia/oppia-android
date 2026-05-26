@@ -1,8 +1,9 @@
-<?xmxl version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android.app.instrumentation">
   <uses-sdk
-    android:minSdkVersion="21"
+    android:minSdkVersion="23"
     android:targetSdkVersion="30" />
   <instrumentation
     android:targetPackage="org.oppia.android"

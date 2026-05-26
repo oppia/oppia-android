@@ -647,6 +647,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:age_signals",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/spotlight:spotlight_state_controller",
