@@ -18,11 +18,9 @@ import org.robolectric.annotation.Config
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @Config
 class NumberWithUnitsTokenizerTest {
-  @Parameter
-  lateinit var input: String
+  @Parameter lateinit var input: String
 
-  @Parameter
-  lateinit var expected: String
+  @Parameter lateinit var expected: String
 
   @Test
   fun testTokenize_emptyString_producesNoTokens() {
@@ -608,7 +606,7 @@ class NumberWithUnitsTokenizerTest {
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
-    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Cuft") // u
+    assertThat(tokens[1]).isUnitWithRawValueThat().isEqualTo("Cuft")
   }
 
   @Test
