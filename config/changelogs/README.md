@@ -23,7 +23,7 @@ When deploying a release, `UploadBinaryToPlayConsole` and `UploadChangelogToPlay
 
 Each changelog file must contain 2-3 user-facing sentences describing what's new. Write for end users, not developers. Avoid internal implementation details, PR numbers, or technical jargon.
 
-Example:
+Example Changelog:
 
 ```
 This release improves lesson loading speed and fixes a crash that occurred when switching profiles. It also adds support for audio playback on older devices.
