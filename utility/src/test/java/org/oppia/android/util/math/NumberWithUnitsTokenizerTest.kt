@@ -759,7 +759,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Min", "input=10 Min", "expected=Min")
   @Iteration("10 Minute", "input=10 Minute", "expected=Minute")
   @Iteration("10 Minutes", "input=10 Minutes", "expected=Minutes")
-  fun testTokenize_incorrectMinuteUnits_parsesMegaPrefix() {
+  fun testTokenize_incorrectMinuteUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -839,7 +839,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Mol", "input=10 Mol", "expected=Mol")
   @Iteration("10 Mole", "input=10 Mole", "expected=Mole")
   @Iteration("10 Moles", "input=10 Moles", "expected=Moles")
-  fun testTokenize_incorrectMoleUnits_parsesMegaPrefix() {
+  fun testTokenize_incorrectMoleUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
