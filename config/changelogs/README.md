@@ -31,7 +31,7 @@ This release improves lesson loading speed and fixes a crash that occurred when 
 
 ## Adding a New Changelog
 
-Changelogs describe **what changed in the previous version** that is being released. They are generated automatically when a PR is merged to `develop` (via the `generate_changelog.yml` workflow), which kicks off a script to draft a changelog for the version that was just completed. The LLM-generated draft is proposed as a PR for human review before it is merged.
+Changelogs are generated automatically when the version is bumped in `version.bzl` (via the `generate_changelog.yml` workflow) — each changelog covers the **previous version** that was just completed. The LLM-generated draft is proposed as a PR for human review before it is merged. Changelogs always live in the `develop` branch.
 
 To manually create or edit a changelog:
 1. Create/edit `config/changelogs/<version>.md`
