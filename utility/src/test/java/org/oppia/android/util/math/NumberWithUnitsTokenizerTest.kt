@@ -294,7 +294,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("20 Meter", "input=20 Meter", "expected=Meter")
   @Iteration("20 Meters", "input=20 Meters", "expected=Meters")
-  fun testTokenize_incorrectMeterUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectMeterUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -318,7 +318,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 In", "input=20 In", "expected=In")
   @Iteration("20 Inch", "input=20 Inch", "expected=Inch")
   @Iteration("20 Inches", "input=20 Inches", "expected=Inches")
-  fun testTokenize_incorrectInchUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectInchUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -342,7 +342,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Ft", "input=20 Ft", "expected=Ft")
   @Iteration("20 Foot", "input=20 Foot", "expected=Foot")
   @Iteration("20 Feet", "input=20 Feet", "expected=Feet")
-  fun testTokenize_incorrectFootUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectFootUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -437,7 +437,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("20 Oz", "input=20 Oz", "expected=Oz")
   @Iteration("20 Ounce", "input=20 Ounce", "expected=Ounce")
   @Iteration("20 Ounces", "input=20 Ounces", "expected=Ounces")
-  fun testTokenize_incorrectOunceUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectOunceUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -477,7 +477,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("10 Sqft", "input=10 Sqft", "expected=Sqft")
   @Iteration("10 Sqfeet", "input=10 Sqfeet", "expected=Sqfeet")
-  fun testTokenize_incorrectSquareFootUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectSquareFootUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -499,7 +499,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("10 Sqyd", "input=10 Sqyd", "expected=Sqyd")
   @Iteration("10 Sqyard", "input=10 Sqyard", "expected=Sqyard")
-  fun testTokenize_incorrectSquareYardUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectSquareYardUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -547,7 +547,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Liter", "input=10 Liter", "expected=Liter")
   @Iteration("10 Liters", "input=10 Liters", "expected=Liters")
   @Iteration("10 Lt", "input=10 Lt", "expected=Lt")
-  fun testTokenize_incorrectLiterUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectLiterUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -565,7 +565,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectCubicCentimeterUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCubicCentimeterUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 CC").toList()
 
     assertThat(tokens).hasSize(2)
@@ -583,7 +583,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectCubicInchUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCubicInchUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuin").toList()
 
     assertThat(tokens).hasSize(2)
@@ -601,7 +601,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectCubicFootUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCubicFootUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuft").toList()
 
     assertThat(tokens).hasSize(2)
@@ -619,7 +619,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectCubicYardUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCubicYardUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Cuyd").toList()
 
     assertThat(tokens).hasSize(2)
@@ -639,7 +639,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectKelvinUnits_uppercaseKelvin_parsesInvalidToken() {
+  fun testTokenize_incorrectKelvinUnits_uppercaseKelvin_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("310.15 Kelvin").toList()
 
     assertThat(tokens).hasSize(2)
@@ -661,7 +661,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("37 C", "input=37 C", "expected=C")
   @Iteration("37 Celsius", "input=37 Celsius", "expected=Celsius")
-  fun testTokenize_incorrectCelsiusUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCelsiusUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -684,7 +684,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("10 Rad", "input=10 Rad", "expected=Rad")
   @Iteration("10 Radian", "input=10 Radian", "expected=Radian")
-  fun testTokenize_incorrectRadianUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectRadianUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -708,7 +708,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Deg", "input=10 Deg", "expected=Deg")
   @Iteration("10 Degree", "input=10 Degree", "expected=Degree")
   @Iteration("10 Degrees", "input=10 Degrees", "expected=Degrees")
-  fun testTokenize_incorrectDegreeUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectDegreeUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -734,7 +734,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 S", "input=10 S", "expected=S")
   @Iteration("10 Second", "input=10 Second", "expected=Second")
   @Iteration("10 Seconds", "input=10 Seconds", "expected=Seconds")
-  fun testTokenize_incorrectSecondUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectSecondUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -786,7 +786,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Hr", "input=10 Hr", "expected=Hr")
   @Iteration("10 Hour", "input=10 Hour", "expected=Hour")
   @Iteration("10 Hours", "input=10 Hours", "expected=Hours")
-  fun testTokenize_incorrectHourUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectHourUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -815,7 +815,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectHertzUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectHertzUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Hertz").toList()
 
     assertThat(tokens).hasSize(2)
@@ -862,7 +862,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 Cd", "input=10 Cd", "expected=Cd")
   @Iteration("10 CD", "input=10 CD", "expected=CD")
   @Iteration("10 Candela", "input=10 Candela", "expected=Candela")
-  fun testTokenize_incorrectCandelaUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectCandelaUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -882,7 +882,7 @@ class NumberWithUnitsTokenizerTest {
   }
 
   @Test
-  fun testTokenize_incorrectNewtonUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectNewtonUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize("10 Newton").toList()
 
     assertThat(tokens).hasSize(2)
@@ -906,7 +906,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 j", "input=10 j", "expected=j")
   @Iteration("10 Joule", "input=10 Joule", "expected=Joule")
   @Iteration("10 Joules", "input=10 Joules", "expected=Joules")
-  fun testTokenize_incorrectJouleUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectJouleUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -929,7 +929,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("100 Watt", "input=100 Watt", "expected=Watt")
   @Iteration("100 Watts", "input=100 Watts", "expected=Watts")
-  fun testTokenize_incorrectWattUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectWattUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -950,7 +950,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("100 pa", "input=100 pa", "expected=pa")
   @Iteration("100 pascal", "input=100 pascal", "expected=pascal")
-  fun testTokenize_incorrectPascalUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectPascalUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -973,7 +973,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("10 Ampere", "input=10 Ampere", "expected=Ampere")
   @Iteration("10 Amperes", "input=10 Amperes", "expected=Amperes")
-  fun testTokenize_incorrectAmpereUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectAmpereUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -997,7 +997,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 v", "input=10 v", "expected=v")
   @Iteration("10 Volt", "input=10 Volt", "expected=Volt")
   @Iteration("10 Volts", "input=10 Volts", "expected=Volts")
-  fun testTokenize_incorrectVoltUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectVoltUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -1019,7 +1019,7 @@ class NumberWithUnitsTokenizerTest {
   @Test
   @Iteration("10 Ohm", "input=10 Ohm", "expected=Ohm")
   @Iteration("10 Ohms", "input=10 Ohms", "expected=Ohms")
-  fun testTokenize_incorrectOhmUnits_parsesInvalidToken() {
+  fun testTokenize_incorrectOhmUnits_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens).hasSize(2)
@@ -1913,7 +1913,7 @@ class NumberWithUnitsTokenizerTest {
   @Iteration("10 °C", "input=10 °C")
   @Iteration("10 °", "input=10 °")
   @Iteration("10 Ω", "input=10 Ω")
-  fun testTokenize_unknownSymbols_parsesInvalidToken() {
+  fun testTokenize_unknownSymbols_parsesCorrectly() {
     val tokens = NumberWithUnitsTokenizer.tokenize(input).toList()
 
     assertThat(tokens[0]).isPositiveIntegerWithValueThat().isEqualTo(10)
