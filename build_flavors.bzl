@@ -114,7 +114,6 @@ def _transform_android_manifest_impl(ctx):
         "%s" % major_version,
         "%s" % minor_version,
         "%s" % application_relative_qualified_class,
-        ctx.info_file.path,  # Path to the stable status file containing the Git commit hash.
         "true" if enable_firebase_analytics else "false",
         "true" if enable_app_expiration else "false",
     ]
@@ -122,12 +121,15 @@ def _transform_android_manifest_impl(ctx):
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
     ctx.actions.run(
         outputs = [output_file],
-        inputs = [input_file, ctx.info_file],
+        inputs = [input_file],
         tools = [ctx.executable._transform_android_manifest_tool],
         executable = ctx.executable._transform_android_manifest_tool.path,
         arguments = arguments,
         mnemonic = "TransformAndroidManifest",
         progress_message = "Transforming Android manifest",
+        execution_requirements = {
+            "no-sandbox": "",  # Bypasses Bazel sandboxing to access local .git repository dynamically!
+        },
     )
     return DefaultInfo(
         files = depset([output_file]),
