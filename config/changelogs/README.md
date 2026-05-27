@@ -13,7 +13,7 @@ Supported flavors: `alpha`, `beta`, `ga`
 
 ## Lookup Order
 
-When deploying a release, the scripts resolve the changelog as follows:
+When deploying a release, `UploadBinaryToPlayConsole` and `UploadChangelogToPlayConsole` resolve the changelog as follows:
 
 1. Check for `config/changelogs/<version>_<flavor>.md`
 2. Fall back to `config/changelogs/<version>.md`
@@ -23,13 +23,15 @@ When deploying a release, the scripts resolve the changelog as follows:
 
 Each changelog file must contain **2–3 user-facing sentences** describing what's new. Write for end users, not developers — no internal implementation details, no PR numbers, no technical jargon.
 
-```
+Example Changelog:
+
+```bash
 This release improves lesson loading speed and fixes a crash that occurred when switching profiles. It also adds support for audio playback on older devices.
 ```
 
 ## Adding a New Changelog
 
-Changelogs are generated automatically when the version is bumped in `version.bzl` (via the `generate_changelog.yml` workflow). The LLM-generated draft is proposed as a PR for human review before it is merged.
+Changelogs describe **what changed in the previous version** that is being released. They are generated automatically when a PR is merged to `develop` (via the `generate_changelog.yml` workflow), which kicks off a script to draft a changelog for the version that was just completed. The LLM-generated draft is proposed as a PR for human review before it is merged.
 
 To manually create or edit a changelog:
 1. Create/edit `config/changelogs/<version>.md`
