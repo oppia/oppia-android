@@ -105,7 +105,7 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      # TODO(PR1.2-task2): Authenticate to GCP via WIF and provision keystore from Secret Manager.
+      # Next: Authenticate to GCP via WIF and provision keystore from Secret Manager.
       # Steps:
       #   1. google-github-actions/auth with workload_identity_provider and service_account
       #   2. google-github-actions/setup-gcloud
@@ -113,7 +113,7 @@ jobs:
       #   4. gcloud secrets versions access latest --secret=oppia-android-keystore-password > /tmp/keystore_password.txt
       #   5. Write the keystore and password to temp files for use in the Bazel build step.
 
-      # TODO(PR1.2-task2): Build signed AAB with Bazel using keystore flags.
+      # Next: Build signed AAB with Bazel using keystore flags.
       # Steps:
       #   bazel build --compilation_mode=opt \
       #     --//config:keystore_file=/tmp/keystore.jks \
@@ -123,7 +123,7 @@ jobs:
       # The _sign_and_rename_aab Bazel rule signs and renames the AAB automatically.
       # Output: bazel-bin/oppia-android-{version_name}.aab
 
-      # TODO(PR1.2-task3): Upload signed AAB to GCS archive.
+      # Next: Upload signed AAB to GCS archive.
       # Steps:
       #   1. Determine the signed AAB path from bazel-bin/
       #   2. gcloud storage cp <aab_path> gs://oppia-android-{flavor}-releases/{version}/RC{n}/{name}.aab
