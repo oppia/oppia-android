@@ -30,6 +30,7 @@ import org.oppia.android.scripts.gae.json.GaeSolution
 import org.oppia.android.scripts.gae.json.GaeState
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeStoryNode
+import org.oppia.android.scripts.gae.json.GaeStudyGuideSection
 import org.oppia.android.scripts.gae.json.GaeSubtitledHtml
 import org.oppia.android.scripts.gae.json.GaeSubtitledUnicode
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -105,6 +106,7 @@ import org.oppia.proto.v1.structure.SetOfTranslatableHtmlContentIdsDto
 import org.oppia.proto.v1.structure.SkillSummaryDto
 import org.oppia.proto.v1.structure.StateDto
 import org.oppia.proto.v1.structure.StorySummaryDto
+import org.oppia.proto.v1.structure.StudyGuideSectionDto
 import org.oppia.proto.v1.structure.SubtitledTextDto
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
 import org.oppia.proto.v1.structure.SubtopicSummaryDto
@@ -325,19 +327,18 @@ class JsonToProtoConverter(
     for ((subtopic, subtopicPage) in revisionCards) {
       val containerId = LocalizationTracker.ContainerId.createFrom(subtopicPage, subtopic)
       val defaultLanguage = subtopicPage.languageCode.resolveLanguageCode()
-      val pageContents = subtopicPage.pageContents
       localizationTracker.initializeContainer(containerId, defaultLanguage)
       localizationTracker.trackContainerText(containerId, TITLE, subtopic.title)
-      localizationTracker.trackContainerText(containerId, pageContents.subtitledHtml)
+      subtopicPage.sections.forEach { section ->
+        localizationTracker.trackContainerText(containerId, section.heading)
+        localizationTracker.trackContainerText(containerId, section.content)
+      }
       localizationTracker.trackThumbnail(
         containerId,
         subtopic.thumbnailFilename,
         subtopic.thumbnailBgColor,
         subtopic.thumbnailSizeInBytes
       )
-
-      // Track translations after all default strings have been established.
-      localizationTracker.trackTranslations(containerId, pageContents.writtenTranslations)
     }
   }
 
@@ -432,10 +433,9 @@ class JsonToProtoConverter(
         this.subtopicIndex = gaeSubtopic.id
       }.build()
       this.title = localizationTracker.convertContainerText(containerId, TITLE)
-      this.content =
-        localizationTracker.convertContainerText(
-          containerId, gaeSubtopicPage.pageContents.subtitledHtml
-        )
+      this.addAllSections(
+        gaeSubtopicPage.sections.map { it.toProto(containerId) }
+      )
       this.defaultLocalization =
         localizationTracker.computeSpecificContentLocalization(containerId, defaultLanguage)
       this.contentVersion = gaeSubtopicPage.version
@@ -1812,6 +1812,15 @@ class JsonToProtoConverter(
   ): BaseSolutionDto {
     return BaseSolutionDto.newBuilder().apply {
       this.explanation = this@toBaseProto.explanation.toProto(containerId)
+    }.build()
+  }
+
+  private fun GaeStudyGuideSection.toProto(
+    containerId: LocalizationTracker.ContainerId
+  ): StudyGuideSectionDto {
+    return StudyGuideSectionDto.newBuilder().apply {
+      this.heading = this@toProto.heading.toProto(containerId)
+      this.content = this@toProto.content.toProto(containerId)
     }.build()
   }
 

@@ -38,7 +38,6 @@ import org.oppia.android.scripts.gae.json.GaeSubtitledHtml
 import org.oppia.android.scripts.gae.json.GaeSubtitledUnicode
 import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
-import org.oppia.android.scripts.gae.json.GaeSubtopicPageContents
 import org.oppia.android.scripts.gae.json.GaeTopic
 import org.oppia.android.scripts.gae.json.GaeTranslatedContent
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
@@ -128,29 +127,19 @@ class StructureCompatibilityChecker(
     correspondingGaeSubtopic: GaeSubtopic
   ): CompatibilityResult {
     val containerId = ContainerId.createFrom(gaeSubtopicPage, correspondingGaeSubtopic)
-    val expectedTranslatedContentIds =
-      subtitledHtmlCollector.collectSubtitles(gaeSubtopicPage).collectContentIds()
-    val defaultLanguage = gaeSubtopicPage.languageCode.resolveLanguageCode()
     return CompatibilityResult.createFrom {
-      checkSubtopicPageContentsCompatibility(
-        containerId, gaeSubtopicPage.pageContents, expectedTranslatedContentIds, defaultLanguage
-      ) + gaeSubtopicPage.languageCode.checkDefaultLanguageCode(containerId)
+      checkSubtopicPageSectionsCompatibility(containerId, gaeSubtopicPage) +
+        gaeSubtopicPage.languageCode.checkDefaultLanguageCode(containerId)
     }
   }
 
-  private fun checkSubtopicPageContentsCompatibility(
+  private fun checkSubtopicPageSectionsCompatibility(
     origin: ContainerId,
-    subtopicPageContents: GaeSubtopicPageContents,
-    expectedTranslatedContentIds: Set<String>,
-    defaultLanguage: LanguageType
+    gaeSubtopicPage: GaeSubtopicPage
   ): List<CompatibilityFailure> {
-    return subtopicPageContents.subtitledHtml.checkHasValidHtml(origin) +
-      checkWrittenTranslationsCompatibility(
-        origin,
-        subtopicPageContents.writtenTranslations,
-        expectedTranslatedContentIds,
-        defaultLanguage
-      ) + checkRecordedVoiceoversCompatibility(origin, subtopicPageContents.recordedVoiceovers)
+    return gaeSubtopicPage.sections.flatMap { section ->
+      section.heading.checkHasNoValidHtml(origin) + section.content.checkHasValidHtml(origin)
+    }
   }
 
   fun isExplorationItselfCompatible(completeExploration: CompleteExploration): CompatibilityResult {

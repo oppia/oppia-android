@@ -43,9 +43,9 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
   }
 
   fun collectSubtitles(gaeSubtopicPage: GaeSubtopicPage): Set<SubtitledText> {
-    val mainContent = setOf(gaeSubtopicPage.pageContents.subtitledHtml.toSubtitle())
-    val translations = gaeSubtopicPage.pageContents.writtenTranslations.collectSubtitles()
-    return mainContent + translations
+    return gaeSubtopicPage.sections.flatSet { section ->
+      setOf(section.heading.toSubtitle(), section.content.toSubtitle())
+    }
   }
 
   fun collectSubtitles(gaeStory: GaeStory): Set<SubtitledText> {
