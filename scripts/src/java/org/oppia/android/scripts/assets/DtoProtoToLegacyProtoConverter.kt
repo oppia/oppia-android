@@ -31,6 +31,7 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StoryRecord
+import org.oppia.android.app.model.StudyGuideSection
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.SubtopicRecord
@@ -190,13 +191,41 @@ object DtoProtoToLegacyProtoConverter {
   ): SubtopicRecord {
     val dto = this
     val localizations = languagePackDtos.map { it.localization }
+    val sections = dto.sectionsList.map { sectionDto ->
+      StudyGuideSection.newBuilder().apply {
+        this.heading = defaultLocalization.extractSubtitledUnicode(sectionDto.heading)
+        this.content = defaultLocalization.extractSubtitledHtml(sectionDto.content)
+      }.build()
+    }
+    check(sections.isNotEmpty()) { "Expected at least one study guide section for: ${dto.id}." }
     return SubtopicRecord.newBuilder().apply {
       this.title = defaultLocalization.extractSubtitledHtml(dto.title)
-      this.pageContents = defaultLocalization.extractSubtitledHtml(dto.content)
+      // page_contents holds the legacy single-block representation: the study guide sections
+      // combined into one HTML blob. sections holds the structured representation.
+      this.pageContents = sections.combineIntoLegacyPageContents()
+      addAllSections(sections)
       putAllRecordedVoiceover(localizations.toVoiceoverMappings())
       putAllWrittenTranslation(localizations.toTranslationMappings(imageReferenceReplacements))
       addAllSkillIds(subtopicSummaryDto.referencedSkillIdsList)
       this.subtopicThumbnail = dto.defaultLocalization.extractThumbnail(imageReferenceReplacements)
+    }.build()
+  }
+
+  /**
+   * Combines the [StudyGuideSection]s of a revision card into the legacy single-block
+   * [SubtitledHtml] 'page_contents' representation.
+   *
+   * This mirrors Oppia web's `StudyGuide.to_subtopic_page_dict_for_android()` (see
+   * core/domain/study_guide_domain.py): each section contributes a bold heading paragraph followed
+   * by its content HTML, with all parts joined by blank lines.
+   */
+  private fun List<StudyGuideSection>.combineIntoLegacyPageContents(): SubtitledHtml {
+    val combinedHtml = flatMap { section ->
+      listOf("<p><strong>${section.heading.unicodeStr}</strong></p>", section.content.html)
+    }.joinToString(separator = "\n\n")
+    return SubtitledHtml.newBuilder().apply {
+      this.contentId = "content"
+      this.html = combinedHtml
     }.build()
   }
 
