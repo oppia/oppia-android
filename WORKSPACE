@@ -42,7 +42,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1774411548 +0000",
+    shallow_since = "1779917831 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -104,11 +104,12 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+load("@rules_proto//proto:setup.bzl", "rules_proto_setup")
 
 rules_proto_dependencies()
 
-rules_proto_toolchains()
+rules_proto_setup()
 
 # Add support for Dagger
 http_archive(
