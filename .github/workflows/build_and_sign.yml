@@ -105,26 +105,76 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      # Next: Authenticate to GCP via WIF and provision keystore from Secret Manager.
-      # Steps:
-      #   1. google-github-actions/auth with workload_identity_provider and service_account
-      #   2. google-github-actions/setup-gcloud
-      #   3. gcloud secrets versions access latest --secret=oppia-android-keystore > /tmp/keystore.jks
-      #   4. gcloud secrets versions access latest --secret=oppia-android-keystore-password > /tmp/keystore_password.txt
-      #   5. Write the keystore and password to temp files for use in the Bazel build step.
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
 
-      # Next: Build signed AAB with Bazel using keystore flags.
-      # Steps:
-      #   bazel build --compilation_mode=opt \
-      #     --//config:keystore_file=/tmp/keystore.jks \
-      #     --//config:keystore_password_file=/tmp/keystore_password.txt \
-      #     --//config:key_alias=oppia-android-key \
-      #     -- //:oppia_${{ github.event.inputs.flavor }}
-      # The _sign_and_rename_aab Bazel rule signs and renames the AAB automatically.
-      # Output: bazel-bin/oppia-android-{version_name}.aab
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
 
-      # Next: Upload signed AAB to GCS archive.
-      # Steps:
-      #   1. Determine the signed AAB path from bazel-bin/
-      #   2. gcloud storage cp <aab_path> gs://oppia-android-{flavor}-releases/{version}/RC{n}/{name}.aab
-      #   3. Fail if the file already exists in GCS (prevents accidental overwrites).
+      # Retrieves the release keystore and its credentials from GCP Secret Manager.
+      # The keystore is stored base64-encoded; the password and alias are plain text.
+      # Secret names are placeholders — final names confirmed during GCP setup (Action 1.1).
+      # Note: the --//config:keystore_* flag types depend on config/BUILD.bazel from PR #6265.
+      - name: Provision release keystore from Secret Manager
+        run: |
+          gcloud secrets versions access latest \
+            --secret="oppia-android-release-keystore" \
+            --format='get(payload.data)' \
+            | tr '_-' '/+' | base64 -d > /tmp/release_keystore.jks
+
+          gcloud secrets versions access latest \
+            --secret="oppia-android-release-keystore-password" \
+            > /tmp/keystore_password.txt
+
+          gcloud secrets versions access latest \
+            --secret="oppia-android-release-key-alias" \
+            > /tmp/key_alias.txt
+
+          echo "Keystore provisioned from Secret Manager."
+
+      - name: Build signed AAB
+        run: |
+          KEY_ALIAS=$(cat /tmp/key_alias.txt)
+          bazel build --compilation_mode=opt \
+            --//config:keystore_file=/tmp/release_keystore.jks \
+            --//config:keystore_password_file=/tmp/keystore_password.txt \
+            --//config:key_alias="$KEY_ALIAS" \
+            -- //:oppia_${{ github.event.inputs.flavor }}
+
+      # The _sign_and_rename_aab Bazel rule produces a signed AAB named:
+      # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
+      # This step locates it and extracts the version/RC for the GCS archive path.
+      - name: Locate signed AAB
+        run: |
+          AAB_PATH=$(find bazel-bin -name "oppia-android-*.aab" | head -1)
+          if [[ -z "$AAB_PATH" ]]; then
+            echo "::error::Signed AAB not found in bazel-bin/. Build may have failed."
+            exit 1
+          fi
+          AAB_NAME=$(basename "$AAB_PATH")
+          VERSION=$(echo "$AAB_NAME" | grep -oP '(?<=oppia-android-)\d+\.\d+')
+          RC_NUM=$(echo "$AAB_NAME" | grep -oP '(?<=rc)\d+')
+          echo "AAB_PATH=$AAB_PATH" >> $GITHUB_ENV
+          echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
+          echo "Found: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+
+      - name: Upload signed AAB to GCS archive
+        run: |
+          FLAVOR="${{ github.event.inputs.flavor }}"
+          GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
+
+          # Fail if binary already exists — enforces the build-once guarantee.
+          if gcloud storage ls "$GCS_PATH" 2>/dev/null; then
+            echo "::error::Binary already exists at $GCS_PATH."
+            echo "::error::Re-running build_and_sign for the same ref is not allowed."
+            echo "::error::If this is a new RC, ensure the release branch has a new commit."
+            exit 1
+          fi
+
+          gcloud storage cp "$AAB_PATH" "$GCS_PATH"
+          echo "Uploaded to: $GCS_PATH"
