@@ -1,5 +1,5 @@
 """
-Tests corresponding to asset transformation scripts.
+Tests corresponding to asset transformation and download scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
@@ -10,6 +10,18 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/assets:image_repairer",
         "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "DtoProtoToLegacyProtoConverterTest",
+    srcs = ["DtoProtoToLegacyProtoConverterTest.kt"],
+    deps = [
+        "//model/src/main/proto:topic_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/assets:dto_proto_to_legacy_proto_converter",
+        "//third_party:com_google_truth_truth",
+        "//third_party:oppia_proto_api_java_protos",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )

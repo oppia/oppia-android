@@ -57,6 +57,7 @@ kt_jvm_library(
         "VersionedStructure.kt",
     ],
     visibility = [
+        "//scripts:oppia_script_test_visibility",
         "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
     ],
     deps = [
