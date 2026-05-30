@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+reviews:
+  # Provide more detailed, quality-focused feedback.
+  profile: assertive
+  auto_review:
+    # Note: We'll only turn this on once we are happy with the review
+    # results. To generate a review manually, post a comment with the
+    # command "@coderabbitai review".
+    enabled: false
+    # Reviews every new push to an existing PR, keeping feedback up-to-date.
+    auto_incremental_review: true
+  # Always generate a clear, high-level summary of what the PR changes.
+  high_level_summary: true
+  # Generate a detailed file-by-file walkthrough in a collapsible section.
+  collapse_walkthrough: true
+  # By default, don't block the PR from merging. Leave that to reviewers.
+  request_changes_workflow: false 
+  # Prevent CodeRabbit from reviewing build noise and binary blobs.
+  path_filters:
+    - "!bazel-**/**" # Ignore Bazel symlink outputs (bazel-bin, bazel-out, etc.)
+    - "!.idea/**"    # Ignore Android Studio / IntelliJ project configs
+    - "!**.apk"      # Ignore generated binaries
+    - "!**.aar"      # Ignore generated libraries
+    - "!**.png"      # Ignore UI design assets
+    - "!**.webp"
+  tools:
+    gitleaks:
+      enabled: true # Security check for accidental secrets in history
+
+  # Path-specific instructions which provide targeted rules for Kotlin, 
+  # Java, and Android XML layout/manifest configurations.
+  path_instructions:
+    # 🎯 Kotlin (Primary Android codebase)
+    - path: "**/*.kt"
+      instructions: |
+        - Ensure all Kotlin code adheres strictly to official Kotlin coding
+          conventions and Android Kotlin style guides.
+        - Follow the style guidelines here: https://github.com/oppia/oppia-android/wiki/Coding-Style-Guide
+        - Ensure proper use of Kotlin idiomatic features (e.g., null safety,
+          extension functions, immutability with 'val').
+        - Check for lifecycle-aware component usage (e.g., ensuring Coroutine
+          scopes are bound to LifecycleOwner/ViewModel to avoid memory leaks).
+        - Verify that Jetpack Compose code (if applicable) follows state
+          hoisting practices and avoids unnecessary recompositions.
+        - Ensure all new public functions and complex logic have comprehensive
+          Kdoc/docstrings.
+
+    # 🎯 Android XML Layouts & Manifests
+    - path: "**/*.xml"
+      instructions: |
+        - Validate XML layouts for performance bottlenecks (e.g., deep layout
+          nesting; suggest ConstraintLayout where appropriate).
+        - Ensure accessibility (A11y) standards are met (e.g.,
+          'contentDescription' for ImageViews).
+        - Check that strings, dimensions, and colors are externalized to
+          resource files ('@string/', '@dimen/', '@color/') rather than
+          hardcoded.
+        - Verify Manifest changes for correct permission declarations and
+          component exported flags (especially for Android 12+ compatibility).
+
+    # 🎯 Bazel Build Configurations
+    - path: "**/BUILD*"
+      instructions: |
+        - Ensure visibility attributes are as restrictive as possible (prefer
+          private or specific packages over public).
+        - Check that dependencies (`deps`) are explicitly declared and minimal
+          to maintain fast incremental builds.
+        - Verify that Android targets (`android_library`, `android_binary`,
+          `android_local_test`) use correct rules and resource processing.
+        - Discourage the use of broad globs in `srcs` if explicit file listings
+          or stricter patterns are preferred by the team.
+
+    - path: "**/*.bzl"
+      instructions: |
+        - Ensure custom Starlark macros or rules follow Bazel best practices
+          for performance and maintainability.
+        - Look out for unnecessary computation during the loading or analysis
+          phases.
