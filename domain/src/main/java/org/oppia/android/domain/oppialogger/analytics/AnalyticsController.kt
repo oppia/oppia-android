@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
@@ -157,25 +158,18 @@ class AnalyticsController @Inject constructor(
       this.priority = priority
       this.context = context
       profileId?.let { this.profileId = it }
+      val profileIdNew = profileId?.toProfileIdPreservingZero()
       resolveProfileOperation(
-        profileId
-      ) { translationController.getAppLanguageSelection(it.toProfileIdPreservingZero()) }
+        profileIdNew
+      ) { translationController.getAppLanguageSelection(it) }
         ?.let { this.appLanguageSelection = it }
       resolveProfileOperation(
-        profileId
-      ) {
-        translationController.getWrittenTranslationContentLanguageSelection(
-          it.toProfileIdPreservingZero()
-        )
-      }
+        profileIdNew
+      ) { translationController.getWrittenTranslationContentLanguageSelection(it) }
         ?.let { this.writtenTranslationLanguageSelection = it }
       resolveProfileOperation(
-        profileId
-      ) {
-        translationController.getAudioTranslationContentLanguageSelection(
-          it.toProfileIdPreservingZero()
-        )
-      }
+        profileIdNew
+      ) { translationController.getAudioTranslationContentLanguageSelection(it) }
         ?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
@@ -414,8 +408,8 @@ class AnalyticsController @Inject constructor(
 
   private companion object {
     private suspend fun <T> resolveProfileOperation(
-      profileId: LegacyProfileId?,
-      createProvider: (LegacyProfileId) -> DataProvider<T>
+      profileId: ProfileId?,
+      createProvider: (ProfileId) -> DataProvider<T>
     ): T? = profileId?.let { (createProvider(it).retrieveData() as? AsyncResult.Success<T>)?.value }
   }
 }
