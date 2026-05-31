@@ -97,7 +97,7 @@ jobs:
           else
             # Build the deployable (pre-Proguard-map) AAB first, then shutdown Bazel to release
             # JVM memory accumulated during the heavy Proguard step. This avoids OOM crashes
-            # (error code 14) when building the final AAB that packages the Proguard map.
+            # error code 14 when building the final AAB that packages the Proguard map.
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}_deployable
             bazel shutdown
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
