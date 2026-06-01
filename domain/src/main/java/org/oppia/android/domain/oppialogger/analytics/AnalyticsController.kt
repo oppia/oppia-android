@@ -158,19 +158,18 @@ class AnalyticsController @Inject constructor(
       this.priority = priority
       this.context = context
       profileId?.let { this.profileId = it }
-      val profileIdNew = profileId?.toProfileIdPreservingZero()
       resolveProfileOperation(
-        profileIdNew
-      ) { translationController.getAppLanguageSelection(it) }
-        ?.let { this.appLanguageSelection = it }
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAppLanguageSelection
+      )?.let { this.appLanguageSelection = it }
       resolveProfileOperation(
-        profileIdNew
-      ) { translationController.getWrittenTranslationContentLanguageSelection(it) }
-        ?.let { this.writtenTranslationLanguageSelection = it }
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getWrittenTranslationContentLanguageSelection
+      )?.let { this.writtenTranslationLanguageSelection = it }
       resolveProfileOperation(
-        profileIdNew
-      ) { translationController.getAudioTranslationContentLanguageSelection(it) }
-        ?.let { this.audioTranslationLanguageSelection = it }
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAudioTranslationContentLanguageSelection
+      )?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
 
