@@ -73,3 +73,8 @@ feature_flag_definition {
   remote_server_name: "android_enable_topic_practice_tab"
   default_is_enabled: false
 }
+feature_flag_definition {
+  id: LESSON_PROGRESS_VISUALIZATION
+  remote_server_name: "android_enable_lesson_progress_visualization"
+  default_is_enabled: false
+}
