@@ -201,3 +201,15 @@ const val ENABLE_TOPIC_PRACTICE_TAB = "enable_topic_practice_tab"
 
 /** Default value for the feature flag corresponding to [EnableTopicPracticeTab]. */
 const val ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the feature flag that controls whether to enable study guides or not.
+ */
+@Qualifier
+annotation class EnableStudyGuides
+
+/** Name of the feature flag that controls whether to enable study guides. */
+const val ENABLE_STUDY_GUIDES = "android_enable_study_guides"
+
+/** Default value for the feature flag corresponding to [EnableStudyGuides]. */
+const val ENABLE_STUDY_GUIDES_DEFAULT_VALUE = false

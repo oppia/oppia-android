@@ -17,6 +17,7 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -143,5 +144,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.TOPIC_PRACTICE_TAB)
   fun bindTopicPracticeTab(
     @EnableTopicPracticeTab param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.STUDY_GUIDES)
+  fun bindStudyGuides(
+    @EnableStudyGuides param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }
