@@ -1,0 +1,12 @@
+"""
+Libraries for automating release operations, including uploading binaries to the Play Console
+and distributing builds via Firebase App Distribution.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "play_console_client",
+    srcs = ["PlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
