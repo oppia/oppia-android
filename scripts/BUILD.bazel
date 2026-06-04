@@ -255,7 +255,6 @@ java_binary(
 
 java_binary(
     name = "download_lessons",
-    testonly = True,
     # Hide warnings that come from https://github.com/square/retrofit/issues/3341.
     jvm_flags = [
         "--add-opens",

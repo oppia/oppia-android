@@ -16,7 +16,6 @@ java_proto_library(
 
 kt_jvm_library(
     name = "json_to_proto_converter",
-    testonly = True,
     srcs = [
         "JsonToProtoConverter.kt",
     ],
@@ -32,7 +31,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "localization_tracker",
-    testonly = True,
     srcs = [
         "LocalizationTracker.kt",
         "OppiaWebTranslationExtractor.kt",
@@ -51,7 +49,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "image_downloader",
-    testonly = True,
     srcs = [
         "ImageDownloader.kt",
     ],
@@ -64,7 +61,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "proto_version_provider",
-    testonly = True,
     srcs = [
         "ProtoVersionProvider.kt",
     ],

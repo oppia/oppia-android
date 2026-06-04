@@ -8,7 +8,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "compat",
-    testonly = True,
     srcs = [
         "CompleteExploration.kt",
         "CompleteTopicPack.kt",

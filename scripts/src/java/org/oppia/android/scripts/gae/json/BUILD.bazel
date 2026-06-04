@@ -8,7 +8,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 # TODO: Split this up.
 kt_jvm_library(
     name = "model",
-    testonly = True,
     srcs = [
         "AndroidActivityRequests.kt",
         "GaeAnswerGroup.kt",
@@ -68,7 +67,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "api",
-    testonly = True,
     srcs = [
         "AndroidActivityEndpointApi.kt",
         "AndroidActivityHandlerService.kt",

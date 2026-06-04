@@ -21,7 +21,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "download_lessons_lib",
-    testonly = True,
     srcs = ["DownloadLessons.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -36,7 +35,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "dto_proto_to_legacy_proto_converter",
-    testonly = True,
     srcs = ["DtoProtoToLegacyProtoConverter.kt"],
     deps = [
         "//model/src/main/proto:exploration_java_proto",
@@ -51,7 +49,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "image_repairer",
-    testonly = True,
     srcs = ["ImageRepairer.kt"],
     visibility = [
         "//scripts/src/java/org/oppia/android/scripts/assets:__pkg__",
