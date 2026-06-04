@@ -15,6 +15,11 @@ load(
     "generate_todo_assets_list_from_text_protos",
 )
 
+exports_files([
+    "assets/alpha_download_config.textproto",
+    "assets/prod_download_config.textproto",
+])
+
 # Visibility for libraries that should be accessible to script tests.
 package_group(
     name = "oppia_script_test_visibility",
