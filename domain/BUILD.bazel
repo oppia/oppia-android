@@ -145,7 +145,7 @@ android_library(
 
 download_prod_assets(
     name = "downloaded_prod_assets_generation",
-    download_config = "//config/assets:prod_download_config.textproto",
+    download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
     pinned_versions = "//config/assets:pinned_lesson_versions.textproto",
     strict = True,
     tags = ["manual"],
@@ -155,6 +155,23 @@ android_library(
     name = "domain_prod_assets",
     assets = [":downloaded_prod_assets_generation"],
     assets_dir = "downloaded_prod_assets_generation_assets",
+    manifest = "src/main/AndroidManifest.xml",
+    tags = ["manual"],
+    visibility = ["//visibility:public"],
+)
+
+download_prod_assets(
+    name = "downloaded_alpha_assets_generation",
+    download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+    pinned_versions = "//config/assets:pinned_lesson_versions.textproto",
+    strict = True,
+    tags = ["manual"],
+)
+
+android_library(
+    name = "domain_alpha_assets",
+    assets = [":downloaded_alpha_assets_generation"],
+    assets_dir = "downloaded_alpha_assets_generation_assets",
     manifest = "src/main/AndroidManifest.xml",
     tags = ["manual"],
     visibility = ["//visibility:public"],

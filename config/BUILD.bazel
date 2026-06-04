@@ -74,10 +74,15 @@ string_flag(
     visibility = ["//visibility:public"],
 )
 
-# Build-time boolean flag for whether production assets should be used.
-bool_flag(
-    name = "enable_prod_assets",
-    build_setting_default = False,
+# Build-time string flag to specify which assets configuration to use (dev, alpha, or prod).
+string_flag(
+    name = "assets_type",
+    build_setting_default = "dev",
+    values = [
+        "dev",
+        "alpha",
+        "prod",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -105,11 +110,20 @@ config_setting(
     visibility = ["//app:app_visibility"],
 )
 
-# Custom flag to toggle between dev assets (fallback) and production downloaded assets.
+# Enabled when alpha assets are requested.
 config_setting(
-    name = "prod_assets_enabled",
+    name = "assets_type_alpha",
     flag_values = {
-        ":enable_prod_assets": "True",
+        ":assets_type": "alpha",
+    },
+    visibility = ["//visibility:public"],
+)
+
+# Enabled when production assets are requested.
+config_setting(
+    name = "assets_type_prod",
+    flag_values = {
+        ":assets_type": "prod",
     },
     visibility = ["//visibility:public"],
 )
