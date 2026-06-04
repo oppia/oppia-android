@@ -47,6 +47,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//domain:domain_dev_assets",
     ],
 )
 
@@ -95,6 +96,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//domain:domain_dev_assets",
     ],
 )
 

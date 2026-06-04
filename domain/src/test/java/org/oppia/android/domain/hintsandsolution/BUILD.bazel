@@ -30,6 +30,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
+        "//domain:domain_test_assets",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
@@ -57,6 +58,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
+        "//domain:domain_test_assets",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",

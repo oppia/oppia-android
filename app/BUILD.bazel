@@ -755,6 +755,8 @@ TEST_DEPS = [
     "//config/src/java/org/oppia/android/config:all_languages_config",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:platform_parameter_service_test_orchestrator",
+    "//domain:domain_dev_assets",
+    "//domain:domain_test_assets",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",

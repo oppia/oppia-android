@@ -1,0 +1,8 @@
+"""
+Exposes config textprotos under assets subpackage.
+"""
+
+exports_files([
+    "pinned_lesson_versions.textproto",
+    "prod_download_config.textproto",
+])

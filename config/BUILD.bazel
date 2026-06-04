@@ -67,6 +67,20 @@ string_flag(
     visibility = ["//app:app_visibility"],
 )
 
+# Build setting to allow developers to pass their local GAE API key file.
+string_flag(
+    name = "proto_api_key_file",
+    build_setting_default = "",
+    visibility = ["//visibility:public"],
+)
+
+# Build-time boolean flag for whether production assets should be used.
+bool_flag(
+    name = "enable_prod_assets",
+    build_setting_default = False,
+    visibility = ["//visibility:public"],
+)
+
 config_setting(
     name = "firebase_analytics_enabled",
     flag_values = {
@@ -89,6 +103,15 @@ config_setting(
         ":download_firebase_config": "True",
     },
     visibility = ["//app:app_visibility"],
+)
+
+# Custom flag to toggle between dev assets (fallback) and production downloaded assets.
+config_setting(
+    name = "prod_assets_enabled",
+    flag_values = {
+        ":enable_prod_assets": "True",
+    },
+    visibility = ["//visibility:public"],
 )
 
 write_file(

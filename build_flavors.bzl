@@ -250,7 +250,10 @@ def define_oppia_aab_binary_flavor(flavor):
         proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
         shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         production_release = _FLAVOR_METADATA[flavor]["production_release"],
-        deps = _FLAVOR_METADATA[flavor]["deps"],
+        deps = _FLAVOR_METADATA[flavor]["deps"] + select({
+            "//config:prod_assets_enabled": ["//domain:domain_prod_assets"],
+            "//conditions:default": ["//domain:domain_dev_assets"],
+        }),
     )
 
     generate_universal_apk(

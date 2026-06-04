@@ -5,6 +5,7 @@ This library contains the frontend controller and business service logic for the
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
+load("//domain:download_assets.bzl", "download_prod_assets")
 
 filegroup(
     name = "test_manifest",
@@ -34,8 +35,8 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/survey/*.kt",
 ])
 
-DOMAIN_ASSETS = generate_assets_list_from_text_protos(
-    name = "domain_assets",
+DOMAIN_DEV_ASSETS = generate_assets_list_from_text_protos(
+    name = "domain_dev_assets_generation",
     classroom_file_names = [
         "test_classroom_id_0",
         "test_classroom_id_1",
@@ -55,28 +56,6 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
         "5NWuolNcwH6e",
         "k2bQ7z5XHNbK",
         "tIoSb3HZFN6e",
-        "test_single_interactive_state_exp_no_hints_no_solution",
-        "test_single_interactive_state_exp_with_hints_and_solution",
-        "test_single_interactive_state_exp_with_one_hint_and_solution",
-        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
-        "test_single_interactive_state_exp_with_only_solution",
-        "test_single_interactive_state_exp_with_solution_missing_answer",
-        "test_checkpointing_base_exploration",
-        "test_checkpointing_exploration_missing_first_state",
-        "test_checkpointing_exploration_multiple_compatible_updates",
-        "test_checkpointing_exploration_multiple_updates_one_incompatible",
-        "test_checkpointing_exploration_new_title",
-        "test_checkpointing_exploration_new_version",
-        "test_checkpointing_exploration_updated_first_state_compat_rule_spec",
-        "test_checkpointing_exploration_updated_first_state_correctness_label",
-        "test_checkpointing_exploration_updated_first_state_destination",
-        "test_checkpointing_exploration_updated_first_state_feedback_html",
-        "test_checkpointing_exploration_updated_first_state_feedback_id",
-        "test_checkpointing_exploration_updated_first_state_incompat_rule_spec",
-        "test_checkpointing_exploration_updated_first_state_interaction",
-        "test_checkpointing_exploration_updated_first_state_new_correct_answer",
-        "test_checkpointing_exploration_updated_first_state_updated_hints",
-        "test_checkpointing_exploration_updated_second_state_removed",
     ],
     skills_file_names = [
         "skills",
@@ -105,17 +84,88 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     ],
 )
 
+DOMAIN_TEST_ASSETS = generate_assets_list_from_text_protos(
+    name = "domain_test_assets_generation",
+    classroom_file_names = [],
+    classroom_list_file_names = [],
+    exploration_file_names = [
+        "test_single_interactive_state_exp_no_hints_no_solution",
+        "test_single_interactive_state_exp_with_hints_and_solution",
+        "test_single_interactive_state_exp_with_one_hint_and_solution",
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
+        "test_single_interactive_state_exp_with_only_solution",
+        "test_single_interactive_state_exp_with_solution_missing_answer",
+        "test_checkpointing_base_exploration",
+        "test_checkpointing_exploration_missing_first_state",
+        "test_checkpointing_exploration_multiple_compatible_updates",
+        "test_checkpointing_exploration_multiple_updates_one_incompatible",
+        "test_checkpointing_exploration_new_title",
+        "test_checkpointing_exploration_new_version",
+        "test_checkpointing_exploration_updated_first_state_compat_rule_spec",
+        "test_checkpointing_exploration_updated_first_state_correctness_label",
+        "test_checkpointing_exploration_updated_first_state_destination",
+        "test_checkpointing_exploration_updated_first_state_feedback_html",
+        "test_checkpointing_exploration_updated_first_state_feedback_id",
+        "test_checkpointing_exploration_updated_first_state_incompat_rule_spec",
+        "test_checkpointing_exploration_updated_first_state_interaction",
+        "test_checkpointing_exploration_updated_first_state_new_correct_answer",
+        "test_checkpointing_exploration_updated_first_state_updated_hints",
+        "test_checkpointing_exploration_updated_second_state_removed",
+    ],
+    skills_file_names = [],
+    story_file_names = [],
+    subtopic_file_names = [],
+    topic_file_names = [],
+)
+
+android_library(
+    name = "domain_dev_assets",
+    assets = glob([
+        "src/main/assets/**",
+    ], exclude = [
+        "src/main/assets/test_checkpointing_*",
+        "src/main/assets/test_single_interactive_state_*",
+        "src/main/assets/**/*.textproto",
+    ]) + DOMAIN_DEV_ASSETS,
+    assets_dir = "src/main/assets/",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+)
+
+android_library(
+    name = "domain_test_assets",
+    assets = glob([
+        "src/main/assets/test_checkpointing_*",
+        "src/main/assets/test_single_interactive_state_*",
+    ], exclude = ["src/main/assets/**/*.textproto"]) + DOMAIN_TEST_ASSETS,
+    assets_dir = "src/main/assets/",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+)
+
+download_prod_assets(
+    name = "downloaded_prod_assets_generation",
+    download_config = "//config/assets:prod_download_config.textproto",
+    pinned_versions = "//config/assets:pinned_lesson_versions.textproto",
+    strict = True,
+    tags = ["manual"],
+)
+
+android_library(
+    name = "domain_prod_assets",
+    assets = [":downloaded_prod_assets_generation"],
+    assets_dir = "downloaded_prod_assets_generation_assets",
+    manifest = "src/main/AndroidManifest.xml",
+    tags = ["manual"],
+    visibility = ["//visibility:public"],
+)
+
 kt_android_library(
     name = "domain",
     srcs = glob(
         ["src/main/java/org/oppia/android/domain/**/*.kt"],
         exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
     ),
-    assets = glob(
-        ["src/main/assets/**"],
-        exclude = ["src/main/assets/**/*.textproto"],
-    ) + DOMAIN_ASSETS,
-    assets_dir = "src/main/assets/",
     custom_package = "org.oppia.android.domain",
     manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
@@ -166,6 +216,8 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":domain",
+    ":domain_dev_assets",
+    ":domain_test_assets",
     "//:dagger",
     "//app:crashlytics",
     "//app:crashlytics_deps",
