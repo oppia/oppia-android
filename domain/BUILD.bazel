@@ -5,7 +5,7 @@ This library contains the frontend controller and business service logic for the
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
-load("//domain:download_assets.bzl", "download_prod_assets")
+load("//config:download_assets.bzl", "download_prod_assets")
 
 filegroup(
     name = "test_manifest",
@@ -144,34 +144,25 @@ android_library(
 )
 
 download_prod_assets(
-    name = "downloaded_prod_assets_generation",
-    download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
-    pinned_versions = "//config/assets:pinned_lesson_versions.textproto",
+    name = "downloaded_prod_lessons",
+    download_config = select({
+        "//config:assets_type_alpha": "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+        "//config:assets_type_prod": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+        "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+    }),
+    pinned_versions = select({
+        "//config:assets_type_alpha": "//config/assets:alpha_pinned_lesson_versions.textproto",
+        "//config:assets_type_prod": "//config/assets:prod_pinned_lesson_versions.textproto",
+        "//conditions:default": "//config/assets:prod_pinned_lesson_versions.textproto",
+    }),
     strict = True,
     tags = ["manual"],
 )
 
 android_library(
     name = "domain_prod_assets",
-    assets = [":downloaded_prod_assets_generation"],
-    assets_dir = "downloaded_prod_assets_generation_assets",
-    manifest = "src/main/AndroidManifest.xml",
-    tags = ["manual"],
-    visibility = ["//visibility:public"],
-)
-
-download_prod_assets(
-    name = "downloaded_alpha_assets_generation",
-    download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
-    pinned_versions = "//config/assets:pinned_lesson_versions.textproto",
-    strict = True,
-    tags = ["manual"],
-)
-
-android_library(
-    name = "domain_alpha_assets",
-    assets = [":downloaded_alpha_assets_generation"],
-    assets_dir = "downloaded_alpha_assets_generation_assets",
+    assets = [":downloaded_prod_lessons"],
+    assets_dir = "downloaded_prod_lessons_assets",
     manifest = "src/main/AndroidManifest.xml",
     tags = ["manual"],
     visibility = ["//visibility:public"],

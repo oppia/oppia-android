@@ -3,5 +3,6 @@ Exposes config textprotos under assets subpackage.
 """
 
 exports_files([
-    "pinned_lesson_versions.textproto",
+    "prod_pinned_lesson_versions.textproto",
+    "alpha_pinned_lesson_versions.textproto",
 ])

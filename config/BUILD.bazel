@@ -4,6 +4,10 @@ This package contains custom Bazel build configuration flags and settings for re
 
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load(
+    "//config:download_assets.bzl",
+    "update_pinned_lesson_versions",
+)
 
 exports_files(
     glob(["proguard/*.pro"]),
@@ -132,4 +136,19 @@ write_file(
     name = "_android_sdk_debug_keystore_password",
     out = "android_sdk_debug_keystore_password.txt",
     content = ["android"],
+)
+
+update_pinned_lesson_versions(
+    name = "update_pinned_lesson_versions",
+    download_config = select({
+        "//config:assets_type_alpha": "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+        "//config:assets_type_prod": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+        "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+    }),
+    pinned_versions = select({
+        "//config:assets_type_alpha": "//config/assets:alpha_pinned_lesson_versions.textproto",
+        "//config:assets_type_prod": "//config/assets:prod_pinned_lesson_versions.textproto",
+        "//conditions:default": "//config/assets:prod_pinned_lesson_versions.textproto",
+    }),
+    testonly = True,
 )
