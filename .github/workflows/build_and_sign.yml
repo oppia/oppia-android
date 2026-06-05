@@ -119,31 +119,40 @@ jobs:
 
       # Retrieves the release keystore and its credentials from GCP Secret Manager.
       # The keystore is stored base64-encoded; the password and alias are plain text.
-      # Secret names are placeholders — final names confirmed during GCP setup (Action 1.1).
-      # Note: the --//config:keystore_* flag types depend on config/BUILD.bazel from PR #6265.
+      # Files are written into the workspace (config/) so they can be referenced as
+      # Bazel labels (//config:release_keystore.jks etc.) required by the label_flag
+      # types in config/BUILD.bazel (introduced in PR #6265).
       - name: Provision release keystore from Secret Manager
         run: |
           gcloud secrets versions access latest \
             --secret="oppia-android-release-keystore" \
             --format='get(payload.data)' \
-            | tr '_-' '/+' | base64 -d > /tmp/release_keystore.jks
+            | tr '_-' '/+' | base64 -d > config/release_keystore.jks
 
           gcloud secrets versions access latest \
             --secret="oppia-android-release-keystore-password" \
-            > /tmp/keystore_password.txt
+            > config/keystore_password.txt
 
           gcloud secrets versions access latest \
             --secret="oppia-android-release-key-alias" \
             > /tmp/key_alias.txt
 
+          # Expose keystore files as Bazel targets for the label_flags.
+          cat >> config/BUILD.bazel << 'EOF'
+
+exports_files(
+    ["release_keystore.jks", "keystore_password.txt"],
+    visibility = ["//:oppia_binary_visibility"],
+)
+EOF
           echo "Keystore provisioned from Secret Manager."
 
       - name: Build signed AAB
         run: |
           KEY_ALIAS=$(cat /tmp/key_alias.txt)
           bazel build --compilation_mode=opt \
-            --//config:keystore_file=/tmp/release_keystore.jks \
-            --//config:keystore_password_file=/tmp/keystore_password.txt \
+            --//config:keystore_file=//config:release_keystore.jks \
+            --//config:keystore_password_file=//config:keystore_password.txt \
             --//config:key_alias="$KEY_ALIAS" \
             -- //:oppia_${{ github.event.inputs.flavor }}
 
