@@ -29,17 +29,6 @@ rules_java_dependencies()
 
 rules_java_toolchains()
 
-# Bazel 6.5 on macOS arm64 does not always materialize this repo from rules_java,
-# but rules_java's toolchains still reference it for Darwin prebuilt tools.
-http_archive(
-    name = "remote_java_tools_darwin",
-    sha256 = "0dcf4500cc4a1de8e563c1d48a079a7a0cf77cc246e39fd37fcc78ddf409ed26",
-    urls = [
-        "https://mirror.bazel.build/bazel_java_tools/releases/java/v11.8/java_tools_darwin-v11.8.zip",
-        "https://github.com/bazelbuild/java_tools/releases/download/java_v11.8/java_tools_darwin-v11.8.zip",
-    ],
-)
-
 http_archive(
     name = "zlib",
     build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
@@ -200,14 +189,6 @@ http_archive(
     sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
-)
-
-# Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
-# This is done such that it should satisfiy the requirement for pre-fetching but cause an actual
-# build failure for any real dependencies on the target.
-bind(
-    name = "python_headers",
-    actual = "@bazel_tools//tools/cpp:malloc",
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
