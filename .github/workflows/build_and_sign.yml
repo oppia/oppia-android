@@ -175,12 +175,12 @@ jobs:
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
 
           # Fail if binary already exists — enforces the build-once guarantee.
-          if gcloud storage ls "$GCS_PATH" 2>/dev/null; then
+          if gsutil ls "$GCS_PATH" 2>/dev/null; then
             echo "::error::Binary already exists at $GCS_PATH."
             echo "::error::Re-running build_and_sign for the same ref is not allowed."
             echo "::error::If this is a new RC, ensure the release branch has a new commit."
             exit 1
           fi
 
-          gcloud storage cp "$AAB_PATH" "$GCS_PATH"
+          gsutil cp "$AAB_PATH" "$GCS_PATH"
           echo "Uploaded to: $GCS_PATH"
