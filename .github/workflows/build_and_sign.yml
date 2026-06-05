@@ -138,13 +138,7 @@ jobs:
             > /tmp/key_alias.txt
 
           # Expose keystore files as Bazel targets for the label_flags.
-          cat >> config/BUILD.bazel << 'EOF'
-
-exports_files(
-    ["release_keystore.jks", "keystore_password.txt"],
-    visibility = ["//:oppia_binary_visibility"],
-)
-EOF
+          printf '\nexports_files(["release_keystore.jks", "keystore_password.txt"], visibility = ["//:oppia_binary_visibility"])\n' >> config/BUILD.bazel
           echo "Keystore provisioned from Secret Manager."
 
       - name: Build signed AAB
