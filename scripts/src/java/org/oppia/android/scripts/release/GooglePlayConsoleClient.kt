@@ -3,7 +3,6 @@ package org.oppia.android.scripts.release
 import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.oppia.android.scripts.release.model.TrackResponse
@@ -115,7 +114,8 @@ class GooglePlayConsoleClient(
     val releaseNotesJson = releaseNotes.entries.joinToString(",") { (lang, text) ->
       """{"language":"$lang","text":"${text.replace("\"", "\\\"")}"}"""
     }
-    val trackUpdateJson = """
+    val trackUpdateJson =
+      """
       {
         "releases": [{
           "versionCodes": ["$versionCode"],
@@ -123,7 +123,7 @@ class GooglePlayConsoleClient(
           "releaseNotes": [$releaseNotesJson]
         }]
       }
-    """.trimIndent()
+      """.trimIndent()
     val requestBody = trackUpdateJson.toRequestBody(JSON_MEDIA_TYPE)
     val response = playConsoleService
       .updateTrack(packageName, editId, track, authorizationBearer, requestBody)
