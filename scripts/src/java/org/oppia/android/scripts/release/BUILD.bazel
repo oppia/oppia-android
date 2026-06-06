@@ -10,3 +10,17 @@ kt_jvm_library(
     srcs = ["PlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
+
+kt_jvm_library(
+    name = "google_play_console_client",
+    srcs = ["GooglePlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/remote:play_console_service",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)
