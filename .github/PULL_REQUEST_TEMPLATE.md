@@ -6,6 +6,11 @@
   - when this PR is merged.
   -->
 
+## Disclosure of LLM usage
+<!-- Please answer the following two questions. -->
+- **Did you use AI/LLMs when working on this PR?** Type `Yes` or `No`.
+- **If yes, describe the extent AI was used:** e.g. brainstorming, debugging, writing code, writing tests, reviewing code, etc. See https://github.com/oppia/oppia-android/pull/6062 for an example.
+
 ## Essential Checklist
 <!-- Please tick the relevant boxes by putting an "x" in them. -->
 - [ ] The PR title starts with "Fix #bugnum: " (If this PR fixes part of an issue, prefix the title with "Fix part of #bugnum: ...".)
