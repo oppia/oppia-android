@@ -2,9 +2,13 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -181,6 +185,30 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_warningText_isBoldFormatted() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val warningText = activity.findViewById<TextView>(R.id.admin_pin_warning_text).text
+
+        assertThat(warningText).isInstanceOf(Spanned::class.java)
+        val boldSpans =
+          (warningText as Spanned).getSpans(0, warningText.length, StyleSpan::class.java)
+        assertThat(boldSpans).isNotEmpty()
+        val hasBoldStyle =
+          boldSpans.any { it.style == Typeface.BOLD || it.style == Typeface.BOLD_ITALIC }
+        assertThat(hasBoldStyle).isTrue()
+      }
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
@@ -325,7 +353,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
+  fun testAdminPinActivity_inputShortPin_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -344,6 +372,28 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_emptyPins_submit_showsPinLengthError() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    ).use {
+      onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
+      onView(withId(R.id.admin_pin_input_pin)).check(
+        matches(
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_length)
+          )
+        )
+      )
       onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
@@ -379,6 +429,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -424,6 +475,7 @@ class AdminPinActivityTest {
             )
           )
         )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -496,6 +548,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -507,6 +560,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -717,7 +771,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsDisabled() {
+  fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -737,7 +791,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
-      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -773,6 +827,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -816,6 +871,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -894,6 +950,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -906,6 +963,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -995,6 +1053,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -1036,11 +1095,12 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_configChange_clickIsDisabled() {
+  fun testAdminPinActivity_inputShortPin_configChange_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -1060,7 +1120,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
