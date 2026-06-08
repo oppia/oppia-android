@@ -24,3 +24,18 @@ kt_jvm_library(
         "//third_party:com_squareup_retrofit2_retrofit",
     ],
 )
+
+kt_jvm_library(
+    name = "fake_play_console_client",
+    testonly = True,
+    srcs = ["FakePlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":play_console_client"],
+)
+
+kt_jvm_library(
+    name = "version_inversion_check",
+    srcs = ["VersionInversionCheck.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":play_console_client"],
+)
