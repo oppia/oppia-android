@@ -29,7 +29,7 @@ def _download_google_services_json_impl(ctx):
         inputs = [],
         tools = [],
         command = command,
-        env = {},  # Inherits active local firebase developer login session!
+        use_default_shell_env = True,
         mnemonic = "DownloadGoogleServicesJson",
         progress_message = "Downloading google-services.json from Firebase",
         execution_requirements = {
