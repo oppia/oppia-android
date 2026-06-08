@@ -40,6 +40,7 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.profile.toProfileIdPreservingZero
+import org.oppia.android.util.profile.toProfileIdUnsetIfZero
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -141,7 +142,7 @@ class HomeFragmentPresenter @Inject constructor(
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
               profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdPreservingZero()
+                profileId.toProfileIdUnsetIfZero()
               )
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
@@ -150,7 +151,7 @@ class HomeFragmentPresenter @Inject constructor(
               // Additional learners only end profile onboarding, since they will never be the first
               // profile in the app.
               profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdPreservingZero()
+                profileId.toProfileIdUnsetIfZero()
               )
             }
           }

@@ -35,7 +35,7 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -96,6 +96,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -280,7 +281,7 @@ class ActivityLanguageLocaleHandlerTest {
   private fun setAppLanguage(language: OppiaLanguage) {
     val updateProvider =
       translationController.updateAppLanguage(
-        ProfileId.getDefaultInstance(),
+        LegacyProfileId.getDefaultInstance().toProfileIdPreservingZero(),
         AppLanguageSelection.newBuilder().apply {
           selectedLanguage = language
         }.build()
@@ -295,7 +296,7 @@ class ActivityLanguageLocaleHandlerTest {
    */
   private fun retrieveAppLanguageLocale(): OppiaLocale.DisplayLocale {
     val localeProvider =
-      translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
+      translationController.getAppLanguageLocale(LegacyProfileId.getDefaultInstance().toProfileIdPreservingZero())
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 
