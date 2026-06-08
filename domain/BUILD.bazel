@@ -21,6 +21,11 @@ package_group(
     ],
 )
 
+package_group(
+    name = "domain_visibility",
+    packages = ["//..."],
+)
+
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will be excluded automatically from the top-level utility library. It is recommended to use
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
@@ -146,7 +151,7 @@ android_library(
 downloaded_assets_library(
     name = "domain_alpha_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
-    pinned_versions = "//config/assets:alpha_pinned_lesson_versions.textproto",
+    pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     output_log_name = "domain_alpha_assets_output.log",
     tags = ["manual"],
     visibility = ["//visibility:public"],
@@ -155,7 +160,7 @@ downloaded_assets_library(
 downloaded_assets_library(
     name = "domain_prod_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
-    pinned_versions = "//config/assets:prod_pinned_lesson_versions.textproto",
+    pinned_versions = "//config:lessons/prod_pinned_lesson_versions.textproto",
     output_log_name = "domain_prod_assets_output.log",
     tags = ["manual"],
     visibility = ["//visibility:public"],

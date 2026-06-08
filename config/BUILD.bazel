@@ -14,6 +14,11 @@ exports_files(
     visibility = ["//:oppia_binary_visibility"],
 )
 
+exports_files(
+    glob(["lessons/*.textproto"]),
+    visibility = ["//domain:domain_visibility"],
+)
+
 # Build-time boolean flag for enabling Firebase Analytics and Crashlytics collection.
 bool_flag(
     name = "enable_firebase_analytics",
@@ -140,9 +145,9 @@ update_pinned_lesson_versions(
         "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
     }),
     pinned_versions = select({
-        "//config:assets_type_alpha": "//config/assets:alpha_pinned_lesson_versions.textproto",
-        "//config:assets_type_prod": "//config/assets:prod_pinned_lesson_versions.textproto",
-        "//conditions:default": "//config/assets:prod_pinned_lesson_versions.textproto",
+        "//config:assets_type_alpha": "//config:lessons/alpha_pinned_lesson_versions.textproto",
+        "//config:assets_type_prod": "//config:lessons/prod_pinned_lesson_versions.textproto",
+        "//conditions:default": "//config:lessons/prod_pinned_lesson_versions.textproto",
     }),
     tags = ["manual"],
     testonly = True,

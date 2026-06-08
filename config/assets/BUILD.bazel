@@ -1,8 +1,0 @@
-"""
-Exposes config textprotos under assets subpackage.
-"""
-
-exports_files([
-    "prod_pinned_lesson_versions.textproto",
-    "alpha_pinned_lesson_versions.textproto",
-])
