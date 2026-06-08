@@ -3,6 +3,8 @@ Rules for downloading production assets and updating pinned lesson versions usin
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION")
 
 _COMMON_ATTRS = {
     "base_url": attr.string(default = "https://www.oppia.org"),
@@ -28,7 +30,7 @@ def _get_api_key_path(ctx, action_description):
     return api_key_path
 
 def _download_prod_assets_impl(ctx):
-    output_dir = ctx.actions.declare_directory(ctx.attr.name + "_assets")
+    output_dir = ctx.actions.declare_directory(ctx.attr.output_dir_name)
     api_key_path = _get_api_key_path(ctx, "building with prod/alpha assets")
 
     inputs = [ctx.file.pinned_versions, ctx.file.download_config]
@@ -46,8 +48,6 @@ def _download_prod_assets_impl(ctx):
         ctx.file.download_config.path,
         "true" if ctx.attr.download_questions else "false",
     ]
-    if ctx.attr.strict:
-        tool_arguments.append("-Werror")
 
     # Write the wrapper bash script to download and filter assets
     script_content = """#!/bin/bash
@@ -57,6 +57,7 @@ shift
 
 TMP_OUT="{tmp_out}"
 FINAL_OUT="{final_out}"
+LOG_FILE=$(mktemp /tmp/oppia_download_assets.XXXXXX.log)
 
 cleanup() {{
   rm -rf "$TMP_OUT"
@@ -68,7 +69,17 @@ rm -rf "$TMP_OUT"
 mkdir -p "$TMP_OUT"
 
 # Run the download tool (unmodified from external repo)
-"$TOOL_PATH" "$@"
+if ! "$TOOL_PATH" "$@" > "$LOG_FILE" 2>&1; then
+  echo "Asset download failed! Tail of log (last 100 lines):"
+  echo ""
+  tail -n 100 "$LOG_FILE"
+  echo ""
+  echo "Full log is available at: $LOG_FILE"
+  echo ""
+  echo "Command line that was run:"
+  echo "$TOOL_PATH" "$@"
+  exit 1
+fi
 
 # Create final output directories
 mkdir -p "$FINAL_OUT"
@@ -95,7 +106,7 @@ fi
         command = script_content,
         arguments = [ctx.executable._download_tool.path] + tool_arguments,
         mnemonic = "DownloadProdAssets",
-        progress_message = "Downloading, filtering, and preparing production assets",
+        progress_message = "Downloading/filtering/prepping prod assets",
         execution_requirements = {
             "no-sandbox": "1",
             "requires-network": "1",
@@ -107,11 +118,11 @@ fi
         DefaultInfo(files = depset([output_dir])),
     ]
 
-download_prod_assets = rule(
+_download_prod_assets = rule(
     implementation = _download_prod_assets_impl,
     attrs = dict({
-        "download_questions": attr.bool(default = True),
-        "strict": attr.bool(default = False),
+        "output_dir_name": attr.string(mandatory = True),
+        "download_questions": attr.bool(mandatory = True),
         "_download_tool": attr.label(
             default = Label("@oppia_android_asset_pipeline//scripts:download_lessons"),
             executable = True,
@@ -119,6 +130,45 @@ download_prod_assets = rule(
         ),
     }, **_COMMON_ATTRS),
 )
+
+def downloaded_assets_library(name, download_config, pinned_versions, download_questions = False, tags = [], visibility = [], **kwargs):
+    manifest_target = "_%s_manifest" % name
+    manifest_file = "_%s_AndroidManifest.xml" % name
+    downloaded_lessons_target = "_%s_downloaded_assets" % name
+    asset_dir_name = "_%s_asset_dir" % name
+
+    # Generate a simple AndroidManifest.xml for this asset library.
+    write_file(
+        name = manifest_target,
+        out = manifest_file,
+        content = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<manifest xmlns:android="http://schemas.android.com/apk/res/android"',
+            '    package="org.oppia.android.domain.assets.%s">' % name,
+            '    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="%d" />' % BUILD_SDK_VERSION,
+            '</manifest>',
+        ],
+        tags = tags,
+    )
+
+    _download_prod_assets(
+        name = downloaded_lessons_target,
+        output_dir_name = asset_dir_name,
+        download_config = download_config,
+        pinned_versions = pinned_versions,
+        download_questions = download_questions,
+        tags = tags,
+        **kwargs
+    )
+
+    native.android_library(
+        name = name,
+        assets = [downloaded_lessons_target],
+        assets_dir = asset_dir_name,
+        manifest = manifest_file,
+        tags = tags,
+        visibility = visibility,
+    )
 
 def _update_pinned_lesson_versions_impl(ctx):
     api_key_path = _get_api_key_path(ctx, "running update_pinned_lesson_versions")
@@ -178,7 +228,7 @@ echo "Successfully updated pinned lesson versions!"
         ),
     ]
 
-update_pinned_lesson_versions = rule(
+_update_pinned_lesson_versions = rule(
     implementation = _update_pinned_lesson_versions_impl,
     executable = True,
     attrs = dict({
@@ -189,3 +239,11 @@ update_pinned_lesson_versions = rule(
         ),
     }, **_COMMON_ATTRS),
 )
+
+def update_pinned_lesson_versions(name, download_config, pinned_versions, **kwargs):
+    _update_pinned_lesson_versions(
+        name = name,
+        download_config = download_config,
+        pinned_versions = pinned_versions,
+        **kwargs
+    )

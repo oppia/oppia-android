@@ -150,5 +150,6 @@ update_pinned_lesson_versions(
         "//config:assets_type_prod": "//config/assets:prod_pinned_lesson_versions.textproto",
         "//conditions:default": "//config/assets:prod_pinned_lesson_versions.textproto",
     }),
+    tags = ["manual"],
     testonly = True,
 )
