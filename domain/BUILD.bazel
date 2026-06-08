@@ -119,6 +119,17 @@ DOMAIN_TEST_ASSETS = generate_assets_list_from_text_protos(
 )
 
 android_library(
+    name = "domain_test_assets",
+    assets = glob([
+        "src/main/assets/test_checkpointing_*",
+        "src/main/assets/test_single_interactive_state_*",
+    ], exclude = ["src/main/assets/**/*.textproto"]) + DOMAIN_TEST_ASSETS,
+    assets_dir = "src/main/assets/",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+)
+
+android_library(
     name = "domain_dev_assets",
     assets = glob([
         "src/main/assets/**",
@@ -132,14 +143,12 @@ android_library(
     visibility = ["//visibility:public"],
 )
 
-android_library(
-    name = "domain_test_assets",
-    assets = glob([
-        "src/main/assets/test_checkpointing_*",
-        "src/main/assets/test_single_interactive_state_*",
-    ], exclude = ["src/main/assets/**/*.textproto"]) + DOMAIN_TEST_ASSETS,
-    assets_dir = "src/main/assets/",
-    manifest = "src/main/AndroidManifest.xml",
+downloaded_assets_library(
+    name = "domain_alpha_assets",
+    download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+    pinned_versions = "//config/assets:alpha_pinned_lesson_versions.textproto",
+    output_log_name = "domain_alpha_assets_output.log",
+    tags = ["manual"],
     visibility = ["//visibility:public"],
 )
 
@@ -147,14 +156,7 @@ downloaded_assets_library(
     name = "domain_prod_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
     pinned_versions = "//config/assets:prod_pinned_lesson_versions.textproto",
-    tags = ["manual"],
-    visibility = ["//visibility:public"],
-)
-
-downloaded_assets_library(
-    name = "domain_alpha_assets",
-    download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
-    pinned_versions = "//config/assets:alpha_pinned_lesson_versions.textproto",
+    output_log_name = "domain_prod_assets_output.log",
     tags = ["manual"],
     visibility = ["//visibility:public"],
 )

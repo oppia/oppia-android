@@ -31,6 +31,7 @@ def _get_api_key_path(ctx, action_description):
 
 def _download_prod_assets_impl(ctx):
     output_dir = ctx.actions.declare_directory(ctx.attr.output_dir_name)
+    log_file = ctx.outputs.log
     api_key_path = _get_api_key_path(ctx, "building with prod/alpha assets")
 
     inputs = [ctx.file.pinned_versions, ctx.file.download_config]
@@ -53,7 +54,8 @@ def _download_prod_assets_impl(ctx):
     script_content = """#!/bin/bash
 set -e
 TOOL_PATH="$1"
-shift
+FINAL_LOG="$2"
+shift 2
 
 TMP_OUT="{tmp_out}"
 FINAL_OUT="{final_out}"
@@ -94,17 +96,21 @@ if [ -d "$TMP_OUT/images" ] && [ "$(ls -A "$TMP_OUT/images")" ]; then
   mkdir -p "$FINAL_OUT/images"
   cp -r "$TMP_OUT"/images/* "$FINAL_OUT"/images/
 fi
+
+# Copy the log to the final Bazel-declared output path
+cp "$LOG_FILE" "$FINAL_LOG"
+rm -f "$LOG_FILE"
 """.format(
         tmp_out = tmp_out,
         final_out = output_dir.path,
     )
 
     ctx.actions.run_shell(
-        outputs = [output_dir],
+        outputs = [output_dir, log_file],
         inputs = inputs,
         tools = [ctx.executable._download_tool],
         command = script_content,
-        arguments = [ctx.executable._download_tool.path] + tool_arguments,
+        arguments = [ctx.executable._download_tool.path, log_file.path] + tool_arguments,
         mnemonic = "DownloadProdAssets",
         progress_message = "Downloading/filtering/prepping prod assets",
         execution_requirements = {
@@ -122,6 +128,7 @@ _download_prod_assets = rule(
     implementation = _download_prod_assets_impl,
     attrs = dict({
         "output_dir_name": attr.string(mandatory = True),
+        "output_log_name": attr.string(mandatory = True),
         "download_questions": attr.bool(mandatory = True),
         "_download_tool": attr.label(
             default = Label("@oppia_android_asset_pipeline//scripts:download_lessons"),
@@ -129,9 +136,12 @@ _download_prod_assets = rule(
             cfg = "exec",
         ),
     }, **_COMMON_ATTRS),
+    outputs = {
+        "log": "%{output_log_name}",
+    },
 )
 
-def downloaded_assets_library(name, download_config, pinned_versions, download_questions = False, tags = [], visibility = [], **kwargs):
+def downloaded_assets_library(name, download_config, pinned_versions, output_log_name, download_questions = False, tags = [], visibility = [], **kwargs):
     manifest_target = "_%s_manifest" % name
     manifest_file = "_%s_AndroidManifest.xml" % name
     downloaded_lessons_target = "_%s_downloaded_assets" % name
@@ -154,6 +164,7 @@ def downloaded_assets_library(name, download_config, pinned_versions, download_q
     _download_prod_assets(
         name = downloaded_lessons_target,
         output_dir_name = asset_dir_name,
+        output_log_name = output_log_name,
         download_config = download_config,
         pinned_versions = pinned_versions,
         download_questions = download_questions,
