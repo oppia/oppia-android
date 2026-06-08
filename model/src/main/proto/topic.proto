@@ -3,6 +3,7 @@ syntax = "proto3";
 package model;
 
 import "subtitled_html.proto";
+import "subtitled_unicode.proto";
 import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
@@ -769,8 +770,21 @@ message SubtopicRecord {
   // The thumbnail corresponding to this subtopic.
   LessonThumbnail subtopic_thumbnail = 6;
 
+  // The ordered list of sections in this subtopic's study guide. This is stored in addition to the
+  // existing page contents.
+  repeated StudyGuideSection sections = 8;
+
   // The old title corresponding to the subtopic (as a string).
   reserved 1;
+}
+
+// Corresponds to one section in a study guide.
+message StudyGuideSection {
+  // The heading shown above this section's content.
+  SubtitledUnicode heading = 1;
+
+  // The main content displayed in this section.
+  SubtitledHtml content = 2;
 }
 
 // Top-level proto used to store the aggregate learning duration timestamps in a topic,

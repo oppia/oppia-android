@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDGE_TO_EDGE
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
@@ -152,12 +153,14 @@ class TestPlatformParameterModule {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
     }
 
-    /** Helper to configure whether lesson protos should be loaded from assets in tests. */
+    fun forceEnableEdgeToEdge(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(EDGE_TO_EDGE, value)
+    }
+
     fun forceLoadLessonProtosFromAssets(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_LESSON_PROTOS_FROM_ASSETS, value)
     }
 
-    /** Helper to configure whether images should be loaded from assets in tests. */
     fun forceLoadImagesFromAssets(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_IMAGES_FROM_ASSETS, value)
     }
