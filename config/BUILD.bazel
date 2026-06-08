@@ -34,17 +34,17 @@ bool_flag(
     build_setting_default = False,
 )
 
-# Build-time label flag that should point to the production keystore file for AAB signing.
-label_flag(
+# Build setting to allow passing an arbitrary host path for the signing keystore file.
+string_flag(
     name = "keystore_file",
-    build_setting_default = "@bazel_tools//tools/android:debug_keystore",
+    build_setting_default = "",
     visibility = ["//:oppia_binary_visibility"],
 )
 
-# Build-time label flag that should point to the signing keystore's password file.
-label_flag(
+# Build setting to allow passing an arbitrary host path for the signing keystore password file.
+string_flag(
     name = "keystore_password_file",
-    build_setting_default = ":_android_sdk_debug_keystore_password",
+    build_setting_default = "",
     visibility = ["//:oppia_binary_visibility"],
 )
 

@@ -170,10 +170,21 @@ def _sign_and_rename_aab_impl(ctx):
     jarsigner_path = java_bin_path[:java_bin_path.rfind("/")] + "/jarsigner"
 
     input_aab = ctx.file.input_aab
-    keystore = ctx.file.keystore
-    keystore_password_file = ctx.file.keystore_password_file
     key_alias = ctx.attr.key_alias[BuildSettingInfo].value
     bundletool = ctx.executable._bundletool_tool
+
+    # Determine keystore and keystore password to use.
+    keystore_filepath = ctx.attr.keystore[BuildSettingInfo].value
+    keystore_password_filepath = ctx.attr.keystore_password_file[BuildSettingInfo].value
+    additional_keystore_inputs = []
+    if keystore_filepath and keystore_password_filepath:
+        keystore_path = keystore_filepath
+        keystore_password_path = keystore_password_filepath
+    else:
+        keystore_path = ctx.file._debug_keystore.path
+        keystore_password_path = ctx.file._debug_keystore_password.path
+        additional_keystore_inputs.append(ctx.file._debug_keystore)
+        additional_keystore_inputs.append(ctx.file._debug_keystore_password)
 
     output_aab = ctx.actions.declare_file(ctx.label.name + ".aab")
     output_dir = ctx.actions.declare_directory(ctx.label.name + "_release")
@@ -201,8 +212,8 @@ def _sign_and_rename_aab_impl(ctx):
     echo ""
     """.format(
         input_aab = input_aab.path,
-        keystore = keystore.path,
-        keystore_password_file = keystore_password_file.path,
+        keystore = keystore_path,
+        keystore_password_file = keystore_password_path,
         key_alias = key_alias,
         bundletool = bundletool.path,
         jarsigner_path = jarsigner_path,
@@ -213,7 +224,7 @@ def _sign_and_rename_aab_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [output_aab, output_dir],
-        inputs = [input_aab, keystore, keystore_password_file, ctx.info_file],
+        inputs = [input_aab, ctx.info_file] + additional_keystore_inputs,
         tools = depset(
             direct = [bundletool],
             transitive = [java_runtime.files],
@@ -223,6 +234,8 @@ def _sign_and_rename_aab_impl(ctx):
         progress_message = "Re-signing and renaming AAB for production deployment",
         execution_requirements = {
             "no-cache": "",
+            "no-sandbox": "1",
+            "local": "1",
         },
     )
     return DefaultInfo(
@@ -378,11 +391,9 @@ _sign_and_rename_aab = rule(
             mandatory = True,
         ),
         "keystore": attr.label(
-            allow_single_file = True,
             mandatory = True,
         ),
         "keystore_password_file": attr.label(
-            allow_single_file = True,
             mandatory = True,
         ),
         "key_alias": attr.label(mandatory = True),
@@ -390,6 +401,14 @@ _sign_and_rename_aab = rule(
             executable = True,
             cfg = "host",
             default = "//third_party:android_bundletool_binary",
+        ),
+        "_debug_keystore": attr.label(
+            default = Label("@bazel_tools//tools/android:debug_keystore"),
+            allow_single_file = True,
+        ),
+        "_debug_keystore_password": attr.label(
+            default = Label("//config:_android_sdk_debug_keystore_password"),
+            allow_single_file = True,
         ),
     },
     toolchains = ["@bazel_tools//tools/jdk:runtime_toolchain_type"],
