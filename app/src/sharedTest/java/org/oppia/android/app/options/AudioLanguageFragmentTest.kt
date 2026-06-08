@@ -703,7 +703,8 @@ class AudioLanguageFragmentTest {
   fun testFragment_withHindiLanguagePreviouslySet_defaultsBackToEnglish() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
 
-    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build().toProfileIdPreservingZero()
+    val profileId =
+      LegacyProfileId.newBuilder().setInternalId(0).build().toProfileIdPreservingZero()
     val updateProvider = profileManagementController.updateAudioLanguage(
       profileId,
       HINDI_AUDIO_LANGUAGE

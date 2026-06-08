@@ -340,7 +340,8 @@ class ExplorationActivityLocalTest {
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
       profileManagementController.updateSurveyLastShownTimestamp(
-        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build().toProfileIdPreservingZero()
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+          .toProfileIdPreservingZero()
       )
 
       onView(withText(R.string.survey_onboarding_title_text))
