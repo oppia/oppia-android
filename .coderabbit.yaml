@@ -18,12 +18,8 @@ reviews:
   request_changes_workflow: false 
   # Prevent CodeRabbit from reviewing build noise and binary blobs.
   path_filters:
-    - "!bazel-**/**" # Ignore Bazel symlink outputs (bazel-bin, bazel-out, etc.)
-    - "!.idea/**"    # Ignore Android Studio / IntelliJ project configs
-    - "!**.apk"      # Ignore generated binaries
-    - "!**.aar"      # Ignore generated libraries
-    - "!**.png"      # Ignore UI design assets
-    - "!**.webp"
+    - "!config/**"  # Ignore everything inside the config directory
+    - "!wiki/**"    # Ignore everything inside the wiki directory
   tools:
     gitleaks:
       enabled: true # Security check for accidental secrets in history
