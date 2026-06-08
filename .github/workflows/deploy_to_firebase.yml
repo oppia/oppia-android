@@ -19,6 +19,11 @@ on:
         required: false
         type: string
         default: ""
+      tester_groups:
+        description: "Comma-separated Firebase tester group aliases (optional — e.g. 'qa-team,release-managers')"
+        required: false
+        type: string
+        default: ""
 
 concurrency:
   # One Firebase deployment per flavor at a time.
@@ -61,11 +66,20 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       # Downloads the signed AAB from the GCS archive to a temp path for Firebase upload.
+      # Uses gsutil instead of gcloud storage due to known bucket-name validation issues.
       - name: Download signed AAB from GCS
         run: |
-          gcloud storage cp "${{ github.event.inputs.gcs_aab_path }}" "/tmp/$AAB_NAME"
+          gsutil cp "${{ github.event.inputs.gcs_aab_path }}" "/tmp/$AAB_NAME"
+
+          # Verify the download produced a non-empty file.
+          if [[ ! -s "/tmp/$AAB_NAME" ]]; then
+            echo "::error::Downloaded AAB is empty or missing at /tmp/$AAB_NAME"
+            exit 1
+          fi
+
           echo "AAB_LOCAL_PATH=/tmp/$AAB_NAME" >> $GITHUB_ENV
-          echo "Downloaded: $AAB_NAME"
+          FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
+          echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
       - name: Set up Node.js for Firebase CLI
         uses: actions/setup-node@v4
@@ -92,8 +106,15 @@ jobs:
             NOTES="$AAB_NAME"
           fi
 
+          GROUPS="${{ github.event.inputs.tester_groups }}"
+          GROUP_FLAG=""
+          if [[ -n "$GROUPS" ]]; then
+            GROUP_FLAG="--groups $GROUPS"
+          fi
+
           firebase appdistribution:distribute "$AAB_LOCAL_PATH" \
             --app "$FIREBASE_APP_ID" \
-            --release-notes "$NOTES"
+            --release-notes "$NOTES" \
+            $GROUP_FLAG
 
           echo "Successfully distributed $AAB_NAME to Firebase ($FLAVOR)"
