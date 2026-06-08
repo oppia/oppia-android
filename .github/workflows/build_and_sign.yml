@@ -155,9 +155,12 @@ jobs:
       # This step locates it and extracts the version/RC for the GCS archive path.
       - name: Locate signed AAB
         run: |
-          AAB_PATH=$(find bazel-bin -name "oppia-android-*.aab" | head -1)
+          FLAVOR="${{ github.event.inputs.flavor }}"
+          # Use workspace-relative bazel-bin symlink — 'find bazel-bin' can fail in CI
+          # because bazel-bin is a symlink that may not resolve in a separate step.
+          AAB_PATH=$(ls bazel-bin/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
           if [[ -z "$AAB_PATH" ]]; then
-            echo "::error::Signed AAB not found in bazel-bin/. Build may have failed."
+            echo "::error::Signed AAB not found in bazel-bin/oppia_${FLAVOR}_release/. Build may have failed."
             exit 1
           fi
           AAB_NAME=$(basename "$AAB_PATH")
@@ -168,6 +171,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
           echo "Found: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+
 
       - name: Upload signed AAB to GCS archive
         run: |
