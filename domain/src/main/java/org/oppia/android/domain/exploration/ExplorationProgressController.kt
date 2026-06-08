@@ -1138,7 +1138,9 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      isContinueButtonAnimationSeen
+      isContinueButtonAnimationSeen,
+      // The lesson progress feature flag isn't consumed here yet, so no checkpoint total is supplied.
+      totalCheckpointCount = null
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {

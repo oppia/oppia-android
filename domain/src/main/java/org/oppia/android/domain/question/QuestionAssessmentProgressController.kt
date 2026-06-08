@@ -621,7 +621,9 @@ class QuestionAssessmentProgressController @Inject constructor(
     return progress.stateDeck.getCurrentEphemeralState(
       hintHandler.getCurrentHelpIndex().value,
       oppiaClock.getCurrentTimeMs(),
-      isContinueButtonAnimationSeen = true
+      isContinueButtonAnimationSeen = true,
+      // Questions don't show the lesson progress indicator, so no checkpoint total is provided.
+      totalCheckpointCount = null
     )
   }
 
