@@ -511,7 +511,7 @@ class ExplorationProgressController @Inject constructor(
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(),
+                  ExplorationProgress(oppiaLogger),
                   message.isRestart,
                   message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
