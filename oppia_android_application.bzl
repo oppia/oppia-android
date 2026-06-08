@@ -173,7 +173,7 @@ def _sign_and_rename_aab_impl(ctx):
     key_alias = ctx.attr.key_alias[BuildSettingInfo].value
     bundletool = ctx.executable._bundletool_tool
 
-    # Determine keystore and keystore password to use.
+    # Determine which keystore to use.
     keystore_filepath = ctx.attr.keystore[BuildSettingInfo].value
     keystore_password_filepath = ctx.attr.keystore_password_file[BuildSettingInfo].value
     additional_keystore_inputs = []
@@ -181,10 +181,17 @@ def _sign_and_rename_aab_impl(ctx):
         keystore_path = keystore_filepath
         keystore_password_path = keystore_password_filepath
     else:
+        # Fall back to the default debug keystore (which requires a password file).
         keystore_path = ctx.file._debug_keystore.path
-        keystore_password_path = ctx.file._debug_keystore_password.path
         additional_keystore_inputs.append(ctx.file._debug_keystore)
-        additional_keystore_inputs.append(ctx.file._debug_keystore_password)
+
+        debug_password_file = ctx.actions.declare_file(ctx.label.name + "_debug_password.txt")
+        ctx.actions.write(
+            output = debug_password_file,
+            content = "android",
+        )
+        keystore_password_path = debug_password_file.path
+        additional_keystore_inputs.append(debug_password_file)
 
     output_aab = ctx.actions.declare_file(ctx.label.name + ".aab")
     output_dir = ctx.actions.declare_directory(ctx.label.name + "_release")
@@ -404,10 +411,6 @@ _sign_and_rename_aab = rule(
         ),
         "_debug_keystore": attr.label(
             default = Label("@bazel_tools//tools/android:debug_keystore"),
-            allow_single_file = True,
-        ),
-        "_debug_keystore_password": attr.label(
-            default = Label("//config:_android_sdk_debug_keystore_password"),
             allow_single_file = True,
         ),
     },

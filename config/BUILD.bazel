@@ -132,12 +132,6 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
-write_file(
-    name = "_android_sdk_debug_keystore_password",
-    out = "android_sdk_debug_keystore_password.txt",
-    content = ["android"],
-)
-
 update_pinned_lesson_versions(
     name = "update_pinned_lesson_versions",
     download_config = select({
