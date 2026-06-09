@@ -39,3 +39,10 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":play_console_client"],
 )
+
+kt_jvm_library(
+    name = "pending_release_check",
+    srcs = ["PendingReleaseCheck.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":play_console_client"],
+)
