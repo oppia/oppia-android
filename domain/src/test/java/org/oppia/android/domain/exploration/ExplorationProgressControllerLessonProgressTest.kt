@@ -86,10 +86,10 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
  * separate test because the flag has to be forced before the application component (and therefore
  * the platform parameters) is built.
  *
- * test_exp_id_2 has four checkpoints along its main path: the initial Continue state, the
- * MultipleChoice and NumberInput states (both marked with is_checkpoint), and the terminal End
- * state. The completed count therefore progresses 1 -> 2 (MultipleChoice) -> 3 (NumberInput) as the
- * learner advances, and counts back down when navigating backward.
+ * test_exp_id_2 has five checkpoints along its main path: the initial Continue state, the
+ * MultipleChoice, NumberInput and RatioInput states (all marked with is_checkpoint), and the
+ * terminal End state. The completed count progresses 1 -> 2 (MultipleChoice) -> 3 (NumberInput)
+ * -> 4 (RatioInput) as the learner advances, and counts back down when navigating backward.
  */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -118,15 +118,15 @@ class ExplorationProgressControllerLessonProgressTest {
   }
 
   @Test
-  fun testGetCurrentState_initialState_progressIsFirstOfFourCheckpoints() {
+  fun testGetCurrentState_initialState_progressIsFirstOfFiveCheckpoints() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
-    // The initial state always counts as the first of the exploration's four checkpoints.
+    // The initial state always counts as the first of the exploration's five checkpoints.
     assertThat(ephemeralState.hasCheckpointProgress()).isTrue()
     assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(1)
-    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(4)
+    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
@@ -138,7 +138,7 @@ class ExplorationProgressControllerLessonProgressTest {
     val ephemeralState = navigateToMultipleChoiceState()
 
     assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(2)
-    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(4)
+    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
@@ -150,7 +150,19 @@ class ExplorationProgressControllerLessonProgressTest {
     val ephemeralState = navigateToNumericInputState()
 
     assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(3)
-    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(4)
+    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
+  }
+
+  @Test
+  fun testGetCurrentState_advancedPastThirdCheckpoint_completedCountIncrements() {
+    startPlayingNewExploration(TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // The ratio input state is the exploration's third marked checkpoint.
+    val ephemeralState = navigateToRatioInputState()
+
+    assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(4)
+    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
@@ -164,7 +176,7 @@ class ExplorationProgressControllerLessonProgressTest {
     val ephemeralState = moveToPreviousState()
 
     assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(1)
-    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(4)
+    assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
@@ -216,6 +228,13 @@ class ExplorationProgressControllerLessonProgressTest {
     return moveToNextState()
   }
 
+  /** Plays up to and stops on the ratio input state, the exploration's third checkpoint. */
+  private fun navigateToRatioInputState(): EphemeralState {
+    navigateToNumericInputState()
+    submitNumericInputAnswer(121.0)
+    return moveToNextState()
+  }
+
   private fun submitContinueButtonAnswer() {
     submitAnswer(createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER))
   }
@@ -229,6 +248,14 @@ class ExplorationProgressControllerLessonProgressTest {
             this.denominator = denominator
           }.build()
         }.build()
+      )
+    )
+  }
+
+  private fun submitNumericInputAnswer(numericAnswer: Double) {
+    submitAnswer(
+      convertToUserAnswer(
+        InteractionObject.newBuilder().apply { real = numericAnswer }.build()
       )
     )
   }
