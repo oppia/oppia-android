@@ -19,6 +19,7 @@ import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
@@ -109,6 +110,8 @@ class ExplorationProgressControllerLessonProgressTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
+    // Flashback support is needed so the flashback test can open a flashback to an earlier card.
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     setUpTestApplicationComponent()
   }
 
@@ -192,6 +195,34 @@ class ExplorationProgressControllerLessonProgressTest {
     assertThat(ephemeralState.hasCheckpointProgress()).isFalse()
   }
 
+  @Test
+  fun testGetCurrentState_duringFlashback_progressIsHidden_thenRestoredOnReturn() {
+    startPlayingNewExploration(TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToRatioInputState()
+
+    // Submit a wrong answer so a flashback to the earlier same-skill card is offered, then open it.
+    val pendingState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply { addAllRatioComponent(listOf(4, 7)) }.build()
+    )
+    val flashbackState = moveToFlashbackState(
+      pendingState.pendingState.wrongAnswerList[0].stateNameToRevisit
+    )
+
+    // A flashback is a review side-trip rather than forward progress, so the indicator is hidden
+    // while it's open. (To instead keep it visible, populate CheckpointProgress in
+    // ExplorationProgressController.computeCurrentFlashbackEphemeralState.)
+    assertThat(flashbackState.flashbackState).isTrue()
+    assertThat(flashbackState.hasCheckpointProgress()).isFalse()
+
+    // Returning to the lesson restores the indicator at the learner's unchanged position.
+    val resumedState = moveBackToLatest()
+    assertThat(resumedState.flashbackState).isFalse()
+    assertThat(resumedState.hasCheckpointProgress()).isTrue()
+    assertThat(resumedState.checkpointProgress.completedCheckpointCount).isEqualTo(4)
+    assertThat(resumedState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
+  }
+
   private fun startPlayingNewExploration(
     explorationId: String,
     topicId: String = TEST_TOPIC_ID_0,
@@ -260,6 +291,17 @@ class ExplorationProgressControllerLessonProgressTest {
     )
   }
 
+  private fun submitRatioInputAnswer(ratioExpression: RatioExpression): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitAnswer(
+        convertToUserAnswer(
+          InteractionObject.newBuilder().apply { this.ratioExpression = ratioExpression }.build()
+        )
+      )
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
   private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
     val answer = InteractionObject.newBuilder().apply { nonNegativeInt = choiceIndex }.build()
     submitAnswer(
@@ -316,6 +358,18 @@ class ExplorationProgressControllerLessonProgressTest {
 
   private fun moveToPreviousState(): EphemeralState {
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.moveToPreviousState())
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
+  private fun moveToFlashbackState(stateName: String): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveToFlashback(stateName)
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
+  private fun moveBackToLatest(): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(explorationProgressController.moveBackToLatest())
     return waitForGetCurrentStateSuccessfulLoad()
   }
 
