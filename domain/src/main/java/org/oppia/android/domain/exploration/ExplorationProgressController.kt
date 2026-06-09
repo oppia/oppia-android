@@ -48,6 +48,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -126,7 +127,9 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
-  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+  @EnableLessonProgressVisualization
+  private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -1139,8 +1142,14 @@ class ExplorationProgressController @Inject constructor(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
       isContinueButtonAnimationSeen,
-      // The lesson progress feature flag isn't consumed here yet, so no checkpoint total is supplied.
-      totalCheckpointCount = null
+      // Only pass a checkpoint total when lesson progress visualization is enabled (a null total
+      // tells the state deck to leave CheckpointProgress unset). The count is itself null for
+      // explorations that have no checkpoints, so those are left unset regardless of the flag.
+      totalCheckpointCount = if (enableLessonProgressVisualization.value) {
+        explorationProgress.stateGraph.checkpointCount
+      } else {
+        null
+      }
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {

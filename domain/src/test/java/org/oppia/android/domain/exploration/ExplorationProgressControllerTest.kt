@@ -521,6 +521,21 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testGetCurrentState_lessonProgressDisabled_checkpointExploration_hasNoCheckpointProgress() {
+    // The default test setup leaves the lesson progress flag off. The flag-enabled behavior is
+    // covered separately by ExplorationProgressControllerLessonProgressTest.
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // With the feature disabled the indicator is never populated, even for an exploration that does
+    // have checkpoint states.
+    assertThat(ephemeralState.hasCheckpointProgress()).isFalse()
+  }
+
+  @Test
   fun testMoveToNext_beforePlaying_isFailure() {
     val moveToStateResult = explorationProgressController.moveToNextState()
 
