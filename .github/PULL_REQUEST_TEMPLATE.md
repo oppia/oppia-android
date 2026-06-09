@@ -6,7 +6,7 @@
   - when this PR is merged.
   -->
 
-## Disclosure of LLM usage
+## Disclosure of LLM Usage
 <!-- Please answer the following two questions. -->
 - **Did you use AI/LLMs when working on this PR?** Type `Yes` or `No`.
 - **If yes, describe the extent AI was used:** e.g. brainstorming, debugging, writing code, writing tests, reviewing code, etc. See https://github.com/oppia/oppia-android/pull/6062 for an example.
