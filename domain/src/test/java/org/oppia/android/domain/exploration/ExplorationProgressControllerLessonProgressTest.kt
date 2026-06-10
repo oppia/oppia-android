@@ -196,7 +196,7 @@ class ExplorationProgressControllerLessonProgressTest {
   }
 
   @Test
-  fun testGetCurrentState_duringFlashback_progressIsHidden_thenRestoredOnReturn() {
+  fun testGetCurrentState_duringFlashback_progressIsUnchanged_thenRetainedOnReturn() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
     navigateToRatioInputState()
@@ -209,13 +209,14 @@ class ExplorationProgressControllerLessonProgressTest {
       pendingState.pendingState.wrongAnswerList[0].stateNameToRevisit
     )
 
-    // A flashback is a review side-trip rather than forward progress, so the indicator is hidden
-    // while it's open. (To instead keep it visible, populate CheckpointProgress in
-    // ExplorationProgressController.computeCurrentFlashbackEphemeralState.)
+    // A flashback doesn't move the learner's position in the deck, so the indicator stays visible
+    // with the unchanged pre-flashback count while the earlier card is reviewed.
     assertThat(flashbackState.flashbackState).isTrue()
-    assertThat(flashbackState.hasCheckpointProgress()).isFalse()
+    assertThat(flashbackState.hasCheckpointProgress()).isTrue()
+    assertThat(flashbackState.checkpointProgress.completedCheckpointCount).isEqualTo(4)
+    assertThat(flashbackState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
 
-    // Returning to the lesson restores the indicator at the learner's unchanged position.
+    // Returning to the lesson keeps the indicator at the learner's unchanged position.
     val resumedState = moveBackToLatest()
     assertThat(resumedState.flashbackState).isFalse()
     assertThat(resumedState.hasCheckpointProgress()).isTrue()

@@ -116,14 +116,7 @@ class StateDeck constructor(
       )
       else -> getPreviousState()
     }
-    if (totalCheckpointCount == null) return ephemeralState
-    return ephemeralState.toBuilder()
-      .setCheckpointProgress(
-        CheckpointProgress.newBuilder()
-          .setCompletedCheckpointCount(computeCompletedCheckpointCount())
-          .setTotalCheckpointCount(totalCheckpointCount)
-      )
-      .build()
+    return ephemeralState.withCheckpointProgress(totalCheckpointCount)
   }
 
   /**
@@ -143,6 +136,22 @@ class StateDeck constructor(
         else -> pendingTopState.isCheckpoint
       }
     }
+  }
+
+  /**
+   * Returns this state carrying the learner's current [CheckpointProgress], or unchanged when
+   * [totalCheckpointCount] is null (the feature is disabled or the exploration doesn't support
+   * checkpoints).
+   */
+  private fun EphemeralState.withCheckpointProgress(totalCheckpointCount: Int?): EphemeralState {
+    if (totalCheckpointCount == null) return this
+    return toBuilder()
+      .setCheckpointProgress(
+        CheckpointProgress.newBuilder()
+          .setCompletedCheckpointCount(computeCompletedCheckpointCount())
+          .setTotalCheckpointCount(totalCheckpointCount)
+      )
+      .build()
   }
 
   /**
@@ -306,10 +315,15 @@ class StateDeck constructor(
   /**
    * Returns the previously visited [EphemeralState] with the given [stateName], or a default
    * instance if not found.
+   *
+   * [totalCheckpointCount] behaves as in [getCurrentEphemeralState]. Since opening a flashback
+   * doesn't move the learner's position in the deck, the attached [CheckpointProgress] carries
+   * their unchanged pre-flashback completed count.
    */
-  fun getFlashbackEphemeralState(stateName: String): EphemeralState {
-    return previousStates.find { it.state.name == stateName }
-      ?: EphemeralState.getDefaultInstance()
+  fun getFlashbackEphemeralState(stateName: String, totalCheckpointCount: Int?): EphemeralState {
+    val flashbackState = previousStates.find { it.state.name == stateName }
+      ?: return EphemeralState.getDefaultInstance()
+    return flashbackState.withCheckpointProgress(totalCheckpointCount)
   }
 
   /**

@@ -351,9 +351,25 @@ class StateDeckTest {
     val deck = StateDeck(createState("init"), isTerminalState)
     deck.advanceTo(createState("s1"))
 
-    val flashbackState = deck.getFlashbackEphemeralState("init")
+    val flashbackState = deck.getFlashbackEphemeralState("init", totalCheckpointCount = null)
 
     assertThat(flashbackState.state.name).isEqualTo("init")
+    assertThat(flashbackState.hasCheckpointProgress()).isFalse()
+  }
+
+  @Test
+  fun testGetFlashbackEphemeralState_withTotalCount_attachesUnchangedDeckProgress() {
+    // init -> s1(checkpoint) -> s2, then flash back to s1. Viewing the flashback doesn't move the
+    // learner's deck position, so the attached completed count stays at their current 2.
+    val deck = StateDeck(createState("init"), isTerminalState)
+    deck.advanceTo(createState("s1", isCheckpoint = true))
+    deck.advanceTo(createState("s2"))
+
+    val flashbackState = deck.getFlashbackEphemeralState("s1", totalCheckpointCount = 4)
+
+    assertThat(flashbackState.state.name).isEqualTo("s1")
+    assertThat(flashbackState.checkpointProgress.completedCheckpointCount).isEqualTo(2)
+    assertThat(flashbackState.checkpointProgress.totalCheckpointCount).isEqualTo(4)
   }
 
   @Test
@@ -361,7 +377,7 @@ class StateDeckTest {
     val deck = StateDeck(createState("init"), isTerminalState)
     deck.advanceTo(createState("s1"))
 
-    val flashbackState = deck.getFlashbackEphemeralState("nonexistent")
+    val flashbackState = deck.getFlashbackEphemeralState("nonexistent", totalCheckpointCount = 4)
 
     assertThat(flashbackState).isEqualTo(EphemeralState.getDefaultInstance())
   }

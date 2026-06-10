@@ -1059,7 +1059,11 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeCurrentFlashbackEphemeralState(
     stateName: String
   ): EphemeralState {
-    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    // A flashback doesn't move the learner's position in the deck, so the attached progress (when
+    // the indicator is enabled) keeps showing their unchanged pre-flashback count.
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(
+      stateName, retrieveTotalCheckpointCount()
+    )
     return ephemeralState.toBuilder().apply {
       flashbackState = true
     }.build()
@@ -1142,15 +1146,22 @@ class ExplorationProgressController @Inject constructor(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
       isContinueButtonAnimationSeen,
-      // Only pass a checkpoint total when lesson progress visualization is enabled (a null total
-      // tells the state deck to leave CheckpointProgress unset). The count is itself null for
-      // explorations that have no checkpoints, so those are left unset regardless of the flag.
-      totalCheckpointCount = if (enableLessonProgressVisualization.value) {
-        explorationProgress.stateGraph.checkpointCount
-      } else {
-        null
-      }
+      totalCheckpointCount = retrieveTotalCheckpointCount()
     )
+
+  /**
+   * Returns the total checkpoint count for attaching checkpoint progress to outgoing
+   * [EphemeralState]s, or null when that progress should be left unset: either lesson progress
+   * visualization is disabled, or the count is itself null because the exploration has no
+   * checkpoints.
+   */
+  private fun ControllerState.retrieveTotalCheckpointCount(): Int? {
+    return if (enableLessonProgressVisualization.value) {
+      explorationProgress.stateGraph.checkpointCount
+    } else {
+      null
+    }
+  }
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {
