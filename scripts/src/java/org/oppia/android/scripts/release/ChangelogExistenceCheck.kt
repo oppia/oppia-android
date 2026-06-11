@@ -5,42 +5,56 @@ import java.io.File
 /**
  * Precondition check that verifies a changelog file exists for the release version being uploaded.
  *
- * Each release must be accompanied by a changelog entry so that Play Console release notes can
- * be populated and the release is traceable in the repository. The changelog is expected to live
- * at [CHANGELOG_RELATIVE_PATH] within the workspace root and must contain a section header
- * matching the given version string (e.g. "## 0.18-rc00").
+ * Changelogs live in [CHANGELOGS_DIR] and are named by their major.minor version (e.g. `0.17.md`).
+ * A flavor-specific override (e.g. `0.17_beta.md`) is checked first and falls back to the default.
+ * Deployment is blocked if neither file exists.
+ *
+ * This mirrors the lookup order used by `UploadChangelogToPlayConsole`:
+ * 1. `config/changelogs/<major.minor>_<flavor>.md` (flavor-specific override)
+ * 2. `config/changelogs/<major.minor>.md` (default)
+ * 3. Fail if neither exists
  */
 class ChangelogExistenceCheck(private val workspaceRoot: String) {
 
   /**
-   * Verifies that a changelog entry exists for [versionName] within the repository's changelog
-   * file.
+   * Verifies that a changelog file exists for [majorMinorVersion] and [flavor].
    *
-   * @param versionName the full version string to look for in the changelog
-   *     (e.g. "0.18-rc00-alpha")
-   * @throws IllegalStateException if the changelog file does not exist or contains no section
-   *     header for [versionName]
+   * @param majorMinorVersion the major.minor version string (e.g. "0.17")
+   * @param flavor the build flavor (e.g. "alpha", "beta", "ga")
+   * @throws IllegalStateException if no changelog file is found for the given version and flavor
    */
-  fun verify(versionName: String) {
-    val changelogFile = File(workspaceRoot, CHANGELOG_RELATIVE_PATH)
+  fun verify(majorMinorVersion: String, flavor: String) {
+    val changelogsDir = File(workspaceRoot, CHANGELOGS_DIR)
 
-    check(changelogFile.exists()) {
-      "Changelog file not found at '${changelogFile.absolutePath}'. " +
-        "Every release must have a corresponding changelog entry."
+    check(changelogsDir.exists() && changelogsDir.isDirectory) {
+      "Changelogs directory not found at '${changelogsDir.absolutePath}'. " +
+        "Every release must have a corresponding changelog in $CHANGELOGS_DIR."
     }
 
-    val changelogContent = changelogFile.readText()
-    val sectionHeader = "## $versionName"
+    // Check flavor-specific override first, then fall back to the default changelog.
+    val flavorSpecificFile = File(changelogsDir, "${majorMinorVersion}_$flavor.md")
+    val defaultFile = File(changelogsDir, "$majorMinorVersion.md")
 
-    check(changelogContent.contains(sectionHeader)) {
-      "No changelog entry found for version '$versionName' in '${changelogFile.absolutePath}'. " +
-        "Expected a section starting with '$sectionHeader'."
+    val resolvedFile = when {
+      flavorSpecificFile.exists() -> flavorSpecificFile
+      defaultFile.exists() -> defaultFile
+      else -> null
     }
 
-    println("Changelog existence check passed: found entry for '$versionName'.")
+    check(resolvedFile != null) {
+      "No changelog found for version '$majorMinorVersion' (flavor '$flavor'). " +
+        "Expected one of:\n" +
+        "  ${flavorSpecificFile.absolutePath}\n" +
+        "  ${defaultFile.absolutePath}"
+    }
+
+    println(
+      "Changelog existence check passed: using '${resolvedFile.name}' " +
+        "for version '$majorMinorVersion' ($flavor)."
+    )
   }
 
   private companion object {
-    private const val CHANGELOG_RELATIVE_PATH = "CHANGELOG.md"
+    private const val CHANGELOGS_DIR = "config/changelogs"
   }
 }
