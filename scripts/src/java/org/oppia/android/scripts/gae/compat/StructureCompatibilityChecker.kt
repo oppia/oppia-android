@@ -34,6 +34,7 @@ import org.oppia.android.scripts.gae.json.GaeSolution
 import org.oppia.android.scripts.gae.json.GaeState
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeStoryNode
+import org.oppia.android.scripts.gae.json.GaeStudyGuideSection
 import org.oppia.android.scripts.gae.json.GaeSubtitledHtml
 import org.oppia.android.scripts.gae.json.GaeSubtitledUnicode
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -52,6 +53,7 @@ import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.DE
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TITLE
 import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.structure.LanguageType
+import java.io.IOException
 
 // TODO: Check SVG compatibility?
 // TODO: Check image validity?
@@ -136,11 +138,8 @@ class StructureCompatibilityChecker(
   private fun checkSubtopicPageSectionsCompatibility(
     origin: ContainerId,
     gaeSubtopicPage: GaeSubtopicPage
-  ): List<CompatibilityFailure> {
-    return gaeSubtopicPage.sections.flatMap { section ->
-      section.heading.checkHasNoValidHtml(origin) + section.content.checkHasValidHtml(origin)
-    }
-  }
+  ): List<CompatibilityFailure> =
+    checkStudyGuideSectionsForCompatibility(gaeSubtopicPage.sections, origin, constraints)
 
   fun isExplorationItselfCompatible(completeExploration: CompleteExploration): CompatibilityResult {
     val containerId = ContainerId.createFrom(completeExploration.exploration)
@@ -498,15 +497,6 @@ class StructureCompatibilityChecker(
     }?.let { listOf(ThumbnailHasInvalidImageFormat(imageFilename = this, origin)) } ?: emptyList()
   }
 
-  private fun String.checkImageFilename(
-    origin: ContainerId,
-    contentId: String
-  ): List<CompatibilityFailure> {
-    return substringAfter('.').takeUnless { constraints.supportsImageWithExtension(it) }?.let {
-      listOf(TextReferencesInvalidImageFormat(contentId, imageFilename = this, origin))
-    } ?: emptyList()
-  }
-
   private fun String?.checkAudioFilename(origin: ContainerId): List<CompatibilityFailure> {
     return this?.substringAfter('.')?.takeUnless {
       constraints.supportsAudioWithExtension(it)
@@ -591,37 +581,8 @@ class StructureCompatibilityChecker(
     origin: ContainerId,
     contentId: String,
     languageType: LanguageType?
-  ): List<CompatibilityFailure> {
-    val extraTags = extractHtmlTags() - constraints.supportedHtmlTags
-    val tagFailures = if (extraTags.isNotEmpty()) {
-      val failure = languageType?.let {
-        TranslatedTextHasInvalidTags(contentId, extraTags, it, origin)
-      } ?: TextHasInvalidTags(contentId, extraTags, origin)
-      listOf(failure)
-    } else emptyList()
-    return tagFailures +
-      checkHasValidImageReferences(origin, contentId) +
-      checkHasValidMathTags(origin, contentId)
-  }
-
-  private fun String.checkHasValidImageReferences(
-    origin: ContainerId,
-    contentId: String
-  ): List<CompatibilityFailure> {
-    val imageReferences = extractImageReferences()
-    return imageReferences.filterNotNull().flatMap {
-      it.checkImageFilename(origin, contentId)
-    } + listOfNotNull(
-      imageReferences.find { it == null }?.let {
-        TextUsesImageTagWithMissingFilePath(contentId, origin)
-      }
-    )
-  }
-
-  private fun String.checkHasValidMathTags(
-    origin: ContainerId,
-    contentId: String
-  ): List<CompatibilityFailure> = checkMathTagsForLatex(this, origin, contentId)
+  ): List<CompatibilityFailure> =
+    checkHtmlForCompatibility(html = this, origin, contentId, languageType, constraints)
 
   private fun Int.checkIsValidStateSchemaVersion(origin: ContainerId): List<CompatibilityFailure> {
     return if (this > constraints.supportedStateSchemaVersion) {
@@ -662,6 +623,9 @@ class StructureCompatibilityChecker(
           extractMathContentsFromHtml(tag)
         } catch (_: IllegalStateException) {
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        } catch (_: IOException) {
+          // Truncated or malformed JSON in the math content results in a parse failure.
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
         }
         if (parsedMathContents.size != 1) {
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
@@ -672,6 +636,67 @@ class StructureCompatibilityChecker(
           MathTagMissingRawLatex(contentId, origin)
         } else null
       }.toList()
+    }
+
+    fun checkStudyGuideSectionsForCompatibility(
+      sections: List<GaeStudyGuideSection>,
+      origin: ContainerId,
+      constraints: CompatibilityConstraints
+    ): List<CompatibilityFailure> {
+      return sections.flatMap { section ->
+        section.heading.text.checkUnicodeTextForHtml(origin, section.heading.contentId) +
+          checkHtmlForCompatibility(
+            html = section.content.text,
+            origin = origin,
+            contentId = section.content.contentId,
+            languageType = null,
+            constraints = constraints
+          )
+      }
+    }
+
+    private fun checkHtmlForCompatibility(
+      html: String,
+      origin: ContainerId,
+      contentId: String,
+      languageType: LanguageType?,
+      constraints: CompatibilityConstraints
+    ): List<CompatibilityFailure> {
+      val extraTags = html.extractHtmlTags() - constraints.supportedHtmlTags
+      val tagFailures = if (extraTags.isNotEmpty()) {
+        val failure = languageType?.let {
+          TranslatedTextHasInvalidTags(contentId, extraTags, it, origin)
+        } ?: TextHasInvalidTags(contentId, extraTags, origin)
+        listOf(failure)
+      } else emptyList()
+      return tagFailures +
+        html.checkHasValidImageReferences(origin, contentId, constraints) +
+        checkMathTagsForLatex(html, origin, contentId)
+    }
+
+    private fun String.checkHasValidImageReferences(
+      origin: ContainerId,
+      contentId: String,
+      constraints: CompatibilityConstraints
+    ): List<CompatibilityFailure> {
+      val imageReferences = extractImageReferences()
+      return imageReferences.filterNotNull().flatMap {
+        it.checkImageFilename(origin, contentId, constraints)
+      } + listOfNotNull(
+        imageReferences.find { it == null }?.let {
+          TextUsesImageTagWithMissingFilePath(contentId, origin)
+        }
+      )
+    }
+
+    private fun String.checkImageFilename(
+      origin: ContainerId,
+      contentId: String,
+      constraints: CompatibilityConstraints
+    ): List<CompatibilityFailure> {
+      return substringAfter('.').takeUnless { constraints.supportsImageWithExtension(it) }?.let {
+        listOf(TextReferencesInvalidImageFormat(contentId, imageFilename = this, origin))
+      } ?: emptyList()
     }
 
     private fun String.checkTitleOrDescTextForHtml(
