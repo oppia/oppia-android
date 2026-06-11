@@ -52,3 +52,17 @@ kt_jvm_library(
     srcs = ["ChangelogExistenceCheck.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
+
+# Wraps all release script libraries for use by the top-level binary in //scripts.
+# Uses oppia_script_binary_visibility so //scripts:upload_binary_to_play_console can see it.
+kt_jvm_library(
+    name = "upload_binary_to_play_console_lib",
+    srcs = ["UploadBinaryToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":changelog_existence_check",
+        ":google_play_console_client",
+        ":pending_release_check",
+        ":version_inversion_check",
+    ],
+)
