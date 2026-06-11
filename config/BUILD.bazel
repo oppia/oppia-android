@@ -11,7 +11,7 @@ These configurations can significantly impact app builds and behaviors of the ap
 
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 load(
-    "//config:download_assets.bzl",
+    "//tools:download_assets.bzl",
     "update_pinned_lesson_versions",
 )
 

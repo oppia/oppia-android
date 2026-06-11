@@ -2,7 +2,7 @@
 This package contains resources corresponding to third-party dependencies and their license texts.
 """
 
-load("//scripts:retrieve_license_texts.bzl", "retrieve_license_texts")
+load("//tools:retrieve_license_texts.bzl", "retrieve_license_texts")
 
 android_library(
     name = "resources",

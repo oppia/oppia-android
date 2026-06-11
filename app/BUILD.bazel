@@ -12,7 +12,7 @@ order to build with Bazel.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
-load("//app:google_services.bzl", "prepare_google_services_json")
+load("//tools:google_services.bzl", "prepare_google_services_json")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 package(default_visibility = [
