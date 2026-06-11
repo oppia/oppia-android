@@ -128,6 +128,7 @@ class WalkthroughTopicListFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
+    // TODO(#5663): Use proto assets in this test once thumbnails load correctly.
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -275,9 +276,6 @@ class WalkthroughTopicListFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  class TestModule {}
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -335,7 +333,6 @@ class WalkthroughTopicListFragmentTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

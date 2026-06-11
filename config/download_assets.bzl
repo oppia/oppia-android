@@ -1,5 +1,6 @@
 """
-Rules for downloading production assets and updating pinned lesson versions using tools from the external repository.
+Rules for updating pinned lesson versions and downloading production assets for embedding directly
+within app binary builds.
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
@@ -18,15 +19,15 @@ _COMMON_ATTRS = {
         allow_single_file = True,
         mandatory = True,
     ),
-    "proto_api_key_file": attr.label(
-        default = Label("//config:proto_api_key_file"),
+    "web_api_key_file": attr.label(
+        default = Label("//config:web_api_key_file"),
     ),
 }
 
 def _get_api_key_path(ctx, action_description):
-    api_key_path = ctx.attr.proto_api_key_file[BuildSettingInfo].value
+    api_key_path = ctx.attr.web_api_key_file[BuildSettingInfo].value
     if not api_key_path:
-        fail("Must provide --//config:proto_api_key_file when %s (e.g. --//config:proto_api_key_file=/path/to/secret)." % action_description)
+        fail("Must provide --//config:web_api_key_file when %s (e.g. --//config:web_api_key_file=/path/to/secret)." % action_description)
     return api_key_path
 
 def _download_prod_assets_impl(ctx):
@@ -50,7 +51,6 @@ def _download_prod_assets_impl(ctx):
         "true" if ctx.attr.download_questions else "false",
     ]
 
-    # Write the wrapper bash script to download and filter assets
     script_content = """#!/bin/bash
 set -e
 TOOL_PATH="$1"
@@ -66,11 +66,9 @@ cleanup() {{
 }}
 trap cleanup EXIT
 
-# Ensure clean temp dir
 rm -rf "$TMP_OUT"
 mkdir -p "$TMP_OUT"
 
-# Run the download tool (unmodified from external repo)
 if ! "$TOOL_PATH" "$@" > "$LOG_FILE" 2>&1; then
   echo "Asset download failed! Tail of log (last 100 lines):"
   echo ""
@@ -83,21 +81,17 @@ if ! "$TOOL_PATH" "$@" > "$LOG_FILE" 2>&1; then
   exit 1
 fi
 
-# Create final output directories
 mkdir -p "$FINAL_OUT"
 
-# Copy v1 binary protos if they exist
 if [ -d "$TMP_OUT/protov1/binary" ] && [ "$(ls -A "$TMP_OUT/protov1/binary")" ]; then
   cp "$TMP_OUT"/protov1/binary/*.pb "$FINAL_OUT"/
 fi
 
-# Copy images if they exist
 if [ -d "$TMP_OUT/images" ] && [ "$(ls -A "$TMP_OUT/images")" ]; then
   mkdir -p "$FINAL_OUT/images"
   cp -r "$TMP_OUT"/images/* "$FINAL_OUT"/images/
 fi
 
-# Copy the log to the final Bazel-declared output path
 cp "$LOG_FILE" "$FINAL_LOG"
 rm -f "$LOG_FILE"
 """.format(
@@ -114,9 +108,7 @@ rm -f "$LOG_FILE"
         mnemonic = "DownloadProdAssets",
         progress_message = "Downloading/filtering/prepping prod assets",
         execution_requirements = {
-            "no-sandbox": "1",
-            "requires-network": "1",
-            "local": "1",
+            "requires-network": "1",  # This build step cannot run without internet connectivity.
         },
     )
 
@@ -141,7 +133,29 @@ _download_prod_assets = rule(
     },
 )
 
-def downloaded_assets_library(name, download_config, pinned_versions, output_log_name, download_questions = False, tags = [], visibility = [], **kwargs):
+def downloaded_assets_library(name, download_config, pinned_versions, output_log_name, download_questions = False, tags = [], visibility = []):
+    """
+    Creates an android_library that packages remotely downloaded lessons as assets.
+
+    This creates a library that contains all of the assets remotely downloaded from the Oppia web
+    backend for the purpose of embedding the assets directly into built app binaries. It can only be
+    used if the corresponding configuration parameters are correctly specified for the current app
+    build, e.g. //config:assets_type.
+
+    Args:
+        name: str. The name of for the library being defined.
+        download_config: label. The label to the download configuration textproto (which specifies
+            exemptions to make during lesson download validation).
+        pinned_versions: label. The label to the textproto containing all of the lesson versions
+            that should be downloaded (which help provide determinism in the download process).
+        output_log_name: str. The name of the produced output log file which will contain the full
+            output of the download script including potential instructions for release maintainers.
+        download_questions: bool. Whether to also download and include questions as part of the
+            downloaded lesson bundle.
+        tags: list of str. Tags that should be associated with the asset library.
+        visibility: list of label. The visibilities that should be used for the asset library.
+    """
+
     manifest_target = "_%s_manifest" % name
     manifest_file = "_%s_AndroidManifest.xml" % name
     downloaded_lessons_target = "_%s_downloaded_assets" % name
@@ -169,7 +183,6 @@ def downloaded_assets_library(name, download_config, pinned_versions, output_log
         pinned_versions = pinned_versions,
         download_questions = download_questions,
         tags = tags,
-        **kwargs
     )
 
     native.android_library(
@@ -201,13 +214,7 @@ echo "API Key File: {api_key_path}"
 echo "Output File: $OUTPUT"
 echo "Config File: $CONFIG"
 
-"$TOOL" \
-  "{base_url}" \
-  "{gcs_base_url}" \
-  "{gcs_bucket}" \
-  "{api_key_path}" \
-  "$OUTPUT" \
-  "$CONFIG"
+"$TOOL" "{base_url}" "{gcs_base_url}" "{gcs_bucket}" "{api_key_path}" "$OUTPUT" "$CONFIG"
 
 echo "Successfully updated pinned lesson versions!"
 """.format(
@@ -252,6 +259,23 @@ _update_pinned_lesson_versions = rule(
 )
 
 def update_pinned_lesson_versions(name, download_config, pinned_versions, **kwargs):
+    """
+    Creates a runnable target for regenerating a pinned version list.
+
+    This creates a 'bazel run'-able target that, when run, will regenerate the specified pinned
+    version list by downloading the latest list of compatible lesson versions from the Oppia web
+    backend. This can only be used if the corresponding configuration parameters are correctly
+    specified for the bazel run, e.g. //config:assets_type.
+
+    Args:
+        name: str. The name of for the library being defined.
+        download_config: label. The label to the download configuration textproto (which specifies
+            exemptions to make during lesson download validation).
+        pinned_versions: label. The label to the textproto containing all of the lesson versions
+            that should be downloaded (which help provide determinism in the download process).
+        **kwargs: additional generic arguments such as tags and visibility.
+    """
+
     _update_pinned_lesson_versions(
         name = name,
         download_config = download_config,

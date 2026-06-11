@@ -128,7 +128,7 @@ def _transform_android_manifest_impl(ctx):
         mnemonic = "TransformAndroidManifest",
         progress_message = "Transforming Android manifest",
         execution_requirements = {
-            "no-sandbox": "",  # Bypasses Bazel sandboxing to access local .git repository dynamically!
+            "local": "1",  # Ensure that .git can be accessed locally by the script.
         },
     )
     return DefaultInfo(
@@ -261,4 +261,3 @@ def define_oppia_aab_binary_flavor(flavor):
         name = "oppia_%s_universal_apk" % flavor,
         aab_target = ":oppia_%s" % flavor,
     )
-

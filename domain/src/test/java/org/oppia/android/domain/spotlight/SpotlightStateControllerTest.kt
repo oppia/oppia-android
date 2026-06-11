@@ -85,6 +85,7 @@ class SpotlightStateControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
   }
 

@@ -39,8 +39,8 @@ const val MAX_LICENSE_LENGTH = 16383
  * - path_to_maven_dependencies.pb: relative path to the maven_dependencies.pb
  *
  * Example:
- *   bazel run //scripts:retrieve_license_texts -- \
- *     $(pwd)/app/src/main/res/values/third_party_dependencies.xml \
+ *   bazel run //scripts:retrieve_license_texts -- \\
+ *     $(pwd)/app/src/main/res/values/third_party_dependencies.xml \\
  *     scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {

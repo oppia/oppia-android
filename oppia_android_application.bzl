@@ -86,7 +86,7 @@ def _restrict_languages_in_raw_module_zip_impl(ctx):
         executable = ctx.executable._filter_per_language_resources_tool.path,
         arguments = [arguments],
         mnemonic = "RestrictLanguagesInAabModule",
-        progress_message = "Removing unused language resources from module",
+        progress_message = "Removing unused language resources",
     )
 
     return DefaultInfo(
@@ -156,7 +156,7 @@ def _package_metadata_into_deployable_aab_impl(ctx):
         tools = [],
         command = command,
         mnemonic = "PackageMetadataIntoDeployableAAB",
-        progress_message = "Packaging symbols file into deployable AAB",
+        progress_message = "Packaging symbols file into AAB",
     )
     return DefaultInfo(
         files = depset([output_aab_file]),
@@ -170,27 +170,29 @@ def _sign_and_rename_aab_impl(ctx):
     jarsigner_path = java_bin_path[:java_bin_path.rfind("/")] + "/jarsigner"
 
     input_aab = ctx.file.input_aab
-    key_alias = ctx.attr.key_alias[BuildSettingInfo].value
+    extracted_key_alias = ctx.attr.key_alias[BuildSettingInfo].value
     bundletool = ctx.executable._bundletool_tool
 
     # Determine which keystore to use.
-    keystore_filepath = ctx.attr.keystore[BuildSettingInfo].value
-    keystore_password_filepath = ctx.attr.keystore_password_file[BuildSettingInfo].value
+    extracted_keystore_filepath = ctx.attr.keystore[BuildSettingInfo].value
+    extracted_keystore_password_filepath = ctx.attr.keystore_password_file[BuildSettingInfo].value
     additional_keystore_inputs = []
-    if keystore_filepath and keystore_password_filepath:
-        keystore_path = keystore_filepath
-        keystore_password_path = keystore_password_filepath
+    if extracted_keystore_filepath and extracted_keystore_password_filepath and extracted_key_alias:
+        keystore_filepath = extracted_keystore_filepath
+        keystore_password_filepath = extracted_keystore_password_filepath
+        key_alias = extracted_key_alias
     else:
         # Fall back to the default debug keystore (which requires a password file).
-        keystore_path = ctx.file._debug_keystore.path
+        keystore_filepath = ctx.file._debug_keystore.path
         additional_keystore_inputs.append(ctx.file._debug_keystore)
+        key_alias = ctx.attr._debug_key_alias
 
         debug_password_file = ctx.actions.declare_file(ctx.label.name + "_debug_password.txt")
         ctx.actions.write(
             output = debug_password_file,
             content = "android",
         )
-        keystore_password_path = debug_password_file.path
+        keystore_password_filepath = debug_password_file.path
         additional_keystore_inputs.append(debug_password_file)
 
     output_aab = ctx.actions.declare_file(ctx.label.name + ".aab")
@@ -219,8 +221,8 @@ def _sign_and_rename_aab_impl(ctx):
     echo ""
     """.format(
         input_aab = input_aab.path,
-        keystore = keystore_path,
-        keystore_password_file = keystore_password_path,
+        keystore = keystore_filepath,
+        keystore_password_file = keystore_password_filepath,
         key_alias = key_alias,
         bundletool = bundletool.path,
         jarsigner_path = jarsigner_path,
@@ -238,11 +240,9 @@ def _sign_and_rename_aab_impl(ctx):
         ),
         command = command,
         mnemonic = "SignAndRenameAab",
-        progress_message = "Re-signing and renaming AAB for production deployment",
+        progress_message = "Re-signing/renaming AAB for deployment",
         execution_requirements = {
-            "no-cache": "",
-            "no-sandbox": "1",
-            "local": "1",
+            "no-cache": "1",  # Disable caching to try and coerce re-printing the renamed binary.
         },
     )
     return DefaultInfo(
@@ -413,6 +413,7 @@ _sign_and_rename_aab = rule(
             default = Label("@bazel_tools//tools/android:debug_keystore"),
             allow_single_file = True,
         ),
+        "_debug_key_alias": attr.string(default = "androiddebugkey"),
     },
     toolchains = ["@bazel_tools//tools/jdk:runtime_toolchain_type"],
     implementation = _sign_and_rename_aab_impl,

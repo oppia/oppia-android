@@ -1,9 +1,15 @@
 """
-This package contains custom Bazel build configuration flags and settings for release automation.
+This package and its subpackages contain a variety of configurations.
+
+These configurations can significantly impact app builds and behaviors of the app, including:
+- Various automations to simplify building production releases (including automatically downloading
+  production lessons and app configurations).
+- Proguard rules for optimized build flavors.
+- Built-in feature flag and platform parameter overrides.
+- Which languages the app supports for custom in-app language selection.
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
-load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load(
     "//config:download_assets.bzl",
     "update_pinned_lesson_versions",
@@ -19,7 +25,7 @@ exports_files(
     visibility = ["//domain:domain_visibility"],
 )
 
-# Build-time boolean flag for enabling Firebase Analytics and Crashlytics collection.
+# Build-time boolean flag for whether Firebase Analytics and Crashlytics should be enabled.
 bool_flag(
     name = "enable_firebase_analytics",
     build_setting_default = False,
@@ -56,7 +62,7 @@ string_flag(
 # Build-time string flag that should contain the signing keystore's key alias.
 string_flag(
     name = "key_alias",
-    build_setting_default = "androiddebugkey",
+    build_setting_default = "",
     visibility = ["//:oppia_binary_visibility"],
 )
 
@@ -76,14 +82,18 @@ string_flag(
     visibility = ["//app:app_visibility"],
 )
 
-# Build setting to allow developers to pass their local GAE API key file.
+# Build-time string that should specify the path to a file containing the Oppia API key in order to
+# enable downloading production lessons to be included as part of building the app binary.
 string_flag(
-    name = "proto_api_key_file",
+    name = "web_api_key_file",
     build_setting_default = "",
-    visibility = ["//visibility:public"],
+    visibility = ["//domain:domain_visibility"],
 )
 
-# Build-time string flag to specify which assets configuration to use (dev, alpha, or prod).
+# Build-time string flag to specify which assets should be included part of the app binary build.
+# 'dev' corresponds to the assets that are included within the project itself, 'alpha' corresponds
+# to lesson assets which include 'prod' (user-facing lessons) plus lessons not yet ready for broad
+# release.
 string_flag(
     name = "assets_type",
     build_setting_default = "dev",
@@ -92,7 +102,6 @@ string_flag(
         "alpha",
         "prod",
     ],
-    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -119,24 +128,32 @@ config_setting(
     visibility = ["//app:app_visibility"],
 )
 
-# Enabled when alpha assets are requested.
 config_setting(
     name = "assets_type_alpha",
     flag_values = {
         ":assets_type": "alpha",
     },
-    visibility = ["//visibility:public"],
 )
 
-# Enabled when production assets are requested.
 config_setting(
     name = "assets_type_prod",
     flag_values = {
         ":assets_type": "prod",
     },
-    visibility = ["//visibility:public"],
 )
 
+# Defines a 'bazel run' target to regenerate the pinned lesson versions for both production and
+# alpha builds. This does require some specific parameters to be included in order to ensure the
+# pipeline is properly authenticated. Example CLI run:
+#
+#   bazel run //config:update_pinned_lesson_versions \\
+#     --//config:web_api_key_file=/absolute/path/to/api.key \\
+#     --//config:assets_type=alpha
+#
+# This example will potentially update //config/lessons/alpha_pinned_lesson_versions.textproto if
+# any of the lessons had a compatible update that should be downloaded. Using
+# --//config:assets_type=prod would potentially update the production pinned lesson versions
+# textproto file, instead.
 update_pinned_lesson_versions(
     name = "update_pinned_lesson_versions",
     download_config = select({

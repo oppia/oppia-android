@@ -23,7 +23,7 @@ package_group(
 
 package_group(
     name = "domain_visibility",
-    packages = ["//..."],
+    packages = ["//domain/..."],
 )
 
 # Source files that have been migrated to their own package-based libraries. Files added to this
@@ -131,7 +131,10 @@ android_library(
     ], exclude = ["src/main/assets/**/*.textproto"]) + DOMAIN_TEST_ASSETS,
     assets_dir = "src/main/assets/",
     manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//visibility:public"],
+    visibility = [
+        ":domain_visibility",
+        "//app:app_visibility",
+    ],
 )
 
 android_library(
@@ -145,7 +148,11 @@ android_library(
     ]) + DOMAIN_DEV_ASSETS,
     assets_dir = "src/main/assets/",
     manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//visibility:public"],
+    visibility = [
+        ":domain_visibility",
+        "//app:app_visibility",
+        "//:oppia_binary_visibility",
+    ],
 )
 
 downloaded_assets_library(
@@ -154,7 +161,7 @@ downloaded_assets_library(
     pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     output_log_name = "domain_alpha_assets_output.log",
     tags = ["manual"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_binary_visibility"],
 )
 
 downloaded_assets_library(
@@ -163,7 +170,7 @@ downloaded_assets_library(
     pinned_versions = "//config:lessons/prod_pinned_lesson_versions.textproto",
     output_log_name = "domain_prod_assets_output.log",
     tags = ["manual"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_binary_visibility"],
 )
 
 kt_android_library(

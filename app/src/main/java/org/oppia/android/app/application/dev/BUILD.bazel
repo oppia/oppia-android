@@ -27,8 +27,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
-
-exports_files(
-    ["res/values/third_party_dependencies.xml"],
-    visibility = ["//app:__pkg__"],
-)

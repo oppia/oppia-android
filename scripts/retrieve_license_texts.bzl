@@ -1,5 +1,6 @@
 """
-Macro and rule corresponding to third-party dependencies license retrieval.
+Rules for downloading third-party dependenciy license texts for the purpose of embedding within app
+binary builds.
 """
 
 def _retrieve_license_texts_impl(ctx):
@@ -18,7 +19,7 @@ def _retrieve_license_texts_impl(ctx):
         mnemonic = "RetrieveLicenseTexts",
         progress_message = "Retrieving third-party license texts",
         execution_requirements = {
-            "requires-network": "",
+            "requires-network": "1",  # This build step cannot run without internet connectivity.
         },
     )
     return DefaultInfo(files = depset([output_file]))

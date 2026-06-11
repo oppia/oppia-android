@@ -1,5 +1,6 @@
 """
-Macro and rule corresponding to production Firebase google-services.json downloads.
+Rules that provide support for downloading configurations related to Firebase (i.e. the
+google-services.json file).
 """
 
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
@@ -33,8 +34,8 @@ def _download_google_services_json_impl(ctx):
         mnemonic = "DownloadGoogleServicesJson",
         progress_message = "Downloading google-services.json from Firebase",
         execution_requirements = {
-            "requires-network": "",
-            "no-sandbox": "",  # Bypasses filesystem isolation to read active host login session!
+            "requires-network": "1",  # This build step cannot run without internet connectivity.
+            "local": "1",  # Ensure the local 'firebase' command can be accessed.
         },
     )
     return DefaultInfo(files = depset([output_file]))
@@ -58,7 +59,9 @@ def prepare_google_services_json(name, developer_google_services_file, output_fi
     """
     Prepares a google_services_config.json file for use in google_services_xml() setups.
 
-    If configured, this will remotely download the production configuration file.
+    The developer-only file will be provided unless //config:download_firebase_config is set to true
+    which in turn requires both //config:firebase_project_id and //config:firebase_app_id to be
+    provided and valid.
 
     Args:
         name: str. A unique name for this target.

@@ -60,8 +60,8 @@ private const val USAGE_STRING =
  * - enable_app_expiration: whether to enable app expiration.
  *
  * Example:
- *   bazel run //scripts:transform_android_manifest -- $(pwd) \
- *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 \
+ *   bazel run //scripts:transform_android_manifest -- $(pwd) \\
+ *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 \\
  *     .app.application.alpha.AlphaOppiaApplication false false
  */
 fun main(args: Array<String>) {
