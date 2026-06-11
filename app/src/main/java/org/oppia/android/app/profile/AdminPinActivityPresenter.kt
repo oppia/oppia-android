@@ -20,6 +20,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -32,13 +33,10 @@ class AdminPinActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val adminViewModel: AdminPinViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
+  private val htmlParserFactory: HtmlParser.Factory,
   @EnableEdgeToEdge
   private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
-
-  private var inputtedPin = false
-  private var inputtedConfirmPin = false
-
   private val args by lazy {
     activity.intent.getProtoExtra(
       ADMIN_PIN_ACTIVITY_PARAMS_KEY,
@@ -73,6 +71,12 @@ class AdminPinActivityPresenter @Inject constructor(
 
     binding.adminPinToolbar.title = resourceHandler
       .getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
+    binding.adminPinWarningText.text = htmlParserFactory.create(
+      displayLocale = resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      resourceHandler.getStringInLocale(R.string.admin_pin_pin_description),
+      binding.adminPinWarningText
+    )
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
@@ -80,13 +84,11 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedPin.get() == it
         ) {
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
         } else {
           adminViewModel.pinErrorMsg.set("")
           adminViewModel.savedPin.set(it)
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -97,13 +99,11 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.savedConfirmPin.get() == it
         ) {
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
         } else {
           adminViewModel.confirmPinErrorMsg.set("")
           adminViewModel.savedConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
         }
+        updateSubmitButtonState()
       }
     }
 
@@ -119,7 +119,7 @@ class AdminPinActivityPresenter @Inject constructor(
         )
         failed = true
       }
-      if (inputPin != confirmPin) {
+      if (!failed && inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
           resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_confirm_wrong
@@ -128,6 +128,7 @@ class AdminPinActivityPresenter @Inject constructor(
         failed = true
       }
       if (failed) {
+        updateSubmitButtonState()
         return@setOnClickListener
       }
       val profileId =
@@ -180,9 +181,13 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       false
     }
+
+    updateSubmitButtonState()
   }
 
-  private fun setValidPin() {
-    adminViewModel.isButtonActive.set(inputtedPin && inputtedConfirmPin)
+  private fun updateSubmitButtonState() {
+    val hasPinError = !adminViewModel.pinErrorMsg.get().isNullOrEmpty()
+    val hasConfirmPinError = !adminViewModel.confirmPinErrorMsg.get().isNullOrEmpty()
+    adminViewModel.isButtonActive.set(!hasPinError && !hasConfirmPinError)
   }
 }
