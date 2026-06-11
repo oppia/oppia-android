@@ -142,7 +142,7 @@ class HomeFragmentPresenter @Inject constructor(
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
               profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdUnsetIfZero()
+                profileId.toProfileIdPreservingZero()
               )
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
