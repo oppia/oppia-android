@@ -3,7 +3,7 @@ This library contains the frontend controller and business service logic for the
 """
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
-load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
+load("//domain:domain_assets.bzl", "local_assets_library")
 load("//domain:domain_test.bzl", "domain_test")
 load("//tools:download_assets.bzl", "downloaded_assets_library")
 
@@ -40,8 +40,9 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/survey/*.kt",
 ])
 
-DOMAIN_DEV_ASSETS = generate_assets_list_from_text_protos(
-    name = "domain_dev_assets_generation",
+local_assets_library(
+    name = "domain_dev_assets",
+    assets_dir = "src/main/assets/dev",
     classroom_file_names = [
         "test_classroom_id_0",
         "test_classroom_id_1",
@@ -87,12 +88,18 @@ DOMAIN_DEV_ASSETS = generate_assets_list_from_text_protos(
         "GJ2rLXRKD5hw",
         "omzF4oqgeTXd",
     ],
+    json_assets = glob(["src/main/assets/dev/**/*.json"]),
+    visibility = [
+        ":domain_visibility",
+        "//app:app_visibility",
+        "//:oppia_binary_visibility",
+    ],
 )
 
-DOMAIN_TEST_ASSETS = generate_assets_list_from_text_protos(
-    name = "domain_test_assets_generation",
-    classroom_file_names = [],
-    classroom_list_file_names = [],
+local_assets_library(
+    name = "domain_test_assets",
+    assets_dir = "src/main/assets/test",
+    testonly = True,
     exploration_file_names = [
         "test_single_interactive_state_exp_no_hints_no_solution",
         "test_single_interactive_state_exp_with_hints_and_solution",
@@ -117,41 +124,10 @@ DOMAIN_TEST_ASSETS = generate_assets_list_from_text_protos(
         "test_checkpointing_exploration_updated_first_state_updated_hints",
         "test_checkpointing_exploration_updated_second_state_removed",
     ],
-    skills_file_names = [],
-    story_file_names = [],
-    subtopic_file_names = [],
-    topic_file_names = [],
-)
-
-android_library(
-    name = "domain_test_assets",
-    assets = glob([
-        "src/main/assets/test_checkpointing_*",
-        "src/main/assets/test_single_interactive_state_*",
-    ], exclude = ["src/main/assets/**/*.textproto"]) + DOMAIN_TEST_ASSETS,
-    assets_dir = "src/main/assets/",
-    manifest = "src/main/AndroidManifest.xml",
+    json_assets = glob(["src/main/assets/test/**/*.json"]),
     visibility = [
         ":domain_visibility",
         "//app:app_visibility",
-    ],
-)
-
-android_library(
-    name = "domain_dev_assets",
-    assets = glob([
-        "src/main/assets/**",
-    ], exclude = [
-        "src/main/assets/test_checkpointing_*",
-        "src/main/assets/test_single_interactive_state_*",
-        "src/main/assets/**/*.textproto",
-    ]) + DOMAIN_DEV_ASSETS,
-    assets_dir = "src/main/assets/",
-    manifest = "src/main/AndroidManifest.xml",
-    visibility = [
-        ":domain_visibility",
-        "//app:app_visibility",
-        "//:oppia_binary_visibility",
     ],
 )
 
