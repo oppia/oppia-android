@@ -1,4 +1,4 @@
-package org.oppia.android.util.caching
+package org.oppia.android.util.platformparameter
 
 import javax.inject.Qualifier
 

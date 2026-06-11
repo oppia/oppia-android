@@ -15,17 +15,6 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "annotations",
-    srcs = [
-        "LoadImagesFromAssets.kt",
-        "LoadLessonProtosFromAssets.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
 
 kt_android_library(
     name = "impl",

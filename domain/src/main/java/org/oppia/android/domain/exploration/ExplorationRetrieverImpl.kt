@@ -8,7 +8,7 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 

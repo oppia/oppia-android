@@ -36,7 +36,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider

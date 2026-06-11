@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.LoadImagesFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
