@@ -20,27 +20,27 @@ import kotlin.test.assertFailsWith
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class DtoProtoToLegacyProtoConverterTest {
-  @Test
-  fun testConvertRevisionCard_withStudyGuideSections_populatesStructuredSections() {
-    val revisionCard = createRevisionCard(
-      sections = listOf(
-        StudyGuideSection(
-          headingContentId = "section_heading_0",
-          headingText = "What is a fraction?",
-          contentContentId = "section_content_1",
-          contentHtml = "<p>A fraction is part of a whole.</p>"
-        ),
-        StudyGuideSection(
-          headingContentId = "section_heading_2",
-          headingText = "How do we write it?",
-          contentContentId = "section_content_3",
-          contentHtml = "<p>We write it using a numerator and denominator.</p>"
-        )
+  private val revisionCardWithTwoSections = createRevisionCard(
+    sections = listOf(
+      StudyGuideSection(
+        headingContentId = "section_heading_0",
+        headingText = "What is a fraction?",
+        contentContentId = "section_content_1",
+        contentHtml = "<p>A fraction is part of a whole.</p>"
+      ),
+      StudyGuideSection(
+        headingContentId = "section_heading_2",
+        headingText = "How do we write it?",
+        contentContentId = "section_content_3",
+        contentHtml = "<p>We write it using a numerator and denominator.</p>"
       )
     )
+  )
 
+  @Test
+  fun testConvertRevisionCard_withStudyGuideSections_populatesStructuredSections() {
     val subtopicRecord =
-      revisionCard.convertToSubtopicRecord(
+      revisionCardWithTwoSections.convertToSubtopicRecord(
         imageReferenceReplacements = mapOf(),
         subtopicSummaryDto = createSubtopicSummary(),
         languagePackDtos = listOf()
@@ -57,26 +57,9 @@ class DtoProtoToLegacyProtoConverterTest {
   }
 
   @Test
-  fun testConvertRevisionCard_withStudyGuideSections_combinesLegacyPageContentsLikeWeb() {
-    val revisionCard = createRevisionCard(
-      sections = listOf(
-        StudyGuideSection(
-          headingContentId = "section_heading_0",
-          headingText = "What is a fraction?",
-          contentContentId = "section_content_1",
-          contentHtml = "<p>A fraction is part of a whole.</p>"
-        ),
-        StudyGuideSection(
-          headingContentId = "section_heading_2",
-          headingText = "How do we write it?",
-          contentContentId = "section_content_3",
-          contentHtml = "<p>We write it using a numerator and denominator.</p>"
-        )
-      )
-    )
-
+  fun testConvertRevisionCard_withStudyGuideSections_combinesLegacyPageContents() {
     val subtopicRecord =
-      revisionCard.convertToSubtopicRecord(
+      revisionCardWithTwoSections.convertToSubtopicRecord(
         imageReferenceReplacements = mapOf(),
         subtopicSummaryDto = createSubtopicSummary(),
         languagePackDtos = listOf()
