@@ -107,10 +107,10 @@ jobs:
           fi
 
           GROUPS="${{ github.event.inputs.tester_groups }}"
-          GROUP_FLAG=""
-          if [[ -n "$GROUPS" ]]; then
-            GROUP_FLAG="--groups $GROUPS"
+          if [[ -z "$GROUPS" ]]; then
+            GROUPS="qa-team"
           fi
+          GROUP_FLAG="--groups $GROUPS"
 
           firebase appdistribution:distribute "$AAB_LOCAL_PATH" \
             --app "$FIREBASE_APP_ID" \
