@@ -46,3 +46,9 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":play_console_client"],
 )
+
+kt_jvm_library(
+    name = "changelog_existence_check",
+    srcs = ["ChangelogExistenceCheck.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
