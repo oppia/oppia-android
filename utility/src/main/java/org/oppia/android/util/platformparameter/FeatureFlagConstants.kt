@@ -203,6 +203,13 @@ const val ENABLE_TOPIC_PRACTICE_TAB = "enable_topic_practice_tab"
 const val ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE = false
 
 /**
+ * Qualifier for the feature flag that controls whether edge-to-edge display support
+ * is enabled for Android 15+ (API 35+) compatibility.
+ */
+@Qualifier
+annotation class EnableEdgeToEdge
+
+/**
  * Qualifier for the feature flag that controls whether to enable study guides or not.
  */
 @Qualifier
