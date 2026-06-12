@@ -1,0 +1,32 @@
+"""
+Tests for Google Play Developer API response model data classes.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "BundleResponseTest",
+    srcs = ["BundleResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:bundle_response",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "EditResponseTest",
+    srcs = ["EditResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:edit_response",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "TrackResponseTest",
+    srcs = ["TrackResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//third_party:com_google_truth_truth",
+    ],
+)
