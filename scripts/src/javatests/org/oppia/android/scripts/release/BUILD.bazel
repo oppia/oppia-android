@@ -1,0 +1,40 @@
+"""
+Tests for release automation scripts: ChangelogExistenceCheck, PendingReleaseCheck,
+VersionInversionCheck, and supporting fakes.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "ChangelogExistenceCheckTest",
+    srcs = ["ChangelogExistenceCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:changelog_existence_check",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "PendingReleaseCheckTest",
+    srcs = ["PendingReleaseCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:pending_release_check",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "VersionInversionCheckTest",
+    srcs = ["VersionInversionCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:version_inversion_check",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
