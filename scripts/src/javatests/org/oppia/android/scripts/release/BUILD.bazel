@@ -1,6 +1,7 @@
 """
 Tests for release automation scripts: ChangelogExistenceCheck, PendingReleaseCheck,
-VersionInversionCheck, and supporting fakes.
+VersionInversionCheck, FakePlayConsoleClient, PlayConsoleClient, GooglePlayConsoleClient,
+and UploadBinaryToPlayConsole.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
@@ -48,3 +49,35 @@ kt_jvm_test(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_jvm_test(
+    name = "PlayConsoleClientTest",
+    srcs = ["PlayConsoleClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "FakePlayConsoleClientTest",
+    srcs = ["FakePlayConsoleClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "GooglePlayConsoleClientTest",
+    srcs = ["GooglePlayConsoleClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:google_play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
