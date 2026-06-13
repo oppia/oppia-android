@@ -54,11 +54,10 @@ class StateGraphTest {
   }
 
   @Test
-  fun testCheckpointCount_linearPathWithCheckpoints_countsIntermediatesPlusTwoEndpoints() {
-    // init -> s1(checkpoint) -> s2(checkpoint) -> s3 -> end. Two of the three intermediate states
-    // are checkpoints, so the count is 2 + 2 (the initial and terminal states) = 4.
+  fun testRemainingCheckpointCount_fromInitial_countsIntermediatesPlusTerminal() {
+    // init -> s1(checkpoint) -> s2(checkpoint) -> s3 -> end. From init the remaining count is the
+    // two future checkpoints plus the terminal (init is excluded as completed): 2 + 1 = 3.
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "s1"),
       createContinueState(name = "s1", nextStateName = "s2", isCheckpoint = true),
       createQuestionState(name = "s2", correctDestStateName = "s3", isCheckpoint = true),
@@ -66,58 +65,55 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.checkpointCount).isEqualTo(4)
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(3)
   }
 
   @Test
-  fun testCheckpointCount_continueCardInPath_isTraversedAndCounted() {
+  fun testRemainingCheckpointCount_continueCardInPath_isTraversedAndCounted() {
     // A Continue card has no answer groups and only moves forward through its default outcome. The
-    // path init -> continueCard(checkpoint) -> end must still be found, giving 1 + 2 = 3.
+    // path init -> continueCard(checkpoint) -> end must still be found; from init the remaining
+    // count is the future checkpoint plus the terminal: 1 + 1 = 2.
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "continueCard"),
       createContinueState(name = "continueCard", nextStateName = "end", isCheckpoint = true),
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.checkpointCount).isEqualTo(3)
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testCheckpointCount_noCheckpointStates_returnsNull() {
+  fun testRemainingCheckpointCount_noCheckpointStates_returnsNull() {
     // No state is marked as a checkpoint, so this exploration doesn't support the progress indicator.
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "middle"),
       createContinueState(name = "middle", nextStateName = "end"),
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.checkpointCount).isNull()
+    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
   }
 
   @Test
-  fun testCheckpointCount_checkpointOnInitialAndTerminal_doesNotDoubleCount() {
-    // The initial and terminal states are always counted via the "+2", so marking them as
-    // checkpoints must not count them a second time. Only "middle" is an intermediate checkpoint,
-    // so the count is 1 + 2 = 3 (not 5).
+  fun testRemainingCheckpointCount_checkpointOnInitialAndTerminal_doesNotDoubleCount() {
+    // The start is excluded (already completed) and the terminal is always counted once, so marking
+    // them as checkpoints must not change the count. Only "middle" is a future checkpoint, so the
+    // remaining count from init is 1 + 1 = 2 (not 3).
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "middle", isCheckpoint = true),
       createContinueState(name = "middle", nextStateName = "end", isCheckpoint = true),
       createTerminalState(name = "end", isCheckpoint = true)
     )
 
-    assertThat(graph.checkpointCount).isEqualTo(3)
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testCheckpointCount_branchesReconverge_usesShortestPath() {
+  fun testRemainingCheckpointCount_branchesReconverge_usesShortestPath() {
     // "init" has two correct answers: a direct one to "join" and a longer detour through "detour".
-    // The shortest path init -> join -> end is used, so only "join" is an intermediate checkpoint:
-    // 1 + 2 = 3.
+    // The shortest path init -> join -> end is used, so from init only "join" is a future
+    // checkpoint: 1 + 1 = 2.
     val graph = createStateGraph(
-      initialStateName = "init",
       createBranchingQuestionState(
         name = "init",
         correctDestStateNames = listOf("detour", "join"),
@@ -128,40 +124,80 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.checkpointCount).isEqualTo(3)
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testCheckpointCount_multipleTerminalStates_returnsNull() {
+  fun testRemainingCheckpointCount_fromInitialState_excludesAlreadyCompletedInitialState() {
+    // init -> s1(checkpoint) -> s2(checkpoint) -> end. The initial state is already counted by
+    // StateDeck, so the remaining count only includes the two future checkpoints and the terminal.
+    val graph = createStateGraph(
+      createQuestionState(name = "init", correctDestStateName = "s1", isCheckpoint = true),
+      createContinueState(name = "s1", nextStateName = "s2", isCheckpoint = true),
+      createContinueState(name = "s2", nextStateName = "end", isCheckpoint = true),
+      createTerminalState(name = "end")
+    )
+
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(3)
+  }
+
+  @Test
+  fun testRemainingCheckpointCount_fromBranchWithExtraCheckpoints_countsBackToMainPath() {
+    // The main path is init -> join(checkpoint) -> end, so the remaining count from init is 2
+    // (join + terminal). If the learner has instead reached detour(checkpoint), the remaining path
+    // detour -> review(checkpoint) -> join(checkpoint) -> end gives 3. This lets callers compute
+    // completed-so-far + remaining instead of showing progress like 4/3 on branch paths.
+    val graph = createStateGraph(
+      createQuestionState(name = "init", correctDestStateName = "join", isCheckpoint = true),
+      createContinueState(name = "detour", nextStateName = "review", isCheckpoint = true),
+      createContinueState(name = "review", nextStateName = "join", isCheckpoint = true),
+      createContinueState(name = "join", nextStateName = "end", isCheckpoint = true),
+      createTerminalState(name = "end")
+    )
+
+    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
+    assertThat(graph.computeRemainingCheckpointCount("detour")).isEqualTo(3)
+  }
+
+  @Test
+  fun testRemainingCheckpointCount_atTerminalState_isZero() {
+    val graph = createStateGraph(
+      createQuestionState(name = "init", correctDestStateName = "end", isCheckpoint = true),
+      createTerminalState(name = "end")
+    )
+
+    assertThat(graph.computeRemainingCheckpointCount("end")).isEqualTo(0)
+  }
+
+  @Test
+  fun testRemainingCheckpointCount_multipleTerminalStates_returnsNull() {
     // More than one terminal state means the exploration can't be reduced to a single start-to-end
     // path, so the count is null (and a warning is logged).
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "end1", isCheckpoint = true),
       createTerminalState(name = "end1"),
       createTerminalState(name = "end2")
     )
 
-    assertThat(graph.checkpointCount).isNull()
+    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
   }
 
   @Test
-  fun testCheckpointCount_noCorrectPathToTerminal_returnsNull() {
+  fun testRemainingCheckpointCount_noCorrectPathToTerminal_returnsNull() {
     // The only correct answer from "init" loops to a dead-end that never reaches the terminal state,
     // so there's no main path and the count is null (and a warning is logged).
     val graph = createStateGraph(
-      initialStateName = "init",
       createQuestionState(name = "init", correctDestStateName = "stuck", isCheckpoint = true),
       createQuestionState(name = "stuck", correctDestStateName = "stuck"),
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.checkpointCount).isNull()
+    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
   }
 
   @Test
   fun testComputeAnswerOutcome_withRefresherExplorationId_setsRefresher() {
-    val graph = createStateGraph("current", createTerminalState("current"))
+    val graph = createStateGraph(createTerminalState("current"))
     val currentState = createQuestionState(name = "current", correctDestStateName = "next")
     val outcome = Outcome.newBuilder()
       .setDestStateName("next")
@@ -175,7 +211,7 @@ class StateGraphTest {
 
   @Test
   fun testComputeAnswerOutcome_withMissingPrereqSkillId_setsMissingPrereq() {
-    val graph = createStateGraph("current", createTerminalState("current"))
+    val graph = createStateGraph(createTerminalState("current"))
     val currentState = createQuestionState(name = "current", correctDestStateName = "next")
     val outcome = Outcome.newBuilder()
       .setDestStateName("next")
@@ -189,7 +225,7 @@ class StateGraphTest {
 
   @Test
   fun testComputeAnswerOutcome_destinationIsCurrentState_marksSameState() {
-    val graph = createStateGraph("current", createTerminalState("current"))
+    val graph = createStateGraph(createTerminalState("current"))
     val currentState = createQuestionState(name = "current", correctDestStateName = "current")
     val outcome = Outcome.newBuilder().setDestStateName("current").build()
 
@@ -200,7 +236,7 @@ class StateGraphTest {
 
   @Test
   fun testComputeAnswerOutcome_destinationIsOtherState_setsStateName() {
-    val graph = createStateGraph("current", createTerminalState("current"))
+    val graph = createStateGraph(createTerminalState("current"))
     val currentState = createQuestionState(name = "current", correctDestStateName = "next")
     val outcome = Outcome.newBuilder().setDestStateName("next").build()
 
@@ -210,10 +246,9 @@ class StateGraphTest {
   }
 
   /** Builds a [StateGraph] from the given [states], keyed by state name. */
-  private fun createStateGraph(initialStateName: String, vararg states: State): StateGraph {
+  private fun createStateGraph(vararg states: State): StateGraph {
     return StateGraph(
       states.associateBy { it.name },
-      initialStateName,
       isTerminalState,
       oppiaLogger
     )

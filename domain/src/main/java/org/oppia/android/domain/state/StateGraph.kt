@@ -9,27 +9,19 @@ private const val STATE_GRAPH_LOG_TAG = "StateGraph"
 
 /**
  * Graph that provides lookup access for an exploration's [State]s, processing for the outcome of a
- * submitted learner answer, and the count of checkpoints along the exploration's main path.
+ * submitted learner answer, and the remaining checkpoint count toward the terminal state.
  */
 class StateGraph constructor(
   private var stateGraph: Map<String, State>,
-  private val initialStateName: String,
   private val isTerminalState: (State) -> Boolean,
   private val oppiaLogger: OppiaLogger
 ) {
-  /**
-   * The total number of checkpoints in the current exploration, or null if it doesn't support the
-   * lesson progress indicator (see [computeCheckpointCount] for when that's the case). The count
-   * always includes the initial and terminal states.
-   *
-   * This is lazily computed and memoized since it's needed throughout a play session but never
-   * changes for a given exploration.
-   */
-  val checkpointCount: Int? by lazy { computeCheckpointCount() }
+  private val remainingCheckpointCountCache = mutableMapOf<String, Int?>()
 
   /** Resets this graph to the new graph represented by the specified [Map]. */
   fun reset(stateGraph: Map<String, State>) {
     this.stateGraph = stateGraph
+    remainingCheckpointCountCache.clear()
   }
 
   /** Returns the [State] corresponding to the specified name. */
@@ -56,11 +48,30 @@ class StateGraph constructor(
   }
 
   /**
-   * Returns the number of checkpoints along the exploration's main path, or null if it doesn't
-   * support checkpoint-based progress: it has no checkpoint states, doesn't have exactly one
-   * terminal state, or has no correct-answer path to that terminal state.
+   * Returns the number of checkpoints still remaining from [startStateName] to the terminal state
+   * along the shortest correct path, or null if this exploration doesn't support checkpoint
+   * progress from that state.
+   *
+   * The start state itself is excluded because callers combine this with the learner's completed
+   * checkpoint count at their current deck position. Any future checkpoint states and the terminal
+   * state are included, so a learner at the terminal state has zero remaining checkpoints.
    */
-  private fun computeCheckpointCount(): Int? {
+  fun computeRemainingCheckpointCount(startStateName: String): Int? {
+    if (remainingCheckpointCountCache.containsKey(startStateName)) {
+      return remainingCheckpointCountCache[startStateName]
+    }
+    return computeCheckpointCountFrom(startStateName).also { remainingCheckpointCount ->
+      remainingCheckpointCountCache[startStateName] = remainingCheckpointCount
+    }
+  }
+
+  /**
+   * Computes the remaining checkpoint count from [startStateName] (see
+   * [computeRemainingCheckpointCount]). Returns null when the exploration doesn't support
+   * checkpoint-based progress: no checkpoint states, not exactly one terminal state, or no
+   * correct-answer path from [startStateName] to that terminal state.
+   */
+  private fun computeCheckpointCountFrom(startStateName: String): Int? {
     // No checkpoint states means the indicator isn't supported. This is the common, expected case,
     // so it returns quietly instead of logging a warning.
     if (stateGraph.values.none { it.isCheckpoint }) return null
@@ -76,23 +87,25 @@ class StateGraph constructor(
       return null
     }
 
-    val mainPath = findShortestCorrectPath(initialStateName, terminalStateNames.single())
+    val mainPath = findShortestCorrectPath(startStateName, terminalStateNames.single())
     if (mainPath == null) {
       oppiaLogger.w(
         STATE_GRAPH_LOG_TAG,
-        "Cannot compute checkpoint count: no correct-answer path from the initial state to the" +
+        "Cannot compute checkpoint count: no correct-answer path from $startStateName to the" +
           " terminal state."
       )
       return null
     }
 
-    // Count the checkpoints between the endpoints, then add 2 for the initial and terminal states
-    // (always checkpoints). Excluding the endpoints first avoids double-counting a marked one.
+    // Count the checkpoints between the endpoints, then add 1 for the terminal (always a
+    // checkpoint). The start state is excluded; the caller counts it as already completed.
+    // Dropping both endpoints first avoids double-counting a marked terminal.
     val intermediateCheckpointCount = mainPath
       .drop(1)
       .dropLast(1)
       .count { stateName -> stateGraph.getValue(stateName).isCheckpoint }
-    return intermediateCheckpointCount + 2
+    val terminalCheckpointCount = if (mainPath.size > 1) 1 else 0
+    return intermediateCheckpointCount + terminalCheckpointCount
   }
 
   /**

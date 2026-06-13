@@ -1151,16 +1151,21 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * Returns the total checkpoint count for attaching checkpoint progress to outgoing
-   * [EphemeralState]s, or null when that progress should be left unset: either lesson progress
-   * visualization is disabled, or the count is itself null because the exploration has no
-   * checkpoints.
+   * [EphemeralState]s.
+   *
+   * The total follows the learner's realized path through the deck, then adds the shortest
+   * remaining path from the state they're currently viewing. This keeps branching paths from
+   * showing impossible counts like a completed value greater than the total.
    */
   private fun ControllerState.retrieveTotalCheckpointCount(): Int? {
-    return if (enableLessonProgressVisualization.value) {
-      explorationProgress.stateGraph.checkpointCount
-    } else {
-      null
-    }
+    if (!enableLessonProgressVisualization.value) return null
+    val completedCheckpointCount =
+      explorationProgress.stateDeck.computeCompletedCheckpointCount()
+    val remainingCheckpointCount =
+      explorationProgress.stateGraph.computeRemainingCheckpointCount(
+        explorationProgress.stateDeck.getCurrentState().name
+      ) ?: return null
+    return completedCheckpointCount + remainingCheckpointCount
   }
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {

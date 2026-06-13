@@ -34,7 +34,6 @@ internal class ExplorationProgress(private val oppiaLogger: OppiaLogger) {
   internal val stateGraph: StateGraph by lazy {
     StateGraph(
       currentExploration.statesMap,
-      currentExploration.initStateName,
       ::isTopStateTerminal,
       oppiaLogger
     )
