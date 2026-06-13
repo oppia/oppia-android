@@ -4424,6 +4424,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/topic/StudyGuideTestHelper.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "testing/src/test/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRuleCustomContextTest.kt",
   is_extra_test_file: true
 }
