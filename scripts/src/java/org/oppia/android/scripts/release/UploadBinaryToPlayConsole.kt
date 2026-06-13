@@ -76,7 +76,31 @@ fun main(args: Array<String>) {
 
   val accessToken = obtainAccessToken(gcpProjectId)
   val client = GooglePlayConsoleClient(accessToken)
+  runUpload(client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track)
+}
 
+/**
+ * Executes the full upload workflow after authentication.
+ *
+ * Extracted to allow unit tests to inject a [PlayConsoleClient] fake, bypassing `gcloud`.
+ *
+ * @param client the [PlayConsoleClient] used for all Play Console API calls
+ * @param workspaceRoot absolute path to the repository root (for changelog lookups)
+ * @param aabPath absolute path to the signed AAB to upload
+ * @param versionName the full version string (e.g. "0.18-rc01-alpha")
+ * @param majorMinorVersion the `major.minor` portion used for changelog file lookup
+ * @param flavor the build flavor ("alpha", "beta", or "ga")
+ * @param track the Play Console track ("alpha", "beta", or "production")
+ */
+fun runUpload(
+  client: PlayConsoleClient,
+  workspaceRoot: String,
+  aabPath: String,
+  versionName: String,
+  majorMinorVersion: String,
+  flavor: String,
+  track: String
+) {
   // Pre-upload checks that don't require the version code.
   println("Running pre-upload precondition checks...")
   PendingReleaseCheck(client).verify(PACKAGE_NAME, track)
@@ -169,7 +193,7 @@ private fun extractFlavor(aabName: String): String? {
  * Returns a map with a single "en-US" entry. Returns an empty map if no file is found (the
  * changelog check will have already caught this case before any upload is attempted).
  */
-private fun extractReleaseNotes(
+fun extractReleaseNotes(
   workspaceRoot: String,
   majorMinorVersion: String,
   flavor: String

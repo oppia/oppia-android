@@ -259,4 +259,247 @@ class UploadBinaryToPlayConsoleTest {
 
     assertThat(exception).hasMessageThat().doesNotContain("rollout_fraction")
   }
+
+  // ---------------------------------------------------------------------------
+  // runUpload — full upload flow tests (bypass gcloud via FakePlayConsoleClient)
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testRunUpload_noReleasesOnTrack_completesFullUploadFlow() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Bug fixes and performance improvements.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha"
+    )
+
+    assertThat(fake.createdEdits).hasSize(1)
+    assertThat(fake.uploadedBundles).hasSize(1)
+    assertThat(fake.trackUpdates).hasSize(1)
+    assertThat(fake.committedEdits).hasSize(1)
+  }
+
+  @Test
+  fun testRunUpload_noReleasesOnTrack_uploadsCorrectAabPath() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha"
+    )
+
+    val (_, _, path) = fake.uploadedBundles.first()
+    assertThat(path).isEqualTo(aab.absolutePath)
+  }
+
+  @Test
+  fun testRunUpload_noReleasesOnTrack_assignsReturnedVersionCodeToTrack() {
+    val fake = FakePlayConsoleClient()
+    fake.setNextVersionCode(301L)
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha"
+    )
+
+    val update = fake.trackUpdates.first()
+    assertThat(update.versionCode).isEqualTo(301L)
+    assertThat(update.track).isEqualTo("alpha")
+  }
+
+  @Test
+  fun testRunUpload_noReleasesOnTrack_uploadsChangelogAsReleaseNotes() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "User-facing release notes.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha"
+    )
+
+    val update = fake.trackUpdates.first()
+    assertThat(update.releaseNotes["en-US"]).isEqualTo("User-facing release notes.")
+  }
+
+  @Test
+  fun testRunUpload_pendingReleaseOnTrack_throwsBeforeUpload() {
+    val fake = FakePlayConsoleClient()
+    fake.setTrackReleases(
+      "alpha",
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(299L), status = "draft"))
+    )
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    assertThrows<IllegalStateException>() {
+      runUpload(
+        client = fake,
+        workspaceRoot = tempFolder.root.absolutePath,
+        aabPath = aab.absolutePath,
+        versionName = "0.17-rc01-alpha",
+        majorMinorVersion = "0.17",
+        flavor = "alpha",
+        track = "alpha"
+      )
+    }
+
+    // Upload must NOT have been attempted.
+    assertThat(fake.uploadedBundles).isEmpty()
+  }
+
+  @Test
+  fun testRunUpload_changelogFileMissing_throwsBeforeUpload() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    // No changelog file created.
+
+    assertThrows<IllegalStateException>() {
+      runUpload(
+        client = fake,
+        workspaceRoot = tempFolder.root.absolutePath,
+        aabPath = aab.absolutePath,
+        versionName = "0.17-rc01-alpha",
+        majorMinorVersion = "0.17",
+        flavor = "alpha",
+        track = "alpha"
+      )
+    }
+
+    assertThat(fake.uploadedBundles).isEmpty()
+  }
+
+  @Test
+  fun testRunUpload_versionInversionDetected_throwsAfterUploadNotCommitted() {
+    val fake = FakePlayConsoleClient()
+    // A completed release already has version code 500, so uploading vc=1 would be an inversion.
+    fake.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(500L), status = "completed")
+      )
+    )
+    fake.setNextVersionCode(1L)
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    assertThrows<IllegalStateException>() {
+      runUpload(
+        client = fake,
+        workspaceRoot = tempFolder.root.absolutePath,
+        aabPath = aab.absolutePath,
+        versionName = "0.17-rc01-alpha",
+        majorMinorVersion = "0.17",
+        flavor = "alpha",
+        track = "alpha"
+      )
+    }
+
+    // AAB was uploaded but the edit was never committed.
+    assertThat(fake.uploadedBundles).hasSize(1)
+    assertThat(fake.committedEdits).isEmpty()
+  }
+
+  // ---------------------------------------------------------------------------
+  // extractReleaseNotes — changelog file resolution
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testExtractReleaseNotes_defaultFileExists_returnsEnUsContent() {
+    createChangelog("0.17", content = "Bug fixes.")
+
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes["en-US"]).isEqualTo("Bug fixes.")
+  }
+
+  @Test
+  fun testExtractReleaseNotes_flavorSpecificFileExists_usesFlavorFileOverDefault() {
+    createChangelog("0.17", content = "Default notes.")
+    createChangelog("0.17", flavor = "alpha", content = "Alpha-specific notes.")
+
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes["en-US"]).isEqualTo("Alpha-specific notes.")
+  }
+
+  @Test
+  fun testExtractReleaseNotes_noFileExists_returnsEmptyMap() {
+    // No changelog files created.
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes).isEmpty()
+  }
+
+  @Test
+  fun testExtractReleaseNotes_emptyDefaultFile_returnsEmptyMap() {
+    createChangelog("0.17", content = "")
+
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes).isEmpty()
+  }
+
+  @Test
+  fun testExtractReleaseNotes_contentExceeds500Chars_truncatesToMaxLength() {
+    val longContent = "a".repeat(600)
+    createChangelog("0.17", content = longContent)
+
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes["en-US"]).hasLength(500)
+  }
+
+  @Test
+  fun testExtractReleaseNotes_contentExactly500Chars_notTruncated() {
+    val exactContent = "b".repeat(500)
+    createChangelog("0.17", content = exactContent)
+
+    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+
+    assertThat(notes["en-US"]).hasLength(500)
+  }
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Creates a `config/changelogs/<version>[_<flavor>].md` file in the temp folder.
+   *
+   * @param version the major.minor version string (e.g. "0.17")
+   * @param flavor optional flavor suffix (e.g. "alpha") — omit for the default changelog
+   * @param content the text content to write to the file
+   */
+  private fun createChangelog(version: String, flavor: String? = null, content: String): File {
+    val dir = File(tempFolder.root, "config/changelogs").also { it.mkdirs() }
+    val filename = if (flavor != null) "${version}_$flavor.md" else "$version.md"
+    return File(dir, filename).also { it.writeText(content) }
+  }
 }
