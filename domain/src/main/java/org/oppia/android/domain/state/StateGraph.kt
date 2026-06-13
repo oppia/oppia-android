@@ -55,23 +55,26 @@ class StateGraph constructor(
    * The start state itself is excluded because callers combine this with the learner's completed
    * checkpoint count at their current deck position. Any future checkpoint states and the terminal
    * state are included, so a learner at the terminal state has zero remaining checkpoints.
+   *
+   * When a path is found, this also caches the remaining count for the other states on that path.
+   * This avoids running the same search again as the learner moves through those states.
    */
   fun computeRemainingCheckpointCount(startStateName: String): Int? {
     if (remainingCheckpointCountCache.containsKey(startStateName)) {
       return remainingCheckpointCountCache[startStateName]
     }
-    return computeCheckpointCountFrom(startStateName).also { remainingCheckpointCount ->
+    // On success the path states (including the start) are already cached below; on a null result
+    // the start is cached here so the unsupported-exploration checks aren't repeated every query.
+    return computeAndCacheCheckpointCountsFrom(startStateName).also { remainingCheckpointCount ->
       remainingCheckpointCountCache[startStateName] = remainingCheckpointCount
     }
   }
 
   /**
-   * Computes the remaining checkpoint count from [startStateName] (see
-   * [computeRemainingCheckpointCount]). Returns null when the exploration doesn't support
-   * checkpoint-based progress: no checkpoint states, not exactly one terminal state, or no
-   * correct-answer path from [startStateName] to that terminal state.
+   * Computes the remaining checkpoint count from [startStateName]. It also caches the remaining
+   * count for each state on that path. Returns null when checkpoint progress can't be computed.
    */
-  private fun computeCheckpointCountFrom(startStateName: String): Int? {
+  private fun computeAndCacheCheckpointCountsFrom(startStateName: String): Int? {
     // No checkpoint states means the indicator isn't supported. This is the common, expected case,
     // so it returns quietly instead of logging a warning.
     if (stateGraph.values.none { it.isCheckpoint }) return null
@@ -97,15 +100,17 @@ class StateGraph constructor(
       return null
     }
 
-    // Count the checkpoints between the endpoints, then add 1 for the terminal (always a
-    // checkpoint). The start state is excluded; the caller counts it as already completed.
-    // Dropping both endpoints first avoids double-counting a marked terminal.
-    val intermediateCheckpointCount = mainPath
-      .drop(1)
-      .dropLast(1)
-      .count { stateName -> stateGraph.getValue(stateName).isCheckpoint }
-    val terminalCheckpointCount = if (mainPath.size > 1) 1 else 0
-    return intermediateCheckpointCount + terminalCheckpointCount
+    // Walk backward from the terminal so each state gets the number of checkpoints after it. The
+    // terminal always counts as the final checkpoint, even though lesson data doesn't mark it.
+    var remainingCount = 0
+    for (index in mainPath.indices.reversed()) {
+      val stateName = mainPath[index]
+      remainingCheckpointCountCache[stateName] = remainingCount
+      val countsAsCheckpoint =
+        index == mainPath.lastIndex || stateGraph.getValue(stateName).isCheckpoint
+      if (countsAsCheckpoint) remainingCount++
+    }
+    return remainingCheckpointCountCache.getValue(startStateName)
   }
 
   /**
