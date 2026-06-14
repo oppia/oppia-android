@@ -208,8 +208,15 @@ def _sign_and_rename_aab_impl(ctx):
     RENAMED_AAB_PATH="{output_dir}/oppia-android-$VERSION_NAME.aab"
     cp {input_aab} $RENAMED_AAB_PATH || exit 255
 
+    # Fall back to system jarsigner if the derived path from the toolchain doesn't exist or is not executable
+    # (e.g. when using Bazel's embedded remotejdk which doesn't ship development tools like jarsigner).
+    JARSIGNER="{jarsigner_path}"
+    if [ ! -x "$JARSIGNER" ]; then
+        JARSIGNER="jarsigner"
+    fi
+
     JARSIGNER_LOG_FILE=$(mktemp)
-    if ! {jarsigner_path} -keystore {keystore} -storepass:file {keystore_password_file} -keypass:file {keystore_password_file} $RENAMED_AAB_PATH "{key_alias}" > "$JARSIGNER_LOG_FILE" 2>&1 ; then
+    if ! $JARSIGNER -keystore {keystore} -storepass:file {keystore_password_file} -keypass:file {keystore_password_file} $RENAMED_AAB_PATH "{key_alias}" > "$JARSIGNER_LOG_FILE" 2>&1 ; then
         cat "$JARSIGNER_LOG_FILE" >&2
         rm -f "$JARSIGNER_LOG_FILE"
         exit 255
@@ -243,6 +250,7 @@ def _sign_and_rename_aab_impl(ctx):
         progress_message = "Re-signing/renaming AAB for deployment",
         execution_requirements = {
             "no-cache": "1",  # Disable caching to try and coerce re-printing the renamed binary.
+            "local": "1",  # Ensure the local 'jarsigner' command can be accessed, if needed.
         },
     )
     return DefaultInfo(

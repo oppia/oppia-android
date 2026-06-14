@@ -628,7 +628,7 @@ class BazelClientTest {
   @Test
   fun testRetrieveBazelInfo_withMockExecutor_returnsCorrectInfo() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
       .thenReturn(
         CommandResult(
           exitCode = 0,
@@ -852,7 +852,7 @@ class BazelClientTest {
       "external/maven/androidx_appcompat_appcompat-1.4.0.aar"
     )
 
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
       .thenReturn(
         CommandResult(
           exitCode = 0,
@@ -871,7 +871,7 @@ class BazelClientTest {
   fun testRetrieveTargetModuleDependencies_withEmptyResult_returnsEmptyList() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
 
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
       .thenReturn(
         CommandResult(
           exitCode = 0,
@@ -891,7 +891,7 @@ class BazelClientTest {
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
     // circumstances where they occur, and the only way to guarantee this happens in the test
     // environment is to force the command output.
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
       .thenReturn(
         CommandResult(
           exitCode = 0,

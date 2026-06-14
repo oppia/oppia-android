@@ -92,6 +92,7 @@ local_assets_library(
     visibility = [
         ":domain_visibility",
         "//app:app_visibility",
+        "//testing:__subpackages__",
         "//:oppia_binary_visibility",
     ],
 )
@@ -128,6 +129,7 @@ local_assets_library(
     visibility = [
         ":domain_visibility",
         "//app:app_visibility",
+        "//testing:__subpackages__",
     ],
 )
 
