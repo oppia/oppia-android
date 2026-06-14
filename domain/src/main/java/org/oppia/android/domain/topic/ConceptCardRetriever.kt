@@ -24,7 +24,8 @@ import javax.inject.Inject
 class ConceptCardRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a [ConceptCard] corresponding to the specified skill ID, loaded from the filesystem.

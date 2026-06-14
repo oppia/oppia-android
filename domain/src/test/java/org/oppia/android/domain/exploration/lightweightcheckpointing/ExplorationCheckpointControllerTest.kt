@@ -973,7 +973,6 @@ class ExplorationCheckpointControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -25,10 +25,10 @@ import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -919,7 +919,6 @@ class TopicListControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl

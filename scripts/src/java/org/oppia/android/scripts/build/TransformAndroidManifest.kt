@@ -185,7 +185,9 @@ private class TransformAndroidManifest(
   private fun computeReleaseCandidateNumber(): Int {
     // Each commit on the release branch is a potential release candidate.
     return if (currentBranch.startsWith("release-")) {
-      (gitClient.countCommits("HEAD") - gitClient.countCommits(gitClient.branchMergeBase) + 1).also {
+      val commitCountToHead = gitClient.countCommits("HEAD")
+      val commitCountToBranch = gitClient.countCommits(gitClient.branchMergeBase)
+      (commitCountToHead - commitCountToBranch + 1).also {
         check(it <= MAX_RCS_PER_RELEASE) {
           "Too many release candidates: $it. Max is $MAX_RCS_PER_RELEASE."
         }

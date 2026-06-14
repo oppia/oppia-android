@@ -32,7 +32,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.testing.FakeAssetRepository
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -369,7 +368,6 @@ class ClassroomControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl

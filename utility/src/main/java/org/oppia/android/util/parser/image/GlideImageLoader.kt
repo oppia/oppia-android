@@ -12,14 +12,14 @@ import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.platformparameter.LoadImagesFromAssets
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
+import org.oppia.android.util.platformparameter.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -9,12 +9,12 @@ load("//:build_vars.bzl", "BUILD_SDK_VERSION")
 
 _COMMON_ATTRS = {
     "base_url": attr.string(default = "https://www.oppia.org"),
-    "gcs_base_url": attr.string(default = "https://storage.googleapis.com"),
-    "gcs_bucket": attr.string(default = "oppiaserver-resources"),
     "download_config": attr.label(
         allow_single_file = True,
         mandatory = True,
     ),
+    "gcs_base_url": attr.string(default = "https://storage.googleapis.com"),
+    "gcs_bucket": attr.string(default = "oppiaserver-resources"),
     "pinned_versions": attr.label(
         allow_single_file = True,
         mandatory = True,
@@ -119,9 +119,9 @@ rm -f "$LOG_FILE"
 _download_prod_assets = rule(
     implementation = _download_prod_assets_impl,
     attrs = dict({
+        "download_questions": attr.bool(mandatory = True),
         "output_dir_name": attr.string(mandatory = True),
         "output_log_name": attr.string(mandatory = True),
-        "download_questions": attr.bool(mandatory = True),
         "_download_tool": attr.label(
             default = Label("@oppia_android_asset_pipeline//scripts:download_lessons"),
             executable = True,
@@ -170,7 +170,7 @@ def downloaded_assets_library(name, download_config, pinned_versions, output_log
             '<manifest xmlns:android="http://schemas.android.com/apk/res/android"',
             '    package="org.oppia.android.domain.assets.%s">' % name,
             '    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="%d" />' % BUILD_SDK_VERSION,
-            '</manifest>',
+            "</manifest>",
         ],
         tags = tags,
     )

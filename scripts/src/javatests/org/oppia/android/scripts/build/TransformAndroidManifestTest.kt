@@ -676,7 +676,8 @@ class TransformAndroidManifestTest {
 
     val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
     assertThat(transformedManifest).containsMatch(
-      "<meta-data android:name=\"firebase_analytics_collection_deactivated\" android:value=\"false\""
+      "<meta-data android:name=\"firebase_analytics_collection_deactivated\"" +
+        " android:value=\"false\""
     )
     assertThat(transformedManifest).containsMatch(
       "<meta-data android:name=\"firebase_crashlytics_collection_enabled\" android:value=\"true\""

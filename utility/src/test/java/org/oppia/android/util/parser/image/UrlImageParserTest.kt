@@ -1,7 +1,5 @@
 package org.oppia.android.util.parser.image
 
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import android.app.Application
 import android.content.Context
 import android.graphics.Color
@@ -20,8 +18,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule

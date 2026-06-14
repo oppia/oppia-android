@@ -1,6 +1,5 @@
 package org.oppia.android.domain.hintsandsolution
 
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -37,6 +36,7 @@ import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -424,7 +424,6 @@ class HintHandlerDebugImplTest {
   class TestModule {
     @Provides
     fun provideContext(application: Application): Context = application
-
   }
 
   @Singleton

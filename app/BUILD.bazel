@@ -12,8 +12,8 @@ order to build with Bazel.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
-load("//tools:google_services.bzl", "prepare_google_services_json")
 load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//tools:google_services.bzl", "prepare_google_services_json")
 
 package(default_visibility = [
     "//domain:__subpackages__",
@@ -426,8 +426,8 @@ android_library(
     ),
     visibility = ["//app:__subpackages__"],
     deps = [
-        "//third_party:com_google_android_material_material",
         "//app/src/main/java/org/oppia/android/app/thirdparty:resources",
+        "//third_party:com_google_android_material_material",
     ],
 )
 
@@ -754,9 +754,9 @@ TEST_DEPS = [
     "//config/src/java/org/oppia/android/config:all_languages_config",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:platform_parameter_service_test_orchestrator",
+    "//domain",
     "//domain:domain_dev_assets",
     "//domain:domain_test_assets",
-    "//domain",
     "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",

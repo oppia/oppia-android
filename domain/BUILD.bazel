@@ -63,6 +63,7 @@ local_assets_library(
         "k2bQ7z5XHNbK",
         "tIoSb3HZFN6e",
     ],
+    json_assets = glob(["src/main/assets/dev/**/*.json"]),
     skills_file_names = [
         "skills",
     ],
@@ -88,19 +89,18 @@ local_assets_library(
         "GJ2rLXRKD5hw",
         "omzF4oqgeTXd",
     ],
-    json_assets = glob(["src/main/assets/dev/**/*.json"]),
     visibility = [
         ":domain_visibility",
+        "//:oppia_binary_visibility",
         "//app:app_visibility",
         "//testing:__subpackages__",
-        "//:oppia_binary_visibility",
     ],
 )
 
 local_assets_library(
     name = "domain_test_assets",
-    assets_dir = "src/main/assets/test",
     testonly = True,
+    assets_dir = "src/main/assets/test",
     exploration_file_names = [
         "test_single_interactive_state_exp_no_hints_no_solution",
         "test_single_interactive_state_exp_with_hints_and_solution",
@@ -136,8 +136,8 @@ local_assets_library(
 downloaded_assets_library(
     name = "domain_alpha_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
-    pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     output_log_name = "domain_alpha_assets_output.log",
+    pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     tags = ["manual"],
     visibility = ["//:oppia_binary_visibility"],
 )
@@ -145,8 +145,8 @@ downloaded_assets_library(
 downloaded_assets_library(
     name = "domain_prod_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
-    pinned_versions = "//config:lessons/prod_pinned_lesson_versions.textproto",
     output_log_name = "domain_prod_assets_output.log",
+    pinned_versions = "//config:lessons/prod_pinned_lesson_versions.textproto",
     tags = ["manual"],
     visibility = ["//:oppia_binary_visibility"],
 )

@@ -36,8 +36,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -46,6 +44,8 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -107,7 +107,8 @@ class TopicController @Inject constructor(
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
 ) {

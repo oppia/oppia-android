@@ -29,8 +29,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -579,7 +577,6 @@ class ConceptCardFragmentTest {
 
   private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
     find { text in it.first }?.second
-
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

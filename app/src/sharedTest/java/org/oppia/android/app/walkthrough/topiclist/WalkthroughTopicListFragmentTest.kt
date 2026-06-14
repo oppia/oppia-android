@@ -18,8 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
@@ -90,8 +88,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.platformparameter.LoadImagesFromAssets
-import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule

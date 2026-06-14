@@ -12,8 +12,8 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
-        "//domain:domain_test_assets",
         "//domain:domain_dev_assets",
+        "//domain:domain_test_assets",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",

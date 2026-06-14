@@ -166,7 +166,7 @@ java_binary(
     name = "retrieve_license_texts",
     data = MAVEN_ASSETS,
     main_class = "org.oppia.android.scripts.maven.RetrieveLicenseTextsKt",
-    visibility = ["//:oppia_api_visibility",],
+    visibility = ["//:oppia_api_visibility"],
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib"],
 )
 

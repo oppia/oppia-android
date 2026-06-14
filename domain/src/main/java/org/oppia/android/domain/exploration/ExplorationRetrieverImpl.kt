@@ -21,7 +21,8 @@ class ExplorationRetrieverImpl @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) : ExplorationRetriever {
   override suspend fun loadExploration(explorationId: String): Exploration {
     return if (loadLessonProtosFromAssets.value) {

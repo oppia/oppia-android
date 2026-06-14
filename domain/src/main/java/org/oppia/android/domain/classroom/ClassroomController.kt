@@ -23,12 +23,12 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -62,7 +62,8 @@ class ClassroomController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
 ) {
   /** Returns the list of [ClassroomSummary]s currently tracked by the app. */
   fun getClassroomList(profileId: LegacyProfileId): DataProvider<ClassroomList> {

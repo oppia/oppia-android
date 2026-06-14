@@ -28,8 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -901,7 +899,6 @@ class RevisionCardFragmentTest {
     )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
-
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

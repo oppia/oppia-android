@@ -34,21 +34,21 @@ def _download_google_services_json_impl(ctx):
         mnemonic = "DownloadGoogleServicesJson",
         progress_message = "Downloading google-services.json from Firebase",
         execution_requirements = {
-            "requires-network": "1",  # This build step cannot run without internet connectivity.
             "local": "1",  # Ensure the local 'firebase' command can be accessed.
+            "requires-network": "1",  # This build step cannot run without internet connectivity.
         },
     )
     return DefaultInfo(files = depset([output_file]))
 
 _download_google_services_json = rule(
     attrs = {
-        "project_id_flag": attr.label(
-            mandatory = True,
-        ),
         "app_id_flag": attr.label(
             mandatory = True,
         ),
         "output_file": attr.output(
+            mandatory = True,
+        ),
+        "project_id_flag": attr.label(
             mandatory = True,
         ),
     },
@@ -83,5 +83,5 @@ def prepare_google_services_json(name, developer_google_services_file, output_fi
             "//config:download_firebase_config_enabled": prod_file_name,
             "//conditions:default": developer_google_services_file,
         }),
-        out = output_file
+        out = output_file,
     )

@@ -51,8 +51,6 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -7112,7 +7110,6 @@ class StateFragmentTest {
   ): ClickableSpan? {
     return find { text in it.first }?.second
   }
-
 
   @Singleton
   @Component(

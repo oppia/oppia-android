@@ -15,7 +15,6 @@ kt_android_library(
     ],
 )
 
-
 kt_android_library(
     name = "impl",
     srcs = [
@@ -30,7 +29,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
-
 
 kt_android_library(
     name = "asset_prod_module",

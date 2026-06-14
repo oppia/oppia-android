@@ -140,7 +140,7 @@ def local_assets_library(
             '<manifest xmlns:android="http://schemas.android.com/apk/res/android"',
             '    package="org.oppia.android.domain.assets.%s">' % name,
             '    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="%d" />' % BUILD_SDK_VERSION,
-            '</manifest>',
+            "</manifest>",
         ],
     )
 

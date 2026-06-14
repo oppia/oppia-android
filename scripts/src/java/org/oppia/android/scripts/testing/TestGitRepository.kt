@@ -144,7 +144,8 @@ class TestGitRepository(
   }
 
   private fun executeGitCommand(
-    vararg arguments: String, inputLines: Sequence<String> = emptySequence()
+    vararg arguments: String,
+    inputLines: Sequence<String> = emptySequence()
   ): CommandResult {
     return commandExecutor.executeCommand(rootDirectory, "git", *arguments, inputLines = inputLines)
   }
@@ -153,7 +154,8 @@ class TestGitRepository(
     executeGitCommand(*arguments).takeIf { it.exitCode == 0 }
 
   private fun executeSuccessfulGitCommand(
-    vararg arguments: String, inputLines: Sequence<String> = emptySequence()
+    vararg arguments: String,
+    inputLines: Sequence<String> = emptySequence()
   ) = verifySuccessfulCommand(executeGitCommand(*arguments, inputLines = inputLines))
 
   private fun verifySuccessfulCommand(result: CommandResult) {

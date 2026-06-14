@@ -387,9 +387,9 @@ class BazelClientTest {
     val sourceContent =
       """
       package com.example
-      
+
       class AddNums {
-      
+
         companion object {
           fun sumNumbers(a: Int, b: Int): Any {
             return if (a == 0 && b == 0) {
@@ -405,16 +405,16 @@ class BazelClientTest {
     val testContent =
       """
       package com.example
-      
+
       import org.junit.Assert.assertEquals
       import org.junit.Test
-      
+
       class AddNumsTest {
-      
+
         @Test
         fun testSumNumbers() {
           assertEquals(AddNums.sumNumbers(0, 1), 1)
-          assertEquals(AddNums.sumNumbers(3, 4), 7)         
+          assertEquals(AddNums.sumNumbers(3, 4), 7)
           assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
         }
       }
@@ -467,9 +467,9 @@ class BazelClientTest {
     val sourceContent =
       """
       package com.example
-      
+
       class AddNums {
-      
+
         companion object {
           fun sumNumbers(a: Int, b: Int): Any {
             return if (a == 0 && b == 0) {
@@ -485,20 +485,20 @@ class BazelClientTest {
     val testContent =
       """
       package com.example
-      
+
       import org.junit.Assert.assertEquals
       import org.junit.Test
-      
+
       class AddNumsTest {
-      
+
         @Test
         fun testSumNumbers() {
           assertEquals(AddNums.sumNumbers(0, 1), 1)
           assertEquals(AddNums.sumNumbers(3, 4), 7)
         }
-        
+
         @Test
-        fun testBothNumbersAreZero() {        
+        fun testBothNumbersAreZero() {
           assertEquals(AddNums.sumNumbers(0, 0), "Both numbers are zero")
         }
       }
@@ -517,7 +517,7 @@ class BazelClientTest {
     testBuildFile.writeText(
       """
       load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-      
+
       kt_jvm_test(
           name = "AddNumsTest",
           srcs = ["AddNumsTest.kt"],
@@ -628,20 +628,23 @@ class BazelClientTest {
   @Test
   fun testRetrieveBazelInfo_withMockExecutor_returnsCorrectInfo() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = listOf(
-            "workspace: /tmp/test_workspace",
-            "execution_root: /tmp/test_workspace/bazel-out",
-            "output_base: /tmp/test_workspace/bazel-TestWorkspace",
-            "output_path: /tmp/test_workspace/bazel-out"
-          ),
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = listOf(
+          "workspace: /tmp/test_workspace",
+          "execution_root: /tmp/test_workspace/bazel-out",
+          "output_base: /tmp/test_workspace/bazel-TestWorkspace",
+          "output_path: /tmp/test_workspace/bazel-out"
+        ),
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
 
     val bazelInfo = bazelClient.retrieveBazelInfo()
 
@@ -729,7 +732,7 @@ class BazelClientTest {
     testBazelWorkspace.rootBuildFile.appendText(
       """
     load("@rules_jvm_external//:defs.bzl", "artifact")
-    
+
     kt_jvm_library(
         name = "mixed_deps_lib",
         srcs = ["MixedDepsLib.kt"],
@@ -779,7 +782,7 @@ class BazelClientTest {
     testBazelWorkspace.rootBuildFile.appendText(
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
-      
+
       kt_jvm_library(
           name = "LibD_lib",
           srcs = ["LibD.kt"],
@@ -820,7 +823,7 @@ class BazelClientTest {
     subpackageBuildFile.writeText(
       """
       load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-      
+
       kt_jvm_library(
           name = "sub_lib",
           srcs = ["SubLib.kt"],
@@ -852,15 +855,18 @@ class BazelClientTest {
       "external/maven/androidx_appcompat_appcompat-1.4.0.aar"
     )
 
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = mockDependencies,
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = mockDependencies,
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
 
     val dependencies = bazelClient.retrieveTargetModuleDependencies("//:test_target")
 
@@ -871,15 +877,18 @@ class BazelClientTest {
   fun testRetrieveTargetModuleDependencies_withEmptyResult_returnsEmptyList() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
 
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = listOf(),
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = listOf(),
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
 
     val dependencies = bazelClient.retrieveTargetModuleDependencies("//:empty_target")
 
@@ -891,15 +900,18 @@ class BazelClientTest {
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
     // circumstances where they occur, and the only way to guarantee this happens in the test
     // environment is to force the command output.
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = listOf(singleLine),
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = listOf(singleLine),
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
   }
 
   private fun createAndroidLibrary(artifactName: String, buildFile: File) {

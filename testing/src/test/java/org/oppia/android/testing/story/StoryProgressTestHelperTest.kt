@@ -26,7 +26,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -50,6 +49,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -1758,7 +1758,6 @@ class StoryProgressTestHelperTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
   }
 
   // TODO(#89): Move this to a common test application component.

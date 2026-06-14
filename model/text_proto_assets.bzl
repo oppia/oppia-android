@@ -81,7 +81,12 @@ _gen_binary_proto_from_text = rule(
 )
 
 def gen_binary_proto_from_text(
-    name, proto_type_name, input_file, output_file, proto_deps, visibility):
+        name,
+        proto_type_name,
+        input_file,
+        output_file,
+        proto_deps,
+        visibility):
     """
     Generates a binary proto from a text proto.
 

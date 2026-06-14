@@ -42,8 +42,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf

@@ -1,6 +1,5 @@
 package org.oppia.android.domain.exploration.testing
 
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -18,14 +17,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
@@ -203,7 +203,6 @@ class FakeExplorationRetrieverTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
   }
 
   // TODO(#89): Move this to a common test application component.

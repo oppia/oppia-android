@@ -20,7 +20,8 @@ import javax.inject.Inject
 class RevisionCardRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a [RevisionCard] given a subtopic ID in the specific topic, loaded from the filesystem.
