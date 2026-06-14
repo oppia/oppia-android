@@ -48,35 +48,67 @@ class StateGraph constructor(
   }
 
   /**
-   * Returns the number of checkpoints still remaining from [startStateName] to the terminal state
-   * along the shortest correct path, or null if this exploration doesn't support checkpoint
-   * progress from that state.
+   * Returns the minimum number of checkpoints still remaining from [startStateName] to the terminal
+   * state, or null if this exploration doesn't support checkpoint progress from that state. The
+   * count is the *minimum* because it follows the shortest correct path; straying onto a longer
+   * branch can pass through extra checkpoints, so callers should treat this as a lower bound.
    *
    * The start state itself is excluded because callers combine this with the learner's completed
    * checkpoint count at their current deck position. Any future checkpoint states and the terminal
    * state are included, so a learner at the terminal state has zero remaining checkpoints.
    *
-   * When a path is found, this also caches the remaining count for the other states on that path.
-   * This avoids running the same search again as the learner moves through those states.
+   * Caching is a dynamic-programming optimization. Because a suffix of a shortest path is itself a
+   * shortest path, finding the path from [startStateName] simultaneously determines the remaining
+   * count of every state along it, so the first cache miss caches all of them in a single backward
+   * pass. Callers query this once per navigation event as the learner advances along that same
+   * path, so every later query is a cache hit and the search never runs again. We deliberately stop
+   * there and never seed one path's walk from another path's cached suffix: equal-length shortest
+   * paths can pass through different checkpoints, so reusing a cached suffix could make the result
+   * depend on the order queries arrive in. Walking the concrete path each time keeps the count tied
+   * to the path actually taken.
    */
-  fun computeRemainingCheckpointCount(startStateName: String): Int? {
+  fun computeMinimumCheckpointCount(startStateName: String): Int? {
+    // Early return on a cache hit. This is the only entry point, so the worker below runs only on a
+    // genuine miss: either a direct first query for this state, or the first query for its path.
     if (remainingCheckpointCountCache.containsKey(startStateName)) {
       return remainingCheckpointCountCache[startStateName]
     }
-    // On success the path states (including the start) are already cached below; on a null result
-    // the start is cached here so the unsupported-exploration checks aren't repeated every query.
-    return computeAndCacheCheckpointCountsFrom(startStateName).also { remainingCheckpointCount ->
-      remainingCheckpointCountCache[startStateName] = remainingCheckpointCount
-    }
+    return computeAndCacheCheckpointCountsFrom(startStateName)
   }
 
   /**
-   * Computes the remaining checkpoint count from [startStateName]. It also caches the remaining
-   * count for each state on that path. Returns null when checkpoint progress can't be computed.
+   * Computes the minimum remaining checkpoint count from [startStateName], caching it and the
+   * count for every other state on the discovered path. Caches and returns null when checkpoint
+   * progress can't be computed, so the unsupported-exploration checks aren't repeated on later
+   * queries for the same start state.
    */
   private fun computeAndCacheCheckpointCountsFrom(startStateName: String): Int? {
-    // No checkpoint states means the indicator isn't supported. This is the common, expected case,
-    // so it returns quietly instead of logging a warning.
+    val mainPath = findMainPath(startStateName)
+    if (mainPath == null) {
+      remainingCheckpointCountCache[startStateName] = null
+      return null
+    }
+
+    // Walk backward from the terminal so each state gets the number of checkpoints after it. The
+    // terminal always counts as the final checkpoint, even though lesson data doesn't mark it.
+    var remainingCount = 0
+    for (index in mainPath.indices.reversed()) {
+      val stateName = mainPath[index]
+      remainingCheckpointCountCache[stateName] = remainingCount
+      val countsAsCheckpoint =
+        index == mainPath.lastIndex || stateGraph.getValue(stateName).isCheckpoint
+      if (countsAsCheckpoint) remainingCount++
+    }
+    return remainingCheckpointCountCache.getValue(startStateName)
+  }
+
+  /**
+   * Returns the shortest correct-answer path from [startStateName] to the single terminal state, or
+   * null when this exploration doesn't support checkpoint progress: it has no checkpoint
+   * states (the common, expected case, returned quietly), it doesn't have exactly one terminal
+   * state, or no correct-answer path reaches the terminal (the latter two are logged).
+   */
+  private fun findMainPath(startStateName: String): List<String>? {
     if (stateGraph.values.none { it.isCheckpoint }) return null
 
     // Requiring a single terminal state reduces this to a pathfind between two fixed points.
@@ -97,20 +129,8 @@ class StateGraph constructor(
         "Cannot compute checkpoint count: no correct-answer path from $startStateName to the" +
           " terminal state."
       )
-      return null
     }
-
-    // Walk backward from the terminal so each state gets the number of checkpoints after it. The
-    // terminal always counts as the final checkpoint, even though lesson data doesn't mark it.
-    var remainingCount = 0
-    for (index in mainPath.indices.reversed()) {
-      val stateName = mainPath[index]
-      remainingCheckpointCountCache[stateName] = remainingCount
-      val countsAsCheckpoint =
-        index == mainPath.lastIndex || stateGraph.getValue(stateName).isCheckpoint
-      if (countsAsCheckpoint) remainingCount++
-    }
-    return remainingCheckpointCountCache.getValue(startStateName)
+    return mainPath
   }
 
   /**

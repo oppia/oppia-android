@@ -54,7 +54,7 @@ class StateGraphTest {
   }
 
   @Test
-  fun testRemainingCheckpointCount_fromInitial_countsIntermediatesPlusTerminal() {
+  fun testMinimumCheckpointCount_fromInitial_countsIntermediatesPlusTerminal() {
     // init -> s1(checkpoint) -> s2(checkpoint) -> s3 -> end. From init the remaining count is the
     // two future checkpoints plus the terminal (init is excluded as completed): 2 + 1 = 3.
     val graph = createStateGraph(
@@ -65,11 +65,11 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(3)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(3)
   }
 
   @Test
-  fun testRemainingCheckpointCount_continueCardInPath_isTraversedAndCounted() {
+  fun testMinimumCheckpointCount_continueCardInPath_isTraversedAndCounted() {
     // A Continue card has no answer groups and only moves forward through its default outcome. The
     // path init -> continueCard(checkpoint) -> end must still be found; from init the remaining
     // count is the future checkpoint plus the terminal: 1 + 1 = 2.
@@ -79,11 +79,11 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testRemainingCheckpointCount_noCheckpointStates_returnsNull() {
+  fun testMinimumCheckpointCount_noCheckpointStates_returnsNull() {
     // No state is marked as a checkpoint, so this exploration doesn't support the progress indicator.
     val graph = createStateGraph(
       createQuestionState(name = "init", correctDestStateName = "middle"),
@@ -91,11 +91,11 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
+    assertThat(graph.computeMinimumCheckpointCount("init")).isNull()
   }
 
   @Test
-  fun testRemainingCheckpointCount_checkpointOnInitialAndTerminal_doesNotDoubleCount() {
+  fun testMinimumCheckpointCount_checkpointOnInitialAndTerminal_doesNotDoubleCount() {
     // The start is excluded (already completed) and the terminal is always counted once, so marking
     // them as checkpoints must not change the count. Only "middle" is a future checkpoint, so the
     // remaining count from init is 1 + 1 = 2 (not 3).
@@ -105,11 +105,11 @@ class StateGraphTest {
       createTerminalState(name = "end", isCheckpoint = true)
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testRemainingCheckpointCount_branchesReconverge_usesShortestPath() {
+  fun testMinimumCheckpointCount_branchesReconverge_usesShortestPath() {
     // "init" has two correct answers: a direct one to "join" and a longer detour through "detour".
     // The shortest path init -> join -> end is used, so from init only "join" is a future
     // checkpoint: 1 + 1 = 2.
@@ -124,11 +124,11 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(2)
   }
 
   @Test
-  fun testRemainingCheckpointCount_fromInitialState_excludesAlreadyCompletedInitialState() {
+  fun testMinimumCheckpointCount_fromInitialState_excludesAlreadyCompletedInitialState() {
     // init -> s1(checkpoint) -> s2(checkpoint) -> end. The initial state is already counted by
     // StateDeck, so the remaining count only includes the two future checkpoints and the terminal.
     val graph = createStateGraph(
@@ -138,11 +138,11 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(3)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(3)
   }
 
   @Test
-  fun testRemainingCheckpointCount_fromBranchWithExtraCheckpoints_countsBackToMainPath() {
+  fun testMinimumCheckpointCount_fromBranchWithExtraCheckpoints_countsBackToMainPath() {
     // The main path is init -> join(checkpoint) -> end, so the remaining count from init is 2
     // (join + terminal). If the learner has instead reached detour(checkpoint), the remaining path
     // detour -> review(checkpoint) -> join(checkpoint) -> end gives 3. This lets callers compute
@@ -155,22 +155,22 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isEqualTo(2)
-    assertThat(graph.computeRemainingCheckpointCount("detour")).isEqualTo(3)
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(2)
+    assertThat(graph.computeMinimumCheckpointCount("detour")).isEqualTo(3)
   }
 
   @Test
-  fun testRemainingCheckpointCount_atTerminalState_isZero() {
+  fun testMinimumCheckpointCount_atTerminalState_isZero() {
     val graph = createStateGraph(
       createQuestionState(name = "init", correctDestStateName = "end", isCheckpoint = true),
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("end")).isEqualTo(0)
+    assertThat(graph.computeMinimumCheckpointCount("end")).isEqualTo(0)
   }
 
   @Test
-  fun testRemainingCheckpointCount_multipleTerminalStates_returnsNull() {
+  fun testMinimumCheckpointCount_multipleTerminalStates_returnsNull() {
     // More than one terminal state means the exploration can't be reduced to a single start-to-end
     // path, so the count is null (and a warning is logged).
     val graph = createStateGraph(
@@ -179,11 +179,11 @@ class StateGraphTest {
       createTerminalState(name = "end2")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
+    assertThat(graph.computeMinimumCheckpointCount("init")).isNull()
   }
 
   @Test
-  fun testRemainingCheckpointCount_noCorrectPathToTerminal_returnsNull() {
+  fun testMinimumCheckpointCount_noCorrectPathToTerminal_returnsNull() {
     // The only correct answer from "init" loops to a dead-end that never reaches the terminal state,
     // so there's no main path and the count is null (and a warning is logged).
     val graph = createStateGraph(
@@ -192,7 +192,7 @@ class StateGraphTest {
       createTerminalState(name = "end")
     )
 
-    assertThat(graph.computeRemainingCheckpointCount("init")).isNull()
+    assertThat(graph.computeMinimumCheckpointCount("init")).isNull()
   }
 
   @Test

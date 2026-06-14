@@ -1162,7 +1162,7 @@ class ExplorationProgressController @Inject constructor(
     val completedCheckpointCount =
       explorationProgress.stateDeck.computeCompletedCheckpointCount()
     val remainingCheckpointCount =
-      explorationProgress.stateGraph.computeRemainingCheckpointCount(
+      explorationProgress.stateGraph.computeMinimumCheckpointCount(
         explorationProgress.stateDeck.getCurrentState().name
       ) ?: return null
     return completedCheckpointCount + remainingCheckpointCount
