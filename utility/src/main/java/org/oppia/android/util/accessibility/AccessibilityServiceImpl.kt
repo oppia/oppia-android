@@ -17,6 +17,11 @@ class AccessibilityServiceImpl @Inject constructor(
     return accessibilityManager.isEnabled
   }
 
+  // TODO : Replace deprecated View.announceForAccessibility() with a direct
+  //  AccessibilityManager.sendAccessibilityEvent(TYPE_ANNOUNCEMENT) call.
+  //  Suppressed temporarily to unblock the Android 16 (SDK 36) target upgrade.
+
+  @Suppress("DEPRECATION")
   override fun announceForAccessibilityForView(view: View, text: CharSequence) {
     view.announceForAccessibility(text)
   }

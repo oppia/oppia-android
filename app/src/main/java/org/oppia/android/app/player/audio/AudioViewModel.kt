@@ -180,7 +180,9 @@ class AudioViewModel @Inject constructor(
 
     if (languageCodeForDataSource != null) {
       // TODO(#3791): Remove this dependency.
-      val locale = Locale(languageCodeForDataSource)
+      val locale = Locale.Builder()
+        .setLanguage(languageCodeForDataSource)
+        .build()
       selectedLanguageName.set(locale.getDisplayLanguage(locale))
 
       audioPlayerController.changeDataSource(
