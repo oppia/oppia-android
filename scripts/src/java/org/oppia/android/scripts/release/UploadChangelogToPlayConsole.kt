@@ -46,17 +46,31 @@ fun main(args: Array<String>) {
       "Expected at config/changelogs/$version.md inside workspace root."
   }
 
+  val localNotes = changelogFile.readText().trim()
+
   println("=== Upload Changelog to Play Console ===")
   println("  Package  : $packageName")
   println("  Version  : $version")
   println("  Changelog: ${changelogFile.absolutePath}")
+  println("  Notes    : ${localNotes.take(80)}${if (localNotes.length > 80) "..." else ""}")
   println()
 
-  // TODO(#PR1.4): Uncomment once PR 1.4 merges.
+  // TODO(#PR1.4-ext): obtainAccessToken and GooglePlayConsoleClient are from PR 1.4.
+  // TODO(#PR1.4-ext): PlayConsoleClient.getTrackReleaseNotes(packageName, track) must be added
+  //     to the PlayConsoleClient interface in PR 1.4 so that this script can fetch the currently
+  //     deployed release notes from the API for diff detection.
+  //
   // val accessToken = obtainAccessToken(gcpProjectId)
   // val client = GooglePlayConsoleClient(accessToken)
   // val liveTracks = auditLiveTracks(client, packageName)
-  // TODO: detect changelog diff and upload (tasks 2 & 3)
+  //
+  // for ((track, releases) in liveTracks) {
+  //   val deployedNotes = client.getTrackReleaseNotes(packageName, track)["en-US"].orEmpty()
+  //   if (detectChangelogDiff(localNotes, deployedNotes)) {
+  //     val versionCode = releases.first().versionCodes.max()
+  //     uploadChangelogToTrack(client, packageName, track, versionCode, mapOf("en-US" to localNotes))
+  //   }
+  // }
 }
 
 /**
@@ -101,8 +115,87 @@ fun auditLiveTracks(
   return result
 }
 
+/**
+ * Determines whether the Play Console release notes for a track need to be updated.
+ *
+ * Compares [localNotes] (read from `config/changelogs/`) against [deployedNotes] (fetched from
+ * the Play Developer API). Both are trimmed before comparison so trailing whitespace and newlines
+ * do not trigger spurious updates.
+ *
+ * @param localNotes the changelog content from the repository (`config/changelogs/<version>.md`)
+ * @param deployedNotes the `en-US` release notes currently live on the Play Console track
+ * @return `true` if the notes differ and an upload should be performed; `false` if they are
+ *     already in sync
+ */
+fun detectChangelogDiff(localNotes: String, deployedNotes: String): Boolean {
+  val trimmedLocal = localNotes.trim()
+  val trimmedDeployed = deployedNotes.trim()
+
+  return if (trimmedLocal == trimmedDeployed) {
+    println("Changelog is already up to date on this track — no upload needed.")
+    false
+  } else {
+    val deployedSnippet = trimmedDeployed.take(60) + if (trimmedDeployed.length > 60) "..." else ""
+    val localSnippet = trimmedLocal.take(60) + if (trimmedLocal.length > 60) "..." else ""
+    println(
+      "Changelog diff detected:" +
+        "\n  deployed : $deployedSnippet" +
+        "\n  local    : $localSnippet"
+    )
+    true
+  }
+}
+
+/**
+ * Uploads updated release notes to a live Play Console track within a new edit session.
+ *
+ * Creates a new edit, updates the release notes for the highest live version code on [track], and
+ * commits the edit. This is a *changelog-only* update — the binary itself is not changed.
+ *
+ * **Precondition:** [liveTracks] must contain [track] as a key (i.e., the track must have at
+ * least one live release). Call [auditLiveTracks] first and only call this function for tracks
+ * present in its result.
+ *
+ * @param client the [PlayConsoleClient] used for all API calls
+ * @param packageName the application package name (e.g. `"org.oppia.android"`)
+ * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
+ * @param versionCode the version code of the live release to attach the updated notes to
+ * @param newNotes map of BCP-47 language codes to updated release notes text (max 500 chars each);
+ *     must contain at least an `"en-US"` entry
+ * @throws IllegalStateException if [newNotes] is empty or has no `"en-US"` entry
+ */
+fun uploadChangelogToTrack(
+  client: PlayConsoleClient,
+  packageName: String,
+  track: String,
+  versionCode: Long,
+  newNotes: Map<String, String>
+) {
+  require(newNotes.containsKey("en-US")) {
+    "newNotes must contain an 'en-US' entry. Got keys: ${newNotes.keys}"
+  }
+  require(newNotes.values.all { it.length <= MAX_RELEASE_NOTES_LENGTH }) {
+    "Release notes must not exceed $MAX_RELEASE_NOTES_LENGTH characters. " +
+      "Longest entry: ${newNotes.values.maxOf { it.length }} chars."
+  }
+
+  println("Uploading updated changelog to track '$track' (version code: $versionCode)...")
+
+  val editId = client.createEdit(packageName)
+  println("  Edit session: $editId")
+
+  client.setTrackRelease(packageName, editId, track, versionCode, newNotes)
+  println("  Track release notes updated.")
+
+  client.commitEdit(packageName, editId)
+  println("  Edit committed. Track '$track' release notes are now live.")
+}
+
 /** Standard Play Console tracks audited by this script. */
 private val AUDITED_TRACKS = listOf("alpha", "beta", "production")
 
 /** Release statuses that indicate a build is live (visible to users). */
 private val LIVE_STATUSES = setOf("completed", "inProgress")
+
+/** Maximum length of release notes accepted by the Play Developer API. */
+private const val MAX_RELEASE_NOTES_LENGTH = 500
