@@ -76,7 +76,9 @@ fun main(args: Array<String>) {
 
   val accessToken = obtainAccessToken(gcpProjectId)
   val client = GooglePlayConsoleClient(accessToken)
-  runUpload(client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track, rolloutFraction)
+  runUpload(
+    client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track, rolloutFraction
+  )
 }
 
 /**
@@ -126,7 +128,9 @@ fun runUpload(
   println("Version inversion check passed.\n")
 
   val releaseNotes = extractReleaseNotes(workspaceRoot, majorMinorVersion, flavor)
-  client.setTrackRelease(PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes)
+  client.setTrackRelease(
+    PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes
+  )
   println("Track '$track' updated.")
 
   client.commitEdit(PACKAGE_NAME, editId)

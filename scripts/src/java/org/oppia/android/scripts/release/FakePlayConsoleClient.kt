@@ -63,7 +63,9 @@ class FakePlayConsoleClient : PlayConsoleClient {
     releaseNotes: Map<String, String>
   ) {
     maybeFailCall("setTrackRelease")
-    trackUpdates.add(TrackUpdate(packageName, editId, track, versionCode, rolloutFraction, releaseNotes))
+    trackUpdates.add(
+      TrackUpdate(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
+    )
   }
 
   override fun commitEdit(packageName: String, editId: String) {

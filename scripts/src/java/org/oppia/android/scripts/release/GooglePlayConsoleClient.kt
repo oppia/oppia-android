@@ -119,7 +119,8 @@ class GooglePlayConsoleClient(
     // explicit userFraction for a staged rollout. Including userFraction on a "completed" release
     // causes an API error, so it is intentionally omitted when rolling out to 100%.
     val status = if (rolloutFraction >= 1.0) "completed" else "inProgress"
-    val userFractionField = if (rolloutFraction < 1.0) ",\n          \"userFraction\": $rolloutFraction" else ""
+    val userFractionField =
+      if (rolloutFraction < 1.0) ",\n          \"userFraction\": $rolloutFraction" else ""
     val trackUpdateJson =
       """
       {
