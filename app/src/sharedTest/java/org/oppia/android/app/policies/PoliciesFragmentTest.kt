@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.view.Gravity
+import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -170,6 +172,24 @@ class PoliciesFragmentTest {
           .isEqualTo(
             "Please visit this page for the latest version of this privacy policy."
           )
+      }
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_policyTextViews_useLtrDirectionAndStartGravity() {
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
+        val policyDescriptionTextView: TextView =
+          activity.findViewById(R.id.policy_description_text_view)
+        val policyWebLinkTextView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
+
+        assertThat(policyDescriptionTextView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+        assertThat(policyDescriptionTextView.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+          .isEqualTo(Gravity.LEFT)
+        assertThat(policyWebLinkTextView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+        assertThat(policyWebLinkTextView.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+          .isEqualTo(Gravity.LEFT)
       }
     }
   }

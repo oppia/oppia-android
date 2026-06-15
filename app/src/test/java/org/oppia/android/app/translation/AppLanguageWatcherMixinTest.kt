@@ -28,6 +28,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -145,7 +146,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_noAppLanguageChange_doesNothing() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(ForcedActivityLanguageMode.USE_APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       // Initializing without anything changing should result in no changes to the locale or activity.
@@ -159,7 +160,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_localeIsUnchanged() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(ForcedActivityLanguageMode.USE_APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(ENGLISH)
@@ -174,7 +175,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_newLanguage_updatesLocale() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(ForcedActivityLanguageMode.USE_APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -189,7 +190,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_doesNotRecreateActivity() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(ForcedActivityLanguageMode.USE_APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(ENGLISH)
@@ -203,7 +204,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_newLanguage_recreatesActivity() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(ForcedActivityLanguageMode.USE_APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -217,7 +218,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withShouldUseSystemLanguage_initializesSystemLanguage() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      mixin.initialize(ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -230,9 +231,25 @@ class AppLanguageWatcherMixinTest {
   }
 
   @Test
+  fun testMixin_initialized_withShouldUseEnglish_initializesEnglishAndIgnoresAppLanguageChanges() {
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(ForcedActivityLanguageMode.USE_ENGLISH)
+      testCoroutineDispatchers.runCurrent()
+
+      updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
+
+      // English should remain the selected locale even when app language is changed.
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+    }
+  }
+
+  @Test
   fun testMixin_initialized_noProfileLoggedIn_initializesSystemLanguage() {
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      mixin.initialize(ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -242,6 +259,16 @@ class AppLanguageWatcherMixinTest {
       val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
       assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
     }
+  }
+
+  @Test
+  fun testForcedActivityLanguageMode_values_containsExpectedModes() {
+    assertThat(ForcedActivityLanguageMode.values().asList()).containsAtLeast(
+      ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
+      ForcedActivityLanguageMode.USE_APP_LANGUAGE,
+      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE,
+      ForcedActivityLanguageMode.USE_ENGLISH
+    )
   }
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
