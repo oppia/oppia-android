@@ -59,10 +59,11 @@ class FakePlayConsoleClient : PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
+    rolloutFraction: Double,
     releaseNotes: Map<String, String>
   ) {
     maybeFailCall("setTrackRelease")
-    trackUpdates.add(TrackUpdate(packageName, editId, track, versionCode, releaseNotes))
+    trackUpdates.add(TrackUpdate(packageName, editId, track, versionCode, rolloutFraction, releaseNotes))
   }
 
   override fun commitEdit(packageName: String, editId: String) {
@@ -115,6 +116,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
    * @property editId the edit session ID
    * @property track the Play Console track
    * @property versionCode the version code assigned to the track
+   * @property rolloutFraction the staged rollout fraction (1.0 = full rollout)
    * @property releaseNotes the release notes map (language code → text)
    */
   data class TrackUpdate(
@@ -122,6 +124,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     val editId: String,
     val track: String,
     val versionCode: Long,
+    val rolloutFraction: Double,
     val releaseNotes: Map<String, String>
   )
 }

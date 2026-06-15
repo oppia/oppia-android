@@ -277,7 +277,8 @@ class UploadBinaryToPlayConsoleTest {
       versionName = "0.17-rc01-alpha",
       majorMinorVersion = "0.17",
       flavor = "alpha",
-      track = "alpha"
+      track = "alpha",
+      rolloutFraction = 1.0
     )
 
     assertThat(fake.createdEdits).hasSize(1)
@@ -299,7 +300,8 @@ class UploadBinaryToPlayConsoleTest {
       versionName = "0.17-rc01-alpha",
       majorMinorVersion = "0.17",
       flavor = "alpha",
-      track = "alpha"
+      track = "alpha",
+      rolloutFraction = 1.0
     )
 
     val (_, _, path) = fake.uploadedBundles.first()
@@ -320,7 +322,8 @@ class UploadBinaryToPlayConsoleTest {
       versionName = "0.17-rc01-alpha",
       majorMinorVersion = "0.17",
       flavor = "alpha",
-      track = "alpha"
+      track = "alpha",
+      rolloutFraction = 1.0
     )
 
     val update = fake.trackUpdates.first()
@@ -341,7 +344,8 @@ class UploadBinaryToPlayConsoleTest {
       versionName = "0.17-rc01-alpha",
       majorMinorVersion = "0.17",
       flavor = "alpha",
-      track = "alpha"
+      track = "alpha",
+      rolloutFraction = 1.0
     )
 
     val update = fake.trackUpdates.first()
@@ -366,7 +370,8 @@ class UploadBinaryToPlayConsoleTest {
         versionName = "0.17-rc01-alpha",
         majorMinorVersion = "0.17",
         flavor = "alpha",
-        track = "alpha"
+        track = "alpha",
+        rolloutFraction = 1.0
       )
     }
 
@@ -388,7 +393,8 @@ class UploadBinaryToPlayConsoleTest {
         versionName = "0.17-rc01-alpha",
         majorMinorVersion = "0.17",
         flavor = "alpha",
-        track = "alpha"
+        track = "alpha",
+        rolloutFraction = 1.0
       )
     }
 
@@ -417,13 +423,58 @@ class UploadBinaryToPlayConsoleTest {
         versionName = "0.17-rc01-alpha",
         majorMinorVersion = "0.17",
         flavor = "alpha",
-        track = "alpha"
+        track = "alpha",
+        rolloutFraction = 1.0
       )
     }
 
     // AAB was uploaded but the edit was never committed.
     assertThat(fake.uploadedBundles).hasSize(1)
     assertThat(fake.committedEdits).isEmpty()
+  }
+
+  // ---------------------------------------------------------------------------
+  // runUpload — rollout fraction forwarding
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testRunUpload_fullRollout_recordsRolloutFractionAsOne() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha",
+      rolloutFraction = 1.0
+    )
+
+    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(1.0)
+  }
+
+  @Test
+  fun testRunUpload_stagedRollout_recordsCorrectRolloutFraction() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      versionName = "0.17-rc01-alpha",
+      majorMinorVersion = "0.17",
+      flavor = "alpha",
+      track = "alpha",
+      rolloutFraction = 0.25
+    )
+
+    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(0.25)
   }
 
   // ---------------------------------------------------------------------------

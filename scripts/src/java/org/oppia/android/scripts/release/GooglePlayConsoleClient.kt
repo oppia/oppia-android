@@ -109,17 +109,23 @@ class GooglePlayConsoleClient(
     editId: String,
     track: String,
     versionCode: Long,
+    rolloutFraction: Double,
     releaseNotes: Map<String, String>
   ) {
     val releaseNotesJson = releaseNotes.entries.joinToString(",") { (lang, text) ->
       """{"language":"$lang","text":"${text.replace("\"", "\\\"")}"}"""
     }
+    // The Play API uses status="completed" for a full rollout and status="inProgress" with an
+    // explicit userFraction for a staged rollout. Including userFraction on a "completed" release
+    // causes an API error, so it is intentionally omitted when rolling out to 100%.
+    val status = if (rolloutFraction >= 1.0) "completed" else "inProgress"
+    val userFractionField = if (rolloutFraction < 1.0) ",\n          \"userFraction\": $rolloutFraction" else ""
     val trackUpdateJson =
       """
       {
         "releases": [{
           "versionCodes": ["$versionCode"],
-          "status": "completed",
+          "status": "$status"$userFractionField,
           "releaseNotes": [$releaseNotesJson]
         }]
       }

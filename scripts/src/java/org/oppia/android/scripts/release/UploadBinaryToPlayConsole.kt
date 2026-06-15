@@ -76,7 +76,7 @@ fun main(args: Array<String>) {
 
   val accessToken = obtainAccessToken(gcpProjectId)
   val client = GooglePlayConsoleClient(accessToken)
-  runUpload(client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track)
+  runUpload(client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track, rolloutFraction)
 }
 
 /**
@@ -91,6 +91,8 @@ fun main(args: Array<String>) {
  * @param majorMinorVersion the `major.minor` portion used for changelog file lookup
  * @param flavor the build flavor ("alpha", "beta", or "ga")
  * @param track the Play Console track ("alpha", "beta", or "production")
+ * @param rolloutFraction the fraction of users to roll out to, between 0.0 and 1.0 inclusive.
+ *     Passed directly to [PlayConsoleClient.setTrackRelease].
  */
 fun runUpload(
   client: PlayConsoleClient,
@@ -99,7 +101,8 @@ fun runUpload(
   versionName: String,
   majorMinorVersion: String,
   flavor: String,
-  track: String
+  track: String,
+  rolloutFraction: Double
 ) {
   // Pre-upload checks that don't require the version code.
   println("Running pre-upload precondition checks...")
@@ -123,7 +126,7 @@ fun runUpload(
   println("Version inversion check passed.\n")
 
   val releaseNotes = extractReleaseNotes(workspaceRoot, majorMinorVersion, flavor)
-  client.setTrackRelease(PACKAGE_NAME, editId, track, uploadedVersionCode, releaseNotes)
+  client.setTrackRelease(PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes)
   println("Track '$track' updated.")
 
   client.commitEdit(PACKAGE_NAME, editId)

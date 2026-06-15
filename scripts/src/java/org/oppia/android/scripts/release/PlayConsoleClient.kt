@@ -50,6 +50,9 @@ interface PlayConsoleClient {
    * @param editId the active edit session ID returned by [createEdit]
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
    * @param versionCode the version code of the binary to assign, as returned by [uploadAab]
+   * @param rolloutFraction the fraction of users to roll out to, between 0.0 and 1.0 inclusive.
+   *     A value of 1.0 means a full rollout (status: "completed"); any value below 1.0 produces a
+   *     staged rollout (status: "inProgress") with the given userFraction in the Play API payload.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
    */
   fun setTrackRelease(
@@ -57,6 +60,7 @@ interface PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
+    rolloutFraction: Double,
     releaseNotes: Map<String, String>
   )
 
