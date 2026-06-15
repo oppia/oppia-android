@@ -6,6 +6,7 @@
 - [Understanding Android Lint](#understanding-android-lint)
 - [Why is Android Lint Important?](#why-is-android-lint-important)
 - [How to use the Android Lint tool?](#how-to-use-the-android-lint-tool)
+    - [Lint Execution Modes](#lint-execution-modes)
     - [Understanding the Lint Report](#understanding-the-lint-report)
         - [Grouped by Severity](#grouped-by-severity)
         - [Grouped by File Path](#grouped-by-file-path)
@@ -15,6 +16,7 @@
 - [False Positive Detection](#false-positive-detection)
 - [Exemption File Management](#exemption-file-management)
 - [Unused Enum Mappings Detection](#unused-enum-mappings-detection)
+- [Check Catalog Maintenance](#check-catalog-maintenance)
 - [CI Integration and Static Checks](#ci-integration-and-static-checks)
 - [Troubleshooting and FAQ](#troubleshooting-and-faq)
 - [Limitations of the Android Lint tool](#limitations-of-the-android-lint-tool)
@@ -80,19 +82,56 @@ Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-and
 ### Run Android Lint Analysis
 
 ```sh
-bazel run //scripts:android_lint_check -- <path_to_repository_root> [path_to_proto_binary] [--group_by_severity] [--processTimeout=<minutes>]
+bazel run //scripts:android_lint_check -- <path_to_repository_root> [--mode=<mode>] [--proto=<path>] [--checks=<check_ids>] [--group_by_severity] [--processTimeout=<minutes>]
 ```
-Example: `bazel run //scripts:android_lint_check -- $(pwd)`
+Example: `bazel run //scripts:android_lint_check -- $(pwd) --mode=fast`
 
 **Arguments:**
 - `<path_to_repository_root>`: The root path of the repository (required)
+- `[--mode=<mode>]`: Execution mode — `fast` (default), `full`, `list-checks`, or `check-script-consistency` (see [Lint Execution Modes](#lint-execution-modes))
 - `[--proto=<path_to_proto_binary>]`: Optional relative path to the exemption .pb file (defaults to `scripts/assets/android_lint_exemptions.pb`)
+- `[--checks=<check_ids>]`: Optional comma-separated list of check IDs to run (e.g. `HardcodedText,ByteOrderMark`). When specified, only these checks are run.
 - `[--group_by_severity]`: Optional flag to group issues by severity level
 - `[--processTimeout=<minutes>]`: Optional process timeout in minutes (defaults to 10 minutes)
 
-Example: `bazel run //scripts:android_lint_check -- $(pwd) --proto=scripts/assets/android_lint_exemptions.pb --group_by_severity --processTimeout=20`
+Example: `bazel run //scripts:android_lint_check -- $(pwd) --mode=full --proto=scripts/assets/android_lint_exemptions.pb --group_by_severity --processTimeout=20`
 
 The script can also be analyzed through the **Static Checks CI workflow** for automated code quality monitoring in continuous integration.
+
+## Lint Execution Modes
+
+The lint script supports four execution modes, selected via `--mode=<mode>`:
+
+### `--mode=fast` (default)
+
+Incrementally analyzes only the files changed relative to `develop`. This is the recommended mode for local development because it is significantly faster than a full run.
+
+- **What runs**: Checks that operate on individual source files (`checksForIncrementalSources`) and checks that operate only on XML/resources (`checksNotNeedingSources`). Cross-file and classpath-dependent checks are disabled.
+- **Changed files**: Detected automatically via `git diff --name-only develop` — only `.kt` and `.java` files are passed to the lint project description.
+- **Typical time**: ~1 minute (vs. ~4–5 minutes for full mode).
+- **Use when**: Iterating on a feature or fix and you want fast feedback.
+
+### `--mode=full`
+
+Runs the complete suite of checks against all source files in the project.
+
+- **What runs**: All checks, including cross-file and classpath-dependent checks (`checksRequiringFullProject`). Gradle-specific checks are included but produce no findings since there are no `.gradle` files in this project.
+- **Use when**: Performing a final check before opening a PR, or investigating a potential cross-file issue that fast mode won't detect.
+- **CI**: The CI static checks workflow always runs in full mode.
+
+### `--mode=list-checks`
+
+Prints the list of all lint checks that would be enabled for the current project and exits without performing any analysis. Useful for debugging which checks are active.
+
+### `--mode=check-script-consistency`
+
+Compares the `LintCheckCatalog` (the list of all checks tracked by the script) against the checks actually registered in the lint JAR. If the two sets differ — for example after a lint version upgrade adds or removes checks — this mode fails with a detailed diff. Run this mode after any lint version bump to catch catalog drift early.
+
+```sh
+bazel run //scripts:android_lint_check -- $(pwd) --mode=check-script-consistency
+```
+
+If the check fails, update `LintCheckCatalog.kt` to add or remove the reported check IDs and re-run until the mode passes. See [Check Catalog Maintenance](#check-catalog-maintenance) for detailed steps.
 
 ## Understanding the Lint Report
 
@@ -369,6 +408,42 @@ To resolve unused enum mappings:
 
 **Note**: The `LintError` issue ID is exempt from unused enum detection as it's used for internal lint tool errors.
 
+# Check Catalog Maintenance
+
+The `LintCheckCatalog` in `scripts/src/java/org/oppia/android/scripts/lint/LintCheckCatalog.kt` tracks every check known to the version of Android Lint used by this project. Every check is assigned to exactly one of four buckets:
+
+| Bucket | Variable | When used |
+|---|---|---|
+| Gradle-specific | `gradleChecksToIgnore` | Always disabled — these checks require Gradle files which don't exist in this Bazel project |
+| No sources needed | `checksNotNeedingSources` | Fast mode: these run on XML/resource/manifest files without any Kotlin/Java source context |
+| Incremental sources | `checksForIncrementalSources` | Fast mode: these run on only the changed source files |
+| Full project | `checksRequiringFullProject` | Full mode only: cross-file checks and classpath-dependent checks |
+
+## When to update the catalog
+
+Update `LintCheckCatalog.kt` whenever:
+- Android Lint is upgraded to a new version (checks may be added, renamed, or removed)
+- The `check-script-consistency` mode reports a difference between the catalog and the live registry
+- You manually discover that a check is misclassified (e.g. it produces false positives in fast mode)
+
+## How to update the catalog
+
+1. Run `check-script-consistency` to see exactly which checks are new or missing:
+   ```sh
+   bazel run //scripts:android_lint_check -- $(pwd) --mode=check-script-consistency
+   ```
+2. For each **new** check reported: research the lint detector to determine which bucket it belongs to, then add it to the appropriate set in `LintCheckCatalog.kt`.
+3. For each **removed** check reported: delete it from whichever bucket it was in.
+4. Re-run `check-script-consistency` until it passes.
+5. Update `LintCheckCatalogTest.kt` if the new check should have explicit test coverage (e.g. it's in `checksRequiringFullProject` and warrants a named assertion).
+
+## Bucket classification rules
+
+- **`checksNotNeedingSources`** — The check only inspects XML files, resources, drawables, icons, or manifest content. It does not require any Kotlin/Java source context to produce correct findings.
+- **`checksForIncrementalSources`** — The check inspects Kotlin/Java source files on a per-file basis. It must not require cross-file analysis (class hierarchy resolution, global symbol lookup, etc.) to produce correct results on a partial file set.
+- **`checksRequiringFullProject`** — The check resolves class hierarchies, verifies manifest-to-source consistency, or otherwise requires the complete project definition to avoid false positives or missed findings.
+- **`gradleChecksToIgnore`** — The check requires Gradle files. Since this project uses Bazel, these files don't exist and the check can never fire.
+
 # CI Integration and Static Checks
 
 The Android Lint Analysis Tool is fully integrated into the Oppia Android project's continuous integration pipeline through the **Static Checks CI workflow**. This integration ensures that code quality is automatically monitored for every pull request and commit.
@@ -469,7 +544,7 @@ Both conditions will cause the script to fail and must be resolved.
 
 1. **Report Accuracy**: The lint reports are sensitive to changes in the `LintProjectDescription` utility which can lead to inaccuracies compared to the Gradle version of the lint tool.
 
-2. **Execution Time**: The script scans the entire codebase for issues and takes up to 8-10 minutes for execution due to the comprehensive project-level analysis across all layers.
+2. **Execution Time**: Full mode (`--mode=full`) scans the entire codebase and typically takes 4–5 minutes. Use `--mode=fast` (the default) for local development — it analyzes only changed files and typically completes in under 1 minute.
 
 3. **Limited Issue Coverage**: The script exemption system currently supports only a predefined set of issue categories through the `issueIdMapping`. Unknown issue IDs are filtered out and not reported. While this may seem limiting, it helps maintain better oversight of issues by ensuring all issue types are explicitly handled.
 
