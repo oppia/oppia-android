@@ -369,6 +369,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/CopyIdMaterialButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
+    "src/main/java/org/oppia/android/app/customview/LessonProgressIndicatorView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
