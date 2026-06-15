@@ -135,6 +135,7 @@ class FakePlayConsoleClientTest {
       editId = "edit-1",
       track = "alpha",
       versionCode = 300L,
+      rolloutFraction = 1.0,
       releaseNotes = mapOf("en-US" to "Release notes")
     )
 
