@@ -11,11 +11,23 @@ def _download_google_services_json_impl(ctx):
     project_id = ctx.attr.project_id_flag[BuildSettingInfo].value
     app_id = ctx.attr.app_id_flag[BuildSettingInfo].value
 
-    # Enforce that the Firebase App ID is provided.
-    if not app_id:
-        fail("\n\nERROR: Firebase App ID is required for downloading production google-services.json.\n" +
-             "Please specify it in the build command using:\n" +
-             "  --//config:firebase_app_id=<your_firebase_app_id>\n\n")
+    # Enforce that the Firebase App ID and Project ID are provided at execution time.
+    if not app_id or not project_id:
+        fail_command = """
+        echo "ERROR: Need Firebase app & project IDs for downloading prod google-services.json."
+        echo ""
+        echo "Please specify them in your build command:"
+        echo "  --//config:firebase_app_id=<your_firebase_app_id>"
+        echo "  --//config:firebase_project_id=<your_firebase_project_id>"
+        exit 1
+        """
+        ctx.actions.run_shell(
+            outputs = [output_file],
+            command = fail_command,
+            mnemonic = "FailMissingFirebaseConfig",
+            progress_message = "Failing due to missing Firebase configuration",
+        )
+        return DefaultInfo(files = depset([output_file]))
 
     command = """
     firebase apps:sdkconfig ANDROID "{app_id}" --project "{project_id}" --out "{output_file}" --non-interactive || exit 255

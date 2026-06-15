@@ -24,16 +24,26 @@ _COMMON_ATTRS = {
     ),
 }
 
-def _get_api_key_path(ctx, action_description):
-    api_key_path = ctx.attr.web_api_key_file[BuildSettingInfo].value
-    if not api_key_path:
-        fail("Must provide --//config:web_api_key_file when %s (e.g. --//config:web_api_key_file=/path/to/secret)." % action_description)
-    return api_key_path
-
 def _download_prod_assets_impl(ctx):
     output_dir = ctx.actions.declare_directory(ctx.attr.output_dir_name)
     log_file = ctx.outputs.log
-    api_key_path = _get_api_key_path(ctx, "building with prod/alpha assets")
+    api_key_path = ctx.attr.web_api_key_file[BuildSettingInfo].value
+
+    if not api_key_path:
+        fail_command = """
+        echo "ERROR: Web API key is required for downloading prod/alpha assets."
+        echo ""
+        echo "Please specify it in your build command:"
+        echo "  --//config:web_api_key_file=/path/to/your/api_key.txt"
+        exit 1
+        """
+        ctx.actions.run_shell(
+            outputs = [output_dir, log_file],
+            command = fail_command,
+            mnemonic = "FailMissingApiKey",
+            progress_message = "Failing due to missing web API key",
+        )
+        return [DefaultInfo(files = depset([output_dir]))]
 
     inputs = [ctx.file.pinned_versions, ctx.file.download_config]
     tmp_out = output_dir.path + "_tmp"
@@ -195,14 +205,23 @@ def downloaded_assets_library(name, download_config, pinned_versions, output_log
     )
 
 def _update_pinned_lesson_versions_impl(ctx):
-    api_key_path = _get_api_key_path(ctx, "running update_pinned_lesson_versions")
-
+    api_key_path = ctx.attr.web_api_key_file[BuildSettingInfo].value
     script = ctx.actions.declare_file(ctx.label.name + ".sh")
-    tool_path = ctx.executable._download_tool.short_path
-    config_path = ctx.file.download_config.short_path
-    pinned_versions_path = ctx.file.pinned_versions.short_path
 
-    script_content = """#!/bin/bash
+    if not api_key_path:
+        script_content = """#!/bin/bash
+echo "ERROR: Web API key is required for running update_pinned_lesson_versions."
+echo ""
+echo "Please specify it in your build command:"
+echo "  --//config:web_api_key_file=/path/to/your/api_key.txt"
+exit 1
+"""
+    else:
+        tool_path = ctx.executable._download_tool.short_path
+        config_path = ctx.file.download_config.short_path
+        pinned_versions_path = ctx.file.pinned_versions.short_path
+
+        script_content = """#!/bin/bash
 set -e
 
 TOOL="{tool_path}"
@@ -218,14 +237,14 @@ echo "Config File: $CONFIG"
 
 echo "Successfully updated pinned lesson versions!"
 """.format(
-        tool_path = tool_path,
-        config_path = config_path,
-        pinned_versions_path = pinned_versions_path,
-        base_url = ctx.attr.base_url,
-        gcs_base_url = ctx.attr.gcs_base_url,
-        gcs_bucket = ctx.attr.gcs_bucket,
-        api_key_path = api_key_path,
-    )
+            tool_path = tool_path,
+            config_path = config_path,
+            pinned_versions_path = pinned_versions_path,
+            base_url = ctx.attr.base_url,
+            gcs_base_url = ctx.attr.gcs_base_url,
+            gcs_bucket = ctx.attr.gcs_bucket,
+            api_key_path = api_key_path,
+        )
 
     ctx.actions.write(
         output = script,
