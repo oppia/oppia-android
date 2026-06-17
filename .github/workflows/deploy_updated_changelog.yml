@@ -44,13 +44,17 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
       # On push: detect the modified changelog file and extract the version from its filename.
       # On workflow_dispatch: use the version provided by the coordinator.
       - name: Resolve changelog version
         id: resolve_version
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
+            CHANGED=$(git diff --name-only HEAD~1 HEAD \
               -- 'config/changelogs/*.md' | head -1)
 
             if [[ -z "$CHANGED" ]]; then
@@ -76,9 +80,6 @@ jobs:
       - name: Skip if no changelog changed
         if: env.SKIP == 'true'
         run: echo "Skipping — no changelog files were modified in this push."
-
-      - uses: actions/checkout@v4
-        if: env.SKIP != 'true'
 
       - name: Validate changelog file exists
         if: env.SKIP != 'true'
