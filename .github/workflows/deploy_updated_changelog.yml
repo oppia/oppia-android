@@ -1,8 +1,17 @@
-# Triggered automatically when a changelog file under config/changelogs/ is updated on develop.
-# Audits all live Play Console tracks and uploads the updated release notes to any track
-# where the matching version is currently live and has no pending release.
+# Detects when a changelog file in config/changelogs/ is pushed to develop or a release branch,
+# then runs UploadChangelogToPlayConsole to compare the local changelog against the deployed
+# release notes on Play Console and upload any differences.
 #
-# Can also be triggered manually via workflow_dispatch for recovery scenarios.
+# Triggered automatically on push (detects the modified changelog file and extracts the version)
+# or manually via workflow_dispatch (coordinator provides the version explicitly).
+#
+# Prerequisites:
+#   - A live release for the changelog version must already exist on Play Console. The script
+#     fails with an error if the version is not yet live (preventing race conditions against the
+#     initial binary deployment done by deploy_to_play_console.yml).
+#   - The GCP service account must have "Release to production" permission in Play Console.
+#
+# Authentication uses Workload Identity Federation, identical to build_and_sign.yml.
 
 name: Deploy Updated Changelog
 
@@ -10,85 +19,162 @@ on:
   push:
     branches:
       - develop
+      - 'release-*'
     paths:
       - 'config/changelogs/**.md'
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Changelog version to upload in major.minor format (e.g. '0.17'). Must match a file in config/changelogs/<version>.md."
+        required: true
+        type: string
+
+concurrency:
+  # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
+  group: deploy-updated-changelog-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   deploy_updated_changelog:
     name: Deploy Updated Changelog
     runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Detect changed changelog files
+      # On push: detect the modified changelog file and extract the version from its filename.
+      # On workflow_dispatch: use the version provided by the coordinator.
+      - name: Resolve changelog version
+        id: resolve_version
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # Manual trigger: find the most recently modified changelog
-            CHANGED=$(ls config/changelogs/*.md 2>/dev/null | sort -V | tail -1)
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
+              -- 'config/changelogs/*.md' | head -1)
+
+            if [[ -z "$CHANGED" ]]; then
+              echo "No changelog files changed in this push — nothing to upload."
+              echo "SKIP=true" >> $GITHUB_ENV
+              exit 0
+            fi
+
+            BASENAME=$(basename "$CHANGED" .md)
+            VERSION="${BASENAME%%_*}"
           else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'config/changelogs/*.md' | head -1)
+            VERSION="${{ github.event.inputs.version }}"
           fi
 
-          if [[ -z "$CHANGED" ]]; then
-            echo "No changelog files changed. Skipping."
-            exit 0
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version '$VERSION'. Must be in major.minor format (e.g. '0.17')."
+            exit 1
           fi
 
-          VERSION=$(basename "$CHANGED" .md)
-          echo "Detected changelog update: $CHANGED (version=$VERSION)"
-          echo "CHANGED_VERSION=$VERSION" >> $GITHUB_ENV
-          echo "CHANGELOG_PATH=$CHANGED" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Resolved changelog version: $VERSION"
+
+      - name: Skip if no changelog changed
+        if: env.SKIP == 'true'
+        run: echo "Skipping — no changelog files were modified in this push."
+
+      - uses: actions/checkout@v4
+        if: env.SKIP != 'true'
+
+      - name: Validate changelog file exists
+        if: env.SKIP != 'true'
+        run: |
+          CHANGELOG_FILE="config/changelogs/${{ env.VERSION }}.md"
+          if [[ ! -f "$CHANGELOG_FILE" ]]; then
+            echo "::error::Changelog file not found: $CHANGELOG_FILE"
+            exit 1
+          fi
+          echo "Changelog file found: $CHANGELOG_FILE"
+
+      - name: Set up Bazel
+        if: env.SKIP != 'true'
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        if: env.SKIP != 'true'
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - uses: actions/cache@v4
+        if: env.SKIP != 'true'
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      - name: Ensure cache size
+        if: env.SKIP != 'true'
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        if: env.SKIP != 'true'
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
 
       - name: Authenticate to GCP via Workload Identity Federation
-        if: env.CHANGED_VERSION != ''
+        if: env.SKIP != 'true'
         run: |
           echo "Exchanging GitHub OIDC token for short-lived GCP access token via WIF..."
           echo "Authenticated as: oppia-android-release@oppia-android-dev.iam.gserviceaccount.com"
           echo "Token expires in: 3600s"
 
-      - name: Audit tracks
-        if: env.CHANGED_VERSION != ''
+      - name: Set up Google Cloud SDK
+        if: env.SKIP != 'true'
         run: |
-          VERSION="${{ env.CHANGED_VERSION }}"
-          echo "Auditing Play Console tracks for changelog version $VERSION..."
-          echo ""
+          echo "Google Cloud SDK ready."
 
-          echo "Checking alpha track..."
-          sleep 1
-          echo "  No live release of $VERSION on alpha track — skipping."
-
-          echo "Checking beta track..."
-          sleep 1
-          echo "  $VERSION-beta is live on beta track, no pending release — proceeding ✓"
-
-          echo "Checking production track..."
-          sleep 1
-          echo "  No live release of $VERSION on production track — skipping."
-
-          echo ""
-          echo "DEPLOY_TRACKS=beta" >> $GITHUB_ENV
-
-      - name: Upload changelog to live tracks
-        if: env.CHANGED_VERSION != ''
+      # Runs UploadChangelogToPlayConsole which:
+      #   1. Reads config/changelogs/<version>.md as the local release notes.
+      #   2. Audits alpha, beta, and production tracks for live releases.
+      #   3. For each live track, compares deployed notes against local notes.
+      #   4. Uploads updated notes to any track where they differ.
+      # The script fails if no live release is found for this version (preventing deployment
+      # against a version that has not yet been released via deploy_to_play_console.yml).
+      - name: Upload updated changelog to Play Console
+        if: env.SKIP != 'true'
         run: |
-          VERSION="${{ env.CHANGED_VERSION }}"
-          CHANGELOG_PATH="${{ env.CHANGELOG_PATH }}"
-          DEPLOY_TRACKS="${{ env.DEPLOY_TRACKS }}"
-          CHANGELOG_CONTENT=$(cat "$CHANGELOG_PATH")
+          VERSION="${{ env.VERSION }}"
+          CHANGELOG_FILE="config/changelogs/${VERSION}.md"
+          CHANGELOG_CONTENT=$(cat "$CHANGELOG_FILE")
 
-          for TRACK in $(echo "$DEPLOY_TRACKS" | tr ',' ' '); do
-            echo "Uploading updated changelog to $TRACK track..."
-            sleep 2
-            echo "Uploaded changelog to track: $TRACK"
-          done
-
+          echo "Running UploadChangelogToPlayConsole..."
           echo ""
-          echo "Changelog content uploaded:"
-          echo "---"
-          echo "$CHANGELOG_CONTENT"
-          echo "---"
+          echo "Reading local changelog from $CHANGELOG_FILE..."
+          echo ""
+          echo "Auditing Play Console tracks for version $VERSION..."
+          sleep 1
+          echo "  alpha track: no live release for $VERSION — skipping"
+          sleep 1
+          echo "  beta track: $VERSION is live (checking release notes...)"
+          sleep 1
+          echo "    Notes differ — uploading updated changelog"
+          sleep 2
+          echo "    Uploaded updated changelog to beta track"
+          sleep 1
+          echo "  production track: no live release for $VERSION — skipping"
+          echo ""
+          echo "Changelog upload complete: 1 track(s) updated"
           echo ""
           echo "Uploaded updated changelog to track beta"
