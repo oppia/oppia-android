@@ -14,13 +14,16 @@ private const val CONNECTOR_THICKNESS_DP = 4f
 private const val RING_STROKE_WIDTH_DP = 2f
 
 /**
- * [View] that draws the lesson progress indicator shown beneath the navigation buttons: a horizontal
+ * [View] that draws the lesson progress indicator shown above the navigation buttons: a horizontal
  * connector line with one circular node per checkpoint.
  *
- * Each node is styled by its position relative to the completed checkpoint count: completed nodes are
- * filled, the current node is an outlined ring, and upcoming nodes are faint rings. The connector is
- * filled from the start in proportion to how many checkpoints are completed. The raw counts are
- * supplied via data binding (see [setLessonProgressCompletedCount] and [setLessonProgressTotalCount]).
+ * Every checkpoint the learner has reached -- including the one they're currently on -- is drawn as
+ * a solid filled circle, so the first card shows a single solid node and the terminal card shows
+ * every node solid. The next upcoming checkpoint is drawn as an outlined teal ring to hint that it's
+ * coming up; all remaining checkpoints are faint hollow rings. The connector is filled teal up to the
+ * last reached node plus half the gap toward that upcoming ring, clamping to a full teal bar on the
+ * terminal card. The raw counts are supplied via data binding (see [setLessonProgressCompletedCount]
+ * and [setLessonProgressTotalCount]).
  */
 class LessonProgressIndicatorView @JvmOverloads constructor(
   context: Context,
@@ -78,13 +81,16 @@ class LessonProgressIndicatorView @JvmOverloads constructor(
     val span = lastCenterX - firstCenterX
 
     if (totalCount > 1) {
-      // Draw the full upcoming (unreached) connector, then overlay the reached portion.
+      // Draw the full upcoming (unreached) connector, then overlay teal up to the last reached node
+      // plus half the gap toward the upcoming look-ahead ring. That half-filled segment is the
+      // proposal's "in-progress" connector state between the last completed checkpoint and the next
+      // one; on the terminal card (every node solid, no ring) it clamps to a full teal bar.
       connectorPaint.color = upcomingColor
       canvas.drawLine(firstCenterX, centerY, lastCenterX, centerY, connectorPaint)
-      val reachedFraction = (completedCount.toFloat() / totalCount).coerceIn(0f, 1f)
-      if (reachedFraction > 0f) {
+      if (completedCount >= 1) {
+        val reachedFraction = (completedCount - 0.5f) / (totalCount - 1)
+        val reachedEndX = (firstCenterX + span * reachedFraction).coerceAtMost(lastCenterX)
         connectorPaint.color = reachedColor
-        val reachedEndX = firstCenterX + span * reachedFraction
         canvas.drawLine(firstCenterX, centerY, reachedEndX, centerY, connectorPaint)
       }
     }
@@ -95,14 +101,16 @@ class LessonProgressIndicatorView @JvmOverloads constructor(
         else -> firstCenterX + span * i / (totalCount - 1)
       }
       when {
-        // Completed checkpoint: solid filled node.
+        // Reached checkpoint, including the current one: solid filled node.
         i < completedCount -> {
           fillPaint.color = reachedColor
           canvas.drawCircle(centerX, centerY, nodeRadius, fillPaint)
         }
-        // Current checkpoint: filled ring.
-        i == completedCount -> drawRingNode(canvas, centerX, centerY, reachedColor)
-        // Upcoming checkpoint: faint ring.
+        // The next upcoming checkpoint: a teal ring hinting it's coming up. Shown on every card
+        // (including the first) so the indicator has a uniform structure.
+        i == completedCount ->
+          drawRingNode(canvas, centerX, centerY, reachedColor)
+        // Remaining upcoming checkpoints: faint hollow ring.
         else -> drawRingNode(canvas, centerX, centerY, upcomingColor)
       }
     }
