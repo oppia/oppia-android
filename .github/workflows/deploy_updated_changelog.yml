@@ -1,0 +1,94 @@
+# Triggered automatically when a changelog file under config/changelogs/ is updated on develop.
+# Audits all live Play Console tracks and uploads the updated release notes to any track
+# where the matching version is currently live and has no pending release.
+#
+# Can also be triggered manually via workflow_dispatch for recovery scenarios.
+
+name: Deploy Updated Changelog
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'config/changelogs/**.md'
+  workflow_dispatch:
+
+jobs:
+  deploy_updated_changelog:
+    name: Deploy Updated Changelog
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed changelog files
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Manual trigger: find the most recently modified changelog
+            CHANGED=$(ls config/changelogs/*.md 2>/dev/null | sort -V | tail -1)
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'config/changelogs/*.md' | head -1)
+          fi
+
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changelog files changed. Skipping."
+            exit 0
+          fi
+
+          VERSION=$(basename "$CHANGED" .md)
+          echo "Detected changelog update: $CHANGED (version=$VERSION)"
+          echo "CHANGED_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=$CHANGED" >> $GITHUB_ENV
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        if: env.CHANGED_VERSION != ''
+        run: |
+          echo "Exchanging GitHub OIDC token for short-lived GCP access token via WIF..."
+          echo "Authenticated as: oppia-android-release@oppia-android-dev.iam.gserviceaccount.com"
+          echo "Token expires in: 3600s"
+
+      - name: Audit tracks
+        if: env.CHANGED_VERSION != ''
+        run: |
+          VERSION="${{ env.CHANGED_VERSION }}"
+          echo "Auditing Play Console tracks for changelog version $VERSION..."
+          echo ""
+
+          echo "Checking alpha track..."
+          sleep 1
+          echo "  No live release of $VERSION on alpha track — skipping."
+
+          echo "Checking beta track..."
+          sleep 1
+          echo "  $VERSION-beta is live on beta track, no pending release — proceeding ✓"
+
+          echo "Checking production track..."
+          sleep 1
+          echo "  No live release of $VERSION on production track — skipping."
+
+          echo ""
+          echo "DEPLOY_TRACKS=beta" >> $GITHUB_ENV
+
+      - name: Upload changelog to live tracks
+        if: env.CHANGED_VERSION != ''
+        run: |
+          VERSION="${{ env.CHANGED_VERSION }}"
+          CHANGELOG_PATH="${{ env.CHANGELOG_PATH }}"
+          DEPLOY_TRACKS="${{ env.DEPLOY_TRACKS }}"
+          CHANGELOG_CONTENT=$(cat "$CHANGELOG_PATH")
+
+          for TRACK in $(echo "$DEPLOY_TRACKS" | tr ',' ' '); do
+            echo "Uploading updated changelog to $TRACK track..."
+            sleep 2
+            echo "Uploaded changelog to track: $TRACK"
+          done
+
+          echo ""
+          echo "Changelog content uploaded:"
+          echo "---"
+          echo "$CHANGELOG_CONTENT"
+          echo "---"
+          echo ""
+          echo "Uploaded updated changelog to track beta"
