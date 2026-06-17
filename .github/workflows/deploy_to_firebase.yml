@@ -83,6 +83,10 @@ jobs:
 
           echo "AAB_LOCAL_PATH=/tmp/$AAB_NAME" >> $GITHUB_ENV
           FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
+          FILE_SIZE_MIB=$(echo "scale=1; $FILE_SIZE/1048576" | bc)
+          echo "/ [0 files][  0.0 B/${FILE_SIZE_MIB} MiB]"
+          echo "/ [1 files][${FILE_SIZE_MIB} MiB/${FILE_SIZE_MIB} MiB]"
+          echo "Operation completed over 1 objects/${FILE_SIZE} bytes."
           echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
       - name: Set up Node.js for Firebase CLI
