@@ -331,7 +331,7 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_missingFilename_inlineMode_withFrac_includesCachedBlockLatexImageSpan() {
+  fun testParseHtml_withMathMarkup_missingFilename_inlineMode_includesCachedBlockLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP,
@@ -544,7 +544,10 @@ class MathTagHandlerTest {
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = false, equationColor = customColor)
+          CUSTOM_MATH_TAG to createMathTagHandler(
+            cacheLatexRendering = false,
+            equationColor = customColor
+          )
         )
       )
 
@@ -559,7 +562,10 @@ class MathTagHandlerTest {
       html = MATH_WITHOUT_FILENAME_INLINE_MARKUP,
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf(
-        CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = true, equationColor = customColor)
+        CUSTOM_MATH_TAG to createMathTagHandler(
+          cacheLatexRendering = true,
+          equationColor = customColor
+        )
       )
     )
 
