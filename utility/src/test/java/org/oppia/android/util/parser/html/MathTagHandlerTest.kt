@@ -306,7 +306,7 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_missingFilename_includesCachedInlineLatexImageSpan() {
+  fun testParseHtml_withMathMarkup_missingFilename_withFrac_includesCachedBlockLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
@@ -314,7 +314,7 @@ class MathTagHandlerTest {
         customTagHandlers = tagHandlersWithCachedMathSupport
       )
 
-    // The image span is a cached bitmap loaded from LaTeX.
+    // \frac expressions are always rendered in block mode for the horizontal fraction bar.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
@@ -322,11 +322,11 @@ class MathTagHandlerTest {
       capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
-    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_missingFilename_inlineMode_includesCachedInlineLatexImageSpan() {
+  fun testParseHtml_withMathMarkup_missingFilename_inlineMode_withFrac_includesCachedBlockLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP,
@@ -334,7 +334,7 @@ class MathTagHandlerTest {
         customTagHandlers = tagHandlersWithCachedMathSupport
       )
 
-    // The image span is a cached bitmap loaded from LaTeX.
+    // \frac overrides even an explicit inline render-type to ensure the horizontal bar is visible.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     verify(mockImageRetriever)!!.loadMathDrawable(
@@ -342,7 +342,7 @@ class MathTagHandlerTest {
       capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
-    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
   }
 
   @Test
@@ -460,7 +460,7 @@ class MathTagHandlerTest {
       capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
-    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
   }
 
   @Test
@@ -481,7 +481,7 @@ class MathTagHandlerTest {
       .containsExactly("\\frac{3}{8}", "\\frac{2}{5}")
       .inOrder()
     assertThat(retrieverTypeCaptor.allValues)
-      .containsExactly(ImageRetriever.Type.INLINE_TEXT_IMAGE, ImageRetriever.Type.INLINE_TEXT_IMAGE)
+      .containsExactly(ImageRetriever.Type.BLOCK_IMAGE, ImageRetriever.Type.BLOCK_IMAGE)
       .inOrder()
   }
 
@@ -531,14 +531,53 @@ class MathTagHandlerTest {
     assertThat(parsedHtmlStr).contains(" and ")
   }
 
-  private fun createMathTagHandler(cacheLatexRendering: Boolean): MathTagHandler {
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOff_withProvidedEquationColor_usesProvidedColor() {
+    val customColor = Color.MAGENTA
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = MATH_WITHOUT_FILENAME_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = false, equationColor = customColor)
+        )
+      )
+
+    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
+    assertThat(equationColor[0].equationColor).isEqualTo(customColor)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOn_withProvidedEquationColor_usesProvidedColor() {
+    val customColor = Color.CYAN
+    CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_FILENAME_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf(
+        CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = true, equationColor = customColor)
+      )
+    )
+
+    verify(mockImageRetriever)!!.loadMathDrawable(
+      capture(stringCaptor), capture(floatCaptor),
+      capture(colorCaptor), capture(retrieverTypeCaptor)
+    )
+    assertThat(colorCaptor.value).isEqualTo(customColor)
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
+  }
+
+  private fun createMathTagHandler(
+    cacheLatexRendering: Boolean,
+    equationColor: Int? = null
+  ): MathTagHandler {
     // Pick an arbitrary line height since rendering doesn't actually happen in tests.
     return MathTagHandler(
       consoleLogger,
       context.assets,
       lineHeight = 10.0f,
       cacheLatexRendering,
-      application = context.applicationContext as Application
+      application = context.applicationContext as Application,
+      equationColor = equationColor
     )
   }
 

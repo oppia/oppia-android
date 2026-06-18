@@ -168,7 +168,8 @@ class HtmlParser private constructor(
         context.assets,
         htmlContentTextView.lineHeight.toFloat(),
         cacheLatexRendering,
-        context as? Application ?: context.applicationContext as Application
+        context as? Application ?: context.applicationContext as Application,
+        equationColor = htmlContentTextView.currentTextColor
       )
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler

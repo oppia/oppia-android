@@ -31,7 +31,8 @@ class MathTagHandler(
   private val assetManager: AssetManager,
   private val lineHeight: Float,
   private val cacheLatexRendering: Boolean,
-  private val application: Application
+  private val application: Application,
+  private val equationColor: Int? = null
 ) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
@@ -44,17 +45,21 @@ class MathTagHandler(
     val content = MathContent.parseMathContent(
       attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
-    val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
+    var useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
       "inline" -> true
       "block" -> false
       else -> true
     }
     checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
-    val equationColor = ResourcesCompat.getColor(
+    val resolvedEquationColor = equationColor ?: ResourcesCompat.getColor(
       application.resources,
       R.color.component_color_shared_equation_color,
       null
     )
+    // \frac renders with a horizontal bar only in block/display mode; force it so the bar is visible.
+    if (content is MathContent.MathAsLatex && content.rawLatex.contains("\\frac")) {
+      useInlineRendering = false
+    }
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(
@@ -71,7 +76,7 @@ class MathTagHandler(
             imageRetriever.loadMathDrawable(
               content.rawLatex,
               lineHeight,
-              equationColor,
+              resolvedEquationColor,
               type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
             ),
             useInlineRendering
@@ -82,7 +87,7 @@ class MathTagHandler(
             lineHeight,
             assetManager,
             isMathMode = !useInlineRendering,
-            equationColor
+            resolvedEquationColor
           )
         }
       }
