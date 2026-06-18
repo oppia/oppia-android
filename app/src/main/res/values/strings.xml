@@ -68,6 +68,7 @@
   <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="lesson_progress_indicator_content_description">Learning Progress, %1$s of %2$s completed.</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="image_error_empty_input">Select an image to continue.</string>

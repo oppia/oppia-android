@@ -947,9 +947,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val lessonProgressViewModel = LessonProgressViewModel(
       completedCount = checkpointProgress.completedCheckpointCount,
       totalCount = totalCheckpoints,
-      // The spoken "Learning Progress, X of N" content description is wired up with its translatable
-      // string resource separately; the indicator's visuals are fully driven by the counts above.
-      progressText = ""
+      // The indicator draws no on-screen text, so this string is purely the TalkBack content
+      // description. The counts are passed as strings because only %s specifiers are permitted in
+      // translatable resources (bidirectional wrapping), matching the "X of N" stepper strings.
+      progressText = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.lesson_progress_indicator_content_description,
+        checkpointProgress.completedCheckpointCount.toString(),
+        totalCheckpoints.toString()
+      )
     )
     // The Continue interaction is auto-navigating: it renders its own forward button inline. When
     // that button is the trailing item, the indicator is inserted just above it so it stays above
