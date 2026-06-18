@@ -1029,7 +1029,7 @@ class HtmlParserTest {
         val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
         val htmlResult: Spannable = htmlParser.parseOppiaHtml(
           "<oppia-noninteractive-math render-type=\"inline\" math_content-with-value=\"{" +
-            "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\x^2&amp;quot;}\">" +
+            "&amp;quot;raw_latex&amp;quot;:&amp;quot;x^2&amp;quot;}\">" +
             "</oppia-noninteractive-math>",
           textView,
           supportsLinks = true,
