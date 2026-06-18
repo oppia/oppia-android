@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
@@ -69,6 +70,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.LESSON_PROGRESS_INDICATOR
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
@@ -126,6 +128,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -185,6 +188,11 @@ class QuestionPlayerActivityTest {
 
   @Before
   fun setUp() {
+    // Enable lesson progress visualization so testQuestionPlayer_lessonProgressIndicatorIsNotShown
+    // proves the question player excludes the indicator even when the feature is ON (the flag has no
+    // effect on the question player otherwise). It must be forced before the component is built --
+    // the override freezes once platform parameters load -- and is cleared in tearDown().
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -204,6 +212,7 @@ class QuestionPlayerActivityTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -579,6 +588,17 @@ class QuestionPlayerActivityTest {
       }
       testCoroutineDispatchers.runCurrent()
       verifyFontSizeMatches(38F)
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_lessonProgressIndicatorIsNotShown() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // The lesson progress indicator is exploration-only: the question player never assembles it
+      // and the domain never attaches checkpoint progress to practice questions, so it must never
+      // appear during a question session even with the feature enabled (see setUp). Asserting the
+      // scroll fails proves the indicator view type is absent from the adapter, not just off-screen.
+      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
     }
   }
 

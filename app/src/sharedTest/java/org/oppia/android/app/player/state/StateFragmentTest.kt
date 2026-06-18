@@ -93,6 +93,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.LESSON_PROGRESS_INDICATOR
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
@@ -166,6 +167,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -6040,6 +6042,85 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_lessonProgressOn_firstCheckpoint_indicatorShowsFirstOfFiveCheckpoints() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The initial card is the first of the exploration's five checkpoints, so the indicator is
+      // shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_advancePastCheckpoint_progressCountIncrements() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Initially the learner is on the first of five checkpoints.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+
+      // Advance to the multiple choice card, the exploration's second checkpoint, so the count
+      // increments to "2 of 5".
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 2, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_noCheckpointExploration_indicatorIsNotShown() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // TEST_EXPLORATION_ID_4 contains no checkpoints, so the domain attaches no checkpoint progress
+      // and the indicator is never assembled even with the feature enabled. Asserting the scroll
+      // fails proves the indicator view type is absent from the adapter, not merely off-screen --
+      // scrollToViewType scans every item the adapter holds, so an unmatched type throws.
+      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOff_indicatorIsNotShown() {
+    setUpTestWithLessonProgressFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // With the feature flag off the indicator is never assembled, even for an exploration that
+      // does have checkpoints. Asserting the scroll fails proves the indicator view type is absent
+      // from the adapter, not merely off-screen.
+      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
@@ -6920,6 +7001,16 @@ class StateFragmentTest {
   }
   private fun setUpTestWithFlashbackFeatureOff() {
     TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithLessonProgressFeatureOn() {
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithLessonProgressFeatureOff() {
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(false)
     setUpTest()
   }
 
