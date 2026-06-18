@@ -114,7 +114,7 @@ class StateGraph constructor(
     // Requiring a single terminal state reduces this to a pathfind between two fixed points.
     val terminalStateNames = stateGraph.values.filter(isTerminalState).map { it.name }
     if (terminalStateNames.size != 1) {
-      oppiaLogger.w(
+      oppiaLogger.d(
         STATE_GRAPH_LOG_TAG,
         "Cannot compute checkpoint count: expected exactly one terminal state but found" +
           " ${terminalStateNames.size}."
@@ -124,7 +124,7 @@ class StateGraph constructor(
 
     val mainPath = findShortestCorrectPath(startStateName, terminalStateNames.single())
     if (mainPath == null) {
-      oppiaLogger.w(
+      oppiaLogger.d(
         STATE_GRAPH_LOG_TAG,
         "Cannot compute checkpoint count: no correct-answer path from $startStateName to the" +
           " terminal state."
