@@ -19,6 +19,9 @@ utility/build
 config/oppia-dev-workflow-remote-cache-credentials.json
 bazel-*
 .bazelproject
+.bazelrc.local
+MODULE.bazel
+MODULE.bazel.lock
 .aswb
 *.pb
 coverage_reports

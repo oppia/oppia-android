@@ -67,6 +67,11 @@ private const val MATH_WITHOUT_FILENAME_MARKUP =
   "<oppia-noninteractive-math math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
     ":&amp;quot;\\\\frac{2}{5}&amp;quot;}\"></oppia-noninteractive-math>"
 
+// A non-\frac expression so these tests exercise the inline code-path (not block-forced by \frac).
+private const val MATH_WITHOUT_FILENAME_INLINE_MARKUP =
+  "<oppia-noninteractive-math math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
+    ":&amp;quot;x^2&amp;quot;}\"></oppia-noninteractive-math>"
+
 private const val MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP =
   "<oppia-noninteractive-math render-type=\"inline\"" +
     " math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
@@ -117,7 +122,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_cachingOn_imageSpanHasCorrectMetrics() {
 
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
-      html = MATH_WITHOUT_FILENAME_MARKUP,
+      html = MATH_WITHOUT_FILENAME_INLINE_MARKUP,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithCachedMathSupport
     )
@@ -142,7 +147,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_cachingOn_drawsAtCorrectVerticalPosition() {
 
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
-      html = MATH_WITHOUT_FILENAME_MARKUP,
+      html = MATH_WITHOUT_FILENAME_INLINE_MARKUP,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithCachedMathSupport
     )
