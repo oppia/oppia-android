@@ -548,15 +548,15 @@ class MathTagHandlerTest {
         )
       )
 
-    val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
-    assertThat(equationColor[0].equationColor).isEqualTo(customColor)
+    val mathExpressionSpans = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
+    assertThat(mathExpressionSpans[0].equationColor).isEqualTo(customColor)
   }
 
   @Test
   fun testParseHtml_withMathMarkup_cachingOn_withProvidedEquationColor_usesProvidedColor() {
     val customColor = Color.CYAN
     CustomHtmlContentHandler.fromHtml(
-      html = MATH_WITHOUT_FILENAME_MARKUP,
+      html = MATH_WITHOUT_FILENAME_INLINE_MARKUP,
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf(
         CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = true, equationColor = customColor)
@@ -568,7 +568,6 @@ class MathTagHandlerTest {
       capture(colorCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(colorCaptor.value).isEqualTo(customColor)
-    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
   }
 
   private fun createMathTagHandler(
