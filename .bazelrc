@@ -23,6 +23,3 @@ mobile-install --start_app
 
 # Ensure that all tests have access to the ANDROID_HOME environment variable.
 test --test_env=ANDROID_HOME
-
-# Allow machine-specific local overrides (e.g. Apple Silicon flags). This file is gitignored.
-try-import %workspace%/.bazelrc.local
