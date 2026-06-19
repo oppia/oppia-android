@@ -256,6 +256,10 @@
       android:label="@string/revision_card_activity_title"
       android:theme="@style/RevisionCardActivityTheme" />
     <activity
+      android:name=".app.topic.studyguide.StudyGuideActivity"
+      android:label="@string/study_guide_activity_title"
+      android:theme="@style/RevisionCardActivityTheme" />
+    <activity
       android:name=".app.topic.TopicActivity"
       android:label="@string/topic_page"
       android:theme="@style/OppiaThemeWithoutActionBar" />
