@@ -2985,7 +2985,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideActivity.kt"
-  test_file_not_required: true
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideActivityPresenter.kt"
@@ -2993,7 +2993,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideFragment.kt"
-  test_file_not_required: true
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideFragmentPresenter.kt"
@@ -3252,6 +3252,10 @@ test_file_exemption {
   is_extra_test_file: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/topic/studyguide/StudyGuideActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/CompletedStoryListSpanTest.kt",
   is_extra_test_file: true
 }
@@ -3305,6 +3309,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerActivityProdTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/topic/revision/TopicRevisionFragmentStudyGuideRoutingTest.kt",
   is_extra_test_file: true
 }
 test_file_exemption {
