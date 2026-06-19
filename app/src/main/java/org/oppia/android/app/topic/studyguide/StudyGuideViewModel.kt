@@ -69,6 +69,27 @@ class StudyGuideViewModel private constructor(
     processStudyGuideLiveData()
   }
 
+  /** The [LiveData] of the section items (headings and content) to display in order. */
+  val sectionItemsLiveData: LiveData<List<StudyGuideItemViewModel>> by lazy {
+    Transformations.map(studyGuideLiveData, ::processSectionItems)
+  }
+
+  private fun processSectionItems(
+    ephemeralStudyGuide: EphemeralStudyGuide
+  ): List<StudyGuideItemViewModel> {
+    val writtenTranslationContext = ephemeralStudyGuide.writtenTranslationContext
+    return ephemeralStudyGuide.studyGuide.sectionsList.flatMap { section ->
+      listOf(
+        StudyGuideSectionHeadingViewModel(
+          translationController.extractString(section.heading, writtenTranslationContext)
+        ),
+        StudyGuideSectionContentViewModel(
+          translationController.extractString(section.content, writtenTranslationContext)
+        )
+      )
+    }
+  }
+
   private val topicLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     getTopicResultLiveData()
   }

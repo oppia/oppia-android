@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -9,15 +10,19 @@
   </data>
 
   <!--
-    Scaffolding container for the study guide. The section list (SECTION_HEADING / SECTION_CONTENT
-    items via a BindableAdapter) is wired up in the next task of PR 1.4 (#6104), and the
-    Previous/Next subtopic navigation cards are added in the task after that.
+    Hosts the study guide's ordered sections. Each section contributes a SECTION_HEADING and a
+    SECTION_CONTENT item, bound through a BindableAdapter in StudyGuideFragmentPresenter. The
+    Previous/Next subtopic navigation cards are added in the next task of PR 1.4 (#6104).
   -->
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/study_guide_section_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/component_color_shared_screen_secondary_background_color"
+    android:clipToPadding="false"
     android:overScrollMode="never"
-    android:scrollbars="none" />
+    android:paddingBottom="@dimen/study_guide_section_list_padding_bottom"
+    android:scrollbars="none"
+    app:data="@{viewModel.sectionItemsLiveData}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </layout>
