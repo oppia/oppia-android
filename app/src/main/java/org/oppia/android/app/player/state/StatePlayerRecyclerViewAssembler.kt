@@ -940,16 +940,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-    // 'completedCheckpointCount' is 1-based and includes the checkpoint the learner is on now, so it
-    // maps directly to the number of solid (reached) nodes -- the current checkpoint is always shown
-    // as a reached node. The view draws a teal ring on the next checkpoint as a look-ahead hint, and
-    // at the terminal card every node is solid since all checkpoints have been reached.
+    // 'completedCheckpointCount' is 1-based and includes the checkpoint the learner is on now, so
+    // it maps directly to the number of reached (solid) nodes the view should draw.
     val lessonProgressViewModel = LessonProgressViewModel(
       completedCount = checkpointProgress.completedCheckpointCount,
       totalCount = totalCheckpoints,
       // The indicator draws no on-screen text, so this string is purely the TalkBack content
-      // description. The counts are passed as strings because only %s specifiers are permitted in
-      // translatable resources (bidirectional wrapping), matching the "X of N" stepper strings.
+      // description. Counts are passed as strings because only %s specifiers are allowed in
+      // translatable resources.
       progressText = resourceHandler.getStringInLocaleWithWrapping(
         R.string.lesson_progress_indicator_content_description,
         checkpointProgress.completedCheckpointCount.toString(),
@@ -1794,8 +1792,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /**
      * Adds support for displaying the lesson progress indicator that shows the learner how far they
-     * are through the exploration's checkpoints. This is only enabled when the corresponding feature
-     * flag is on; when it's off the indicator's view binder is never registered.
+     * are through the exploration's checkpoints. Only enabled when the feature flag is on.
      */
     fun addLessonProgressIndicatorSupport(): Builder {
       if (enableLessonProgressVisualization.value) {

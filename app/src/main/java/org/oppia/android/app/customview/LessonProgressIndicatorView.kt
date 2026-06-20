@@ -15,15 +15,12 @@ private const val RING_STROKE_WIDTH_DP = 2f
 
 /**
  * [View] that draws the lesson progress indicator shown above the navigation buttons: a horizontal
- * connector line with one circular node per checkpoint.
+ * connector with one circular node per checkpoint.
  *
- * Every checkpoint the learner has reached -- including the one they're currently on -- is drawn as
- * a solid filled circle, so the first card shows a single solid node and the terminal card shows
- * every node solid. The next upcoming checkpoint is drawn as an outlined teal ring to hint that it's
- * coming up; all remaining checkpoints are faint hollow rings. The connector is filled teal up to the
- * last reached node plus half the gap toward that upcoming ring, clamping to a full teal bar on the
- * terminal card. The raw counts are supplied via data binding (see [setLessonProgressCompletedCount]
- * and [setLessonProgressTotalCount]).
+ * Reached checkpoints (including the current one) are drawn as solid nodes, the next checkpoint as
+ * a teal ring, and the rest as faint rings, with the connector filled to the learner's progress.
+ * Counts are supplied via data binding (see [setLessonProgressCompletedCount] and
+ * [setLessonProgressTotalCount]).
  */
 class LessonProgressIndicatorView @JvmOverloads constructor(
   context: Context,
@@ -81,10 +78,8 @@ class LessonProgressIndicatorView @JvmOverloads constructor(
     val span = lastCenterX - firstCenterX
 
     if (totalCount > 1) {
-      // Draw the full upcoming (unreached) connector, then overlay teal up to the last reached node
-      // plus half the gap toward the upcoming look-ahead ring. That half-filled segment is the
-      // proposal's "in-progress" connector state between the last completed checkpoint and the next
-      // one; on the terminal card (every node solid, no ring) it clamps to a full teal bar.
+      // Draw the full unreached connector, then overlay teal up to the last reached node plus half
+      // the gap toward the next ring -- the in-progress segment, clamped to a full bar at the end.
       connectorPaint.color = upcomingColor
       canvas.drawLine(firstCenterX, centerY, lastCenterX, centerY, connectorPaint)
       if (completedCount >= 1) {

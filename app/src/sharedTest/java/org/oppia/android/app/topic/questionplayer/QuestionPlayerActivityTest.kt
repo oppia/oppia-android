@@ -188,10 +188,10 @@ class QuestionPlayerActivityTest {
 
   @Before
   fun setUp() {
-    // Enable lesson progress visualization so testQuestionPlayer_lessonProgressIndicatorIsNotShown
-    // proves the question player excludes the indicator even when the feature is ON (the flag has no
-    // effect on the question player otherwise). It must be forced before the component is built --
-    // the override freezes once platform parameters load -- and is cleared in tearDown().
+    // Enable lesson progress visualization so the indicator test below proves the question player
+    // excludes the indicator even when the feature is ON (the flag has no effect on the question
+    // player otherwise). It must be forced before the component is built -- the override freezes
+    // once platform parameters load -- and is cleared in tearDown().
     TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -592,7 +592,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_lessonProgressIndicatorIsNotShown() {
+  fun testQuestionPlayer_lessonProgressOn_indicatorIsNotShown() {
     launchForSkillList(SKILL_ID_LIST).use {
       // The lesson progress indicator is exploration-only: the question player never assembles it
       // and the domain never attaches checkpoint progress to practice questions, so it must never
