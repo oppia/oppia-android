@@ -32,7 +32,13 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Repin maven_install.json
-        run: REPIN=1 bazel run @unpinned_maven//:pin
+        run: |
+          # Step 1: comment out maven_install_json so Bazel regenerates from scratch
+          sed -i 's|maven_install_json = "//third_party:maven_install.json",|# maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          # Step 2: pin fresh (resolves all artifacts, writes new maven_install.json)
+          bazel run @maven//:pin
+          # Step 3: restore the maven_install_json attribute
+          sed -i 's|# maven_install_json = "//third_party:maven_install.json",|maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
 
       - name: Commit and push updated maven_install.json
         run: |
