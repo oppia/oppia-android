@@ -64,7 +64,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -1654,7 +1653,6 @@ class QuestionAssessmentProgressControllerTest {
       AlgebraicExpressionInputModule::class,
       ApplicationLifecycleModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       DragDropSortInputModule::class,
       FakeOppiaClockModule::class,

@@ -42,8 +42,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -156,8 +154,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -204,6 +200,7 @@ class StateFragmentLocalTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
@@ -235,6 +232,7 @@ class StateFragmentLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
     // during initialization for the next test).
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2992,18 +2990,6 @@ class StateFragmentLocalTest {
   private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
     getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -3061,7 +3047,6 @@ class StateFragmentLocalTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

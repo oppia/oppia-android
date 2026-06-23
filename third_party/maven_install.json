@@ -934,6 +934,12 @@
       },
       "version": "4.11.0"
     },
+    "com.github.weisj:jsvg": {
+      "shasums": {
+        "jar": "23ac24ccd459447b2074d25f53886a4f42bf896cd6f5e286630e3622e8205f72"
+      },
+      "version": "1.0.0"
+    },
     "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework": {
       "shasums": {
         "jar": "cdf16ef8f5b8023d003ce3cc1b0d51bda737762e2dab2fedf43d1c4292353f7f"
@@ -4951,6 +4957,35 @@
     "com.github.bumptech.glide:disklrucache": [
       "com.bumptech.glide.disklrucache"
     ],
+    "com.github.weisj:jsvg": [
+      "com.github.weisj.jsvg",
+      "com.github.weisj.jsvg.attributes",
+      "com.github.weisj.jsvg.attributes.filter",
+      "com.github.weisj.jsvg.attributes.font",
+      "com.github.weisj.jsvg.attributes.paint",
+      "com.github.weisj.jsvg.attributes.stroke",
+      "com.github.weisj.jsvg.attributes.text",
+      "com.github.weisj.jsvg.geometry",
+      "com.github.weisj.jsvg.geometry.mesh",
+      "com.github.weisj.jsvg.geometry.noise",
+      "com.github.weisj.jsvg.geometry.path",
+      "com.github.weisj.jsvg.geometry.size",
+      "com.github.weisj.jsvg.geometry.util",
+      "com.github.weisj.jsvg.nodes",
+      "com.github.weisj.jsvg.nodes.animation",
+      "com.github.weisj.jsvg.nodes.container",
+      "com.github.weisj.jsvg.nodes.filter",
+      "com.github.weisj.jsvg.nodes.mesh",
+      "com.github.weisj.jsvg.nodes.prototype",
+      "com.github.weisj.jsvg.nodes.prototype.impl",
+      "com.github.weisj.jsvg.nodes.prototype.spec",
+      "com.github.weisj.jsvg.nodes.text",
+      "com.github.weisj.jsvg.parser",
+      "com.github.weisj.jsvg.parser.css",
+      "com.github.weisj.jsvg.parser.css.impl",
+      "com.github.weisj.jsvg.renderer",
+      "com.github.weisj.jsvg.util"
+    ],
     "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework": [
       "com.google.android.apps.common.testing.accessibility.framework",
       "com.google.android.apps.common.testing.accessibility.framework.integrations",
@@ -7896,6 +7931,7 @@
       "com.github.bumptech.glide:gifdecoder:aar",
       "com.github.bumptech.glide:glide:aar",
       "com.github.bumptech.glide:mocks:aar",
+      "com.github.weisj:jsvg",
       "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework",
       "com.google.android.datatransport:transport-api:aar",
       "com.google.android.datatransport:transport-backend-cct:aar",
@@ -8239,6 +8275,7 @@
       "com.github.bumptech.glide:gifdecoder:aar",
       "com.github.bumptech.glide:glide:aar",
       "com.github.bumptech.glide:mocks:aar",
+      "com.github.weisj:jsvg",
       "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework",
       "com.google.android.datatransport:transport-api:aar",
       "com.google.android.datatransport:transport-backend-cct:aar",
@@ -8582,6 +8619,7 @@
       "com.github.bumptech.glide:gifdecoder:aar",
       "com.github.bumptech.glide:glide:aar",
       "com.github.bumptech.glide:mocks:aar",
+      "com.github.weisj:jsvg",
       "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework",
       "com.google.android.datatransport:transport-api:aar",
       "com.google.android.datatransport:transport-backend-cct:aar",
@@ -8925,6 +8963,7 @@
       "com.github.bumptech.glide:gifdecoder:aar",
       "com.github.bumptech.glide:glide:aar",
       "com.github.bumptech.glide:mocks:aar",
+      "com.github.weisj:jsvg",
       "com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework",
       "com.google.android.datatransport:transport-api:aar",
       "com.google.android.datatransport:transport-backend-cct:aar",

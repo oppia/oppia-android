@@ -6,6 +6,7 @@ import dagger.multibindings.IntoMap
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
@@ -143,5 +144,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.TOPIC_PRACTICE_TAB)
   fun bindTopicPracticeTab(
     @EnableTopicPracticeTab param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.EDGE_TO_EDGE)
+  fun bindEdgeToEdge(
+    @EnableEdgeToEdge param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }

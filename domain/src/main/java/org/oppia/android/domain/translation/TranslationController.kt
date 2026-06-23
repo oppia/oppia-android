@@ -99,6 +99,17 @@ class TranslationController @Inject constructor(
   }
 
   /**
+   * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
+   * English language.
+   *
+   * This is used for activities that should always display in English regardless of the user's
+   * selected app language (e.g. the policies pages which show canonical English content).
+   */
+  fun getEnglishLocale(): DataProvider<OppiaLocale.DisplayLocale> {
+    return localeController.retrieveAppStringDisplayLocale(OppiaLanguage.ENGLISH)
+  }
+
+  /**
    * Returns a data provider for the current [OppiaLanguage] selected for app strings for the
    * specified user (per their [profileId]).
    *
