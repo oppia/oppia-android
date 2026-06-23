@@ -1,0 +1,46 @@
+"""
+Libraries for release automation scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "cloud_signer",
+    srcs = [
+        "CloudKmsSigner.kt",
+        "CloudSigner.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//third_party:net_jsign_jsign-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "fake_cloud_signer",
+    testonly = True,
+    srcs = ["FakeCloudSigner.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":cloud_signer"],
+)
+
+kt_jvm_library(
+    name = "sign_release_binary_lib",
+    srcs = ["SignReleaseBinary.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":cloud_signer",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+    ],
+)
+
+# Note: upload_changelog_to_play_console_lib depends on PlayConsoleClient from PR 1.4.
+# This target is defined in PR 1.6 once PR 1.4 merges into develop.
+kt_jvm_library(
+    name = "upload_changelog_to_play_console_lib",
+    srcs = ["UploadChangelogToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [],
+)
