@@ -337,12 +337,26 @@ class StateDeckTest {
   }
 
   @Test
-  fun testHasFlashbackState_withMatchingLinkedSkill_isTrueAndReturnsStateName() {
+  fun testHasFlashbackState_withMatchingLinkedSkillId_returnsTrue() {
     val deck = StateDeck(createState("init", linkedSkillId = "skill_1"), isTerminalState)
     deck.advanceTo(createState("s1"))
 
     assertThat(deck.hasFlashbackState("skill_1")).isTrue()
+  }
+
+  @Test
+  fun testHasFlashbackState_withNonMatchingLinkedSkillId_returnsFalse() {
+    val deck = StateDeck(createState("init", linkedSkillId = "skill_1"), isTerminalState)
+    deck.advanceTo(createState("s1"))
+
     assertThat(deck.hasFlashbackState("other_skill")).isFalse()
+  }
+
+  @Test
+  fun testGetFlashbackStateName_withMatchingLinkedSkillId_returnsCorrectStateName() {
+    val deck = StateDeck(createState("init", linkedSkillId = "skill_1"), isTerminalState)
+    deck.advanceTo(createState("s1"))
+
     assertThat(deck.getFlashbackStateName("skill_1")).isEqualTo("init")
   }
 

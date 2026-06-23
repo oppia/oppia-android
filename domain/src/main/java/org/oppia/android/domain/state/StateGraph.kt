@@ -17,11 +17,16 @@ class StateGraph constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private val remainingCheckpointCountCache = mutableMapOf<String, Int?>()
+  // Whether any state in this graph is a checkpoint. This is a graph-level property, so it's computed
+  // once and cached: explorations without checkpoints are the common case and are queried on every
+  // navigation event, so re-scanning every state each time would be wasteful. Reset with the graph.
+  private var graphHasCheckpointState: Boolean? = null
 
   /** Resets this graph to the new graph represented by the specified [Map]. */
   fun reset(stateGraph: Map<String, State>) {
     this.stateGraph = stateGraph
     remainingCheckpointCountCache.clear()
+    graphHasCheckpointState = null
   }
 
   /** Returns the [State] corresponding to the specified name. */
@@ -109,7 +114,7 @@ class StateGraph constructor(
    * state, or no correct-answer path reaches the terminal (the latter two are logged).
    */
   private fun findMainPath(startStateName: String): List<String>? {
-    if (stateGraph.values.none { it.isCheckpoint }) return null
+    if (!hasAnyCheckpointState()) return null
 
     // Requiring a single terminal state reduces this to a pathfind between two fixed points.
     val terminalStateNames = stateGraph.values.filter(isTerminalState).map { it.name }
@@ -131,6 +136,18 @@ class StateGraph constructor(
       )
     }
     return mainPath
+  }
+
+  /**
+   * Returns whether any state in this graph is a checkpoint, computing it once and caching the
+   * result because it's a graph-level property that's re-queried on every navigation event.
+   */
+  private fun hasAnyCheckpointState(): Boolean {
+    val cached = graphHasCheckpointState
+    if (cached != null) return cached
+    val hasCheckpoint = stateGraph.values.any { it.isCheckpoint }
+    graphHasCheckpointState = hasCheckpoint
+    return hasCheckpoint
   }
 
   /**
@@ -169,6 +186,9 @@ class StateGraph constructor(
    */
   private fun getForwardDestinations(stateName: String): List<String> {
     val interaction = stateGraph.getValue(stateName).interaction
+    // A correct outcome's destStateName is the empty-string proto default when the exploration data
+    // doesn't set one; skip those so an empty name can't enter the search and crash the later
+    // getValue lookup. Valid lessons always give a correct answer a real destination.
     val correctAnswerDestinations = interaction.answerGroupsList
       .map { it.outcome }
       .filter { it.labelledAsCorrect && it.destStateName.isNotEmpty() }

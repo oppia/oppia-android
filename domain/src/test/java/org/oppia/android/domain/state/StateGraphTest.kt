@@ -32,7 +32,7 @@ import javax.inject.Singleton
 
 private const val TERMINAL_INTERACTION_ID = "EndExploration"
 
-/** Tests for [StateGraph], focusing on its checkpoint-counting behavior. */
+/** Tests for [StateGraph]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -196,6 +196,49 @@ class StateGraphTest {
   }
 
   @Test
+  fun testMinimumCheckpointCount_noCheckpointGraphQueriedFromMultipleStates_scansStatesOnce() {
+    // A no-checkpoint exploration returns null for every state. Because "has any checkpoint" is a
+    // graph-level property, the scan over all states should run once and be reused, not repeated for
+    // each queried state. The counting map asserts the states are only iterated a single time.
+    val countingMap = ValuesAccessCountingMap(
+      listOf(
+        createQuestionState(name = "init", correctDestStateName = "middle"),
+        createContinueState(name = "middle", nextStateName = "end"),
+        createTerminalState(name = "end")
+      ).associateBy { it.name }
+    )
+    val graph = StateGraph(countingMap, isTerminalState, oppiaLogger)
+
+    assertThat(graph.computeMinimumCheckpointCount("init")).isNull()
+    assertThat(graph.computeMinimumCheckpointCount("middle")).isNull()
+
+    assertThat(countingMap.valuesAccessCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testReset_afterCachingCount_recomputesForNewGraph() {
+    // init -> s1(checkpoint) -> end: from init the remaining count is the future checkpoint plus the
+    // terminal, so 2. Querying it also populates the cache.
+    val graph = createStateGraph(
+      createQuestionState(name = "init", correctDestStateName = "s1", isCheckpoint = true),
+      createContinueState(name = "s1", nextStateName = "end", isCheckpoint = true),
+      createTerminalState(name = "end")
+    )
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(2)
+
+    // After resetting to a graph where init goes straight to the terminal with no checkpoint in
+    // between, the count must drop to 1 (just the terminal). A stale cache would still report 2.
+    graph.reset(
+      listOf(
+        createQuestionState(name = "init", correctDestStateName = "end", isCheckpoint = true),
+        createTerminalState(name = "end")
+      ).associateBy { it.name }
+    )
+
+    assertThat(graph.computeMinimumCheckpointCount("init")).isEqualTo(1)
+  }
+
+  @Test
   fun testComputeAnswerOutcome_withRefresherExplorationId_setsRefresher() {
     val graph = createStateGraph(createTerminalState("current"))
     val currentState = createQuestionState(name = "current", correctDestStateName = "next")
@@ -321,6 +364,23 @@ class StateGraphTest {
       .setDestStateName(destStateName)
       .setLabelledAsCorrect(labelledAsCorrect)
       .build()
+  }
+
+  /**
+   * A [Map] that delegates to [delegate] but counts how many times its [values] collection is
+   * accessed, used to verify the graph-level no-checkpoint scan is cached instead of repeated.
+   */
+  private class ValuesAccessCountingMap(
+    private val delegate: Map<String, State>
+  ) : Map<String, State> by delegate {
+    var valuesAccessCount = 0
+      private set
+
+    override val values: Collection<State>
+      get() {
+        valuesAccessCount++
+        return delegate.values
+      }
   }
 
   private fun setUpTestApplicationComponent() {
