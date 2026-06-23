@@ -81,7 +81,6 @@ class CloudKmsSigner(
       )
     }
 
-
     // Load the public certificate from the repository (safe to commit — it's the public part only).
     val certFactory = CertificateFactory.getInstance("X.509")
     val certificate = FileInputStream(certPath.toFile()).use { stream ->
