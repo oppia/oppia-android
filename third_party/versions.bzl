@@ -84,6 +84,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "io.fabric.sdk.android:fabric": "1.4.7",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
+    "net.jsign:jsign-core": "7.1",
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.checkerframework:checker-compat-qual": "2.5.5",
     "org.checkerframework:checker-qual": "3.21.3",
