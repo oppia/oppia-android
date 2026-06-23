@@ -33,12 +33,16 @@ jobs:
 
       - name: Repin maven_install.json
         run: |
-          # Step 1: comment out maven_install_json so Bazel regenerates from scratch
-          sed -i 's|maven_install_json = "//third_party:maven_install.json",|# maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
-          # Step 2: pin fresh (resolves all artifacts, writes new maven_install.json)
+          # Step 1: comment out maven_install_json + pinned_maven_install (both break without the lock file)
+          sed -i 's|    maven_install_json = "//third_party:maven_install.json",|    # maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          sed -i 's|load("@maven//:defs.bzl", "pinned_maven_install")|# load("@maven//:defs.bzl", "pinned_maven_install")|' WORKSPACE
+          sed -i 's|^pinned_maven_install()$|# pinned_maven_install()|' WORKSPACE
+          # Step 2: fresh pin — resolves all artifacts and writes new maven_install.json
           bazel run @maven//:pin
-          # Step 3: restore the maven_install_json attribute
-          sed -i 's|# maven_install_json = "//third_party:maven_install.json",|maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          # Step 3: restore all commented lines
+          sed -i 's|    # maven_install_json = "//third_party:maven_install.json",|    maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          sed -i 's|# load("@maven//:defs.bzl", "pinned_maven_install")|load("@maven//:defs.bzl", "pinned_maven_install")|' WORKSPACE
+          sed -i 's|^# pinned_maven_install()$|pinned_maven_install()|' WORKSPACE
 
       - name: Commit and push updated maven_install.json
         run: |
