@@ -1,7 +1,11 @@
-# Builds a release AAB for the given flavor at the given source ref, signs it using jarsigner
-# with a production keystore provisioned via GCP Secret Manager, and uploads the signed binary
-# to the flavor-specific GCS archive bucket. Signing is handled by the _sign_and_rename_aab
-# Bazel rule in oppia_android_application.bzl via the //config:keystore_* Bazel flags.
+# Builds a release AAB for the given flavor at the given source ref, signs it using
+# Cloud KMS HSM via jarsigner + jsign JCA provider (sign_release_binary Kotlin script), and
+# uploads the signed binary to the flavor-specific GCS archive bucket.
+#
+# The private key NEVER leaves the KMS HSM boundary — only the AAB digest is sent to KMS
+# and the RSA signature is returned. The GCP access token is obtained post-WIF-auth and passed
+# as GCP_ACCESS_TOKEN to sign_release_binary, which configures jarsigner accordingly.
+# The public certificate is committed at config/certificate/upload_certificate.pem.
 #
 # This workflow must be triggered manually by a release coordinator. It requires approval from
 # a required reviewer via the oppia-android-release-env GitHub environment before any steps
@@ -117,60 +121,53 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      # Retrieves the release keystore and its credentials from GCP Secret Manager.
-      # The keystore is stored base64-encoded; the password and alias are plain text.
-      # Files are written into the workspace (config/) so they can be referenced as
-      # Bazel labels (//config:release_keystore.jks etc.) required by the label_flag
-      # types in config/BUILD.bazel (introduced in PR #6265).
-      - name: Provision release keystore from Secret Manager
+      # Obtain an OAuth2 access token for the WIF-impersonated service account.
+      # sign_release_binary reads this from the GCP_ACCESS_TOKEN environment variable
+      # when configuring the jsign JCA provider to reach Cloud KMS.
+      - name: Get GCP access token
+        run: echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
+
+      - name: Build unsigned AAB
         run: |
-          gcloud secrets versions access latest \
-            --secret="oppia-android-release-keystore" \
-            --format='get(payload.data)' \
-            | tr '_-' '/+' | base64 -d > config/release_keystore.jks
-
-          gcloud secrets versions access latest \
-            --secret="oppia-android-release-keystore-password" \
-            > config/keystore_password.txt
-
-          gcloud secrets versions access latest \
-            --secret="oppia-android-release-key-alias" \
-            > /tmp/key_alias.txt
-
-          # Expose keystore files as Bazel targets for the label_flags.
-          printf '\nexports_files(["release_keystore.jks", "keystore_password.txt"], visibility = ["//:oppia_binary_visibility"])\n' >> config/BUILD.bazel
-          echo "Keystore provisioned from Secret Manager."
-
-      - name: Build signed AAB
-        run: |
-          KEY_ALIAS=$(cat /tmp/key_alias.txt)
           bazel build --compilation_mode=opt \
-            --//config:keystore_file=//config:release_keystore.jks \
-            --//config:keystore_password_file=//config:keystore_password.txt \
-            --//config:key_alias="$KEY_ALIAS" \
             -- //:oppia_${{ github.event.inputs.flavor }}
 
-      # The _sign_and_rename_aab Bazel rule produces a signed AAB named:
+      # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
-      # This step locates it and extracts the version/RC for the GCS archive path.
-      - name: Locate signed AAB
+      # This step locates the unsigned output and extracts version/RC for the GCS archive path.
+      - name: Locate unsigned AAB
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           # Use workspace-relative bazel-bin symlink — 'find bazel-bin' can fail in CI
           # because bazel-bin is a symlink that may not resolve in a separate step.
-          AAB_PATH=$(ls bazel-bin/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
-          if [[ -z "$AAB_PATH" ]]; then
-            echo "::error::Signed AAB not found in bazel-bin/oppia_${FLAVOR}_release/. Build may have failed."
+          UNSIGNED_AAB_PATH=$(ls bazel-bin/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
+          if [[ -z "$UNSIGNED_AAB_PATH" ]]; then
+            echo "::error::Unsigned AAB not found in bazel-bin/oppia_${FLAVOR}_release/. Build may have failed."
             exit 1
           fi
-          AAB_NAME=$(basename "$AAB_PATH")
+          AAB_NAME=$(basename "$UNSIGNED_AAB_PATH")
           VERSION=$(echo "$AAB_NAME" | grep -oP '(?<=oppia-android-)\d+\.\d+')
           RC_NUM=$(echo "$AAB_NAME" | grep -oP '(?<=rc)\d+')
-          echo "AAB_PATH=$AAB_PATH" >> $GITHUB_ENV
+          echo "UNSIGNED_AAB_PATH=$UNSIGNED_AAB_PATH" >> $GITHUB_ENV
+          echo "SIGNED_AAB_PATH=${{ github.workspace }}/signed-${AAB_NAME}" >> $GITHUB_ENV
           echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
-          echo "Found: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+          echo "Found unsigned: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+
+      # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
+      # only the digest is sent to KMS and the signature returned via the jsign JCA provider.
+      # GCP_ACCESS_TOKEN (set above) is read by sign_release_binary at runtime.
+      - name: Sign AAB with Cloud KMS
+        env:
+          GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
+        run: |
+          bazel run //scripts:sign_release_binary -- \
+            "${{ github.workspace }}/$UNSIGNED_AAB_PATH" \
+            "${{ secrets.KMS_KEY_RESOURCE_NAME }}" \
+            "${{ github.workspace }}/config/certificate/upload_certificate.pem" \
+            "$SIGNED_AAB_PATH"
+          echo "Signed AAB written to: $SIGNED_AAB_PATH"
 
 
       - name: Upload signed AAB to GCS archive
@@ -186,5 +183,5 @@ jobs:
             exit 1
           fi
 
-          gsutil cp "$AAB_PATH" "$GCS_PATH"
+          gsutil cp "$SIGNED_AAB_PATH" "$GCS_PATH"
           echo "Uploaded to: $GCS_PATH"
