@@ -152,6 +152,7 @@ class GooglePlayConsoleClientTest {
       editId = "edit-1",
       track = "alpha",
       versionCode = 301L,
+      rolloutFraction = 1.0,
       releaseNotes = mapOf("en-US" to "Bug fixes")
     )
   }
@@ -164,7 +165,7 @@ class GooglePlayConsoleClientTest {
         .setResponseCode(200)
     )
 
-    client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, emptyMap())
+    client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1.0, emptyMap())
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("PUT")
@@ -176,7 +177,7 @@ class GooglePlayConsoleClientTest {
     server.enqueue(MockResponse().setResponseCode(409).setBody("Conflict"))
 
     val exception = assertThrows<IllegalStateException>() {
-      client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, emptyMap())
+      client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1.0, emptyMap())
     }
 
     assertThat(exception).hasMessageThat().contains("409")
