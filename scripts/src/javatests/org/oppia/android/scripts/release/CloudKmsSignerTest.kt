@@ -39,7 +39,7 @@ class CloudKmsSignerTest {
   @Test
   fun testSign_withNonExistentAabPath_throwsFileNotFoundWithAabPath() {
     val signer = CloudKmsSigner(
-      kmsKeyResourceName = "projects/p/locations/global/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
+      kmsKeyResourceName = "projects/p/locations/gl/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
       commandExecutor = unusedCommandExecutor
     )
     val nonExistentAab = tempFolder.root.toPath().resolve("missing.aab")
@@ -57,7 +57,7 @@ class CloudKmsSignerTest {
   fun testSign_withExistingAabAndMissingGcpToken_throwsIllegalStateException() {
     // Bazel's sandbox does not pass GCP_ACCESS_TOKEN through, so checkNotNull fails here.
     val signer = CloudKmsSigner(
-      kmsKeyResourceName = "projects/p/locations/global/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
+      kmsKeyResourceName = "projects/p/locations/gl/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
       commandExecutor = unusedCommandExecutor
     )
     val unsignedAab = tempFolder.newFile("unsigned.aab")
