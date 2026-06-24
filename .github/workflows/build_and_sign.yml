@@ -13,7 +13,6 @@
 # conflicts (cancel-in-progress is disabled so in-flight builds are never interrupted).
 
 name: Build and Sign Release
-
 on:
   workflow_dispatch:
     inputs:
@@ -31,8 +30,6 @@ on:
         type: string
 
 concurrency:
-  # One build+sign run per flavor at a time. cancel-in-progress=false ensures an in-flight
-  # signing run is never cancelled mid-way (which could leave a corrupt AAB in GCS).
   group: build-and-sign-${{ github.event.inputs.flavor }}
   cancel-in-progress: false
 

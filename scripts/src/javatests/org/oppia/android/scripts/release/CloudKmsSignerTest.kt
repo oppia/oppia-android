@@ -13,9 +13,8 @@ import java.io.FileNotFoundException
 /**
  * Tests for [CloudKmsSigner].
  *
- * These tests cover only the precondition-failure paths that do not require real GCP credentials
- * or a Cloud KMS keystore. The actual KMS signing path is exercised at runtime in CI via the
- * `sign_release_binary` binary and is validated by the `build_and_sign.yml` workflow.
+ * Covers the precondition-failure paths that do not require real GCP credentials: missing AAB
+ * file and missing GCP access token. Signing behaviour is covered in [FakeCloudSignerTest].
  */
 class CloudKmsSignerTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -33,8 +32,6 @@ class CloudKmsSignerTest {
       inputLines: Sequence<String>
     ): CommandResult = error("CommandExecutor should not be called in these tests.")
   }
-
-  // region sign() — precondition checks
 
   @Test
   fun testSign_withNonExistentAabPath_throwsFileNotFoundWithAabPath() {
@@ -70,6 +67,4 @@ class CloudKmsSignerTest {
 
     assertThat(exception).hasMessageThat().contains("GCP_ACCESS_TOKEN")
   }
-
-  // endregion
 }

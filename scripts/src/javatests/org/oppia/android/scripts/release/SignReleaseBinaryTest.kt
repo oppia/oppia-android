@@ -42,8 +42,6 @@ class SignReleaseBinaryTest {
     System.setErr(originalErr)
   }
 
-  // region main() — argument count checks
-
   @Test
   fun testMain_noArguments_throwsIllegalArgumentWithUsage() {
     val exception = assertThrows<IllegalArgumentException> { main() }
@@ -73,10 +71,6 @@ class SignReleaseBinaryTest {
 
     assertThat(exception).hasMessageThat().contains("Usage:")
   }
-
-  // endregion
-
-  // region main() — blank argument checks
 
   @Test
   fun testMain_blankUnsignedAabPath_throwsIllegalArgument() {
@@ -120,10 +114,6 @@ class SignReleaseBinaryTest {
     assertThat(exception).hasMessageThat().contains("output_aab_path must not be blank")
   }
 
-  // endregion
-
-  // region main() — validation checks
-
   @Test
   fun testMain_certFileDoesNotExist_throwsIllegalArgument() {
     val exception = assertThrows<IllegalArgumentException> {
@@ -163,10 +153,6 @@ class SignReleaseBinaryTest {
     assertThat(errContent.toString()).contains("Unsigned AAB not found")
   }
 
-  // endregion
-
-  // region signAndValidate() — success path
-
   @Test
   fun testSignAndValidate_validInputs_outputFileIsCreated() {
     val unsignedAab =
@@ -204,10 +190,6 @@ class SignReleaseBinaryTest {
     assertThat(fakeSigner.signedPaths).hasSize(1)
     assertThat(fakeSigner.signedPaths.first()).isEqualTo(unsignedAab.toPath())
   }
-
-  // endregion
-
-  // region signAndValidate() — error paths (System.exit → SecurityException)
 
   @Test
   fun testSignAndValidate_missingUnsignedAab_exitsAndLogsError() {
@@ -287,8 +269,6 @@ class SignReleaseBinaryTest {
     assertThat(exception).hasMessageThat().contains("System.exit()")
     assertThat(errContent.toString()).contains("mismatch")
   }
-
-  // endregion
 
   private companion object {
     /** A syntactically valid Cloud KMS key version resource name for use in tests. */

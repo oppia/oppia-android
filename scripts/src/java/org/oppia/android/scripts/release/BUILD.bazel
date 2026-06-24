@@ -36,8 +36,6 @@ kt_jvm_library(
     ],
 )
 
-# Note: upload_changelog_to_play_console_lib depends on PlayConsoleClient from PR 1.4.
-# This target is defined in PR 1.6 once PR 1.4 merges into develop.
 kt_jvm_library(
     name = "upload_changelog_to_play_console_lib",
     srcs = ["UploadChangelogToPlayConsole.kt"],

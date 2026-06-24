@@ -28,7 +28,6 @@ class CloudKmsSigner(
   private val kmsKeyResourceName: String,
   private val commandExecutor: CommandExecutor
 ) : CloudSigner {
-
   override fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path) {
     // Verify the unsigned AAB exists before attempting to contact KMS.
     if (!unsignedAabPath.toFile().exists()) {
@@ -54,8 +53,6 @@ class CloudKmsSigner(
     val keyAlias = kmsKeyResourceName
 
     // Register the Jsign JCA provider so that jarsigner can delegate signing to Cloud KMS.
-    // See: https://docs.cloud.google.com/kms/docs/hsm
-    // IMPORTANT: Select HSM — NOT single tenant.
     val provider = JsignJcaProvider(keyRingPath)
     Security.addProvider(provider)
 
@@ -63,21 +60,20 @@ class CloudKmsSigner(
     keyStore.load(null, gcpAccessToken)
 
     // Validate KMS access: ensures the key exists and is reachable before invoking jarsigner.
-    // The actual signing is performed by jarsigner which looks up the key via the registered
-    // JCA provider — the PrivateKey object itself is not passed to jarsigner.
-    try {
+    val key = try {
       keyStore.getKey(keyAlias, null)
-        ?: throw KeyVersionUnavailableException(
-          "Key version not found in KMS keystore for alias: $keyAlias. " +
-            "Check that the key version is enabled and not destroyed."
-        )
     } catch (e: Exception) {
-      if (e is KeyVersionUnavailableException) throw e
       throw CloudKmsAuthenticationException(
         "Failed to authenticate with Cloud KMS. " +
           "WIF identity may be misconfigured or the key resource name is incorrect: " +
           kmsKeyResourceName,
         e
+      )
+    }
+    if (key == null) {
+      throw KeyVersionUnavailableException(
+        "Key version not found in KMS keystore for alias: $keyAlias. " +
+          "Check that the key version is enabled and not destroyed."
       )
     }
 

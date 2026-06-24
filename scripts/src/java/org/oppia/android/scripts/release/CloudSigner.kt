@@ -3,28 +3,15 @@ package org.oppia.android.scripts.release
 import java.nio.file.Path
 
 /**
- * Abstracts AAB signing so that tests can avoid real KMS calls.
+ * Abstracts AAB signing so that production and test code share the same call site.
  *
- * The production implementation [CloudKmsSigner] invokes `jarsigner` configured with the Cloud
- * KMS JCA provider, sending only the AAB digest to KMS and receiving the signature back. The key
- * never leaves the HSM boundary.
- *
- * Test code uses [FakeCloudSigner], which writes a predictable stub AAB to [outputPath] without
- * making any network calls or requiring GCP credentials.
+ * @see CloudKmsSigner for the production implementation using Cloud KMS HSM via jarsigner.
+ * @see FakeCloudSigner for the test double used in unit tests.
  */
 interface CloudSigner {
   /**
-   * Signs the unsigned AAB at [unsignedAabPath] using the certificate at [certPath] and writes the
-   * signed output to [outputPath].
-   *
-   * @param unsignedAabPath path to the unsigned AAB produced by `bazel build`
-   * @param certPath path to the public X.509 certificate PEM file (checked into
-   *     `config/certificate/`)
-   * @param outputPath destination path for the signed AAB
-   * @throws CloudKmsAuthenticationException if KMS is unreachable or returns an auth error
-   * @throws KeyVersionUnavailableException if the KMS key version is disabled or destroyed
-   * @throws CertificateMismatchException if the cert in `META-INF/` does not match [certPath]
-   * @throws java.io.FileNotFoundException if [unsignedAabPath] does not exist
+   * Signs the unsigned AAB at [unsignedAabPath] using the certificate at [certPath] and writes
+   * the signed output to [outputPath].
    */
   fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path)
 }
