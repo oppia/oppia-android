@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.gae.compat
 
+import com.squareup.moshi.JsonDataException
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.AudioVoiceoverHasInvalidAudioFormat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlInTitleOrDescription
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlUnexpectedlyInUnicodeContent
@@ -623,8 +624,11 @@ class StructureCompatibilityChecker(
           extractMathContentsFromHtml(tag)
         } catch (_: IllegalStateException) {
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        } catch (_: JsonDataException) {
+          // Math content with invalid JSON fields fails to parse.
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
         } catch (_: IOException) {
-          // Truncated or malformed JSON in the math content results in a parse failure.
+          // Truncated or malformed math content JSON fails to parse.
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
         }
         if (parsedMathContents.size != 1) {
