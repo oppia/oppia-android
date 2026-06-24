@@ -300,7 +300,7 @@ class TopicController @Inject constructor(
     subtopicId: Int
   ): DataProvider<EphemeralStudyGuide> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_STUDY_GUIDE_PROVIDER_ID) { contentLocale ->
       EphemeralStudyGuide.newBuilder().apply {
         studyGuide = studyGuideRetriever.loadStudyGuide(topicId, subtopicId)
