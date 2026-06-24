@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.gae.compat
 
 import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.JsonEncodingException
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.AudioVoiceoverHasInvalidAudioFormat
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlInTitleOrDescription
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityFailure.HtmlUnexpectedlyInUnicodeContent
@@ -54,7 +55,7 @@ import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.DE
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TITLE
 import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.proto.v1.structure.LanguageType
-import java.io.IOException
+import java.io.EOFException
 
 // TODO: Check SVG compatibility?
 // TODO: Check image validity?
@@ -625,10 +626,13 @@ class StructureCompatibilityChecker(
         } catch (_: IllegalStateException) {
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
         } catch (_: JsonDataException) {
-          // Math content with invalid JSON fields fails to parse.
+          // Missing or invalid math content JSON fields fail to parse.
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
-        } catch (_: IOException) {
-          // Truncated or malformed math content JSON fails to parse.
+        } catch (_: JsonEncodingException) {
+          // Malformed math content JSON fails to parse.
+          return@mapNotNull MathTagHasInvalidContent(contentId, origin)
+        } catch (_: EOFException) {
+          // Truncated math content JSON fails to parse.
           return@mapNotNull MathTagHasInvalidContent(contentId, origin)
         }
         if (parsedMathContents.size != 1) {
