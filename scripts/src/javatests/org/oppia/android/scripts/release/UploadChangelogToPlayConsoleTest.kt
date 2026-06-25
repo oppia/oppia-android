@@ -314,7 +314,9 @@ class UploadChangelogToPlayConsoleTest {
     val tooLongNote = "A".repeat(501)
 
     val exception = assertThrows<IllegalArgumentException> {
-      uploadChangelogToTrack(fakeClient, testPackageName, "alpha", 100L, mapOf("en-US" to tooLongNote))
+      uploadChangelogToTrack(
+        fakeClient, testPackageName, "alpha", 100L, mapOf("en-US" to tooLongNote)
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("500")
@@ -325,7 +327,9 @@ class UploadChangelogToPlayConsoleTest {
     val exactLengthNote = "A".repeat(500)
 
     // Should not throw — 500 chars is exactly at the limit.
-    uploadChangelogToTrack(fakeClient, testPackageName, "alpha", 100L, mapOf("en-US" to exactLengthNote))
+    uploadChangelogToTrack(
+      fakeClient, testPackageName, "alpha", 100L, mapOf("en-US" to exactLengthNote)
+    )
 
     assertThat(fakeClient.committedEdits).hasSize(1)
   }
@@ -365,8 +369,12 @@ class UploadChangelogToPlayConsoleTest {
       override fun uploadAab(packageName: String, editId: String, aabPath: String) =
         inner.uploadAab(packageName, editId, aabPath)
       override fun setTrackRelease(
-        packageName: String, editId: String, track: String,
-        versionCode: Long, rolloutFraction: Double, releaseNotes: Map<String, String>
+        packageName: String,
+        editId: String,
+        track: String,
+        versionCode: Long,
+        rolloutFraction: Double,
+        releaseNotes: Map<String, String>
       ) {
         if (failOnSetTrackRelease) error("simulated failure in setTrackRelease")
       }
