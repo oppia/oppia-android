@@ -13,6 +13,7 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
+        "//domain:domain_dev_assets",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
@@ -60,6 +61,7 @@ oppia_android_test(
         "//:dagger",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain",
+        "//domain:domain_dev_assets",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
