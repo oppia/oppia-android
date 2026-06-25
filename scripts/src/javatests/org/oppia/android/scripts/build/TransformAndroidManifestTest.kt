@@ -747,7 +747,7 @@ class TransformAndroidManifestTest {
     // there's a HEAD commit).
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.initializeHistoricalCommits(commitCount = 2280)
+    testGitRepository.initializeHistoricalCommits(commitCount = 2289)
     testGitRepository.createRemoteBranchRef("origin/develop")
   }
 

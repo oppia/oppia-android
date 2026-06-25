@@ -233,7 +233,7 @@ private class TransformAndroidManifest(
     // The version code beginning the new version code strategy.
     private const val BASE_VERSION_CODE = 300
     // The commit count at the time the new version code strategy was introduced.
-    private const val NEW_VERSION_STRATEGY_STARTING_COMMIT_NUMBER = 2280
+    private const val NEW_VERSION_STRATEGY_STARTING_COMMIT_NUMBER = 2289
     private const val VERSION_CODES_PER_RELEASE = 1000
     private const val MAX_FLAVORS_PER_RC = 25
     private const val MAX_RCS_PER_RELEASE = VERSION_CODES_PER_RELEASE / MAX_FLAVORS_PER_RC
