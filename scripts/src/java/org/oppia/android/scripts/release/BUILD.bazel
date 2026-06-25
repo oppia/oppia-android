@@ -1,6 +1,6 @@
 """
-Libraries for automating release operations, including uploading binaries and changelogs to the
-Play Console and distributing builds via Firebase App Distribution.
+Libraries for automating release operations, including uploading binaries to the Play Console
+and distributing builds via Firebase App Distribution.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
@@ -65,13 +65,4 @@ kt_jvm_library(
         ":pending_release_check",
         ":version_inversion_check",
     ],
-)
-
-# Wraps the UploadChangelogToPlayConsole script for use by the top-level binary in //scripts.
-# Uses oppia_script_binary_visibility so //scripts:upload_changelog_to_play_console can see it.
-kt_jvm_library(
-    name = "upload_changelog_to_play_console_lib",
-    srcs = ["UploadChangelogToPlayConsole.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [":play_console_client"],
 )

@@ -1,7 +1,7 @@
 """
 Tests for release automation scripts: ChangelogExistenceCheck, PendingReleaseCheck,
 VersionInversionCheck, FakePlayConsoleClient, PlayConsoleClient, GooglePlayConsoleClient,
-UploadBinaryToPlayConsole, and UploadChangelogToPlayConsole.
+and UploadBinaryToPlayConsole.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
@@ -80,17 +80,5 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:com_squareup_okhttp3_mockwebserver",
-    ],
-)
-
-kt_jvm_test(
-    name = "UploadChangelogToPlayConsoleTest",
-    srcs = ["UploadChangelogToPlayConsoleTest.kt"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
-        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
-        "//scripts/src/java/org/oppia/android/scripts/release:upload_changelog_to_play_console_lib",
-        "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
     ],
 )
