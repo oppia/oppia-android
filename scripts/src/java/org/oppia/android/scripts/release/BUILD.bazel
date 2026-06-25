@@ -18,4 +18,3 @@ kt_jvm_library(
         ":play_console_client",
     ],
 )
-
