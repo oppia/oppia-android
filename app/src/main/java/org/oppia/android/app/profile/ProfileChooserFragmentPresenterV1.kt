@@ -30,6 +30,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -236,13 +237,15 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id)
+      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
     }
   }
 
   private fun loginToProfile(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
-      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
+      profileManagementController.loginToProfile(
+        profile.id.toProfileIdPreservingZero()
+      ).toLiveData().observe(fragment) {
         if (it is AsyncResult.Success) {
           if (enableMultipleClassrooms.value) {
             activity.startActivity(

@@ -15,6 +15,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [IntroFragment]. */
@@ -44,7 +45,7 @@ class IntroFragmentPresenter @Inject constructor(
 
     setLearnerName(profileNickname)
 
-    profileManagementController.markProfileOnboardingStarted(profileId)
+    profileManagementController.markProfileOnboardingStarted(profileId.toProfileIdPreservingZero())
 
     if (parentScreen != IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN) {
       binding.onboardingStepsCount?.visibility = View.GONE

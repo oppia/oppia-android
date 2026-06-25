@@ -68,7 +68,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -76,6 +75,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -937,7 +937,7 @@ class AudioPlayerControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 
@@ -1003,7 +1003,6 @@ class AudioPlayerControllerTest {
       AlgebraicExpressionInputModule::class,
       ApplicationLifecycleModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       DragDropSortInputModule::class,
       ExplorationProgressModule::class,
