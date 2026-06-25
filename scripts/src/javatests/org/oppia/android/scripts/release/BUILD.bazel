@@ -1,0 +1,22 @@
+"""
+Tests for the upload_changelog_to_play_console script.
+
+Note: This PR (1.6) depends on PR 1.4 (upload-binary-to-play-console) which provides
+:play_console_client and :fake_play_console_client. This BUILD file will not resolve
+standalone until PR 1.4 merges into develop first.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "UploadChangelogToPlayConsoleTest",
+    srcs = ["UploadChangelogToPlayConsoleTest.kt"],
+    deps = [
+        # These targets are defined in PR 1.4's release/BUILD.bazel.
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:upload_changelog_to_play_console_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)

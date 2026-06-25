@@ -1,0 +1,19 @@
+"""
+Library for uploading changelogs to the Play Console.
+
+Note: This PR (1.6) depends on PR 1.4 (upload-binary-to-play-console) which provides
+:play_console_client and :fake_play_console_client. This BUILD file will not resolve
+standalone until PR 1.4 merges into develop first.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "upload_changelog_to_play_console_lib",
+    srcs = ["UploadChangelogToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        # play_console_client is defined in PR 1.4's release/BUILD.bazel.
+        ":play_console_client",
+    ],
+)
