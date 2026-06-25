@@ -20,8 +20,9 @@ import java.io.File
  * @param args[2] version — version in major.minor format matching `config/changelogs/<version>.md`
  * @param args[3] gcp_project_id — GCP project ID for WIF-authenticated `gcloud` token
  */
-// Note: PlayConsoleClient and GooglePlayConsoleClient are provided by PR 1.4
-// (upload-binary-to-play-console). This file will not compile until that PR merges into develop.
+// Note: PlayConsoleClient and GooglePlayConsoleClient are defined in PR 1.4
+// (upload-binary-to-play-console, tracking issue #6106). This file will not compile until
+// that PR merges into develop.
 fun main(args: Array<String>) {
   require(args.size == 4) {
     "Usage: upload_changelog_to_play_console <workspace_path> <package_name> <version> " +
@@ -55,22 +56,25 @@ fun main(args: Array<String>) {
   println("  Notes    : ${localNotes.take(80)}${if (localNotes.length > 80) "..." else ""}")
   println()
 
-  // TODO(#PR1.4-ext): obtainAccessToken and GooglePlayConsoleClient are from PR 1.4.
-  // TODO(#PR1.4-ext): PlayConsoleClient.getTrackReleaseNotes(packageName, track) must be added
-  //     to the PlayConsoleClient interface in PR 1.4 so that this script can fetch the currently
-  //     deployed release notes from the API for diff detection.
+  // The wiring below requires two additions from PR 1.4 (tracking issue #6106):
+  //   1. obtainAccessToken(gcpProjectId) — currently private to UploadBinaryToPlayConsole.kt;
+  //      needs to be extracted to a shared utility (e.g. GcpAuthUtils.kt).
+  //   2. PlayConsoleClient.getTrackReleaseNotes(packageName, track) — not yet in the
+  //      PlayConsoleClient interface; needed to fetch deployed notes for diff detection.
   //
-  // val accessToken = obtainAccessToken(gcpProjectId)
-  // val client = GooglePlayConsoleClient(accessToken)
-  // val liveTracks = auditLiveTracks(client, packageName)
+  // Once both are available this body becomes:
   //
-  // for ((track, releases) in liveTracks) {
-  //   val deployedNotes = client.getTrackReleaseNotes(packageName, track)["en-US"].orEmpty()
-  //   if (detectChangelogDiff(localNotes, deployedNotes)) {
-  //     val versionCode = releases.first().versionCodes.max()
-  //     uploadChangelogToTrack(client, packageName, track, versionCode, mapOf("en-US" to localNotes))
+  //   val accessToken = obtainAccessToken(gcpProjectId)
+  //   val client = GooglePlayConsoleClient(accessToken)
+  //   val liveTracks = auditLiveTracks(client, packageName)
+  //
+  //   for ((track, releases) in liveTracks) {
+  //     val deployedNotes = client.getTrackReleaseNotes(packageName, track)["en-US"].orEmpty()
+  //     if (detectChangelogDiff(localNotes, deployedNotes)) {
+  //       val versionCode = releases.first().versionCodes.max()
+  //       uploadChangelogToTrack(client, packageName, track, versionCode, mapOf("en-US" to localNotes))
+  //     }
   //   }
-  // }
 }
 
 /**
