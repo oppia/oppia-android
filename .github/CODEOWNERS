@@ -216,7 +216,7 @@
 /scripts/assets/maven_dependencies.textproto @oppia/owners
 
 # Configuration and developer-only resources related to third-party licenses.
-/app/src/main/java/org/oppia/android/app/thirdparty/ @oppia/android-frontend-reviewers
+/app/src/main/java/org/oppia/android/app/thirdparty/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                         Linter & IDE configurations                          #
