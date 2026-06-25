@@ -184,7 +184,10 @@ fun uploadChangelogToTrack(
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  client.setTrackRelease(packageName, editId, track, versionCode, newNotes)
+  // Changelog-only updates do not change the binary; use a full rollout (1.0) so the track
+  // assignment is preserved as-is. For in-progress (staged) releases, the fraction is kept at
+  // 100% since this script only updates text, not the user rollout percentage.
+  client.setTrackRelease(packageName, editId, track, versionCode, 1.0, newNotes)
   println("  Track release notes updated.")
 
   client.commitEdit(packageName, editId)
