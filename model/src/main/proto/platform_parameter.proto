@@ -152,6 +152,13 @@ enum FeatureFlagId {
 
   // Corresponds to a feature enabling edge-to-edge display support for Android 15+ compatibility.
   EDGE_TO_EDGE = 19;
+
+  // Corresponds to whether lesson protos should be loaded from assets rather than JSON (which are
+  // loaded by default).
+  LOAD_LESSON_PROTOS_FROM_ASSETS = 20;
+
+  // Corresponds to whether images should be loaded from assets.
+  LOAD_IMAGES_FROM_ASSETS = 21;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to

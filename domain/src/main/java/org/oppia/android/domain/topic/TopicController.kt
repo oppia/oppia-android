@@ -36,7 +36,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -45,6 +44,8 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -107,7 +108,8 @@ class TopicController @Inject constructor(
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
 ) {
@@ -488,7 +490,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveTopic(topicId: String): Topic? {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.maybeLoadProtoFromLocalAssets(
         assetName = topicId,
         baseMessage = TopicRecord.getDefaultInstance()
@@ -525,7 +527,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       loadStorySummary(storyId)
     } else createStorySummaryFromJson(topicId, storyId)
   }
@@ -647,7 +649,7 @@ class TopicController @Inject constructor(
     // TODO(#169): Compute this based on protos & the combined topic package.
     // TODO(#169): Incorporate image files in this computation.
     return constituentFiles.sumOf { file ->
-      if (loadLessonProtosFromAssets) {
+      if (loadLessonProtosFromAssets.value) {
         assetRepository.getLocalAssetProtoSize(file)
       } else {
         jsonAssetRetriever.getAssetSize(file)
