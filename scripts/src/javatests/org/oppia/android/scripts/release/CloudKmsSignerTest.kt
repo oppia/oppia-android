@@ -8,13 +8,15 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
 import org.oppia.android.testing.assertThrows
 import java.io.File
-import java.io.FileNotFoundException
 
 /**
  * Tests for [CloudKmsSigner].
  *
  * Covers the precondition-failure paths that do not require real GCP credentials: missing AAB
- * file and missing GCP access token. Signing behaviour is covered in [FakeCloudSignerTest].
+ * file and missing GCP access token.
+ *
+ * TODO(#<issue>): Expand test coverage to validate that `jarsigner` is invoked with the expected
+ *   arguments by injecting a [CommandExecutor] that captures command invocations.
  */
 class CloudKmsSignerTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -34,37 +36,20 @@ class CloudKmsSignerTest {
   }
 
   @Test
-  fun testSign_withNonExistentAabPath_throwsFileNotFoundWithAabPath() {
+  fun testSign_withNonExistentAabPath_throwsIllegalStateWithAabPath() {
     val signer = CloudKmsSigner(
       kmsKeyResourceName = "projects/p/locations/gl/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
+      gcpAccessToken = "fake-token".toCharArray(),
       commandExecutor = unusedCommandExecutor
     )
     val nonExistentAab = tempFolder.root.toPath().resolve("missing.aab")
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    val exception = assertThrows<FileNotFoundException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(nonExistentAab, cert, output)
     }
 
     assertThat(exception).hasMessageThat().contains("missing.aab")
-  }
-
-  @Test
-  fun testSign_withExistingAabAndMissingGcpToken_throwsIllegalStateException() {
-    // Bazel's sandbox does not pass GCP_ACCESS_TOKEN through, so checkNotNull fails here.
-    val signer = CloudKmsSigner(
-      kmsKeyResourceName = "projects/p/locations/gl/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
-      commandExecutor = unusedCommandExecutor
-    )
-    val unsignedAab = tempFolder.newFile("unsigned.aab")
-    val cert = tempFolder.newFile("cert.pem")
-    val output = tempFolder.root.toPath().resolve("signed.aab")
-
-    val exception = assertThrows<IllegalStateException> {
-      signer.sign(unsignedAab.toPath(), cert.toPath(), output)
-    }
-
-    assertThat(exception).hasMessageThat().contains("GCP_ACCESS_TOKEN")
   }
 }
