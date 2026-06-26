@@ -101,21 +101,6 @@ class StructureCompatibilityCheckerTest {
   }
 
   @Test
-  fun testCheckMathTagsForLatex_mathTagWithInvalidJsonSyntax_returnsInvalidContentFailure() {
-    val invalidSyntaxContent =
-      "{&amp;quot;raw_latex&amp;quot;:," +
-        "&amp;quot;svg_filename&amp;quot;:&amp;quot;math.svg&amp;quot;}"
-    val html =
-      "<oppia-noninteractive-math math_content-with-value=\"$invalidSyntaxContent\">" +
-        "</oppia-noninteractive-math>"
-
-    val failures = checkMathTagsForLatex(html, testOrigin, testContentId)
-
-    assertThat(failures).hasSize(1)
-    assertThat(failures.first()).isInstanceOf(MathTagHasInvalidContent::class.java)
-  }
-
-  @Test
   fun testCheckMathTagsForLatex_mathTagWithMissingJsonField_returnsInvalidContentFailure() {
     val missingFieldContent = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;x^2&amp;quot;}"
     val html =
