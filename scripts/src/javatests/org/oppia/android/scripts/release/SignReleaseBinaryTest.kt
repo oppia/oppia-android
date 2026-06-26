@@ -13,27 +13,21 @@ import java.io.PrintStream
 
 /**
  * Tests for [SignReleaseBinary].
- *
- * All tests that exercise error paths in [signAndValidate] expect a [SecurityException] because
- * Bazel's test runner installs a SecurityManager that converts [System.exit] calls into a
- * SecurityException (this is the same pattern used across other script tests in this codebase).
  */
 class SignReleaseBinaryTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private lateinit var outContent: ByteArrayOutputStream
-  private lateinit var errContent: ByteArrayOutputStream
   private lateinit var originalOut: PrintStream
   private lateinit var originalErr: PrintStream
 
   @Before
   fun setUp() {
     outContent = ByteArrayOutputStream()
-    errContent = ByteArrayOutputStream()
     originalOut = System.out
     originalErr = System.err
     System.setOut(PrintStream(outContent))
-    System.setErr(PrintStream(errContent))
+    System.setErr(PrintStream(ByteArrayOutputStream()))
   }
 
   @After
@@ -53,6 +47,13 @@ class SignReleaseBinaryTest {
   @Test
   fun testMain_oneArgument_throwsIllegalArgumentWithUsage() {
     val exception = assertThrows<IllegalArgumentException> { main("only-one") }
+
+    assertThat(exception).hasMessageThat().contains("Usage:")
+  }
+
+  @Test
+  fun testMain_twoArguments_throwsIllegalArgumentWithUsage() {
+    val exception = assertThrows<IllegalArgumentException> { main("a", "b") }
 
     assertThat(exception).hasMessageThat().contains("Usage:")
   }
@@ -135,22 +136,21 @@ class SignReleaseBinaryTest {
   }
 
   @Test
-  fun testMain_validKmsResourceNameWithNumericVersion_doesNotThrowOnFormat() {
-    // Verify the regex accepts version numbers > 1 (regression check).
+  fun testMain_validKmsResourceNameWithNumericVersion_gcpTokenMissingNotFormatError() {
+    // Verify the regex accepts version numbers > 1 (regression check). Format validation passes,
+    // then execution proceeds to the GCP_ACCESS_TOKEN check — which throws since Bazel's sandbox
+    // doesn't set that variable.
     val certFile = tempFolder.newFile("cert.pem")
     val kmsKeyV3 =
       "projects/my-proj/locations/global/keyRings/ring/cryptoKeys/key/cryptoKeyVersions/3"
 
-    // KMS format validation passes → execution proceeds until jarsigner fails on the missing AAB,
-    // which triggers System.exit(1) inside signAndValidate → SecurityException.
-    val exception = assertThrows<SecurityException> {
+    val exception = assertThrows<IllegalStateException> {
       main("nonexistent.aab", kmsKeyV3, certFile.absolutePath, "output.aab")
     }
 
-    // Error is about the missing AAB, NOT about the KMS key format.
-    assertThat(exception).hasMessageThat().contains("System.exit()")
-    assertThat(errContent.toString()).doesNotContain("does not match the expected Cloud KMS")
-    assertThat(errContent.toString()).contains("Unsigned AAB not found")
+    // Error is about the missing token, NOT about the KMS key format.
+    assertThat(exception).hasMessageThat().contains("GCP_ACCESS_TOKEN")
+    assertThat(exception).hasMessageThat().doesNotContain("does not match the expected Cloud KMS")
   }
 
   @Test
@@ -192,12 +192,12 @@ class SignReleaseBinaryTest {
   }
 
   @Test
-  fun testSignAndValidate_missingUnsignedAab_exitsAndLogsError() {
+  fun testSignAndValidate_missingUnsignedAab_throwsIllegalStateException() {
     val nonExistentAab = File(tempFolder.root, "missing.aab")
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    val exception = assertThrows<SecurityException> {
+    val exception = assertThrows<IllegalStateException> {
       signAndValidate(
         FakeCloudSigner(),
         nonExistentAab.toPath(),
@@ -206,18 +206,17 @@ class SignReleaseBinaryTest {
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("System.exit()")
-    assertThat(errContent.toString()).contains("Unsigned AAB not found")
+    assertThat(exception).hasMessageThat().contains("Unsigned AAB not found")
   }
 
   @Test
-  fun testSignAndValidate_kmsAuthenticationFails_exitsAndLogsError() {
+  fun testSignAndValidate_kmsAuthenticationFails_throwsCloudKmsAuthenticationException() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    val exception = assertThrows<SecurityException> {
+    assertThrows<CloudKmsAuthenticationException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowAuthError = true),
         unsignedAab.toPath(),
@@ -225,19 +224,16 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
-
-    assertThat(exception).hasMessageThat().contains("System.exit()")
-    assertThat(errContent.toString()).contains("authentication failed")
   }
 
   @Test
-  fun testSignAndValidate_keyVersionUnavailable_exitsAndLogsError() {
+  fun testSignAndValidate_keyVersionUnavailable_throwsKeyVersionUnavailableException() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    val exception = assertThrows<SecurityException> {
+    assertThrows<KeyVersionUnavailableException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowKeyUnavailable = true),
         unsignedAab.toPath(),
@@ -245,19 +241,16 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
-
-    assertThat(exception).hasMessageThat().contains("System.exit()")
-    assertThat(errContent.toString()).contains("unavailable")
   }
 
   @Test
-  fun testSignAndValidate_certificateMismatchAfterSigning_exitsAndLogsError() {
+  fun testSignAndValidate_certificateMismatch_throwsCertificateMismatchException() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    val exception = assertThrows<SecurityException> {
+    assertThrows<CertificateMismatchException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowCertMismatch = true),
         unsignedAab.toPath(),
@@ -265,9 +258,6 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
-
-    assertThat(exception).hasMessageThat().contains("System.exit()")
-    assertThat(errContent.toString()).contains("mismatch")
   }
 
   private companion object {
