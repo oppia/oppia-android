@@ -42,8 +42,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    env:
-      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v4
 
@@ -80,8 +78,18 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
       # Downloads the signed AAB from the GCS archive to a temp path for the upload script.
-      # Uses gsutil instead of gcloud storage due to known bucket-name validation issues.
+      # Uses gsutil instead of gcloud storage: gcloud storage applies DNS-compliant bucket name
+      # validation that rejects bucket names containing hyphens in certain configurations,
+      # whereas gsutil does not apply this validation.
       - name: Download signed AAB from GCS
         run: |
           gsutil cp "${{ github.event.inputs.gcs_aab_path }}" "/tmp/$AAB_NAME"
@@ -96,45 +104,6 @@ jobs:
           FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
           echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
-      - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 6.5.0
-
-      - name: Set up build environment
-        uses: ./.github/actions/set-up-android-bazel-build-environment
-
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
-
-      - name: Ensure cache size
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
-          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
-          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
-            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $EXPANDED_BAZEL_CACHE_PATH
-          fi
-
-      - name: Configure Bazel to use a local cache
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-        shell: bash
-
       # Runs the UploadBinaryToPlayConsole Kotlin script which enforces all precondition checks
       # (pending release, version inversion, changelog existence) before uploading the AAB.
       - name: Upload AAB to Play Console
@@ -145,5 +114,3 @@ jobs:
             "${{ github.event.inputs.track }}" \
             "${{ secrets.GCP_PROJECT_ID }}" \
             "${{ github.event.inputs.rollout_fraction }}"
-
-          echo "Successfully uploaded $AAB_NAME to Play Console track: ${{ github.event.inputs.track }}"
