@@ -4,7 +4,6 @@ import net.jsign.jca.JsignJcaProvider
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.security.KeyStore
 import java.security.Security
@@ -17,30 +16,23 @@ import java.util.jar.JarFile
  * provider (via the jsign library).
  *
  * The private key never leaves the KMS HSM boundary — only the AAB digest is sent to KMS and the
- * signature is received back. The GCP OAuth2 access token is read from the `GCP_ACCESS_TOKEN`
- * environment variable, which is populated by Workload Identity Federation in GitHub Actions.
+ * signature is received back. The GCP OAuth2 access token is passed in as [gcpAccessToken] and
+ * should be obtained by saving the output of `gcloud auth print-access-token` to the
+ * `GCP_ACCESS_TOKEN` environment variable before invoking the enclosing script.
  *
  * @param kmsKeyResourceName full Cloud KMS key resource name, e.g.
  *     `projects/<id>/locations/global/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>`
+ * @param gcpAccessToken GCP OAuth2 access token obtained via Workload Identity Federation
  * @param commandExecutor used to invoke `jarsigner` as a subprocess
  */
 class CloudKmsSigner(
   private val kmsKeyResourceName: String,
+  private val gcpAccessToken: CharArray,
   private val commandExecutor: CommandExecutor
 ) : CloudSigner {
   override fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path) {
-    // Verify the unsigned AAB exists before attempting to contact KMS.
-    if (!unsignedAabPath.toFile().exists()) {
-      throw FileNotFoundException(
-        "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
-      )
-    }
-
-    // Obtain the GCP access token provided by WIF.
-    val gcpAccessToken = checkNotNull(System.getenv(GCP_ACCESS_TOKEN_ENV)?.toCharArray()) {
-      "Missing required environment variable '$GCP_ACCESS_TOKEN_ENV'. " +
-        "Ensure Workload Identity Federation is configured and the workflow calls " +
-        "'gcloud auth print-access-token' before invoking this script."
+    check(unsignedAabPath.toFile().exists()) {
+      "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
     }
 
     // Extract key ring path from the full key resource name.
@@ -57,15 +49,16 @@ class CloudKmsSigner(
     Security.addProvider(provider)
 
     val keyStore = KeyStore.getInstance("GOOGLECLOUD", provider)
-    keyStore.load(null, gcpAccessToken)
+    keyStore.load(/* protectionParam= */ null, gcpAccessToken)
 
     // Validate KMS access: ensures the key exists and is reachable before invoking jarsigner.
     val key = try {
-      keyStore.getKey(keyAlias, null)
+      keyStore.getKey(keyAlias, /* password= */ null)
     } catch (e: Exception) {
       throw CloudKmsAuthenticationException(
         "Failed to authenticate with Cloud KMS. " +
           "WIF identity may be misconfigured or the key resource name is incorrect: " +
+          // kmsKeyResourceName is a structural path identifier, not key material — safe to log.
           kmsKeyResourceName,
         e
       )
@@ -77,8 +70,7 @@ class CloudKmsSigner(
       )
     }
 
-    // Load the public certificate from the repository (safe to commit — it's the public part only).
-    val certFactory = CertificateFactory.getInstance("X.509")
+    // Load the public certificate from the repository.
     val certificate = FileInputStream(certPath.toFile()).use { stream ->
       certFactory.generateCertificate(stream) as X509Certificate
     }
@@ -110,8 +102,6 @@ class CloudKmsSigner(
 
     // Validate: verify the signing certificate in META-INF/ matches the expected certificate.
     verifyCertificateMatch(outputPath, certificate)
-
-    println("Successfully signed AAB via Cloud KMS: ${outputPath.toAbsolutePath()}")
   }
 
   /**
@@ -126,7 +116,6 @@ class CloudKmsSigner(
         jar.entries().asSequence()
           .filter { it.name.startsWith("META-INF/") && it.name.endsWith(".RSA") }
           .flatMap { entry ->
-            val certFactory = CertificateFactory.getInstance("X.509")
             jar.getInputStream(entry).use { certFactory.generateCertificates(it) }.asSequence()
           }
           .filterIsInstance<X509Certificate>()
@@ -146,6 +135,6 @@ class CloudKmsSigner(
   }
 
   private companion object {
-    private const val GCP_ACCESS_TOKEN_ENV = "GCP_ACCESS_TOKEN"
+    private val certFactory by lazy { CertificateFactory.getInstance("X.509") }
   }
 }
