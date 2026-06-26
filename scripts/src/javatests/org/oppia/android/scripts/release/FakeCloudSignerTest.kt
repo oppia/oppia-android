@@ -5,7 +5,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
-import java.io.FileNotFoundException
 
 /**
  * Tests for [FakeCloudSigner].
@@ -18,13 +17,13 @@ class FakeCloudSignerTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Test
-  fun testSign_withNonExistentAab_throwsFileNotFoundException() {
+  fun testSign_withNonExistentAab_throwsIllegalStateException() {
     val signer = FakeCloudSigner()
     val aab = tempFolder.root.toPath().resolve("missing.aab")
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<FileNotFoundException> {
+    assertThrows<IllegalStateException> {
       signer.sign(aab, cert, output)
     }
   }
@@ -52,6 +51,23 @@ class FakeCloudSignerTest {
     signer.sign(aab.toPath(), cert.toPath(), output)
 
     assertThat(signer.signedPaths).containsExactly(aab.toPath())
+  }
+
+  @Test
+  fun testSign_multipleAabs_recordsSignedPathsInOrder() {
+    val signer = FakeCloudSigner()
+    val aab1 = tempFolder.newFile("first.aab").also { it.writeText("content1") }
+    val aab2 = tempFolder.newFile("second.aab").also { it.writeText("content2") }
+    val cert = tempFolder.newFile("cert.pem")
+    val out1 = tempFolder.root.toPath().resolve("signed1.aab")
+    val out2 = tempFolder.root.toPath().resolve("signed2.aab")
+
+    signer.sign(aab1.toPath(), cert.toPath(), out1)
+    signer.sign(aab2.toPath(), cert.toPath(), out2)
+
+    assertThat(signer.signedPaths)
+      .containsExactly(aab1.toPath(), aab2.toPath())
+      .inOrder()
   }
 
   @Test
