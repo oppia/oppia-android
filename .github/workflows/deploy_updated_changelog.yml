@@ -1,9 +1,12 @@
-# Detects when a changelog file in config/changelogs/ is pushed to develop or a release branch,
-# then runs UploadChangelogToPlayConsole to compare the local changelog against the deployed
-# release notes on Play Console and upload any differences.
+# Detects when a changelog file in config/changelogs/ is pushed to develop, then runs
+# UploadChangelogToPlayConsole to compare the local changelog against the deployed release notes
+# on Play Console and upload any differences.
 #
-# Triggered automatically on push (detects the modified changelog file and extracts the version)
-# or manually via workflow_dispatch (coordinator provides the version explicitly).
+# Triggered automatically on push to develop (detects the modified changelog file and extracts
+# version and optional flavor) or manually via workflow_dispatch (coordinator provides both).
+#
+# Flavor-specific changelogs (e.g. config/changelogs/0.17_alpha.md) take precedence over the
+# generic changelog (e.g. config/changelogs/0.17.md) for the matching flavor's track.
 #
 # Prerequisites:
 #   - A live release for the changelog version must already exist on Play Console. The script
@@ -19,15 +22,23 @@ on:
   push:
     branches:
       - develop
-      - 'release-*'
     paths:
       - 'config/changelogs/**.md'
   workflow_dispatch:
     inputs:
       version:
-        description: "Changelog version to upload in major.minor format (e.g. '0.17'). Must match a file in config/changelogs/<version>.md."
+        description: "Changelog version in major.minor format (e.g. '0.17'). Must match a file in config/changelogs/<version>[_flavor].md."
         required: true
         type: string
+      flavor:
+        description: "Optional app flavor for a flavor-specific changelog (leave blank to use the generic changelog for all flavors)."
+        required: false
+        type: choice
+        options:
+          - ""
+          - alpha
+          - beta
+          - ga
 
 concurrency:
   # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
@@ -35,129 +46,133 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy_updated_changelog:
-    name: Deploy Updated Changelog
+
+  # Runs only on push: uses the GitHub API to list files changed in this commit and extracts the
+  # changelog version and optional flavor from the filename (e.g. 0.17_alpha.md → 0.17, alpha).
+  # No checkout required since the GitHub API provides the changed-file list directly.
+  resolve_push:
+    name: Resolve version (push)
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    environment: oppia-android-release-env
-    permissions:
-      id-token: write
-      contents: read
-    env:
-      CACHE_DIRECTORY: ~/.bazel_cache
+    outputs:
+      version: ${{ steps.detect.outputs.version }}
+      flavor: ${{ steps.detect.outputs.flavor }}
     steps:
-      # On push: detect the modified changelog file and extract the version from its filename.
-      # On workflow_dispatch: use the version provided by the coordinator.
-      - name: Resolve changelog version
-        id: resolve_version
+      - name: Detect changed changelog file
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            # Find all .md files changed in config/changelogs/ in this push.
-            CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
-              -- 'config/changelogs/*.md' | head -1)
+          CHANGED=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}" \
+            --jq '[.files[].filename | select(test("^config/changelogs/.+\\.md$"))] | first // ""')
 
-            if [[ -z "$CHANGED" ]]; then
-              echo "No changelog files changed in this push — nothing to upload."
-              echo "SKIP=true" >> $GITHUB_ENV
-              exit 0
-            fi
-
-            # Extract version from filename: config/changelogs/0.17.md → 0.17
-            BASENAME=$(basename "$CHANGED" .md)
-            # Strip flavor suffix if present (e.g. 0.17_alpha → 0.17)
-            VERSION="${BASENAME%%_*}"
-          else
-            VERSION="${{ github.event.inputs.version }}"
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changelog files changed in this push — skipping upload."
+            echo "version=" >> $GITHUB_OUTPUT
+            echo "flavor=" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-          # Validate version format: must be major.minor (e.g. 0.17).
+          BASENAME=$(basename "$CHANGED" .md)
+          VERSION="${BASENAME%%_*}"
+          FLAVOR_SUFFIX="${BASENAME#${VERSION}}"
+          FLAVOR="${FLAVOR_SUFFIX#_}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version '$VERSION' extracted from '$CHANGED'."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "flavor=$FLAVOR" >> $GITHUB_OUTPUT
+          echo "Detected: version=$VERSION, flavor=${FLAVOR:-<generic>}"
+
+  # Runs only on workflow_dispatch: reads and validates the version and flavor provided by the
+  # release coordinator.
+  resolve_dispatch:
+    name: Resolve version (dispatch)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      flavor: ${{ steps.resolve.outputs.flavor }}
+    steps:
+      - name: Validate and resolve inputs
+        id: resolve
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          FLAVOR="${{ github.event.inputs.flavor }}"
+
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Invalid version '$VERSION'. Must be in major.minor format (e.g. '0.17')."
             exit 1
           fi
 
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Resolved changelog version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "flavor=$FLAVOR" >> $GITHUB_OUTPUT
+          echo "Resolved: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
-      - name: Skip if no changelog changed
-        if: env.SKIP == 'true'
-        run: echo "Skipping — no changelog files were modified in this push."
-
+  # Uploads the changelog to Play Console. Runs only when a version was successfully resolved by
+  # either of the preceding jobs, and shows as skipped in the GitHub Actions UI otherwise.
+  upload_changelog:
+    name: Upload changelog to Play Console
+    needs: [resolve_push, resolve_dispatch]
+    if: |
+      always() && !cancelled() &&
+      (needs.resolve_push.outputs.version != '' || needs.resolve_dispatch.outputs.version != '')
+    runs-on: ubuntu-24.04
+    environment: oppia-android-release-env
+    permissions:
+      id-token: write
+      contents: read
+    steps:
       - uses: actions/checkout@v4
-        if: env.SKIP != 'true'
 
-      - name: Validate changelog file exists
-        if: env.SKIP != 'true'
+      - name: Resolve changelog file
         run: |
-          CHANGELOG_FILE="config/changelogs/${{ env.VERSION }}.md"
+          VERSION="${{ needs.resolve_push.outputs.version || needs.resolve_dispatch.outputs.version }}"
+          FLAVOR="${{ needs.resolve_push.outputs.flavor || needs.resolve_dispatch.outputs.flavor }}"
+
+          # Use flavor-specific changelog if available; fall back to the generic one.
+          if [[ -n "$FLAVOR" && -f "config/changelogs/${VERSION}_${FLAVOR}.md" ]]; then
+            CHANGELOG_FILE="config/changelogs/${VERSION}_${FLAVOR}.md"
+          else
+            CHANGELOG_FILE="config/changelogs/${VERSION}.md"
+          fi
+
           if [[ ! -f "$CHANGELOG_FILE" ]]; then
             echo "::error::Changelog file not found: $CHANGELOG_FILE"
             exit 1
           fi
-          echo "Changelog file found: $CHANGELOG_FILE"
+
+          echo "Using changelog: $CHANGELOG_FILE"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Set up Bazel
-        if: env.SKIP != 'true'
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
       - name: Set up build environment
-        if: env.SKIP != 'true'
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
-      - uses: actions/cache@v4
-        if: env.SKIP != 'true'
-        with:
-          path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
-
-      - name: Ensure cache size
-        if: env.SKIP != 'true'
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
-          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
-          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
-            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $EXPANDED_BAZEL_CACHE_PATH
-          fi
-
-      - name: Configure Bazel to use a local cache
-        if: env.SKIP != 'true'
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-        shell: bash
-
       - name: Authenticate to GCP via Workload Identity Federation
-        if: env.SKIP != 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_PLAY_CONSOLE_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud SDK
-        if: env.SKIP != 'true'
         uses: google-github-actions/setup-gcloud@v2
 
       # Runs UploadChangelogToPlayConsole which:
-      #   1. Reads config/changelogs/<version>.md as the local release notes.
+      #   1. Reads config/changelogs/<version>[_flavor].md as the local release notes.
       #   2. Audits alpha, beta, and production tracks for live releases.
       #   3. For each live track, compares deployed notes against local notes.
       #   4. Uploads updated notes to any track where they differ.
       # The script fails if no live release is found for this version (preventing deployment
       # against a version that has not yet been released via deploy_to_play_console.yml).
       - name: Upload updated changelog to Play Console
-        if: env.SKIP != 'true'
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
             "$GITHUB_WORKSPACE" \
