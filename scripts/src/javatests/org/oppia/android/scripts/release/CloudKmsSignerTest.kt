@@ -15,7 +15,7 @@ import java.io.File
  * Covers the precondition-failure paths that do not require real GCP credentials: missing AAB
  * file and missing GCP access token.
  *
- * TODO(#<issue>): Expand test coverage to validate that `jarsigner` is invoked with the expected
+ * Note: Expand test coverage to validate that `jarsigner` is invoked with the expected
  *   arguments by injecting a [CommandExecutor] that captures command invocations.
  */
 class CloudKmsSignerTest {
