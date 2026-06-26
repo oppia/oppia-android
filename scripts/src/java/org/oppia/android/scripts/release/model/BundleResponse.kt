@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.release.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -8,4 +9,4 @@ import com.squareup.moshi.JsonClass
  * @property versionCode the version code assigned to the uploaded AAB by the Play Console
  */
 @JsonClass(generateAdapter = true)
-data class BundleResponse(val versionCode: Long)
+data class BundleResponse(@Json(name = "versionCode") val versionCode: Long)

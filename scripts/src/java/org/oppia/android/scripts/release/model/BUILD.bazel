@@ -24,3 +24,10 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
+
+kt_jvm_library(
+    name = "track_update_request",
+    srcs = ["TrackUpdateRequest.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)

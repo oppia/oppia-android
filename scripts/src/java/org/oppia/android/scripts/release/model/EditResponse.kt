@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.release.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -8,4 +9,4 @@ import com.squareup.moshi.JsonClass
  * @property id the unique identifier for the newly created edit session
  */
 @JsonClass(generateAdapter = true)
-data class EditResponse(val id: String)
+data class EditResponse(@Json(name = "id") val id: String)

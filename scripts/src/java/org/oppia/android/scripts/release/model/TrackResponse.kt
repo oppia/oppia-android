@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.release.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -10,18 +11,19 @@ import com.squareup.moshi.JsonClass
  *     track has no releases
  */
 @JsonClass(generateAdapter = true)
-data class TrackResponse(val releases: List<ReleaseEntry>?) {
+data class TrackResponse(@Json(name = "releases") val releases: List<ReleaseEntry>?) {
 
   /**
    * Represents a single release entry within a track.
    *
-   * @property versionCodes the version codes included in this release, or null if none are assigned
-   * @property status the release lifecycle status (e.g. "completed", "inProgress", "draft",
-   *     "halted")
+   * @property versionCodes the version codes included in this release, or null if no version codes
+   *     have been assigned (e.g. an empty draft release)
+   * @property status the release lifecycle status. One of: `"statusUnspecified"`, `"draft"`,
+   *     `"inProgress"`, `"halted"`, or `"completed"`.
    */
   @JsonClass(generateAdapter = true)
   data class ReleaseEntry(
-    val versionCodes: List<Long>?,
-    val status: String?
+    @Json(name = "versionCodes") val versionCodes: List<Long>?,
+    @Json(name = "status") val status: String
   )
 }
