@@ -12,6 +12,7 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/release/model:bundle_response",
         "//scripts/src/java/org/oppia/android/scripts/release/model:edit_response",
         "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:com_squareup_retrofit2_retrofit",
     ],

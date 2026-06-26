@@ -5,6 +5,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.oppia.android.scripts.release.model.BundleResponse
 import org.oppia.android.scripts.release.model.EditResponse
 import org.oppia.android.scripts.release.model.TrackResponse
+import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -75,7 +76,7 @@ interface PlayConsoleService {
    * @param editId the active edit session ID
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
    * @param authorizationBearer the OAuth2 bearer token for authentication
-   * @param trackBody the JSON request body containing the track update configuration
+   * @param trackBody the track update configuration
    * @return the [TrackResponse] reflecting the updated track state
    */
   @PUT("{packageName}/edits/{editId}/tracks/{track}")
@@ -84,13 +85,15 @@ interface PlayConsoleService {
     @Path("editId") editId: String,
     @Path("track") track: String,
     @Header("Authorization") authorizationBearer: String,
-    @Body trackBody: RequestBody
+    @Body trackBody: TrackUpdateRequest
   ): Call<TrackResponse>
 
   /**
-   * Commits an edit session, publishing all changes made within it to the Play Console.
+   * Commits an edit session, publishing all pending changes to the Play Console for review.
    *
-   * This is irreversible — once committed, uploaded bundles and track assignments become live.
+   * This operation is irreversible — once committed, uploaded bundles and track assignments cannot
+   * be rolled back via the API. Changes are queued for review and require a final human approval
+   * in the Play Console before they go live (internal tracks excepted, but those will not be used).
    *
    * API reference: https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit
    *
@@ -108,9 +111,6 @@ interface PlayConsoleService {
 
   /**
    * Retrieves the current track configuration, including all active releases.
-   *
-   * Used for precondition checks (version inversion, pending release detection) before uploading
-   * a new binary. This endpoint does not require an edit session.
    *
    * API reference: https://developers.google.com/android-publisher/api-ref/rest/v3/edits.tracks/get
    *

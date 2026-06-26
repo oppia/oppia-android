@@ -8,6 +8,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -88,7 +89,7 @@ class PlayConsoleServiceTest {
   @Test
   fun testUpdateTrack_sendsPutToCorrectPath() {
     server.enqueue(MockResponse().setBody("""{"releases":[]}""").setResponseCode(200))
-    val body = "{\"releases\":[]}".toRequestBody()
+    val body = TrackUpdateRequest(track = "alpha", releases = emptyList())
 
     service.updateTrack("org.oppia.android", "edit-1", "alpha", "Bearer token", body).execute()
 

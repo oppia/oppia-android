@@ -4,8 +4,8 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.oppia.android.scripts.release.model.TrackResponse
+import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import org.oppia.android.scripts.release.remote.PlayConsoleService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -112,28 +112,22 @@ class GooglePlayConsoleClient(
     rolloutFraction: Double,
     releaseNotes: Map<String, String>
   ) {
-    val releaseNotesJson = releaseNotes.entries.joinToString(",") { (lang, text) ->
-      """{"language":"$lang","text":"${text.replace("\"", "\\\"")}"}"""
-    }
-    // The Play API uses status="completed" for a full rollout and status="inProgress" with an
-    // explicit userFraction for a staged rollout. Including userFraction on a "completed" release
-    // causes an API error, so it is intentionally omitted when rolling out to 100%.
     val status = if (rolloutFraction >= 1.0) "completed" else "inProgress"
-    val userFractionField =
-      if (rolloutFraction < 1.0) ",\n          \"userFraction\": $rolloutFraction" else ""
-    val trackUpdateJson =
-      """
-      {
-        "releases": [{
-          "versionCodes": ["$versionCode"],
-          "status": "$status"$userFractionField,
-          "releaseNotes": [$releaseNotesJson]
-        }]
-      }
-      """.trimIndent()
-    val requestBody = trackUpdateJson.toRequestBody(JSON_MEDIA_TYPE)
+    val trackUpdate = TrackUpdateRequest(
+      track = track,
+      releases = listOf(
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = listOf(versionCode),
+          status = status,
+          releaseNotes = releaseNotes.map { (lang, text) ->
+            TrackUpdateRequest.LocalizedText(language = lang, text = text)
+          },
+          userFraction = if (rolloutFraction < 1.0) rolloutFraction else null
+        )
+      )
+    )
     val response = playConsoleService
-      .updateTrack(packageName, editId, track, authorizationBearer, requestBody)
+      .updateTrack(packageName, editId, track, authorizationBearer, trackUpdate)
       .execute()
     check(response.isSuccessful) {
       "Failed to set track '$track' for '$packageName' (edit=$editId, vc=$versionCode): " +
@@ -156,7 +150,6 @@ class GooglePlayConsoleClient(
     private const val DEFAULT_TIMEOUT_MS = 120_000L
 
     private val OCTET_STREAM_MEDIA_TYPE = "application/octet-stream".toMediaType()
-    private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
 
     /**
      * The base URL for the Google Play Developer Publishing API v3. This can be overridden in
@@ -168,7 +161,7 @@ class GooglePlayConsoleClient(
   private fun TrackResponse.ReleaseEntry.toTrackRelease(): PlayConsoleClient.TrackRelease {
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes ?: emptyList(),
-      status = status ?: "unknown"
+      status = status
     )
   }
 }
