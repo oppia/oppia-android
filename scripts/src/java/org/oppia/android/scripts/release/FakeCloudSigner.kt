@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.release
 
-import java.io.FileNotFoundException
 import java.nio.file.Path
 
 /**
@@ -27,10 +26,8 @@ class FakeCloudSigner(
   val signedPaths = mutableListOf<Path>()
 
   override fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path) {
-    if (!unsignedAabPath.toFile().exists()) {
-      throw FileNotFoundException(
-        "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
-      )
+    check(unsignedAabPath.toFile().exists()) {
+      "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
     }
 
     when {
