@@ -41,8 +41,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    env:
-      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - name: Validate inputs
         run: |
@@ -77,37 +75,6 @@ jobs:
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
-
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
-            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
-
-      - name: Ensure cache size
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
-          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
-          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
-            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $EXPANDED_BAZEL_CACHE_PATH
-          fi
-
-      - name: Configure Bazel to use a local cache
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
-        run: |
-          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
-          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
-          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
-        shell: bash
 
       - name: Authenticate to GCP via Workload Identity Federation
         uses: google-github-actions/auth@v2
@@ -166,12 +133,14 @@ jobs:
             "$SIGNED_AAB_PATH"
           echo "Signed AAB written to: $SIGNED_AAB_PATH"
 
-
       - name: Upload signed AAB to GCS archive
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
 
+          # TODO(#<issue>): Check for GCS path existence here (before the build) to save CI
+          #   time when re-running an already-built ref. Requires externalizing the version
+          #   components of TransformAndroidManifest so the AAB name can be derived up-front.
           # Fail if binary already exists — enforces the build-once guarantee.
           if gsutil ls "$GCS_PATH" 2>/dev/null; then
             echo "::error::Binary already exists at $GCS_PATH."
