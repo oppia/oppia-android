@@ -1,9 +1,12 @@
 # Downloads a signed release AAB from the GCS archive and distributes it to Firebase App
 # Distribution for QA testing. The AAB must have been previously produced by build_and_sign.yml
-# and archived in GCS. Firebase App IDs per flavor are stored as GitHub secrets.
+# and archived in GCS.
 #
 # Authentication uses the same Workload Identity Federation setup as build_and_sign.yml.
 # Firebase CLI uses Application Default Credentials (ADC) set up by google-github-actions/auth.
+#
+# A single Firebase App Distribution project is used across all flavors; QA testers are
+# differentiated by tester group membership within that project.
 
 name: Deploy to Firebase App Distribution
 
@@ -19,14 +22,9 @@ on:
         required: false
         type: string
         default: ""
-      tester_groups:
-        description: "Comma-separated Firebase tester group aliases (optional — e.g. 'qa-team,release-managers')"
-        required: false
-        type: string
-        default: ""
 
 concurrency:
-  # One Firebase deployment per flavor at a time.
+  # One Firebase deployment per GCS path at a time.
   group: deploy-firebase-${{ github.event.inputs.gcs_aab_path }}
   cancel-in-progress: false
 
@@ -49,12 +47,10 @@ jobs:
             exit 1
           fi
 
-          FLAVOR=$(echo "$GCS_PATH" | grep -oP '(?<=oppia-android-)(alpha|beta|ga)(?=-releases)')
           AAB_NAME=$(basename "$GCS_PATH")
 
-          echo "FLAVOR=$FLAVOR" >> $GITHUB_ENV
           echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
-          echo "Inputs validated: flavor=$FLAVOR, aab=$AAB_NAME"
+          echo "Inputs validated: aab=$AAB_NAME"
 
       - name: Authenticate to GCP via Workload Identity Federation
         uses: google-github-actions/auth@v2
@@ -65,7 +61,24 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      # Downloads the signed AAB from the GCS archive to a temp path for Firebase upload.
+      # Fail fast: verify the AAB exists in GCS before spending time on tool installation.
+      - name: Check GCS path exists
+        run: |
+          if ! gsutil ls "${{ github.event.inputs.gcs_aab_path }}" 2>/dev/null; then
+            echo "::error::GCS path not found: ${{ github.event.inputs.gcs_aab_path }}"
+            echo "::error::Ensure the AAB was archived by build_and_sign.yml before running this workflow."
+            exit 1
+          fi
+
+      - name: Set up Node.js for Firebase CLI
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      # Downloads the signed AAB from the GCS archive for Firebase upload.
       # Uses gsutil instead of gcloud storage due to known bucket-name validation issues.
       - name: Download signed AAB from GCS
         run: |
@@ -81,24 +94,6 @@ jobs:
           FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
           echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
-      - name: Set up Node.js for Firebase CLI
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      # Maps each flavor to its corresponding Firebase App ID secret.
-      # Firebase CLI uses ADC (set up by google-github-actions/auth above) for authentication.
-      - name: Resolve Firebase App ID for flavor
-        run: |
-          case "$FLAVOR" in
-            alpha) echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID_ALPHA }}" >> $GITHUB_ENV ;;
-            beta)  echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID_BETA }}"  >> $GITHUB_ENV ;;
-            ga)    echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID_GA }}"    >> $GITHUB_ENV ;;
-          esac
-
       - name: Upload AAB to Firebase App Distribution
         run: |
           NOTES="${{ github.event.inputs.release_notes }}"
@@ -106,15 +101,12 @@ jobs:
             NOTES="$AAB_NAME"
           fi
 
-          GROUPS="${{ github.event.inputs.tester_groups }}"
-          if [[ -z "$GROUPS" ]]; then
-            GROUPS="qa-team"
-          fi
-          GROUP_FLAG="--groups $GROUPS"
-
+          # Firebase CLI uses ADC (set up by google-github-actions/auth above) for authentication.
+          # All QA testers are managed via group membership within the single Firebase project;
+          # testers can install any app they are grouped for from the Firebase App Distribution UI.
           firebase appdistribution:distribute "$AAB_LOCAL_PATH" \
-            --app "$FIREBASE_APP_ID" \
+            --app "${{ secrets.FIREBASE_APP_ID }}" \
             --release-notes "$NOTES" \
-            $GROUP_FLAG
+            --groups "qa-team"
 
-          echo "Successfully distributed $AAB_NAME to Firebase ($FLAVOR)"
+          echo "Successfully distributed $AAB_NAME to Firebase App Distribution"
