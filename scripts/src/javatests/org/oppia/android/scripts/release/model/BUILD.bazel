@@ -30,3 +30,12 @@ kt_jvm_test(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_jvm_test(
+    name = "TrackUpdateRequestTest",
+    srcs = ["TrackUpdateRequestTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
+        "//third_party:com_google_truth_truth",
+    ],
+)

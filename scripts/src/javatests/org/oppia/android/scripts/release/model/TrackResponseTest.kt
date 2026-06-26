@@ -72,11 +72,11 @@ class TrackResponseTest {
   }
 
   @Test
-  fun testReleaseEntry_constructor_nullFields_areNull() {
-    val entry = TrackResponse.ReleaseEntry(versionCodes = null, status = null)
+  fun testReleaseEntry_constructor_nullVersionCodes_isNull() {
+    val entry = TrackResponse.ReleaseEntry(versionCodes = null, status = "statusUnspecified")
 
     assertThat(entry.versionCodes).isNull()
-    assertThat(entry.status).isNull()
+    assertThat(entry.status).isEqualTo("statusUnspecified")
   }
 
   @Test
