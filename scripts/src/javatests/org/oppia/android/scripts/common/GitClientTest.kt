@@ -292,10 +292,34 @@ class GitClientTest {
     assertThat(committedAndMovedFiles).containsExactly("committed_file", "moved_file")
   }
 
+  @Test
+  fun testCountCommits_freshDevelop_returnsOne() {
+    initializeRepoWithDevelopBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val count = gitClient.countCommits("develop")
+
+    assertThat(count).isEqualTo(1)
+  }
+
+  @Test
+  fun testCountCommits_featureBranch_featureBranchHasAdditionalCommitsOverDevelopBranch() {
+    initializeRepoWithDevelopBranch()
+    testGitRepository.checkoutNewBranch("introduce-feature")
+    commitNewFile("feature_file_1")
+    commitNewFile("feature_file_2")
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+    val developCount = gitClient.countCommits("develop")
+    val featureCount = gitClient.countCommits("introduce-feature")
+
+    assertThat(developCount).isEqualTo(1)
+    assertThat(featureCount).isEqualTo(3)
+  }
+
   private fun initializeRepoWithDevelopBranch() {
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
   }
 

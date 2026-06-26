@@ -45,7 +45,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1716846301 -0700",
+    shallow_since = "1774411548 +0000",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -258,3 +258,10 @@ pinned_maven_install()
         "jre",
     ]
 ]
+
+# Pinned lesson download pipeline script branch.
+git_repository(
+    name = "oppia_android_asset_pipeline",
+    commit = "01e4763bf666e02672756efee7fbf31a6a5b7be2",
+    remote = "https://github.com/oppia/oppia-android.git",
+)

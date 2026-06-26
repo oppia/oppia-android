@@ -20,6 +20,8 @@ import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.platformparameter.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -107,6 +109,22 @@ class FeatureFlagBindingModule {
   @EnableEdgeToEdge
   fun provideEnableEdgeToEdge(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.EDGE_TO_EDGE)
+
+  @Provides
+  @LoadLessonProtosFromAssets
+  fun provideLoadLessonProtosFromAssets(
+    processState: PlatformParameterProcessState
+  ): PlatformParameterValue<Boolean> {
+    return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS)
+  }
+
+  @Provides
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(
+    processState: PlatformParameterProcessState
+  ): PlatformParameterValue<Boolean> {
+    return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_IMAGES_FROM_ASSETS)
+  }
 
   @Provides
   @EnableStudyGuides

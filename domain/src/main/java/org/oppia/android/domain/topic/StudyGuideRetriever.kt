@@ -14,7 +14,8 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class StudyGuideRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a [StudyGuide] given a subtopic ID in the specific topic, loaded from the filesystem.
@@ -32,7 +34,7 @@ class StudyGuideRetriever @Inject constructor(
    * [StudyGuide] has an empty sections list.
    */
   fun loadStudyGuide(topicId: String, subtopicId: Int): StudyGuide {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val subtopicRecord = assetRepository.loadProtoFromLocalAssets(
         assetName = "${topicId}_$subtopicId",
         baseMessage = SubtopicRecord.getDefaultInstance()
