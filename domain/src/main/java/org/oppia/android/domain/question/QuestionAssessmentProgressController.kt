@@ -32,6 +32,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -321,7 +322,9 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> {
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     val ephemeralQuestionDataProvider =
       mostRecentEphemeralQuestionFlow.convertToSessionProvider(CURRENT_QUESTION_PROVIDER_ID)
 

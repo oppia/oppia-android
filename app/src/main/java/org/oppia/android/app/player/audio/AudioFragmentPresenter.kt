@@ -32,6 +32,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -146,7 +147,9 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun retrieveAudioLanguageCode(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getAudioLanguage(profileId).toLiveData(),
+      profileManagementController.getAudioLanguage(
+        profileId.toProfileIdPreservingZero()
+      ).toLiveData(),
       ::processAudioLanguageResult
     )
   }

@@ -36,7 +36,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -45,6 +44,9 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -106,7 +108,8 @@ class TopicController @Inject constructor(
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
 ) {
@@ -159,7 +162,9 @@ class TopicController @Inject constructor(
       ::combineTopicsAndTopicsProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return topicsCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_TOPICS_PROVIDER_ID
     ) { topics, locale ->
@@ -193,7 +198,9 @@ class TopicController @Inject constructor(
       ::combineStorySummaryAndStoryProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return storyCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_STORY_PROVIDER_ID
     ) { storySummary, locale -> storySummary.toEphemeral(locale) }
@@ -231,7 +238,9 @@ class TopicController @Inject constructor(
     }
 
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return chapterCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_CHAPTER_PROVIDER_ID
     ) { chapterSummary, locale -> chapterSummary.toEphemeral(locale) }
@@ -246,7 +255,7 @@ class TopicController @Inject constructor(
     skillId: String
   ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralConceptCard.newBuilder().apply {
         conceptCard = conceptCardRetriever.loadConceptCard(skillId)
@@ -268,7 +277,7 @@ class TopicController @Inject constructor(
     subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_REVISION_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralRevisionCard.newBuilder().apply {
         revisionCard = retrieveReviewCard(topicId, subtopicId)
@@ -288,7 +297,9 @@ class TopicController @Inject constructor(
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider, GET_COMPLETED_STORY_LIST_PROVIDER_ID
     ) { progressList, contentLocale ->
@@ -313,7 +324,9 @@ class TopicController @Inject constructor(
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider,
       GET_ONGOING_TOPIC_LIST_PROVIDER_ID,
@@ -477,7 +490,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveTopic(topicId: String): Topic? {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.maybeLoadProtoFromLocalAssets(
         assetName = topicId,
         baseMessage = TopicRecord.getDefaultInstance()
@@ -514,7 +527,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       loadStorySummary(storyId)
     } else createStorySummaryFromJson(topicId, storyId)
   }
@@ -636,7 +649,7 @@ class TopicController @Inject constructor(
     // TODO(#169): Compute this based on protos & the combined topic package.
     // TODO(#169): Incorporate image files in this computation.
     return constituentFiles.sumOf { file ->
-      if (loadLessonProtosFromAssets) {
+      if (loadLessonProtosFromAssets.value) {
         assetRepository.getLocalAssetProtoSize(file)
       } else {
         jsonAssetRetriever.getAssetSize(file)

@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +32,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.testing.FakeAssetRepository
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -72,7 +72,13 @@ class ClassroomControllerTest {
   fun setUp() {
     profileId0 = LegacyProfileId.newBuilder().setInternalId(0).build()
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -362,10 +368,6 @@ class ClassroomControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl
