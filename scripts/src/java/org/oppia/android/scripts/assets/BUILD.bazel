@@ -36,6 +36,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "dto_proto_to_legacy_proto_converter",
     srcs = ["DtoProtoToLegacyProtoConverter.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//model/src/main/proto:exploration_java_proto",
         "//model/src/main/proto:interaction_object_java_proto",

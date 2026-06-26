@@ -55,17 +55,17 @@ internal interface AndroidActivityEndpointApi {
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
   ): Call<List<VersionedStructure<GaeSkill>>>
 
-  @GET("android_data?activity_type=subtopic")
+  @GET("android_data?activity_type=subtopic_with_study_guide")
   fun fetchLatestRevisionCard(
     @Query("activities_data") request: AndroidActivityRequests.Latest
   ): Call<List<VersionedStructure<GaeSubtopicPage>>>
 
-  @GET("android_data?activity_type=subtopic")
+  @GET("android_data?activity_type=subtopic_with_study_guide")
   fun fetchSingleRevisionCardByVersion(
     @Query("activities_data") request: AndroidActivityRequests.SingleNonLocalized
   ): Call<List<VersionedStructure<GaeSubtopicPage>>>
 
-  @GET("android_data?activity_type=subtopic")
+  @GET("android_data?activity_type=subtopic_with_study_guide")
   fun fetchRevisionCardByVersion(
     @Query("activities_data") request: AndroidActivityRequests.NonLocalized
   ): Call<List<VersionedStructure<GaeSubtopicPage>>>

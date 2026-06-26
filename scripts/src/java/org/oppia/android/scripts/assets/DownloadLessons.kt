@@ -1199,7 +1199,14 @@ class LessonDownloader(
       val topic = Container.Topic(dto.id.topicId)
       val container = Container.RevisionCard(topic, dto.id.subtopicIndex)
       if (dto.hasTitle()) texts += TextReference.Title(container, dto.title.contentId)
-      if (dto.hasContent()) texts += TextReference.Content(container, dto.content.contentId)
+      dto.sectionsList.forEach { section ->
+        if (section.hasHeading()) {
+          texts += TextReference.Content(container, section.heading.contentId)
+        }
+        if (section.hasContent()) {
+          texts += TextReference.Content(container, section.content.contentId)
+        }
+      }
       if (dto.hasDefaultLocalization()) track(container, dto.defaultLocalization)
     }
 

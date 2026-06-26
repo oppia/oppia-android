@@ -1,0 +1,16 @@
+"""
+Tests corresponding to JSON models used by Oppia web's Android lesson endpoints.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "GaeSubtopicPageTest",
+    srcs = ["GaeSubtopicPageTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:moshi",
+    ],
+)
