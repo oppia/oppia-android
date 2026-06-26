@@ -2,6 +2,7 @@ package org.oppia.android.scripts.release
 
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -9,9 +10,9 @@ import java.nio.file.Paths
  * Cloud KMS keystore provider. The signing key never leaves the HSM.
  *
  * Parses command-line arguments, delegates signing to [CloudSigner.sign], and validates the signed
- * output by verifying the certificate in META-INF/. Fails with a non-zero exit code if the KMS
- * key is unavailable, the certificate doesn't match, or the unsigned AAB doesn't exist at the
- * specified path.
+ * output by verifying the certificate in META-INF/. Fails with a non-zero exit code if the
+ * [GCP_ACCESS_TOKEN_ENV] environment variable is missing, the KMS key is unavailable, the
+ * certificate doesn't match, or the unsigned AAB doesn't exist.
  *
  * Usage:
  * ```
@@ -54,6 +55,12 @@ fun main(vararg args: String) {
       "/cryptoKeyVersions/<ver>. Got: $kmsKeyResourceName"
   }
 
+  val gcpAccessToken = checkNotNull(System.getenv(GCP_ACCESS_TOKEN_ENV)?.toCharArray()) {
+    "Missing required environment variable '$GCP_ACCESS_TOKEN_ENV'. " +
+      "Save the output of 'gcloud auth print-access-token' to the '$GCP_ACCESS_TOKEN_ENV' " +
+      "environment variable before invoking this script."
+  }
+
   println("=== Sign Release Binary via Cloud KMS ===")
   println("  Unsigned AAB : ${unsignedAabPath.toAbsolutePath()}")
   println("  KMS key      : $kmsKeyResourceName")
@@ -65,6 +72,7 @@ fun main(vararg args: String) {
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val signer = CloudKmsSigner(
       kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = gcpAccessToken,
       commandExecutor = commandExecutor
     )
     signAndValidate(signer, unsignedAabPath, certPemPath, outputAabPath)
@@ -72,43 +80,22 @@ fun main(vararg args: String) {
 }
 
 /**
- * Invokes [signer] to sign the AAB and handles all expected failure cases with descriptive
- * error messages and a non-zero exit code.
+ * Checks that the unsigned AAB exists, then invokes [signer] to sign it, printing a success
+ * message on completion. Any exceptions from the signer propagate to the caller.
  *
- * This is a separate function so tests can inject a [FakeCloudSigner] without invoking `main`.
+ * This is a separate function so tests can inject a [FakeCloudSigner] without invoking [main].
  */
 fun signAndValidate(
   signer: CloudSigner,
-  unsignedAabPath: java.nio.file.Path,
-  certPemPath: java.nio.file.Path,
-  outputAabPath: java.nio.file.Path
+  unsignedAabPath: Path,
+  certPemPath: Path,
+  outputAabPath: Path
 ) {
-  try {
-    signer.sign(unsignedAabPath, certPemPath, outputAabPath)
-    println("Signing complete. Signed AAB: ${outputAabPath.toAbsolutePath()}")
-  } catch (e: java.io.FileNotFoundException) {
-    System.err.println("ERROR: Unsigned AAB not found: ${e.message}")
-    System.exit(1)
-  } catch (e: CloudKmsAuthenticationException) {
-    System.err.println(
-      "ERROR: Cloud KMS authentication failed.\n${e.message}\n" +
-        "Check that GCP_ACCESS_TOKEN is set and the WIF configuration is correct."
-    )
-    System.exit(1)
-  } catch (e: KeyVersionUnavailableException) {
-    System.err.println(
-      "ERROR: Cloud KMS key version is unavailable (disabled or destroyed).\n${e.message}\n" +
-        "Check the key version status in the GCP Console."
-    )
-    System.exit(1)
-  } catch (e: CertificateMismatchException) {
-    System.err.println(
-      "ERROR: Certificate mismatch after signing.\n${e.message}\n" +
-        "The KMS key and the PEM certificate in config/certificate/ must correspond to the " +
-        "same key pair."
-    )
-    System.exit(1)
+  check(unsignedAabPath.toFile().exists()) {
+    "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
   }
+  signer.sign(unsignedAabPath, certPemPath, outputAabPath)
+  println("Signing complete. Signed AAB: ${outputAabPath.toAbsolutePath()}")
 }
 
 /**
@@ -119,3 +106,5 @@ fun signAndValidate(
 private val KMS_RESOURCE_NAME_REGEX = Regex(
   """^projects/[^/]+/locations/[^/]+/keyRings/[^/]+/cryptoKeys/[^/]+/cryptoKeyVersions/\d+$"""
 )
+
+private const val GCP_ACCESS_TOKEN_ENV = "GCP_ACCESS_TOKEN"
