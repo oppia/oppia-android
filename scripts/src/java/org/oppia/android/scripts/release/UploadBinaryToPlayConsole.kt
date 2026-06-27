@@ -97,7 +97,10 @@ fun runUpload(
   ChangelogExistenceChecker(workspaceRoot).verify(
     properties.majorVersion, properties.minorVersion, properties.flavor
   )
-  println("Changelog existence check passed for ${properties.majorMinorVersion} (${properties.flavor.id}).")
+  println(
+    "Changelog existence check passed for ${properties.majorMinorVersion} " +
+      "(${properties.flavor.id})."
+  )
   println("Pre-upload checks passed.")
   println()
 
@@ -114,13 +117,27 @@ fun runUpload(
   println("Version inversion check passed.")
   println()
 
-  val releaseNotes = extractReleaseNotes(workspaceRoot, properties.majorMinorVersion, properties.flavor.id)
-  client.setTrackRelease(PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes)
+  val releaseNotes = extractReleaseNotes(
+    workspaceRoot,
+    properties.majorMinorVersion,
+    properties.flavor.id
+  )
+  client.setTrackRelease(
+    PACKAGE_NAME,
+    editId,
+    track,
+    uploadedVersionCode,
+    rolloutFraction,
+    releaseNotes
+  )
   println("Track '$track' updated.")
 
   client.commitEdit(PACKAGE_NAME, editId)
   println()
-  println("Done: ${properties.versionName} (vc=$uploadedVersionCode) committed to Play Console track '$track'.")
+  println(
+    "Done: ${properties.versionName} (vc=$uploadedVersionCode) " +
+      "committed to Play Console track '$track'."
+  )
 }
 
 /**

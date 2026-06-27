@@ -65,7 +65,10 @@ class TrackResponseTest {
 
   @Test
   fun testReleaseEntry_constructor_setsVersionCodesAndStatus() {
-    val entry = TrackResponse.ReleaseEntry(versionCodes = listOf("300", "301"), status = "inProgress")
+    val entry = TrackResponse.ReleaseEntry(
+      versionCodes = listOf("300", "301"),
+      status = "inProgress"
+    )
 
     assertThat(entry.versionCodes).containsExactly("300", "301")
     assertThat(entry.status).isEqualTo("inProgress")
