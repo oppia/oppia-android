@@ -1260,7 +1260,8 @@
         },
         "solicit_answer_details": false,
         "next_content_id_index": -1,
-        "linked_skill_id": "test_skill_id_0"
+        "linked_skill_id": "test_skill_id_0",
+        "card_is_checkpoint": true
       },
       "Text": {
         "content": {

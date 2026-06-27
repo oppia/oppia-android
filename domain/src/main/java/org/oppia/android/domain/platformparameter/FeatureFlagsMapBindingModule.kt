@@ -12,6 +12,7 @@ import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLes
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
@@ -153,6 +154,14 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.EDGE_TO_EDGE)
   fun bindEdgeToEdge(
     @EnableEdgeToEdge param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.LESSON_PROGRESS_VISUALIZATION)
+  fun bindLessonProgressVisualization(
+    @EnableLessonProgressVisualization param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 
   @Binds

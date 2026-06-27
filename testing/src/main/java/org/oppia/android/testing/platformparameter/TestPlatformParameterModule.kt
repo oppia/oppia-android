@@ -13,6 +13,7 @@ import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LESSON_PROGRESS_VISUALIZATION
 import org.oppia.android.app.model.FeatureFlagId.LOAD_IMAGES_FROM_ASSETS
 import org.oppia.android.app.model.FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
@@ -156,6 +157,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableEdgeToEdge(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(EDGE_TO_EDGE, value)
+    }
+
+    fun forceEnableLessonProgressVisualization(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LESSON_PROGRESS_VISUALIZATION, value)
     }
 
     fun forceLoadLessonProtosFromAssets(value: Boolean) {
