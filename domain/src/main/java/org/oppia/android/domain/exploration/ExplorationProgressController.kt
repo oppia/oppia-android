@@ -48,7 +48,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -126,7 +128,9 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
-  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+  @EnableLessonProgressVisualization
+  private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -439,7 +443,9 @@ class ExplorationProgressController @Inject constructor(
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     val ephemeralStateDataProvider =
       mostRecentEphemeralStateFlow.convertToSessionProvider(CURRENT_STATE_PROVIDER_ID)
     return writtenTranslationContentLocale.combineWith(
@@ -473,7 +479,7 @@ class ExplorationProgressController @Inject constructor(
     selection: WrittenTranslationLanguageSelection
   ): DataProvider<Any> {
     return translationController.updateWrittenTranslationContentLanguage(
-      profileId, selection
+      profileId.toProfileIdPreservingZero(), selection
     ).transform(UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID) { previousSelection ->
       val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
       val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
@@ -500,18 +506,20 @@ class ExplorationProgressController @Inject constructor(
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
-              val learnerId = profileManagementController.fetchLearnerId(message.profileId)
+              val learnerId = profileManagementController.fetchLearnerId(
+                message.profileId.toProfileIdPreservingZero()
+              )
               val installationId = loggingIdentifierController.fetchInstallationId()
               val isContinueButtonAnimationSeen =
                 profileManagementController.fetchContinueAnimationSeenStatus(
-                  message.profileId
+                  message.profileId.toProfileIdPreservingZero()
                 ) ?: false
 
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(),
+                  ExplorationProgress(oppiaLogger),
                   message.isRestart,
                   message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
@@ -872,7 +880,9 @@ class ExplorationProgressController @Inject constructor(
       }
 
       if (!isContinueButtonAnimationSeen) {
-        profileManagementController.markContinueButtonAnimationSeen(profileId)
+        profileManagementController.markContinueButtonAnimationSeen(
+          profileId.toProfileIdPreservingZero()
+        )
       }
       isContinueButtonAnimationSeen = true
     }
@@ -1056,7 +1066,11 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeCurrentFlashbackEphemeralState(
     stateName: String
   ): EphemeralState {
-    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    // A flashback doesn't move the learner's position in the deck, so the attached progress (when
+    // the indicator is enabled) keeps showing their unchanged pre-flashback count.
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(
+      stateName, retrieveTotalCheckpointCount()
+    )
     return ephemeralState.toBuilder().apply {
       flashbackState = true
     }.build()
@@ -1138,8 +1152,28 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      isContinueButtonAnimationSeen
+      isContinueButtonAnimationSeen,
+      totalCheckpointCount = retrieveTotalCheckpointCount()
     )
+
+  /**
+   * Returns the total checkpoint count for attaching checkpoint progress to outgoing
+   * [EphemeralState]s.
+   *
+   * The total follows the learner's realized path through the deck, then adds the shortest
+   * remaining path from the state they're currently viewing. This keeps branching paths from
+   * showing impossible counts like a completed value greater than the total.
+   */
+  private fun ControllerState.retrieveTotalCheckpointCount(): Int? {
+    if (!enableLessonProgressVisualization.value) return null
+    val completedCheckpointCount =
+      explorationProgress.stateDeck.computeCompletedCheckpointCount()
+    val remainingCheckpointCount =
+      explorationProgress.stateGraph.computeMinimumCheckpointCount(
+        explorationProgress.stateDeck.getCurrentState().name
+      ) ?: return null
+    return completedCheckpointCount + remainingCheckpointCount
+  }
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {

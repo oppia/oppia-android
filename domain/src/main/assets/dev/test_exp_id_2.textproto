@@ -1593,6 +1593,7 @@ states {
       }
     }
     linked_skill_id: "test_skill_id_0"
+    is_checkpoint: true
   }
 }
 states {
