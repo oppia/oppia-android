@@ -162,7 +162,7 @@ enum FeatureFlagId {
 
   // Corresponds to a feature that enables study guides, an enhanced version of revision cards that
   // introduces multiple sections with section headers.
-  STUDY_GUIDES = 23;
+  STUDY_GUIDES = 22;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to
