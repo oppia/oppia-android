@@ -196,7 +196,7 @@ fun parseAabFilename(aabName: String): AabProperties? {
  * Fails if the changelog text exceeds [MAX_RELEASE_NOTES_LENGTH] characters.
  * Returns an empty map if no file is found.
  */
-internal fun extractReleaseNotes(
+fun extractReleaseNotes(
   workspaceRoot: String,
   majorMinorVersion: String,
   flavorId: String

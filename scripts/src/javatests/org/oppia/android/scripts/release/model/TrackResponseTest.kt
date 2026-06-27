@@ -41,8 +41,8 @@ class TrackResponseTest {
 
   @Test
   fun testTrackResponse_equality_differentReleases_isNotEqual() {
-    val a = TrackResponse(releases = listOf(TrackResponse.ReleaseEntry(listOf(100L), "completed")))
-    val b = TrackResponse(releases = listOf(TrackResponse.ReleaseEntry(listOf(200L), "completed")))
+    val a = TrackResponse(releases = listOf(TrackResponse.ReleaseEntry(listOf("100"), "completed")))
+    val b = TrackResponse(releases = listOf(TrackResponse.ReleaseEntry(listOf("200"), "completed")))
 
     assertThat(a).isNotEqualTo(b)
   }
