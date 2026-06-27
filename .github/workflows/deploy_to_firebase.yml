@@ -48,9 +48,11 @@ jobs:
           fi
 
           AAB_NAME=$(basename "$GCS_PATH")
+          FLAVOR=$(echo "$GCS_PATH" | grep -oP '(?<=oppia-android-)\w+(?=-releases)')
 
           echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
-          echo "Inputs validated: aab=$AAB_NAME"
+          echo "FLAVOR=$FLAVOR" >> $GITHUB_ENV
+          echo "Inputs validated: aab=$AAB_NAME, flavor=$FLAVOR"
 
       - name: Authenticate to GCP via Workload Identity Federation
         uses: google-github-actions/auth@v2
@@ -107,6 +109,6 @@ jobs:
           firebase appdistribution:distribute "$AAB_LOCAL_PATH" \
             --app "${{ secrets.FIREBASE_APP_ID }}" \
             --release-notes "$NOTES" \
-            --groups "qa-team"
+            --groups "${FLAVOR}-qa-testers"
 
           echo "Successfully distributed $AAB_NAME to Firebase App Distribution"
