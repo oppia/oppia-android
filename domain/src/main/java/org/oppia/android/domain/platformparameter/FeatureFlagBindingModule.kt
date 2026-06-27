@@ -18,6 +18,7 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.LoadImagesFromAssets
@@ -130,6 +131,11 @@ class FeatureFlagBindingModule {
   @EnableLessonProgressVisualization
   fun provideEnableLessonProgressVisualization(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.LESSON_PROGRESS_VISUALIZATION)
+
+  @Provides
+  @EnableStudyGuides
+  fun provideEnableStudyGuides(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.STUDY_GUIDES)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

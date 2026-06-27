@@ -22,6 +22,7 @@ import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
+import org.oppia.android.app.model.FeatureFlagId.STUDY_GUIDES
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
 import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
@@ -168,6 +169,10 @@ class TestPlatformParameterModule {
 
     fun forceLoadImagesFromAssets(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_IMAGES_FROM_ASSETS, value)
+    }
+
+    fun forceEnableStudyGuides(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(STUDY_GUIDES, value)
     }
 
     fun reset() {

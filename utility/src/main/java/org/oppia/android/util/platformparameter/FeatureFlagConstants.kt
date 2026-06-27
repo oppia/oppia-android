@@ -227,3 +227,9 @@ annotation class LoadLessonProtosFromAssets
  */
 @Qualifier
 annotation class EnableLessonProgressVisualization
+
+/**
+ * Qualifier for the feature flag that controls whether to enable study guides or not.
+ */
+@Qualifier
+annotation class EnableStudyGuides

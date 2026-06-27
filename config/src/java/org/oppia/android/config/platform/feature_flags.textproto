@@ -93,3 +93,8 @@ feature_flag_definition {
   remote_server_name: "android_enable_lesson_progress_visualization"
   default_is_enabled: false
 }
+feature_flag_definition {
+  id: STUDY_GUIDES
+  remote_server_name: "android_enable_study_guides"
+  default_is_enabled: false
+}

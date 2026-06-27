@@ -44,6 +44,8 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.testing.topic.StudyGuideTestHelper
+import org.oppia.android.testing.topic.TEST_STUDY_GUIDE_SUBTOPIC_TITLE
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
@@ -83,6 +85,7 @@ class TopicControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var studyGuideTestHelper: StudyGuideTestHelper
 
   private lateinit var profileId1: LegacyProfileId
   private lateinit var profileId2: LegacyProfileId
@@ -1104,6 +1107,163 @@ class TopicControllerTest {
     // Selecting the profile with Arabic translations should provide a translation context.
     assertThat(ephemeralRevisionCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetStudyGuide_testTopicSubtopic1_isSuccessful() {
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+    assertThat(ephemeralStudyGuide.studyGuide.sectionsCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testGetStudyGuide_testTopicSubtopic1_hasCorrectSubtopicTitle() {
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+    assertThat(ephemeralStudyGuide.studyGuide.subtopicTitle.contentId).isEqualTo("title")
+    assertThat(ephemeralStudyGuide.studyGuide.subtopicTitle.html)
+      .isEqualTo(TEST_STUDY_GUIDE_SUBTOPIC_TITLE)
+  }
+
+  @Test
+  fun testGetStudyGuide_testTopicSubtopic1_hasExpectedSectionsInOrder() {
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+    // The multi-section study guide should expose both sections, in order, with their headings and
+    // content (including the skillreview rich-text tag embedded in the second section's content).
+    assertThat(ephemeralStudyGuide.studyGuide.sectionsList)
+      .containsExactlyElementsIn(studyGuideTestHelper.createTestTopicSubtopic1Sections())
+      .inOrder()
+  }
+
+  @Test
+  fun testGetStudyGuide_noTopicAndSubtopicId_returnsFailure() {
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, "invalid_topic_id", subtopicId = 0)
+
+    monitorFactory.waitForNextFailureResult(studyGuideProvider)
+  }
+
+  @Test
+  fun testGetStudyGuide_fractionsSubtopic2_legacyRecord_hasNoSections() {
+    // A subtopic record that predates study guide support has no sections. It still loads as a
+    // study guide, but with an empty sections list and its subtopic title preserved.
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+    assertThat(ephemeralStudyGuide.studyGuide.sectionsList).isEmpty()
+    assertThat(ephemeralStudyGuide.studyGuide.subtopicTitle.html).isEqualTo("Fractions of a group")
+  }
+
+  @Test
+  fun testGetStudyGuide_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    forceDefaultLocale(Locale.US)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // The context should be just the language for English since the default strings of the study
+    // guide are expected to be in English.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralStudyGuide.writtenTranslationContext).isEqualTo(expectedContext)
+  }
+
+  @Test
+  fun testGetStudyGuide_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.language).isEqualTo(ARABIC)
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetStudyGuide_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // No translations match an unsupported language, so default to the built-in strings.
+    assertThat(ephemeralStudyGuide.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetStudyGuide_englishLangProfile_includesTranslationContextForEnglish() {
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+    updateContentLanguage(profileId1, ENGLISH)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // English translations means a context without translations.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralStudyGuide.writtenTranslationContext).isEqualTo(expectedContext)
+  }
+
+  @Test
+  fun testGetStudyGuide_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, ENGLISH)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+    val monitor = monitorFactory.createMonitor(studyGuideProvider)
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral study guide to update.
+    updateContentLanguage(profileId1, ARABIC)
+    val ephemeralStudyGuide = monitor.ensureNextResultIsSuccess()
+
+    // Switching to Arabic should result in a new ephemeral study guide with a translation context.
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.language).isEqualTo(ARABIC)
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetStudyGuide_arabicLangProfile_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, ENGLISH)
+    updateContentLanguage(profileId2, ARABIC)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId2, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.language).isEqualTo(ARABIC)
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetStudyGuide_arabicLangProfile_translationContextIncludesSectionTranslations() {
+    updateContentLanguage(profileId2, ARABIC)
+    val studyGuideProvider =
+      topicController.getStudyGuide(profileId2, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
+
+    // Each study guide section heading & content is independently translatable, so the Arabic
+    // context must include a translation for every section content ID (not just the legacy title &
+    // content IDs). Without these the sections would fall back to the default English strings.
+    val sectionContentIds = studyGuideTestHelper.createTestTopicSubtopic1Sections()
+      .flatMap { listOf(it.heading.contentId, it.content.contentId) }
+    assertThat(ephemeralStudyGuide.writtenTranslationContext.translationsMap.keys)
+      .containsAtLeastElementsIn(sectionContentIds)
   }
 
   private fun setUpTestApplicationComponent() {
