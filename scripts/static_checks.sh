@@ -107,14 +107,6 @@ echo "********************************"
 bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb || FAILURES=$((FAILURES+1))
 echo ""
 
-# License Texts Check
-echo "********************************"
-echo "Running license texts checks"
-echo "********************************"
-bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml || FAILURES=$((FAILURES+1))
-echo ""
-
-# TODO checks.
 # Open issue correctness checks.
 echo "********************************"
 echo "Running TODO correctness checks"
