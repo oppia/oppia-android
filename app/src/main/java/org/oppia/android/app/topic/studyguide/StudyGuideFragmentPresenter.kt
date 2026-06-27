@@ -26,6 +26,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Presenter for [StudyGuideFragment], sets up bindings from ViewModel. */
@@ -85,7 +86,7 @@ class StudyGuideFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
       .toLiveData().observe(
         fragment
       ) { result ->
