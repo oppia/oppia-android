@@ -115,6 +115,7 @@ bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_
 echo ""
 
 # TODO checks.
+# Open issue correctness checks.
 echo "********************************"
 echo "Running TODO correctness checks"
 echo "********************************"

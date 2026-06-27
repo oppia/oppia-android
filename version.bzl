@@ -11,8 +11,3 @@ the app (that potentially contain changes or features that are not yet ready for
 
 MAJOR_VERSION = 0
 MINOR_VERSION = 18
-
-OPPIA_DEV_VERSION_CODE = 202
-OPPIA_ALPHA_VERSION_CODE = 201
-OPPIA_BETA_VERSION_CODE = 200
-OPPIA_GA_VERSION_CODE = 199

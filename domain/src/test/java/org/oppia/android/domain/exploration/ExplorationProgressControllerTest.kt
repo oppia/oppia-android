@@ -106,7 +106,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -167,6 +166,7 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
@@ -519,6 +519,19 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
       .isEqualTo(2)
     assertThat(ephemeralState.completedState.getAnswer(1).feedback.html).contains("Correct!")
+  }
+
+  @Test
+  fun testGetCurrentState_lessonProgressDisabled_checkpointExploration_hasNoCheckpointProgress() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // With the feature disabled the indicator is never populated, even for an exploration that does
+    // have checkpoint states.
+    assertThat(ephemeralState.hasCheckpointProgress()).isFalse()
   }
 
   @Test
@@ -4265,10 +4278,6 @@ class ExplorationProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.
