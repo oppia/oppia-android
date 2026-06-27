@@ -114,6 +114,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.android.tools.lint:lint": "30.3.1",
     "com.android.tools.lint:lint-tests": "30.3.1",
     "com.github.bumptech.glide:mocks": "4.11.0",
+    "com.github.weisj:jsvg": "1.0.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.protobuf:protobuf-java-util": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
@@ -154,7 +155,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "31.0.1",
     },
     "oppia_proto_api": {
-        "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
+        "version": "1eca22026838ea37f3f4f88dcca31c5110062262",
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",

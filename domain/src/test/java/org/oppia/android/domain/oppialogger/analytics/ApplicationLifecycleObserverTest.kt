@@ -87,7 +87,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -106,6 +105,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -590,7 +590,7 @@ class ApplicationLifecycleObserverTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 
@@ -694,7 +694,6 @@ class ApplicationLifecycleObserverTest {
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

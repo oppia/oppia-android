@@ -14,6 +14,8 @@ import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESS
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.FeatureFlagId.LESSON_PROGRESS_VISUALIZATION
+import org.oppia.android.app.model.FeatureFlagId.LOAD_IMAGES_FROM_ASSETS
+import org.oppia.android.app.model.FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
@@ -158,6 +160,14 @@ class TestPlatformParameterModule {
 
     fun forceEnableLessonProgressVisualization(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(LESSON_PROGRESS_VISUALIZATION, value)
+    }
+
+    fun forceLoadLessonProtosFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_LESSON_PROTOS_FROM_ASSETS, value)
+    }
+
+    fun forceLoadImagesFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_IMAGES_FROM_ASSETS, value)
     }
 
     fun reset() {

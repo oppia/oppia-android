@@ -51,8 +51,6 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -186,8 +184,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -199,6 +195,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -5337,7 +5334,9 @@ class StateFragmentTest {
 
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
-      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        profileId.toProfileIdPreservingZero()
+      )
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -6891,7 +6890,7 @@ class StateFragmentTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -6901,7 +6900,7 @@ class StateFragmentTest {
 
   private fun enableInLessonLanguageSwitching() {
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId, allowInLessonQuickLanguageSwitching = true
+      profileId.toProfileIdPreservingZero(), allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
@@ -6976,6 +6975,7 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
   }
@@ -7205,17 +7205,6 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   @Singleton
   @Component(
     modules = [
@@ -7272,7 +7261,6 @@ class StateFragmentTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

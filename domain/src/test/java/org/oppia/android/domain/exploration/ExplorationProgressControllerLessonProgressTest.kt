@@ -19,6 +19,7 @@ import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -62,7 +63,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -80,12 +80,11 @@ import javax.inject.Singleton
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /**
- * Tests for [ExplorationProgressController]'s lesson progress wiring, run with
- * [org.oppia.android.util.platformparameter.EnableLessonProgressVisualization] enabled.
+ * Tests for [ExplorationProgressController]'s lesson progress wiring, run with the
+ * EnableLessonProgressVisualization feature flag enabled.
  *
- * The flag-disabled behavior lives in [ExplorationProgressControllerTest]. These are kept in a
- * separate test because the flag has to be forced before the application component (and therefore
- * the platform parameters) is built.
+ * These are kept in a separate test suite because [ExplorationProgressControllerTest] currently
+ * does not support feature flag toggling.
  *
  * test_exp_id_2 has five checkpoints along its main path: the initial Continue state, the
  * MultipleChoice, NumberInput and RatioInput states (all marked with is_checkpoint), and the
@@ -110,8 +109,8 @@ class ExplorationProgressControllerLessonProgressTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
-    // Flashback support is needed so the flashback test can open a flashback to an earlier card.
     TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
   }
 
@@ -126,14 +125,14 @@ class ExplorationProgressControllerLessonProgressTest {
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
-    // The initial state always counts as the first of the exploration's five checkpoints.
+    // The initial state always counts as the first of the exploration's checkpoints.
     assertThat(ephemeralState.hasCheckpointProgress()).isTrue()
     assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(1)
     assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
-  fun testGetCurrentState_advancedPastFirstCheckpoint_completedCountIncrements() {
+  fun testGetCurrentState_passFirstCheckpoint_completedCheckpointCountIncrements() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
@@ -145,7 +144,7 @@ class ExplorationProgressControllerLessonProgressTest {
   }
 
   @Test
-  fun testGetCurrentState_advancedPastSecondCheckpoint_completedCountIncrements() {
+  fun testGetCurrentState_passSecondCheckpoint_completedCheckpointCountIncrements() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
@@ -157,7 +156,7 @@ class ExplorationProgressControllerLessonProgressTest {
   }
 
   @Test
-  fun testGetCurrentState_advancedPastThirdCheckpoint_completedCountIncrements() {
+  fun testGetCurrentState_passThirdCheckpoint_completedCheckpointCountIncrements() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
@@ -169,21 +168,37 @@ class ExplorationProgressControllerLessonProgressTest {
   }
 
   @Test
-  fun testGetCurrentState_navigatedBackward_completedCountDecrements() {
+  fun testGetCurrentState_reachTerminalState_allCheckpointsCompleted() {
     startPlayingNewExploration(TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToMultipleChoiceState()
 
-    // Navigating back from the first checkpoint to the earlier (non-checkpoint) fraction state drops
-    // the completed count back to just the initial checkpoint.
-    val ephemeralState = moveToPreviousState()
+    // The terminal state is the exploration's last checkpoint, so reaching it completes every
+    // checkpoint and the completed count matches the total.
+    val ephemeralState = navigateToTerminalState()
 
-    assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(1)
+    assertThat(ephemeralState.hasCheckpointProgress()).isTrue()
+    assertThat(ephemeralState.checkpointProgress.completedCheckpointCount).isEqualTo(5)
     assertThat(ephemeralState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
   }
 
   @Test
-  fun testGetCurrentState_noCheckpointExploration_hasNoCheckpointProgress() {
+  fun testGetCurrentState_navigateBackward_completedCountDecreases() {
+    startPlayingNewExploration(TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Advancing to the first marked checkpoint takes the completed count up to 2.
+    val forwardState = navigateToMultipleChoiceState()
+    assertThat(forwardState.checkpointProgress.completedCheckpointCount).isEqualTo(2)
+
+    // Navigating back to the earlier (non-checkpoint) fraction state drops the completed count back
+    // down to just the initial checkpoint.
+    val backwardState = moveToPreviousState()
+    assertThat(backwardState.checkpointProgress.completedCheckpointCount).isEqualTo(1)
+    assertThat(backwardState.checkpointProgress.totalCheckpointCount).isEqualTo(5)
+  }
+
+  @Test
+  fun testGetCurrentState_noExplorationCheckpoint_hasNoCheckpointProgress() {
     startPlayingNewExploration(
       TEST_EXPLORATION_ID_4, TEST_TOPIC_ID_1, TEST_STORY_ID_2
     )
@@ -267,6 +282,30 @@ class ExplorationProgressControllerLessonProgressTest {
     return moveToNextState()
   }
 
+  /** Plays through the remaining (non-checkpoint) states and stops on the terminal state. */
+  private fun navigateToTerminalState(): EphemeralState {
+    navigateToRatioInputState()
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply { addAllRatioComponent(listOf(4, 5)) }.build()
+    )
+    moveToNextState()
+    submitAnswer(createTextInputAnswer("finnish"))
+    moveToNextState()
+    submitDragAndDropAnswer(
+      listOf("ca_choices_1"),
+      listOf("ca_choices_2"),
+      listOf("ca_choices_3"),
+      listOf("ca_choices_0")
+    )
+    moveToNextState()
+    submitDragAndDropAnswer(
+      listOf("ca_choices_0", "ca_choices_1"),
+      listOf("ca_choices_3"),
+      listOf("ca_choices_2")
+    )
+    return moveToNextState()
+  }
+
   private fun submitContinueButtonAnswer() {
     submitAnswer(createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER))
   }
@@ -336,6 +375,31 @@ class ExplorationProgressControllerLessonProgressTest {
     )
   }
 
+  private fun submitDragAndDropAnswer(vararg selectedChoicesLists: List<String>) {
+    submitAnswer(createDragAndDropAnswer(selectedChoicesLists.toList()))
+  }
+
+  private fun createDragAndDropAnswer(selectedChoicesLists: List<List<String>>): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        listOfSetsOfTranslatableHtmlContentIds =
+          ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+            addAllContentIdLists(
+              selectedChoicesLists.map { choices ->
+                SetOfTranslatableHtmlContentIds.newBuilder().apply {
+                  addAllContentIds(
+                    choices.map { choice ->
+                      TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
+                    }
+                  )
+                }.build()
+              }
+            )
+          }.build()
+      }.build()
+    )
+  }
+
   private fun createTextInputAnswer(textAnswer: String): UserAnswer {
     return convertToUserAnswer(
       InteractionObject.newBuilder().apply { normalizedString = textAnswer }.build()
@@ -397,10 +461,6 @@ class ExplorationProgressControllerLessonProgressTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   @Singleton

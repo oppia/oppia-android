@@ -80,7 +80,13 @@ _gen_binary_proto_from_text = rule(
     implementation = _gen_binary_proto_from_text_impl,
 )
 
-def gen_binary_proto_from_text(name, proto_type_name, input_file, output_file, proto_deps):
+def gen_binary_proto_from_text(
+        name,
+        proto_type_name,
+        input_file,
+        output_file,
+        proto_deps,
+        visibility):
     """
     Generates a binary proto from a text proto.
 
@@ -94,6 +100,7 @@ def gen_binary_proto_from_text(name, proto_type_name, input_file, output_file, p
         proto_deps: list of targets. The list of proto_library dependencies that are needed to
             perform the conversion. Generally, only the proto file corresponding to the proto type
             is needed since proto_library automatically pulls in transitive dependencies.
+        visibility: list of str. The Bazel access visibility of the generated proto assets.
 
     Returns:
         str. The path to the newly generated binary file (same as output_file).
@@ -104,6 +111,7 @@ def gen_binary_proto_from_text(name, proto_type_name, input_file, output_file, p
         input_file = input_file,
         output_file = output_file,
         proto_deps = proto_deps,
+        visibility = visibility,
     )
     return output_file
 
@@ -114,7 +122,8 @@ def _generate_single_asset_proto_binary(
         proto_type_name,
         asset_dir,
         proto_dep_bazel_target_prefix,
-        proto_package):
+        proto_package,
+        visibility):
     """
     Converts a single asset text proto to a new binary asset.
 
@@ -131,6 +140,7 @@ def _generate_single_asset_proto_binary(
         proto_dep_bazel_target_prefix: str. The path to the library that contains the proto_dep.
             Example: '//model'.
         proto_package: str. The name of the proto package. Example: 'model'.
+        visibility: list of str. The Bazel access visibility of the generated proto assets.
 
     Returns:
         str. The path to the newly generated binary file.
@@ -143,6 +153,7 @@ def _generate_single_asset_proto_binary(
             "%s:%s_proto" % (proto_dep_bazel_target_prefix, proto_dep_name),
         ],
         proto_type_name = "%s.%s" % (proto_package, proto_type_name),
+        visibility = visibility,
     )
 
 def generate_proto_binary_assets(
@@ -153,7 +164,8 @@ def generate_proto_binary_assets(
         name_prefix,
         asset_dir,
         proto_dep_bazel_target_prefix,
-        proto_package):
+        proto_package,
+        visibility = []):
     """
     Converts a list of text proto assets to binary.
 
@@ -167,6 +179,7 @@ def generate_proto_binary_assets(
         asset_dir: str. See _generate_single_asset_proto_binary.
         proto_dep_bazel_target_prefix: str. See _generate_single_asset_proto_binary.
         proto_package: str. See _generate_single_asset_proto_binary.
+        visibility: list of str. The Bazel access visibility of the generated proto assets.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -180,6 +193,7 @@ def generate_proto_binary_assets(
             asset_dir = asset_dir,
             proto_dep_bazel_target_prefix = proto_dep_bazel_target_prefix,
             proto_package = proto_package,
+            visibility = visibility,
         )
         for name in names
     ]
