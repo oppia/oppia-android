@@ -11,6 +11,7 @@ import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLes
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
@@ -124,6 +125,11 @@ class FeatureFlagBindingModule {
   ): PlatformParameterValue<Boolean> {
     return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_IMAGES_FROM_ASSETS)
   }
+
+  @Provides
+  @EnableLessonProgressVisualization
+  fun provideEnableLessonProgressVisualization(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.LESSON_PROGRESS_VISUALIZATION)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

@@ -230,6 +230,16 @@ message RuleSpec {
 
 /* The following structures are specific to ephemeral exploration sessions and should never be persisted on disk. */
 
+// Represents a learner's progress through the checkpointed cards of an exploration, used to render
+// the lesson progress indicator.
+message CheckpointProgress {
+  // The number of checkpoints the learner has already completed in the current exploration.
+  int32 completed_checkpoint_count = 1;
+
+  // The total number of checkpoints in the current exploration.
+  int32 total_checkpoint_count = 2;
+}
+
 // Corresponds to an exploration state that exists ephemerally in the UI and will disappear once the user finishes the
 // exploration or navigates away from it. This model contains additional information to help the UI display an exact
 // representation of their interaction with the lesson.
@@ -276,6 +286,10 @@ message EphemeralState {
 
   // Indicates whether this state is a flashback state.
   bool flashback_state = 12;
+
+  // The learner's progress through this exploration's checkpoints, used to render the lesson
+  // progress indicator.
+  CheckpointProgress checkpoint_progress = 13;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.

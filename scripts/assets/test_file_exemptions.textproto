@@ -4048,14 +4048,6 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/state/StateDeck.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/state/StateGraph.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/state/StateList.kt"
   test_file_not_required: true
 }
@@ -4122,6 +4114,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/test/java/org/oppia/android/domain/exploration/ExplorationProgressControllerLessonProgressTest.kt",
+  is_extra_test_file: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/test/java/org/oppia/android/domain/locale/LanguageConfigRetrieverProductionTest.kt",
