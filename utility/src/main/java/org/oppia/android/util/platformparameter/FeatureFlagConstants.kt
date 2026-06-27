@@ -233,9 +233,3 @@ annotation class EnableLessonProgressVisualization
  */
 @Qualifier
 annotation class EnableStudyGuides
-
-/** Name of the feature flag that controls whether to enable study guides. */
-const val ENABLE_STUDY_GUIDES = "android_enable_study_guides"
-
-/** Default value for the feature flag corresponding to [EnableStudyGuides]. */
-const val ENABLE_STUDY_GUIDES_DEFAULT_VALUE = false
