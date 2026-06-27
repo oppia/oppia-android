@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.oppia.android.scripts.release.model.InsertEditRequest
 import org.oppia.android.scripts.release.model.TrackResponse
 import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import org.oppia.android.scripts.release.remote.PlayConsoleService
@@ -47,7 +48,11 @@ class GooglePlayConsoleClient(
       .build()
   }
 
-  private val moshi by lazy { Moshi.Builder().build() }
+  private val moshi by lazy {
+    Moshi.Builder()
+      .add(InsertEditRequest::class.java, InsertEditRequest.ADAPTER)
+      .build()
+  }
 
   private val retrofit by lazy {
     Retrofit.Builder()

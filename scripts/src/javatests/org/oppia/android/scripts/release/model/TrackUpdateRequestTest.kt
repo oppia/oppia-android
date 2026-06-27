@@ -79,16 +79,16 @@ class TrackUpdateRequestTest {
 
   @Test
   fun testReleaseEntry_equality_sameFields_isEqual() {
-    val a = TrackUpdateRequest.ReleaseEntry(listOf(300L), "completed", emptyList())
-    val b = TrackUpdateRequest.ReleaseEntry(listOf(300L), "completed", emptyList())
+    val a = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
+    val b = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
 
     assertThat(a).isEqualTo(b)
   }
 
   @Test
   fun testReleaseEntry_equality_differentStatus_isNotEqual() {
-    val a = TrackUpdateRequest.ReleaseEntry(listOf(300L), "completed", emptyList())
-    val b = TrackUpdateRequest.ReleaseEntry(listOf(300L), "inProgress", emptyList())
+    val a = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
+    val b = TrackUpdateRequest.ReleaseEntry(listOf("300"), "inProgress", emptyList())
 
     assertThat(a).isNotEqualTo(b)
   }

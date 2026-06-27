@@ -46,6 +46,5 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
         "//third_party:com_google_truth_truth",
-        "//third_party:com_squareup_moshi_moshi",
     ],
 )

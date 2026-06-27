@@ -23,6 +23,6 @@ enum class AppFlavor(val id: String) {
      *
      * @param flavorId the flavor string from an AAB filename or changelog filename
      */
-    fun fromId(flavorId: String): AppFlavor? = entries.find { it.id == flavorId }
+    fun fromId(flavorId: String): AppFlavor? = values().find { it.id == flavorId }
   }
 }

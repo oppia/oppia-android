@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.release.remote
 
+import okhttp3.RequestBody
 import org.oppia.android.scripts.release.model.BundleResponse
 import org.oppia.android.scripts.release.model.EditResponse
 import org.oppia.android.scripts.release.model.InsertEditRequest
