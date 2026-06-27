@@ -6,6 +6,12 @@ and distributing builds via Firebase App Distribution.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "app_flavor",
+    srcs = ["AppFlavor.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
     name = "play_console_client",
     srcs = ["PlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
@@ -17,7 +23,9 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
         "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
         "//scripts/src/java/org/oppia/android/scripts/release/remote:play_console_service",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:com_squareup_retrofit2_converter-moshi",
@@ -34,35 +42,35 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "version_inversion_check",
-    srcs = ["VersionInversionCheck.kt"],
+    name = "version_inversion_checker",
+    srcs = ["VersionInversionChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":play_console_client"],
 )
 
 kt_jvm_library(
-    name = "pending_release_check",
-    srcs = ["PendingReleaseCheck.kt"],
+    name = "pending_release_checker",
+    srcs = ["PendingReleaseChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":play_console_client"],
 )
 
 kt_jvm_library(
-    name = "changelog_existence_check",
-    srcs = ["ChangelogExistenceCheck.kt"],
+    name = "changelog_existence_checker",
+    srcs = ["ChangelogExistenceChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":app_flavor"],
 )
 
-# Wraps all release script libraries for use by the top-level binary in //scripts.
-# Uses oppia_script_binary_visibility so //scripts:upload_binary_to_play_console can see it.
 kt_jvm_library(
     name = "upload_binary_to_play_console_lib",
     srcs = ["UploadBinaryToPlayConsole.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":changelog_existence_check",
+        ":app_flavor",
+        ":changelog_existence_checker",
         ":google_play_console_client",
-        ":pending_release_check",
-        ":version_inversion_check",
+        ":pending_release_checker",
+        ":version_inversion_checker",
     ],
 )

@@ -53,12 +53,12 @@ class TrackUpdateRequestTest {
   fun testReleaseEntry_constructor_setsAllFields() {
     val notes = listOf(TrackUpdateRequest.LocalizedText(language = "en-US", text = "Bug fixes."))
     val entry = TrackUpdateRequest.ReleaseEntry(
-      versionCodes = listOf(301L),
+      versionCodes = listOf("301"),
       status = "completed",
       releaseNotes = notes
     )
 
-    assertThat(entry.versionCodes).containsExactly(301L)
+    assertThat(entry.versionCodes).containsExactly("301")
     assertThat(entry.status).isEqualTo("completed")
     assertThat(entry.releaseNotes).hasSize(1)
     assertThat(entry.userFraction).isNull()
@@ -67,7 +67,7 @@ class TrackUpdateRequestTest {
   @Test
   fun testReleaseEntry_constructor_withUserFraction_setsUserFraction() {
     val entry = TrackUpdateRequest.ReleaseEntry(
-      versionCodes = listOf(301L),
+      versionCodes = listOf("301"),
       status = "inProgress",
       releaseNotes = emptyList(),
       userFraction = 0.1

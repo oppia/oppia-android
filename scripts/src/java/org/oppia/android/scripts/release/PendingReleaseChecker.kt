@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.release
 
 /**
- * Precondition check that prevents uploading a binary when a release is already pending on the
+ * Precondition checker that prevents uploading a binary when a release is already pending on the
  * target Play Console track.
  *
  * A pending release is any release whose status is not "completed" or "halted" (i.e. a release
@@ -9,7 +9,7 @@ package org.oppia.android.scripts.release
  * a pending release exists would conflict with the in-flight release and may cause unexpected
  * rollout behaviour or Play Console API errors.
  */
-class PendingReleaseCheck(private val client: PlayConsoleClient) {
+class PendingReleaseChecker(private val client: PlayConsoleClient) {
 
   /**
    * Verifies that there is no pending release on [track] for [packageName].
@@ -23,10 +23,7 @@ class PendingReleaseCheck(private val client: PlayConsoleClient) {
   fun verify(packageName: String, track: String) {
     val releases = client.getTrackReleases(packageName, track)
 
-    if (releases.isEmpty()) {
-      println("No existing releases on track '$track'. Pending release check passed.")
-      return
-    }
+    if (releases.isEmpty()) return
 
     val pendingRelease = releases.find { it.status !in TERMINAL_STATUSES }
 
@@ -35,8 +32,6 @@ class PendingReleaseCheck(private val client: PlayConsoleClient) {
         "versionCodes=${pendingRelease.versionCodes}. " +
         "Cannot upload a new binary while a release is in-flight."
     }
-
-    println("Pending release check passed: no in-flight releases on track '$track'.")
   }
 
   private companion object {

@@ -9,4 +9,4 @@ import com.squareup.moshi.JsonClass
  * @property versionCode the version code assigned to the uploaded AAB by the Play Console
  */
 @JsonClass(generateAdapter = true)
-data class BundleResponse(@Json(name = "versionCode") val versionCode: Long)
+data class BundleResponse(@Json(name = "versionCode") val versionCode: String)

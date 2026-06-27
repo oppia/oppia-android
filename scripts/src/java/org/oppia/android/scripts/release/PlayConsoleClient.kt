@@ -22,9 +22,6 @@ interface PlayConsoleClient {
   /**
    * Returns all active releases on [track] for [packageName], sorted by version code descending.
    *
-   * Used by precondition checks to detect version inversion and pending in-progress releases before
-   * uploading a new binary.
-   *
    * @param packageName the application package name
    * @param track the Play Console track to query (e.g. "alpha", "beta", "production")
    * @return the list of [TrackRelease] entries currently live on the track
@@ -50,9 +47,9 @@ interface PlayConsoleClient {
    * @param editId the active edit session ID returned by [createEdit]
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
    * @param versionCode the version code of the binary to assign, as returned by [uploadAab]
-   * @param rolloutFraction the fraction of users to roll out to, between 0.0 and 1.0 inclusive.
-   *     A value of 1.0 means a full rollout (status: "completed"); any value below 1.0 produces a
-   *     staged rollout (status: "inProgress") with the given userFraction in the Play API payload.
+   * @param rolloutFraction the rollout fraction as an integer in the range [0, 1000], where
+   *     1000 means full rollout (status: "completed") and any value below 1000 produces a staged
+   *     rollout (status: "inProgress"). For example: 250 = 25%, 334 = 33.4%, 1000 = 100%.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
    */
   fun setTrackRelease(
@@ -60,7 +57,7 @@ interface PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Double,
+    rolloutFraction: Int,
     releaseNotes: Map<String, String>
   )
 

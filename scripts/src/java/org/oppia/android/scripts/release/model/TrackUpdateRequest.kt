@@ -25,7 +25,7 @@ data class TrackUpdateRequest(
    */
   @JsonClass(generateAdapter = true)
   data class ReleaseEntry(
-    @Json(name = "versionCodes") val versionCodes: List<Long>,
+    @Json(name = "versionCodes") val versionCodes: List<String>,
     @Json(name = "status") val status: String,
     @Json(name = "releaseNotes") val releaseNotes: List<LocalizedText>,
     /** Only set when [status] is `"inProgress"` (staged rollout). Must be in range (0.0, 1.0). */

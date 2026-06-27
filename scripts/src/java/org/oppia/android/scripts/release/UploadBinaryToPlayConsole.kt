@@ -3,116 +3,104 @@ package org.oppia.android.scripts.release
 import java.io.File
 
 /**
- * Main entry point for uploading a signed Android App Bundle (AAB) to the Google Play Console.
+ * Script that uploads a signed AAB to the Google Play Console and configures its release track.
  *
- * This script:
- * 1. Validates all inputs.
- * 2. Runs pre-upload precondition checks: pending release detection and changelog existence. These
- *    checks do not require the version code and are safe to run before any mutations.
- * 3. Opens a Play Console edit session and uploads the AAB. The version code is returned by the
- *    API after upload and is used for the version inversion check (step 4).
- * 4. Runs the version inversion check using the uploaded version code. If the check fails the edit
- *    session is abandoned (never committed) and no change is published.
- * 5. Assigns the binary to the target track and commits the edit.
+ * Before uploading, three precondition checks are run:
+ * 1. No pending release exists on the target track ([PendingReleaseChecker]).
+ * 2. A changelog file exists for the version being deployed ([ChangelogExistenceChecker]).
+ * 3. The version code satisfies the cross-track ordering constraint (ga < beta < alpha)
+ *    ([VersionInversionChecker]).
  *
  * Release notes are sourced from [CHANGELOGS_DIR]: a flavor-specific file
  * (`<major.minor>_<flavor>.md`) is used if it exists, otherwise the default (`<major.minor>.md`)
- * is used.
+ * is used. The script fails if the changelog exceeds [MAX_RELEASE_NOTES_LENGTH] characters rather
+ * than truncating silently.
  *
  * Usage (called by deploy_to_play_console.yml via Bazel):
  * ```
  * bazel run //scripts:upload_binary_to_play_console -- \
- *   <workspace_root> <aab_path> <track> <gcp_project_id> <rollout_fraction>
+ *   <workspace_root> <aab_path> <track> <access_token> <rollout_fraction>
  * ```
  *
- * @param args[0] workspace_root — absolute path to the repository root
- * @param args[1] aab_path — absolute path to the signed AAB to upload
- * @param args[2] track — Play Console track: "alpha", "beta", or "production"
- * @param args[3] gcp_project_id — GCP project ID used to obtain an access token via gcloud
- * @param args[4] rollout_fraction — staged rollout fraction between 0.0 and 1.0
+ * Arguments (positional):
+ *   0. workspace_root   — absolute path to the repository root
+ *   1. aab_path         — absolute path to the signed AAB to upload
+ *   2. track            — Play Console track: "alpha", "beta", or "production"
+ *   3. access_token     — OAuth2 bearer token (passed from the workflow via gcloud)
+ *   4. rollout_fraction — staged rollout as an integer [0, 1000] (e.g. 250 = 25%, 1000 = 100%)
  */
 fun main(args: Array<String>) {
   require(args.size == 5) {
     "Usage: upload_binary_to_play_console <workspace_root> <aab_path> <track> " +
-      "<gcp_project_id> <rollout_fraction>\nGot ${args.size} argument(s): ${args.toList()}"
+      "<access_token> <rollout_fraction>\nGot ${args.size} argument(s): ${args.toList()}"
   }
 
   val workspaceRoot = args[0]
   val aabPath = args[1]
   val track = args[2]
-  val gcpProjectId = args[3]
-  val rolloutFraction = requireNotNull(args[4].toDoubleOrNull()) {
-    "rollout_fraction must be a valid decimal number (0.0-1.0), got '${args[4]}'."
+  val accessToken = args[3]
+  val rolloutFraction = requireNotNull(args[4].toIntOrNull()) {
+    "rollout_fraction must be an integer in [0, 1000] (e.g. 250 for 25%), got '${args[4]}'."
   }
 
   require(track in VALID_TRACKS) {
     "track must be one of $VALID_TRACKS, got '$track'."
   }
-  require(rolloutFraction in 0.0..1.0) {
-    "rollout_fraction must be between 0.0 and 1.0, got $rolloutFraction."
+  require(rolloutFraction in 0..1000) {
+    "rollout_fraction must be between 0 and 1000, got $rolloutFraction."
   }
 
   val aabFile = File(aabPath)
   require(aabFile.exists()) { "AAB file not found: $aabPath" }
 
-  val aabName = aabFile.name
-  val versionName = extractVersionName(aabName)
+  val properties = parseAabFilename(aabFile.name)
     ?: error(
-      "Cannot extract version name from AAB filename '$aabName'. " +
+      "Cannot parse AAB filename '${aabFile.name}'. " +
         "Expected format: oppia-android-<major>.<minor>-rc<rc>-<flavor>-<hash>.aab"
     )
-  val majorMinorVersion = extractMajorMinorVersion(versionName)
-    ?: error("Cannot extract major.minor version from version name '$versionName'.")
-  val flavor = extractFlavor(aabName)
-    ?: error("Cannot extract flavor from AAB filename '$aabName'.")
 
   println("=== Upload Binary to Play Console ===")
-  println("  AAB     : $aabName")
-  println("  Version : $versionName (major.minor: $majorMinorVersion)")
-  println("  Flavor  : $flavor")
+  println("  AAB     : ${aabFile.name}")
+  println("  Version : ${properties.versionName} (major.minor: ${properties.majorMinorVersion})")
+  println("  Flavor  : ${properties.flavor.id}")
   println("  Track   : $track")
-  println("  Rollout : ${rolloutFraction * 100}%")
+  println("  Rollout : ${rolloutFraction / 10.0}%")
   println()
 
-  val accessToken = obtainAccessToken(gcpProjectId)
   val client = GooglePlayConsoleClient(accessToken)
-  runUpload(
-    client, workspaceRoot, aabPath, versionName, majorMinorVersion, flavor, track, rolloutFraction
-  )
+  runUpload(client, workspaceRoot, aabPath, properties, track, rolloutFraction)
 }
 
 /**
  * Executes the full upload workflow after authentication.
  *
- * Extracted to allow unit tests to inject a [PlayConsoleClient] fake, bypassing `gcloud`.
+ * Extracted to allow unit tests to inject a [PlayConsoleClient] fake, bypassing token setup.
  *
  * @param client the [PlayConsoleClient] used for all Play Console API calls
  * @param workspaceRoot absolute path to the repository root (for changelog lookups)
  * @param aabPath absolute path to the signed AAB to upload
- * @param versionName the full version string (e.g. "0.18-rc01-alpha")
- * @param majorMinorVersion the `major.minor` portion used for changelog file lookup
- * @param flavor the build flavor ("alpha", "beta", or "ga")
+ * @param properties parsed properties from the AAB filename
  * @param track the Play Console track ("alpha", "beta", or "production")
- * @param rolloutFraction the fraction of users to roll out to, between 0.0 and 1.0 inclusive.
- *     Passed directly to [PlayConsoleClient.setTrackRelease].
+ * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
 fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
-  versionName: String,
-  majorMinorVersion: String,
-  flavor: String,
+  properties: AabProperties,
   track: String,
-  rolloutFraction: Double
+  rolloutFraction: Int
 ) {
-  // Pre-upload checks that don't require the version code.
   println("Running pre-upload precondition checks...")
-  PendingReleaseCheck(client).verify(PACKAGE_NAME, track)
-  ChangelogExistenceCheck(workspaceRoot).verify(majorMinorVersion, flavor)
-  println("Pre-upload checks passed.\n")
+  PendingReleaseChecker(client).verify(PACKAGE_NAME, track)
+  println("Pending release check passed: no in-flight releases on track '$track'.")
+  ChangelogExistenceChecker(workspaceRoot).verify(
+    properties.majorVersion, properties.minorVersion, properties.flavor
+  )
+  println("Changelog existence check passed for ${properties.majorMinorVersion} (${properties.flavor.id}).")
+  println("Pre-upload checks passed.")
+  println()
 
-  // Upload the AAB. The version code is assigned by the Play Console and returned here.
   println("Opening edit session...")
   val editId = client.createEdit(PACKAGE_NAME)
   println("Edit session: $editId")
@@ -121,92 +109,83 @@ fun runUpload(
   val uploadedVersionCode = client.uploadAab(PACKAGE_NAME, editId, aabPath)
   println("Uploaded — assigned version code: $uploadedVersionCode")
 
-  // Version inversion check runs after upload so we have the actual version code from the API.
-  // If this check fails, the edit session is abandoned (not committed) — nothing is published.
   println("Running version inversion check...")
-  VersionInversionCheck(client).verify(PACKAGE_NAME, track, uploadedVersionCode)
-  println("Version inversion check passed.\n")
+  VersionInversionChecker(client).verify(PACKAGE_NAME, track, uploadedVersionCode)
+  println("Version inversion check passed.")
+  println()
 
-  val releaseNotes = extractReleaseNotes(workspaceRoot, majorMinorVersion, flavor)
-  client.setTrackRelease(
-    PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes
-  )
+  val releaseNotes = extractReleaseNotes(workspaceRoot, properties.majorMinorVersion, properties.flavor.id)
+  client.setTrackRelease(PACKAGE_NAME, editId, track, uploadedVersionCode, rolloutFraction, releaseNotes)
   println("Track '$track' updated.")
 
   client.commitEdit(PACKAGE_NAME, editId)
-  println(
-    "\nDone: $versionName (vc=$uploadedVersionCode) committed to Play Console track '$track'."
+  println()
+  println("Done: ${properties.versionName} (vc=$uploadedVersionCode) committed to Play Console track '$track'.")
+}
+
+/**
+ * Represents properties parsed from a signed AAB filename.
+ *
+ * @property majorVersion the major version number
+ * @property minorVersion the minor version number
+ * @property rcNumber the release candidate number string (e.g. "01")
+ * @property flavor the build flavor
+ * @property versionName the full version string (e.g. "0.18-rc01-alpha")
+ * @property majorMinorVersion the major.minor string (e.g. "0.18")
+ */
+data class AabProperties(
+  val majorVersion: Int,
+  val minorVersion: Int,
+  val rcNumber: String,
+  val flavor: AppFlavor,
+  val versionName: String,
+  val majorMinorVersion: String
+)
+
+private val AAB_FILENAME_REGEX =
+  Regex("""oppia-android-(\d+)\.(\d+)-rc(\d+)-(alpha|beta|ga)-[0-9a-f]+\.aab""")
+
+/**
+ * Parses all relevant properties from a signed AAB filename in a single regex pass.
+ *
+ * Example: `oppia-android-0.18-rc01-alpha-e740815230.aab`
+ * → [AabProperties] with majorVersion=0, minorVersion=18, rcNumber="01", flavor=ALPHA
+ *
+ * @return parsed [AabProperties], or `null` if the filename does not match the expected format
+ */
+fun parseAabFilename(aabName: String): AabProperties? {
+  val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
+  val (major, minor, rc, flavorId) = match.destructured
+  val flavor = AppFlavor.fromId(flavorId) ?: return null
+  val majorMinorVersion = "$major.$minor"
+  val versionName = "$majorMinorVersion-rc$rc-$flavorId"
+  return AabProperties(
+    majorVersion = major.toInt(),
+    minorVersion = minor.toInt(),
+    rcNumber = rc,
+    flavor = flavor,
+    versionName = versionName,
+    majorMinorVersion = majorMinorVersion
   )
 }
 
 /**
- * Obtains an OAuth2 access token for the Google Play Developer API via
- * `gcloud auth print-access-token`.
- *
- * In CI this uses Application Default Credentials set up by Workload Identity Federation.
- * Locally, `gcloud auth application-default login` must have been run first.
- */
-private fun obtainAccessToken(gcpProjectId: String): String {
-  val process = ProcessBuilder(
-    "gcloud", "auth", "print-access-token", "--project=$gcpProjectId"
-  )
-    .redirectErrorStream(true)
-    .start()
-  val output = process.inputStream.bufferedReader().readText().trim()
-  val exitCode = process.waitFor()
-  check(exitCode == 0) {
-    "Failed to obtain access token (exit code $exitCode):\n$output"
-  }
-  return output
-}
-
-/**
- * Extracts the full version name from an AAB filename.
- *
- * Example: `oppia-android-0.18-rc01-alpha-e740815230.aab` → `0.18-rc01-alpha`
- */
-private fun extractVersionName(aabName: String): String? {
-  val pattern = Regex("""oppia-android-(\d+\.\d+-rc\d+-(?:alpha|beta|ga))-[0-9a-f]+\.aab""")
-  return pattern.find(aabName)?.groupValues?.get(1)
-}
-
-/**
- * Extracts the major.minor portion of the version name for changelog lookups.
- *
- * Example: `0.18-rc01-alpha` → `0.18`
- */
-private fun extractMajorMinorVersion(versionName: String): String? {
-  val pattern = Regex("""^(\d+\.\d+)-rc\d+-(?:alpha|beta|ga)$""")
-  return pattern.find(versionName)?.groupValues?.get(1)
-}
-
-/**
- * Extracts the build flavor from an AAB filename.
- *
- * Example: `oppia-android-0.18-rc01-alpha-e740815230.aab` → `alpha`
- */
-private fun extractFlavor(aabName: String): String? {
-  val pattern = Regex("""oppia-android-\d+\.\d+-rc\d+-(alpha|beta|ga)-[0-9a-f]+\.aab""")
-  return pattern.find(aabName)?.groupValues?.get(1)
-}
-
-/**
- * Reads the release notes for [majorMinorVersion] and [flavor] from [CHANGELOGS_DIR].
+ * Reads the release notes for [majorMinorVersion] and [flavorId] from [CHANGELOGS_DIR].
  *
  * Lookup order:
- * 1. `config/changelogs/<majorMinorVersion>_<flavor>.md` (flavor-specific override)
+ * 1. `config/changelogs/<majorMinorVersion>_<flavorId>.md` (flavor-specific override)
  * 2. `config/changelogs/<majorMinorVersion>.md` (default)
  *
- * Returns a map with a single "en-US" entry. Returns an empty map if no file is found (the
- * changelog check will have already caught this case before any upload is attempted).
+ * Fails if the changelog text exceeds [MAX_RELEASE_NOTES_LENGTH] characters.
+ * Returns an empty map if no file is found.
  */
-fun extractReleaseNotes(
+internal fun extractReleaseNotes(
   workspaceRoot: String,
   majorMinorVersion: String,
-  flavor: String
+  flavorId: String
 ): Map<String, String> {
   val changelogsDir = File(workspaceRoot, CHANGELOGS_DIR)
-  val flavorSpecificFile = File(changelogsDir, "${majorMinorVersion}_$flavor.md")
+  val flavorSpecificFile = File(changelogsDir, "${majorMinorVersion}_$flavorId.md")
   val defaultFile = File(changelogsDir, "$majorMinorVersion.md")
 
   val changelogFile = when {
@@ -215,7 +194,11 @@ fun extractReleaseNotes(
     else -> return emptyMap()
   }
 
-  val notes = changelogFile.readText().trim().take(MAX_RELEASE_NOTES_LENGTH)
+  val notes = changelogFile.readText().trim()
+  check(notes.length <= MAX_RELEASE_NOTES_LENGTH) {
+    "Changelog '${changelogFile.name}' exceeds the $MAX_RELEASE_NOTES_LENGTH character " +
+      "limit (${notes.length} chars). Trim it before deploying."
+  }
   return if (notes.isEmpty()) emptyMap() else mapOf("en-US" to notes)
 }
 

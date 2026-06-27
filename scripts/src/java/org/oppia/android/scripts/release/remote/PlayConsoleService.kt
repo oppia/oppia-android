@@ -1,9 +1,8 @@
 package org.oppia.android.scripts.release.remote
 
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.oppia.android.scripts.release.model.BundleResponse
 import org.oppia.android.scripts.release.model.EditResponse
+import org.oppia.android.scripts.release.model.InsertEditRequest
 import org.oppia.android.scripts.release.model.TrackResponse
 import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import retrofit2.Call
@@ -37,7 +36,7 @@ interface PlayConsoleService {
   fun insertEdit(
     @Path("packageName") packageName: String,
     @Header("Authorization") authorizationBearer: String,
-    @Body body: RequestBody = byteArrayOf().toRequestBody()
+    @Body body: InsertEditRequest = InsertEditRequest()
   ): Call<EditResponse>
 
   /**
@@ -92,8 +91,8 @@ interface PlayConsoleService {
    * Commits an edit session, publishing all pending changes to the Play Console for review.
    *
    * This operation is irreversible — once committed, uploaded bundles and track assignments cannot
-   * be rolled back via the API. Changes are queued for review and require a final human approval
-   * in the Play Console before they go live (internal tracks excepted, but those will not be used).
+   * be rolled back via the API. Changes require a final human approval in the Play Console
+   * before they go live.
    *
    * API reference: https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit
    *

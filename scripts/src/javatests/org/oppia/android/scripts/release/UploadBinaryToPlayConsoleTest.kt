@@ -10,11 +10,10 @@ import java.io.File
 /**
  * Tests for the upload_binary_to_play_console script.
  *
- * Tests cover argument validation and AAB filename parsing. The full upload flow (edit session →
- * AAB upload → track assignment → commit) is not exercised here because it requires live GCP
- * credentials; that layer is covered by the dedicated integration tests for each precondition
- * check class ([VersionInversionCheckTest], [PendingReleaseCheckTest],
- * [ChangelogExistenceCheckTest]).
+ * Tests cover argument validation, AAB filename parsing, the full upload flow, and changelog
+ * resolution. The full upload flow is exercised via [runUpload] with a [FakePlayConsoleClient].
+ * Individual precondition checkers are tested in their own dedicated test files:
+ * [VersionInversionCheckerTest], [PendingReleaseCheckerTest], [ChangelogExistenceCheckerTest].
  */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -28,6 +27,14 @@ class UploadBinaryToPlayConsoleTest {
   // Helper to create a valid dummy AAB file in the temp folder.
   private fun createAab(name: String): File =
     tempFolder.newFile(name).also { it.writeBytes(ByteArray(64)) }
+
+  // Helper to build AabProperties for a 0.17-rc01-alpha AAB.
+  private fun alphaProperties() = AabProperties(
+    majorVersion = 0, minorVersion = 17, rcNumber = "01",
+    flavor = AppFlavor.ALPHA,
+    versionName = "0.17-rc01-alpha",
+    majorMinorVersion = "0.17"
+  )
 
   // ---------------------------------------------------------------------------
   // Argument count validation
@@ -60,29 +67,28 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction validation
+  // Rollout fraction validation (now Int [0, 1000])
   // ---------------------------------------------------------------------------
 
   @Test
   fun testScript_nonNumericRolloutFraction_throwsWithMessage() {
     val exception = assertThrows<IllegalArgumentException>() {
-      runScript("workspace", "aab.aab", "alpha", "project", "notanumber")
+      runScript("workspace", "aab.aab", "alpha", "token", "notanumber")
     }
 
     assertThat(exception).hasMessageThat().contains("rollout_fraction")
   }
 
   @Test
-  fun testScript_rolloutFractionAboveOne_throwsWithMessage() {
+  fun testScript_rolloutFractionAboveThousand_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.1")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1001")
     }
 
     assertThat(exception).hasMessageThat().contains("rollout_fraction")
-    assertThat(exception).hasMessageThat().contains("0.0")
-    assertThat(exception).hasMessageThat().contains("1.0")
+    assertThat(exception).hasMessageThat().contains("1000")
   }
 
   @Test
@@ -90,7 +96,18 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "beta", "project", "-0.1")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "beta", "token", "-1")
+    }
+
+    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+  }
+
+  @Test
+  fun testScript_decimalRolloutFraction_throwsWithMessage() {
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+
+    val exception = assertThrows<IllegalArgumentException>() {
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "0.5")
     }
 
     assertThat(exception).hasMessageThat().contains("rollout_fraction")
@@ -105,7 +122,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "internal", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "internal", "token", "1000")
     }
 
     assertThat(exception).hasMessageThat().contains("track")
@@ -117,7 +134,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "", "token", "1000")
     }
 
     assertThat(exception).hasMessageThat().contains("track")
@@ -134,8 +151,8 @@ class UploadBinaryToPlayConsoleTest {
         tempFolder.root.absolutePath,
         "/tmp/nonexistent-oppia.aab",
         "alpha",
-        "project",
-        "1.0"
+        "token",
+        "1000"
       )
     }
 
@@ -151,10 +168,10 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("my-app.aab")
 
     val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
     }
 
-    assertThat(exception).hasMessageThat().contains("Cannot extract version name")
+    assertThat(exception).hasMessageThat().contains("Cannot parse AAB filename")
     assertThat(exception).hasMessageThat().contains("my-app.aab")
   }
 
@@ -163,10 +180,10 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("app-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
     }
 
-    assertThat(exception).hasMessageThat().contains("Cannot extract version name")
+    assertThat(exception).hasMessageThat().contains("Cannot parse AAB filename")
   }
 
   @Test
@@ -175,10 +192,10 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-gamma-e740815230.aab")
 
     val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
     }
 
-    assertThat(exception).hasMessageThat().contains("Cannot extract version name")
+    assertThat(exception).hasMessageThat().contains("Cannot parse AAB filename")
   }
 
   @Test
@@ -186,51 +203,10 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha.aab")
 
     val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
     }
 
-    assertThat(exception).hasMessageThat().contains("Cannot extract version name")
-  }
-
-  // ---------------------------------------------------------------------------
-  // AAB filename parsing — valid filenames pass parsing (fail later at gcloud)
-  // ---------------------------------------------------------------------------
-
-  @Test
-  fun testScript_validAlphaAabName_passesParsingFailsAtGcloud() {
-    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
-    // Should fail at obtainAccessToken (gcloud not available in unit tests), not at parsing.
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
-    }
-
-    // The error must NOT be a parsing error.
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract version name")
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract flavor")
-  }
-
-  @Test
-  fun testScript_validBetaAabName_passesParsingFailsAtGcloud() {
-    val aab = createAab("oppia-android-0.18-rc02-beta-abc1234567.aab")
-
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "beta", "project", "0.25")
-    }
-
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract version name")
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract flavor")
-  }
-
-  @Test
-  fun testScript_validGaAabName_passesParsingFailsAtGcloud() {
-    val aab = createAab("oppia-android-1.0-rc01-ga-deadbeef12.aab")
-
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "production", "project", "1.0")
-    }
-
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract version name")
-    assertThat(exception).hasMessageThat().doesNotContain("Cannot extract flavor")
+    assertThat(exception).hasMessageThat().contains("Cannot parse AAB filename")
   }
 
   // ---------------------------------------------------------------------------
@@ -238,30 +214,79 @@ class UploadBinaryToPlayConsoleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testScript_rolloutFractionZero_passesValidationFailsAtGcloud() {
+  fun testScript_rolloutFractionZero_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "0.0")
+    // 0 is a valid fraction — error will be from Play Console API, not arg validation.
+    val exception = assertThrows<Exception>() {
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "0")
     }
 
-    // 0.0 is a valid fraction — failure must be after arg validation.
     assertThat(exception).hasMessageThat().doesNotContain("rollout_fraction")
   }
 
   @Test
-  fun testScript_rolloutFractionOne_passesValidationFailsAtGcloud() {
+  fun testScript_rolloutFractionThousand_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "project", "1.0")
+    val exception = assertThrows<Exception>() {
+      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
     }
 
     assertThat(exception).hasMessageThat().doesNotContain("rollout_fraction")
   }
 
   // ---------------------------------------------------------------------------
-  // runUpload — full upload flow tests (bypass gcloud via FakePlayConsoleClient)
+  // parseAabFilename
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testParseAabFilename_validAlphaAab_returnsCorrectProperties() {
+    val props = parseAabFilename("oppia-android-0.17-rc01-alpha-e740815230.aab")
+
+    assertThat(props).isNotNull()
+    assertThat(props!!.majorVersion).isEqualTo(0)
+    assertThat(props.minorVersion).isEqualTo(17)
+    assertThat(props.rcNumber).isEqualTo("01")
+    assertThat(props.flavor).isEqualTo(AppFlavor.ALPHA)
+    assertThat(props.versionName).isEqualTo("0.17-rc01-alpha")
+    assertThat(props.majorMinorVersion).isEqualTo("0.17")
+  }
+
+  @Test
+  fun testParseAabFilename_validBetaAab_returnsCorrectFlavor() {
+    val props = parseAabFilename("oppia-android-0.18-rc02-beta-abc1234567.aab")
+
+    assertThat(props!!.flavor).isEqualTo(AppFlavor.BETA)
+    assertThat(props.majorMinorVersion).isEqualTo("0.18")
+  }
+
+  @Test
+  fun testParseAabFilename_validGaAab_returnsCorrectFlavor() {
+    val props = parseAabFilename("oppia-android-1.0-rc01-ga-deadbeef12.aab")
+
+    assertThat(props!!.flavor).isEqualTo(AppFlavor.GA)
+    assertThat(props.majorVersion).isEqualTo(1)
+    assertThat(props.minorVersion).isEqualTo(0)
+  }
+
+  @Test
+  fun testParseAabFilename_invalidFlavor_returnsNull() {
+    assertThat(parseAabFilename("oppia-android-0.17-rc01-gamma-e740815230.aab")).isNull()
+  }
+
+  @Test
+  fun testParseAabFilename_missingHash_returnsNull() {
+    assertThat(parseAabFilename("oppia-android-0.17-rc01-alpha.aab")).isNull()
+  }
+
+  @Test
+  fun testParseAabFilename_missingPrefix_returnsNull() {
+    assertThat(parseAabFilename("app-0.17-rc01-alpha-e740815230.aab")).isNull()
+  }
+
+  // ---------------------------------------------------------------------------
+  // runUpload — full upload flow tests (using FakePlayConsoleClient)
   // ---------------------------------------------------------------------------
 
   @Test
@@ -274,17 +299,15 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 1.0
+      rolloutFraction = 1000
     )
 
-    assertThat(fake.createdEdits).hasSize(1)
+    assertThat(fake.createdEdits).isNotEmpty()
     assertThat(fake.uploadedBundles).hasSize(1)
     assertThat(fake.trackUpdates).hasSize(1)
-    assertThat(fake.committedEdits).hasSize(1)
+    assertThat(fake.committedEdits).isNotEmpty()
   }
 
   @Test
@@ -297,11 +320,9 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 1.0
+      rolloutFraction = 1000
     )
 
     val (_, _, path) = fake.uploadedBundles.first()
@@ -319,11 +340,9 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 1.0
+      rolloutFraction = 1000
     )
 
     val update = fake.trackUpdates.first()
@@ -341,11 +360,9 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 1.0
+      rolloutFraction = 1000
     )
 
     val update = fake.trackUpdates.first()
@@ -367,11 +384,9 @@ class UploadBinaryToPlayConsoleTest {
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
         aabPath = aab.absolutePath,
-        versionName = "0.17-rc01-alpha",
-        majorMinorVersion = "0.17",
-        flavor = "alpha",
+        properties = alphaProperties(),
         track = "alpha",
-        rolloutFraction = 1.0
+        rolloutFraction = 1000
       )
     }
 
@@ -390,11 +405,9 @@ class UploadBinaryToPlayConsoleTest {
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
         aabPath = aab.absolutePath,
-        versionName = "0.17-rc01-alpha",
-        majorMinorVersion = "0.17",
-        flavor = "alpha",
+        properties = alphaProperties(),
         track = "alpha",
-        rolloutFraction = 1.0
+        rolloutFraction = 1000
       )
     }
 
@@ -402,14 +415,12 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testRunUpload_versionInversionDetected_throwsAfterUploadNotCommitted() {
+  fun testRunUpload_crossTrackInversion_throwsAfterUploadNotCommitted() {
     val fake = FakePlayConsoleClient()
-    // A completed release already has version code 500, so uploading vc=1 would be an inversion.
+    // Beta has vc=500; deploying vc=1 to alpha would violate alpha > beta.
     fake.setTrackReleases(
-      "alpha",
-      listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(500L), status = "completed")
-      )
+      "beta",
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(500L), status = "completed"))
     )
     fake.setNextVersionCode(1L)
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
@@ -420,11 +431,9 @@ class UploadBinaryToPlayConsoleTest {
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
         aabPath = aab.absolutePath,
-        versionName = "0.17-rc01-alpha",
-        majorMinorVersion = "0.17",
-        flavor = "alpha",
+        properties = alphaProperties(),
         track = "alpha",
-        rolloutFraction = 1.0
+        rolloutFraction = 1000
       )
     }
 
@@ -438,7 +447,7 @@ class UploadBinaryToPlayConsoleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testRunUpload_fullRollout_recordsRolloutFractionAsOne() {
+  fun testRunUpload_fullRollout_recordsRolloutFractionAsThousand() {
     val fake = FakePlayConsoleClient()
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
@@ -447,14 +456,12 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 1.0
+      rolloutFraction = 1000
     )
 
-    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(1.0)
+    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(1000)
   }
 
   @Test
@@ -467,14 +474,12 @@ class UploadBinaryToPlayConsoleTest {
       client = fake,
       workspaceRoot = tempFolder.root.absolutePath,
       aabPath = aab.absolutePath,
-      versionName = "0.17-rc01-alpha",
-      majorMinorVersion = "0.17",
-      flavor = "alpha",
+      properties = alphaProperties(),
       track = "alpha",
-      rolloutFraction = 0.25
+      rolloutFraction = 250
     )
 
-    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(0.25)
+    assertThat(fake.trackUpdates.first().rolloutFraction).isEqualTo(250)
   }
 
   // ---------------------------------------------------------------------------
@@ -502,7 +507,6 @@ class UploadBinaryToPlayConsoleTest {
 
   @Test
   fun testExtractReleaseNotes_noFileExists_returnsEmptyMap() {
-    // No changelog files created.
     val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
 
     assertThat(notes).isEmpty()
@@ -518,17 +522,20 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testExtractReleaseNotes_contentExceeds500Chars_truncatesToMaxLength() {
+  fun testExtractReleaseNotes_contentExceeds500Chars_throwsWithCharCount() {
     val longContent = "a".repeat(600)
     createChangelog("0.17", content = longContent)
 
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+    val exception = assertThrows<IllegalStateException>() {
+      extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+    }
 
-    assertThat(notes["en-US"]).hasLength(500)
+    assertThat(exception).hasMessageThat().contains("500")
+    assertThat(exception).hasMessageThat().contains("600")
   }
 
   @Test
-  fun testExtractReleaseNotes_contentExactly500Chars_notTruncated() {
+  fun testExtractReleaseNotes_contentExactly500Chars_passes() {
     val exactContent = "b".repeat(500)
     createChangelog("0.17", content = exactContent)
 

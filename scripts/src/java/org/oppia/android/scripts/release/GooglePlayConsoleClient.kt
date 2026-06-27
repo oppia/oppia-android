@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.oppia.android.scripts.release.model.InsertEditRequest
 import org.oppia.android.scripts.release.model.TrackResponse
 import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import org.oppia.android.scripts.release.remote.PlayConsoleService
@@ -26,11 +27,14 @@ import java.util.concurrent.TimeUnit
  * 3. [commitEdit] — publishes all changes atomically
  *
  * @property accessToken the OAuth2 bearer token for API authentication
+ * @property apiBaseUrl the base URL for the Play Developer Publishing API; defaults to the
+ *     production endpoint and can be overridden in tests to point at a local mock server
  * @property connectTimeoutMs the HTTP connection timeout in milliseconds; defaults to 120 seconds
  *     to accommodate large AAB uploads
  */
 class GooglePlayConsoleClient(
   private val accessToken: String,
+  private val apiBaseUrl: String = PRODUCTION_API_BASE_URL,
   private val connectTimeoutMs: Long = DEFAULT_TIMEOUT_MS
 ) : PlayConsoleClient {
 
@@ -85,7 +89,11 @@ class GooglePlayConsoleClient(
     val trackResponse = checkNotNull(response.body()) {
       "Track response returned null body for '$packageName' track '$track'."
     }
-    return trackResponse.releases?.map { it.toTrackRelease() } ?: emptyList()
+    // Sort by version code descending; Play Console does not guarantee ordering on releases.
+    return trackResponse.releases
+      ?.map { it.toTrackRelease() }
+      ?.sortedByDescending { it.versionCodes.maxOrNull() }
+      ?: emptyList()
   }
 
   override fun uploadAab(packageName: String, editId: String, aabPath: String): Long {
@@ -101,7 +109,7 @@ class GooglePlayConsoleClient(
     }
     return checkNotNull(response.body()) {
       "Bundle upload returned null body for '$packageName' (edit=$editId)."
-    }.versionCode
+    }.versionCode.toLong()
   }
 
   override fun setTrackRelease(
@@ -109,20 +117,21 @@ class GooglePlayConsoleClient(
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Double,
+    rolloutFraction: Int,
     releaseNotes: Map<String, String>
   ) {
-    val status = if (rolloutFraction >= 1.0) "completed" else "inProgress"
+    val fraction = rolloutFraction / 1000.0
+    val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
     val trackUpdate = TrackUpdateRequest(
       track = track,
       releases = listOf(
         TrackUpdateRequest.ReleaseEntry(
-          versionCodes = listOf(versionCode),
+          versionCodes = listOf(versionCode.toString()),
           status = status,
           releaseNotes = releaseNotes.map { (lang, text) ->
             TrackUpdateRequest.LocalizedText(language = lang, text = text)
           },
-          userFraction = if (rolloutFraction < 1.0) rolloutFraction else null
+          userFraction = if (rolloutFraction < 1000) fraction else null
         )
       )
     )
@@ -151,16 +160,14 @@ class GooglePlayConsoleClient(
 
     private val OCTET_STREAM_MEDIA_TYPE = "application/octet-stream".toMediaType()
 
-    /**
-     * The base URL for the Google Play Developer Publishing API v3. This can be overridden in
-     * tests to point at a local mock server.
-     */
-    var apiBaseUrl = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/"
+    /** Base URL for the Google Play Developer Publishing API v3 production endpoint. */
+    const val PRODUCTION_API_BASE_URL =
+      "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/"
   }
 
   private fun TrackResponse.ReleaseEntry.toTrackRelease(): PlayConsoleClient.TrackRelease {
     return PlayConsoleClient.TrackRelease(
-      versionCodes = versionCodes ?: emptyList(),
+      versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status
     )
   }

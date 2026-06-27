@@ -170,12 +170,7 @@ java_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib"],
 )
 
-kt_jvm_binary(
-    name = "license_texts_check",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.license.LicenseTextsCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/license:license_texts_check_lib"],
-)
+
 
 kt_jvm_binary(
     name = "upload_binary_to_play_console",

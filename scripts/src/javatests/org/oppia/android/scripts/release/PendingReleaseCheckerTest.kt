@@ -5,17 +5,17 @@ import org.junit.Before
 import org.junit.Test
 import org.oppia.android.testing.assertThrows
 
-/** Tests for [PendingReleaseCheck]. */
+/** Tests for [PendingReleaseChecker]. */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-class PendingReleaseCheckTest {
+class PendingReleaseCheckerTest {
   private lateinit var fakeClient: FakePlayConsoleClient
-  private lateinit var check: PendingReleaseCheck
+  private lateinit var check: PendingReleaseChecker
 
   @Before
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
-    check = PendingReleaseCheck(fakeClient)
+    check = PendingReleaseChecker(fakeClient)
   }
 
   // ---------------------------------------------------------------------------

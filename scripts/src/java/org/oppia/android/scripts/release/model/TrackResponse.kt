@@ -11,7 +11,9 @@ import com.squareup.moshi.JsonClass
  *     track has no releases
  */
 @JsonClass(generateAdapter = true)
-data class TrackResponse(@Json(name = "releases") val releases: List<ReleaseEntry>?) {
+data class TrackResponse(
+  @Json(name = "releases") val releases: List<ReleaseEntry>? // null when the track has no releases
+) {
 
   /**
    * Represents a single release entry within a track.
@@ -23,7 +25,7 @@ data class TrackResponse(@Json(name = "releases") val releases: List<ReleaseEntr
    */
   @JsonClass(generateAdapter = true)
   data class ReleaseEntry(
-    @Json(name = "versionCodes") val versionCodes: List<Long>?,
+    @Json(name = "versionCodes") val versionCodes: List<String>?,
     @Json(name = "status") val status: String
   )
 }

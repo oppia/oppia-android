@@ -7,10 +7,10 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.File
 
-/** Tests for [ChangelogExistenceCheck]. */
+/** Tests for [ChangelogExistenceChecker]. */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-class ChangelogExistenceCheckTest {
+class ChangelogExistenceCheckerTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   // ---------------------------------------------------------------------------
@@ -20,8 +20,8 @@ class ChangelogExistenceCheckTest {
   private fun changelogsDir(): File =
     tempFolder.newFolder("config", "changelogs")
 
-  private fun check(): ChangelogExistenceCheck =
-    ChangelogExistenceCheck(tempFolder.root.absolutePath)
+  private fun checker(): ChangelogExistenceChecker =
+    ChangelogExistenceChecker(tempFolder.root.absolutePath)
 
   // ---------------------------------------------------------------------------
   // Missing changelogs directory
@@ -31,7 +31,7 @@ class ChangelogExistenceCheckTest {
   fun testVerify_missingChangelogsDir_throwsWithDirPath() {
     // Do NOT create the changelogs directory.
     val exception = assertThrows<IllegalStateException>() {
-      check().verify("0.17", "alpha")
+      checker().verify(0, 17, AppFlavor.ALPHA)
     }
 
     assertThat(exception).hasMessageThat().contains("Changelogs directory not found")
@@ -48,7 +48,7 @@ class ChangelogExistenceCheckTest {
     File(dir, "0.17.md").writeText("## 0.17\n- Feature A")
 
     // Should not throw.
-    check().verify("0.17", "beta")
+    checker().verify(0, 17, AppFlavor.BETA)
   }
 
   @Test
@@ -56,7 +56,7 @@ class ChangelogExistenceCheckTest {
     val dir = changelogsDir()
     File(dir, "1.0.md").writeText("## 1.0\n- Major release")
 
-    check().verify("1.0", "ga")
+    checker().verify(1, 0, AppFlavor.GA)
   }
 
   // ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ class ChangelogExistenceCheckTest {
     File(dir, "0.17_alpha.md").writeText("Alpha-specific changelog")
 
     // Should not throw — override is found first.
-    check().verify("0.17", "alpha")
+    checker().verify(0, 17, AppFlavor.ALPHA)
   }
 
   @Test
@@ -79,7 +79,7 @@ class ChangelogExistenceCheckTest {
     // Only the flavor-specific file exists, no default.
     File(dir, "0.17_beta.md").writeText("Beta-only changelog")
 
-    check().verify("0.17", "beta")
+    checker().verify(0, 17, AppFlavor.BETA)
   }
 
   @Test
@@ -87,7 +87,7 @@ class ChangelogExistenceCheckTest {
     val dir = changelogsDir()
     File(dir, "0.18_ga.md").writeText("GA-specific changelog")
 
-    check().verify("0.18", "ga")
+    checker().verify(0, 18, AppFlavor.GA)
   }
 
   // ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class ChangelogExistenceCheckTest {
     changelogsDir() // directory exists but is empty
 
     val exception = assertThrows<IllegalStateException>() {
-      check().verify("0.17", "alpha")
+      checker().verify(0, 17, AppFlavor.ALPHA)
     }
 
     assertThat(exception).hasMessageThat().contains("No changelog found")
@@ -113,7 +113,7 @@ class ChangelogExistenceCheckTest {
     File(dir, "0.16.md").writeText("Old changelog") // different version
 
     val exception = assertThrows<IllegalStateException>() {
-      check().verify("0.17", "beta")
+      checker().verify(0, 17, AppFlavor.BETA)
     }
 
     assertThat(exception).hasMessageThat().contains("0.17")
@@ -125,8 +125,8 @@ class ChangelogExistenceCheckTest {
     File(dir, "0.17.md").writeText("Default")
     File(dir, "0.17_alpha.md").writeText("Alpha override")
 
-    // Requesting "beta" — alpha override doesn't apply, but default exists.
-    check().verify("0.17", "beta")
+    // Requesting BETA — alpha override doesn't apply, but default exists.
+    checker().verify(0, 17, AppFlavor.BETA)
   }
 
   @Test
@@ -134,9 +134,9 @@ class ChangelogExistenceCheckTest {
     val dir = changelogsDir()
     File(dir, "0.17_alpha.md").writeText("Alpha override only")
 
-    // Requesting "beta" — no beta override, no default.
+    // Requesting BETA — no beta override, no default.
     val exception = assertThrows<IllegalStateException>() {
-      check().verify("0.17", "beta")
+      checker().verify(0, 17, AppFlavor.BETA)
     }
 
     assertThat(exception).hasMessageThat().contains("No changelog found")

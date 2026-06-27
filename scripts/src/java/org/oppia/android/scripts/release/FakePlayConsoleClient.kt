@@ -59,7 +59,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Double,
+    rolloutFraction: Int,
     releaseNotes: Map<String, String>
   ) {
     maybeFailCall("setTrackRelease")
@@ -126,7 +126,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     val editId: String,
     val track: String,
     val versionCode: Long,
-    val rolloutFraction: Double,
+    val rolloutFraction: Int,
     val releaseNotes: Map<String, String>
   )
 }

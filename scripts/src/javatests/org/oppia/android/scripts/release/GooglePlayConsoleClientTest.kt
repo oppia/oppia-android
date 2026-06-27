@@ -23,20 +23,20 @@ class GooglePlayConsoleClientTest {
 
   private lateinit var server: MockWebServer
   private lateinit var client: GooglePlayConsoleClient
-  private val savedBaseUrl = GooglePlayConsoleClient.apiBaseUrl
 
   @Before
   fun setUp() {
     server = MockWebServer()
     server.start()
-    GooglePlayConsoleClient.apiBaseUrl = server.url("/").toString()
-    client = GooglePlayConsoleClient(accessToken = "test-token")
+    client = GooglePlayConsoleClient(
+      accessToken = "test-token",
+      apiBaseUrl = server.url("/").toString()
+    )
   }
 
   @After
   fun tearDown() {
     server.shutdown()
-    GooglePlayConsoleClient.apiBaseUrl = savedBaseUrl
   }
 
   // ---------------------------------------------------------------------------
@@ -90,9 +90,9 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testUploadAab_successResponse_returnsVersionCode() {
-    // createEdit is called inside getTrackReleases; for uploadAab directly we need the edit ID.
+    // versionCode is returned as a quoted string (int64 format) in the Play Console API.
     val aabFile = tempFolder.newFile("test.aab").also { it.writeBytes(ByteArray(32)) }
-    server.enqueue(MockResponse().setBody("""{"versionCode":301}""").setResponseCode(200))
+    server.enqueue(MockResponse().setBody("""{"versionCode":"301"}""").setResponseCode(200))
 
     val versionCode = client.uploadAab("org.oppia.android", "edit-1", aabFile.absolutePath)
 
@@ -152,7 +152,7 @@ class GooglePlayConsoleClientTest {
       editId = "edit-1",
       track = "alpha",
       versionCode = 301L,
-      rolloutFraction = 1.0,
+      rolloutFraction = 1000,
       releaseNotes = mapOf("en-US" to "Bug fixes")
     )
   }
@@ -165,7 +165,7 @@ class GooglePlayConsoleClientTest {
         .setResponseCode(200)
     )
 
-    client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1.0, emptyMap())
+    client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1000, emptyMap())
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("PUT")
@@ -177,7 +177,7 @@ class GooglePlayConsoleClientTest {
     server.enqueue(MockResponse().setResponseCode(409).setBody("Conflict"))
 
     val exception = assertThrows<IllegalStateException>() {
-      client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1.0, emptyMap())
+      client.setTrackRelease("org.oppia.android", "edit-1", "alpha", 301L, 1000, emptyMap())
     }
 
     assertThat(exception).hasMessageThat().contains("409")
