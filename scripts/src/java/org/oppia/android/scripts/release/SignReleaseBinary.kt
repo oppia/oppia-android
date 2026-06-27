@@ -55,7 +55,7 @@ fun main(vararg args: String) {
       "/cryptoKeyVersions/<ver>. Got: $kmsKeyResourceName"
   }
 
-  val gcpAccessToken = checkNotNull(System.getenv(GCP_ACCESS_TOKEN_ENV)?.toCharArray()) {
+  val gcpAccessToken = checkNotNull(System.getenv(GCP_ACCESS_TOKEN_ENV)) {
     "Missing required environment variable '$GCP_ACCESS_TOKEN_ENV'. " +
       "Save the output of 'gcloud auth print-access-token' to the '$GCP_ACCESS_TOKEN_ENV' " +
       "environment variable before invoking this script."

@@ -17,8 +17,7 @@ import java.util.jar.JarFile
  *
  * The private key never leaves the KMS HSM boundary — only the AAB digest is sent to KMS and the
  * signature is received back. The GCP OAuth2 access token is passed in as [gcpAccessToken] and
- * should be obtained by saving the output of `gcloud auth print-access-token` to the
- * `GCP_ACCESS_TOKEN` environment variable before invoking the enclosing script.
+ * should be obtained from `gcloud auth print-access-token`.
  *
  * @param kmsKeyResourceName full Cloud KMS key resource name, e.g.
  *     `projects/<id>/locations/global/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>`
@@ -27,7 +26,7 @@ import java.util.jar.JarFile
  */
 class CloudKmsSigner(
   private val kmsKeyResourceName: String,
-  private val gcpAccessToken: CharArray,
+  private val gcpAccessToken: String,
   private val commandExecutor: CommandExecutor
 ) : CloudSigner {
   override fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path) {
@@ -49,7 +48,7 @@ class CloudKmsSigner(
     Security.addProvider(provider)
 
     val keyStore = KeyStore.getInstance("GOOGLECLOUD", provider)
-    keyStore.load(/* protectionParam= */ null, gcpAccessToken)
+    keyStore.load(/* protectionParam= */ null, gcpAccessToken.toCharArray())
 
     // Validate KMS access: ensures the key exists and is reachable before invoking jarsigner.
     val key = try {
@@ -86,7 +85,7 @@ class CloudKmsSigner(
       command = "jarsigner",
       "-keystore", "NONE",
       "-storetype", "GOOGLECLOUD",
-      "-storepass", String(gcpAccessToken),
+      "-storepass", gcpAccessToken,
       "-certchain", certPath.toAbsolutePath().toString(),
       "-sigalg", "SHA256withRSA",
       "-digestalg", "SHA-256",

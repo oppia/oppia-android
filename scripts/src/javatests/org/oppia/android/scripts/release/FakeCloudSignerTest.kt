@@ -23,9 +23,11 @@ class FakeCloudSignerTest {
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(aab, cert, output)
     }
+
+    assertThat(exception).hasMessageThat().contains("missing.aab")
   }
 
   @Test

@@ -39,7 +39,7 @@ class CloudKmsSignerTest {
   fun testSign_withNonExistentAabPath_throwsIllegalStateWithAabPath() {
     val signer = CloudKmsSigner(
       kmsKeyResourceName = "projects/p/locations/gl/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1",
-      gcpAccessToken = "fake-token".toCharArray(),
+      gcpAccessToken = "fake-token",
       commandExecutor = unusedCommandExecutor
     )
     val nonExistentAab = tempFolder.root.toPath().resolve("missing.aab")

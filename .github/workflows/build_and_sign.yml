@@ -138,7 +138,7 @@ jobs:
           FLAVOR="${{ github.event.inputs.flavor }}"
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
 
-          # Note: Check for GCS path existence here (before the build) to save CI
+          # TODO(#6292): Check for GCS path existence here (before the build) to save CI
           #   time when re-running an already-built ref. Requires externalizing the version
           #   components of TransformAndroidManifest so the AAB name can be derived up-front.
           # Fail if binary already exists — enforces the build-once guarantee.
