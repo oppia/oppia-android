@@ -948,7 +948,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // The indicator draws no on-screen text, so this string is purely the TalkBack content
       // description. Counts are passed as strings because only %s specifiers are allowed in
       // translatable resources.
-      progressText = resourceHandler.getStringInLocaleWithWrapping(
+      contentDescription = resourceHandler.getStringInLocaleWithWrapping(
         R.string.lesson_progress_indicator_content_description,
         checkpointProgress.completedCheckpointCount.toString(),
         totalCheckpoints.toString()

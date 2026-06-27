@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
@@ -70,7 +69,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.LESSON_PROGRESS_INDICATOR
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
@@ -128,7 +126,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -596,9 +593,10 @@ class QuestionPlayerActivityTest {
     launchForSkillList(SKILL_ID_LIST).use {
       // The lesson progress indicator is exploration-only: the question player never assembles it
       // and the domain never attaches checkpoint progress to practice questions, so it must never
-      // appear during a question session even with the feature enabled (see setUp). Asserting the
-      // scroll fails proves the indicator view type is absent from the adapter, not just off-screen.
-      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
+      // appear during a question session even with the feature enabled (see setUp). Scrolling to the
+      // bottom and checking the indicator is absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.question_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
     }
   }
 
@@ -726,6 +724,24 @@ class QuestionPlayerActivityTest {
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.question_recycler_view)).perform(
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToEndOfRecyclerView(recyclerViewId: Int) {
+    onView(withId(recyclerViewId)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String = "scroll to the last item of the RecyclerView"
+
+        override fun perform(uiController: UiController, view: View) {
+          val recyclerView = view as RecyclerView
+          val itemCount = recyclerView.adapter?.itemCount ?: 0
+          if (itemCount > 0) recyclerView.scrollToPosition(itemCount - 1)
+          uiController.loopMainThreadUntilIdle()
+        }
+      }
     )
     testCoroutineDispatchers.runCurrent()
   }

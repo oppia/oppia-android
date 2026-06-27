@@ -165,7 +165,6 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -6100,10 +6099,10 @@ class StateFragmentTest {
       startPlayingExploration()
 
       // TEST_EXPLORATION_ID_4 contains no checkpoints, so the domain attaches no checkpoint progress
-      // and the indicator is never assembled even with the feature enabled. Asserting the scroll
-      // fails proves the indicator view type is absent from the adapter, not merely off-screen --
-      // scrollToViewType scans every item the adapter holds, so an unmatched type throws.
-      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
+      // and the indicator is never assembled even with the feature enabled. Scrolling to the bottom
+      // of the player and checking the indicator is absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.state_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
     }
   }
 
@@ -6114,9 +6113,42 @@ class StateFragmentTest {
       startPlayingExploration()
 
       // With the feature flag off the indicator is never assembled, even for an exploration that
-      // does have checkpoints. Asserting the scroll fails proves the indicator view type is absent
-      // from the adapter, not merely off-screen.
-      assertThrows<PerformException> { scrollToViewType(LESSON_PROGRESS_INDICATOR) }
+      // does have checkpoints. Scrolling to the bottom of the player and checking the indicator is
+      // absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.state_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_continueInteractionCard_indicatorIsAboveContinueButton() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The first card uses an auto-navigating Continue interaction that renders its own inline
+      // button, so the indicator is inserted directly above that button instead of above a separate
+      // navigation button. This is the specially-handled placement case.
+      scrollToViewType(CONTINUE_INTERACTION)
+      verifyIndicatorIsDirectlyAbove(CONTINUE_INTERACTION)
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_answeredCard_indicatorIsAboveContinueNavButton() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Advance to the fraction-input card and submit a correct answer so a standalone Continue
+      // navigation button appears. The indicator is added before the navigation buttons, so it sits
+      // directly above that Continue button -- the placement case for non-auto-navigating cards.
+      playThroughPrototypeState1()
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      verifyIndicatorIsDirectlyAbove(CONTINUE_NAVIGATION_BUTTON)
     }
   }
 
@@ -6886,6 +6918,52 @@ class StateFragmentTest {
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToEndOfRecyclerView(recyclerViewId: Int) {
+    onView(withId(recyclerViewId)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String = "scroll to the last item of the RecyclerView"
+
+        override fun perform(uiController: UiController, view: View) {
+          val recyclerView = view as RecyclerView
+          val itemCount = recyclerView.adapter?.itemCount ?: 0
+          if (itemCount > 0) recyclerView.scrollToPosition(itemCount - 1)
+          uiController.loopMainThreadUntilIdle()
+        }
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * Asserts that the lesson progress indicator is present in the state RecyclerView and occupies the
+   * adapter position immediately above [belowViewType] (e.g. a continue button), which is where the
+   * assembler places it.
+   */
+  private fun verifyIndicatorIsDirectlyAbove(belowViewType: StateItemViewModel.ViewType) {
+    val positions = intArrayOf(-1, -1)
+    onView(withId(R.id.state_recycler_view)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String =
+          "find adapter positions of the lesson progress indicator and $belowViewType"
+
+        override fun perform(uiController: UiController, view: View) {
+          val adapter = checkNotNull((view as RecyclerView).adapter)
+          val viewTypes = (0 until adapter.itemCount).map(adapter::getItemViewType)
+          positions[0] = viewTypes.indexOf(LESSON_PROGRESS_INDICATOR.ordinal)
+          positions[1] = viewTypes.indexOf(belowViewType.ordinal)
+        }
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+    // The indicator must be present and sit immediately above the trailing button.
+    assertThat(positions[0]).isAtLeast(0)
+    assertThat(positions[1]).isEqualTo(positions[0] + 1)
   }
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {

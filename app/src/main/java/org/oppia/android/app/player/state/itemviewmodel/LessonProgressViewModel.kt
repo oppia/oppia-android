@@ -4,5 +4,5 @@ package org.oppia.android.app.player.state.itemviewmodel
 class LessonProgressViewModel(
   val completedCount: Int,
   val totalCount: Int,
-  val progressText: String
+  val contentDescription: String
 ) : StateItemViewModel(ViewType.LESSON_PROGRESS_INDICATOR)
