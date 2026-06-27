@@ -227,9 +227,3 @@ annotation class LoadLessonProtosFromAssets
  */
 @Qualifier
 annotation class EnableLessonProgressVisualization
-
-/** Name of the feature flag that controls whether to enable the lesson progress. */
-const val ENABLE_LESSON_PROGRESS_VISUALIZATION = "android_enable_lesson_progress_visualization"
-
-/** Default value for the feature flag corresponding to [EnableLessonProgressVisualization]. */
-const val ENABLE_LESSON_PROGRESS_VISUALIZATION_DEFAULT_VALUE = false
