@@ -7,6 +7,15 @@ and UploadBinaryToPlayConsole.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "AppFlavorTest",
+    srcs = ["AppFlavorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:app_flavor",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "ChangelogExistenceCheckerTest",
     srcs = ["ChangelogExistenceCheckerTest.kt"],
     deps = [

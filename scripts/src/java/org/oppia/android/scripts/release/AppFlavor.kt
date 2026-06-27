@@ -8,8 +8,13 @@ package org.oppia.android.scripts.release
  * and in changelog filenames (e.g. `config/changelogs/0.18_alpha.md`).
  */
 enum class AppFlavor(val id: String) {
+  /** The alpha (internal testing) flavor, deployed to the alpha Play Console track. */
   ALPHA("alpha"),
+
+  /** The beta (external testing) flavor, deployed to the beta Play Console track. */
   BETA("beta"),
+
+  /** The general-availability flavor, deployed to the production Play Console track. */
   GA("ga");
 
   companion object {
