@@ -225,6 +225,7 @@ class ControlButtonsViewModel private constructor(
     private const val DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT = Integer.MIN_VALUE
 
     // Copied from ProtoStringEncoder (which isn't available in production code).
+    @Suppress("NewApi") // The API 26 call on line 233 is guarded by a Build.VERSION.SDK_INT check.
     private fun <M : MessageLite> M.toCompressedBase64(): String {
       val compressedMessage = ByteArrayOutputStream().also { byteOutputStream ->
         GZIPOutputStream(byteOutputStream).use(::writeTo)
