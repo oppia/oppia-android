@@ -1173,7 +1173,8 @@ class TopicFragmentTest {
     RouteToStoryListener,
     RouteToExplorationListener,
     RouteToResumeLessonListener,
-    RouteToRevisionCardListener {
+    RouteToRevisionCardListener,
+    RouteToStudyGuideListener {
     override fun routeToExploration(
       profileId: LegacyProfileId,
       classroomId: String,
@@ -1203,6 +1204,14 @@ class TopicFragmentTest {
       profileId: LegacyProfileId,
       topicId: String,
       subtopicId: Int,
+      subtopicListSize: Int
+    ) {
+    }
+
+    override fun routeToStudyGuide(
+      profileId: LegacyProfileId,
+      topicId: String,
+      subtopicIndex: Int,
       subtopicListSize: Int
     ) {
     }
