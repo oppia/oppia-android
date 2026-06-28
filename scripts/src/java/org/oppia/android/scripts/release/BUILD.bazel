@@ -13,7 +13,8 @@ kt_jvm_library(
     srcs = ["UploadChangelogToPlayConsole.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        # play_console_client is defined in PR 1.4's release/BUILD.bazel.
+        # These targets are defined in PR 1.4's release/BUILD.bazel.
+        ":google_play_console_client",
         ":play_console_client",
     ],
 )

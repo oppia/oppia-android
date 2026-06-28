@@ -261,7 +261,7 @@ class UploadChangelogToPlayConsoleTest {
     )
 
     val update = fakeClient.trackUpdates.single()
-    assertThat(update.rolloutFraction).isEqualTo(1.0)
+    assertThat(update.rolloutFraction).isEqualTo(1000)
   }
 
   @Test
@@ -373,7 +373,7 @@ class UploadChangelogToPlayConsoleTest {
         editId: String,
         track: String,
         versionCode: Long,
-        rolloutFraction: Double,
+        rolloutFraction: Int,
         releaseNotes: Map<String, String>
       ) {
         if (failOnSetTrackRelease) error("simulated failure in setTrackRelease")
@@ -390,5 +390,95 @@ class UploadChangelogToPlayConsoleTest {
 
     assertThat(exception).hasMessageThat().contains("simulated failure")
     assertThat(capturingClient.inner.committedEdits).isEmpty()
+  }
+
+  // ---------------------------------------------------------------------------
+  // resolveNotesForTrack — per-track changelog file resolution
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testResolveNotesForTrack_sharedFileExists_returnsSharedNotes() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("Shared release notes.")
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).containsEntry("en-US", "Shared release notes.")
+  }
+
+  @Test
+  fun testResolveNotesForTrack_trackSpecificFileExists_returnsTrackSpecificNotes() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("Shared notes.")
+    changelogsDir.resolve("0.18_alpha.md").writeText("Alpha-specific notes.")
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).containsEntry("en-US", "Alpha-specific notes.")
+  }
+
+  @Test
+  fun testResolveNotesForTrack_trackSpecificFileExists_otherTrackUsesSharedFile() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("Shared notes.")
+    changelogsDir.resolve("0.18_beta.md").writeText("Beta-specific notes.")
+
+    val alphaResult = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+    val betaResult = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "beta")
+
+    assertThat(alphaResult).containsEntry("en-US", "Shared notes.")
+    assertThat(betaResult).containsEntry("en-US", "Beta-specific notes.")
+  }
+
+  @Test
+  fun testResolveNotesForTrack_noFileExists_returnsEmptyMap() {
+    tempFolder.newFolder("config", "changelogs")
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).isEmpty()
+  }
+
+  @Test
+  fun testResolveNotesForTrack_emptySharedFile_returnsEmptyMap() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("   ")
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).isEmpty()
+  }
+
+  @Test
+  fun testResolveNotesForTrack_notesThatExceedMaxLength_throwsIllegalStateException() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("A".repeat(501))
+
+    val exception = assertThrows<IllegalStateException> {
+      resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+    }
+
+    assertThat(exception).hasMessageThat().contains("500")
+  }
+
+  @Test
+  fun testResolveNotesForTrack_notesAtExactMaxLength_returnsNotes() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    val exactNotes = "A".repeat(500)
+    changelogsDir.resolve("0.18.md").writeText(exactNotes)
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).containsEntry("en-US", exactNotes)
+  }
+
+  @Test
+  fun testResolveNotesForTrack_trailingWhitespaceInFile_isTrimmedBeforeReturn() {
+    val changelogsDir = tempFolder.newFolder("config", "changelogs")
+    changelogsDir.resolve("0.18.md").writeText("  Release notes.  \n")
+
+    val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
+
+    assertThat(result).containsEntry("en-US", "Release notes.")
   }
 }
