@@ -34,7 +34,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
@@ -174,9 +173,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   ) {
     val audioLanguageSelection =
       AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAudioTranslationContentLanguage(
-      profileId.toProfileIdPreservingZero(), audioLanguageSelection
-    )
+    translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
       .toLiveData().observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
@@ -217,9 +214,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun logInToProfile(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(
-      profileId.toProfileIdPreservingZero()
-    ).toLiveData().observe(
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(
       fragment,
       { result ->
         if (result is AsyncResult.Success) {

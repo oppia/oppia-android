@@ -116,7 +116,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -3154,10 +3153,7 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider =
-      translationController.getWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero()
-      )
+    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.SWAHILI)
   }
@@ -3213,9 +3209,7 @@ class ExplorationProgressControllerTest {
 
     // Verify that the other learner's profile-wide content language hasn't changed.
     val contentLangProvider =
-      translationController.getWrittenTranslationContentLanguage(
-        arabicProfileId.toProfileIdPreservingZero()
-      )
+      translationController.getWrittenTranslationContentLanguage(arabicProfileId)
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ARABIC)
   }
@@ -3238,10 +3232,7 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider =
-      translationController.getWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero()
-      )
+    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ENGLISH)
   }
@@ -4153,7 +4144,7 @@ class ExplorationProgressControllerTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId.toProfileIdPreservingZero(),
+      profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -4224,7 +4215,7 @@ class ExplorationProgressControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
+      profileManagementController.loginToProfile(rootProfileId)
     )
   }
 

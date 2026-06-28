@@ -29,7 +29,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** [ViewModel] for state-fragment. */
@@ -64,16 +63,14 @@ class StateViewModel @Inject constructor(
   }
   val hasEnabledSwahiliTranslations: LiveData<Boolean> by lazy {
     Transformations.map(
-      translationController.getWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero()
-      ).toLiveData(),
+      translationController.getWrittenTranslationContentLanguage(profileId).toLiveData(),
       ::processIsCurrentLanguageSwahili
     )
   }
 
   val allowInLessonQuickLanguageSwitching: LiveData<Boolean> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processAllowInLessonQuickLanguageSwitching
     )
   }

@@ -28,7 +28,6 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -101,13 +100,13 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
-    private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
-    private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
-    private val PROFILE_ID_4 = ProfileId.newBuilder().setInternalId(4).build()
-    private val PROFILE_ID_6 = ProfileId.newBuilder().setInternalId(6).build()
+    private val ADMIN_PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_2 = LegacyProfileId.newBuilder().setInternalId(2).build()
+    private val PROFILE_ID_3 = LegacyProfileId.newBuilder().setInternalId(3).build()
+    private val PROFILE_ID_4 = LegacyProfileId.newBuilder().setInternalId(4).build()
+    private val PROFILE_ID_6 = LegacyProfileId.newBuilder().setInternalId(6).build()
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
@@ -409,7 +408,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -425,7 +424,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -2001,7 +2000,7 @@ class ProfileManagementControllerTest {
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasStartProfileOnboardingContextThat {
-      hasProfileIdThat().isEqualTo(LegacyProfileId.newBuilder().setInternalId(0).build())
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
     }
   }
 
@@ -2013,7 +2012,7 @@ class ProfileManagementControllerTest {
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasEndProfileOnboardingContextThat {
-      hasProfileIdThat().isEqualTo(LegacyProfileId.newBuilder().setInternalId(0).build())
+      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
     }
   }
 
@@ -2041,7 +2040,7 @@ class ProfileManagementControllerTest {
     )
   }
 
-  private fun retrieveProfile(profileId: ProfileId) =
+  private fun retrieveProfile(profileId: LegacyProfileId) =
     monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
 
   private fun retrieveCurrentSessionId() =
@@ -2128,8 +2127,8 @@ class ProfileManagementControllerTest {
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
-    block: suspend (profileId: ProfileId) -> T,
-    profileId: ProfileId
+    block: suspend (profileId: LegacyProfileId) -> T,
+    profileId: LegacyProfileId
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {

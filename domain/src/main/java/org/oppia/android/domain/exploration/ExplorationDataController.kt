@@ -12,7 +12,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID = "get_exploration_by_id_provider_id"
@@ -41,9 +40,7 @@ class ExplorationDataController @Inject constructor(
     id: String
   ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(
-        profileId.toProfileIdPreservingZero()
-      )
+      translationController.getWrittenTranslationContentLocale(profileId)
     val explorationProvider = dataProviders.createInMemoryDataProviderAsync(
       GET_EXPLORATION_BY_ID_PROVIDER_ID
     ) { retrieveExplorationById(id) }

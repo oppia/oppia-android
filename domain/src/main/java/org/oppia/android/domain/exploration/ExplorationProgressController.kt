@@ -49,7 +49,6 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -440,9 +439,7 @@ class ExplorationProgressController @Inject constructor(
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(
-        profileId.toProfileIdPreservingZero()
-      )
+      translationController.getWrittenTranslationContentLocale(profileId)
     val ephemeralStateDataProvider =
       mostRecentEphemeralStateFlow.convertToSessionProvider(CURRENT_STATE_PROVIDER_ID)
     return writtenTranslationContentLocale.combineWith(
@@ -476,7 +473,7 @@ class ExplorationProgressController @Inject constructor(
     selection: WrittenTranslationLanguageSelection
   ): DataProvider<Any> {
     return translationController.updateWrittenTranslationContentLanguage(
-      profileId.toProfileIdPreservingZero(), selection
+      profileId, selection
     ).transform(UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID) { previousSelection ->
       val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
       val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
@@ -503,13 +500,11 @@ class ExplorationProgressController @Inject constructor(
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
-              val learnerId = profileManagementController.fetchLearnerId(
-                message.profileId.toProfileIdPreservingZero()
-              )
+              val learnerId = profileManagementController.fetchLearnerId(message.profileId)
               val installationId = loggingIdentifierController.fetchInstallationId()
               val isContinueButtonAnimationSeen =
                 profileManagementController.fetchContinueAnimationSeenStatus(
-                  message.profileId.toProfileIdPreservingZero()
+                  message.profileId
                 ) ?: false
 
               // Ensure the state is completely recreated for each session to avoid leaking state
@@ -877,9 +872,7 @@ class ExplorationProgressController @Inject constructor(
       }
 
       if (!isContinueButtonAnimationSeen) {
-        profileManagementController.markContinueButtonAnimationSeen(
-          profileId.toProfileIdPreservingZero()
-        )
+        profileManagementController.markContinueButtonAnimationSeen(profileId)
       }
       isContinueButtonAnimationSeen = true
     }

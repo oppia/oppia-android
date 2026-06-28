@@ -24,7 +24,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */
@@ -63,10 +62,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(
-        profileId.toProfileIdPreservingZero()
-      ).toLiveData(),
-      ::processGetProfileResult
+      profileManagementController.getProfile(profileId).toLiveData(), ::processGetProfileResult
     )
   }
 

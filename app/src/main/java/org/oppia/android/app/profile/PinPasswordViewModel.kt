@@ -13,7 +13,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 // TODO(#5817): Remove along with PinPasswordActivity when v2 onboarding flow has stabilized.
@@ -35,7 +34,7 @@ class PinPasswordViewModel @Inject constructor(
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }

@@ -70,7 +70,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /**
@@ -115,11 +114,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
-      getProfileResult(
-        profileManagementController.getProfile(
-          profileId.toProfileIdPreservingZero()
-        ).toLiveData()
-      )
+      getProfileResult(profileManagementController.getProfile(profileId).toLiveData())
 
     getAdminPin()
 
@@ -132,11 +127,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     adminProfileLiveData =
-      getProfileResult(
-        profileManagementController.getProfile(
-          adminProfileId.toProfileIdPreservingZero()
-        ).toLiveData()
-      )
+      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
   }
 
   private fun createComposeView() {
@@ -235,7 +226,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   private fun loginToProfile(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData()
+    profileManagementController.loginToProfile(profileId).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
           activity.startActivity(

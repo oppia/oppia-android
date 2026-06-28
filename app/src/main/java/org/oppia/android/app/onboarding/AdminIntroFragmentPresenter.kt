@@ -54,7 +54,6 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Argument key for [ProfileChooserActivity] intent parameters. */
@@ -88,7 +87,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
     createComposeView()
 
-    profileManagementController.markProfileOnboardingStarted(profileId.toProfileIdPreservingZero())
+    profileManagementController.markProfileOnboardingStarted(profileId)
 
     return binding.root
   }

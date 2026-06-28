@@ -24,7 +24,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
@@ -149,7 +148,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(profileId.toProfileIdPreservingZero(), selection)
+    translationController.updateAppLanguage(profileId, selection)
   }
 
   private fun updateAppLanguage(appLanguage: OppiaLanguage) {

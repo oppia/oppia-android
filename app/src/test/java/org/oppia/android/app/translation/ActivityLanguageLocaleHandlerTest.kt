@@ -96,7 +96,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -281,7 +280,7 @@ class ActivityLanguageLocaleHandlerTest {
   private fun setAppLanguage(language: OppiaLanguage) {
     val updateProvider =
       translationController.updateAppLanguage(
-        LegacyProfileId.getDefaultInstance().toProfileIdPreservingZero(),
+        LegacyProfileId.getDefaultInstance(),
         AppLanguageSelection.newBuilder().apply {
           selectedLanguage = language
         }.build()
@@ -296,9 +295,7 @@ class ActivityLanguageLocaleHandlerTest {
    */
   private fun retrieveAppLanguageLocale(): OppiaLocale.DisplayLocale {
     val localeProvider =
-      translationController.getAppLanguageLocale(
-        LegacyProfileId.getDefaultInstance().toProfileIdPreservingZero()
-      )
+      translationController.getAppLanguageLocale(LegacyProfileId.getDefaultInstance())
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 

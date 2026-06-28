@@ -16,7 +16,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** ViewModel for managing language selection in [AudioLanguageFragment]. */
@@ -90,7 +89,7 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
 
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
-    translationController.getAudioLanguagePreselection(profileId.toProfileIdPreservingZero())
+    translationController.getAudioLanguagePreselection(profileId)
   }
 
   /** Receives and sets the current profileId in this viewModel. */

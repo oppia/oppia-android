@@ -29,7 +29,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val ONBOARDING_FRAGMENT_SAVED_STATE_KEY = "OnboardingFragment.saved_state"
@@ -152,9 +151,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(
-      profileId.toProfileIdPreservingZero(), selection
-    ).toLiveData()
+    translationController.updateAppLanguage(profileId, selection).toLiveData()
       .observe(
         fragment,
         { result ->

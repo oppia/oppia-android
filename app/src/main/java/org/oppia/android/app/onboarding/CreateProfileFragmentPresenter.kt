@@ -28,7 +28,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Presenter for [CreateProfileFragment]. */
@@ -153,7 +152,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   private fun updateProfileDetails(profileName: String) {
     profileManagementController.updateNewProfileDetails(
-      profileId = profileId.toProfileIdPreservingZero(),
+      profileId = profileId,
       profileType = profileType,
       avatarImagePath = selectedImageUri,
       colorRgb = selectUniqueRandomColor(),

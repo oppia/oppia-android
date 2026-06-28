@@ -16,7 +16,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
@@ -100,8 +99,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableDownloads = !binding.profileEditAllowDownloadSwitch.isChecked
       binding.profileEditAllowDownloadSwitch.isChecked = enableDownloads
       profileManagementController.updateAllowDownloadAccess(
-        LegacyProfileId.newBuilder().setInternalId(internalProfileId)
-          .build().toProfileIdPreservingZero(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         enableDownloads
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -115,8 +113,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       val enableLangSwitching = !binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked
       binding.profileEditEnableInLessonLanguageSwitchingSwitch.isChecked = enableLangSwitching
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-        LegacyProfileId.newBuilder().setInternalId(internalProfileId)
-          .build().toProfileIdPreservingZero(),
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
         enableLangSwitching
       ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
@@ -148,7 +145,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   fun deleteProfile(internalProfileId: Int) {
     val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     profileManagementController
-      .deleteProfile(legacyProfileId.toProfileIdPreservingZero()).toLiveData()
+      .deleteProfile(legacyProfileId).toLiveData()
       .observe(
         fragment,
         Observer {

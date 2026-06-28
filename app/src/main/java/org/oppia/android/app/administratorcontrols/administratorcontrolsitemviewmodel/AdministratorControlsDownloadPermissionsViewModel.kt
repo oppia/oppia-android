@@ -9,7 +9,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
@@ -31,7 +30,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   /** Called when topic wifi update permission changes. */
   fun onTopicWifiUpdatePermissionChanged() {
     profileManagementController.updateWifiPermissionDeviceSettings(
-      userProfileId.toProfileIdPreservingZero(),
+      userProfileId,
       !isTopicWifiUpdatePermission.get()!!
     ).toLiveData()
       .observe(
@@ -51,7 +50,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   /** Called when topic auto update permission changes. */
   fun onTopicAutoUpdatePermissionChanged() {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-      userProfileId.toProfileIdPreservingZero(),
+      userProfileId,
       !isTopicAutoUpdatePermission.get()!!
     ).toLiveData().observe(
       fragment,
