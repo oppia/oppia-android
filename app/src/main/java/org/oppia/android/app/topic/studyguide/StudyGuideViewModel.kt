@@ -24,7 +24,7 @@ import javax.inject.Inject
  *
  * @property entityType the entity type corresponding to loaded images
  * @property topicId the ID of the topic containing the subtopic being viewed
- * @property subtopicId the ID of the subtopic being viewed
+ * @property subtopicIndex the index of the subtopic being viewed
  * @property profileId the ID of the user profile
  * @property subtopicListSize the number of subtopics in the parent topic. This is used to determine
  *     whether or not to show the next/previous cards.
@@ -36,7 +36,7 @@ class StudyGuideViewModel private constructor(
   val entityType: String,
   private val translationController: TranslationController,
   val topicId: String,
-  val subtopicId: Int,
+  val subtopicIndex: Int,
   val profileId: LegacyProfileId,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   val subtopicListSize: Int
@@ -49,7 +49,7 @@ class StudyGuideViewModel private constructor(
     routeToStudyGuideListener.routeToStudyGuide(
       profileId,
       topicId,
-      subtopicId - 1,
+      subtopicIndex - 1,
       subtopicListSize
     )
   }
@@ -59,7 +59,7 @@ class StudyGuideViewModel private constructor(
     routeToStudyGuideListener.routeToStudyGuide(
       profileId,
       topicId,
-      subtopicId + 1,
+      subtopicIndex + 1,
       subtopicListSize
     )
   }
@@ -124,7 +124,7 @@ class StudyGuideViewModel private constructor(
     } ?: ""
   }
 
-  /** Returns the content description of the subtopic. */
+  /** Returns the content description of the specified subtopic. */
   fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String {
     return when (subtopicLiveData) {
       previousSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
@@ -146,7 +146,7 @@ class StudyGuideViewModel private constructor(
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
         topic.subtopicsList.find {
-          it.subtopic.subtopicId == subtopicId - 1
+          it.subtopic.subtopicId == subtopicIndex - 1
         } ?: EphemeralSubtopic.getDefaultInstance()
       }
       else -> EphemeralSubtopic.getDefaultInstance()
@@ -160,7 +160,7 @@ class StudyGuideViewModel private constructor(
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
         topic.subtopicsList.find {
-          it.subtopic.subtopicId == subtopicId + 1
+          it.subtopic.subtopicId == subtopicIndex + 1
         } ?: EphemeralSubtopic.getDefaultInstance()
       }
       else -> EphemeralSubtopic.getDefaultInstance()
@@ -168,7 +168,7 @@ class StudyGuideViewModel private constructor(
   }
 
   private val studyGuideResultLiveData: LiveData<AsyncResult<EphemeralStudyGuide>> by lazy {
-    topicController.getStudyGuide(profileId, topicId, subtopicId).toLiveData()
+    topicController.getStudyGuide(profileId, topicId, subtopicIndex).toLiveData()
   }
 
   private fun processStudyGuideLiveData(): LiveData<EphemeralStudyGuide> {
@@ -202,7 +202,7 @@ class StudyGuideViewModel private constructor(
     /** Returns a new [StudyGuideViewModel]. */
     fun create(
       topicId: String,
-      subtopicId: Int,
+      subtopicIndex: Int,
       profileId: LegacyProfileId,
       subtopicListSize: Int
     ): StudyGuideViewModel {
@@ -213,7 +213,7 @@ class StudyGuideViewModel private constructor(
         entityType,
         translationController,
         topicId,
-        subtopicId,
+        subtopicIndex,
         profileId,
         appLanguageResourceHandler,
         subtopicListSize

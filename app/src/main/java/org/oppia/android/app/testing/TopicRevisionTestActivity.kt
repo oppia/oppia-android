@@ -46,7 +46,7 @@ class TopicRevisionTestActivity :
   override fun routeToStudyGuide(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ) {
     startActivity(
@@ -54,7 +54,7 @@ class TopicRevisionTestActivity :
         this,
         profileId,
         topicId,
-        subtopicId,
+        subtopicIndex,
         subtopicListSize
       )
     )

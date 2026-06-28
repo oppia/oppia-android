@@ -71,7 +71,9 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    val subtopicListSize = checkNotNull(this.subtopicListSize) { "Subtopic list size not found." }
+    val subtopicListSize = checkNotNull(this.subtopicListSize) {
+      "Expected subtopic list size to be initialized."
+    }
     if (enableStudyGuides.value) {
       routeToStudyGuideListener.routeToStudyGuide(
         profileId,

@@ -48,13 +48,13 @@ class StudyGuideActivity :
       val topicId = checkNotNull(args.topicId) {
         "Expected topic ID to be included in intent for StudyGuideActivity."
       }
-      val subtopicId = args?.subtopicId ?: -1
-      val subtopicListSize = args?.subtopicListSize ?: -1
+      val subtopicIndex = args.subtopicIndex
+      val subtopicListSize = args.subtopicListSize
 
       studyGuideActivityPresenter.handleOnCreate(
         profileId,
         topicId,
-        subtopicId,
+        subtopicIndex,
         subtopicListSize
       )
     }
@@ -82,12 +82,12 @@ class StudyGuideActivity :
       context: Context,
       profileId: LegacyProfileId,
       topicId: String,
-      subtopicId: Int,
+      subtopicIndex: Int,
       subtopicListSize: Int
     ): Intent {
       val args = StudyGuideActivityParams.newBuilder().apply {
         this.topicId = topicId
-        this.subtopicId = subtopicId
+        this.subtopicIndex = subtopicIndex
         this.subtopicListSize = subtopicListSize
       }.build()
       return Intent(context, StudyGuideActivity::class.java).apply {
@@ -101,7 +101,7 @@ class StudyGuideActivity :
   override fun routeToStudyGuide(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ) {
     startActivity(
@@ -109,7 +109,7 @@ class StudyGuideActivity :
         this,
         profileId,
         topicId,
-        subtopicId,
+        subtopicIndex,
         subtopicListSize
       )
     )

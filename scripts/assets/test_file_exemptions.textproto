@@ -3316,10 +3316,6 @@ test_file_exemption {
   is_extra_test_file: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/topic/revision/TopicRevisionFragmentStudyGuideRoutingTest.kt",
-  is_extra_test_file: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ClickActions.kt"
   test_file_not_required: true
 }

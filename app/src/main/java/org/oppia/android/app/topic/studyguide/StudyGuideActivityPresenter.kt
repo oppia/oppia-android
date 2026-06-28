@@ -1,14 +1,13 @@
 package org.oppia.android.app.topic.studyguide
 
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.databinding.databinding.StudyGuideActivityBinding
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralStudyGuide
 import org.oppia.android.app.model.LegacyProfileId
@@ -49,28 +48,21 @@ class StudyGuideActivityPresenter @Inject constructor(
 
   private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
-  private var subtopicId: Int = 0
+  private var subtopicIndex: Int = 0
   private var subtopicListSize: Int = 0
 
   /** Handles the [StudyGuideActivity]'s creation, setting up the toolbar and content. */
   fun handleOnCreate(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ) {
-    val binding = DataBindingUtil.setContentView<StudyGuideActivityBinding>(
-      activity,
-      R.layout.study_guide_activity
-    )
+    activity.setContentView(R.layout.study_guide_activity)
     this.profileId = profileId
     this.topicId = topicId
-    this.subtopicId = subtopicId
+    this.subtopicIndex = subtopicIndex
     this.subtopicListSize = subtopicListSize
-
-    binding.apply {
-      lifecycleOwner = activity
-    }
 
     retrieveReadingTextSize().observe(
       activity
@@ -78,25 +70,25 @@ class StudyGuideActivityPresenter @Inject constructor(
       (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
     }
 
-    studyGuideToolbar = binding.studyGuideToolbar
-    studyGuideToolbarTitle = binding.studyGuideToolbarTitle
+    studyGuideToolbar = activity.findViewById(R.id.study_guide_toolbar)
+    studyGuideToolbarTitle = activity.findViewById(R.id.study_guide_toolbar_title)
     activity.setSupportActionBar(studyGuideToolbar)
     activity.supportActionBar?.setDisplayShowTitleEnabled(false)
 
-    binding.studyGuideToolbar.setNavigationOnClickListener {
+    studyGuideToolbar.setNavigationOnClickListener {
       (activity as ReturnToTopicClickListener).onReturnToTopicRequested()
       fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
       activity.onBackPressedDispatcher.onBackPressed()
     }
     if (!accessibilityService.isScreenReaderEnabled()) {
-      binding.studyGuideToolbarTitle.setOnClickListener {
-        binding.studyGuideToolbarTitle.isSelected = true
+      studyGuideToolbarTitle.setOnClickListener {
+        studyGuideToolbarTitle.isSelected = true
       }
     }
 
     subscribeToSubtopicTitle()
 
-    binding.actionBottomSheetOptionsMenu.setOnClickListener {
+    activity.findViewById<View>(R.id.action_bottom_sheet_options_menu).setOnClickListener {
       val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
       bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
@@ -165,17 +157,13 @@ class StudyGuideActivityPresenter @Inject constructor(
   fun logExitStudyGuide() {
     // Reuses the revision card event since study guides are its successor screen.
     analyticsController.logImportantEvent(
-      oppiaLogger.createCloseRevisionCardContext(topicId, subtopicId),
+      oppiaLogger.createCloseRevisionCardContext(topicId, subtopicIndex),
       profileId
     )
   }
 
   private fun subscribeToSubtopicTitle() {
-    subtopicLiveData.observe(
-      activity
-    ) {
-      studyGuideToolbarTitle.text = it
-    }
+    subtopicLiveData.observe(activity) { studyGuideToolbarTitle.text = it }
   }
 
   private val subtopicLiveData: LiveData<String> by lazy {
@@ -183,7 +171,7 @@ class StudyGuideActivityPresenter @Inject constructor(
   }
 
   private val studyGuideResultLiveData: LiveData<AsyncResult<EphemeralStudyGuide>> by lazy {
-    topicController.getStudyGuide(profileId, topicId, subtopicId).toLiveData()
+    topicController.getStudyGuide(profileId, topicId, subtopicIndex).toLiveData()
   }
 
   private fun processSubtopicTitleLiveData(): LiveData<String> {
@@ -230,7 +218,7 @@ class StudyGuideActivityPresenter @Inject constructor(
       R.id.study_guide_fragment_placeholder,
       StudyGuideFragment.newInstance(
         topicId,
-        subtopicId,
+        subtopicIndex,
         profileId,
         subtopicListSize,
         readingTextSize

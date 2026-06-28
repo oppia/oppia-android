@@ -35,8 +35,6 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -120,8 +118,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -176,6 +172,7 @@ class StudyGuideFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     Intents.init()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
@@ -183,6 +180,7 @@ class StudyGuideFragmentTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -194,7 +192,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -216,7 +214,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -238,7 +236,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -260,7 +258,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -282,7 +280,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -310,7 +308,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -332,7 +330,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -354,7 +352,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -373,7 +371,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -392,7 +390,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_3,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_3,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -413,7 +411,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -423,7 +421,7 @@ class StudyGuideFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val args = StudyGuideActivityParams.newBuilder().apply {
-        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
+        this.subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_2
         this.topicId = FRACTIONS_TOPIC_ID
         this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
@@ -441,7 +439,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
         FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
@@ -451,7 +449,7 @@ class StudyGuideFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val args = StudyGuideActivityParams.newBuilder().apply {
-        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        this.subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0
         this.topicId = FRACTIONS_TOPIC_ID
         this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
       }.build()
@@ -467,7 +465,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -484,7 +482,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use { scenario ->
@@ -502,7 +500,7 @@ class StudyGuideFragmentTest {
         val receivedTopicId = checkNotNull(args?.topicId) {
           "Expected topicId to be passed to StudyGuideFragment"
         }
-        val receivedSubtopicId = args?.subtopicId ?: -1
+        val receivedSubtopicId = args?.subtopicIndex ?: -1
         val receivedProfileId = arguments.extractCurrentUserProfileId()
         val receivedSubtopicListSize = args?.subtopicListSize ?: -1
 
@@ -524,7 +522,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -549,7 +547,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -580,7 +578,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -602,7 +600,7 @@ class StudyGuideFragmentTest {
         context,
         profileId,
         TEST_TOPIC_ID_0,
-        subtopicId = 1,
+        subtopicIndex = 1,
         subtopicListSize = 1
       )
     ).use {
@@ -712,17 +710,6 @@ class StudyGuideFragmentTest {
     return parent as View
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -780,7 +767,6 @@ class StudyGuideFragmentTest {
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

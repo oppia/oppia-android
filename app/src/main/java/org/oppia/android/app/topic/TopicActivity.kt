@@ -110,7 +110,7 @@ class TopicActivity :
   override fun routeToStudyGuide(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ) {
     startActivity(
@@ -118,7 +118,7 @@ class TopicActivity :
         this,
         profileId,
         topicId,
-        subtopicId,
+        subtopicIndex,
         subtopicListSize
       )
     )

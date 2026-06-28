@@ -881,8 +881,8 @@ message StudyGuideActivityParams {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
-  // The ID of the sub topic to which the opening exploration belongs.
-  int32 subtopic_id = 2;
+  // The index of the sub topic to which the opening exploration belongs.
+  int32 subtopic_index = 2;
 
   // The sub topic list size.
   int32 subtopic_list_size = 3;
@@ -893,8 +893,8 @@ message StudyGuideFragmentArguments {
   // The ID of the topic to which the opening exploration belongs.
   string topic_id = 1;
 
-  // The ID of the sub topic to which the opening exploration belongs.
-  int32 subtopic_id = 2;
+  // The index of the sub topic to which the opening exploration belongs.
+  int32 subtopic_index = 2;
 
   // The sub topic list size.
   int32 subtopic_list_size = 3;

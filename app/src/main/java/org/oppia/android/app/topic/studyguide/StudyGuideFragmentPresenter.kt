@@ -57,7 +57,7 @@ class StudyGuideFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     profileId: LegacyProfileId,
     subtopicListSize: Int
   ): View? {
@@ -72,12 +72,12 @@ class StudyGuideFragmentPresenter @Inject constructor(
       )
     val viewModel = studyGuideViewModelFactory.create(
       topicId,
-      subtopicId,
+      subtopicIndex,
       profileId,
       subtopicListSize
     )
 
-    logStudyGuideEvent(topicId, subtopicId)
+    logStudyGuideEvent(topicId, subtopicIndex)
 
     binding.studyGuideSectionRecyclerView.adapter = createRecyclerViewAdapter()
 

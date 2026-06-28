@@ -92,7 +92,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -164,7 +163,7 @@ class StudyGuideActivityTest {
       context,
       profileId,
       TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).extractCurrentAppScreenName()
 
@@ -175,7 +174,7 @@ class StudyGuideActivityTest {
   fun testStudyGuideActivity_hasCorrectActivityLabel() {
     launchStudyGuideActivity(
       topicId = TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).use { scenario ->
       lateinit var title: CharSequence
@@ -191,7 +190,7 @@ class StudyGuideActivityTest {
   fun testStudyGuideActivity_toolbarTitle_testTopicSubtopic1_isDisplayedCorrectly() {
     launchStudyGuideActivity(
       topicId = TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -205,7 +204,7 @@ class StudyGuideActivityTest {
   fun testStudyGuideActivity_configurationChange_toolbarTitle_isDisplayedCorrectly() {
     launchStudyGuideActivity(
       topicId = TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -223,7 +222,7 @@ class StudyGuideActivityTest {
     fakeAccessibilityService.setScreenReaderEnabled(false)
     launchStudyGuideActivity(
       topicId = TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
@@ -244,7 +243,7 @@ class StudyGuideActivityTest {
     fakeAccessibilityService.setScreenReaderEnabled(true)
     launchStudyGuideActivity(
       topicId = TEST_TOPIC_ID_0,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = 1
     ).use { scenario ->
       scenario.onActivity { activity ->
@@ -264,7 +263,7 @@ class StudyGuideActivityTest {
   fun testActivity_requestReturnToTopic_finishesActivity() {
     launchStudyGuideActivity(
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = SUBTOPIC_LIST_SIZE
     ).use { scenario ->
       scenario.onActivity { activity ->
@@ -280,7 +279,7 @@ class StudyGuideActivityTest {
   fun testActivity_requestReturnToTopic_logsCloseRevisionCardEvent() {
     launchStudyGuideActivity(
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = SUBTOPIC_LIST_SIZE
     ).use { scenario ->
       scenario.onActivity { activity ->
@@ -301,7 +300,7 @@ class StudyGuideActivityTest {
   fun testActivity_clickNavigationBack_finishesActivity() {
     launchStudyGuideActivity(
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = SUBTOPIC_LIST_SIZE
     ).use { scenario ->
       onView(withContentDescription("Navigate up")).perform(click())
@@ -317,7 +316,7 @@ class StudyGuideActivityTest {
   fun testActivity_pressBack_finishesActivity() {
     launchStudyGuideActivity(
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1,
+      subtopicIndex = 1,
       subtopicListSize = SUBTOPIC_LIST_SIZE
     ).use { scenario ->
       pressBack()
@@ -335,7 +334,7 @@ class StudyGuideActivityTest {
 
   private fun launchStudyGuideActivity(
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ): ActivityScenario<StudyGuideActivity> {
     val scenario = ActivityScenario.launch<StudyGuideActivity>(
@@ -343,7 +342,7 @@ class StudyGuideActivityTest {
         context,
         profileId,
         topicId,
-        subtopicId,
+        subtopicIndex,
         subtopicListSize
       )
     )
@@ -363,7 +362,6 @@ class StudyGuideActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

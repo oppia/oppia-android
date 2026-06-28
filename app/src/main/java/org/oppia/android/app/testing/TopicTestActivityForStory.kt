@@ -137,12 +137,12 @@ class TopicTestActivityForStory :
   override fun routeToStudyGuide(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   ) {
     startActivity(
       StudyGuideActivity.createStudyGuideActivityIntent(
-        this, profileId, topicId, subtopicId, subtopicListSize
+        this, profileId, topicId, subtopicIndex, subtopicListSize
       )
     )
   }

@@ -28,14 +28,14 @@ class StudyGuideFragment : InjectableDialogFragment() {
      */
     fun newInstance(
       topicId: String,
-      subtopicId: Int,
+      subtopicIndex: Int,
       profileId: LegacyProfileId,
       subtopicListSize: Int,
       readingTextSize: ReadingTextSize
     ): StudyGuideFragment {
       val args = StudyGuideFragmentArguments.newBuilder().apply {
         this.topicId = topicId
-        this.subtopicId = subtopicId
+        this.subtopicIndex = subtopicIndex
         this.subtopicListSize = subtopicListSize
         this.readingTextSize = readingTextSize
       }.build()
@@ -75,11 +75,11 @@ class StudyGuideFragment : InjectableDialogFragment() {
       checkNotNull(args?.topicId) {
         "Expected topicId to be passed to StudyGuideFragment"
       }
-    val subtopicId = args?.subtopicId ?: -1
+    val subtopicIndex = args.subtopicIndex
     val profileId = arguments.extractCurrentUserProfileId()
-    val subtopicListSize = args?.subtopicListSize ?: -1
+    val subtopicListSize = args.subtopicListSize
     return studyGuideFragmentPresenter.handleCreateView(
-      inflater, container, topicId, subtopicId, profileId, subtopicListSize
+      inflater, container, topicId, subtopicIndex, profileId, subtopicListSize
     )
   }
 

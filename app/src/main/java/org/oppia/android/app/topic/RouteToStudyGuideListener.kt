@@ -8,7 +8,7 @@ interface RouteToStudyGuideListener {
   fun routeToStudyGuide(
     profileId: LegacyProfileId,
     topicId: String,
-    subtopicId: Int,
+    subtopicIndex: Int,
     subtopicListSize: Int
   )
 }
