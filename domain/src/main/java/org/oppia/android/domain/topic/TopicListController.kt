@@ -129,7 +129,7 @@ class TopicListController @Inject constructor(
    */
   fun getPromotedActivityList(profileId: LegacyProfileId): DataProvider<PromotedActivityList> {
     val retrieveTopicProgressListProvider =
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId.toProfileIdPreservingZero())
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(
         profileId.toProfileIdPreservingZero()

@@ -4,6 +4,7 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
@@ -387,7 +388,7 @@ class StoryProgressController @Inject constructor(
         cacheStoreFactory.createPerProfile(
           CACHE_NAME,
           TopicProgressDatabase.getDefaultInstance(),
-          profileId
+          profileId.toLegacyProfileId()
         )
       cacheStoreMap[profileId] = cacheStore
       cacheStore
