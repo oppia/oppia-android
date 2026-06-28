@@ -76,6 +76,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -937,7 +938,7 @@ class AudioPlayerControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 

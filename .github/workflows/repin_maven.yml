@@ -1,0 +1,62 @@
+name: Repin Maven Install
+
+# One-shot utility workflow to regenerate maven_install.json in CI using the
+# same ubuntu-24.04 environment as the regular build workflows. After it runs,
+# delete this file — it is not part of the permanent workflow suite.
+#
+# Trigger: Actions → "Repin Maven Install" → Run workflow (select branch)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  repin:
+    name: Repin maven_install.json
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
+      SDK_VERSION: 35
+      BUILD_TOOLS_VERSION: 34.0.0
+      ANDROID_HOME: /home/runner/android-sdk
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Repin maven_install.json
+        run: |
+          # Step 1: comment out maven_install_json + pinned_maven_install (both break without the lock file)
+          sed -i 's|    maven_install_json = "//third_party:maven_install.json",|    # maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          sed -i 's|load("@maven//:defs.bzl", "pinned_maven_install")|# load("@maven//:defs.bzl", "pinned_maven_install")|' WORKSPACE
+          sed -i 's|^pinned_maven_install()$|# pinned_maven_install()|' WORKSPACE
+          # Step 2: fresh pin — resolves all artifacts and writes new maven_install.json
+          bazel run @maven//:pin
+          # Step 3: restore all commented lines
+          sed -i 's|    # maven_install_json = "//third_party:maven_install.json",|    maven_install_json = "//third_party:maven_install.json",|' WORKSPACE
+          sed -i 's|# load("@maven//:defs.bzl", "pinned_maven_install")|load("@maven//:defs.bzl", "pinned_maven_install")|' WORKSPACE
+          sed -i 's|^# pinned_maven_install()$|pinned_maven_install()|' WORKSPACE
+
+      - name: Commit and push updated maven_install.json
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          # The pin writes to the repo root when maven_install_json is not set; move it to the correct location.
+          if [ -f maven_install.json ]; then
+            mv maven_install.json third_party/maven_install.json
+          fi
+          git add third_party/maven_install.json
+          if git diff --cached --quiet; then
+            echo "maven_install.json is already up to date."
+          else
+            git commit -m "Repin maven_install.json with CI environment"
+            git push
+            echo "Successfully repinned and pushed."
+          fi

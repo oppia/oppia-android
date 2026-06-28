@@ -28,6 +28,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -66,7 +67,9 @@ class ClassroomController @Inject constructor(
   /** Returns the list of [ClassroomSummary]s currently tracked by the app. */
   fun getClassroomList(profileId: LegacyProfileId): DataProvider<ClassroomList> {
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return translationLocaleProvider.transform(
       GET_CLASSROOM_LIST_PROVIDER_ID,
       ::createClassroomList
@@ -105,7 +108,9 @@ class ClassroomController @Inject constructor(
    */
   fun getTopicList(profileId: LegacyProfileId, classroomId: String): DataProvider<TopicList> {
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID) { contentLocale ->
       createTopicList(classroomId, contentLocale)
     }
