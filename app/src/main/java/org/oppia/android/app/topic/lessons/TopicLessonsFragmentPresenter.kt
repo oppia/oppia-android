@@ -31,6 +31,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.enumfilter.filterByEnumCondition
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -369,21 +370,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
     }

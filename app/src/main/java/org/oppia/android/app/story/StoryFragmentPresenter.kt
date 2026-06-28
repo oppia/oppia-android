@@ -272,7 +272,7 @@ class StoryFragmentPresenter @Inject constructor(
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId,
+        profileId.toProfileIdPreservingZero(),
         classroomId,
         topicId,
         storyId,
@@ -280,7 +280,7 @@ class StoryFragmentPresenter @Inject constructor(
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.toProfileIdPreservingZero(),
         classroomId,
         topicId,
         storyId,

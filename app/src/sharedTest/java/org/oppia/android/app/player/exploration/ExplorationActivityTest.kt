@@ -71,6 +71,7 @@ import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -1539,7 +1540,7 @@ class ExplorationActivityTest {
       shouldSavePartialProgress = false
     ) {
       explorationDataController.replayExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -1569,7 +1570,7 @@ class ExplorationActivityTest {
       shouldSavePartialProgress = false
     ) {
       explorationDataController.replayExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -2308,7 +2309,8 @@ class ExplorationActivityTest {
       classroomId, topicId, storyId, explorationId, shouldSavePartialProgress
     ) {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId, classroomId, topicId, storyId, explorationId
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        classroomId, topicId, storyId, explorationId
       )
       testCoroutineDispatchers.runCurrent()
       testBlock()
