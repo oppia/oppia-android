@@ -92,7 +92,7 @@ fun runUpload(
   rolloutFraction: Int
 ) {
   println("Running pre-upload precondition checks...")
-  PendingReleaseChecker(client).verify(PACKAGE_NAME, track)
+  PendingReleaseChecker(client).verify(PACKAGE_NAME, track, rolloutFraction)
   println("Pending release check passed: no in-flight releases on track '$track'.")
   ChangelogExistenceChecker(workspaceRoot).verify(
     properties.majorVersion, properties.minorVersion, properties.flavor

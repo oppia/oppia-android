@@ -25,7 +25,7 @@ class PendingReleaseCheckerTest {
   @Test
   fun testVerify_emptyTrack_passes() {
     // No releases configured → check should pass.
-    check.verify("org.oppia.android", "alpha")
+    check.verify("org.oppia.android", "alpha", 1000)
   }
 
   // ---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class PendingReleaseCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(300L)))
     )
 
-    check.verify("org.oppia.android", "alpha")
+    check.verify("org.oppia.android", "alpha", 1000)
   }
 
   @Test
@@ -49,7 +49,7 @@ class PendingReleaseCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "halted", versionCodes = listOf(400L)))
     )
 
-    check.verify("org.oppia.android", "beta")
+    check.verify("org.oppia.android", "beta", 1000)
   }
 
   @Test
@@ -62,7 +62,7 @@ class PendingReleaseCheckerTest {
       )
     )
 
-    check.verify("org.oppia.android", "production")
+    check.verify("org.oppia.android", "production", 1000)
   }
 
   // ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ class PendingReleaseCheckerTest {
     )
 
     val exception = assertThrows<IllegalStateException>() {
-      check.verify("org.oppia.android", "alpha")
+      check.verify("org.oppia.android", "alpha", 1000)
     }
 
     assertThat(exception).hasMessageThat().contains("Pending release detected")
@@ -85,17 +85,71 @@ class PendingReleaseCheckerTest {
   }
 
   @Test
-  fun testVerify_inProgressRelease_throwsWithStatus() {
+  fun testVerify_inProgressRelease_newRolloutNotHigherThanCurrent_throwsWithStatus() {
     fakeClient.setTrackReleases(
       "beta",
-      listOf(PlayConsoleClient.TrackRelease(status = "inProgress", versionCodes = listOf(302L)))
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "inProgress", versionCodes = listOf(302L), rolloutFraction = 250
+        )
+      )
     )
 
     val exception = assertThrows<IllegalStateException>() {
-      check.verify("org.oppia.android", "beta")
+      // 250 is not > 250 → should throw
+      check.verify("org.oppia.android", "beta", 250)
     }
 
-    assertThat(exception).hasMessageThat().contains("inProgress")
+    assertThat(exception).hasMessageThat().contains("in-progress release")
+  }
+
+  @Test
+  fun testVerify_inProgressRelease_newRolloutHigherThanCurrent_passes() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "inProgress", versionCodes = listOf(302L), rolloutFraction = 250
+        )
+      )
+    )
+
+    // 500 > 250 → rollout increase, should pass.
+    check.verify("org.oppia.android", "beta", 500)
+  }
+
+  @Test
+  fun testVerify_inProgressRelease_fullRolloutAfterPartial_passes() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "inProgress", versionCodes = listOf(100L), rolloutFraction = 100
+        )
+      )
+    )
+
+    // 1000 > 100 → increasing to full rollout, should pass.
+    check.verify("org.oppia.android", "alpha", 1000)
+  }
+
+  @Test
+  fun testVerify_inProgressRelease_lowerRolloutThanCurrent_throws() {
+    fakeClient.setTrackReleases(
+      "production",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "inProgress", versionCodes = listOf(500L), rolloutFraction = 500
+        )
+      )
+    )
+
+    val exception = assertThrows<IllegalStateException>() {
+      // 250 < 500 → rollout decrease not allowed
+      check.verify("org.oppia.android", "production", 250)
+    }
+
+    assertThat(exception).hasMessageThat().contains("rollout_fraction greater than 500")
   }
 
   @Test
@@ -106,7 +160,7 @@ class PendingReleaseCheckerTest {
     )
 
     val exception = assertThrows<IllegalStateException>() {
-      check.verify("org.oppia.android", "alpha")
+      check.verify("org.oppia.android", "alpha", 1000)
     }
 
     assertThat(exception).hasMessageThat().contains("305")
@@ -127,7 +181,8 @@ class PendingReleaseCheckerTest {
     )
 
     val exception = assertThrows<IllegalStateException>() {
-      check.verify("org.oppia.android", "beta")
+      // Existing inProgress has rolloutFraction = null (= 0); newRolloutFraction = 0 → not higher → throws.
+      check.verify("org.oppia.android", "beta", 0)
     }
 
     assertThat(exception).hasMessageThat().contains("Pending release detected")
@@ -144,6 +199,6 @@ class PendingReleaseCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "draft", versionCodes = listOf(300L)))
     )
     // Beta track is empty — should pass even though alpha has a pending release.
-    check.verify("org.oppia.android", "beta")
+    check.verify("org.oppia.android", "beta", 1000)
   }
 }

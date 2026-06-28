@@ -12,6 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 /**
  * Production implementation of [PlayConsoleClient] that communicates with the Google Play Developer
@@ -172,7 +173,8 @@ class GooglePlayConsoleClient(
   private fun TrackResponse.ReleaseEntry.toTrackRelease(): PlayConsoleClient.TrackRelease {
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
-      status = status
+      status = status,
+      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() }
     )
   }
 }

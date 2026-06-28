@@ -22,10 +22,13 @@ data class TrackResponse(
    *     have been assigned (e.g. an empty draft release)
    * @property status the release lifecycle status. One of: `"statusUnspecified"`, `"draft"`,
    *     `"inProgress"`, `"halted"`, or `"completed"`.
+   * @property userFraction the fraction of users receiving this release in a staged rollout
+   *     (range 0.0–1.0, e.g. 0.25 for 25%), or null for completed/halted releases
    */
   @JsonClass(generateAdapter = true)
   data class ReleaseEntry(
     @Json(name = "versionCodes") val versionCodes: List<String>?,
-    @Json(name = "status") val status: String
+    @Json(name = "status") val status: String,
+    @Json(name = "userFraction") val userFraction: Double? = null
   )
 }

@@ -77,9 +77,13 @@ interface PlayConsoleClient {
    * @property versionCodes the version codes included in this release
    * @property status the release lifecycle status (e.g. "completed", "inProgress", "draft",
    *     "halted")
+   * @property rolloutFraction the staged rollout fraction as an integer in [0, 1000], where
+   *     1000 = 100%. Null for [status] values that do not have a rollout percentage
+   *     ("completed", "halted", "draft").
    */
   data class TrackRelease(
     val versionCodes: List<Long>,
-    val status: String
+    val status: String,
+    val rolloutFraction: Int? = null
   )
 }
