@@ -13,7 +13,6 @@ import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -25,6 +24,7 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -116,7 +116,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     saveCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
-
   /**
    * Saves a checkpoint for topic Fractions, story 0, exploration 1.
    *
@@ -140,7 +139,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   fun saveCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
     saveCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
-
 
   /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
@@ -167,7 +165,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     updateCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
-
   /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 1. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration1].
@@ -192,7 +189,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   fun updateCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
     updateCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
-
 
   /**
    * Saves a checkpoint for topic Ratios, story 0, exploration 0.
@@ -224,7 +220,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     saveCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
-
   /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
@@ -249,7 +244,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   fun updateCheckpointForRatiosStory0Exploration0(profileId: LegacyProfileId, version: Int) {
     updateCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
-
 
   /**
    * Function to verify progress for the exploration specified by the explorationId exists in the
@@ -286,7 +280,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyExplorationProgressIsSaved(profileId.toProfileIdPreservingZero(), explorationId)
   }
 
-
   /**
    * Function to verify no progress for the exploration specified by the explorationId exists in the
    * checkpoint database of the specified profileId.
@@ -322,7 +315,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   fun verifyExplorationProgressIsDeleted(profileId: LegacyProfileId, explorationId: String) {
     verifyExplorationProgressIsDeleted(profileId.toProfileIdPreservingZero(), explorationId)
   }
-
 
   private fun createExplorationCheckpoint(
     explorationTitle: String,
