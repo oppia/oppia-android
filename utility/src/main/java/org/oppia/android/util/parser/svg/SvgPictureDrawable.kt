@@ -93,7 +93,6 @@ abstract class SvgPictureDrawable(
 
   override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
 
-  @Suppress("WrongConstant") // TRANSLUCENT is a valid PixelFormat opacity value.
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
   /**
