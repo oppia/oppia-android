@@ -161,7 +161,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -177,7 +177,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -194,7 +194,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -211,11 +211,11 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -233,11 +233,11 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
 
@@ -265,7 +265,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -281,7 +281,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_checkpointWasDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     val deleteCheckpointProvider =
@@ -336,7 +336,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCompatibleCheckpoint_retrieveCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile.toLegacyProfileId(),
+      profileId = firstTestProfile,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 

@@ -67,8 +67,7 @@ class ExplorationDataController @Inject constructor(
    * and it will save the user's progress. See [resumeExploration], [restartExploration], and
    * [replayExploration] for other situations.
    *
-   * @param internalProfileId the ID corresponding to the profile for which exploration is to be
-   *     played
+   * @param profileId the ID corresponding to the profile for which exploration is to be played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played
    * @param explorationId the ID of the exploration which has to be played
@@ -205,7 +204,7 @@ class ExplorationDataController @Inject constructor(
    * [stopPlayingExploration] may be optionally called to clean up the session--see the
    * documentation for that method for details.
    *
-   * @param internalProfileId the ID corresponding to the profile for which exploration has to be
+   * @param profileId the ID corresponding to the profile for which exploration has to be
    *     played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played

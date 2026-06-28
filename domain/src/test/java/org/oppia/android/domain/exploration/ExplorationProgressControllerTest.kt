@@ -4225,7 +4225,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = ProfileId.getDefaultInstance()
+    val rootProfileId = ProfileId.newBuilder().setInternalId(0).build()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",
