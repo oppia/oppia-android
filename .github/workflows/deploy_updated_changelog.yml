@@ -128,24 +128,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve changelog file
+      - name: Validate changelog version
         run: |
           VERSION="${{ needs.resolve_push.outputs.version || needs.resolve_dispatch.outputs.version }}"
-          FLAVOR="${{ needs.resolve_push.outputs.flavor || needs.resolve_dispatch.outputs.flavor }}"
 
-          # Use flavor-specific changelog if available; fall back to the generic one.
-          if [[ -n "$FLAVOR" && -f "config/changelogs/${VERSION}_${FLAVOR}.md" ]]; then
-            CHANGELOG_FILE="config/changelogs/${VERSION}_${FLAVOR}.md"
-          else
-            CHANGELOG_FILE="config/changelogs/${VERSION}.md"
-          fi
+          # Verify that at least one changelog file exists for this version. The upload script
+          # resolves the correct file per track (track-specific first, then shared fallback), so
+          # we only need to confirm that the coordinator hasn't specified a non-existent version.
+          GENERIC="config/changelogs/${VERSION}.md"
+          FLAVOR_SPECIFIC=$(find config/changelogs -name "${VERSION}_*.md" 2>/dev/null | head -1)
 
-          if [[ ! -f "$CHANGELOG_FILE" ]]; then
-            echo "::error::Changelog file not found: $CHANGELOG_FILE"
+          if [[ ! -f "$GENERIC" && -z "$FLAVOR_SPECIFIC" ]]; then
+            echo "::error::No changelog file found for version $VERSION in config/changelogs/. "\
+              "Expected config/changelogs/${VERSION}[_<track>].md."
             exit 1
           fi
 
-          echo "Using changelog: $CHANGELOG_FILE"
+          echo "Changelog validated: version=$VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Set up Bazel
@@ -166,16 +165,14 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       # Runs UploadChangelogToPlayConsole which:
-      #   1. Reads config/changelogs/<version>[_flavor].md as the local release notes.
-      #   2. Audits alpha, beta, and production tracks for live releases.
-      #   3. For each live track, compares deployed notes against local notes.
-      #   4. Uploads updated notes to any track where they differ.
-      # The script fails if no live release is found for this version (preventing deployment
-      # against a version that has not yet been released via deploy_to_play_console.yml).
+      #   1. Audits alpha, beta, and production tracks for live releases.
+      #   2. For each live track, resolves the changelog file (track-specific first, then shared).
+      #   3. Uploads updated notes to any track where a changelog file is found.
+      # The script skips tracks with no matching changelog file silently.
       - name: Upload updated changelog to Play Console
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
             "$GITHUB_WORKSPACE" \
             "${{ secrets.PLAY_CONSOLE_PACKAGE_NAME }}" \
             "${{ env.VERSION }}" \
-            "${{ secrets.GCP_PROJECT_ID }}"
+            "$(gcloud auth print-access-token)"
