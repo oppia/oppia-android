@@ -157,7 +157,9 @@ class TopicController @Inject constructor(
         AsyncResult.Success(topics)
       }
     val topicsProgressDataProvider =
-      storyProgressController.retrieveTopicsProgressDataProvider(profileId.toProfileIdPreservingZero(), topicIds)
+      storyProgressController.retrieveTopicsProgressDataProvider(
+        profileId.toProfileIdPreservingZero(), topicIds
+      )
 
     val topicsCombinedProvider = topicsDataProvider.combineWith(
       topicsProgressDataProvider,
@@ -193,7 +195,9 @@ class TopicController @Inject constructor(
         return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
       }
     val storyProgressDataProvider =
-      storyProgressController.retrieveStoryProgressDataProvider(profileId.toProfileIdPreservingZero(), topicId, storyId)
+      storyProgressController.retrieveStoryProgressDataProvider(
+        profileId.toProfileIdPreservingZero(), topicId, storyId
+      )
 
     val storyCombinedProvider = storyDataProvider.combineWith(
       storyProgressDataProvider,
@@ -320,7 +324,9 @@ class TopicController @Inject constructor(
    */
   fun getCompletedStoryList(profileId: LegacyProfileId): DataProvider<CompletedStoryList> {
     val retrieveTopicProgressListProvider =
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId.toProfileIdPreservingZero())
+      storyProgressController.retrieveTopicProgressListDataProvider(
+        profileId.toProfileIdPreservingZero()
+      )
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(
         profileId.toProfileIdPreservingZero()
@@ -347,7 +353,9 @@ class TopicController @Inject constructor(
    */
   fun getOngoingTopicList(profileId: LegacyProfileId): DataProvider<OngoingTopicList> {
     val retrieveTopicProgressListProvider =
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId.toProfileIdPreservingZero())
+      storyProgressController.retrieveTopicProgressListDataProvider(
+        profileId.toProfileIdPreservingZero()
+      )
     val translationLocaleProvider =
       translationController.getWrittenTranslationContentLocale(
         profileId.toProfileIdPreservingZero()

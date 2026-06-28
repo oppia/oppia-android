@@ -4,7 +4,6 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
@@ -17,6 +16,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.profile.toLegacyProfileId
 import javax.inject.Inject
 import javax.inject.Singleton
 
