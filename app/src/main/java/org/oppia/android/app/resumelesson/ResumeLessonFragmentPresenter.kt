@@ -26,6 +26,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ResumeLessonFragment]. */
@@ -198,11 +199,16 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
+        profileId.toProfileIdPreservingZero(),
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->

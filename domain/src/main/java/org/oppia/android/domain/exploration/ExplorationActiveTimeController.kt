@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicLearningTime
 import org.oppia.android.app.model.TopicLearningTimeDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -82,9 +82,9 @@ class ExplorationActiveTimeController @Inject constructor(
   }
 
   private val cacheStoreMap =
-    mutableMapOf<LegacyProfileId, PersistentCacheStore<TopicLearningTimeDatabase>>()
+    mutableMapOf<ProfileId, PersistentCacheStore<TopicLearningTimeDatabase>>()
 
-  override fun onExplorationStarted(profileId: LegacyProfileId, topicId: String) {
+  override fun onExplorationStarted(profileId: ProfileId, topicId: String) {
     this.explorationStarted = true
     if (enableNpsSurvey.value) {
       startSessionTimer(
@@ -133,7 +133,7 @@ class ExplorationActiveTimeController @Inject constructor(
   private fun startSessionTimer(
     isAppInForeground: Boolean,
     explorationStarted: Boolean,
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String
   ): DataProvider<Any?> {
     val sessionId = UUID.randomUUID().toString().also {
@@ -286,7 +286,7 @@ class ExplorationActiveTimeController @Inject constructor(
     beginTimerResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     isAppInForeground: Boolean,
     isExplorationStarted: Boolean,
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String,
   ) {
     tryOperation(beginTimerResultFlow) {
@@ -394,7 +394,7 @@ class ExplorationActiveTimeController @Inject constructor(
     data class InitializeController(
       val isAppInForeground: Boolean,
       val isExplorationStarted: Boolean,
-      val profileId: LegacyProfileId,
+      val profileId: ProfileId,
       val topicId: String,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
@@ -473,7 +473,7 @@ class ExplorationActiveTimeController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this record operation
    */
   private fun recordAggregateTopicLearningTime(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String,
     sessionDuration: Long
   ): DataProvider<Any?> {
@@ -510,7 +510,7 @@ class ExplorationActiveTimeController @Inject constructor(
 
   /** Returns the [TopicLearningTime] [DataProvider] for a specific topicId, per-profile basis. */
   fun retrieveAggregateTopicLearningTimeDataProvider(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String
   ): DataProvider<TopicLearningTime> {
     return retrieveCacheStore(profileId)
@@ -529,7 +529,7 @@ class ExplorationActiveTimeController @Inject constructor(
   }
 
   private fun retrieveCacheStore(
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ): PersistentCacheStore<TopicLearningTimeDatabase> {
     return cacheStoreMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(

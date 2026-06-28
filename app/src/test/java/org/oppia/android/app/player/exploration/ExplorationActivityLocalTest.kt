@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -213,7 +214,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -267,7 +268,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -312,7 +313,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -378,7 +379,7 @@ class ExplorationActivityLocalTest {
       )
     ).use { scenario ->
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -496,7 +497,7 @@ class ExplorationActivityLocalTest {
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          internalProfileId,
+          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
           classroomId,
           topicId,
           storyId,

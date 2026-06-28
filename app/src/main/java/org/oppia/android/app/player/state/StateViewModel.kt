@@ -131,7 +131,7 @@ class StateViewModel @Inject constructor(
     }.build()
     val updateResultProvider =
       explorationProgressController.updateWrittenTranslationContentLanguageMidLesson(
-        profileId, languageSelection
+        profileId.toProfileIdPreservingZero(), languageSelection
       )
     val updateResultLiveData = updateResultProvider.toLiveData()
     updateResultLiveData.observe(

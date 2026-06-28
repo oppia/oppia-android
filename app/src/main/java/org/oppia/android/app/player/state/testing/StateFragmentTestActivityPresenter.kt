@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.StateFragmentTestActivityBinding
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
@@ -87,7 +87,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      LegacyProfileId.newBuilder().setInternalId(profileId).build(),
+      ProfileId.newBuilder().setInternalId(profileId).build(),
       explorationId
     )
     stopExploration(isCompletion)
@@ -106,11 +106,13 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileId, classroomId, topicId, storyId, explorationId
+        ProfileId.newBuilder().setInternalId(profileId).build(),
+        classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        profileId, classroomId, topicId, storyId, explorationId
+        ProfileId.newBuilder().setInternalId(profileId).build(),
+        classroomId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(

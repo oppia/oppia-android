@@ -17,7 +17,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -74,6 +74,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -117,8 +118,8 @@ class ExplorationCheckpointControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  private val firstTestProfile = LegacyProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = LegacyProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -154,7 +155,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -170,7 +171,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -187,7 +188,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -204,11 +205,11 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -226,11 +227,11 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
 
@@ -258,7 +259,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -274,7 +275,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_checkpointWasDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     val deleteCheckpointProvider =
@@ -329,7 +330,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCompatibleCheckpoint_retrieveCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId = firstTestProfile,
+      profileId = firstTestProfile.toLegacyProfileId(),
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
@@ -826,7 +827,7 @@ class ExplorationCheckpointControllerTest {
     }
   }
 
-  private fun saveCheckpoint(profileId: LegacyProfileId, index: Int): Any? {
+  private fun saveCheckpoint(profileId: ProfileId, index: Int): Any? {
     val recordProvider = explorationCheckpointController.recordExplorationCheckpoint(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
@@ -835,7 +836,7 @@ class ExplorationCheckpointControllerTest {
     return monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
-  private fun saveMultipleCheckpoints(profileId: LegacyProfileId, numberOfCheckpoints: Int) {
+  private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {
       saveCheckpoint(profileId, index)
     }
@@ -879,7 +880,7 @@ class ExplorationCheckpointControllerTest {
       .build()
 
   private fun retrieveExplorationCheckpointWithOverride(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     expIdToLoadInstead: String
   ): DataProvider<ExplorationCheckpoint> {
     fakeExplorationRetriever.setExplorationProxy(
@@ -892,7 +893,7 @@ class ExplorationCheckpointControllerTest {
   }
 
   private fun createCheckpointForTestExploration(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     playRoutine: () -> Unit
   ) {
     fakeExplorationRetriever.setExplorationProxy(
