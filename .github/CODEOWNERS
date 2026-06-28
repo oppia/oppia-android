@@ -230,6 +230,8 @@
 /.editorconfig @oppia/android-dev-workflow-reviewers
 /.idea/ @oppia/android-dev-workflow-reviewers
 
+# CodeRabbit AI reviewer configuration.
+/.coderabbit.yaml @oppia/android-dev-workflow-reviewers
 
 
 # ---========================== GLOBAL OVERRIDES ==========================--- #

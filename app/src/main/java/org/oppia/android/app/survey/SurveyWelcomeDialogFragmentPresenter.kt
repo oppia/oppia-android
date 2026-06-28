@@ -15,6 +15,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_SURVEY_WELCOME_DIALOG = "SURVEY_WELCOME_DIALOG"
@@ -55,7 +56,9 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
       dismissSurveyListener.dismissSurvey()
     }
 
-    profileManagementController.updateSurveyLastShownTimestamp(profileId)
+    profileManagementController.updateSurveyLastShownTimestamp(
+      profileId.toProfileIdPreservingZero()
+    )
 
     logSurveyPopUpShownEvent(explorationId, topicId, profileId)
 
