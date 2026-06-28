@@ -22,6 +22,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -535,7 +536,7 @@ class ExplorationActiveTimeController @Inject constructor(
       cacheStoreFactory.createPerProfile(
         CACHE_NAME,
         TopicLearningTimeDatabase.getDefaultInstance(),
-        profileId
+        profileId.toLegacyProfileId()
       ).also { cacheStore ->
         cacheStore.primeInMemoryAndDiskCacheAsync(
           updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,

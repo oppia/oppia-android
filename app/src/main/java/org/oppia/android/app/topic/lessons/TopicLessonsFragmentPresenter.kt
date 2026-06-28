@@ -299,7 +299,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ChapterPlayState.IN_PROGRESS_SAVED -> {
         val explorationCheckpointLiveData =
           explorationCheckpointController.retrieveExplorationCheckpoint(
-            profileId, explorationId
+            profileId.toProfileIdPreservingZero(), explorationId
           ).toLiveData()
         explorationCheckpointLiveData.observe(
           fragment,

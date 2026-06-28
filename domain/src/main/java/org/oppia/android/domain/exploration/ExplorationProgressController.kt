@@ -17,6 +17,7 @@ import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
