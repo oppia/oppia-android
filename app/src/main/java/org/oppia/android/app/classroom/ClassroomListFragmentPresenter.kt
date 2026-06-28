@@ -72,8 +72,6 @@ import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.profile.toProfileIdUnsetIfZero
 import javax.inject.Inject
 
 /** Test tag for the classroom list screen. */
@@ -168,9 +166,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
       }
     )
 
-    profileManagementController.getProfile(
-      profileId.toProfileIdPreservingZero()
-    ).toLiveData().observe(fragment) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
       processProfileResult(it)
     }
 
@@ -190,9 +186,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   /** Triggers the view model to update the topic list. */
   fun onClassroomSummaryClicked(classroomSummary: ClassroomSummary) {
     val classroomId = classroomSummary.classroomId
-    profileManagementController.updateLastSelectedClassroomId(
-      profileId.toProfileIdPreservingZero(), classroomId
-    )
+    profileManagementController.updateLastSelectedClassroomId(profileId, classroomId)
     classroomListViewModel.fetchAndUpdateTopicList(classroomId)
   }
 
@@ -293,18 +287,14 @@ class ClassroomListFragmentPresenter @Inject constructor(
               // These asynchronous API calls do not block or wait for their results. They execute
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
-              profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdPreservingZero()
-              )
+              profileManagementController.markProfileOnboardingEnded(profileId)
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
             profileType == ProfileType.ADDITIONAL_LEARNER &&
               !profile.completedProfileOnboarding -> {
               // Additional learners complete only profile onboarding, since they will never be the
               // first profile in the app.
-              profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdUnsetIfZero()
-              )
+              profileManagementController.markProfileOnboardingEnded(profileId)
             }
           }
         }

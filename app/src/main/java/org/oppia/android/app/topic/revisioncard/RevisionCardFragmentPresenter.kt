@@ -24,7 +24,6 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
@@ -98,7 +97,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       )
     }
 
-    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
+    profileManagementController.getProfile(profileId)
       .toLiveData().observe(
         fragment
       ) { result ->

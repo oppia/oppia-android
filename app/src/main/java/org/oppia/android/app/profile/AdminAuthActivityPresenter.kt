@@ -18,7 +18,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */
@@ -90,9 +89,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            profileManagementController.loginToProfile(
-              profileId.toProfileIdPreservingZero()
-            ).toLiveData().observe(activity) {
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
@@ -104,9 +101,7 @@ class AdminAuthActivityPresenter @Inject constructor(
             }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-            profileManagementController.loginToProfile(
-              profileId.toProfileIdPreservingZero()
-            ).toLiveData().observe(activity) {
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(
                   AddProfileActivity.createAddProfileActivityIntent(

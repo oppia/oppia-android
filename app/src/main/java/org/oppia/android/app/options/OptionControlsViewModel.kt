@@ -18,7 +18,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID =
@@ -70,13 +69,11 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun createOptionsItemViewModelProvider(): DataProvider<List<OptionsItemViewModel>> {
     val appAudioLangProvider =
-      translationController.getAppLanguage(profileId.toProfileIdPreservingZero()).combineWith(
-        profileManagementController.getAudioLanguage(profileId.toProfileIdPreservingZero()),
+      translationController.getAppLanguage(profileId).combineWith(
+        profileManagementController.getAudioLanguage(profileId),
         OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID
       ) { appLanguage, audioLanguage -> appLanguage to audioLanguage }
-    return profileManagementController.getProfile(
-      profileId.toProfileIdPreservingZero()
-    ).combineWith(
+    return profileManagementController.getProfile(profileId).combineWith(
       appAudioLangProvider, OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID
     ) { profile, (appLang, audioLang) -> processViewModelList(profile, appLang, audioLang) }
   }

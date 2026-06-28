@@ -68,7 +68,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -1274,8 +1273,7 @@ class AnalyticsControllerTest {
     monitorFactory.ensureDataProviderExecutes(addProfileProvider)
 
     return LegacyProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
-      val logInProvider =
-        profileManagementController.loginToProfile(expectedProfileId.toProfileIdPreservingZero())
+      val logInProvider = profileManagementController.loginToProfile(expectedProfileId)
       monitorFactory.waitForNextSuccessfulResult(logInProvider) // Ensure that the login succeeds.
     }
   }
@@ -1283,8 +1281,7 @@ class AnalyticsControllerTest {
   private fun ensureAppLanguageIsUpdatedTo(profileId: LegacyProfileId, language: OppiaLanguage) {
     val resultProvider =
       translationController.updateAppLanguage(
-        profileId.toProfileIdPreservingZero(),
-        AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build()
+        profileId, AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build()
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
@@ -1295,7 +1292,7 @@ class AnalyticsControllerTest {
   ) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero(),
+        profileId,
         WrittenTranslationLanguageSelection.newBuilder().apply {
           selectedLanguage = language
         }.build()
@@ -1309,7 +1306,7 @@ class AnalyticsControllerTest {
   ) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero(),
+        profileId,
         AudioTranslationLanguageSelection.newBuilder().apply {
           selectedLanguage = language
         }.build()

@@ -39,8 +39,6 @@ import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
-import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.profile.toProfileIdUnsetIfZero
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -114,9 +112,7 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
-    profileManagementController.getProfile(
-      profileId.toProfileIdPreservingZero()
-    ).toLiveData().observe(fragment) {
+    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
       processProfileResult(it)
     }
 
@@ -141,18 +137,14 @@ class HomeFragmentPresenter @Inject constructor(
               // These asynchronous API calls do not block or wait for their results. They execute
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
-              profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdPreservingZero()
-              )
+              profileManagementController.markProfileOnboardingEnded(profileId)
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
             profileType == ProfileType.ADDITIONAL_LEARNER &&
               !profile.completedProfileOnboarding -> {
               // Additional learners only end profile onboarding, since they will never be the first
               // profile in the app.
-              profileManagementController.markProfileOnboardingEnded(
-                profileId.toProfileIdUnsetIfZero()
-              )
+              profileManagementController.markProfileOnboardingEnded(profileId)
             }
           }
         }

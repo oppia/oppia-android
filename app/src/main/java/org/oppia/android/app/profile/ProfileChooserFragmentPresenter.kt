@@ -36,7 +36,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -101,9 +100,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
-      profileManagementController.markProfileOnboardingEnded(
-        adminProfileId.toProfileIdPreservingZero()
-      )
+      profileManagementController.markProfileOnboardingEnded(adminProfileId)
     }
 
     binding =
@@ -295,7 +292,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
+      profileManagementController.initializeLearnerId(profile.id)
     }
   }
 
@@ -334,9 +331,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun launchHomeScreen(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(
-      profileId.toProfileIdPreservingZero()
-    ).toLiveData().observe(fragment) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
           activity.startActivity(

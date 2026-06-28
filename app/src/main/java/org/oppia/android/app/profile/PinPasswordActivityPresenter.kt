@@ -27,7 +27,6 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -109,7 +108,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) {
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
-              .loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData().observe(
+              .loginToProfile(profileId).toLiveData().observe(
                 activity,
                 Observer
                 {
