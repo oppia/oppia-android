@@ -497,7 +497,7 @@ class ExplorationActiveTimeControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
