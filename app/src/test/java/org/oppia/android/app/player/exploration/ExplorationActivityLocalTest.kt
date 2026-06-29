@@ -437,7 +437,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
