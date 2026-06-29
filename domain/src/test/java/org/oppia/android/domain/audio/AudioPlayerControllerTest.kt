@@ -949,7 +949,11 @@ class AudioPlayerControllerTest {
   ) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId = profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
+        profileId = profileId.toProfileIdPreservingZero(),
+        classroomId,
+        topicId,
+        storyId,
+        explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())
@@ -957,7 +961,9 @@ class AudioPlayerControllerTest {
 
   private fun loadExploration(explorationId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId.toProfileIdPreservingZero(), explorationId)
+      explorationDataController.getExplorationById(
+        profileId.toProfileIdPreservingZero(), explorationId
+      )
     ).exploration
   }
 
