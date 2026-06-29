@@ -354,7 +354,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(
-      explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
+      explorationDataController.getExplorationById(profileId.toProfileIdPreservingZero(), explorationId).toLiveData()
     )
   }
 

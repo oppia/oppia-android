@@ -49,6 +49,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -694,7 +695,7 @@ class TopicListControllerTest {
     val previousTopicId = "previous_topic_id"
     val recordProgressDataProvider =
       storyProgressController.recordChapterAsInProgressSaved(
-        profileId0,
+        profileId0.toProfileIdPreservingZero(),
         topicId = previousTopicId,
         storyId = "previous_story_id",
         explorationId = "previous_exploration_id",
