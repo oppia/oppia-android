@@ -639,7 +639,7 @@ class SurveyGatingControllerTest {
     topicId: String
   ) {
     explorationActiveTimeController.onAppInForeground()
-    explorationActiveTimeController.onExplorationStarted(profileId, topicId)
+    explorationActiveTimeController.onExplorationStarted(profileId.toProfileIdPreservingZero(), topicId)
     testCoroutineDispatchers.advanceTimeBy(sessionLengthMs)
     explorationActiveTimeController.onExplorationEnded()
   }
