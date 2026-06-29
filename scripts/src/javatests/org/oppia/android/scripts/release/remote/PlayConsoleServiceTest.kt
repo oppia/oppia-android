@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release.remote
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
@@ -8,6 +9,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.oppia.android.scripts.release.model.InsertEditRequest
 import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -30,7 +32,13 @@ class PlayConsoleServiceTest {
     server.start()
     service = Retrofit.Builder()
       .baseUrl(server.url("/"))
-      .addConverterFactory(MoshiConverterFactory.create())
+      .addConverterFactory(
+        MoshiConverterFactory.create(
+          Moshi.Builder()
+            .add(InsertEditRequest::class.java, InsertEditRequest.ADAPTER)
+            .build()
+        )
+      )
       .client(OkHttpClient())
       .build()
       .create(PlayConsoleService::class.java)

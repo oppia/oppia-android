@@ -185,7 +185,7 @@ class PendingReleaseCheckerTest {
       check.verify("org.oppia.android", "beta", 0)
     }
 
-    assertThat(exception).hasMessageThat().contains("Pending release detected")
+    assertThat(exception).hasMessageThat().contains("in-progress release already exists")
   }
 
   // ---------------------------------------------------------------------------
