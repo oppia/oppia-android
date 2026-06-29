@@ -3,7 +3,7 @@ language: en-US
 reviews:
   # Provide more detailed, quality-focused feedback.
   profile: assertive
-  review_status: true
+  review_status: false
   auto_review:
     # Note: We'll only turn this on once we are happy with the review
     # results. To generate a review manually, post a comment with the
