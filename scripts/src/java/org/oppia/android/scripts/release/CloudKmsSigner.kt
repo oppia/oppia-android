@@ -143,4 +143,3 @@ class CloudKmsSigner(
     private val certFactory by lazy { CertificateFactory.getInstance("X.509") }
   }
 }
-
