@@ -21,7 +21,7 @@ class InsertEditRequest {
      * This avoids Moshi code-generation for an empty class (which produces an unused
      * `moshi` constructor parameter that fails under `-Werror`).
      */
-    val ADAPTER: JsonAdapter<InsertEditRequest> = object : JsonAdapter<InsertEditRequest>() {
+    val Adapter: JsonAdapter<InsertEditRequest> = object : JsonAdapter<InsertEditRequest>() {
       override fun fromJson(reader: JsonReader): InsertEditRequest {
         reader.beginObject()
         while (reader.hasNext()) reader.skipValue()

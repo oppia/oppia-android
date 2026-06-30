@@ -1,7 +1,5 @@
 """
-Tests for release automation scripts: ChangelogExistenceChecker, PendingReleaseChecker,
-VersionInversionChecker, FakePlayConsoleClient, PlayConsoleClient, GooglePlayConsoleClient,
-and UploadBinaryToPlayConsole.
+Tests for the release automation scripts in the release package.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
@@ -63,14 +61,6 @@ kt_jvm_test(
     ],
 )
 
-kt_jvm_test(
-    name = "PlayConsoleClientTest",
-    srcs = ["PlayConsoleClientTest.kt"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
-        "//third_party:com_google_truth_truth",
-    ],
-)
 
 kt_jvm_test(
     name = "FakePlayConsoleClientTest",

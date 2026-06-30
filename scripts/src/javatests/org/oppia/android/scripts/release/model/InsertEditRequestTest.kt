@@ -10,14 +10,14 @@ class InsertEditRequestTest {
 
   @Test
   fun testInsertEditRequest_serialisesToEmptyJsonObject() {
-    val json = InsertEditRequest.ADAPTER.toJson(InsertEditRequest())
+    val json = InsertEditRequest.Adapter.toJson(InsertEditRequest())
 
     assertThat(json).isEqualTo("{}")
   }
 
   @Test
   fun testInsertEditRequest_deserialisesFromEmptyJsonObject() {
-    val result = InsertEditRequest.ADAPTER.fromJson("{}")
+    val result = InsertEditRequest.Adapter.fromJson("{}")
 
     assertThat(result).isNotNull()
   }

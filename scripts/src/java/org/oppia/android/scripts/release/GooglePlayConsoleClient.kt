@@ -51,7 +51,7 @@ class GooglePlayConsoleClient(
 
   private val moshi by lazy {
     Moshi.Builder()
-      .add(InsertEditRequest::class.java, InsertEditRequest.ADAPTER)
+      .add(InsertEditRequest::class.java, InsertEditRequest.Adapter)
       .build()
   }
 

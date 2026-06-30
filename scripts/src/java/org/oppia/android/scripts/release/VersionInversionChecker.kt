@@ -90,17 +90,10 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
           }
         }
       }
-      else -> {
-        // For unknown tracks, fall back to a same-track check.
-        val allLive = (alphaVersionCodes + betaVersionCodes + gaVersionCodes)
-        if (allLive.isNotEmpty()) {
-          val maxLive = allLive.maxOrNull()!!
-          check(newVersionCode > maxLive) {
-            "Version inversion: $newVersionCode is not greater than the highest known " +
-              "version code $maxLive across all tracks."
-          }
-        }
-      }
+      else -> error(
+        "Unknown track '$targetTrack'. Expected one of: '$ALPHA_TRACK', '$BETA_TRACK', " +
+          "'$GA_TRACK'."
+      )
     }
   }
 

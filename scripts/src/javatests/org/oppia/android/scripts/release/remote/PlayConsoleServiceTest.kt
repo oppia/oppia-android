@@ -35,7 +35,7 @@ class PlayConsoleServiceTest {
       .addConverterFactory(
         MoshiConverterFactory.create(
           Moshi.Builder()
-            .add(InsertEditRequest::class.java, InsertEditRequest.ADAPTER)
+            .add(InsertEditRequest::class.java, InsertEditRequest.Adapter)
             .build()
         )
       )

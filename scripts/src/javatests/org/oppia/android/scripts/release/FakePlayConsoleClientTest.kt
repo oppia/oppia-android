@@ -86,9 +86,11 @@ class FakePlayConsoleClientTest {
   fun testGetTrackReleases_simulatedFailure_throws() {
     fake.shouldFailNextCall = true
 
-    assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException>() {
       fake.getTrackReleases("org.oppia.android", "alpha")
     }
+
+    assertThat(exception).hasMessageThat().contains("getTrackReleases")
   }
 
   // ---------------------------------------------------------------------------
