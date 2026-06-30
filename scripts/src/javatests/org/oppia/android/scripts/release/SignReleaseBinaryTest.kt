@@ -210,13 +210,13 @@ class SignReleaseBinaryTest {
   }
 
   @Test
-  fun testSignAndValidate_kmsAuthenticationFails_throwsCloudKmsAuthenticationException() {
+  fun testSignAndValidate_kmsAuthenticationFails_throwsWithMessage() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    assertThrows<CloudKmsAuthenticationException> {
+    val exception = assertThrows<CloudKmsAuthenticationException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowAuthError = true),
         unsignedAab.toPath(),
@@ -224,16 +224,18 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
+
+    assertThat(exception).hasMessageThat().contains("authentication")
   }
 
   @Test
-  fun testSignAndValidate_keyVersionUnavailable_throwsKeyVersionUnavailableException() {
+  fun testSignAndValidate_keyVersionUnavailable_throwsWithMessage() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    assertThrows<KeyVersionUnavailableException> {
+    val exception = assertThrows<KeyVersionUnavailableException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowKeyUnavailable = true),
         unsignedAab.toPath(),
@@ -241,16 +243,18 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
+
+    assertThat(exception).hasMessageThat().contains("disabled")
   }
 
   @Test
-  fun testSignAndValidate_certificateMismatch_throwsCertificateMismatchException() {
+  fun testSignAndValidate_certificateMismatch_throwsWithMessage() {
     val unsignedAab =
       tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
     val certPem = tempFolder.newFile("cert.pem")
     val outputAab = File(tempFolder.root, "signed.aab")
 
-    assertThrows<CertificateMismatchException> {
+    val exception = assertThrows<CertificateMismatchException> {
       signAndValidate(
         FakeCloudSigner(shouldThrowCertMismatch = true),
         unsignedAab.toPath(),
@@ -258,6 +262,34 @@ class SignReleaseBinaryTest {
         outputAab.toPath()
       )
     }
+
+    assertThat(exception).hasMessageThat().contains("certificate")
+  }
+
+  @Test
+  fun testSignAndValidate_validInputs_signedOutputFileContainsSourceContent() {
+    val unsignedAab =
+      tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-bytes") }
+    val certPem = tempFolder.newFile("cert.pem")
+    val outputAab = File(tempFolder.root, "signed.aab")
+
+    signAndValidate(FakeCloudSigner(), unsignedAab.toPath(), certPem.toPath(), outputAab.toPath())
+
+    // FakeCloudSigner copies the unsigned AAB to the output path.
+    assertThat(outputAab.readText()).isEqualTo("fake-aab-bytes")
+  }
+
+  @Test
+  fun testSignAndValidate_validInputs_signedOutputFileHasDifferentPathFromInput() {
+    val unsignedAab =
+      tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
+    val certPem = tempFolder.newFile("cert.pem")
+    val outputAab = File(tempFolder.root, "signed.aab")
+
+    signAndValidate(FakeCloudSigner(), unsignedAab.toPath(), certPem.toPath(), outputAab.toPath())
+
+    assertThat(outputAab.absolutePath).isNotEqualTo(unsignedAab.absolutePath)
+    assertThat(outputAab.exists()).isTrue()
   }
 
   private companion object {

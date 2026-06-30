@@ -183,6 +183,186 @@ class CloudKmsSignerTest {
     assertThat(exception).hasMessageThat().contains("exit code 2")
   }
 
+  @Test
+  fun testSign_withJarsignerFailure_errorMessageContainsJarsignerStderr() {
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, mutableListOf())
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    val exception = assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(exception).hasMessageThat().contains("simulated jarsigner failure")
+  }
+
+  @Test
+  fun testSign_withValidAab_copiesAabToOutputPathBeforeJarsignerCheck() {
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, mutableListOf())
+    )
+    val unsignedAab =
+      tempFolder.newFile("unsigned.aab").also { it.writeText("fake-aab-content") }
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    // jarsigner fails, but the AAB must have been copied to the output path before the check.
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(output.toFile().exists()).isTrue()
+    assertThat(output.toFile().readText()).isEqualTo("fake-aab-content")
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesCommandNamedJarsigner() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs.first()).isEqualTo("jarsigner")
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesJarsignerWithNoneKeystore() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs).contains("-keystore")
+    assertThat(capturedArgs).contains("NONE")
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesJarsignerWithSha256SignatureAlgorithm() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs).contains("-sigalg")
+    assertThat(capturedArgs).contains("SHA256withRSA")
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesJarsignerWithSha256DigestAlgorithm() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs).contains("-digestalg")
+    assertThat(capturedArgs).contains("SHA-256")
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesJarsignerWithCertChainPath() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs).contains("-certchain")
+    assertThat(capturedArgs).contains(cert.toAbsolutePath().toString())
+  }
+
+  @Test
+  fun testSign_withValidAab_invokesJarsignerWithSignedJarOutputPath() {
+    val capturedArgs = mutableListOf<String>()
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(capturedArgs).contains("-signedjar")
+    assertThat(capturedArgs).contains(output.toAbsolutePath().toString())
+  }
+
+  @Test
+  fun testSign_withJarsignerSuccessAndEmptyCert_throwsAfterExitCodeCheck() {
+    // When jarsigner exits with 0, CloudKmsSigner proceeds to load the certificate.
+    // An empty cert file causes the CertificateFactory to fail, which confirms that
+    // the code path past the exitCode check (lines 85+) is reached.
+    val signer = CloudKmsSigner(
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 0, mutableListOf())
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath() // empty — not a valid X.509 cert
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    // The exception is thrown during cert loading, not during jarsigner exit-code check.
+    val exception = assertThrows<Exception> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(exception).hasMessageThat().doesNotContain("exit code")
+  }
+
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
