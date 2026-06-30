@@ -204,7 +204,8 @@ class CloudKmsSignerTest {
       return CommandResult(
         exitCode = exitCode,
         output = emptyList(),
-        errorOutput = if (exitCode != 0) listOf("simulated jarsigner failure") else emptyList()
+        errorOutput = if (exitCode != 0) listOf("simulated jarsigner failure") else emptyList(),
+        command = listOf(command) + arguments
       )
     }
   }
