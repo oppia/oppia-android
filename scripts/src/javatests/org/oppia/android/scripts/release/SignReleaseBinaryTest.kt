@@ -263,7 +263,7 @@ class SignReleaseBinaryTest {
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("certificate")
+    assertThat(exception).hasMessageThat().contains("does not match")
   }
 
   @Test
