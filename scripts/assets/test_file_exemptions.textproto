@@ -347,6 +347,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/LessonProgressIndicatorView.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -1814,6 +1818,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/InteractionViewModelModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/LessonProgressViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {

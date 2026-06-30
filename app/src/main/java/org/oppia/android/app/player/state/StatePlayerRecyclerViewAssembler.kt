@@ -27,6 +27,7 @@ import org.oppia.android.app.databinding.databinding.FlashbackButtonItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ItemSelectionSubmittedAnswerItemsBinding
+import org.oppia.android.app.databinding.databinding.LessonProgressIndicatorItemBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
@@ -70,6 +71,7 @@ import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FlashbackButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.LessonProgressViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
@@ -118,6 +120,7 @@ import org.oppia.android.util.parser.html.ImageTagHandler
 import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -329,6 +332,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
             ephemeralState.writtenTranslationContext
           )
         }
+        // Keep the indicator visible while reviewing a flashback card; the domain preserves the
+        // learner's unchanged pre-flashback checkpoint count for exactly this purpose.
+        addLessonProgressItem(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState
+        )
         if (playerFeatureSet.flashbackNavigationSupport) {
           addReturnToQuestionButton(
             conversationPendingItemList,
@@ -385,6 +395,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     if (!ephemeralState.flashbackState) {
+      addLessonProgressItem(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        ephemeralState
+      )
       maybeAddNavigationButtons(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -908,6 +923,49 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private fun addLessonProgressItem(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    ephemeralState: EphemeralState
+  ) {
+    // The indicator is assembled whenever the feature is on and the domain has attached checkpoint
+    // progress -- which only happens for explorations that contain checkpoints, never practice
+    // questions or checkpoint-free explorations. It's shown on pending, completed, flashback, and
+    // terminal cards.
+    if (!playerFeatureSet.lessonProgressSupport || !ephemeralState.hasCheckpointProgress()) return
+
+    val checkpointProgress = ephemeralState.checkpointProgress
+    val totalCheckpoints = checkpointProgress.totalCheckpointCount
+    if (totalCheckpoints < 1) return
+
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    // 'completedCheckpointCount' is 1-based and includes the checkpoint the learner is on now, so
+    // it maps directly to the number of reached (solid) nodes the view should draw.
+    val lessonProgressViewModel = LessonProgressViewModel(
+      completedCount = checkpointProgress.completedCheckpointCount,
+      totalCount = totalCheckpoints,
+      // The indicator draws no on-screen text, so this string is purely the TalkBack content
+      // description. Counts are passed as strings because only %s specifiers are allowed in
+      // translatable resources.
+      contentDescription = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.lesson_progress_indicator_content_description,
+        checkpointProgress.completedCheckpointCount.toString(),
+        totalCheckpoints.toString()
+      )
+    )
+    // The Continue interaction is auto-navigating: it renders its own forward button inline. When
+    // that button is the trailing item, the indicator is inserted just above it so it stays above
+    // the primary action on every card, matching how it sits above the nav buttons elsewhere.
+    val trailingItemIsAutoNavigating =
+      (targetList.lastOrNull() as? InteractionAnswerHandler)?.isAutoNavigating() == true
+    if (trailingItemIsAutoNavigating) {
+      targetList.add(targetList.lastIndex, lessonProgressViewModel)
+    } else {
+      targetList += lessonProgressViewModel
+    }
+  }
+
   private fun addSubmitButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
     extraInteractionPendingItemList: MutableList<StateItemViewModel>,
@@ -1272,7 +1330,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val consoleLogger: ConsoleLogger,
     private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
     private val solutionViewModelFactory: SolutionViewModel.Factory,
-    private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+    private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+    private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1732,6 +1791,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     /**
+     * Adds support for displaying the lesson progress indicator that shows the learner how far they
+     * are through the exploration's checkpoints. Only enabled when the feature flag is on.
+     */
+    fun addLessonProgressIndicatorSupport(): Builder {
+      if (enableLessonProgressVisualization.value) {
+        adapterBuilder.registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.LESSON_PROGRESS_INDICATOR,
+          inflateDataBinding = LessonProgressIndicatorItemBinding::inflate,
+          setViewModel = LessonProgressIndicatorItemBinding::setViewModel,
+          transformViewModel = { it as LessonProgressViewModel }
+        )
+        featureSets += PlayerFeatureSet(lessonProgressSupport = true)
+      }
+      return this
+    }
+
+    /**
      * Adds support for displaying a button that allows the learner to replay the lesson experience.
      */
     fun addReplayButtonSupport(): Builder {
@@ -1895,7 +1971,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val consoleLogger: ConsoleLogger,
       private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
       private val solutionViewModelFactory: SolutionViewModel.Factory,
-      @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+      @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+      @EnableLessonProgressVisualization
+      private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1925,7 +2003,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           consoleLogger,
           conceptCardTagHandlerFactory,
           solutionViewModelFactory,
-          enableFlashbackSupport
+          enableFlashbackSupport,
+          enableLessonProgressVisualization
         )
       }
     }
@@ -1948,7 +2027,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false,
     val flashbackNavigationSupport: Boolean = false,
-    val flashbackSolutionSummarySupport: Boolean = false
+    val flashbackSolutionSummarySupport: Boolean = false,
+    val lessonProgressSupport: Boolean = false
   ) {
     /**
      * Returns a union of this feature set with other one. Loosely based on
@@ -1974,7 +2054,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport,
         flashbackNavigationSupport = flashbackNavigationSupport || other.flashbackNavigationSupport,
         flashbackSolutionSummarySupport = flashbackSolutionSummarySupport ||
-          other.flashbackSolutionSummarySupport
+          other.flashbackSolutionSummarySupport,
+        lessonProgressSupport = lessonProgressSupport || other.lessonProgressSupport
       )
     }
   }
