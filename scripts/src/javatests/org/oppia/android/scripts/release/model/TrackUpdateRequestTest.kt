@@ -1,48 +1,40 @@
 package org.oppia.android.scripts.release.model
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import org.junit.Test
 
-/** Tests for [TrackUpdateRequest] and its nested types. */
+/**
+ * Tests for [TrackUpdateRequest], [TrackUpdateRequest.ReleaseEntry], and
+ * [TrackUpdateRequest.LocalizedText] JSON serialization.
+ */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class TrackUpdateRequestTest {
+  private val moshi = Moshi.Builder().build()
+  private val adapter = moshi.adapter(TrackUpdateRequest::class.java)
 
   // ---------------------------------------------------------------------------
   // TrackUpdateRequest
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testTrackUpdateRequest_constructor_setsTrackAndReleases() {
+  fun testTrackUpdateRequest_toJson_withTrackAndReleases_serialisesTrackField() {
     val request = TrackUpdateRequest(track = "alpha", releases = emptyList())
 
-    assertThat(request.track).isEqualTo("alpha")
-    assertThat(request.releases).isEmpty()
+    val json = adapter.toJson(request)
+
+    assertThat(json).contains("\"track\"")
+    assertThat(json).contains("\"alpha\"")
   }
 
   @Test
-  fun testTrackUpdateRequest_equality_sameFields_isEqual() {
-    val a = TrackUpdateRequest(track = "beta", releases = emptyList())
-    val b = TrackUpdateRequest(track = "beta", releases = emptyList())
+  fun testTrackUpdateRequest_toJson_withReleases_serialisesReleasesField() {
+    val request = TrackUpdateRequest(track = "alpha", releases = emptyList())
 
-    assertThat(a).isEqualTo(b)
-  }
+    val json = adapter.toJson(request)
 
-  @Test
-  fun testTrackUpdateRequest_equality_differentTrack_isNotEqual() {
-    val a = TrackUpdateRequest(track = "alpha", releases = emptyList())
-    val b = TrackUpdateRequest(track = "beta", releases = emptyList())
-
-    assertThat(a).isNotEqualTo(b)
-  }
-
-  @Test
-  fun testTrackUpdateRequest_copy_updatesTrack() {
-    val original = TrackUpdateRequest(track = "alpha", releases = emptyList())
-    val copy = original.copy(track = "production")
-
-    assertThat(copy.track).isEqualTo("production")
-    assertThat(original.track).isEqualTo("alpha")
+    assertThat(json).contains("\"releases\"")
   }
 
   // ---------------------------------------------------------------------------
@@ -50,47 +42,44 @@ class TrackUpdateRequestTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testReleaseEntry_constructor_setsAllFields() {
-    val notes = listOf(TrackUpdateRequest.LocalizedText(language = "en-US", text = "Bug fixes."))
-    val entry = TrackUpdateRequest.ReleaseEntry(
-      versionCodes = listOf("301"),
-      status = "completed",
-      releaseNotes = notes
+  fun testReleaseEntry_toJson_withVersionCodeAndStatus_serialisesCorrectly() {
+    val request = TrackUpdateRequest(
+      track = "beta",
+      releases = listOf(
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = listOf("301"),
+          status = "completed",
+          releaseNotes = emptyList()
+        )
+      )
     )
 
-    assertThat(entry.versionCodes).containsExactly("301")
-    assertThat(entry.status).isEqualTo("completed")
-    assertThat(entry.releaseNotes).hasSize(1)
-    assertThat(entry.userFraction).isNull()
+    val json = adapter.toJson(request)
+
+    assertThat(json).contains("\"versionCodes\"")
+    assertThat(json).contains("\"301\"")
+    assertThat(json).contains("\"status\"")
+    assertThat(json).contains("\"completed\"")
   }
 
   @Test
-  fun testReleaseEntry_constructor_withUserFraction_setsUserFraction() {
-    val entry = TrackUpdateRequest.ReleaseEntry(
-      versionCodes = listOf("301"),
-      status = "inProgress",
-      releaseNotes = emptyList(),
-      userFraction = 0.1
+  fun testReleaseEntry_toJson_withUserFraction_serialisesUserFraction() {
+    val request = TrackUpdateRequest(
+      track = "alpha",
+      releases = listOf(
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = listOf("301"),
+          status = "inProgress",
+          releaseNotes = emptyList(),
+          userFraction = 0.25
+        )
+      )
     )
 
-    assertThat(entry.userFraction).isEqualTo(0.1)
-    assertThat(entry.status).isEqualTo("inProgress")
-  }
+    val json = adapter.toJson(request)
 
-  @Test
-  fun testReleaseEntry_equality_sameFields_isEqual() {
-    val a = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
-    val b = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
-
-    assertThat(a).isEqualTo(b)
-  }
-
-  @Test
-  fun testReleaseEntry_equality_differentStatus_isNotEqual() {
-    val a = TrackUpdateRequest.ReleaseEntry(listOf("300"), "completed", emptyList())
-    val b = TrackUpdateRequest.ReleaseEntry(listOf("300"), "inProgress", emptyList())
-
-    assertThat(a).isNotEqualTo(b)
+    assertThat(json).contains("\"userFraction\"")
+    assertThat(json).contains("0.25")
   }
 
   // ---------------------------------------------------------------------------
@@ -98,26 +87,25 @@ class TrackUpdateRequestTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testLocalizedText_constructor_setsLanguageAndText() {
-    val text = TrackUpdateRequest.LocalizedText(language = "en-US", text = "Bug fixes.")
+  fun testLocalizedText_toJson_withLanguageAndText_serialisesCorrectly() {
+    val request = TrackUpdateRequest(
+      track = "alpha",
+      releases = listOf(
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = listOf("301"),
+          status = "completed",
+          releaseNotes = listOf(
+            TrackUpdateRequest.LocalizedText(language = "en-US", text = "Bug fixes.")
+          )
+        )
+      )
+    )
 
-    assertThat(text.language).isEqualTo("en-US")
-    assertThat(text.text).isEqualTo("Bug fixes.")
-  }
+    val json = adapter.toJson(request)
 
-  @Test
-  fun testLocalizedText_equality_sameFields_isEqual() {
-    val a = TrackUpdateRequest.LocalizedText("en-US", "Bug fixes.")
-    val b = TrackUpdateRequest.LocalizedText("en-US", "Bug fixes.")
-
-    assertThat(a).isEqualTo(b)
-  }
-
-  @Test
-  fun testLocalizedText_equality_differentLanguage_isNotEqual() {
-    val a = TrackUpdateRequest.LocalizedText("en-US", "Bug fixes.")
-    val b = TrackUpdateRequest.LocalizedText("fr-FR", "Bug fixes.")
-
-    assertThat(a).isNotEqualTo(b)
+    assertThat(json).contains("\"language\"")
+    assertThat(json).contains("\"en-US\"")
+    assertThat(json).contains("\"text\"")
+    assertThat(json).contains("Bug fixes.")
   }
 }

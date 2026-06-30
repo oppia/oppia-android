@@ -1,5 +1,6 @@
 """
-Tests for Google Play Developer API response model data classes.
+Tests for Google Play Developer API response model data classes: JSON serialization and
+deserialization.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
@@ -10,6 +11,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release/model:bundle_response",
         "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
     ],
 )
 
@@ -19,6 +21,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release/model:edit_response",
         "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
     ],
 )
 
@@ -28,6 +31,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
         "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
     ],
 )
 
@@ -37,6 +41,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
         "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
     ],
 )
 

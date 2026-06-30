@@ -1,50 +1,35 @@
 package org.oppia.android.scripts.release.model
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import org.junit.Test
 
-/** Tests for [BundleResponse]. */
+/** Tests for [BundleResponse] JSON serialization and deserialization. */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class BundleResponseTest {
+  private val moshi = Moshi.Builder().build()
+  private val adapter = moshi.adapter(BundleResponse::class.java)
 
   @Test
-  fun testBundleResponse_constructor_setsVersionCode() {
-    val response = BundleResponse(versionCode = "301")
+  fun testBundleResponse_fromJson_withVersionCode_parsesVersionCode() {
+    val response = adapter.fromJson("""{"versionCode":"301"}""")
 
-    assertThat(response.versionCode).isEqualTo("301")
+    assertThat(response!!.versionCode).isEqualTo("301")
   }
 
   @Test
-  fun testBundleResponse_equality_sameVersionCode_isEqual() {
-    val a = BundleResponse(versionCode = "100")
-    val b = BundleResponse(versionCode = "100")
+  fun testBundleResponse_fromJson_withExtraFields_ignoresUnknownFields() {
+    val response = adapter.fromJson("""{"versionCode":"200","unknown":"ignored"}""")
 
-    assertThat(a).isEqualTo(b)
+    assertThat(response!!.versionCode).isEqualTo("200")
   }
 
   @Test
-  fun testBundleResponse_equality_differentVersionCode_isNotEqual() {
-    val a = BundleResponse(versionCode = "100")
-    val b = BundleResponse(versionCode = "200")
+  fun testBundleResponse_toJson_withVersionCode_serialisesCorrectFieldName() {
+    val json = adapter.toJson(BundleResponse(versionCode = "301"))
 
-    assertThat(a).isNotEqualTo(b)
-  }
-
-  @Test
-  fun testBundleResponse_copy_updatesVersionCode() {
-    val original = BundleResponse(versionCode = "100")
-    val copy = original.copy(versionCode = "200")
-
-    assertThat(copy.versionCode).isEqualTo("200")
-    assertThat(original.versionCode).isEqualTo("100")
-  }
-
-  @Test
-  fun testBundleResponse_hashCode_equalObjects_haveSameHashCode() {
-    val a = BundleResponse(versionCode = "42")
-    val b = BundleResponse(versionCode = "42")
-
-    assertThat(a.hashCode()).isEqualTo(b.hashCode())
+    assertThat(json).contains("\"versionCode\"")
+    assertThat(json).contains("\"301\"")
   }
 }

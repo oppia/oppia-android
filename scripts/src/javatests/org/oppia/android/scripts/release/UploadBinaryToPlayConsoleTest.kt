@@ -67,7 +67,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction validation (now Int [0, 1000])
+  // Rollout fraction validation (integer in [0, 1000])
   // ---------------------------------------------------------------------------
 
   @Test
@@ -210,30 +210,45 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Boundary rollout fractions — valid values pass arg checks
+  // Boundary rollout fractions — valid values complete the full upload flow
   // ---------------------------------------------------------------------------
 
   @Test
   fun testScript_rolloutFractionZero_passesValidation() {
+    val fake = FakePlayConsoleClient()
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
 
-    // 0 is a valid fraction — error will be from Play Console API, not arg validation.
-    val exception = assertThrows<Exception>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "0")
-    }
+    // rollout_fraction = 0 is valid — the full upload flow should complete without errors.
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = alphaProperties(),
+      track = "alpha",
+      rolloutFraction = 0
+    )
 
-    assertThat(exception).hasMessageThat().doesNotContain("rollout_fraction")
+    assertThat(fake.uploadedBundles).hasSize(1)
   }
 
   @Test
   fun testScript_rolloutFractionThousand_passesValidation() {
+    val fake = FakePlayConsoleClient()
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
 
-    val exception = assertThrows<Exception>() {
-      runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1000")
-    }
+    // rollout_fraction = 1000 (100%) is valid — the full upload flow should complete.
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = alphaProperties(),
+      track = "alpha",
+      rolloutFraction = 1000
+    )
 
-    assertThat(exception).hasMessageThat().doesNotContain("rollout_fraction")
+    assertThat(fake.uploadedBundles).hasSize(1)
   }
 
   // ---------------------------------------------------------------------------
@@ -379,7 +394,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException>() {
       runUpload(
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
@@ -390,6 +405,7 @@ class UploadBinaryToPlayConsoleTest {
       )
     }
 
+    assertThat(exception).hasMessageThat().contains("Pending release detected")
     // Upload must NOT have been attempted.
     assertThat(fake.uploadedBundles).isEmpty()
   }
@@ -400,7 +416,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     // No changelog file created.
 
-    assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException>() {
       runUpload(
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
@@ -411,6 +427,7 @@ class UploadBinaryToPlayConsoleTest {
       )
     }
 
+    assertThat(exception).hasMessageThat().contains("changelog")
     assertThat(fake.uploadedBundles).isEmpty()
   }
 
@@ -426,7 +443,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException>() {
       runUpload(
         client = fake,
         workspaceRoot = tempFolder.root.absolutePath,
@@ -437,6 +454,7 @@ class UploadBinaryToPlayConsoleTest {
       )
     }
 
+    assertThat(exception).hasMessageThat().contains("Version inversion")
     // AAB was uploaded but the edit was never committed.
     assertThat(fake.uploadedBundles).hasSize(1)
     assertThat(fake.committedEdits).isEmpty()

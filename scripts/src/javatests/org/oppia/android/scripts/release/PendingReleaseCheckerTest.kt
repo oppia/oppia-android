@@ -153,7 +153,7 @@ class PendingReleaseCheckerTest {
   }
 
   @Test
-  fun testVerify_pendingRelease_throwsWithVersionCodes() {
+  fun testVerify_pendingRelease_sameVersionCodesAsCurrent_throws() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(status = "draft", versionCodes = listOf(305L)))

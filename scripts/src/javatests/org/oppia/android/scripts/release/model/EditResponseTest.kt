@@ -1,50 +1,35 @@
 package org.oppia.android.scripts.release.model
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import org.junit.Test
 
-/** Tests for [EditResponse]. */
+/** Tests for [EditResponse] JSON serialization and deserialization. */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class EditResponseTest {
+  private val moshi = Moshi.Builder().build()
+  private val adapter = moshi.adapter(EditResponse::class.java)
 
   @Test
-  fun testEditResponse_constructor_setsId() {
-    val response = EditResponse(id = "edit-123")
+  fun testEditResponse_fromJson_withId_parsesId() {
+    val response = adapter.fromJson("""{"id":"edit-1"}""")
 
-    assertThat(response.id).isEqualTo("edit-123")
+    assertThat(response!!.id).isEqualTo("edit-1")
   }
 
   @Test
-  fun testEditResponse_equality_sameId_isEqual() {
-    val a = EditResponse(id = "edit-abc")
-    val b = EditResponse(id = "edit-abc")
+  fun testEditResponse_fromJson_withExtraFields_ignoresUnknownFields() {
+    val response = adapter.fromJson("""{"id":"edit-2","extra":"ignored"}""")
 
-    assertThat(a).isEqualTo(b)
+    assertThat(response!!.id).isEqualTo("edit-2")
   }
 
   @Test
-  fun testEditResponse_equality_differentId_isNotEqual() {
-    val a = EditResponse(id = "edit-abc")
-    val b = EditResponse(id = "edit-xyz")
+  fun testEditResponse_toJson_withId_serialisesCorrectFieldName() {
+    val json = adapter.toJson(EditResponse(id = "edit-1"))
 
-    assertThat(a).isNotEqualTo(b)
-  }
-
-  @Test
-  fun testEditResponse_copy_updatesId() {
-    val original = EditResponse(id = "original-id")
-    val copy = original.copy(id = "copied-id")
-
-    assertThat(copy.id).isEqualTo("copied-id")
-    assertThat(original.id).isEqualTo("original-id")
-  }
-
-  @Test
-  fun testEditResponse_hashCode_equalObjects_haveSameHashCode() {
-    val a = EditResponse(id = "same-id")
-    val b = EditResponse(id = "same-id")
-
-    assertThat(a.hashCode()).isEqualTo(b.hashCode())
+    assertThat(json).contains("\"id\"")
+    assertThat(json).contains("\"edit-1\"")
   }
 }

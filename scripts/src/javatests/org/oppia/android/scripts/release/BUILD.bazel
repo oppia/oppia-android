@@ -61,7 +61,6 @@ kt_jvm_test(
     ],
 )
 
-
 kt_jvm_test(
     name = "FakePlayConsoleClientTest",
     srcs = ["FakePlayConsoleClientTest.kt"],

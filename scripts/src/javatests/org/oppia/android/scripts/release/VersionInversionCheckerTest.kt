@@ -202,4 +202,17 @@ class VersionInversionCheckerTest {
     }
     assertThat(exception).hasMessageThat().contains("400")
   }
+
+  // ---------------------------------------------------------------------------
+  // Unknown track — should hard-fail rather than silently no-op
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testVerify_unknownTrack_throwsWithTrackName() {
+    val exception = assertThrows<IllegalStateException>() {
+      checker.verify("org.oppia.android", "internal", newVersionCode = 100L)
+    }
+
+    assertThat(exception).hasMessageThat().contains("internal")
+  }
 }
