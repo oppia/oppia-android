@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -6149,6 +6150,70 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       verifyIndicatorIsDirectlyAbove(CONTINUE_NAVIGATION_BUTTON)
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testStateFragment_lessonProgressOn_tabletPortrait_indicatorShowsFirstOfFive() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // On a tablet in portrait the indicator is unchanged: the first card is the first of five
+      // checkpoints, so it's shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testStateFragment_lessonProgressOn_tabletLandscape_indicatorShowsFirstOfFive() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // On a tablet in landscape the indicator is unchanged: the first card is the first of five
+      // checkpoints, so it's shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_rtlLayout_indicatorIsLaidOutRightToLeft() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      // The custom view mirrors its drawing so progress fills from the right when its layout
+      // direction resolves to RTL (see LessonProgressIndicatorView.onDraw). Verify the indicator
+      // adopts the RTL layout direction it inherits -- the condition that mirror keys off.
+      scenario.onActivity { activity ->
+        val indicator = activity.findViewById<View>(R.id.lesson_progress_indicator)
+        assertThat(indicator.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+      }
     }
   }
 
