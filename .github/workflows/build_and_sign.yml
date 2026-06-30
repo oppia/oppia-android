@@ -43,9 +43,10 @@ jobs:
       contents: read
     steps:
       - name: Validate inputs
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
+          SOURCE_REF: ${{ github.event.inputs.source_ref }}
         run: |
-          FLAVOR="${{ github.event.inputs.flavor }}"
-          SOURCE_REF="${{ github.event.inputs.source_ref }}"
 
           # Flavor is enforced by the 'choice' type above, but we re-validate here so that
           # future workflow_call usages (e.g. auto_release_alpha.yml) also get this check.
@@ -63,13 +64,14 @@ jobs:
 
           echo "Input validation passed: flavor=$FLAVOR, source_ref=$SOURCE_REF"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
+          persist-credentials: false
           ref: ${{ github.event.inputs.source_ref }}
           fetch-depth: 0
 
       - name: Set up Bazel
-        uses: bazel-contrib/setup-bazel@0.19.0
+        uses: bazel-contrib/setup-bazel@8cb04a772ab4c1eb984e9c1b493a182e96c5e425 # 0.19.0
         with:
           bazelisk-cache: true
 
@@ -77,13 +79,13 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Authenticate to GCP via Workload Identity Federation
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
 
       # Obtain an OAuth2 access token for the WIF-impersonated service account.
       # sign_release_binary reads this from the GCP_ACCESS_TOKEN environment variable
