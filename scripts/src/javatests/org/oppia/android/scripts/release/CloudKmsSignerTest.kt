@@ -71,10 +71,11 @@ class CloudKmsSignerTest {
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
     // jarsigner "fails" (exitCode = 1) so the test throws before cert verification is reached.
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
+    assertThat(exception).hasMessageThat().contains("exit code 1")
     assertThat(capturedArgs).contains("-storetype")
     assertThat(capturedArgs).contains("GOOGLECLOUD")
   }
@@ -91,10 +92,11 @@ class CloudKmsSignerTest {
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
+    assertThat(exception).hasMessageThat().contains("exit code 1")
     assertThat(capturedArgs).contains("-providerClass")
     assertThat(capturedArgs).contains("net.jsign.jca.JsignJcaProvider")
   }
@@ -111,10 +113,11 @@ class CloudKmsSignerTest {
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
+    assertThat(exception).hasMessageThat().contains("exit code 1")
     assertThat(capturedArgs).contains("-providerArg")
     assertThat(capturedArgs).contains(expectedKeyRingPath)
   }
@@ -131,10 +134,11 @@ class CloudKmsSignerTest {
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
+    assertThat(exception).hasMessageThat().contains("exit code 1")
     // The last argument to jarsigner must be the full KMS resource name (the key alias), not an
     // arbitrary name like "oppia-signer".
     assertThat(capturedArgs.last()).isEqualTo(kmsKeyResourceName)
@@ -152,10 +156,11 @@ class CloudKmsSignerTest {
     val cert = tempFolder.newFile("cert.pem").toPath()
     val output = tempFolder.root.toPath().resolve("signed.aab")
 
-    assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
+    assertThat(exception).hasMessageThat().contains("exit code 1")
     assertThat(capturedArgs).contains("-storepass")
     assertThat(capturedArgs).contains("my-gcp-token")
   }
