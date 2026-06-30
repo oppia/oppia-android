@@ -34,6 +34,7 @@ class SignReleaseBinaryTest {
   fun tearDown() {
     System.setOut(originalOut)
     System.setErr(originalErr)
+    envReader = System::getenv
   }
 
   @Test
@@ -139,13 +140,15 @@ class SignReleaseBinaryTest {
   fun testMain_validKmsResourceNameWithNumericVersion_gcpTokenMissingNotFormatError() {
     // Verify the regex accepts version numbers > 1 (regression check). Format validation passes,
     // then execution proceeds to the GCP_ACCESS_TOKEN check — which throws since Bazel's sandbox
-    // doesn't set that variable.
+    // doesn't set that variable. The output path must have a parent directory for the parentDir
+    // check (which precedes the token check) to pass.
     val certFile = tempFolder.newFile("cert.pem")
+    val outputAab = File(tempFolder.root, "signed.aab")
     val kmsKeyV3 =
       "projects/my-proj/locations/global/keyRings/ring/cryptoKeys/key/cryptoKeyVersions/3"
 
     val exception = assertThrows<IllegalStateException> {
-      main("nonexistent.aab", kmsKeyV3, certFile.absolutePath, "output.aab")
+      main("nonexistent.aab", kmsKeyV3, certFile.absolutePath, outputAab.absolutePath)
     }
 
     // Error is about the missing token, NOT about the KMS key format.
@@ -290,6 +293,41 @@ class SignReleaseBinaryTest {
 
     assertThat(outputAab.absolutePath).isNotEqualTo(unsignedAab.absolutePath)
     assertThat(outputAab.exists()).isTrue()
+  }
+
+  @Test
+  fun testMain_outputPathWithNoParentDirectory_throwsIllegalArgument() {
+    // A bare filename like "output.aab" has no parent component. The script should reject it
+    // with a clear error before attempting to read the GCP_ACCESS_TOKEN.
+    val certFile = tempFolder.newFile("cert.pem")
+
+    val exception = assertThrows<IllegalArgumentException> {
+      main("input.aab", VALID_KMS_KEY, certFile.absolutePath, "output.aab")
+    }
+
+    assertThat(exception).hasMessageThat().contains("parent directory")
+    assertThat(exception).hasMessageThat().doesNotContain("GCP_ACCESS_TOKEN")
+  }
+
+  @Test
+  fun testMain_allValidationsPass_printsSigningHeader() {
+    // Inject a fake token so execution reaches the println block. jarsigner is not available in
+    // the Bazel sandbox, so the process will throw after printing the header — that's expected.
+    envReader = { "fake-gcp-token" }
+    val certFile = tempFolder.newFile("cert.pem")
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val outputAab = File(tempFolder.root, "signed.aab")
+
+    assertThrows<Exception> {
+      main(
+        unsignedAab.absolutePath,
+        VALID_KMS_KEY,
+        certFile.absolutePath,
+        outputAab.absolutePath
+      )
+    }
+
+    assertThat(outContent.toString()).contains("=== Sign Release Binary via Cloud KMS ===")
   }
 
   private companion object {

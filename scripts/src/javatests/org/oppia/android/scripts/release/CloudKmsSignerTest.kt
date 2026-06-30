@@ -43,6 +43,7 @@ class CloudKmsSignerTest {
   @Test
   fun testSign_withNonExistentAabPath_throwsIllegalStateWithAabPath() {
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = unusedCommandExecutor
@@ -62,6 +63,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithGoogleCloudStoretype() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -84,6 +86,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithJsignProviderClass() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -105,6 +108,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithKeyRingPathAsProviderArg() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -126,6 +130,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithFullKmsResourceNameAsAlias() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -148,6 +153,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithAccessTokenAsStorePass() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "my-gcp-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -168,6 +174,7 @@ class CloudKmsSignerTest {
   @Test
   fun testSign_withJarsignerFailure_throwsWithExitCode() {
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 2, mutableListOf())
@@ -186,6 +193,7 @@ class CloudKmsSignerTest {
   @Test
   fun testSign_withJarsignerFailure_errorMessageContainsJarsignerStderr() {
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, mutableListOf())
@@ -204,6 +212,7 @@ class CloudKmsSignerTest {
   @Test
   fun testSign_withValidAab_copiesAabToOutputPathBeforeJarsignerCheck() {
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, mutableListOf())
@@ -226,6 +235,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesCommandNamedJarsigner() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -245,6 +255,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithNoneKeystore() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -265,6 +276,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithSha256SignatureAlgorithm() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -285,6 +297,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithSha256DigestAlgorithm() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -305,6 +318,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithCertChainPath() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -325,6 +339,7 @@ class CloudKmsSignerTest {
   fun testSign_withValidAab_invokesJarsignerWithSignedJarOutputPath() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 1, capturedArgs)
@@ -347,6 +362,7 @@ class CloudKmsSignerTest {
     // An empty cert file causes the CertificateFactory to fail, which confirms that
     // the code path past the exitCode check (lines 85+) is reached.
     val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = "fake-token",
       commandExecutor = capturingExecutorReturning(exitCode = 0, mutableListOf())
@@ -361,6 +377,26 @@ class CloudKmsSignerTest {
     }
 
     assertThat(exception).hasMessageThat().doesNotContain("exit code")
+  }
+
+  @Test
+  fun testSign_withOutputInNonExistentSubdirectory_throwsWithDirectoryPath() {
+    val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = unusedCommandExecutor
+    )
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val cert = tempFolder.newFile("cert.pem").toPath()
+    // "nonexistent-dir/signed.aab" — parent is tempFolder.root/nonexistent-dir which does not exist.
+    val output = tempFolder.root.toPath().resolve("nonexistent-dir").resolve("signed.aab")
+
+    val exception = assertThrows<IllegalStateException> {
+      signer.sign(unsignedAab.toPath(), cert, output)
+    }
+
+    assertThat(exception).hasMessageThat().contains("nonexistent-dir")
   }
 
   // ---------------------------------------------------------------------------

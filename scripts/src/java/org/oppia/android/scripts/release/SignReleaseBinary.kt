@@ -55,7 +55,13 @@ fun main(vararg args: String) {
       "/cryptoKeyVersions/<ver>. Got: $kmsKeyResourceName"
   }
 
-  val gcpAccessToken = checkNotNull(System.getenv(GCP_ACCESS_TOKEN_ENV)) {
+  val outputParentDir = outputAabPath.parent?.toFile()
+  require(outputParentDir != null) {
+    "output_aab_path '${args[3]}' must include a parent directory. " +
+      "Provide an absolute path or a relative path with at least one directory component."
+  }
+
+  val gcpAccessToken = checkNotNull(envReader(GCP_ACCESS_TOKEN_ENV)) {
     "Missing required environment variable '$GCP_ACCESS_TOKEN_ENV'. " +
       "Save the output of 'gcloud auth print-access-token' to the '$GCP_ACCESS_TOKEN_ENV' " +
       "environment variable before invoking this script."
@@ -71,6 +77,7 @@ fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val signer = CloudKmsSigner(
+      workingDir = outputParentDir,
       kmsKeyResourceName = kmsKeyResourceName,
       gcpAccessToken = gcpAccessToken,
       commandExecutor = commandExecutor
@@ -97,6 +104,12 @@ fun signAndValidate(
   signer.sign(unsignedAabPath, certPemPath, outputAabPath)
   println("Signing complete. Signed AAB: ${outputAabPath.toAbsolutePath()}")
 }
+
+/**
+ * Reads a value from the process environment. Exposed as `internal` so tests can substitute a
+ * fake reader without needing to mutate the real environment map.
+ */
+internal var envReader: (String) -> String? = System::getenv
 
 /**
  * Regex matching a full Cloud KMS asymmetric key version resource name.

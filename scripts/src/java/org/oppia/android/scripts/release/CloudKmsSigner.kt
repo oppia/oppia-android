@@ -3,6 +3,7 @@ package org.oppia.android.scripts.release
 import net.jsign.jca.JsignJcaProvider
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
+import java.io.File
 import java.io.FileInputStream
 import java.nio.file.Path
 import java.security.cert.CertificateFactory
@@ -23,12 +24,18 @@ import java.util.jar.JarFile
  * `-providerPath`, together with `-providerClass net.jsign.jca.JsignJcaProvider` and
  * `-providerArg <keyRingPath>`.
  *
+ * @param workingDir base directory used to resolve a relative [outputPath] passed to [sign] into a
+ *     fully absolute path via `File(workingDir, outputPath).absoluteFile.normalize()`. When the
+ *     caller always provides an absolute [outputPath] (as the release workflow does), this value
+ *     has no effect on path resolution; it serves as a fallback root so the class never relies on
+ *     the process's implicit CWD (which can be Bazel's ephemeral execroot under `bazel run`).
  * @param kmsKeyResourceName full Cloud KMS key resource name, e.g.
  *     `projects/<id>/locations/global/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>`
  * @param gcpAccessToken GCP OAuth2 access token obtained via Workload Identity Federation
  * @param commandExecutor used to invoke `jarsigner` as a subprocess
  */
 class CloudKmsSigner(
+  private val workingDir: File,
   private val kmsKeyResourceName: String,
   private val gcpAccessToken: String,
   private val commandExecutor: CommandExecutor
@@ -36,6 +43,20 @@ class CloudKmsSigner(
   override fun sign(unsignedAabPath: Path, certPath: Path, outputPath: Path) {
     check(unsignedAabPath.toFile().exists()) {
       "Unsigned AAB not found at: ${unsignedAabPath.toAbsolutePath()}"
+    }
+
+    // Resolve the output path against the provided working directory so the resulting path is
+    // always fully absolute and normalised. This mirrors the pattern used elsewhere in the
+    // codebase: File(repoRoot, relativePathStr).absoluteFile.normalize(). When outputPath is
+    // already absolute, Java's File constructor ignores workingDir, so the call is a no-op for
+    // the production case where CI always supplies absolute paths.
+    val absoluteOutputFile = File(workingDir, outputPath.toString()).absoluteFile.normalize()
+    val parentDir = checkNotNull(absoluteOutputFile.parentFile) {
+      "Output file has no parent directory: $absoluteOutputFile"
+    }.also {
+      check(it.isDirectory) {
+        "Expected parent directory of output file to exist as a directory: $it"
+      }
     }
 
     // Extract key ring path from the full key resource name.
@@ -54,10 +75,10 @@ class CloudKmsSigner(
     // Copy unsigned AAB to output path, then sign in-place with jarsigner.
     // jarsigner is used instead of ApkSigner because AABs use JAR signing (v1 scheme), and
     // ApkSigner is designed for APK v2/v3 signing schemes.
-    unsignedAabPath.toFile().copyTo(outputPath.toFile(), overwrite = true)
+    unsignedAabPath.toFile().copyTo(absoluteOutputFile, overwrite = true)
 
     val jarsignerResult: CommandResult = commandExecutor.executeCommand(
-      workingDir = outputPath.toFile().parentFile,
+      workingDir = parentDir,
       command = "jarsigner",
       "-keystore", "NONE",
       "-storetype", "GOOGLECLOUD",
@@ -68,8 +89,8 @@ class CloudKmsSigner(
       "-providerPath", jsignJarPath,
       "-providerClass", "net.jsign.jca.JsignJcaProvider",
       "-providerArg", keyRingPath,
-      "-signedjar", outputPath.toAbsolutePath().toString(),
-      outputPath.toAbsolutePath().toString(),
+      "-signedjar", absoluteOutputFile.absolutePath,
+      absoluteOutputFile.absolutePath,
       // The alias for GOOGLECLOUD keystores is the full KMS key resource name.
       kmsKeyResourceName
     )
@@ -85,7 +106,7 @@ class CloudKmsSigner(
     val certificate = FileInputStream(certPath.toFile()).use { stream ->
       certFactory.generateCertificate(stream) as X509Certificate
     }
-    verifyCertificateMatch(outputPath, certificate)
+    verifyCertificateMatch(absoluteOutputFile.toPath(), certificate)
   }
 
   /**
@@ -122,3 +143,4 @@ class CloudKmsSigner(
     private val certFactory by lazy { CertificateFactory.getInstance("X.509") }
   }
 }
+
