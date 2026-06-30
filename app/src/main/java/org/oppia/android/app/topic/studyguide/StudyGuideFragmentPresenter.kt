@@ -155,7 +155,10 @@ class StudyGuideFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    /** Represents the view type for a study guide section's heading. */
     SECTION_HEADING,
+
+    /** Represents the view type for a study guide section's content. */
     SECTION_CONTENT
   }
 

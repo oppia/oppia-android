@@ -124,19 +124,30 @@ class StudyGuideViewModel private constructor(
     } ?: ""
   }
 
-  /** Returns the content description of the specified subtopic. */
-  fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String {
-    return when (subtopicLiveData) {
-      previousSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
+  /** Returns the content description for the given [navigationCardType]'s [subtopic]. */
+  fun computeContentDescriptionText(
+    navigationCardType: NavigationCardType,
+    subtopic: EphemeralSubtopic?
+  ): String {
+    return when (navigationCardType) {
+      NavigationCardType.PREVIOUS -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
         R.string.previous_subtopic_talkback_text,
-        computeTitleText(previousSubtopicLiveData.value)
+        computeTitleText(subtopic)
       )
-      nextSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
+      NavigationCardType.NEXT -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
         R.string.next_subtopic_talkback_text,
-        computeTitleText(nextSubtopicLiveData.value)
+        computeTitleText(subtopic)
       )
-      else -> ""
     }
+  }
+
+  /** The type of adjacent-subtopic navigation card a content description corresponds to. */
+  enum class NavigationCardType {
+    /** The card that navigates to the previous subtopic. */
+    PREVIOUS,
+
+    /** The card that navigates to the next subtopic. */
+    NEXT
   }
 
   private fun processPreviousSubtopicData(

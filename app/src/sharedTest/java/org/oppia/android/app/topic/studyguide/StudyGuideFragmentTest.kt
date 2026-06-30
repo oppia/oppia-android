@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.studyguide
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -10,7 +11,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
@@ -18,16 +19,13 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -45,6 +43,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -58,16 +62,16 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.StudyGuideActivityParams
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.StudyGuideFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
-import org.oppia.android.app.topic.studyguide.StudyGuideActivity.Companion.createStudyGuideActivityIntent
+import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.topic.RouteToStudyGuideListener
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -111,6 +115,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -156,6 +161,9 @@ class StudyGuideFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
   @Inject
   lateinit var context: Context
 
@@ -168,12 +176,26 @@ class StudyGuideFragmentTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
+  @Mock
+  lateinit var mockRouteToStudyGuideListener: RouteToStudyGuideListener
+
+  @Captor
+  lateinit var profileIdCaptor: ArgumentCaptor<LegacyProfileId>
+
+  @Captor
+  lateinit var topicIdCaptor: ArgumentCaptor<String>
+
+  @Captor
+  lateinit var subtopicIndexCaptor: ArgumentCaptor<Int>
+
+  @Captor
+  lateinit var subtopicListSizeCaptor: ArgumentCaptor<Int>
+
   private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
-    Intents.init()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -182,21 +204,15 @@ class StudyGuideFragmentTest {
   fun tearDown() {
     TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   @Test
   fun testStudyGuide_testTopicSubtopic1_firstSectionHeadingIsDisplayed() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -209,16 +225,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_testTopicSubtopic1_firstSectionContentIsDisplayed() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -231,16 +242,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_testTopicSubtopic1_secondSectionHeadingIsDisplayed() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -253,16 +259,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_testTopicSubtopic1_secondSectionShowsConceptCardLinkText() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -275,16 +276,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_clickConceptCardLinkText_opensConceptCard() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -303,19 +299,14 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_previousSubtopicTitle_whatIsAFraction_hasCorrectContentDescription() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_prev_subtopic_title)).check(
         matches(
-          ViewMatchers.withContentDescription(
+          withContentDescription(
             "The previous subtopic is What is a Fraction?"
           )
         )
@@ -325,19 +316,14 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_nextSubtopicTitle_mixedNumbers_hasCorrectContentDescription() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_next_subtopic_title)).check(
         matches(
-          ViewMatchers.withContentDescription(
+          withContentDescription(
             "The next subtopic is Mixed Numbers"
           )
         )
@@ -347,16 +333,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_fractionSubtopicId1_onlyNextNavCardIsVisible() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_next_navigation_card))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
       onView(withId(R.id.study_guide_previous_navigation_card))
@@ -366,16 +347,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_fractionSubtopicId2_previousAndNextNavCardsAreVisible() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_previous_navigation_card))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
       onView(withId(R.id.study_guide_next_navigation_card))
@@ -385,16 +361,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_fractionSubtopicId4_onlyPreviousNavCardIsVisible() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_3,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_3,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_previous_navigation_card))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
       onView(withId(R.id.study_guide_next_navigation_card))
@@ -405,71 +376,62 @@ class StudyGuideFragmentTest {
   // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
-  fun testStudyGuide_fracSubtopicId2_clickNextNavCard_opensStudyGuideActivity() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+  fun testStudyGuide_fracSubtopicId2_clickNextNavCard_routesToNextSubtopic() {
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_navigation_card_container)).perform(nestedScrollTo())
       onView(withId(R.id.study_guide_next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val args = StudyGuideActivityParams.newBuilder().apply {
-        this.subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_2
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
-      }.build()
-      intended(hasComponent(StudyGuideActivity::class.java.name))
-      intended(hasProtoExtra(StudyGuideActivity.STUDY_GUIDE_ACTIVITY_PARAMS_KEY, args))
+      verify(mockRouteToStudyGuideListener).routeToStudyGuide(
+        capture(profileIdCaptor),
+        capture(topicIdCaptor),
+        capture(subtopicIndexCaptor),
+        capture(subtopicListSizeCaptor)
+      )
+      assertThat(profileIdCaptor.value).isEqualTo(profileId)
+      assertThat(topicIdCaptor.value).isEqualTo(FRACTIONS_TOPIC_ID)
+      assertThat(subtopicIndexCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_TOPIC_ID_2)
+      assertThat(subtopicListSizeCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_LIST_SIZE)
     }
   }
 
   // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
-  fun testStudyGuide_fracSubtopicId2_clickPrevNavCard_opensStudyGuideActivity() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+  fun testStudyGuide_fracSubtopicId2_clickPrevNavCard_routesToPreviousSubtopic() {
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
       onView(withId(R.id.study_guide_navigation_card_container)).perform(nestedScrollTo())
       onView(withId(R.id.study_guide_previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val args = StudyGuideActivityParams.newBuilder().apply {
-        this.subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_0
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
-      }.build()
-      intended(hasComponent(StudyGuideActivity::class.java.name))
-      intended(hasProtoExtra(StudyGuideActivity.STUDY_GUIDE_ACTIVITY_PARAMS_KEY, args))
+      verify(mockRouteToStudyGuideListener).routeToStudyGuide(
+        capture(profileIdCaptor),
+        capture(topicIdCaptor),
+        capture(subtopicIndexCaptor),
+        capture(subtopicListSizeCaptor)
+      )
+      assertThat(profileIdCaptor.value).isEqualTo(profileId)
+      assertThat(topicIdCaptor.value).isEqualTo(FRACTIONS_TOPIC_ID)
+      assertThat(subtopicIndexCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_TOPIC_ID_0)
+      assertThat(subtopicListSizeCaptor.value).isEqualTo(FRACTIONS_SUBTOPIC_LIST_SIZE)
     }
   }
 
   @Test
   fun testStudyGuide_oneSubtopicInList_continueStudyingTextIsNotShown() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(withId(R.id.study_guide_continue_studying_text_view))
         .check(matches(not(isDisplayed())))
     }
@@ -477,37 +439,26 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      onActivity { activity ->
         val studyGuideFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.study_guide_fragment_placeholder) as StudyGuideFragment
-        val arguments = checkNotNull(studyGuideFragment.arguments) {
-          "Expected arguments to be passed to StudyGuideFragment"
-        }
-        val args = arguments.getProto(
+          .findFragmentById(R.id.test_fragment_placeholder) as StudyGuideFragment
+        val arguments = studyGuideFragment.arguments
+        assertThat(arguments).isNotNull()
+        val args = arguments!!.getProto(
           StudyGuideFragment.STUDY_GUIDE_FRAGMENT_ARGUMENTS_KEY,
           StudyGuideFragmentArguments.getDefaultInstance()
         )
-        val receivedTopicId = checkNotNull(args?.topicId) {
-          "Expected topicId to be passed to StudyGuideFragment"
-        }
-        val receivedSubtopicId = args?.subtopicIndex ?: -1
         val receivedProfileId = arguments.extractCurrentUserProfileId()
-        val receivedSubtopicListSize = args?.subtopicListSize ?: -1
 
-        assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
-        assertThat(receivedSubtopicId).isEqualTo(1)
+        assertThat(args.topicId).isEqualTo(TEST_TOPIC_ID_0)
+        assertThat(args.subtopicIndex).isEqualTo(1)
         assertThat(receivedProfileId).isEqualTo(profileId)
-        assertThat(receivedSubtopicListSize).isEqualTo(1)
+        assertThat(args.subtopicListSize).isEqualTo(1)
       }
     }
   }
@@ -517,16 +468,11 @@ class StudyGuideFragmentTest {
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStudyGuide_englishContentLang_sectionContentIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -542,17 +488,11 @@ class StudyGuideFragmentTest {
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStudyGuide_englishContentLang_switchToArabic_sectionContentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       // Switch to Arabic after opening the page. It should update the section content with the
       // correct translation shown.
       updateContentLanguage(profileId, OppiaLanguage.ARABIC)
@@ -573,16 +513,11 @@ class StudyGuideFragmentTest {
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStudyGuide_withArabicContentLang_sectionContentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.study_guide_section_recycler_view,
@@ -595,17 +530,11 @@ class StudyGuideFragmentTest {
 
   @Test
   fun testStudyGuide_configurationChange_sectionContentIsDisplayed() {
-    launch<StudyGuideActivity>(
-      createStudyGuideActivityIntent(
-        context,
-        profileId,
-        TEST_TOPIC_ID_0,
-        subtopicIndex = 1,
-        subtopicListSize = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
@@ -627,6 +556,34 @@ class StudyGuideFragmentTest {
       }.build()
     )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun runWithLaunchedActivityAndAddedFragment(
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int,
+    testBlock: ActivityScenario<StudyGuideFragmentTestActivity>.() -> Unit
+  ) {
+    val fragment = StudyGuideFragment.newInstance(
+      topicId,
+      subtopicIndex,
+      profileId,
+      subtopicListSize,
+      ReadingTextSize.MEDIUM_TEXT_SIZE
+    )
+    val intent = Intent(context, StudyGuideFragmentTestActivity::class.java)
+    TestActivity.registerWithPackageManager<StudyGuideFragmentTestActivity>(context)
+    ActivityScenario.launch<StudyGuideFragmentTestActivity>(intent).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.mockRouteToStudyGuideListener = mockRouteToStudyGuideListener
+        activity.setContentView(R.layout.test_activity)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.test_fragment_placeholder, fragment)
+          .commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   /** See the version in StateFragmentTest for documentation details. */
@@ -708,6 +665,31 @@ class StudyGuideFragmentTest {
       i++
     }
     return parent as View
+  }
+
+  /**
+   * A test-only [TestActivity] that hosts [StudyGuideFragment] in isolation so the fragment can be
+   * validated without depending on [StudyGuideActivity]. It records study guide navigation requests
+   * via [mockRouteToStudyGuideListener].
+   */
+  class StudyGuideFragmentTestActivity :
+    TestActivity(),
+    RouteToStudyGuideListener {
+    lateinit var mockRouteToStudyGuideListener: RouteToStudyGuideListener
+
+    override fun routeToStudyGuide(
+      profileId: LegacyProfileId,
+      topicId: String,
+      subtopicIndex: Int,
+      subtopicListSize: Int
+    ) {
+      mockRouteToStudyGuideListener.routeToStudyGuide(
+        profileId,
+        topicId,
+        subtopicIndex,
+        subtopicListSize
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

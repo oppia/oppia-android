@@ -6,6 +6,8 @@
 
     <import type="android.view.View" />
 
+    <import type="org.oppia.android.app.topic.studyguide.StudyGuideViewModel.NavigationCardType" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.studyguide.StudyGuideViewModel" />
@@ -102,7 +104,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/component_color_shared_revision_card_text_background_color"
-              android:contentDescription="@{viewModel.computeContentDescriptionText(viewModel.previousSubtopicLiveData)}"
+              android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.PREVIOUS, viewModel.previousSubtopicLiveData)}"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
               android:minWidth="144dp"
@@ -160,7 +162,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/component_color_shared_revision_card_text_background_color"
-              android:contentDescription="@{viewModel.computeContentDescriptionText(viewModel.nextSubtopicLiveData)}"
+              android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.NEXT, viewModel.nextSubtopicLiveData)}"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
               android:minWidth="144dp"
