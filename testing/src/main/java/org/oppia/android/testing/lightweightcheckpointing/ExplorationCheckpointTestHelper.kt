@@ -112,6 +112,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Saves a checkpoint for topic Fractions, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun saveCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
     saveCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
@@ -136,6 +142,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Saves a checkpoint for topic Fractions, story 0, exploration 1.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun saveCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
     saveCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
@@ -161,6 +173,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun updateCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
     updateCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
@@ -186,6 +204,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 1.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun updateCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
     updateCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
@@ -213,6 +237,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Saves a checkpoint for topic Ratios, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun saveCheckpointForRatiosStory0Exploration0(
     profileId: LegacyProfileId,
     version: Int,
@@ -241,6 +271,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
   }
 
+  /**
+   * Updates the saved checkpoint for Ratios, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
   fun updateCheckpointForRatiosStory0Exploration0(profileId: LegacyProfileId, version: Int) {
     updateCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
@@ -276,6 +312,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     }
   }
 
+  /**
+   * Verifies that progress for the given [explorationId] exists for the specified [profileId].
+   *
+   * @param profileId the legacy profile ID for which the save operation has to be verified
+   * @param explorationId the ID of the exploration for which checkpoint was saved
+   */
   fun verifyExplorationProgressIsSaved(profileId: LegacyProfileId, explorationId: String) {
     verifyExplorationProgressIsSaved(profileId.toProfileIdPreservingZero(), explorationId)
   }
@@ -312,6 +354,12 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     }
   }
 
+  /**
+   * Verifies that no progress for the given [explorationId] exists for the specified [profileId].
+   *
+   * @param profileId the legacy profile ID for which the delete operation has to be verified
+   * @param explorationId the ID of the exploration for which checkpoint should be deleted
+   */
   fun verifyExplorationProgressIsDeleted(profileId: LegacyProfileId, explorationId: String) {
     verifyExplorationProgressIsDeleted(profileId.toProfileIdPreservingZero(), explorationId)
   }
