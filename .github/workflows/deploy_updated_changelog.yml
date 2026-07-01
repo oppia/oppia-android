@@ -3,7 +3,8 @@
 # on Play Console and upload any differences.
 #
 # Triggered automatically on push to develop (detects the modified changelog file and extracts
-# version and optional flavor) or manually via workflow_dispatch (coordinator provides both).
+# the version from the filename) or manually via workflow_dispatch (coordinator provides version
+# and optional flavor).
 #
 # Flavor-specific changelogs (e.g. config/changelogs/0.17_alpha.md) take precedence over the
 # generic changelog (e.g. config/changelogs/0.17.md) for the matching flavor's track.
@@ -33,43 +34,44 @@ on:
       flavor:
         description: "Optional app flavor for a flavor-specific changelog (leave blank to use the generic changelog for all flavors)."
         required: false
-        type: choice
-        options:
-          - ""
-          - alpha
-          - beta
-          - ga
+        # type: string allows empty/blank values; type: choice with an empty option is invalid in
+        # workflow_dispatch and causes the workflow to fail at parse time.
+        type: string
 
 concurrency:
   # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
-  group: deploy-updated-changelog-${{ github.ref }}
+  # The group is intentionally not scoped to github.ref so that push and dispatch triggers
+  # across different refs are also serialized — Play Console edits must be globally exclusive.
+  group: deploy-updated-changelog
   cancel-in-progress: false
 
 jobs:
 
-  # Runs only on push: uses the GitHub API to list files changed in this commit and extracts the
-  # changelog version and optional flavor from the filename (e.g. 0.17_alpha.md → 0.17, alpha).
+  # Runs only on push: uses the GitHub API to list files changed across the entire push (not just
+  # the head commit) and extracts the changelog version from the filename (e.g. 0.17_alpha.md →
+  # 0.17). The compare endpoint covers all commits in the push so a changelog changed in an
+  # earlier commit is still detected even if the head commit did not touch it.
   # No checkout required since the GitHub API provides the changed-file list directly.
   resolve_push:
     name: Resolve version (push)
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     outputs:
       version: ${{ steps.detect.outputs.version }}
-      flavor: ${{ steps.detect.outputs.flavor }}
     steps:
       - name: Detect changed changelog file
         id: detect
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          CHANGED=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}" \
+          CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
             --jq '[.files[].filename | select(test("^config/changelogs/.+\\.md$"))] | first // ""')
 
           if [[ -z "$CHANGED" ]]; then
             echo "No changelog files changed in this push — skipping upload."
             echo "version=" >> $GITHUB_OUTPUT
-            echo "flavor=" >> $GITHUB_OUTPUT
             exit 0
           fi
 
@@ -84,24 +86,26 @@ jobs:
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "flavor=$FLAVOR" >> $GITHUB_OUTPUT
           echo "Detected: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
-  # Runs only on workflow_dispatch: reads and validates the version and flavor provided by the
-  # release coordinator.
+  # Runs only on workflow_dispatch: reads and validates the version provided by the release
+  # coordinator. Inputs are passed via env vars to prevent shell injection before the regex guard.
   resolve_dispatch:
     name: Resolve version (dispatch)
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    permissions: {}
     outputs:
       version: ${{ steps.resolve.outputs.version }}
-      flavor: ${{ steps.resolve.outputs.flavor }}
     steps:
       - name: Validate and resolve inputs
         id: resolve
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_FLAVOR: ${{ github.event.inputs.flavor }}
         run: |
-          VERSION="${{ github.event.inputs.version }}"
-          FLAVOR="${{ github.event.inputs.flavor }}"
+          VERSION="$INPUT_VERSION"
+          FLAVOR="$INPUT_FLAVOR"
 
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Invalid version '$VERSION'. Must be in major.minor format (e.g. '0.17')."
@@ -109,7 +113,6 @@ jobs:
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "flavor=$FLAVOR" >> $GITHUB_OUTPUT
           echo "Resolved: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
   # Uploads the changelog to Play Console. Runs only when a version was successfully resolved by
@@ -170,9 +173,11 @@ jobs:
       #   3. Uploads updated notes to any track where a changelog file is found.
       # The script skips tracks with no matching changelog file silently.
       - name: Upload updated changelog to Play Console
+        env:
+          PLAY_CONSOLE_PACKAGE_NAME: ${{ secrets.PLAY_CONSOLE_PACKAGE_NAME }}
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
             "$GITHUB_WORKSPACE" \
-            "${{ secrets.PLAY_CONSOLE_PACKAGE_NAME }}" \
-            "${{ env.VERSION }}" \
+            "$PLAY_CONSOLE_PACKAGE_NAME" \
+            "$VERSION" \
             "$(gcloud auth print-access-token)"
