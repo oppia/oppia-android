@@ -46,11 +46,12 @@ class CloudKmsSigner(
     }
 
     // Resolve the output path against the provided working directory so the resulting path is
-    // always fully absolute and normalised. This mirrors the pattern used elsewhere in the
-    // codebase: File(repoRoot, relativePathStr).absoluteFile.normalize(). When outputPath is
-    // already absolute, Java's File constructor ignores workingDir, so the call is a no-op for
-    // the production case where CI always supplies absolute paths.
-    val absoluteOutputFile = File(workingDir, outputPath.toString()).absoluteFile.normalize()
+    // always fully absolute and normalised. Path.resolve(Path) is used (rather than
+    // File(workingDir, child)) because it has an unambiguous contract: if outputPath is already
+    // absolute it is returned unchanged; if relative it is resolved against workingDir. This
+    // mirrors the codebase pattern: File(repoRoot, relativePathStr).absoluteFile.normalize(),
+    // while being robust to cases where outputPath starts out as an absolute Path.
+    val absoluteOutputFile = workingDir.toPath().resolve(outputPath).normalize().toFile()
     val parentDir = checkNotNull(absoluteOutputFile.parentFile) {
       "Output file has no parent directory: $absoluteOutputFile"
     }.also {
