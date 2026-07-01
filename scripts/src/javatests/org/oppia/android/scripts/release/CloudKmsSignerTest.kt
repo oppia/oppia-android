@@ -8,6 +8,11 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
 import org.oppia.android.testing.assertThrows
 import java.io.File
+import java.io.FileInputStream
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import java.util.jar.JarEntry
+import java.util.jar.JarOutputStream
 
 /**
  * Tests for [CloudKmsSigner].
@@ -399,9 +404,74 @@ class CloudKmsSignerTest {
     assertThat(exception).hasMessageThat().contains("nonexistent-dir")
   }
 
+  @Test
+  fun testSign_withJarsignerSuccessAndSignedJarWithNoRsaEntries_throwsCertMismatch() {
+    // After jarsigner exits 0 the code tries to verify the cert embedded in the signed AAB.
+    // A JAR with no META-INF/*.RSA entries means no signer certs → CertificateMismatchException.
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    val certFile = tempFolder.newFile("cert.pem").also { it.writeText(TEST_CERT_PEM) }
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+    // The "unsigned" AAB is a valid JAR so JarFile can open it after the copy-to-output step.
+    createMinimalJar(unsignedAab)
+
+    val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 0, mutableListOf())
+    )
+
+    val exception = assertThrows<CertificateMismatchException> {
+      signer.sign(unsignedAab.toPath(), certFile.toPath(), output)
+    }
+
+    assertThat(exception).hasMessageThat().contains("META-INF")
+  }
+
+  @Test
+  fun testSign_withJarsignerSuccessAndJarWithMatchingCert_completesNormally() {
+    // When the JAR's META-INF/CERT.RSA DER bytes match the expected cert, sign() should return
+    // normally without throwing CertificateMismatchException.
+    val certFile = tempFolder.newFile("cert.pem").also { it.writeText(TEST_CERT_PEM) }
+    val certDer = FileInputStream(certFile).use { stream ->
+      (CertificateFactory.getInstance("X.509").generateCertificate(stream) as X509Certificate)
+        .encoded
+    }
+    val unsignedAab = tempFolder.newFile("unsigned.aab")
+    createMinimalJar(unsignedAab, certDer)
+    val output = tempFolder.root.toPath().resolve("signed.aab")
+
+    val signer = CloudKmsSigner(
+      workingDir = tempFolder.root,
+      kmsKeyResourceName = kmsKeyResourceName,
+      gcpAccessToken = "fake-token",
+      commandExecutor = capturingExecutorReturning(exitCode = 0, mutableListOf())
+    )
+
+    // Should complete without any exception — cert in the JAR matches expected cert.
+    signer.sign(unsignedAab.toPath(), certFile.toPath(), output)
+  }
+
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
+
+  /**
+   * Creates a minimal valid JAR at [target]. If [rsaDerBytes] are provided they are written
+   * into a `META-INF/CERT.RSA` entry so that [verifyCertificateMatch] can find them.
+   */
+  private fun createMinimalJar(target: File, rsaDerBytes: ByteArray? = null) {
+    JarOutputStream(target.outputStream()).use { jar ->
+      jar.putNextEntry(JarEntry("META-INF/MANIFEST.MF"))
+      jar.write("Manifest-Version: 1.0\n\n".toByteArray())
+      jar.closeEntry()
+      if (rsaDerBytes != null) {
+        jar.putNextEntry(JarEntry("META-INF/CERT.RSA"))
+        jar.write(rsaDerBytes)
+        jar.closeEntry()
+      }
+    }
+  }
 
   /** Returns a [CommandExecutor] that records all arguments and returns [exitCode]. */
   private fun capturingExecutorReturning(
@@ -424,5 +494,25 @@ class CloudKmsSignerTest {
         command = listOf(command) + arguments
       )
     }
+  }
+
+  private companion object {
+    /**
+     * A self-signed RSA-1024 certificate generated solely for test coverage. Not used for any
+     * real signing — only to exercise [CloudKmsSigner.verifyCertificateMatch].
+     */
+    private const val TEST_CERT_PEM = """
+-----BEGIN CERTIFICATE-----
+MIIBrzCCARgCCQCwCsiWNlS1pjANBgkqhkiG9w0BAQsFADAcMRowGAYDVQQDDBFP
+cHBpYUNvdmVyYWdlVGVzdDAeFw0yNjA3MDEwNzMyMzFaFw0zNjA2MjgwNzMyMzFa
+MBwxGjAYBgNVBAMMEU9wcGlhQ292ZXJhZ2VUZXN0MIGfMA0GCSqGSIb3DQEBAQUA
+A4GNADCBiQKBgQDDSAJDKOtO+jxNh/OqPdXR3ZoBd7vaURWybWPjbGbedC8ZOvXO
+FCRqBYnJGA/opCYUvpGXp5HLsTrAr24AuD0hE3NGwlXHGlRHkyw7c+HoCwGtPxj6
+rQPVFqXtViHzUTOLDmXLpGGtJWAdVulHjvM0Z4/MQK1HiTTtH4XAFWzzuQIDAQAB
+MA0GCSqGSIb3DQEBCwUAA4GBAFjnaHIeKwE0hdnYXkMZ6XLyiswXz3YzdRKNxxkd
+4KWVsHH7VoHROQthWzomP+vTFGS/v8zJVze7sd32hpNpoM7bOL8eJOsnjvO/V0yx
+Xls9D5O3WF+U63uJGkg8CofYcvP2EIP+0WA1ewjKV79Dig+iUwiaLmBS51QPlBFa
+zGZr
+-----END CERTIFICATE-----"""
   }
 }
