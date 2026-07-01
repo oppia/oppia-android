@@ -170,7 +170,7 @@ private val AAB_FILENAME_REGEX =
  *
  * @return parsed [AabProperties], or `null` if the filename does not match the expected format
  */
-fun parseAabFilename(aabName: String): AabProperties? {
+private fun parseAabFilename(aabName: String): AabProperties? {
   val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
   val (major, minor, rc, flavorId) = match.destructured
   val flavor = AppFlavor.fromId(flavorId) ?: return null
@@ -196,7 +196,7 @@ fun parseAabFilename(aabName: String): AabProperties? {
  * Fails if the changelog text exceeds [MAX_RELEASE_NOTES_LENGTH] characters.
  * Returns an empty map if no file is found.
  */
-fun extractReleaseNotes(
+private fun extractReleaseNotes(
   workspaceRoot: String,
   majorMinorVersion: String,
   flavorId: String

@@ -10,8 +10,9 @@ import java.io.File
 /**
  * Tests for the upload_binary_to_play_console script.
  *
- * Tests cover argument validation, AAB filename parsing, the full upload flow, and changelog
- * resolution. The full upload flow is exercised via [runUpload] with a [FakePlayConsoleClient].
+ * Tests cover argument validation, the full upload flow, and changelog resolution. The full
+ * upload flow is exercised via [runUpload] with a [FakePlayConsoleClient]. Changelog content
+ * behaviour (flavor resolution, length enforcement) is tested through [runUpload] as well.
  * Individual precondition checkers are tested in their own dedicated test files:
  * [VersionInversionCheckerTest], [PendingReleaseCheckerTest], [ChangelogExistenceCheckerTest].
  */
@@ -251,58 +252,6 @@ class UploadBinaryToPlayConsoleTest {
     assertThat(fake.uploadedBundles).hasSize(1)
   }
 
-  // ---------------------------------------------------------------------------
-  // parseAabFilename
-  // ---------------------------------------------------------------------------
-
-  @Test
-  fun testParseAabFilename_validAlphaAab_returnsCorrectProperties() {
-    val props = parseAabFilename("oppia-android-0.17-rc01-alpha-e740815230.aab")
-
-    assertThat(props).isNotNull()
-    assertThat(props!!.majorVersion).isEqualTo(0)
-    assertThat(props.minorVersion).isEqualTo(17)
-    assertThat(props.rcNumber).isEqualTo("01")
-    assertThat(props.flavor).isEqualTo(AppFlavor.ALPHA)
-    assertThat(props.versionName).isEqualTo("0.17-rc01-alpha")
-    assertThat(props.majorMinorVersion).isEqualTo("0.17")
-  }
-
-  @Test
-  fun testParseAabFilename_validBetaAab_returnsCorrectFlavor() {
-    val props = parseAabFilename("oppia-android-0.18-rc02-beta-abc1234567.aab")
-
-    assertThat(props!!.flavor).isEqualTo(AppFlavor.BETA)
-    assertThat(props.majorMinorVersion).isEqualTo("0.18")
-  }
-
-  @Test
-  fun testParseAabFilename_validGaAab_returnsCorrectFlavor() {
-    val props = parseAabFilename("oppia-android-1.0-rc01-ga-deadbeef12.aab")
-
-    assertThat(props!!.flavor).isEqualTo(AppFlavor.GA)
-    assertThat(props.majorVersion).isEqualTo(1)
-    assertThat(props.minorVersion).isEqualTo(0)
-  }
-
-  @Test
-  fun testParseAabFilename_invalidFlavor_returnsNull() {
-    assertThat(parseAabFilename("oppia-android-0.17-rc01-gamma-e740815230.aab")).isNull()
-  }
-
-  @Test
-  fun testParseAabFilename_missingHash_returnsNull() {
-    assertThat(parseAabFilename("oppia-android-0.17-rc01-alpha.aab")).isNull()
-  }
-
-  @Test
-  fun testParseAabFilename_missingPrefix_returnsNull() {
-    assertThat(parseAabFilename("app-0.17-rc01-alpha-e740815230.aab")).isNull()
-  }
-
-  // ---------------------------------------------------------------------------
-  // runUpload — full upload flow tests (using FakePlayConsoleClient)
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testRunUpload_noReleasesOnTrack_completesFullUploadFlow() {
@@ -501,65 +450,85 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // extractReleaseNotes — changelog file resolution
+  // runUpload — changelog content behaviour
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testExtractReleaseNotes_defaultFileExists_returnsEnUsContent() {
-    createChangelog("0.17", content = "Bug fixes.")
-
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
-
-    assertThat(notes["en-US"]).isEqualTo("Bug fixes.")
-  }
-
-  @Test
-  fun testExtractReleaseNotes_flavorSpecificFileExists_usesFlavorFileOverDefault() {
+  fun testRunUpload_flavorSpecificChangelogExists_usesFlavorFileOverDefault() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Default notes.")
     createChangelog("0.17", flavor = "alpha", content = "Alpha-specific notes.")
 
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = alphaProperties(),
+      track = "alpha",
+      rolloutFraction = 1000
+    )
 
-    assertThat(notes["en-US"]).isEqualTo("Alpha-specific notes.")
+    assertThat(fake.trackUpdates.first().releaseNotes["en-US"]).isEqualTo("Alpha-specific notes.")
   }
 
   @Test
-  fun testExtractReleaseNotes_noFileExists_returnsEmptyMap() {
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
-
-    assertThat(notes).isEmpty()
-  }
-
-  @Test
-  fun testExtractReleaseNotes_emptyDefaultFile_returnsEmptyMap() {
+  fun testRunUpload_emptyChangelog_setsEmptyReleaseNotes() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "")
 
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = alphaProperties(),
+      track = "alpha",
+      rolloutFraction = 1000
+    )
 
-    assertThat(notes).isEmpty()
+    assertThat(fake.trackUpdates.first().releaseNotes).isEmpty()
   }
 
   @Test
-  fun testExtractReleaseNotes_contentExceeds500Chars_throwsWithCharCount() {
-    val longContent = "a".repeat(600)
-    createChangelog("0.17", content = longContent)
+  fun testRunUpload_changelogExceeds500Chars_throwsBeforeSetTrackRelease() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "a".repeat(600))
 
     val exception = assertThrows<IllegalStateException>() {
-      extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+      runUpload(
+        client = fake,
+        workspaceRoot = tempFolder.root.absolutePath,
+        aabPath = aab.absolutePath,
+        properties = alphaProperties(),
+        track = "alpha",
+        rolloutFraction = 1000
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("500")
     assertThat(exception).hasMessageThat().contains("600")
+    // Track release must NOT have been set.
+    assertThat(fake.trackUpdates).isEmpty()
   }
 
   @Test
-  fun testExtractReleaseNotes_contentExactly500Chars_passes() {
-    val exactContent = "b".repeat(500)
-    createChangelog("0.17", content = exactContent)
+  fun testRunUpload_changelogExactly500Chars_completesUploadWithFullNotes() {
+    val fake = FakePlayConsoleClient()
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "b".repeat(500))
 
-    val notes = extractReleaseNotes(tempFolder.root.absolutePath, "0.17", "alpha")
+    runUpload(
+      client = fake,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = alphaProperties(),
+      track = "alpha",
+      rolloutFraction = 1000
+    )
 
-    assertThat(notes["en-US"]).hasLength(500)
+    assertThat(fake.trackUpdates.first().releaseNotes["en-US"]).hasLength(500)
   }
 
   // ---------------------------------------------------------------------------
