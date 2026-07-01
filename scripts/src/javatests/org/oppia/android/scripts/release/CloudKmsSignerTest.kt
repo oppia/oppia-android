@@ -1,4 +1,3 @@
-
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
