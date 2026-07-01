@@ -173,11 +173,9 @@ jobs:
       #   3. Uploads updated notes to any track where a changelog file is found.
       # The script skips tracks with no matching changelog file silently.
       - name: Upload updated changelog to Play Console
-        env:
-          PLAY_CONSOLE_PACKAGE_NAME: ${{ secrets.PLAY_CONSOLE_PACKAGE_NAME }}
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
             "$GITHUB_WORKSPACE" \
-            "$PLAY_CONSOLE_PACKAGE_NAME" \
+            "org.oppia.android" \
             "$VERSION" \
             "$(gcloud auth print-access-token)"
