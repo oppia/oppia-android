@@ -106,10 +106,10 @@ fun signAndValidate(
 }
 
 /**
- * Reads a value from the process environment. Exposed as `internal` so tests can substitute a
+ * Reads a value from the process environment. Exposed so tests can substitute a
  * fake reader without needing to mutate the real environment map.
  */
-internal var envReader: (String) -> String? = System::getenv
+var envReader: (String) -> String? = System::getenv
 
 /**
  * Regex matching a full Cloud KMS asymmetric key version resource name.
