@@ -71,6 +71,7 @@ kt_jvm_library(
         ":changelog_existence_checker",
         ":google_play_console_client",
         ":pending_release_checker",
+        ":play_console_client",
         ":version_inversion_checker",
     ],
 )

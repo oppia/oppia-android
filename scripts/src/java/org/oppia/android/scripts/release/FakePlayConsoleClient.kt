@@ -45,7 +45,10 @@ class FakePlayConsoleClient : PlayConsoleClient {
     track: String
   ): List<PlayConsoleClient.TrackRelease> {
     maybeFailCall("getTrackReleases")
-    return trackReleasesMap[track] ?: emptyList()
+    // Sort by descending version code to honour the PlayConsoleClient contract, which documents
+    // that releases are returned "sorted by version code descending".
+    return (trackReleasesMap[track] ?: emptyList())
+      .sortedByDescending { release -> release.versionCodes.maxOrNull() ?: 0L }
   }
 
   override fun uploadAab(packageName: String, editId: String, aabPath: String): Long {
