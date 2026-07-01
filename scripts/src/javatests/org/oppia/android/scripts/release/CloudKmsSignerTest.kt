@@ -502,7 +502,8 @@ class CloudKmsSignerTest {
      * A self-signed RSA-1024 certificate generated solely for test coverage. Not used for any
      * real signing — only to exercise [CloudKmsSigner.verifyCertificateMatch].
      */
-    private val TEST_CERT_PEM = """
+    private val TEST_CERT_PEM =
+      """
       -----BEGIN CERTIFICATE-----
       MIIBrzCCARgCCQCwCsiWNlS1pjANBgkqhkiG9w0BAQsFADAcMRowGAYDVQQDDBFP
       cHBpYUNvdmVyYWdlVGVzdDAeFw0yNjA3MDEwNzMyMzFaFw0zNjA2MjgwNzMyMzFa
@@ -515,7 +516,6 @@ class CloudKmsSignerTest {
       Xls9D5O3WF+U63uJGkg8CofYcvP2EIP+0WA1ewjKV79Dig+iUwiaLmBS51QPlBFa
       zGZr
       -----END CERTIFICATE-----
-    """.trimIndent()
+      """.trimIndent()
   }
-
 }
