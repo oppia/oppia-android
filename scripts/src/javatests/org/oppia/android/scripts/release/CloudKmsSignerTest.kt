@@ -1,3 +1,4 @@
+
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
@@ -501,18 +502,20 @@ class CloudKmsSignerTest {
      * A self-signed RSA-1024 certificate generated solely for test coverage. Not used for any
      * real signing — only to exercise [CloudKmsSigner.verifyCertificateMatch].
      */
-    private const val TEST_CERT_PEM = """
------BEGIN CERTIFICATE-----
-MIIBrzCCARgCCQCwCsiWNlS1pjANBgkqhkiG9w0BAQsFADAcMRowGAYDVQQDDBFP
-cHBpYUNvdmVyYWdlVGVzdDAeFw0yNjA3MDEwNzMyMzFaFw0zNjA2MjgwNzMyMzFa
-MBwxGjAYBgNVBAMMEU9wcGlhQ292ZXJhZ2VUZXN0MIGfMA0GCSqGSIb3DQEBAQUA
-A4GNADCBiQKBgQDDSAJDKOtO+jxNh/OqPdXR3ZoBd7vaURWybWPjbGbedC8ZOvXO
-FCRqBYnJGA/opCYUvpGXp5HLsTrAr24AuD0hE3NGwlXHGlRHkyw7c+HoCwGtPxj6
-rQPVFqXtViHzUTOLDmXLpGGtJWAdVulHjvM0Z4/MQK1HiTTtH4XAFWzzuQIDAQAB
-MA0GCSqGSIb3DQEBCwUAA4GBAFjnaHIeKwE0hdnYXkMZ6XLyiswXz3YzdRKNxxkd
-4KWVsHH7VoHROQthWzomP+vTFGS/v8zJVze7sd32hpNpoM7bOL8eJOsnjvO/V0yx
-Xls9D5O3WF+U63uJGkg8CofYcvP2EIP+0WA1ewjKV79Dig+iUwiaLmBS51QPlBFa
-zGZr
------END CERTIFICATE-----"""
+    private val TEST_CERT_PEM = """
+      -----BEGIN CERTIFICATE-----
+      MIIBrzCCARgCCQCwCsiWNlS1pjANBgkqhkiG9w0BAQsFADAcMRowGAYDVQQDDBFP
+      cHBpYUNvdmVyYWdlVGVzdDAeFw0yNjA3MDEwNzMyMzFaFw0zNjA2MjgwNzMyMzFa
+      MBwxGjAYBgNVBAMMEU9wcGlhQ292ZXJhZ2VUZXN0MIGfMA0GCSqGSIb3DQEBAQUA
+      A4GNADCBiQKBgQDDSAJDKOtO+jxNh/OqPdXR3ZoBd7vaURWybWPjbGbedC8ZOvXO
+      FCRqBYnJGA/opCYUvpGXp5HLsTrAr24AuD0hE3NGwlXHGlRHkyw7c+HoCwGtPxj6
+      rQPVFqXtViHzUTOLDmXLpGGtJWAdVulHjvM0Z4/MQK1HiTTtH4XAFWzzuQIDAQAB
+      MA0GCSqGSIb3DQEBCwUAA4GBAFjnaHIeKwE0hdnYXkMZ6XLyiswXz3YzdRKNxxkd
+      4KWVsHH7VoHROQthWzomP+vTFGS/v8zJVze7sd32hpNpoM7bOL8eJOsnjvO/V0yx
+      Xls9D5O3WF+U63uJGkg8CofYcvP2EIP+0WA1ewjKV79Dig+iUwiaLmBS51QPlBFa
+      zGZr
+      -----END CERTIFICATE-----
+    """.trimIndent()
   }
+
 }
