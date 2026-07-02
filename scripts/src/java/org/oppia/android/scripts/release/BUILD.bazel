@@ -29,6 +29,10 @@ kt_jvm_library(
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:com_squareup_retrofit2_converter-moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)
+
+kt_jvm_library(
     name = "cloud_signer",
     srcs = [
         "CloudKmsSigner.kt",
@@ -47,6 +51,14 @@ kt_jvm_library(
     srcs = ["FakePlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [":play_console_client"],
+)
+
+kt_jvm_library(
+    name = "fake_cloud_signer",
+    testonly = True,
+    srcs = ["FakeCloudSigner.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":cloud_signer"],
 )
 
 kt_jvm_library(
@@ -81,11 +93,7 @@ kt_jvm_library(
         ":pending_release_checker",
         ":play_console_client",
         ":version_inversion_checker",
-    name = "fake_cloud_signer",
-    testonly = True,
-    srcs = ["FakeCloudSigner.kt"],
-    visibility = ["//scripts:oppia_script_test_visibility"],
-    deps = [":cloud_signer"],
+    ],
 )
 
 kt_jvm_library(

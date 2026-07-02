@@ -56,6 +56,10 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
+kt_jvm_test(
     name = "CloudKmsSignerTest",
     srcs = ["CloudKmsSignerTest.kt"],
     deps = [
@@ -75,6 +79,10 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "FakeCloudSignerTest",
     srcs = ["FakeCloudSignerTest.kt"],
     deps = [
@@ -94,6 +102,10 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
+kt_jvm_test(
     name = "SignReleaseBinaryTest",
     srcs = ["SignReleaseBinaryTest.kt"],
     deps = [
