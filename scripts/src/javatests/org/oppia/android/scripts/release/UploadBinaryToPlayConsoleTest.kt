@@ -307,7 +307,8 @@ class UploadBinaryToPlayConsoleTest {
   fun testRunUpload_pendingReleaseOnTrack_throwsBeforeUpload() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
-    val draftTrack = """{"releases":[{"versionCodes":["299"],"status":"draft"}]}"""
+    val draftTrack =
+      """{"releases":[{"versionCodes":["299"],"status":"draft"}]}"""
     enqueuePendingCheck(draftTrack)
 
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
@@ -335,7 +336,8 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     // Beta has vc=500; uploading vc=1 to alpha violates the alpha > beta constraint.
-    val betaWithHighVc = """{"releases":[{"versionCodes":["500"],"status":"completed"}]}"""
+    val betaWithHighVc =
+      """{"releases":[{"versionCodes":["500"],"status":"completed"}]}"""
     enqueuePendingCheck()
     enqueueUpload(versionCode = 1L)
     enqueueVersionCheck(betaBody = betaWithHighVc)
@@ -497,7 +499,10 @@ class UploadBinaryToPlayConsoleTest {
    * Enqueues the 2-response sequence for [PendingReleaseChecker]: a createEdit response followed
    * by a getTrack response with [trackBody].
    */
-  private fun enqueuePendingCheck(trackBody: String = """{"releases":[]}""") {
+  private fun enqueuePendingCheck(
+    trackBody: String =
+      """{"releases":[]}"""
+  ) {
     server.enqueue(MockResponse().setBody("""{"id":"e-pc"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(trackBody).setResponseCode(200))
   }
@@ -520,9 +525,12 @@ class UploadBinaryToPlayConsoleTest {
    * for the alpha, beta, and production tracks in that order.
    */
   private fun enqueueVersionCheck(
-    alphaBody: String = """{"releases":[]}""",
-    betaBody: String = """{"releases":[]}""",
-    productionBody: String = """{"releases":[]}"""
+    alphaBody: String =
+      """{"releases":[]}""",
+    betaBody: String =
+      """{"releases":[]}""",
+    productionBody: String =
+      """{"releases":[]}"""
   ) {
     server.enqueue(MockResponse().setBody("""{"id":"e-vi-a"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(alphaBody).setResponseCode(200))
@@ -542,10 +550,14 @@ class UploadBinaryToPlayConsoleTest {
    */
   private fun enqueueSuccessfulUpload(
     versionCode: Long = 1L,
-    pendingBody: String = """{"releases":[]}""",
-    alphaBody: String = """{"releases":[]}""",
-    betaBody: String = """{"releases":[]}""",
-    productionBody: String = """{"releases":[]}"""
+    pendingBody: String =
+      """{"releases":[]}""",
+    alphaBody: String =
+      """{"releases":[]}""",
+    betaBody: String =
+      """{"releases":[]}""",
+    productionBody: String =
+      """{"releases":[]}"""
   ) {
     enqueuePendingCheck(pendingBody)
     enqueueUpload(versionCode)
