@@ -221,3 +221,15 @@ annotation class EnableEdgeToEdge
  */
 @Qualifier
 annotation class LoadLessonProtosFromAssets
+
+/**
+ * Qualifier for the feature flag that controls whether to enable lesson progress or not.
+ */
+@Qualifier
+annotation class EnableLessonProgressVisualization
+
+/**
+ * Qualifier for the feature flag that controls whether to enable study guides or not.
+ */
+@Qualifier
+annotation class EnableStudyGuides

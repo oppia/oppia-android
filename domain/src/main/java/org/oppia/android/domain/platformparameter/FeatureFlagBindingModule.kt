@@ -11,12 +11,14 @@ import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLes
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.LoadImagesFromAssets
@@ -124,6 +126,16 @@ class FeatureFlagBindingModule {
   ): PlatformParameterValue<Boolean> {
     return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_IMAGES_FROM_ASSETS)
   }
+
+  @Provides
+  @EnableLessonProgressVisualization
+  fun provideEnableLessonProgressVisualization(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.LESSON_PROGRESS_VISUALIZATION)
+
+  @Provides
+  @EnableStudyGuides
+  fun provideEnableStudyGuides(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.STUDY_GUIDES)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

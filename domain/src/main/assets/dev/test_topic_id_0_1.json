@@ -49,10 +49,100 @@
             "translation": {"translation" : "<p> Maelezo ya subtopic iko hapa. Kumbuka kuwa hii ni aya nyingi kuiga yaliyomo zaidi ya chini. <opdia-noninteractive-skillreview skill_id-na-thamani = \"& amp; quot; test_skill_id_0 & amp; quot;\" maandishi-na-thamani = \"& amp; quot; test_skill_id_0 kadi ya dhana & amp; quot;\" quot; test_skill_id_1 & amp; quot; \" maandishi-na-thamani = \"& amp; quot; test_skill_id_1 kadi ya dhana & amp; quot;\">"},
             "needs_update": false
           }
+        },
+        "section_heading_0": {
+          "pt": {
+            "data_format": "unicode",
+            "translation": {"translation" : "O que é um subtópico de teste?"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "unicode",
+            "translation": {"translation" : "ما هو الموضوع الفرعي التجريبي؟"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "unicode",
+            "translation": {"translation" : "Mada ndogo ya jaribio ni nini?"},
+            "needs_update": false
+          }
+        },
+        "section_content_1": {
+          "pt": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>Descrição do subtópico está aqui. Esta é a primeira seção de um guia de estudo de amostra com conteúdo fictício não relacionado a nada em particular.</p>"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>وصف الموضوع الفرعي هنا. هذا هو القسم الأول من دليل دراسة نموذجي بمحتوى وهمي لا يرتبط بأي شيء على وجه الخصوص.</p>"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>Maelezo ya mada ndogo yako hapa. Hii ni sehemu ya kwanza ya mwongozo wa kujifunza wa mfano wenye maudhui ya mfano yasiyohusiana na kitu chochote hasa.</p>"},
+            "needs_update": false
+          }
+        },
+        "section_heading_2": {
+          "pt": {
+            "data_format": "unicode",
+            "translation": {"translation" : "Revise as habilidades relacionadas"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "unicode",
+            "translation": {"translation" : "راجع المهارات ذات الصلة"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "unicode",
+            "translation": {"translation" : "Pitia ujuzi unaohusiana"},
+            "needs_update": false
+          }
+        },
+        "section_content_3": {
+          "pt": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>Esta seção revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cartão de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>يراجع هذا القسم مهارة ذات صلة: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;بطاقة مفهوم test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "needs_update": false
+          },
+          "sw": {
+            "data_format": "html",
+            "translation": {"translation" : "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "needs_update": false
+          }
         }
       }
     }
   },
+  "sections": [
+    {
+      "heading": {
+        "content_id": "section_heading_0",
+        "unicode_str": "What is a test subtopic?"
+      },
+      "content": {
+        "content_id": "section_content_1",
+        "html": "<p>Description of subtopic is here. This is the first section of a sample study guide with dummy content not related to anything in particular.</p>"
+      }
+    },
+    {
+      "heading": {
+        "content_id": "section_heading_2",
+        "unicode_str": "Review related skills"
+      },
+      "content": {
+        "content_id": "section_content_3",
+        "html": "<p>This section reviews a related skill: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+      }
+    }
+  ],
   "subtopic_title": "Test subtopic",
   "next_subtopic_dict": null
 }

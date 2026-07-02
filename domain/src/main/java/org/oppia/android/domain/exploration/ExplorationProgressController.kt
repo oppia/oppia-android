@@ -48,6 +48,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
@@ -127,7 +128,9 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
-  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+  @EnableLessonProgressVisualization
+  private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -516,7 +519,7 @@ class ExplorationProgressController @Inject constructor(
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(),
+                  ExplorationProgress(oppiaLogger),
                   message.isRestart,
                   message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
@@ -1063,7 +1066,11 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeCurrentFlashbackEphemeralState(
     stateName: String
   ): EphemeralState {
-    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    // A flashback doesn't move the learner's position in the deck, so the attached progress (when
+    // the indicator is enabled) keeps showing their unchanged pre-flashback count.
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(
+      stateName, retrieveTotalCheckpointCount()
+    )
     return ephemeralState.toBuilder().apply {
       flashbackState = true
     }.build()
@@ -1145,8 +1152,28 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      isContinueButtonAnimationSeen
+      isContinueButtonAnimationSeen,
+      totalCheckpointCount = retrieveTotalCheckpointCount()
     )
+
+  /**
+   * Returns the total checkpoint count for attaching checkpoint progress to outgoing
+   * [EphemeralState]s.
+   *
+   * The total follows the learner's realized path through the deck, then adds the shortest
+   * remaining path from the state they're currently viewing. This keeps branching paths from
+   * showing impossible counts like a completed value greater than the total.
+   */
+  private fun ControllerState.retrieveTotalCheckpointCount(): Int? {
+    if (!enableLessonProgressVisualization.value) return null
+    val completedCheckpointCount =
+      explorationProgress.stateDeck.computeCompletedCheckpointCount()
+    val remainingCheckpointCount =
+      explorationProgress.stateGraph.computeMinimumCheckpointCount(
+        explorationProgress.stateDeck.getCurrentState().name
+      ) ?: return null
+    return completedCheckpointCount + remainingCheckpointCount
+  }
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {

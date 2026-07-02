@@ -2240,6 +2240,7 @@ class EventBundleCreatorTest {
   @Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity")
   @Iteration("topic", "name=TOPIC_ACTIVITY", "expNameStr=topic_activity")
   @Iteration("revisionCard", "name=REVISION_CARD_ACTIVITY", "expNameStr=revision_card_activity")
+  @Iteration("studyGuide", "name=STUDY_GUIDE_ACTIVITY", "expNameStr=study_guide_activity")
   @Iteration(
     "questionPlayer",
     "name=QUESTION_PLAYER_ACTIVITY",

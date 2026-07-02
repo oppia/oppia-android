@@ -185,6 +185,11 @@ class QuestionPlayerActivityTest {
 
   @Before
   fun setUp() {
+    // Enable lesson progress visualization so the indicator test below proves the question player
+    // excludes the indicator even when the feature is ON (the flag has no effect on the question
+    // player otherwise). It must be forced before the component is built -- the override freezes
+    // once platform parameters load -- and is cleared in tearDown().
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -204,6 +209,7 @@ class QuestionPlayerActivityTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -582,6 +588,18 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @Test
+  fun testQuestionPlayer_lessonProgressOn_indicatorIsNotShown() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // The lesson progress indicator is exploration-only: the question player never assembles it
+      // and the domain never attaches checkpoint progress to practice questions, so it must never
+      // appear during a question session even with the feature enabled (see setUp). Scrolling to the
+      // bottom and checking the indicator is absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.question_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
+    }
+  }
+
   private fun verifyFontSizeMatches(fontSize: Float) {
     scrollToViewType(CONTENT)
     onView(
@@ -706,6 +724,24 @@ class QuestionPlayerActivityTest {
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.question_recycler_view)).perform(
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToEndOfRecyclerView(recyclerViewId: Int) {
+    onView(withId(recyclerViewId)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String = "scroll to the last item of the RecyclerView"
+
+        override fun perform(uiController: UiController, view: View) {
+          val recyclerView = view as RecyclerView
+          val itemCount = recyclerView.adapter?.itemCount ?: 0
+          if (itemCount > 0) recyclerView.scrollToPosition(itemCount - 1)
+          uiController.loopMainThreadUntilIdle()
+        }
+      }
     )
     testCoroutineDispatchers.runCurrent()
   }

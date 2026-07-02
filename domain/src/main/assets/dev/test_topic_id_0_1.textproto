@@ -53,6 +53,98 @@ written_translation {
     }
   }
 }
+written_translation {
+  key: "section_heading_0"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "O que \303\251 um subt\303\263pico de teste?"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "\331\205\330\247 \331\207\331\210 \330\247\331\204\331\205\331\210\330\266\331\210\330\271 \330\247\331\204\331\201\330\261\330\271\331\212 \330\247\331\204\330\252\330\254\330\261\331\212\330\250\331\212\330\237"
+      }
+    }
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "Mada ndogo ya jaribio ni nini?"
+      }
+    }
+  }
+}
+written_translation {
+  key: "section_content_1"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "<p>Descri\303\247\303\243o do subt\303\263pico est\303\241 aqui. Esta \303\251 a primeira se\303\247\303\243o de um guia de estudo de amostra com conte\303\272do fict\303\255cio n\303\243o relacionado a nada em particular.</p>"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "<p>\331\210\330\265\331\201 \330\247\331\204\331\205\331\210\330\266\331\210\330\271 \330\247\331\204\331\201\330\261\330\271\331\212 \331\207\331\206\330\247. \331\207\330\260\330\247 \331\207\331\210 \330\247\331\204\331\202\330\263\331\205 \330\247\331\204\330\243\331\210\331\204 \331\205\331\206 \330\257\331\204\331\212\331\204 \330\257\330\261\330\247\330\263\330\251 \331\206\331\205\331\210\330\260\330\254\331\212 \330\250\331\205\330\255\330\252\331\210\331\211 \331\210\331\207\331\205\331\212 \331\204\330\247 \331\212\330\261\330\252\330\250\330\267 \330\250\330\243\331\212 \330\264\331\212\330\241 \330\271\331\204\331\211 \331\210\330\254\331\207 \330\247\331\204\330\256\330\265\331\210\330\265.</p>"
+      }
+    }
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "<p>Maelezo ya mada ndogo yako hapa. Hii ni sehemu ya kwanza ya mwongozo wa kujifunza wa mfano wenye maudhui ya mfano yasiyohusiana na kitu chochote hasa.</p>"
+      }
+    }
+  }
+}
+written_translation {
+  key: "section_heading_2"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "Revise as habilidades relacionadas"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "\330\261\330\247\330\254\330\271 \330\247\331\204\331\205\331\207\330\247\330\261\330\247\330\252 \330\260\330\247\330\252 \330\247\331\204\330\265\331\204\330\251"
+      }
+    }
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "Pitia ujuzi unaohusiana"
+      }
+    }
+  }
+}
+written_translation {
+  key: "section_content_3"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "<p>Esta se\303\247\303\243o revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cart\303\243o de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "<p>\331\212\330\261\330\247\330\254\330\271 \331\207\330\260\330\247 \330\247\331\204\331\202\330\263\331\205 \331\205\331\207\330\247\330\261\330\251 \330\260\330\247\330\252 \330\265\331\204\330\251: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;\330\250\330\267\330\247\331\202\330\251 \331\205\331\201\331\207\331\210\331\205 test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+      }
+    }
+    translation_mapping {
+      key: "sw"
+      value {
+        html: "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+      }
+    }
+  }
+}
 skill_ids: "test_skill_id_0"
 skill_ids: "test_skill_id_1"
 skill_ids: "test_skill_id_2"
@@ -62,4 +154,24 @@ subtopic_thumbnail {
 title {
   html: "Test subtopic"
   content_id: "title"
+}
+sections {
+  heading {
+    unicode_str: "What is a test subtopic?"
+    content_id: "section_heading_0"
+  }
+  content {
+    html: "<p>Description of subtopic is here. This is the first section of a sample study guide with dummy content not related to anything in particular.</p>"
+    content_id: "section_content_1"
+  }
+}
+sections {
+  heading {
+    unicode_str: "Review related skills"
+    content_id: "section_heading_2"
+  }
+  content {
+    html: "<p>This section reviews a related skill: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+    content_id: "section_content_3"
+  }
 }

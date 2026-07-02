@@ -12,6 +12,7 @@ import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.EphemeralConceptCard
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralStudyGuide
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.LegacyProfileId
@@ -97,6 +98,7 @@ private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_
 private const val GET_LOCALIZABLE_STORY_PROVIDER_ID = "get_localizable_story_provider_id"
 private const val GET_CONCEPT_CARD_PROVIDER_ID = "get_concept_card_provider_id"
 private const val GET_REVISION_CARD_PROVIDER_ID = "get_revision_card_provider_id"
+private const val GET_STUDY_GUIDE_PROVIDER_ID = "get_study_guide_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -106,6 +108,7 @@ class TopicController @Inject constructor(
   private val questionRetriever: QuestionRetriever,
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
+  private val studyGuideRetriever: StudyGuideRetriever,
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets
@@ -284,6 +287,28 @@ class TopicController @Inject constructor(
         writtenTranslationContext =
           translationController.computeWrittenTranslationContext(
             revisionCard.writtenTranslationsMap, contentLocale
+          )
+      }.build()
+    }
+  }
+
+  /**
+   * Returns the [EphemeralStudyGuide] corresponding to the specified topic ID and subtopic ID, or
+   * a failed result if there is none.
+   */
+  fun getStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicId: Int
+  ): DataProvider<EphemeralStudyGuide> {
+    return translationController.getWrittenTranslationContentLocale(
+      profileId.toProfileIdPreservingZero()
+    ).transform(GET_STUDY_GUIDE_PROVIDER_ID) { contentLocale ->
+      EphemeralStudyGuide.newBuilder().apply {
+        studyGuide = studyGuideRetriever.loadStudyGuide(topicId, subtopicId)
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            studyGuide.writtenTranslationsMap, contentLocale
           )
       }.build()
     }

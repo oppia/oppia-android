@@ -111,6 +111,7 @@
 /testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/topic/ @oppia/android-app-infrastructure-reviewers
 
 # All app-specific shared test infrastructure.
 /testing/src/main/AndroidManifest.xml @oppia/android-frontend-reviewers

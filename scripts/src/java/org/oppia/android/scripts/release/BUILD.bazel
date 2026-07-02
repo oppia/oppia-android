@@ -1,6 +1,5 @@
 """
-Libraries for automating release operations, including uploading binaries to the Play Console
-and distributing builds via Firebase App Distribution.
+Libraries for release automation scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
@@ -30,6 +29,15 @@ kt_jvm_library(
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:com_squareup_retrofit2_converter-moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
+    name = "cloud_signer",
+    srcs = [
+        "CloudKmsSigner.kt",
+        "CloudSigner.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//third_party:net_jsign_jsign-core",
     ],
 )
 
@@ -73,5 +81,20 @@ kt_jvm_library(
         ":pending_release_checker",
         ":play_console_client",
         ":version_inversion_checker",
+    name = "fake_cloud_signer",
+    testonly = True,
+    srcs = ["FakeCloudSigner.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":cloud_signer"],
+)
+
+kt_jvm_library(
+    name = "sign_release_binary_lib",
+    srcs = ["SignReleaseBinary.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":cloud_signer",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
     ],
 )
