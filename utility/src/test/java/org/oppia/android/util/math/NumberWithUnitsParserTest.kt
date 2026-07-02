@@ -2,6 +2,7 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.NumberUnitExpression.SiPrefix
@@ -374,14 +375,7 @@ class NumberWithUnitsParserTest {
     // "N m" (space-separated) should produce the same result as "Nm" (compound).
     val spacedResult = parseNumberWithUnitsExpectingSuccess("50 N m")
     val compoundResult = parseNumberWithUnitsExpectingSuccess("50 Nm")
-    assertThat(compoundResult).apply {
-      hasRealValueThat().isEqualTo(50.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
-    assertThat(spacedResult).apply {
-      hasRealValueThat().isEqualTo(50.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
+    assertThat(spacedResult).isEqualTo(compoundResult)
   }
 
   @Test
@@ -805,28 +799,14 @@ class NumberWithUnitsParserTest {
   fun testParser_compoundUnit_wattSecond_spacedEquivalent_matchesCompound() {
     val spacedResult = parseNumberWithUnitsExpectingSuccess("5 W s")
     val compoundResult = parseNumberWithUnitsExpectingSuccess("5 Ws")
-    assertThat(spacedResult).apply {
-      hasRealValueThat().isEqualTo(5.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
-    assertThat(compoundResult).apply {
-      hasRealValueThat().isEqualTo(5.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
+    assertThat(spacedResult).isEqualTo(compoundResult)
   }
 
   @Test
   fun testParser_compoundUnit_voltAmpere_spacedEquivalent_matchesCompound() {
     val spacedResult = parseNumberWithUnitsExpectingSuccess("220 V A")
     val compoundResult = parseNumberWithUnitsExpectingSuccess("220 VA")
-    assertThat(spacedResult).apply {
-      hasRealValueThat().isEqualTo(220.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
-    assertThat(compoundResult).apply {
-      hasRealValueThat().isEqualTo(220.0)
-      hasUnitCountThat().isEqualTo(2)
-    }
+    assertThat(spacedResult).isEqualTo(compoundResult)
   }
 
   @Test
