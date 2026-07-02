@@ -28,9 +28,12 @@ import java.io.File
  *   2. track            — Play Console track: "alpha", "beta", or "production"
  *   3. access_token     — OAuth2 bearer token (passed from the workflow via gcloud)
  *   4. rollout_fraction — staged rollout as an integer [0, 1000] (e.g. 250 = 25%, 1000 = 100%)
+ *
+ * An optional 6th argument overrides the API base URL. This is used in tests to route all
+ * Play Console HTTP calls through a local [MockWebServer] instead of the real endpoint.
  */
 fun main(args: Array<String>) {
-  require(args.size == 5) {
+  require(args.size in 5..6) {
     "Usage: upload_binary_to_play_console <workspace_root> <aab_path> <track> " +
       "<access_token> <rollout_fraction>\nGot ${args.size} argument(s): ${args.toList()}"
   }
@@ -42,6 +45,7 @@ fun main(args: Array<String>) {
   val rolloutFraction = requireNotNull(args[4].toIntOrNull()) {
     "rollout_fraction must be an integer in [0, 1000] (e.g. 250 for 25%), got '${args[4]}'."
   }
+  val apiBaseUrl = args.getOrNull(5) ?: GooglePlayConsoleClient.PRODUCTION_API_BASE_URL
 
   require(track in VALID_TRACKS) {
     "track must be one of $VALID_TRACKS, got '$track'."
@@ -67,14 +71,12 @@ fun main(args: Array<String>) {
   println("  Rollout : ${rolloutFraction / 10.0}%")
   println()
 
-  val client = GooglePlayConsoleClient(accessToken)
+  val client = GooglePlayConsoleClient(accessToken, apiBaseUrl)
   runUpload(client, workspaceRoot, aabPath, properties, track, rolloutFraction)
 }
 
 /**
  * Executes the full upload workflow after authentication.
- *
- * Extracted to allow unit tests to inject a [PlayConsoleClient] fake, bypassing token setup.
  *
  * @param client the [PlayConsoleClient] used for all Play Console API calls
  * @param workspaceRoot absolute path to the repository root (for changelog lookups)
@@ -83,7 +85,7 @@ fun main(args: Array<String>) {
  * @param track the Play Console track ("alpha", "beta", or "production")
  * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
-fun runUpload(
+private fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
