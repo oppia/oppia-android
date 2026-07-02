@@ -123,6 +123,7 @@ class VersionInversionCheckerTest {
     }
     assertThat(exception).hasMessageThat().contains("alpha")
     assertThat(exception).hasMessageThat().contains("200")
+    assertThat(exception).hasMessageThat().contains("all alpha version codes")
   }
 
   // ---------------------------------------------------------------------------
@@ -158,6 +159,7 @@ class VersionInversionCheckerTest {
     }
     assertThat(exception).hasMessageThat().contains("beta")
     assertThat(exception).hasMessageThat().contains("200")
+    assertThat(exception).hasMessageThat().contains("all beta version codes")
   }
 
   @Test
@@ -171,10 +173,12 @@ class VersionInversionCheckerTest {
     }
     assertThat(exception).hasMessageThat().contains("alpha")
     assertThat(exception).hasMessageThat().contains("300")
+    assertThat(exception).hasMessageThat().contains("all alpha version codes")
   }
 
   // ---------------------------------------------------------------------------
-  // Multiple releases / multiple version codes — checks against highest
+  // Multiple releases / multiple version codes — "greater than" checks use max,
+  // "less than" checks use min (strictest bound in each direction)
   // ---------------------------------------------------------------------------
 
   @Test
@@ -201,6 +205,87 @@ class VersionInversionCheckerTest {
       checker.verify("org.oppia.android", "alpha", newVersionCode = 300L)
     }
     assertThat(exception).hasMessageThat().contains("400")
+  }
+
+  @Test
+  fun testVerify_beta_multipleVersionCodesOnAlpha_checksLowest() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(305L, 310L))
+      )
+    )
+    // 304 < 305 (min alpha) → passes
+    checker.verify("org.oppia.android", "beta", newVersionCode = 304L)
+  }
+
+  @Test
+  fun testVerify_beta_betweenAlphaVersionCodes_throws() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(305L, 310L))
+      )
+    )
+    // 307 lies between alpha's 305 and 310 — must fail (307 > min alpha = 305).
+    val exception = assertThrows<IllegalStateException>() {
+      checker.verify("org.oppia.android", "beta", newVersionCode = 307L)
+    }
+    assertThat(exception).hasMessageThat().contains("305")
+  }
+
+  @Test
+  fun testVerify_ga_multipleVersionCodesOnBeta_checksLowest() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L, 210L))
+      )
+    )
+    // 199 < 200 (min beta) → passes
+    checker.verify("org.oppia.android", "production", newVersionCode = 199L)
+  }
+
+  @Test
+  fun testVerify_ga_betweenBetaVersionCodes_throws() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L, 210L))
+      )
+    )
+    // 205 lies between beta's 200 and 210 — must fail (205 > min beta = 200).
+    val exception = assertThrows<IllegalStateException>() {
+      checker.verify("org.oppia.android", "production", newVersionCode = 205L)
+    }
+    assertThat(exception).hasMessageThat().contains("200")
+  }
+
+  @Test
+  fun testVerify_ga_multipleVersionCodesOnAlpha_checksLowest() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(305L, 310L))
+      )
+    )
+    // 304 < 305 (min alpha) → passes
+    checker.verify("org.oppia.android", "production", newVersionCode = 304L)
+  }
+
+  @Test
+  fun testVerify_ga_betweenAlphaVersionCodes_throws() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(305L, 310L))
+      )
+    )
+    // 307 lies between alpha's 305 and 310 — must fail (307 > min alpha = 305).
+    val exception = assertThrows<IllegalStateException>() {
+      checker.verify("org.oppia.android", "production", newVersionCode = 307L)
+    }
+    assertThat(exception).hasMessageThat().contains("305")
   }
 
   // ---------------------------------------------------------------------------

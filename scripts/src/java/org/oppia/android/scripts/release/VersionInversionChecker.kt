@@ -40,9 +40,10 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
     val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK)
       .flatMap { it.versionCodes }
 
-    val maxAlpha = alphaVersionCodes.maxOrNull()
     val maxBeta = betaVersionCodes.maxOrNull()
     val maxGa = gaVersionCodes.maxOrNull()
+    val minAlpha = alphaVersionCodes.minOrNull()
+    val minBeta = betaVersionCodes.minOrNull()
 
     when (targetTrack) {
       ALPHA_TRACK -> {
@@ -68,25 +69,25 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
               "$maxGa. Beta must be strictly greater than ga."
           }
         }
-        if (maxAlpha != null) {
-          check(newVersionCode < maxAlpha) {
-            "Version inversion: deploying $newVersionCode to beta but alpha has version code " +
-              "$maxAlpha. Beta must be strictly less than alpha."
+        if (minAlpha != null) {
+          check(newVersionCode < minAlpha) {
+            "Version inversion: deploying $newVersionCode to beta but alpha has a release at " +
+              "version code $minAlpha. Beta must be strictly less than all alpha version codes."
           }
         }
       }
       GA_TRACK -> {
         // GA must be strictly less than beta and alpha.
-        if (maxBeta != null) {
-          check(newVersionCode < maxBeta) {
-            "Version inversion: deploying $newVersionCode to ga but beta has version code " +
-              "$maxBeta. GA must be strictly less than beta."
+        if (minBeta != null) {
+          check(newVersionCode < minBeta) {
+            "Version inversion: deploying $newVersionCode to ga but beta has a release at " +
+              "version code $minBeta. GA must be strictly less than all beta version codes."
           }
         }
-        if (maxAlpha != null) {
-          check(newVersionCode < maxAlpha) {
-            "Version inversion: deploying $newVersionCode to ga but alpha has version code " +
-              "$maxAlpha. GA must be strictly less than alpha."
+        if (minAlpha != null) {
+          check(newVersionCode < minAlpha) {
+            "Version inversion: deploying $newVersionCode to ga but alpha has a release at " +
+              "version code $minAlpha. GA must be strictly less than all alpha version codes."
           }
         }
       }
