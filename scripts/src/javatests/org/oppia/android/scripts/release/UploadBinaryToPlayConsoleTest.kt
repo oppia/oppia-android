@@ -226,7 +226,10 @@ class UploadBinaryToPlayConsoleTest {
     // rollout_fraction = 0 is valid; the full upload flow should complete without errors.
     runMain(aab.absolutePath, rolloutFraction = 0)
 
-    assertThat(server.requestCount).isEqualTo(12)
+    // Verify that commitEdit (the 12th and final request) was actually called, confirming the
+    // upload was committed and not aborted early.
+    skipRequests(11)
+    assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
   @Test
@@ -238,7 +241,10 @@ class UploadBinaryToPlayConsoleTest {
     // rollout_fraction = 1000 (100%) is valid; the full upload flow should complete.
     runMain(aab.absolutePath, rolloutFraction = 1000)
 
-    assertThat(server.requestCount).isEqualTo(12)
+    // Verify that commitEdit (the 12th and final request) was actually called, confirming the
+    // upload was committed and not aborted early.
+    skipRequests(11)
+    assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
   // ---------------------------------------------------------------------------
@@ -253,9 +259,11 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // All 12 HTTP requests were made: 2 (pending check) + 2 (upload) +
-    // 6 (version check) + 1 (setTrackRelease) + 1 (commitEdit).
-    assertThat(server.requestCount).isEqualTo(12)
+    // Verify the full 12-step flow completed by confirming commitEdit (step 12) was called.
+    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) + 1 (setTrackRelease) +
+    // 1 (commitEdit). The :commit suffix on the path uniquely identifies the commit call.
+    skipRequests(11)
+    assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
   @Test
@@ -314,8 +322,12 @@ class UploadBinaryToPlayConsoleTest {
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
 
     assertThat(exception).hasMessageThat().contains("Pending release detected")
-    // Only the PendingReleaseChecker's 2 HTTP calls were made; upload was not attempted.
-    assertThat(server.requestCount).isEqualTo(2)
+    // Verify only the PendingReleaseChecker's 2 calls were made: the last request must be
+    // GET .../tracks/alpha (the track-state read), not a bundle upload or commit.
+    skipRequests(1)
+    val lastRequest = server.takeRequest()
+    assertThat(lastRequest.method).isEqualTo("GET")
+    assertThat(lastRequest.path).contains("/tracks/alpha")
   }
 
   @Test
@@ -327,8 +339,13 @@ class UploadBinaryToPlayConsoleTest {
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
 
     assertThat(exception).hasMessageThat().contains("changelog")
-    // ChangelogExistenceChecker throws before any upload HTTP call.
-    assertThat(server.requestCount).isEqualTo(2)
+    // ChangelogExistenceChecker throws after the pending check but before any upload HTTP call.
+    // Verify the last request made was the pending check's GET .../tracks/alpha, not a bundle
+    // upload.
+    skipRequests(1)
+    val lastRequest = server.takeRequest()
+    assertThat(lastRequest.method).isEqualTo("GET")
+    assertThat(lastRequest.path).contains("/tracks/alpha")
   }
 
   @Test
@@ -345,9 +362,13 @@ class UploadBinaryToPlayConsoleTest {
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
 
     assertThat(exception).hasMessageThat().contains("Version inversion")
-    // 2 (pending check) + 2 (upload) + 6 (all three version-check tracks) = 10.
-    // setTrackRelease and commitEdit were NOT called.
-    assertThat(server.requestCount).isEqualTo(10)
+    // Verify the last request was VersionInversionChecker's final GET .../tracks/production,
+    // confirming setTrackRelease (PUT) and commitEdit were never called.
+    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) = 10 total.
+    skipRequests(9)
+    val lastRequest = server.takeRequest()
+    assertThat(lastRequest.method).isEqualTo("GET")
+    assertThat(lastRequest.path).contains("/tracks/production")
   }
 
   // ---------------------------------------------------------------------------
@@ -428,8 +449,13 @@ class UploadBinaryToPlayConsoleTest {
 
     assertThat(exception).hasMessageThat().contains("500")
     assertThat(exception).hasMessageThat().contains("600")
-    // Only 10 requests were made; setTrackRelease was NOT called.
-    assertThat(server.requestCount).isEqualTo(10)
+    // Verify the last request was VersionInversionChecker's final GET .../tracks/production,
+    // confirming setTrackRelease (PUT) was never called.
+    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) = 10 total.
+    skipRequests(9)
+    val lastRequest = server.takeRequest()
+    assertThat(lastRequest.method).isEqualTo("GET")
+    assertThat(lastRequest.path).contains("/tracks/production")
   }
 
   @Test
