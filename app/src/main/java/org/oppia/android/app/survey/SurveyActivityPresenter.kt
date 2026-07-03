@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.SurveyActivityBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.survey.SurveyFragment.Companion.SURVEY_FRAGMENT_ARGUMENTS_KEY
 import org.oppia.android.app.ui.R
@@ -21,7 +21,7 @@ class SurveyActivityPresenter @Inject constructor(private val activity: AppCompa
   private lateinit var binding: SurveyActivityBinding
 
   fun handleOnCreate(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     explorationId: String
   ) {

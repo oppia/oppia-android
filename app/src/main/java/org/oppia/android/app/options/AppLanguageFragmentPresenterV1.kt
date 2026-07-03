@@ -7,13 +7,14 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AppLanguageFragmentBinding
 import org.oppia.android.app.databinding.databinding.AppLanguageItemBinding
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
@@ -25,7 +26,7 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var appLanguage: OppiaLanguage
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Initializes and creates the views for [AppLanguageFragment]. */
   fun handleOnCreateView(
@@ -40,7 +41,7 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
       /* attachToRoot= */ false
     )
     this.appLanguage = prefSummaryValue
-    this.profileId = ProfileId.newBuilder().apply { internalId = profileId }.build()
+    this.profileId = LegacyProfileId.newBuilder().apply { internalId = profileId }.build()
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     binding.lifecycleOwner = fragment
@@ -88,7 +89,9 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
       selectedLanguage = oppiaLanguage
     }.build()
 
-    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+    translationController.updateAppLanguage(
+      profileId.toProfileIdPreservingZero(), selection
+    ).toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> appLanguage = oppiaLanguage
         is AsyncResult.Failure -> {

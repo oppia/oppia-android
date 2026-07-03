@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -55,11 +55,11 @@ class StoryProgressControllerTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     setUpTestApplicationComponent()
   }
 
@@ -281,7 +281,7 @@ class StoryProgressControllerTest {
   }
 
   private fun retrieveChapterPlayState(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String

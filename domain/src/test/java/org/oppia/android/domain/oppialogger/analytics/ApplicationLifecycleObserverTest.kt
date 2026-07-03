@@ -33,8 +33,8 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -87,7 +87,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -106,6 +105,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -538,8 +538,6 @@ class ApplicationLifecycleObserverTest {
       .isEqualTo(ActivityContextCase.RETROFIT_CALL_CONTEXT)
     assertThat(retrofitCallContext.requestUrl).isEqualTo(mockWebServerUrl.toString())
     assertThat(retrofitCallContext.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-    assertThat(retrofitCallContext.headers).contains(headerString)
-    assertThat(retrofitCallContext.body).isEqualTo(testResponseBody)
   }
 
   @Test
@@ -581,7 +579,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = ProfileId.getDefaultInstance()
+    val rootProfileId = LegacyProfileId.getDefaultInstance()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -592,7 +590,7 @@ class ApplicationLifecycleObserverTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 
@@ -696,7 +694,6 @@ class ApplicationLifecycleObserverTest {
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

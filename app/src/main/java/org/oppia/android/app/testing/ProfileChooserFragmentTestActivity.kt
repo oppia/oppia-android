@@ -19,7 +19,7 @@ class ProfileChooserFragmentTestActivity : InjectableAutoLocalizedAppCompatActiv
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
   }
 }

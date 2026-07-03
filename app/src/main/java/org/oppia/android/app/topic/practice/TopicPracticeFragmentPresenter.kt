@@ -11,7 +11,7 @@ import org.oppia.android.app.databinding.databinding.TopicPracticeFragmentBindin
 import org.oppia.android.app.databinding.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.android.app.databinding.databinding.TopicPracticeSubtopicBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
@@ -43,7 +43,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     subtopicList: ArrayList<Int>,
     selectedSkillId: HashMap<Int, MutableList<String>>,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ): View? {
     this.topicId = topicId

@@ -9,7 +9,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.model.AdministratorControlActivityStateBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
@@ -76,7 +76,8 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val selectedProfileId =
+      intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
@@ -108,7 +109,7 @@ class AdministratorControlsActivity :
     startActivity(ProfileAndDeviceIdActivity.createIntent(this))
   }
 
-  override fun loadProfileEdit(profileId: ProfileId, profileName: String) {
+  override fun loadProfileEdit(profileId: LegacyProfileId, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
   }
@@ -121,8 +122,10 @@ class AdministratorControlsActivity :
   companion object {
 
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId?): Intent {
-
+    fun createAdministratorControlsActivityIntent(
+      context: Context,
+      profileId: LegacyProfileId?
+    ): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
       if (profileId != null) {

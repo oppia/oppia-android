@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
@@ -36,6 +37,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
@@ -98,7 +100,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logImportantEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long = oppiaClock.getCurrentTimeMs()
   ) {
     logEvent(eventContext, profileId, priority = Priority.ESSENTIAL, timestamp)
@@ -119,7 +121,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logLowPriorityEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long = oppiaClock.getCurrentTimeMs()
   ) {
     logEvent(eventContext, profileId, priority = Priority.OPTIONAL, timestamp)
@@ -127,7 +129,7 @@ class AnalyticsController @Inject constructor(
 
   private fun logEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     priority: Priority,
     timestamp: Long
   ) {
@@ -146,7 +148,7 @@ class AnalyticsController @Inject constructor(
 
   /** Returns an event log containing relevant data for event reporting. */
   private suspend fun createEventLog(
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long,
     context: EventLog.Context,
     priority: Priority
@@ -157,13 +159,16 @@ class AnalyticsController @Inject constructor(
       this.context = context
       profileId?.let { this.profileId = it }
       resolveProfileOperation(
-        profileId, translationController::getAppLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAppLanguageSelection
       )?.let { this.appLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getWrittenTranslationContentLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getWrittenTranslationContentLanguageSelection
       )?.let { this.writtenTranslationLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getAudioTranslationContentLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAudioTranslationContentLanguageSelection
       )?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
@@ -349,8 +354,6 @@ class AnalyticsController @Inject constructor(
         logLowPriorityEvent(
           oppiaLogger.createRetrofitCallContext(
             url = retrofitCallContext.requestUrl,
-            headers = retrofitCallContext.headers,
-            body = retrofitCallContext.body,
             responseCode = retrofitCallContext.responseStatusCode,
           ),
           profileId = null
@@ -369,8 +372,6 @@ class AnalyticsController @Inject constructor(
         logLowPriorityEvent(
           oppiaLogger.createRetrofitCallFailedContext(
             url = retrofitFailedCallContext.requestUrl,
-            headers = retrofitFailedCallContext.headers,
-            body = retrofitFailedCallContext.body,
             responseCode = retrofitFailedCallContext.responseStatusCode,
             errorMessage = retrofitFailedCallContext.errorMessage,
           ),
@@ -380,24 +381,24 @@ class AnalyticsController @Inject constructor(
     }
   }
 
-  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [ProfileId]. */
-  fun logAppOnboardedEvent(profileId: ProfileId?) {
+  /** Logs an [EventLog.CompleteAppOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logAppOnboardedEvent(profileId: LegacyProfileId?) {
     logLowPriorityEvent(
       oppiaLogger.createAppOnBoardingContext(),
       profileId = profileId
     )
   }
 
-  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
-  fun logProfileOnboardingStartedContext(profileId: ProfileId) {
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logProfileOnboardingStartedContext(profileId: LegacyProfileId) {
     logLowPriorityEvent(
       oppiaLogger.createProfileOnboardingStartedContext(profileId),
       profileId = profileId
     )
   }
 
-  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [ProfileId]. */
-  fun logProfileOnboardingEndedContext(profileId: ProfileId) {
+  /** Logs an [EventLog.ProfileOnboardingContext] event with the given [LegacyProfileId]. */
+  fun logProfileOnboardingEndedContext(profileId: LegacyProfileId) {
     logLowPriorityEvent(
       oppiaLogger.createProfileOnboardingEndedContext(profileId),
       profileId = profileId

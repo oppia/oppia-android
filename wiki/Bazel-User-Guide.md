@@ -3,6 +3,7 @@
 - [Overview](#overview)
 - [Installation](#installation)
   - [Building the app](#building-the-app)
+  - [Building the app offline](#building-the-app-offline)
 - [Running Tests](#running-tests)
   - [How to Obtain a Test Target](#how-to-obtain-a-test-target)
   - [Common Flags](#common-flags)
@@ -32,18 +33,18 @@ Run the following commands in your terminal. All Bazel commands must be run from
 Note that on the first run, these commands may take 10-20 minutes to complete depending on the performance of your machine. Subsequent runs will be much faster.
 
 **On SDK 29 and below, run**:
-   ```
+   ```sh
    bazel mobile-install //:oppia_dev_binary
    ```
 This will build, install and launch the app on your device.
 
 **On SDK 30 and newer, run**:
-   ```
+   ```sh
    bazel build //:oppia_dev
    ```
 followed by:
-   ```
-   adb install bazel-bin/oppia_dev_binary.apk  
+   ```sh
+   adb install bazel-bin/oppia_dev_binary.apk
    ```
 * Starting from SDK 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
 
@@ -63,13 +64,46 @@ Success
 
 Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the `mobile-install` command.
 
+### Building the app offline
+
+It's possible to pre-fetch all remote dependencies before beginning development in order to avoid needing continuous internet connectivity, though note that it may require more overall disk space than Bazel would use by default with just a direct build (since the commands below ensure _everything_ that could ever be needed in the build graph is downloaded).
+
+To enable offline build support, you need to first pre-fetch the necessary dependencies:
+
+```sh
+bazel sync
+bazel fetch //...
+```
+
+The `sync` in particular may take a few minutes due to the large Go toolchain needing to be downloaded. Once completed, these only need to be re-run if the following command ever fails (e.g. due to a version change):
+
+```sh
+bazel build --nofetch //:oppia_dev
+```
+
+(Or `test`, `run`, etc. for different targets).
+
+The `--nofetch` is necessary here to ensure that Bazel doesn't attempt to check for remote updates for unpinned dependencies (the vast majority of dependencies are pinned so it may be fine to omit this parameter but you may not benefit from the performance of not calling through to the internet).
+
+You may also share remote dependencies across multiple checkouts of the repository (e.g. if you develop in multiple source folders on the same machine) by designating a folder outside of the repository as a Bazel 'repository cache'. This is best configured in your local `~/.bazelrc` file so that it affects all builds:
+
+```
+# Use a custom repository cache to reuse remote dependencies across builds. Also, use hardlinks so that restoration is faster and doesn't duplicate disk usage.
+common --repository_cache=~/bazel-repo-cache
+common --experimental_repository_cache_hardlinks=true
+```
+
+(Set to a different directory if you don't want to use `~/bazel-repo-cache`).
+
+**Important caveat**: Using a repository cache like this will grow indefinitely because `bazel clean --expunge` won't actually affect it. You will need to manually remove the above directory periodically if it's using up too much disk space. Removing it is completely safe as it will just force Bazel to re-download what it needs on the next build, run, or test attempt. It's also expected this shouldn't grow too significantly (unlike a disk cache) since the team doesn't perform frequent third-party version updates.
+
 ## Running Tests
 
 The bazel test command is used to build and run tests in a Bazel workspace. It ensures that the specified test targets are built and executed in a sandboxed environment for reproducibility.
 
 **Syntax**
 
-```shell
+```sh
 bazel test //path/to:target
 ```
 
@@ -79,9 +113,9 @@ A test target in Bazel refers to a specific testable entity defined in a BUILD f
 To ensure you always use the correct test target, follow one of these steps:
 1. If the test file is open in Android Studio:
    * Right-click to open the context menu and select **Copy BUILD target string** as shown.
-     
+
      ![Screenshot 2025-03-18 at 22 30 22](https://github.com/user-attachments/assets/286ebcb6-4f4e-4055-b6f0-4c070b039375)
-   
+
    * Paste the target to the bazel test command, e.g. `bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest`
 
 2. If the test file is open in Android Studio, but **Copy BUILD target string** is not available in the context menu:
@@ -89,7 +123,7 @@ Sometimes, the **Copy BUILD target string** is not available in the context menu
    * In the AS sidebar, right click on the file, and select `copy path/reference`.
      or
    * Right-click on the file tab and then click `copy path/reference`.
-   * Next, select `copy path from repository root`. 
+   * Next, select `copy path from repository root`.
    * Paste the copied path to the bazel test command in the terminal and remove the `.kt` extension, e.g. `bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest`.
 
 With this syntax, Bazel implicitly converts the file path into a target if it matches a test rule in the BUILD file. If the file is not part of a test target in the BUILD file, this command may fail.
@@ -100,8 +134,8 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
    * Copy the relative path of the test file.
    * Run the following command in your terminal to get the test’s Bazel target: `bazel query relative-path-of-test-file`
    Example
-   
-   ```shell
+
+   ```sh
    bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt
    ```
    * The output will be a Bazel target that starts with //. Copy the target and remove the .kt extension.
@@ -115,21 +149,21 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
 `--runs_per_test=100` → Specifies number of times to run each test.
 
 ### Running multiple test targets
-To run all the test targets in the app module:
+To run all the test targets in the app layer:
 
-```
+```sh
 bazel test //app/...
 ```
 
 To run all the test targets in the project (note that this would be extremely slow and is not recommended):
 
-```
+```sh
 bazel test //...
 ```
 
 To run multiple test targets at once:
 
-```
+```sh
 bazel test -- //path/to/target/FirstTest //path/to/target/SecondTest
 ```
 
@@ -148,13 +182,13 @@ In Android, rules are defined using `android_binary`. Android rules for testing 
 
 **[BUILD files](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/app/BUILD.bazel#L3)**
 
-Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
+Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for layer-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
 
 **[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**
 
 A target A depends upon a target B, if B is needed by A at build. `A -> B`
 
-```
+```bazel
 deps = [ "//app",]
 ```
 Here, `deps` is used to define the dependencies which is a type of dependencies called `deps dependencies` and it includes the files/directory/target which are dependent. From the above example, the dependency is the `app` target which is defined in the [Build file of app package](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L616).
@@ -167,7 +201,7 @@ Example of Dependencies
 
 Bazel extensions are files ending in .bzl. Use the load statement to import a symbol from an extension.
 
-```
+```bazel
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 ```
 Here, we are loading `android.bzl` and we are going to use it with a symbol name `kt_android_library`.
@@ -175,7 +209,7 @@ Arguments to the load function must be string literals. Load statements must app
 
 **[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**
 
-With the example from our codebase, target `app` whose visibility is public. 
+With the example from our codebase, target `app` whose visibility is public.
 
  - `visibility = ["//visibility:public"],` - Anyone can use this target.
  - `"//visibility:private"` - Only targets in this package can use this target.
@@ -195,13 +229,14 @@ oppia_android_test(
     ],
     custom_package = "org.oppia.android.app.test",
     test_manifest = "//app:test_manifest",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.customview.interaction.MathExpressionInteractionsViewTest",
     deps = [
       ...
     ],
 )
 ```
+
+**Important**: Do _not_ set `enable_data_binding` to `True` since that will cause unnecessary regeneration, a slower build, and introduce the possibility of a build flake with other targets causing build graph instability.
 
 The above assumes that the corresponding test requires resources. If it doesn't, the definition can be a bit simpler:
 
@@ -225,7 +260,7 @@ The IntelliJ Bazel Plugin's Sync process has a purpose to query Bazel for inform
 
 It runs automatically during a project import, and manually by either clicking on the sync icon in the menu bar or, partially syncing packages and individual files in contextual menus.
 
-Running a sync generates a `.aswb` directory in the project root. 
+Running a sync generates a `.aswb` directory in the project root.
 
 ### Structure of the .aswb
 The `.aswb` is known as the **project directory**. It contains metadata about the project that bridges Bazel and IntelliJ project models.
@@ -235,14 +270,14 @@ The `.aswb` is known as the **project directory**. It contains metadata about th
 ├── .blaze
 │   ├── aar_libraries
 │   ├── modules
-│   ├── remoteOutputCache 
+│   ├── remoteOutputCache
 │   └── renderjars
 └── .idea
 ```
 
 The `.bazelproject` is the project view file which contains project-wide settings, like targets to sync, Bazel flags, and enabled languages. It is used to import a subset of Bazel packages into the IDE. The project view determines which rules are imported and how. Read more information [here](https://ij.bazel.build/docs/project-views.html).
 
-The `.blaze` is the Bazel data subdirectory, containing mostly IntelliJ module definitions. 
+The `.blaze` is the Bazel data subdirectory, containing mostly IntelliJ module definitions.
   - `modules` directory contains IntelliJ module definition files.
   - `remoteOutputCache` is a general-purpose local cache for output artifacts generated remotely. During a project sync, updated outputs of interest will be copied locally.
   - `aar_libraries` is the location of the plugin's JAR cache. This helps provide a more robust code navigation experience, but with the possibility of missing changes made by Bazel outside of the IDE view.
@@ -265,7 +300,7 @@ Your working set is any files your VCS says are dirty, roughly corresponding to 
 
 **Non-Incrementally Sync Project with BUILD Files**
 
-This option recomputes certain things that are otherwise cached. 
+This option recomputes certain things that are otherwise cached.
 - You should never have to use this option, but it exists for debugging/fallback purposes.
 
 **Sync Working Set**

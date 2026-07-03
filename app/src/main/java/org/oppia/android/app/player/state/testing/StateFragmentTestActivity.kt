@@ -10,7 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StateFragmentTestActivityParams
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -43,7 +43,7 @@ class StateFragmentTestActivity :
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class StateFragmentTestActivity :
       StateFragmentTestActivityParams.getDefaultInstance()
     )
 
-    profileId = ProfileId.newBuilder().apply {
+    profileId = LegacyProfileId.newBuilder().apply {
       internalId = args?.internalProfileId ?: -1
     }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()

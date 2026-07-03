@@ -12,12 +12,13 @@ import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.EphemeralConceptCard
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralStudyGuide
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
@@ -36,7 +37,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -45,6 +45,9 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -95,6 +98,7 @@ private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_
 private const val GET_LOCALIZABLE_STORY_PROVIDER_ID = "get_localizable_story_provider_id"
 private const val GET_CONCEPT_CARD_PROVIDER_ID = "get_concept_card_provider_id"
 private const val GET_REVISION_CARD_PROVIDER_ID = "get_revision_card_provider_id"
+private const val GET_STUDY_GUIDE_PROVIDER_ID = "get_study_guide_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -104,9 +108,11 @@ class TopicController @Inject constructor(
   private val questionRetriever: QuestionRetriever,
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
+  private val studyGuideRetriever: StudyGuideRetriever,
   private val storyProgressController: StoryProgressController,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
 ) {
@@ -123,7 +129,7 @@ class TopicController @Inject constructor(
    * @param topicId the ID corresponding to the topic which needs to be returned.
    * @return a [DataProvider] for [EphemeralTopic] combined with [TopicProgress].
    */
-  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<EphemeralTopic> {
+  fun getTopic(profileId: LegacyProfileId, topicId: String): DataProvider<EphemeralTopic> {
     return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
   }
 
@@ -136,7 +142,10 @@ class TopicController @Inject constructor(
    *
    * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
    */
-  fun getTopics(profileId: ProfileId, topicIds: List<String>): DataProvider<List<EphemeralTopic>> {
+  fun getTopics(
+    profileId: LegacyProfileId,
+    topicIds: List<String>
+  ): DataProvider<List<EphemeralTopic>> {
     val topicsDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPICS_PROVIDER_ID) {
         val topics = topicIds.map { topicId ->
@@ -156,7 +165,9 @@ class TopicController @Inject constructor(
       ::combineTopicsAndTopicsProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return topicsCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_TOPICS_PROVIDER_ID
     ) { topics, locale ->
@@ -173,7 +184,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralStorySummary] combined with [StoryProgress].
    */
   fun getStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String
   ): DataProvider<EphemeralStorySummary> {
@@ -190,7 +201,9 @@ class TopicController @Inject constructor(
       ::combineStorySummaryAndStoryProgress
     )
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return storyCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_STORY_PROVIDER_ID
     ) { storySummary, locale -> storySummary.toEphemeral(locale) }
@@ -205,7 +218,7 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [EphemeralChapterSummary]
    */
   fun retrieveChapter(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
@@ -228,7 +241,9 @@ class TopicController @Inject constructor(
     }
 
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return chapterCombinedProvider.combineWith(
       translationLocaleProvider, GET_LOCALIZABLE_CHAPTER_PROVIDER_ID
     ) { chapterSummary, locale -> chapterSummary.toEphemeral(locale) }
@@ -238,9 +253,12 @@ class TopicController @Inject constructor(
    * Returns the [EphemeralConceptCard] corresponding to the specified skill ID, or a failed result
    * if there is none.
    */
-  fun getConceptCard(profileId: ProfileId, skillId: String): DataProvider<EphemeralConceptCard> {
+  fun getConceptCard(
+    profileId: LegacyProfileId,
+    skillId: String
+  ): DataProvider<EphemeralConceptCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralConceptCard.newBuilder().apply {
         conceptCard = conceptCardRetriever.loadConceptCard(skillId)
@@ -257,12 +275,12 @@ class TopicController @Inject constructor(
    * a failed result if there is none.
    */
   fun getRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
     return translationController.getWrittenTranslationContentLocale(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).transform(GET_REVISION_CARD_PROVIDER_ID) { contentLocale ->
       EphemeralRevisionCard.newBuilder().apply {
         revisionCard = retrieveReviewCard(topicId, subtopicId)
@@ -275,14 +293,38 @@ class TopicController @Inject constructor(
   }
 
   /**
+   * Returns the [EphemeralStudyGuide] corresponding to the specified topic ID and subtopic ID, or
+   * a failed result if there is none.
+   */
+  fun getStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicId: Int
+  ): DataProvider<EphemeralStudyGuide> {
+    return translationController.getWrittenTranslationContentLocale(
+      profileId.toProfileIdPreservingZero()
+    ).transform(GET_STUDY_GUIDE_PROVIDER_ID) { contentLocale ->
+      EphemeralStudyGuide.newBuilder().apply {
+        studyGuide = studyGuideRetriever.loadStudyGuide(topicId, subtopicId)
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            studyGuide.writtenTranslationsMap, contentLocale
+          )
+      }.build()
+    }
+  }
+
+  /**
    * Returns the list of all completed stories in the form of [CompletedStoryList] for a specific
    * profile.
    */
-  fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
+  fun getCompletedStoryList(profileId: LegacyProfileId): DataProvider<CompletedStoryList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider, GET_COMPLETED_STORY_LIST_PROVIDER_ID
     ) { progressList, contentLocale ->
@@ -303,11 +345,13 @@ class TopicController @Inject constructor(
   /**
    * Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile.
    */
-  fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
+  fun getOngoingTopicList(profileId: LegacyProfileId): DataProvider<OngoingTopicList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider,
       GET_ONGOING_TOPIC_LIST_PROVIDER_ID,
@@ -448,12 +492,18 @@ class TopicController @Inject constructor(
           chapterBuilder.chapterPlayState =
             storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
         } else {
-          val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
-          if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
+          if (chapterIndex == 0) {
+            // First chapter with no progress recorded: mark as NOT_STARTED.
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
           } else {
-            chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-            chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
+            val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
+            if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
+              chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+            } else {
+              chapterBuilder.chapterPlayState =
+                ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+              chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
+            }
           }
         }
         storyBuilder.setChapter(chapterIndex, chapterBuilder)
@@ -465,7 +515,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveTopic(topicId: String): Topic? {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.maybeLoadProtoFromLocalAssets(
         assetName = topicId,
         baseMessage = TopicRecord.getDefaultInstance()
@@ -502,7 +552,7 @@ class TopicController @Inject constructor(
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       loadStorySummary(storyId)
     } else createStorySummaryFromJson(topicId, storyId)
   }
@@ -624,7 +674,7 @@ class TopicController @Inject constructor(
     // TODO(#169): Compute this based on protos & the combined topic package.
     // TODO(#169): Incorporate image files in this computation.
     return constituentFiles.sumOf { file ->
-      if (loadLessonProtosFromAssets) {
+      if (loadLessonProtosFromAssets.value) {
         assetRepository.getLocalAssetProtoSize(file)
       } else {
         jsonAssetRetriever.getAssetSize(file)

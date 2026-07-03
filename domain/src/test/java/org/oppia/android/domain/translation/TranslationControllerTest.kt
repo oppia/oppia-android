@@ -163,6 +163,33 @@ class TranslationControllerTest {
     assertThat(context.regionDefinition.region).isEqualTo(INDIA)
   }
 
+  /* Tests for getEnglishLocale */
+
+  @Test
+  fun testGetEnglishLocale_hindiSystemLocale_returnsEnglishLanguageContext() {
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+
+    val localeProvider = translationController.getEnglishLocale()
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+  }
+
+  @Test
+  fun testGetEnglishLocale_brazilSystemLocale_returnsEnglishLanguageWithBrazilRegion() {
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
+
+    val localeProvider = translationController.getEnglishLocale()
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
+  }
+
   /* Tests for app language functions */
 
   @Test

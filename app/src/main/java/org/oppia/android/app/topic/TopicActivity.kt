@@ -10,7 +10,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -18,6 +18,7 @@ import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -32,9 +33,10 @@ class TopicActivity :
   RouteToStoryListener,
   RouteToExplorationListener,
   RouteToResumeLessonListener,
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  RouteToStudyGuideListener {
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private lateinit var classroomId: String
   private var storyId: String? = null
@@ -45,7 +47,7 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    profileId = intent?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
@@ -89,7 +91,7 @@ class TopicActivity :
   }
 
   override fun routeToRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -105,8 +107,25 @@ class TopicActivity :
     )
   }
 
+  override fun routeToStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ) {
+    startActivity(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        this,
+        profileId,
+        topicId,
+        subtopicIndex,
+        subtopicListSize
+      )
+    )
+  }
+
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -129,7 +148,7 @@ class TopicActivity :
   }
 
   override fun routeToResumeLesson(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -158,11 +177,14 @@ class TopicActivity :
   class TopicActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
-    override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId, classroomId, topicId)
+    override fun createIntent(
+      profileId: LegacyProfileId,
+      classroomId: String,
+      topicId: String
+    ): Intent = createTopicActivityIntent(activity, profileId, classroomId, topicId)
 
     override fun createIntent(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String
@@ -183,7 +205,7 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String
     ): Intent {
@@ -201,7 +223,7 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
     fun createTopicPlayStoryActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String

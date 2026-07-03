@@ -42,10 +42,10 @@ fun getName(name: String? = " ") =
 A basic test case for line coverage might look like this:
 
 ```kotlin
-@Test 
+@Test
 fun testValidName() {
   // Tests line coverage by hitting the line where name is accessed
-  assertThat(getName("Alice")).isEqualTo("Alice") 
+  assertThat(getName("Alice")).isEqualTo("Alice")
 }
 ```
 
@@ -56,31 +56,31 @@ fun testValidName() {
 To ensure behavioral coverage, the test needs to verify various conditions:
 
 ```kotlin
-@Test 
+@Test
 fun testGetName_withDefaultValue_returnsEmptyValue() {
   // Default value when no name is provided
   assertThat(getName()).isEmpty()
 }
 
-@Test 
+@Test
 fun testGetName_withNullName_throwsException() {
   // Exception for null value
-  assertThrows<IllegalArgumentException> { getName(null) } 
+  assertThrows<IllegalArgumentException> { getName(null) }
 }
 
-@Test 
+@Test
 fun testGetName_withSpecialCharacters_throwsException() {
   // Exception for special characters
-  assertThrows<IllegalArgumentException> { getName("!@#$%^&*()") } 
+  assertThrows<IllegalArgumentException> { getName("!@#$%^&*()") }
 }
 
-@Test 
+@Test
 fun testGetName_withEmptyName_returnsEmptyValue() {
   // Empty string should use default value
   assertThat(getName("")).isEmpty()
 }
 
-@Test 
+@Test
 fun testGetName_withWhitespaceName_returnsWhitespaceValue() {
   // Whitespace name
   assertThat(getName("   ")).isEqualTo("   ")
@@ -97,7 +97,7 @@ While line coverage might reach 100% with a single test, it doesn’t ensure tha
 
 ```mermaid
 block-beta
-columns 2 
+columns 2
   A[["Coverage Analysis"]]:2
   block:Coverage1
     B["100% Line Coverage<br>Does not guarantee full<br>behavioral coverage"]
@@ -229,14 +229,14 @@ Consider a function that manages a food order process. This function does the fo
 fun processOrder(order: List<String>, paymentMade: Boolean): String {
   // List the food items
   val itemList = order.joinToString(", ")
-    
+
   // Calculate total price (mocked here for simplicity)
   val totalPrice = order.size * 10.0
-    
+
   // Display order
   println("Order: $itemList")
   println("Total: $totalPrice")
-    
+
   // Payment status
   return if (paymentMade) "Payment successful" else "Payment pending"
 }
@@ -687,7 +687,7 @@ Test edge cases where exceptions might be thrown, such as boundary values or ext
 
 ```kotlin
 fun calculateDiscount(price: Double, discountPercent: Double): Double {
-  if (price < 0 || discountPercent < 0) { 
+  if (price < 0 || discountPercent < 0) {
     throw IllegalArgumentException("Price and discount cannot be negative")
   }
   return price - (price * discountPercent / 100)
@@ -726,11 +726,11 @@ Let's use a simple `Pizza` class with an `orderPizza` function that has optional
 class Pizza {
   fun orderPizza(addCheese: Boolean = false, takeaway: Boolean = false): String {
     var orderDetails = "Ordered a pizza"
-        
+
     if (addCheese) {
       orderDetails += " with extra cheese"
     }
-        
+
     if (takeaway) {
       orderDetails += " for takeaway"
     }
@@ -787,17 +787,17 @@ These tests confirm that the class behaves as expected without producing unneces
 
 # Testing Public APIs
 
-A public API (Application Programming Interface) refers to the set of methods, properties, and functionalities exposed by a class or module for use by external code. It defines how other parts of a system or external systems can interact with the functionality provided by that class or module.
+A public API (Application Programming Interface) refers to the set of methods, properties, and functionalities exposed by a class or Dagger module for use by external code. It defines how other parts of a system or external systems can interact with the functionality provided by that class or Dagger module.
 
-Public APIs are essential because they provide a way to interact with the functionality of a class or module without exposing its internal workings. They define how external code can use the functionality offered by the class or module, ensuring that interactions are safe and predictable while keeping the internal implementation hidden and secure.
+Public APIs are essential because they provide a way to interact with the functionality of a class or Dagger module without exposing its internal workings. They define how external code can use the functionality offered by the class or Dagger module, ensuring that interactions are safe and predictable while keeping the internal implementation hidden and secure.
 
 Let's consider the following example for a public API to withdraw money from a BankAccount.
 
 ```kotlin
 class BankAccount(
-  private var balance: Double, 
-  private val username: String, 
-  private val password: String 
+  private var balance: Double,
+  private val username: String,
+  private val password: String
 ) {
 
   // Public method to withdraw money
@@ -926,7 +926,7 @@ Goal: Implement the test cases using your mapping as a guide.
 @Test
 fun testWithdraw_validCredentials_outputsCorrectBalance() {
   val account = BankAccount(1000.0, "user", "password")
-  
+
   val output = ByteArrayOutputStream()
   System.setOut(PrintStream(output))
 
@@ -949,7 +949,7 @@ fun testWithdraw_invalidUsername_throwsInvalidCredentialsException() {
 @Test
 fun testWithdraw_withNeedReceipt_receiptPrinted() {
   val account = BankAccount(1000.0, "user", "password")
-  
+
   val output = ByteArrayOutputStream()
   System.setOut(PrintStream(output))
 
@@ -1205,7 +1205,7 @@ fun createLogFile(filePath: String): String {
 fun testPlaceOrder_withValidItems_logsOrderDetails() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   // Use the utility function to create a log file
-  val logFilePath = createLogFile("testLogHistory.txt") 
+  val logFilePath = createLogFile("testLogHistory.txt")
   val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
 
   restaurant.placeOrder(listOf("Burger", "Pizza"))
@@ -1275,7 +1275,7 @@ fun testDiscountedBill_withCreateDiscountHelper_returnsDiscountedBill() {
   val menu = mapOf("Burger" to 5.0, "Pizza" to 8.0, "Salad" to 4.0)
   val logFilePath = createLogFile("LogHistory.txt")
   val restaurant = Restaurant(menu, logHistoryPath = logFilePath)
-  
+
   val discountDetails = createDiscount()
 
   restaurant.applyDiscount(discountDetails.first, discountDetails.second, discountDetails.third)
@@ -1405,7 +1405,7 @@ Analyzing the report reveals that the line,
 
 ```kotlin
 println("Receipt: Withdrew $amount. Current balance: $balance")
-``` 
+```
 
 and its function call `printReceipt` are marked in red, indicating that this line was never executed by the test case. This suggests that the functionality is not covered by the current tests, potentially exposing it to issues or regressions if the code is modified in the future. The green highlights indicate the lines of code that are covered by test cases.
 
@@ -1449,14 +1449,14 @@ fun withdraw(
 ) {
   // Other code here
 
-  if (needReceipt) {                                 --------------------.         
+  if (needReceipt) {                                 --------------------.
     printReceipt(amount)                                                 :
   }                                                                      :
 }                                                                        :
                                                                          :
 ...                                                                      :
                                                       < -----------------`
-private fun printReceipt(amount: Double) {           
+private fun printReceipt(amount: Double) {
   println("Receipt: Withdrew $amount. Current balance: $balance")
 }
 ```
@@ -1497,7 +1497,7 @@ fun withdraw(
   needReceipt: Boolean = false, // Defaults to false     ---------.
   file: File? = null                                              :
 ) {                                                               :
-                                                                  :  
+                                                                  :
   if (needReceipt) {                      <-----------------------`
     printReceipt(amount)
   }
@@ -1544,7 +1544,7 @@ fun withdraw(
   requestedUsername: String,
   requestedPassword: String,
   amount: Double,
-  needReceipt: Boolean = false, // Defaults to false   
+  needReceipt: Boolean = false, // Defaults to false
   file: File? = null
 ) {  }
 ```

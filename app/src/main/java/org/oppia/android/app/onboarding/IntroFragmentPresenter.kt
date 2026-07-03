@@ -9,12 +9,13 @@ import org.oppia.android.app.databinding.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [IntroFragment]. */
@@ -31,7 +32,7 @@ class IntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileNickname: String,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     parentScreen: IntroActivityParams.ParentScreen
   ): View {
     binding = LearnerIntroFragmentBinding.inflate(
@@ -44,7 +45,7 @@ class IntroFragmentPresenter @Inject constructor(
 
     setLearnerName(profileNickname)
 
-    profileManagementController.markProfileOnboardingStarted(profileId)
+    profileManagementController.markProfileOnboardingStarted(profileId.toProfileIdPreservingZero())
 
     if (parentScreen != IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN) {
       binding.onboardingStepsCount?.visibility = View.GONE

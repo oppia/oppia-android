@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class ProfileRenameFragment : InjectableFragment() {
 
     /** Returns the instance of [ProfileRenameFragment]. */
     fun newInstance(internalProfileId: Int): ProfileRenameFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return ProfileRenameFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)

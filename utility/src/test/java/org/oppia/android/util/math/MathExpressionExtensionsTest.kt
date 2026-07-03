@@ -271,9 +271,101 @@ class MathExpressionExtensionsTest {
     assertThat(result2).isFalse()
   }
 
+  @Test
+  fun testStripRedundantGroups_singleConstant_returnsSameExpression() {
+    val expression = parseNumericExpression("2")
+
+    val stripped = expression.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expression)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_singleVariable_returnsSameExpression() {
+    val expression = parseAlgebraicExpression("x")
+
+    val stripped = expression.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expression)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupAroundConstant_stripsGroup() {
+    val original = parseNumericExpression("(2)", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("2")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupAroundVariable_stripsGroup() {
+    val original = parseAlgebraicExpression("(x)", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseAlgebraicExpression("x")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_nestedRedundantGroups_stripsAll() {
+    val original = parseNumericExpression("((2))", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("2")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_groupAroundBinaryOperation_keepsGroup() {
+    val expression = parseNumericExpression("(2+3)", errorCheckingMode = REQUIRED_ONLY)
+
+    val stripped = expression.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expression)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupInBinaryOperation_stripsInnerGroup() {
+    val original = parseNumericExpression("2+(3)", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("2+3")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupInFunctionArgument_stripsGroup() {
+    val original = parseNumericExpression("sqrt((2))", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("sqrt(2)")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
+  @Test
+  fun testStripRedundantGroups_redundantGroupInUnaryOperation_stripsGroup() {
+    val original = parseNumericExpression("-( (2) )", errorCheckingMode = REQUIRED_ONLY)
+    val expected = parseNumericExpression("-2")
+
+    val stripped = original.stripRedundantGroups()
+
+    assertThat(stripped.isApproximatelyEqualTo(expected)).isTrue()
+  }
+
   private companion object {
-    private fun parseNumericExpression(expression: String): MathExpression {
-      return parseNumericExpression(expression, ALL_ERRORS).retrieveExpectedSuccessfulResult()
+    private fun parseNumericExpression(
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+    ): MathExpression {
+      return MathExpressionParser.parseNumericExpression(
+        expression, errorCheckingMode
+      ).retrieveExpectedSuccessfulResult()
     }
 
     private fun parseAlgebraicExpression(

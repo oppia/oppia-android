@@ -43,10 +43,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity.Companion.MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarkChaptersCompletedActivityParams
 import org.oppia.android.app.model.ProfileEditActivityParams
 import org.oppia.android.app.model.ProfileEditFragmentArguments
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -101,7 +101,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
@@ -114,6 +113,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -478,7 +478,8 @@ class ProfileEditFragmentTest {
 
     val updateLangProvider =
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-        profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
+        profileId = LegacyProfileId.newBuilder().apply { internalId = 0 }.build()
+          .toProfileIdPreservingZero(),
         allowInLessonQuickLanguageSwitching = true,
       )
     monitorFactory.waitForNextSuccessfulResult(updateLangProvider)
@@ -500,7 +501,7 @@ class ProfileEditFragmentTest {
     // The user should not have permission to switch languages (since the switch wasn't toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build(),
+        LegacyProfileId.newBuilder().apply { internalId = 0 }.build().toProfileIdPreservingZero(),
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
 
@@ -521,7 +522,7 @@ class ProfileEditFragmentTest {
     // The user should have permission to switch languages (since the switch was toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build(),
+        LegacyProfileId.newBuilder().apply { internalId = 0 }.build().toProfileIdPreservingZero(),
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
@@ -578,7 +579,6 @@ class ProfileEditFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

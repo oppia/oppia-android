@@ -24,7 +24,7 @@ import org.oppia.android.app.databinding.databinding.TopLeftOverlayBinding
 import org.oppia.android.app.databinding.databinding.TopRightOverlayBinding
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.spotlight.SpotlightStateController
@@ -99,7 +99,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
-    val profileId = ProfileId.newBuilder()
+    val profileId = LegacyProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
 
@@ -139,7 +139,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
         override fun onEnded() {
           if (targetList.isNotEmpty()) targetList.removeAt(0)
-          val profileId = ProfileId.newBuilder()
+          val profileId = LegacyProfileId.newBuilder()
             .setInternalId(internalProfileId)
             .build()
           spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
@@ -385,7 +385,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   companion object {
     /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       return SpotlightFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)

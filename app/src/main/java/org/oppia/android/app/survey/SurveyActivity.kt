@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SurveyActivityParams
 import org.oppia.android.util.extensions.getProtoExtra
@@ -18,14 +18,14 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var surveyActivityPresenter: SurveyActivityPresenter
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val params = intent.extractParams()
-    this.profileId = params.profileId ?: ProfileId.newBuilder().setInternalId(-1).build()
+    this.profileId = params.profileId ?: LegacyProfileId.newBuilder().setInternalId(-1).build()
 
     surveyActivityPresenter.handleOnCreate(
       profileId,
@@ -48,7 +48,7 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
      */
     fun createSurveyActivityIntent(
       context: Context,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       topicId: String,
       explorationId: String
     ): Intent {

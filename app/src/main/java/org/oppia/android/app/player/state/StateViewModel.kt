@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -29,6 +29,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** [ViewModel] for state-fragment. */
@@ -63,14 +64,16 @@ class StateViewModel @Inject constructor(
   }
   val hasEnabledSwahiliTranslations: LiveData<Boolean> by lazy {
     Transformations.map(
-      translationController.getWrittenTranslationContentLanguage(profileId).toLiveData(),
+      translationController.getWrittenTranslationContentLanguage(
+        profileId.toProfileIdPreservingZero()
+      ).toLiveData(),
       ::processIsCurrentLanguageSwahili
     )
   }
 
   val allowInLessonQuickLanguageSwitching: LiveData<Boolean> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processAllowInLessonQuickLanguageSwitching
     )
   }
@@ -78,9 +81,9 @@ class StateViewModel @Inject constructor(
   var currentStateName = ObservableField<String>(null as? String?)
 
   private val canSubmitAnswer = ObservableField(false)
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
-  fun initializeProfile(profileId: ProfileId) {
+  fun initializeProfile(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

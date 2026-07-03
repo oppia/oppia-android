@@ -42,6 +42,5 @@ Click on **Clone or download** and copy the link (the URL will look different si
 3. Log in GitHub with your credentials.
 
 4. Paste the **URL** and click on **Clone** button.
-Wait for a few minutes until Gradle build completes. 
 
 <img width="1680" alt="4" src="https://user-images.githubusercontent.com/54615666/72599231-51685d00-3937-11ea-9850-796700298af2.png">

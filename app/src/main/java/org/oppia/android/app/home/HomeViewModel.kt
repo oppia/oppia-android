@@ -14,8 +14,8 @@ import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
@@ -33,6 +33,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -54,7 +55,8 @@ class HomeViewModel(
   private val translationController: TranslationController
 ) : ObservableViewModel() {
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId =
+    LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
     R.integer.promoted_story_list_limit
   )
@@ -69,7 +71,7 @@ class HomeViewModel(
   val isProgressBarVisible = ObservableField(true)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
   }
 
   private val promotedActivityListSummaryDataProvider: DataProvider<PromotedActivityList> by lazy {

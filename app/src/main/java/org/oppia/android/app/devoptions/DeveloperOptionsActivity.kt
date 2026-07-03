@@ -13,7 +13,7 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -102,7 +102,7 @@ class DeveloperOptionsActivity :
   companion object {
 
     /** Function to create intent for DeveloperOptionsActivity. */
-    fun createDeveloperOptionsActivityIntent(context: Context, profileId: ProfileId): Intent {
+    fun createDeveloperOptionsActivityIntent(context: Context, profileId: LegacyProfileId): Intent {
 
       return Intent(context, DeveloperOptionsActivity::class.java).apply {
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)

@@ -59,8 +59,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -122,13 +122,12 @@ import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -141,7 +140,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -153,6 +151,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -173,7 +172,6 @@ class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
 
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
@@ -183,10 +181,15 @@ class QuestionPlayerActivityTest {
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
+    // Enable lesson progress visualization so the indicator test below proves the question player
+    // excludes the indicator even when the feature is ON (the flag has no effect on the question
+    // player otherwise). It must be forced before the component is built -- the override freezes
+    // once platform parameters load -- and is cleared in tearDown().
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -206,6 +209,7 @@ class QuestionPlayerActivityTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -386,7 +390,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -475,7 +479,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -584,6 +588,18 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @Test
+  fun testQuestionPlayer_lessonProgressOn_indicatorIsNotShown() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // The lesson progress indicator is exploration-only: the question player never assembles it
+      // and the domain never attaches checkpoint progress to practice questions, so it must never
+      // appear during a question session even with the feature enabled (see setUp). Scrolling to the
+      // bottom and checking the indicator is absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.question_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
+    }
+  }
+
   private fun verifyFontSizeMatches(fontSize: Float) {
     scrollToViewType(CONTENT)
     onView(
@@ -637,7 +653,7 @@ class QuestionPlayerActivityTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -669,9 +685,9 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -708,6 +724,24 @@ class QuestionPlayerActivityTest {
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.question_recycler_view)).perform(
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToEndOfRecyclerView(recyclerViewId: Int) {
+    onView(withId(recyclerViewId)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String = "scroll to the last item of the RecyclerView"
+
+        override fun perform(uiController: UiController, view: View) {
+          val recyclerView = view as RecyclerView
+          val itemCount = recyclerView.adapter?.itemCount ?: 0
+          if (itemCount > 0) recyclerView.scrollToPosition(itemCount - 1)
+          uiController.loopMainThreadUntilIdle()
+        }
+      }
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -839,7 +873,6 @@ class QuestionPlayerActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

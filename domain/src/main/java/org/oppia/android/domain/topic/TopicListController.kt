@@ -8,9 +8,9 @@ import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
@@ -32,11 +32,13 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -100,16 +102,19 @@ class TopicListController @Inject constructor(
   private val assetRepository: AssetRepository,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
 
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(profileId: ProfileId): DataProvider<TopicList> {
+  fun getTopicList(profileId: LegacyProfileId): DataProvider<TopicList> {
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
   }
 
@@ -122,11 +127,13 @@ class TopicListController @Inject constructor(
    *    fetched.
    * @return a [DataProvider] for an [PromotedActivityList].
    */
-  fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
+  fun getPromotedActivityList(profileId: LegacyProfileId): DataProvider<PromotedActivityList> {
     val retrieveTopicProgressListProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     return retrieveTopicProgressListProvider.combineWith(
       translationLocaleProvider,
       GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID,
@@ -135,7 +142,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val topicIdList = loadCombinedTopicIdList()
       return TopicList.newBuilder().apply {
         // Only include topics currently playable in the topic list.
@@ -200,7 +207,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicSummary(topicId: String): TopicSummary {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
           assetName = topicId,
@@ -587,7 +594,7 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val topicIdList = loadCombinedTopicIdList()
       return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList, contentLocale)
     } else computeSuggestedStoriesFromJson(topicProgressList, contentLocale)
@@ -693,7 +700,7 @@ class TopicListController @Inject constructor(
     topicId: String,
     contentLocale: OppiaLocale.ContentLocale
   ): PromotedStory? {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
           assetName = topicId,

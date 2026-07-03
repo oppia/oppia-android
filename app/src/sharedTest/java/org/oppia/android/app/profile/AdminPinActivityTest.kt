@@ -2,9 +2,13 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -90,7 +94,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -103,7 +107,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -133,7 +136,6 @@ class AdminPinActivityTest {
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
@@ -182,6 +184,30 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_warningText_isBoldFormatted() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val warningText = activity.findViewById<TextView>(R.id.admin_pin_warning_text).text
+
+        assertThat(warningText).isInstanceOf(Spanned::class.java)
+        val boldSpans =
+          (warningText as Spanned).getSpans(0, warningText.length, StyleSpan::class.java)
+        assertThat(boldSpans).isNotEmpty()
+        val hasBoldStyle =
+          boldSpans.any { it.style == Typeface.BOLD || it.style == Typeface.BOLD_ITALIC }
+        assertThat(hasBoldStyle).isTrue()
+      }
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
@@ -198,7 +224,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -208,7 +234,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
@@ -233,7 +259,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -243,7 +269,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -269,7 +295,7 @@ class AdminPinActivityTest {
             isDescendantOfA(withId(R.id.admin_pin_input_pin))
           )
         ).perform(
-          editTextInputAction.appendText("12345"),
+          appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
@@ -280,7 +306,7 @@ class AdminPinActivityTest {
           )
         ).perform(
           nestedScrollTo(),
-          editTextInputAction.appendText("12345"),
+          appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
@@ -307,7 +333,7 @@ class AdminPinActivityTest {
             isDescendantOfA(withId(R.id.admin_pin_input_pin))
           )
         ).perform(
-          editTextInputAction.appendText("12345"),
+          appendText("12345"),
           closeSoftKeyboard()
         )
         onView(
@@ -317,7 +343,7 @@ class AdminPinActivityTest {
           )
         ).perform(
           nestedScrollTo(),
-          editTextInputAction.appendText("12345"),
+          appendText("12345"),
           pressImeActionButton()
         )
         testCoroutineDispatchers.runCurrent()
@@ -326,7 +352,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
+  fun testAdminPinActivity_inputShortPin_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -341,10 +367,32 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_emptyPins_submit_showsPinLengthError() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    ).use {
+      onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
+      onView(withId(R.id.admin_pin_input_pin)).check(
+        matches(
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_length)
+          )
+        )
+      )
       onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
@@ -365,7 +413,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
@@ -375,11 +423,12 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("45"),
+        appendText("45"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -400,7 +449,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -410,7 +459,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -425,6 +474,7 @@ class AdminPinActivityTest {
             )
           )
         )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -444,7 +494,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -454,7 +504,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -484,7 +534,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -493,21 +543,23 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("5"),
+        appendText("5"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -527,7 +579,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -536,7 +588,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         pressImeActionButton()
       )
       onView(
@@ -545,7 +597,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
-        editTextInputAction.appendText("5"),
+        appendText("5"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
@@ -586,7 +638,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -596,7 +648,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -624,7 +676,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -634,7 +686,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -661,7 +713,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -672,7 +724,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
@@ -699,7 +751,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -709,7 +761,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -718,7 +770,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsDisabled() {
+  fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -734,11 +786,11 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
-      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -759,7 +811,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
@@ -769,11 +821,12 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("45"),
+        appendText("45"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -795,7 +848,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -805,7 +858,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
@@ -817,6 +870,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -838,7 +892,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.advanceUntilIdle()
@@ -849,7 +903,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.advanceUntilIdle()
@@ -881,7 +935,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -891,10 +945,11 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -902,11 +957,12 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("5"),
+        appendText("5"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -928,7 +984,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -938,7 +994,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("1234"),
+        appendText("1234"),
         pressImeActionButton()
       )
       onView(
@@ -948,7 +1004,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("5"),
+        appendText("5"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
@@ -972,7 +1028,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -982,7 +1038,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("54321"),
+        appendText("54321"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
@@ -996,6 +1052,7 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -1015,7 +1072,7 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(
@@ -1025,7 +1082,7 @@ class AdminPinActivityTest {
         )
       ).perform(
         nestedScrollTo(),
-        editTextInputAction.appendText("54321"),
+        appendText("54321"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
@@ -1037,11 +1094,12 @@ class AdminPinActivityTest {
           )
         )
       )
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_configChange_clickIsDisabled() {
+  fun testAdminPinActivity_inputShortPin_configChange_clickIsEnabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -1056,12 +1114,12 @@ class AdminPinActivityTest {
           isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_button)).check(matches(isClickable()))
     }
   }
 
@@ -1081,7 +1139,6 @@ class AdminPinActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

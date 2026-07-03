@@ -10,7 +10,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
@@ -23,6 +23,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -142,12 +143,14 @@ class ApplicationLifecycleObserver @Inject constructor(
     currentScreen = BACKGROUND_SCREEN
   }
 
-  private fun logAppLifecycleEventInBackground(logMethod: (String?, ProfileId?, String?) -> Unit) {
+  private fun logAppLifecycleEventInBackground(
+    logMethod: (String?, LegacyProfileId?, String?) -> Unit
+  ) {
     CoroutineScope(backgroundDispatcher).launch {
       val installationId = loggingIdentifierController.fetchInstallationId()
       val profileId = profileManagementController.getCurrentProfileId()
       val learnerId = profileManagementController.fetchCurrentLearnerId()
-      logMethod(installationId, profileId, learnerId)
+      logMethod(installationId, profileId?.toLegacyProfileId(), learnerId)
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
