@@ -4,7 +4,7 @@ name: Issue Checks
 
 on:
   issues:
-    types: [closed, reopened]
+    types: [closed]
 
 permissions:
   issues: write
@@ -14,38 +14,51 @@ jobs:
     name: Closed TODO Issue Check
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - name: TODO Issue Resolved Check
-        id: todoIssueResolvedCheck
-        if: ${{ github.event.action == 'closed' }}
+      - name: Pre-build required scripts
+        id: pre-build-scripts
+        run: |
+          bazel build //scripts:todo_issue_resolved_check //scripts:todo_issue_comment_check
+
+      - name: Check whether issue still has open TODOs in code
+        id: check-for-todo-references
         run: |
           bazel run //scripts:todo_issue_resolved_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
 
-      - name: Reopen Issue
-        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
+      # Always reopen the issue on even build failures since those could hide a TODO not yet being fully resolved.
+      - name: Reopen issue
+        if: ${{ failure() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue reopen ${{ github.event.issue.number }}
 
       - name: Check for duplicate comment
-        id: duplicateCommentCheck
-        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
+        id: check-for-duplicate-comment
+        if: ${{ failure() && steps.check-for-todo-references.outcome == 'failure' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue view ${{ github.event.issue.number }} --json comments --jq '.comments[-1].body' > $(pwd)/latest_comment.txt
           bazel run //scripts:todo_issue_comment_check -- $(pwd) latest_comment.txt script_failures.txt
 
-      - name: Add Comment
-        if: failure() && steps.duplicateCommentCheck.outcome == 'failure'
+      - name: Add comment for unresolved TODO
+        if: ${{ failure() && steps.check-for-duplicate-comment.outcome == 'failure' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue comment ${{ github.event.issue.number }} -F $(pwd)/script_failures.txt
+
+      - name: Add comment for failing script builds
+        if: ${{ failure() && steps.pre-build-scripts.outcome == 'failure' }}
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            TODO script unexpectedly failed to run. Cautiously reopening the issue.

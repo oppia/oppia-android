@@ -50,7 +50,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -128,7 +128,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -190,7 +189,7 @@ class TopicLessonsFragmentTest {
   @field:[Inject EnableTopicPracticeTab]
   lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -199,7 +198,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
@@ -1303,7 +1302,7 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): Intent {
@@ -1316,7 +1315,7 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicPlayStoryActivityIntent(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -1438,7 +1437,6 @@ class TopicLessonsFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

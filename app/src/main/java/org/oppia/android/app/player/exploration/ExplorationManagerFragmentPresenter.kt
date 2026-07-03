@@ -5,13 +5,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ExplorationManagerFragment]. */
@@ -22,9 +23,9 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
-  fun handleCreate(profileId: ProfileId) {
+  fun handleCreate(profileId: LegacyProfileId) {
     this.profileId = profileId
     retrieveReadingTextSize().observe(
       fragment,
@@ -36,7 +37,7 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.RevisionCardFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCardFragmentArguments
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -24,6 +24,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
@@ -41,7 +42,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController
 ) : HtmlParser.CustomOppiaTagActionListener {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Handles the [Fragment.onAttach] portion of [RevisionCardFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -54,7 +55,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     topicId: String,
     subtopicId: Int,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     subtopicListSize: Int
   ): View? {
     this.profileId = profileId
@@ -97,7 +98,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       )
     }
 
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
       .toLiveData().observe(
         fragment
       ) { result ->

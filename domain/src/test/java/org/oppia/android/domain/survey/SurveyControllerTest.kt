@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -68,7 +68,7 @@ class SurveyControllerTest {
     SurveyQuestionName.MARKET_FIT,
     SurveyQuestionName.NPS
   )
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {

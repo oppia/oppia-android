@@ -18,7 +18,7 @@ jobs:
           version: 6.5.0
 
       - name: Check out introduce-asset-download-script branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: introduce-asset-download-script
 

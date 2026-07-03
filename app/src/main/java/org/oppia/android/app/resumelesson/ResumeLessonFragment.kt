@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.util.extensions.getProto
@@ -25,7 +25,7 @@ class ResumeLessonFragment : InjectableFragment() {
 
     /** Creates new instance of [ResumeLessonFragment] for the provided parameters. */
     fun newInstance(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,

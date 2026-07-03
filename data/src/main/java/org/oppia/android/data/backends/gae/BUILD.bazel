@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Library for providing top-level HTTP networking support for Oppia's App Engine backend.
 """

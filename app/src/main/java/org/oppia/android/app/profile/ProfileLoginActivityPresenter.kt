@@ -5,7 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
   private val fragmentManager = activity.supportFragmentManager
 
   /** Creates the view for [ProfileLoginActivity]. */
-  fun handleOnCreate(profileId: ProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId) {
     activity.setContentView(R.layout.profile_login_activity)
 
     if (getProfileLoginFragment() == null) {
@@ -41,7 +41,7 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   /** Handles showing the [ResetPinDialogFragment]. */
-  fun handleRouteToResetPinDialog(profileId: ProfileId, profileName: String) {
+  fun handleRouteToResetPinDialog(profileId: LegacyProfileId, profileName: String) {
     val adminPinDialog = fragmentManager.findFragmentByTag(TAG_VALIDATE_ADMIN_PIN_DIALOG)
       as DialogFragment
     adminPinDialog.dismiss()

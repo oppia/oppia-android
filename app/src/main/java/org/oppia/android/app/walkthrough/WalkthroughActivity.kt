@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.WALKTHROUGH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -45,7 +45,7 @@ class WalkthroughActivity :
 
   companion object {
 
-    fun createWalkthroughActivityIntent(context: Context, profileId: ProfileId): Intent {
+    fun createWalkthroughActivityIntent(context: Context, profileId: LegacyProfileId): Intent {
       return Intent(context, WalkthroughActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(WALKTHROUGH_ACTIVITY)

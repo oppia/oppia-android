@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class ExplorationManagerFragment : InjectableFragment() {
     super.onCreate(savedInstanceState)
     val profileId = checkNotNull(arguments) {
       "Expected arguments to be provided for fragment."
-    }.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    }.getProto(PROFILE_ID_ARGUMENT_KEY, LegacyProfileId.getDefaultInstance())
     explorationManagerFragmentPresenter.handleCreate(profileId)
   }
 
@@ -37,7 +37,7 @@ class ExplorationManagerFragment : InjectableFragment() {
      * Returns a new instance of [ExplorationManagerFragment] corresponding to the specified
      * [profileId].
      */
-    fun createNewInstance(profileId: ProfileId): ExplorationManagerFragment {
+    fun createNewInstance(profileId: LegacyProfileId): ExplorationManagerFragment {
       return ExplorationManagerFragment().apply {
         arguments = Bundle().apply {
           putProto(PROFILE_ID_ARGUMENT_KEY, profileId)

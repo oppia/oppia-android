@@ -22,7 +22,9 @@ markComment: >
   If no further activity occurs within **7 days**, it will be automatically closed so that others can take up the issue.
 
   If you are still working on this PR, please make a follow-up commit within **3 days** (and submit it for review, if applicable).
-  Please also let us know if you are stuck so we can help you!
+  Please also let us know if you are stuck so we can help you! 
+  If you're unsure how to reassign this PR to a reviewer, please make sure to
+  review the wiki page that details the [Guidance on submitting PRs](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#clarification-regarding-assignees-and-reviewers-section).
 
 # Limit the number of actions per hour, from 1-30. Default is 30
 limitPerRun: 30

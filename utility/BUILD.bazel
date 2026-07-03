@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains utilities that all other modules, minus model, depend on.
 """
@@ -9,7 +8,7 @@ load("//utility:utility_test.bzl", "utility_test")
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will automatically be excluded from the top-level utility library. It's recommended to use
 # globs here to ensure new files added to migrated packages don't accidentally get included in the
-# top-level module library.
+# top-level layer library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
     "src/main/java/org/oppia/android/util/caching/*.kt",
@@ -79,7 +78,6 @@ kt_android_library(
         "//third_party:com_google_guava_guava",
         "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
@@ -131,7 +129,6 @@ TEST_DEPS = [
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
@@ -147,7 +144,7 @@ TEST_DEPS = [
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
+# shouldn't be defined as layer-level tests.
 # keep sorted
 MIGRATED_TESTS = [
     "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",

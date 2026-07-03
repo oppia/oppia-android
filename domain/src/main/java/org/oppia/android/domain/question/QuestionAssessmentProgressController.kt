@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
@@ -32,6 +32,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -106,7 +107,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentQuestion).
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   private var mostRecentSessionId: String? = null
   private val activeSessionId: String
@@ -125,7 +126,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
   /**
-   * Begins a training session based on the specified question list data provider and [ProfileId],
+   * Begins a training session based on the specified question list data provider and [LegacyProfileId],
    * and returns a [DataProvider] indicating whether the session was successfully started.
    *
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
@@ -133,7 +134,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   internal fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): DataProvider<Any?> {
     // Prepare to compute the session state by setting up the provided question list provider to be
     // used later in the ephemeral question data provider.
@@ -321,7 +322,9 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> {
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     val ephemeralQuestionDataProvider =
       mostRecentEphemeralQuestionFlow.convertToSessionProvider(CURRENT_QUESTION_PROVIDER_ID)
 
@@ -460,7 +463,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private suspend fun ControllerState.beginQuestionTrainingSessionImpl(
     beginSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ) {
     tryOperation(beginSessionResultFlow) {
       progress.currentProfileId = profileId
@@ -621,7 +624,9 @@ class QuestionAssessmentProgressController @Inject constructor(
     return progress.stateDeck.getCurrentEphemeralState(
       hintHandler.getCurrentHelpIndex().value,
       oppiaClock.getCurrentTimeMs(),
-      isContinueButtonAnimationSeen = true
+      isContinueButtonAnimationSeen = true,
+      // Questions don't show the lesson progress indicator, so no checkpoint total is provided.
+      totalCheckpointCount = null
     )
   }
 
@@ -830,7 +835,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     /** [ControllerMessage] for initializing a new training session. */
     data class StartInitializingController(
-      val profileId: ProfileId,
+      val profileId: LegacyProfileId,
       val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralQuestion>>,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>

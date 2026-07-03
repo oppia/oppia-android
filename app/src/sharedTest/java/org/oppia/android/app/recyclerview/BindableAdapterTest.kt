@@ -3,6 +3,7 @@ package org.oppia.android.app.recyclerview
 import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -107,7 +108,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -433,6 +433,64 @@ class BindableAdapterTest {
     }
   }
 
+  @Test
+  fun testSingleTypeAdapter_withDataBinding_initialData_bindsViewSynchronously() {
+    // Set up the adapter to be used for this test.
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeWithDataBindingBindableAdapter(singleTypeFactory)
+    }
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = listOf(STR_VALUE_0)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the initial data binding value is synchronously available after layout.
+      scenario.onActivity { activity ->
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        recyclerView.measureAndLayout()
+        val displayedText = recyclerView.lookUpTextWithDataBindingAt(position = 0)
+        assertThat(displayedText).isEqualTo(STR_VALUE_0.boundStringValue)
+      }
+    }
+  }
+
+  @Test
+  fun testSingleTypeAdapter_withDataBinding_updateData_rebindsViewSynchronouslyWithoutRunCurrent() {
+    // Set up the adapter to be used for this test.
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeWithDataBindingBindableAdapter(singleTypeFactory)
+    }
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      // First, bind initial data and let it settle.
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = listOf(STR_VALUE_0)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      // Now update the data directly on the adapter (bypassing LiveData to avoid data binding
+      // deferral) and only perform layout (no runCurrent). The new text should appear immediately
+      // because registerViewDataBinder calls executePendingBindings() after each rebind, ensuring
+      // synchronous binding execution. Without this, the recycled view would briefly flash stale
+      // content from the previous binding. See #5935 and #6093.
+      scenario.onActivity { activity ->
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        @Suppress("UNCHECKED_CAST")
+        val adapter = recyclerView.adapter as BindableAdapter<BindableAdapterTestDataModel>
+        adapter.setData(listOf(STR_VALUE_1))
+        recyclerView.measureAndLayout()
+        val displayedText = recyclerView.lookUpTextWithDataBindingAt(position = 0)
+        assertThat(displayedText).isEqualTo(STR_VALUE_1.boundStringValue)
+      }
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -568,6 +626,19 @@ class BindableAdapterTest {
     ) as BindableAdapterTestFragment
   }
 
+  private fun RecyclerView.measureAndLayout() {
+    measure(
+      View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
+      View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY)
+    )
+    layout(0, 0, 1000, 1000)
+  }
+
+  private fun RecyclerView.lookUpTextWithDataBindingAt(position: Int): String? {
+    return (findViewHolderForAdapterPosition(position)?.itemView as? TextView)
+      ?.text?.toString()
+  }
+
   private enum class ViewModelType {
     STRING,
     INT,
@@ -666,7 +737,6 @@ class BindableAdapterTest {
       ApplicationLifecycleModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

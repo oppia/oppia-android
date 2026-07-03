@@ -9,13 +9,14 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
@@ -25,7 +26,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -49,14 +49,13 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -85,13 +84,23 @@ class StoryProgressTestHelperTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val profileId0: ProfileId by lazy { ProfileId.newBuilder().setInternalId(0).build() }
-  private val profileId1: ProfileId by lazy { ProfileId.newBuilder().setInternalId(1).build() }
+  private val profileId0: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(0).build()
+  }
+  private val profileId1: LegacyProfileId by lazy {
+    LegacyProfileId.newBuilder().setInternalId(1).build()
+  }
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1672,7 +1681,7 @@ class StoryProgressTestHelperTest {
     assertThat(exp2.isStartedNotCompleted()).isFalse()
   }
 
-  private fun getTopic(profileId: ProfileId, topicId: String): Topic =
+  private fun getTopic(profileId: LegacyProfileId, topicId: String): Topic =
     monitorFactory.waitForNextSuccessfulResult(topicController.getTopic(profileId, topicId)).topic
 
   private fun Topic.getStory(storyId: String): StorySummary {
@@ -1718,7 +1727,7 @@ class StoryProgressTestHelperTest {
 
   private fun ChapterSummary.isCompleted(): Boolean = chapterPlayState == ChapterPlayState.COMPLETED
 
-  private fun getTopicProgressDatabase(profileId: ProfileId): TopicProgressDatabase {
+  private fun getTopicProgressDatabase(profileId: LegacyProfileId): TopicProgressDatabase {
     // Hacky way to retrieve the current progress database.
     val persistentCacheStore =
       persistentCacheStoreFactory.createPerProfile(
@@ -1749,11 +1758,6 @@ class StoryProgressTestHelperTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1769,7 +1773,7 @@ class StoryProgressTestHelperTest {
       LoggerModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,

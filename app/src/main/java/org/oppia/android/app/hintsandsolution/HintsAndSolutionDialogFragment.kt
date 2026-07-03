@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HintsAndSolutionDialogFragmentArguments
 import org.oppia.android.app.model.HintsAndSolutionDialogFragmentStateBundle
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -130,7 +130,7 @@ class HintsAndSolutionDialogFragment :
     val helpIndex = args.helpIndex ?: HelpIndex.getDefaultInstance()
     val writtenTranslationContext =
       args.writtenTranslationContext ?: WrittenTranslationContext.getDefaultInstance()
-    val profileId = arguments.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
+    val profileId = arguments.getProto(PROFILE_ID_KEY, LegacyProfileId.getDefaultInstance())
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,

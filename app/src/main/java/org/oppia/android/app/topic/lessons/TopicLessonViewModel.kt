@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -25,7 +25,7 @@ class TopicLessonViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var topicStoryList: List<StorySummary>
@@ -77,7 +77,7 @@ class TopicLessonViewModel @Inject constructor(
     return itemList
   }
 
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

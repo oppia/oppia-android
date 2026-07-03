@@ -52,9 +52,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.HelpFragmentArguments
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -107,7 +107,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -154,7 +153,7 @@ class HelpFragmentTest {
     internalProfileId: Int,
     isFromNavigationDrawer: Boolean
   ): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId,
@@ -1466,7 +1465,6 @@ class HelpFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

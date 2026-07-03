@@ -21,7 +21,7 @@ import org.oppia.android.app.databinding.databinding.AdministratorControlsGenera
 import org.oppia.android.app.databinding.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.app.databinding.databinding.AdministratorControlsProfileViewBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
@@ -36,7 +36,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Inject
   lateinit var administratorControlsViewModel: AdministratorControlsViewModel

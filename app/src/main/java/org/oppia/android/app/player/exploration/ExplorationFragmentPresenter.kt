@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.ExplorationFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
@@ -28,6 +28,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */
@@ -70,7 +71,9 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
+    val profileDataProvider = profileManagementController.getProfile(
+      retrieveArguments().profileId.toProfileIdPreservingZero()
+    )
     profileDataProvider.toLiveData().observe(
       fragment
     ) { result ->
@@ -161,7 +164,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       oppiaLogger.createOpenExplorationActivityContext(
         classroomId, topicId, storyId, explorationId
       ),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 

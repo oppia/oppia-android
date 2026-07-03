@@ -44,7 +44,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.model.SurveyQuestionName
@@ -102,7 +102,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -140,7 +139,7 @@ class SurveyFragmentTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var surveyController: SurveyController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setup() {
@@ -614,7 +613,7 @@ class SurveyFragmentTest {
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     surveyController.startSurveySession(questions, profileId = profileId)
     testCoroutineDispatchers.runCurrent()
   }
@@ -644,7 +643,6 @@ class SurveyFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

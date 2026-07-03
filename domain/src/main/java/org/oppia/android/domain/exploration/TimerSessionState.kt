@@ -1,6 +1,6 @@
 package org.oppia.android.domain.exploration
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 
 /**
  * Private class that encapsulates the mutable state of an [ExplorationActiveTimeController].
@@ -12,7 +12,7 @@ internal class TimerSessionState {
   internal var sessionStartTime: Long = 0L
 
   /** The profileId of the profile currently logged in. */
-  internal lateinit var currentProfileId: ProfileId
+  internal lateinit var currentProfileId: LegacyProfileId
 
   /** The id of the topic that the current exploration belongs to. */
   internal lateinit var currentTopicId: String

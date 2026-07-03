@@ -58,6 +58,9 @@ class StateRetriever @Inject constructor() {
       stateJson.optString("linked_skill_id").takeIf {
         it.isNotEmpty() && it != "null"
       }?.let { linkedSkillId = it }
+      if (stateJson.has("card_is_checkpoint")) {
+        isCheckpoint = stateJson.getBoolean("card_is_checkpoint")
+      }
     }.build()
 
   // Creates an interaction from JSON
@@ -505,6 +508,9 @@ class StateRetriever @Inject constructor() {
     interactionId: String
   ): Map<String, SchemaObject> {
     return when (interactionId) {
+      "Continue" -> {
+        createContinueCustomizationArgsMap(customizationArgsJson)
+      }
       "DragAndDropSortInput" -> {
         createDragAndDropSortInputCustomizationArgsMap(customizationArgsJson)
       }
@@ -537,6 +543,16 @@ class StateRetriever @Inject constructor() {
       }
       else -> mutableMapOf()
     }
+  }
+
+  private fun createContinueCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    customizationArgsJson.optJSONObject("buttonText")?.optJSONObject("value")?.let { buttonText ->
+      customizationArgsMap["buttonText"] = parseSubtitledUnicode(buttonText)
+    }
+    return customizationArgsMap
   }
 
   private fun createRatioExpressionInputCustomizationArgsMap(

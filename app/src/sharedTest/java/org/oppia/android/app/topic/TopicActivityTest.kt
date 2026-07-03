@@ -33,7 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -92,7 +92,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -133,7 +132,7 @@ class TopicActivityTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  private val profileId = ProfileId.newBuilder().setInternalId(1).build()
+  private val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -154,7 +153,7 @@ class TopicActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val profileId = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(1).build()
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
       context, profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).extractCurrentAppScreenName()
@@ -207,7 +206,7 @@ class TopicActivityTest {
   }
 
   private fun launchTopicActivity(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
@@ -238,7 +237,6 @@ class TopicActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

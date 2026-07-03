@@ -455,6 +455,7 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("session_id", sessionId)
         store.putNonSensitiveValue("exploration_version", explorationVersion.toString())
         store.putNonSensitiveValue("state_name", stateName)
+        store.putNonSensitiveValue("is_replay", isReplay.toString())
         store.putProperties("learner_details", learnerDetails, ::LearnerDetailsContext)
       }
     }
@@ -670,8 +671,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallEventContext>(activityName, value) {
       override fun RetrofitCallEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
       }
     }
@@ -683,8 +682,6 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<RetrofitCallFailedEventContext>(activityName, value) {
       override fun RetrofitCallFailedEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("url", requestUrl)
-        store.putNonSensitiveValue("headers", headers)
-        store.putNonSensitiveValue("body", body)
         store.putNonSensitiveValue("response_status_code", responseStatusCode)
         store.putNonSensitiveValue("error_message", errorMessage)
       }
@@ -910,6 +907,7 @@ class EventBundleCreator @Inject constructor(
       ScreenName.PLATFORM_PARAMETERS_ACTIVITY -> "platform_parameters_activity"
       ScreenName.PROFILE_LOGIN_ACTIVITY -> "profile_login_activity"
       ScreenName.ADMIN_INTRO_ACTIVITY -> "admin_intro_activity"
+      ScreenName.STUDY_GUIDE_ACTIVITY -> "study_guide_activity"
     }
 
     private fun AppLanguageSelection.toAnalyticsText(): String {

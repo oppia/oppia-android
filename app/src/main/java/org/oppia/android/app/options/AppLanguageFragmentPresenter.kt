@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmentBinding
 import org.oppia.android.app.model.AppLanguageFragmentStateBundle
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.AppLanguageViewModel
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -24,6 +24,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
@@ -35,7 +36,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private val appLanguageViewModel: AppLanguageViewModel
 ) {
   private lateinit var binding: AppLanguageSelectionFragmentBinding
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
   private lateinit var selectedLanguage: OppiaLanguage
   private lateinit var supportedLanguages: List<OppiaLanguage>
 
@@ -45,7 +46,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     outState: Bundle?,
     currentSelection: OppiaLanguage,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View {
     this.profileId = profileId
 
@@ -148,7 +149,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(profileId, selection)
+    translationController.updateAppLanguage(profileId.toProfileIdPreservingZero(), selection)
   }
 
   private fun updateAppLanguage(appLanguage: OppiaLanguage) {

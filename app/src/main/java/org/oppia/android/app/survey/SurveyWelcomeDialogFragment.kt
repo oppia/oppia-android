@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveyWelcomeDialogFragmentArguments
 import org.oppia.android.app.ui.R
@@ -33,7 +33,7 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
      * @return [SurveyWelcomeDialogFragment]: DialogFragment
      */
     fun newInstance(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       topicId: String,
       explorationId: String,
       mandatoryQuestionNames: List<SurveyQuestionName>

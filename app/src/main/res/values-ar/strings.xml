@@ -713,4 +713,8 @@
   <string name="profile_login_forgot_pin_dialog_cancel_button">إلغاء</string>
   <string name="profile_login_reset_pin_success_dialog_close">يغلق</string>
   <string name="profile_login_reset_pin_success_dialog_message">تم تغيير رقم التعريف الشخصي (PIN) بنجاح!</string>
+  <string name="admin_intro_activity_title">المقدمة</string>
+  <string name="admin_intro_activity_header">باعتبارك مسؤولاً عن التطبيق، يمكنك</string>
+  <string name="admin_intro_activity_settings_text">إدارة إعدادات الملفات الشخصية لجميع المتعلمين على هذا الجهاز</string>
+  <string name="admin_intro_activity_learners_text">إضافة متعلمين جدد على هذا الجهاز (حتى 10)</string>
 </resources>
