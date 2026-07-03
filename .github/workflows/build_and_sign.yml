@@ -93,10 +93,21 @@ jobs:
       - name: Get GCP access token
         run: echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
 
+      - name: Write prod server key
+        run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
+
       - name: Build unsigned AAB
         run: |
+          FLAVOR="${{ github.event.inputs.flavor }}"
           bazel build --compilation_mode=opt \
-            -- //:oppia_${{ github.event.inputs.flavor }}
+            //:oppia_${FLAVOR} \
+            --//config:assets_type=prod \
+            --//config:web_api_key_file=/tmp/prod_server.key \
+            --//config:download_firebase_config=true \
+            --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
+            --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
+            --//config:download_license_texts=true \
+            --//config:enable_firebase_analytics=true
 
       # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
