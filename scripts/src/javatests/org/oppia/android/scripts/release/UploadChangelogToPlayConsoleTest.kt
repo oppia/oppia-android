@@ -8,11 +8,11 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 
 /**
- * Tests for [auditLiveTracks], [detectChangelogDiff], and [uploadChangelogToTrack] in the
- * upload_changelog_to_play_console script.
+ * Tests for [main], [auditLiveTracks], [detectChangelogDiff], [uploadChangelogToTrack], and
+ * [resolveNotesForTrack] in the upload_changelog_to_play_console script.
  *
- * These functions are pure business logic (no real Play Console credentials needed); the
- * [FakePlayConsoleClient] stubs out all API interactions.
+ * [main] argument-validation tests cover the [require] blocks without a real Play Console
+ * connection. All other functions are pure business logic tested via [FakePlayConsoleClient].
  */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -477,5 +477,72 @@ class UploadChangelogToPlayConsoleTest {
     val result = resolveNotesForTrack(tempFolder.root.absolutePath, "0.18", "alpha")
 
     assertThat(result).containsEntry("en-US", "Release notes.")
+  }
+
+  // ---------------------------------------------------------------------------
+  // main() — argument validation
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testMain_wrongArgumentCount_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(emptyArray())
+    }
+
+    assertThat(exception).hasMessageThat().contains("Usage:")
+  }
+
+  @Test
+  fun testMain_tooManyArguments_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("/workspace", "org.oppia.android", "0.17", "token", "extra"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Usage:")
+  }
+
+  @Test
+  fun testMain_blankWorkspacePath_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("", "org.oppia.android", "0.17", "token"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("workspace_path must not be blank")
+  }
+
+  @Test
+  fun testMain_blankPackageName_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("/workspace", "", "0.17", "token"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("package_name must not be blank")
+  }
+
+  @Test
+  fun testMain_blankGcpAccessToken_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("/workspace", "org.oppia.android", "0.17", ""))
+    }
+
+    assertThat(exception).hasMessageThat().contains("gcp_access_token must not be blank")
+  }
+
+  @Test
+  fun testMain_invalidVersionFormat_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("/workspace", "org.oppia.android", "invalid-version", "token"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("version must be in major.minor format")
+  }
+
+  @Test
+  fun testMain_versionWithoutMinor_throwsIllegalArgumentException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      main(arrayOf("/workspace", "org.oppia.android", "17", "token"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("version must be in major.minor format")
   }
 }
