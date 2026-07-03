@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class ExplorationFragment : InjectableFragment() {
   companion object {
     /** Returns a new [ExplorationFragment] with the corresponding fragment parameters. */
     fun newInstance(
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,

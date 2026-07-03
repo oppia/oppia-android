@@ -24,7 +24,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.TopicActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -73,7 +73,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -114,7 +113,7 @@ class ActivityIntentFactoriesTest {
       onActivity { activity ->
         val intent =
           activity.topicActivityIntentFactory.createIntent(
-            ProfileId.getDefaultInstance(),
+            LegacyProfileId.getDefaultInstance(),
             classroomId = "test_classroom_id",
             topicId = "test_topic_id"
           )
@@ -137,7 +136,7 @@ class ActivityIntentFactoriesTest {
       onActivity { activity ->
         val intent =
           activity.topicActivityIntentFactory.createIntent(
-            ProfileId.getDefaultInstance(),
+            LegacyProfileId.getDefaultInstance(),
             classroomId = "test_classroom_id",
             topicId = "test_topic_id",
             storyId = "test_story_id"
@@ -193,7 +192,6 @@ class ActivityIntentFactoriesTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

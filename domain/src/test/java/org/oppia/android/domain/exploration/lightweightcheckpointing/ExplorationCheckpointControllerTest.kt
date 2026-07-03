@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +18,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -50,7 +51,6 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_EXPLORATION_0_TITLE
@@ -64,7 +64,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -118,13 +117,19 @@ class ExplorationCheckpointControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
-  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = LegacyProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -827,7 +832,7 @@ class ExplorationCheckpointControllerTest {
     }
   }
 
-  private fun saveCheckpoint(profileId: ProfileId, index: Int): Any? {
+  private fun saveCheckpoint(profileId: LegacyProfileId, index: Int): Any? {
     val recordProvider = explorationCheckpointController.recordExplorationCheckpoint(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
@@ -836,7 +841,7 @@ class ExplorationCheckpointControllerTest {
     return monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
-  private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
+  private fun saveMultipleCheckpoints(profileId: LegacyProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {
       saveCheckpoint(profileId, index)
     }
@@ -880,7 +885,7 @@ class ExplorationCheckpointControllerTest {
       .build()
 
   private fun retrieveExplorationCheckpointWithOverride(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     expIdToLoadInstead: String
   ): DataProvider<ExplorationCheckpoint> {
     fakeExplorationRetriever.setExplorationProxy(
@@ -893,7 +898,7 @@ class ExplorationCheckpointControllerTest {
   }
 
   private fun createCheckpointForTestExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     playRoutine: () -> Unit
   ) {
     fakeExplorationRetriever.setExplorationProxy(
@@ -968,11 +973,6 @@ class ExplorationCheckpointControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.

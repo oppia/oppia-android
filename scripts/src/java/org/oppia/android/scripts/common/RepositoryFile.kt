@@ -14,17 +14,10 @@ class RepositoryFile {
       ".gitsecret",
       ".idea",
       ".aswb",
-      "gradle",
       "bazel-bin",
       "bazel-oppia-android",
       "bazel-out",
       "bazel-testlogs",
-      "app/build",
-      "data/build",
-      "domain/build",
-      "model/build",
-      "testing/build",
-      "utility/build",
     )
 
     /**

@@ -99,6 +99,7 @@ data class GaeInteractionInstance(
         "NumericExpressionInput" -> InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
         "AlgebraicExpressionInput" -> InteractionTypeCase.ALGEBRAIC_EXPRESSION_INPUT
         "MathEquationInput" -> InteractionTypeCase.MATH_EQUATION_INPUT
+        "NumberWithUnits" -> InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
         "EndExploration" -> InteractionTypeCase.END_EXPLORATION
         else -> error("Unsupported interaction ID: $id.")
       }

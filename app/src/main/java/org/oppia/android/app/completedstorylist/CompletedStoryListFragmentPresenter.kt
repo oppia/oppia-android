@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.databinding.databinding.CompletedStoryItemBinding
 import org.oppia.android.app.databinding.databinding.CompletedStoryListFragmentBinding
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View? {
     viewModel.setProfileId(profileId)
 

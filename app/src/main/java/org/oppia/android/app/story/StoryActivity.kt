@@ -8,7 +8,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.STORY_ACTIVITY
 import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -54,7 +54,7 @@ class StoryActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -77,7 +77,7 @@ class StoryActivity :
   }
 
   override fun routeToResumeLesson(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -116,7 +116,7 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = StoryActivityParams.newBuilder().apply {
         this.classroomId = classroomId
         this.topicId = topicId

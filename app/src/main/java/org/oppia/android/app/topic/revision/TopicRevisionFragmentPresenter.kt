@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.databinding.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.app.databinding.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.app.topic.RouteToStudyGuideListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.app.ui.R
+import org.oppia.android.util.platformparameter.EnableStudyGuides
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
@@ -23,18 +26,20 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModel: TopicRevisionViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableStudyGuides private val enableStudyGuides: PlatformParameterValue<Boolean>
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
+  private val routeToStudyGuideListener = activity as RouteToStudyGuideListener
   private var subtopicListSize: Int? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ): View? {
     this.profileId = profileId
@@ -66,12 +71,24 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(
-      profileId,
-      topicId,
-      subtopic.subtopicId,
-      checkNotNull(subtopicListSize) { "Subtopic list size not found." }
-    )
+    val subtopicListSize = checkNotNull(this.subtopicListSize) {
+      "Expected subtopic list size to be initialized."
+    }
+    if (enableStudyGuides.value) {
+      routeToStudyGuideListener.routeToStudyGuide(
+        profileId,
+        topicId,
+        subtopic.subtopicId,
+        subtopicListSize
+      )
+    } else {
+      routeToReviewListener.routeToRevisionCard(
+        profileId,
+        topicId,
+        subtopic.subtopicId,
+        subtopicListSize
+      )
+    }
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {

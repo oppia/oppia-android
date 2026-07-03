@@ -11,8 +11,8 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PinPasswordActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -27,6 +27,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -45,7 +46,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private var internalProfileId = -1
-  private var profileId = ProfileId.getDefaultInstance()
+  private var profileId = LegacyProfileId.getDefaultInstance()
   private var confirmedDeletion = false
   private lateinit var alertDialog: AlertDialog
 
@@ -57,7 +58,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     val adminPin = args?.adminPin
     internalProfileId = args?.internalProfileId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
@@ -108,7 +109,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) {
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
-              .loginToProfile(profileId).toLiveData().observe(
+              .loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData().observe(
                 activity,
                 Observer
                 {
@@ -289,7 +290,7 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
   }
 
-  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+  private fun launchOnboardingScreen(profileId: LegacyProfileId, profileName: String) {
     val introActivityParams = IntroActivityParams.newBuilder()
       .setProfileNickname(profileName)
       .setParentScreen(IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN)

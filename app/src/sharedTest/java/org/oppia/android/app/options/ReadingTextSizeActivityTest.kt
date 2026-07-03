@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,13 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSize.LARGE_TEXT_SIZE
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSize.SMALL_TEXT_SIZE
+import org.oppia.android.app.model.ReadingTextSize.TEXT_SIZE_UNSPECIFIED
+import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -71,7 +78,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -129,18 +136,203 @@ class ReadingTextSizeActivityTest {
     }
   }
 
+  @Test
+  fun testReadingTextSizeActivity_initialTextSize_backNavigation_returnsCorrectResult() {
+    runWithLaunchedActivity {
+      // Trigger back press.
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_newTextSizeSelected_backNavigation_returnsUpdatedResult() {
+    runWithLaunchedActivity(initialSize = SMALL_TEXT_SIZE) {
+      // Change selection before pressing back.
+      selectTextSize(LARGE_TEXT_SIZE)
+
+      // Trigger back press — result should report the updated selection.
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_smallTextSize_backNavigation_returnsSmallResult() {
+    runWithLaunchedActivity(initialSize = SMALL_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_largeTextSize_backNavigation_returnsLargeResult() {
+    runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_extraLargeTextSize_backNavigation_returnsExtraLargeResult() {
+    runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(EXTRA_LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_mediumSize_changesToSmall_backNavigation_returnsSmallResult() {
+    runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
+      selectTextSize(SMALL_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_extraLargeSize_toMedium_backNavigation_returnsMediumResult() {
+    runWithLaunchedActivity(initialSize = EXTRA_LARGE_TEXT_SIZE) {
+      selectTextSize(MEDIUM_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "ar-port-xxhdpi")
+  fun testReadingTextSizeActivity_arabicLocale_largeTextSize_backNavigation_returnsLargeResult() {
+    runWithLaunchedActivity(initialSize = LARGE_TEXT_SIZE) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "ar-port-xxhdpi")
+  fun testReadingTextSizeActivity_arabicLocale_newTextSizeSelected_backNavigation_returnsResult() {
+    runWithLaunchedActivity(initialSize = MEDIUM_TEXT_SIZE) {
+      selectTextSize(EXTRA_LARGE_TEXT_SIZE)
+
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(EXTRA_LARGE_TEXT_SIZE)
+    }
+  }
+
+  @Test
+  fun testReadingTextSizeActivity_unspecifiedTextSize_backNavigation_returnsUnspecifiedResult() {
+    runWithLaunchedActivity(initialSize = TEXT_SIZE_UNSPECIFIED) {
+      onActivity { it.onBackPressedDispatcher.onBackPressed() }
+      testCoroutineDispatchers.runCurrent()
+
+      val result = this.result
+      assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+      val resultBundle = result.resultData.getProtoExtra(
+        MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+        ReadingTextSizeActivityResultBundle.getDefaultInstance()
+      )
+      // Verify that TEXT_SIZE_UNSPECIFIED is passed back unchanged.
+      assertThat(resultBundle.selectedReadingTextSize).isEqualTo(TEXT_SIZE_UNSPECIFIED)
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun runWithLaunchedActivity(
+    initialSize: ReadingTextSize = MEDIUM_TEXT_SIZE,
     testBlock: ActivityScenario<ReadingTextSizeActivity>.() -> Unit
   ) {
     val intent =
-      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, initialSize)
     ActivityScenario.launch<ReadingTextSizeActivity>(intent).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.testBlock()
+    }
+  }
+
+  private fun ActivityScenario<ReadingTextSizeActivity>.selectTextSize(
+    textSize: ReadingTextSize
+  ) {
+    onActivity { activity ->
+      val fragment = activity.supportFragmentManager
+        .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+      fragment.readingTextSizeFragmentPresenter.onTextSizeSelected(textSize)
     }
   }
 
@@ -156,7 +348,6 @@ class ReadingTextSizeActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

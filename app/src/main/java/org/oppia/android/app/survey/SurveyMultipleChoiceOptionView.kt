@@ -2,7 +2,6 @@ package org.oppia.android.app.survey
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -59,20 +58,9 @@ class SurveyMultipleChoiceOptionView @JvmOverloads constructor(
 
   private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
     return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideMultipleChoiceItemsInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.provideMultipleChoiceOptionViewModel(
-            view,
-            viewModel
-          )
-        }
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = bindingInterface::provideMultipleChoiceItemsInflatedView,
+        setViewModel = bindingInterface::provideMultipleChoiceOptionViewModel
       )
       .build()
   }

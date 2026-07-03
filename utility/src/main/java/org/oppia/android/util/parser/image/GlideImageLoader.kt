@@ -12,13 +12,14 @@ import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
+import org.oppia.android.util.platformparameter.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,7 +28,7 @@ import javax.inject.Singleton
 @Singleton
 class GlideImageLoader @Inject constructor(
   context: Context,
-  @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
+  @LoadImagesFromAssets private val loadImagesFromAssets: PlatformParameterValue<Boolean>,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
   private val glide by lazy { Glide.with(context) }
@@ -74,11 +75,12 @@ class GlideImageLoader @Inject constructor(
     rawLatex: String,
     lineHeight: Float,
     useInlineRendering: Boolean,
+    equationColor: Int,
     target: ImageTarget<Bitmap>
   ) {
     glide
       .asBitmap()
-      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering, equationColor))
       .intoTarget(target)
   }
 
@@ -99,7 +101,7 @@ class GlideImageLoader @Inject constructor(
   }
 
   private fun loadImage(imageUrl: String): Any = when {
-    loadImagesFromAssets -> object : ImageAssetFetcher {
+    loadImagesFromAssets.value -> object : ImageAssetFetcher {
       override fun fetchImage(): ByteArray =
         assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
 

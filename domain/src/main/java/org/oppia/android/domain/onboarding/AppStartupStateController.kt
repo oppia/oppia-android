@@ -5,8 +5,8 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingState
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -63,7 +63,7 @@ class AppStartupStateController @Inject constructor(
   }
 
   /** Saves that the user has completed the app onboarding flow. */
-  fun markOnboardingFlowCompleted(profileId: ProfileId? = null) {
+  fun markOnboardingFlowCompleted(profileId: LegacyProfileId? = null) {
     updateOnboardingState { alreadyOnboardedApp = true }
     logAppOnboardedEvent(profileId)
   }
@@ -193,7 +193,7 @@ class AppStartupStateController @Inject constructor(
     } else false
   }
 
-  private fun logAppOnboardedEvent(profileId: ProfileId?) {
+  private fun logAppOnboardedEvent(profileId: LegacyProfileId?) {
     analyticsController.logAppOnboardedEvent(profileId)
   }
 }

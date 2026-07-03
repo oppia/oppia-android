@@ -16,7 +16,7 @@ android_sdk_repository(
     build_tools_version = BUILD_TOOLS_VERSION,
 )
 
-# The rules_java contains the java_lite_proto_library rule used in the model module.
+# The rules_java contains the java_lite_proto_library rule used for Java generated protos.
 http_archive(
     name = "rules_java",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
@@ -34,7 +34,10 @@ http_archive(
     build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
     sha256 = HTTP_DEPENDENCY_VERSIONS["zlib"]["sha"],
     strip_prefix = "zlib-" + HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
-    url = "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    urls = [
+        "https://github.com/madler/zlib/releases/download/v{0}/zlib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["zlib"]["version"]),
+        "http://zlib.net/fossils/zlib-%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["zlib"]["version"],
+    ],
 )
 
 # Oppia's backend proto API definitions.
@@ -42,7 +45,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1716846301 -0700",
+    shallow_since = "1774411548 +0000",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -81,8 +84,8 @@ kotlin_repositories(
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
-# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
-# module while helping us avoid the unnecessary compilation of protoc. Referecences:
+# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for generating
+# protos while helping us avoid the unnecessary compilation of protoc. Referecences:
 # - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 # - https://github.com/bazelbuild/bazel/issues/7095
 
@@ -96,7 +99,7 @@ bind(
     actual = "//tools:java_toolchain",
 )
 
-# The rules_proto contains the proto_library rule used in the model module.
+# The rules_proto contains the proto_library rule used for proto generation.
 http_archive(
     name = "rules_proto",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
@@ -188,6 +191,14 @@ http_archive(
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
 
+# Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
+# This is done such that it should satisfiy the requirement for pre-fetching but cause an actual
+# build failure for any real dependencies on the target.
+bind(
+    name = "python_headers",
+    actual = "@bazel_tools//tools/cpp:malloc",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
@@ -247,3 +258,10 @@ pinned_maven_install()
         "jre",
     ]
 ]
+
+# Pinned lesson download pipeline script branch.
+git_repository(
+    name = "oppia_android_asset_pipeline",
+    commit = "01e4763bf666e02672756efee7fbf31a6a5b7be2",
+    remote = "https://github.com/oppia/oppia-android.git",
+)

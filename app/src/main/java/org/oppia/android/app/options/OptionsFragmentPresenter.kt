@@ -13,8 +13,8 @@ import org.oppia.android.app.databinding.databinding.OptionsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -23,6 +23,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var appLanguage = OppiaLanguage.ENGLISH
   private var audioLanguage = AudioLanguage.NO_AUDIO
 
@@ -71,7 +72,7 @@ class OptionsFragmentPresenter @Inject constructor(
     )
 
     internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     optionControlsViewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)
@@ -199,7 +200,9 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param textSize new textSize to be set as current
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
-    val sizeUpdateResult = profileManagementController.updateReadingTextSize(profileId, textSize)
+    val sizeUpdateResult = profileManagementController.updateReadingTextSize(
+      profileId.toProfileIdPreservingZero(), textSize
+    )
     sizeUpdateResult.toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Failure -> {
@@ -225,7 +228,9 @@ class OptionsFragmentPresenter @Inject constructor(
       selectedLanguageValue = oppiaLanguage.number
     }.build()
 
-    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+    translationController.updateAppLanguage(
+      profileId.toProfileIdPreservingZero(), selection
+    ).toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> appLanguage = oppiaLanguage
         is AsyncResult.Failure ->
@@ -245,7 +250,9 @@ class OptionsFragmentPresenter @Inject constructor(
    */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     val updateLanguageResult =
-      profileManagementController.updateAudioLanguage(profileId, audioLanguage)
+      profileManagementController.updateAudioLanguage(
+        profileId.toProfileIdPreservingZero(), audioLanguage
+      )
     updateLanguageResult.toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> this.audioLanguage = audioLanguage

@@ -11,8 +11,8 @@ import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.HelpActivityStateBundle
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
@@ -98,7 +98,7 @@ class HelpActivity :
 
     fun createHelpActivityIntent(
       context: Context,
-      profileId: ProfileId?,
+      profileId: LegacyProfileId?,
       isFromNavigationDrawer: Boolean
     ): Intent {
       val args = HelpActivityParams.newBuilder().apply {

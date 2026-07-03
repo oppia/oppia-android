@@ -18,6 +18,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
@@ -181,7 +182,7 @@ sealed class GaeInteractionObject {
         ALGEBRAIC_EXPRESSION_INPUT -> parseAlgebraicExpressionInputInputJson(jsonReader)
         MATH_EQUATION_INPUT -> parseMathEquationInputInputJson(jsonReader)
         NUMERIC_EXPRESSION_INPUT -> parseNumericExpressionInputJson(jsonReader)
-        END_EXPLORATION, CONTINUE_INSTANCE, INTERACTIONTYPE_NOT_SET ->
+        END_EXPLORATION, CONTINUE_INSTANCE, NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
           error("Unsupported interaction: $currentInteractionType.")
       }
     }
@@ -235,7 +236,7 @@ sealed class GaeInteractionObject {
         RATIO_EXPRESSION_INPUT -> jsonReader.nextCustomValue(ratioExpressionAdapter)
         ALGEBRAIC_EXPRESSION_INPUT, MATH_EQUATION_INPUT, NUMERIC_EXPRESSION_INPUT ->
           MathExpression(jsonReader.nextString())
-        IMAGE_CLICK_INPUT, END_EXPLORATION, CONTINUE_INSTANCE, INTERACTIONTYPE_NOT_SET ->
+        IMAGE_CLICK_INPUT, END_EXPLORATION, CONTINUE_INSTANCE, NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
           error("Unsupported interaction: $currentInteractionType.")
       }
     }

@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.AdminSettingsDialogFragmentArguments
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -20,7 +20,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
     const val ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY = "AdminSettingsDialogFragment.arguments"
     fun newInstance(
       adminPin: String,
-      profileId: ProfileId,
+      profileId: LegacyProfileId,
       profileName: String
     ): AdminSettingsDialogFragment {
       val args = AdminSettingsDialogFragmentArguments.newBuilder()
@@ -51,7 +51,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
     )
     val adminPin = args?.adminPin
     val profileName = args?.currentProfileName ?: ""
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId = arguments?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     checkNotNull(adminPin) { "Admin Pin must not be null" }
 

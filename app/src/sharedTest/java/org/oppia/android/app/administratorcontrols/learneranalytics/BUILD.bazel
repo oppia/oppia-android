@@ -7,7 +7,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivityTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -33,7 +32,6 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
@@ -47,7 +45,6 @@ oppia_android_test(
         "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    enable_data_binding = True,
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragmentTest",
     test_manifest = "//app:test_manifest",
     deps = [
@@ -75,7 +72,6 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
-        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",

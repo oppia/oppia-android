@@ -18,8 +18,8 @@ import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -39,6 +39,8 @@ import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
+import org.oppia.android.util.profile.toProfileIdUnsetIfZero
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -65,7 +67,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -112,7 +114,9 @@ class HomeFragmentPresenter @Inject constructor(
       it.viewModel = homeViewModel
     }
 
-    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+    profileManagementController.getProfile(
+      profileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment) {
       processProfileResult(it)
     }
 
@@ -137,14 +141,18 @@ class HomeFragmentPresenter @Inject constructor(
               // These asynchronous API calls do not block or wait for their results. They execute
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
-              profileManagementController.markProfileOnboardingEnded(profileId)
+              profileManagementController.markProfileOnboardingEnded(
+                profileId.toProfileIdPreservingZero()
+              )
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
             profileType == ProfileType.ADDITIONAL_LEARNER &&
               !profile.completedProfileOnboarding -> {
               // Additional learners only end profile onboarding, since they will never be the first
               // profile in the app.
-              profileManagementController.markProfileOnboardingEnded(profileId)
+              profileManagementController.markProfileOnboardingEnded(
+                profileId.toProfileIdUnsetIfZero()
+              )
             }
           }
         }
@@ -216,7 +224,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicSummary.classroomId,
       topicSummary.topicId,
       topicSummary.firstStoryId
@@ -226,7 +234,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun logHomeActivityEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenHomeContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     )
   }
 

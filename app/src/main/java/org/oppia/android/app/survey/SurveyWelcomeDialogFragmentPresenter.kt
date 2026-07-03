@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -15,6 +15,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_SURVEY_WELCOME_DIALOG = "SURVEY_WELCOME_DIALOG"
@@ -36,7 +37,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     explorationId: String,
     questionNames: List<SurveyQuestionName>,
@@ -55,7 +56,9 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
       dismissSurveyListener.dismissSurvey()
     }
 
-    profileManagementController.updateSurveyLastShownTimestamp(profileId)
+    profileManagementController.updateSurveyLastShownTimestamp(
+      profileId.toProfileIdPreservingZero()
+    )
 
     logSurveyPopUpShownEvent(explorationId, topicId, profileId)
 
@@ -63,7 +66,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   }
 
   private fun startSurveySession(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     questions: List<SurveyQuestionName>
   ) {
@@ -99,7 +102,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private fun logSurveyPopUpShownEvent(
     explorationId: String,
     topicId: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ) {
     analyticsController.logImportantEvent(
       oppiaLogger.createShowSurveyPopupContext(

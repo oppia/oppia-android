@@ -1,6 +1,6 @@
 package org.oppia.android.domain.question
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.state.StateDeck
@@ -23,7 +23,7 @@ internal class QuestionAssessmentProgress {
   }
   private var isTopQuestionCompleted: Boolean = false
   internal var questionSessionMetrics: MutableList<QuestionSessionMetrics> = mutableListOf()
-  internal lateinit var currentProfileId: ProfileId
+  internal lateinit var currentProfileId: LegacyProfileId
 
   /** Initialize the assessment with the specified list of questions. */
   internal fun initialize(questionsList: List<Question>) {

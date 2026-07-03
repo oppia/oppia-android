@@ -334,8 +334,8 @@ By default, this will generate an HTML report in the coverage_reports directory.
 A list of files can be provided as an input to generate coverage reports for each of the provided the files. An example of this is:
 
 ```sh
-bazel run //scripts:run_coverage -- $(pwd) 
-utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt 
+bazel run //scripts:run_coverage -- $(pwd)
+utility/src/main/java/org/oppia/android/util/math/MathTokenizer.kt
 utility/src/main/java/org/oppia/android/util/parser/math/MathModel.kt
 ```
 
@@ -388,7 +388,7 @@ To improve code coverage, start by identifying which lines are covered and which
 
 For more guidance on best practices, refer to the [Writing Tests with Good Behavioral Coverage](https://github.com/oppia/oppia-android/wiki/Writing-Tests-With-Good-Behavioral-Coverage) wiki page.
 
-Note: Some files in the app module may have multiple test files, located in the sharedTest and test packages, all testing a single source file. For example: [StateFragment.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/main/java/org/oppia/android/app/player/state/StateFragment.kt) has 2 test files [StateFragmentTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt) under ``app/src/sharedTest`` and [StateFragmentLocalTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt) under ``app/src/test``.
+Note: Some files in the app layer may have multiple test files, located in the sharedTest and test packages, all testing a single source file. For example: [StateFragment.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/main/java/org/oppia/android/app/player/state/StateFragment.kt) has 2 test files [StateFragmentTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt) under ``app/src/sharedTest`` and [StateFragmentLocalTest.kt](https://github.com/oppia/oppia-android/blob/develop/app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt) under ``app/src/test``.
 
 ## Unit-Centric Coverage Philosophy
 

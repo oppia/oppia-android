@@ -8,6 +8,9 @@ interface LanguageInterface {
   /** Open the language selection dialog. */
   fun languageSelectionClicked()
 
+  /** Handle play/pause button click with network status check. */
+  fun playPauseButtonClicked()
+
   /**
    * Returns whether the user is actively seeking a new audio position, that is, dragging the
    * knob to a new position in the audio track.

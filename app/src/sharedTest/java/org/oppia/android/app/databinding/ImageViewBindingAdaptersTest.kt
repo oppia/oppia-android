@@ -3,6 +3,8 @@ package org.oppia.android.app.databinding
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -12,6 +14,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -28,9 +31,11 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
@@ -79,7 +84,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -174,6 +178,61 @@ class ImageViewBindingAdaptersTest {
     }
   }
 
+  @Test
+  fun testSetProfileImage_nullAvatar_doesNotCrash() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setProfileImage(imageView, null)
+        // Verify no crash occurred; the view remains in its default state.
+      }
+    }
+  }
+
+  @Test
+  fun testSetProfileImage_colorAvatar_setsDefaultDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(0xFF0000).build()
+        setProfileImage(imageView, avatar)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.ic_default_avatar))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetProfileImage_colorAvatar_appliesColorFilter() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val color = 0xFF0000
+        val avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(color).build()
+        setProfileImage(imageView, avatar)
+        val expected = PorterDuffColorFilter(color, PorterDuff.Mode.DST_OVER)
+        assertThat(imageView.colorFilter).isEqualTo(expected)
+      }
+    }
+  }
+
+  @Test
+  fun testSetProfileImage_colorAvatar_rebindWithDifferentColor_updatesColorFilter() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val firstAvatar = ProfileAvatar.newBuilder().setAvatarColorRgb(0xFF0000).build()
+        setProfileImage(imageView, firstAvatar)
+        val secondColor = 0x00FF00
+        val secondAvatar = ProfileAvatar.newBuilder().setAvatarColorRgb(secondColor).build()
+        setProfileImage(imageView, secondAvatar)
+        val expected = PorterDuffColorFilter(secondColor, PorterDuff.Mode.DST_OVER)
+        assertThat(imageView.colorFilter).isEqualTo(expected)
+      }
+    }
+  }
+
   private fun getImageView(
     imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity
   ): ImageView {
@@ -206,7 +265,6 @@ class ImageViewBindingAdaptersTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

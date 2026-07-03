@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This package contains configuration libraries for defining & tweaking app-wide behavior.
 """
