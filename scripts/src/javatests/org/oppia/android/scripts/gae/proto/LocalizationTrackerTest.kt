@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.gae.proto
 
 import com.google.common.truth.Truth.assertThat
+import java.io.EOFException
 import org.junit.Test
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
 import org.oppia.android.testing.assertThrows
@@ -38,10 +39,10 @@ class LocalizationTrackerTest {
       "<oppia-noninteractive-math math_content-with-value=\"" +
         "{&amp;quot;raw_latex&amp;quot;:&amp;quot;x^2&amp;quot;\"></oppia-noninteractive-math>"
 
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<EOFException> {
       extractMathContentsFromHtml(html)
     }
 
-    assertThat(exception).hasMessageThat().contains("Failed to parse content value from:")
+    assertThat(exception).hasMessageThat().contains("End of input")
   }
 }

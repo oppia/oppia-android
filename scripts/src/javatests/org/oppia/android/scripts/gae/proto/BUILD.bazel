@@ -9,6 +9,7 @@ kt_jvm_test(
     srcs = ["LocalizationTrackerTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
