@@ -97,6 +97,16 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "upload_changelog_to_play_console_lib",
+    srcs = ["UploadChangelogToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":google_play_console_client",
+        ":play_console_client",
+    ],
+)
+
+kt_jvm_library(
     name = "sign_release_binary_lib",
     srcs = ["SignReleaseBinary.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

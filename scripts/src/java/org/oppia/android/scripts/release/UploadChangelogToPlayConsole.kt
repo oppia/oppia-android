@@ -28,9 +28,6 @@ import java.io.File
  * @param args[3] gcp_access_token — OAuth2 access token; obtain via
  *     `gcloud auth print-access-token`
  */
-// Note: PlayConsoleClient and GooglePlayConsoleClient are defined in PR 1.4
-// (upload-binary-to-play-console, tracking issue #6106). This file will not compile until
-// that PR merges into develop.
 fun main(args: Array<String>) {
   require(args.size == 4) {
     "Usage: upload_changelog_to_play_console <workspace_path> <package_name> <version> " +

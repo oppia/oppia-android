@@ -7,8 +7,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 
-// Note: FakePlayConsoleClient and PlayConsoleClient are provided by PR 1.4
-// (upload-binary-to-play-console). This file will not compile until that PR merges into develop.
 
 /**
  * Tests for [auditLiveTracks], [detectChangelogDiff], and [uploadChangelogToTrack] in the
