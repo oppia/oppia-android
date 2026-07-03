@@ -1,6 +1,6 @@
 package org.oppia.android.domain.survey
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicLearningTime
 import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -11,6 +11,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class SurveyGatingController @Inject constructor(
    * Returns a data provider containing a boolean outcome of gating, which informs callers whether
    * a survey can be shown.
    */
-  fun maybeShowSurvey(profileId: ProfileId, topicId: String): DataProvider<Boolean> {
+  fun maybeShowSurvey(profileId: LegacyProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
     val learningTimeProvider = retrieveAggregateLearningTime(profileId, topicId)
     return lastShownDateProvider.combineWith(
@@ -69,15 +70,17 @@ class SurveyGatingController @Inject constructor(
     return currentTimeStamp >= showNextTimestamp
   }
 
-  private fun retrieveSurveyLastShownDate(profileId: ProfileId) =
-    profileManagementController.retrieveSurveyLastShownTimestamp(profileId)
+  private fun retrieveSurveyLastShownDate(profileId: LegacyProfileId) =
+    profileManagementController.retrieveSurveyLastShownTimestamp(
+      profileId.toProfileIdPreservingZero()
+    )
 
   private fun hasReachedMinimumTopicLearningThreshold(topicLearningTimeMs: Long): Boolean {
     return topicLearningTimeMs >= minimumLearningTimeForGatingMillis
   }
 
   private fun retrieveAggregateLearningTime(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ): DataProvider<Long> {
     return activeTimeController.retrieveAggregateTopicLearningTimeDataProvider(

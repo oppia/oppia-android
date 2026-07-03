@@ -58,8 +58,8 @@ import kotlinx.coroutines.delay
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileLoginFragmentBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -70,6 +70,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /**
@@ -109,12 +110,16 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View? {
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
-      getProfileResult(profileManagementController.getProfile(profileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          profileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
 
     getAdminPin()
 
@@ -124,10 +129,14 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   private fun getAdminPin() {
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     adminProfileLiveData =
-      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          adminProfileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
   }
 
   private fun createComposeView() {
@@ -213,7 +222,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private fun maybeShowValidationError(
     enteredPin: String,
     profilePin: String,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): Boolean {
     val showError: Boolean
     if (enteredPin == profilePin) {
@@ -225,8 +234,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     return showError
   }
 
-  private fun loginToProfile(profileId: ProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData()
+  private fun loginToProfile(profileId: LegacyProfileId) {
+    profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
           activity.startActivity(
@@ -369,7 +378,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun ForgotPinButton(profileType: ProfileType, profileId: ProfileId, profileName: String) {
+  private fun ForgotPinButton(
+    profileType: ProfileType,
+    profileId: LegacyProfileId,
+    profileName: String
+  ) {
     val adminProfile:
       Profile by adminProfileLiveData.observeAsState(initial = Profile.getDefaultInstance())
     val adminPin = adminProfile.pin
@@ -414,7 +427,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private fun showResetNonAdminPinFlow(
     correctAdminPin: String,
     openForgotPinDialog: MutableState<Boolean>,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     profileName: String
   ) {
     openForgotPinDialog.value = false

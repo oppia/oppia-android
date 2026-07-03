@@ -1,6 +1,6 @@
 package org.oppia.android.app.settings.profile
 
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 
 /** Listener for when the activity should inflate [ProfileEditDeletionDialogFragment]. */
 interface LoadProfileEditDeletionDialogListener {
@@ -8,5 +8,5 @@ interface LoadProfileEditDeletionDialogListener {
    * Inflates [ProfileEditDeletionDialogFragment] for the configuration changes, i.e. rotating the device
    * from landscape to portrait, and saves the state of the dialog.
    */
-  fun loadProfileEditDeletionDialog(profileId: ProfileId)
+  fun loadProfileEditDeletionDialog(profileId: LegacyProfileId)
 }

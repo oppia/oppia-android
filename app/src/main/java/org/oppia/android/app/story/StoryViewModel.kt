@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralStorySummary
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
@@ -41,7 +41,7 @@ class StoryViewModel @Inject constructor(
 
   private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
     topicController.getStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId,
       storyId
     ).toLiveData()

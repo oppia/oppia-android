@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -38,7 +39,8 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
     MATH_EQUATION_INPUT_INTERACTION,
     FLASHBACK_BUTTON,
     RETURN_TO_QUESTION_BUTTON,
-    FLASHBACK_SOLUTION
+    FLASHBACK_SOLUTION,
+    LESSON_PROGRESS_INDICATOR
   }
 
   /** Factory for creating new [StateItemViewModel]s for interactions. */
@@ -63,7 +65,8 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()
+      userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance(),
+      wrongAnswerList: List<AnswerAndResponse> = emptyList()
     ): StateItemViewModel
   }
 }

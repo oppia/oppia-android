@@ -15,7 +15,7 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.DeviceSettings
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -42,7 +42,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
   private val showLogoutDialogListener = activity as ShowLogoutDialogListener
-  private lateinit var userProfileId: ProfileId
+  private lateinit var userProfileId: LegacyProfileId
 
   /** Sets the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>(1)
@@ -119,7 +119,7 @@ class AdministratorControlsViewModel @Inject constructor(
   }
 
   /** Sets the user profile id. */
-  fun setProfileId(profileId: ProfileId) {
+  fun setProfileId(profileId: LegacyProfileId) {
     userProfileId = profileId
   }
 }

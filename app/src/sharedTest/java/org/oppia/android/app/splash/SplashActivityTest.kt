@@ -47,6 +47,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -54,7 +55,6 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
@@ -101,7 +101,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -121,7 +120,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -304,7 +302,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_englishLocale_initializesLocaleHandlerWithEnglishContext() {
     initializeTestApplication()
     forceDefaultLocale(Locale.ENGLISH)
@@ -325,7 +322,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_arabicLocale_initializesLocaleHandlerWithArabicContext() {
     initializeTestApplication()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -340,7 +336,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_brazilianPortugueseLocale_initializesLocaleHandlerPortugueseContext() {
     initializeTestApplication()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -355,7 +350,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_nigerianPidginLocale_initializesLocaleHandlerNaijaContext() {
     initializeTestApplication()
     forceDefaultLocale(NIGERIAN_PIDGIN_LOCALE)
@@ -385,7 +379,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_initializationFailure_initializesLocaleHandlerWithDefaultContext() {
     corruptCacheFile()
     initializeTestApplication()
@@ -1078,7 +1072,7 @@ class SplashActivityTest {
   fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = IntroActivityParams.newBuilder()
@@ -1100,7 +1094,7 @@ class SplashActivityTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
       profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     )
@@ -1127,7 +1121,7 @@ class SplashActivityTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
       profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     )
@@ -1159,7 +1153,7 @@ class SplashActivityTest {
   fun testSplashActivity_onboardingV2_partiallyOnboardedAdmin_routesToAdminIntroActivity() {
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfile()
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = AdminIntroActivityParams.newBuilder()
@@ -1196,6 +1190,38 @@ class SplashActivityTest {
     launchSplashActivityPartially {
       // Routes to OnboardingActivity because the app is not onboarded.
       intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_afterDataReset_recreatesActivitySuccessfully() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    // Simulate a data reset by resetting the onboarding state (which deleteAllProfiles would do).
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify the splash activity can successfully launch after reset without crashing.
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_afterDataReset_localeInitialization_succeeds() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    forceDefaultLocale(Locale.ENGLISH)
+    // Simulate a data reset.
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityFully {
+      // Verify locale initialization still works after reset. The locale handler should be
+      // re-initialized with the system's default locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
     }
   }
 
@@ -1363,7 +1389,6 @@ class SplashActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

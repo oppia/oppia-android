@@ -10,8 +10,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
@@ -27,6 +27,7 @@ import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -41,12 +42,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
 ) {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var readingTextSize: ReadingTextSize
 
-  fun handleOnCreate(profileId: ProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId) {
     this.profileId = profileId
 
     val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
@@ -101,7 +102,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

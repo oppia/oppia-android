@@ -59,7 +59,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity.Companion.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.TopicActivityParams
@@ -120,7 +120,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -172,7 +171,7 @@ class ProfileProgressFragmentTest {
 
   private val internalProfileId = 0
 
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
@@ -180,7 +179,7 @@ class ProfileProgressFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
@@ -673,7 +672,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testClickViewAll_withLessThanTwoStories_opensRecentlyPlayedActivityWithStoriesForYouTitle() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -685,7 +684,7 @@ class ProfileProgressFragmentTest {
       )
       val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
         .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
@@ -701,15 +700,15 @@ class ProfileProgressFragmentTest {
   @Test
   fun testClickViewAll_threeStoriesStarted_opensRecentlyPlayedActivityWithRecentlyPlayedTitle() {
     storyProgressTestHelper.markCompletedFractionsStory0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -721,7 +720,7 @@ class ProfileProgressFragmentTest {
       )
       val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
         .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
@@ -816,7 +815,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.completed_stories_container)
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasProtoExtra(
@@ -921,7 +920,6 @@ class ProfileProgressFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

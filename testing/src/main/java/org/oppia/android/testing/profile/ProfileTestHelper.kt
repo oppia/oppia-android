@@ -1,11 +1,13 @@
 package org.oppia.android.testing.profile
 
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */
@@ -89,12 +91,7 @@ class ProfileTestHelper @Inject constructor(
 
   /** Creates one admin profile with default values for all fields. */
   fun createDefaultAdminProfile() {
-    addProfileAndWait(
-      name = "",
-      pin = "",
-      allowDownloadAccess = false,
-      isAdmin = true
-    )
+    profileManagementController.createDefaultProfile()
   }
 
   /** Log in to admin profile. */
@@ -111,7 +108,15 @@ class ProfileTestHelper @Inject constructor(
 
   private fun logIntoProfile(internalProfileId: Int): DataProvider<Any?> {
     return profileManagementController.loginToProfile(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+        .toProfileIdPreservingZero()
+    )
+  }
+
+  /** Marks a profile as having finished the onboarding flow. */
+  fun markProfileOnboardingEnded(profileId: LegacyProfileId): DataProvider<Any?> {
+    return profileManagementController.markProfileOnboardingEnded(
+      profileId.toProfileIdPreservingZero()
     )
   }
 
@@ -121,8 +126,22 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /** Marks a profile as having started the onboarding flow. */
+  fun markProfileOnboardingStarted(profileId: LegacyProfileId): DataProvider<Any?> {
+    return profileManagementController.markProfileOnboardingStarted(
+      profileId.toProfileIdPreservingZero()
+    )
+  }
+
+  /** Marks a profile as having started the onboarding flow. */
   fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
     return profileManagementController.markProfileOnboardingStarted(profileId)
+  }
+
+  /** Updates the [ProfileType] of an existing profile. */
+  fun updateProfileType(profileId: LegacyProfileId, profileType: ProfileType): DataProvider<Any?> {
+    return profileManagementController.updateProfileType(
+      profileId.toProfileIdPreservingZero(), profileType
+    )
   }
 
   /** Updates the [ProfileType] of an existing profile. */
@@ -131,9 +150,9 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /** Returns the continue button animation seen for profile. */
-  fun getContinueButtonAnimationSeenStatus(profileId: ProfileId): Boolean {
+  fun getContinueButtonAnimationSeenStatus(profileId: LegacyProfileId): Boolean {
     return monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.getProfile(profileId)
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
     ).isContinueButtonAnimationSeen
   }
 

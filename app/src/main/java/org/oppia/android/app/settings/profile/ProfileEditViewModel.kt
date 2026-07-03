@@ -3,8 +3,8 @@ package org.oppia.android.app.settings.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -14,6 +14,7 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileEditActivity]. */
@@ -26,7 +27,7 @@ class ProfileEditViewModel @Inject constructor(
   @EnableFastLanguageSwitchingInLesson
   private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** Whether the admin is allowed to mark chapters as finished. */
   val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
@@ -38,7 +39,7 @@ class ProfileEditViewModel @Inject constructor(
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -55,7 +56,7 @@ class ProfileEditViewModel @Inject constructor(
 
   /** Sets the identifier of the profile. */
   fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(id).build()
   }
 
   /** Fetches the profile of a user asynchronously. */

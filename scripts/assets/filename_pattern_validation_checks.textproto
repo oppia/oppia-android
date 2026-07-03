@@ -1,6 +1,6 @@
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
-  failure_message: "Activities cannot be placed outside the app or testing module."
+  failure_message: "Activities cannot be placed outside the top-level app or testing directories."
 }
 filename_checks {
   prohibited_filename_regex: "^.+?/res/([^/]+/){2,}[^/]+$"

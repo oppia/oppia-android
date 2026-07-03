@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName.MY_DOWNLOADS_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
@@ -36,7 +36,8 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     fun createMyDownloadsActivityIntent(context: Context, internalProfileId: Int?): Intent {
-      val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
+      val profileId =
+        internalProfileId?.let { LegacyProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, MyDownloadsActivity::class.java)
       if (profileId != null) {
         intent.decorateWithUserProfileId(profileId)
@@ -47,7 +48,7 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     val intent = if (enableMultipleClassrooms.value)
       ClassroomListActivity.createClassroomListActivity(this, profileId)
     else

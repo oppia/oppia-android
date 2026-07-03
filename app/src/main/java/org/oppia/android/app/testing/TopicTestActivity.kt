@@ -5,16 +5,18 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.app.topic.RouteToStudyGuideListener
 import org.oppia.android.app.topic.TopicActivityPresenter
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
@@ -25,14 +27,15 @@ class TopicTestActivity :
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToExplorationListener,
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  RouteToStudyGuideListener {
 
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       profileId = profileId,
@@ -45,7 +48,7 @@ class TopicTestActivity :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList, ProfileId.getDefaultInstance()
+        this, skillIdList, LegacyProfileId.getDefaultInstance()
       )
     )
   }
@@ -68,7 +71,7 @@ class TopicTestActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -91,7 +94,7 @@ class TopicTestActivity :
   }
 
   override fun routeToRevisionCard(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -99,6 +102,19 @@ class TopicTestActivity :
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this, profileId, topicId, subtopicId, subtopicListSize
+      )
+    )
+  }
+
+  override fun routeToStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ) {
+    startActivity(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        this, profileId, topicId, subtopicIndex, subtopicListSize
       )
     )
   }

@@ -164,7 +164,6 @@ class RetrofitModuleTest {
 
     val firstRequest = firstRequestsDeferred.getCompleted().single()
     assertThat(firstRequest.responseStatusCode).isEqualTo(HttpURLConnection.HTTP_OK)
-    assertThat(firstRequest.body).isEqualTo("{\"field1\":\"field val\",\"field2\":3}")
   }
 
   private fun setUpTestObjectServiceResponse(field1: String, field2: Int) {

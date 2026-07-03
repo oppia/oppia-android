@@ -30,7 +30,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -81,7 +81,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -124,7 +123,8 @@ class HomeActivityLocalTest {
 
   private val internalProfileId: Int = 0
 
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: LegacyProfileId =
+    LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -191,7 +191,7 @@ class HomeActivityLocalTest {
     setUpTestWithOnboardingV2Enabled(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(1)
-    val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    val profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
     profileTestHelper.updateProfileType(
       profileId = profileId1,
       profileType = ProfileType.ADDITIONAL_LEARNER
@@ -349,7 +349,7 @@ class HomeActivityLocalTest {
     )
   }
 
-  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
+  private fun createHomeActivityIntent(profileId: LegacyProfileId): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
@@ -369,7 +369,6 @@ class HomeActivityLocalTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

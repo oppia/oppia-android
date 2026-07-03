@@ -29,6 +29,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWithAsync
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toLegacyProfileId
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -96,6 +97,17 @@ class TranslationController @Inject constructor(
     return getSystemLanguage().transformAsync(SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID) { language ->
       localeController.retrieveAppStringDisplayLocale(language).retrieveData()
     }
+  }
+
+  /**
+   * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
+   * English language.
+   *
+   * This is used for activities that should always display in English regardless of the user's
+   * selected app language (e.g. the policies pages which show canonical English content).
+   */
+  fun getEnglishLocale(): DataProvider<OppiaLocale.DisplayLocale> {
+    return localeController.retrieveAppStringDisplayLocale(OppiaLanguage.ENGLISH)
   }
 
   /**
@@ -176,7 +188,9 @@ class TranslationController @Inject constructor(
    *
    * This language can be updated via [updateWrittenTranslationContentLanguage].
    */
-  fun getWrittenTranslationContentLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
+  fun getWrittenTranslationContentLanguage(
+    profileId: ProfileId
+  ): DataProvider<OppiaLanguage> {
     val providerId = WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return getWrittenTranslationContentLocale(profileId).transform(providerId) { locale ->
       locale.getCurrentLanguage()
@@ -502,7 +516,7 @@ class TranslationController @Inject constructor(
   ): PersistentCacheStore<T> {
     return cacheMap.getOrPut(profileId) {
       cacheStoreFactory.createPerProfile(
-        databaseName, defaultCacheValue, profileId
+        databaseName, defaultCacheValue, profileId.toLegacyProfileId()
       ).also<PersistentCacheStore<T>> {
         it.primeInMemoryAndDiskCacheAsync(
           updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,

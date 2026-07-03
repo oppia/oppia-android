@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#6010): Move this manifest to be top-level. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android">
@@ -253,6 +254,10 @@
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
       android:label="@string/revision_card_activity_title"
+      android:theme="@style/RevisionCardActivityTheme" />
+    <activity
+      android:name=".app.topic.studyguide.StudyGuideActivity"
+      android:label="@string/study_guide_activity_title"
       android:theme="@style/RevisionCardActivityTheme" />
     <activity
       android:name=".app.topic.TopicActivity"

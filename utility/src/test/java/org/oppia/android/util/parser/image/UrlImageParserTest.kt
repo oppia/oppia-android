@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.image
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.os.Looper
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -17,12 +18,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
@@ -121,7 +124,8 @@ class UrlImageParserTest {
     urlImageParser.loadMathDrawable(
       rawLatex = rawLatex,
       lineHeight = 20f,
-      type = INLINE_TEXT_IMAGE
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
 
     Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -225,7 +229,10 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_inlineType_loadsInlineLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -238,7 +245,10 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_blockType_loadsBlockLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -251,16 +261,28 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_multiple_loadsEachLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{1}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{1}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 19f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 19f,
+      type = INLINE_TEXT_IMAGE,
+      equationColor = Color.BLACK
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
+      equationColor = Color.BLACK
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -285,14 +307,16 @@ class UrlImageParserTest {
   @Component(
     modules = [
       AssetModule::class,
-      CachingTestModule::class,
       FakeOppiaClockModule::class,
       ImageParsingModule::class,
+      PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class,
       LocaleProdModule::class,
       LoggerModule::class,
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
+      TestLogReportingModule::class,
       TestModule::class
     ]
   )

@@ -15,7 +15,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.AudioFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
@@ -32,6 +32,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -53,11 +54,12 @@ class AudioFragmentPresenter @Inject constructor(
 ) {
   var userIsSeeking = false
   var userProgress = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var feedbackId: String? = null
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
+  private var lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
 
   private var isPauseAudioRequestPending = false
   private lateinit var binding: AudioFragmentBinding
@@ -68,7 +70,7 @@ class AudioFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
@@ -145,7 +147,9 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun retrieveAudioLanguageCode(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getAudioLanguage(profileId).toLiveData(),
+      profileManagementController.getAudioLanguage(
+        profileId.toProfileIdPreservingZero()
+      ).toLiveData(),
       ::processAudioLanguageResult
     )
   }
@@ -222,7 +226,54 @@ class AudioFragmentPresenter @Inject constructor(
     audioViewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
+    maybeLoadMainContentAudio(allowAutoPlay, reloadingContent)
+
+  private fun getCurrentProdConnectionStatusOrNull(): NetworkConnectionUtil.ProdConnectionStatus? {
+    return when (val currentConnectionStatus = networkConnectionUtil.getCurrentConnectionStatus()) {
+      is NetworkConnectionUtil.ProdConnectionStatus -> currentConnectionStatus
+      else -> null
+    }
+  }
+
+  private fun maybeLoadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
+    val currentConnectionStatus = getCurrentProdConnectionStatusOrNull()
+      ?: run {
+        lastKnownConnectionStatus = NetworkConnectionUtil.ProdConnectionStatus.NONE
+        audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+        return
+      }
+    val previousConnectionStatus = lastKnownConnectionStatus
+    val hasConnectionStatusChanged = previousConnectionStatus != currentConnectionStatus
+
+    if (reloadingContent) {
+      when (currentConnectionStatus) {
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+          if (hasConnectionStatusChanged) {
+            showOfflineDialog()
+          }
+          // Always abort reload attempts while offline to avoid getting stuck in loading state.
+          audioViewModel.abortPendingLoad()
+          lastKnownConnectionStatus = currentConnectionStatus
+          return
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+          if (
+            hasConnectionStatusChanged &&
+            previousConnectionStatus == NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+          ) {
+            showCellularDataDialogFragment()
+            return
+          }
+        }
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+          // no-op : no action needed for LOCAL connection
+        }
+      }
+    }
+
+    lastKnownConnectionStatus = currentConnectionStatus
     audioViewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
+  }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
     audioViewModel.loadFeedbackAudio(contentId, allowAutoPlay)
@@ -232,6 +283,37 @@ class AudioFragmentPresenter @Inject constructor(
     if (prepared && isPauseAudioRequestPending) {
       audioViewModel.pauseAudio()
       isPauseAudioRequestPending = false
+    }
+  }
+
+  /**
+   * Handles play/pause button click with network status check.
+   * Checks if network is available before attempting to play audio.
+   * Shows offline dialog if no network is available.
+   */
+  fun handlePlayPauseButtonClick() {
+    val playStatus = audioViewModel.playStatusLiveData.value
+
+    if (playStatus == UiAudioPlayStatus.PLAYING) {
+      audioViewModel.togglePlayPause(playStatus)
+      return
+    }
+
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> {
+        audioViewModel.togglePlayPause(playStatus)
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
+        if (useCellularData) {
+          audioViewModel.togglePlayPause(playStatus)
+        } else {
+          showOfflineDialog()
+        }
+      }
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
+        showOfflineDialog()
+        setAudioFragmentVisible(false)
+      }
     }
   }
 

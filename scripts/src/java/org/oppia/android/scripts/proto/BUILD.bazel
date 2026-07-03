@@ -1,5 +1,5 @@
 """
-This library contains all protos used in the scripts module.
+This library contains all protos used in scripts.
 
 In Bazel, proto files are built using the oppia_proto_library() and java_proto_library() rules. The
 oppia_proto_library() rule creates a proto file library to be used in multiple languages. The

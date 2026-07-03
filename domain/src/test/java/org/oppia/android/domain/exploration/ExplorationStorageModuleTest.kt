@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,13 +22,11 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -56,7 +55,13 @@ class ExplorationStorageModuleTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -95,11 +100,6 @@ class ExplorationStorageModuleTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.

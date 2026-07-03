@@ -82,7 +82,10 @@ class StringResourceParser(private val repoRoot: File) {
     SWAHILI(valuesDirectoryName = "values-sw"),
 
     /** Corresponds to Nigerian Pidgin (pcm) translations. */
-    NIGERIAN_PIDGIN(valuesDirectoryName = "values-pcm-rNG")
+    NIGERIAN_PIDGIN(valuesDirectoryName = "values-pcm-rNG"),
+
+    /** Corresponds to Hindi (hi) translations. */
+    HINDI(valuesDirectoryName = "values-hi")
   }
 
   /**

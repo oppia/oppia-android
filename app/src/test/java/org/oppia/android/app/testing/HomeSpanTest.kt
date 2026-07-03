@@ -26,7 +26,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -73,7 +73,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -167,7 +166,7 @@ class HomeSpanTest {
   }
 
   private fun createHomeActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
@@ -183,7 +182,6 @@ class HomeSpanTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

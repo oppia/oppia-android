@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Package for test-only threading utilities, including classes to coordinate cross-thread operations
 in a way that can improve test reliability, correctness, and performance.
@@ -43,6 +42,21 @@ kt_android_library(
         "TestCoroutineDispatchers.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
+)
+
+kt_android_library(
+    name = "test_coroutine_dispatchers_injector",
+    testonly = True,
+    srcs = [
+        "TestCoroutineDispatchersInjector.kt",
+    ],
+    visibility = [
+        "//testing:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing:__subpackages__",
+    ],
+    deps = [
+        ":test_coroutine_dispatchers",
+    ],
 )
 
 kt_android_library(
@@ -107,6 +121,8 @@ kt_android_library(
         ":annotations",
         ":espresso_impl",
         ":robolectric_impl",
+        ":test_coroutine_dispatchers",
+        ":test_coroutine_dispatchers_injector",
         "//:dagger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],

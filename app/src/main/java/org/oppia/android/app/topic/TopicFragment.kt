@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -35,7 +35,7 @@ class TopicFragment : InjectableFragment() {
       TOPIC_FRAGMENT_ARGUMENTS_KEY,
       TopicFragmentArguments.getDefaultInstance()
     )
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId = arguments?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     val classroomId = args?.classroomId ?: TEST_CLASSROOM_ID_0
     val topicId = args?.topicId ?: TEST_TOPIC_ID_0

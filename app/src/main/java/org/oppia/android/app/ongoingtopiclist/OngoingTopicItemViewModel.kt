@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -29,7 +29,7 @@ class OngoingTopicItemViewModel(
 
   fun onTopicItemClicked() {
     routeToTopic(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build(),
       classroomId = topic.classroomId,
       topicId = topic.topicId
     )
@@ -41,7 +41,7 @@ class OngoingTopicItemViewModel(
     )
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: LegacyProfileId, classroomId: String, topicId: String) {
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
       internalProfileId,

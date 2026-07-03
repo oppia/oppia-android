@@ -34,7 +34,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -96,8 +96,6 @@ class OppiaLoggerTest {
     private const val TEST_ERROR_LOG_EXCEPTION = "test_error_log_exception"
 
     private const val TEST_URL = "test_url"
-    private const val TEST_HEADERS = "test_headers"
-    private const val TEST_BODY = "test_body"
     private const val TEST_RESPONSE_CODE = 200
 
     private const val TEST_INSTALLATION_ID = "test_installation_id"
@@ -110,7 +108,7 @@ class OppiaLoggerTest {
     private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
 
-    private val TEST_PROFILE_ID = ProfileId.newBuilder().setInternalId(0).build()
+    private val TEST_PROFILE_ID = LegacyProfileId.newBuilder().setInternalId(0).build()
   }
 
   @Inject
@@ -379,15 +377,11 @@ class OppiaLoggerTest {
   fun testController_createRetrofitCallContext_returnsCorrectRetrofitCallContext() {
     val eventContext = oppiaLogger.createRetrofitCallContext(
       url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
       responseCode = TEST_RESPONSE_CODE,
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_CONTEXT)
     assertThat(eventContext.retrofitCallContext.requestUrl).matches(TEST_URL)
-    assertThat(eventContext.retrofitCallContext.headers).matches(TEST_HEADERS)
-    assertThat(eventContext.retrofitCallContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallContext.responseStatusCode).isEqualTo(TEST_RESPONSE_CODE)
   }
 
@@ -395,16 +389,12 @@ class OppiaLoggerTest {
   fun testController_createRetrofitCallFailedContext_returnsCorrectRetrofitCallFailedContext() {
     val eventContext = oppiaLogger.createRetrofitCallFailedContext(
       url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
       responseCode = TEST_RESPONSE_CODE,
       errorMessage = TEST_ERROR_LOG_MSG,
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_FAILED_CONTEXT)
     assertThat(eventContext.retrofitCallFailedContext.requestUrl).matches(TEST_URL)
-    assertThat(eventContext.retrofitCallFailedContext.headers).matches(TEST_HEADERS)
-    assertThat(eventContext.retrofitCallFailedContext.body).matches(TEST_BODY)
     assertThat(eventContext.retrofitCallFailedContext.responseStatusCode)
       .isEqualTo(TEST_RESPONSE_CODE)
     assertThat(eventContext.retrofitCallFailedContext.errorMessage).matches(TEST_ERROR_LOG_MSG)

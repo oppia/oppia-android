@@ -43,8 +43,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarkChaptersCompletedFragmentArguments
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -97,7 +97,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -133,11 +132,11 @@ class MarkChaptersCompletedFragmentTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     testCoroutineDispatchers.registerIdlingResource()
@@ -1075,7 +1074,6 @@ class MarkChaptersCompletedFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
