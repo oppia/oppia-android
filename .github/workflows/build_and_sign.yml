@@ -99,9 +99,12 @@ jobs:
       - name: Build unsigned AAB
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
+          # Alpha builds include pre-release lessons so they need alpha assets; all other
+          # flavors (beta, ga) ship to production and use prod assets.
+          ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
           bazel build --compilation_mode=opt \
             //:oppia_${FLAVOR} \
-            --//config:assets_type=prod \
+            --//config:assets_type=${ASSETS_TYPE} \
             --//config:web_api_key_file=/tmp/prod_server.key \
             --//config:download_firebase_config=true \
             --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
