@@ -3,7 +3,7 @@ package org.oppia.android.domain.devoptions
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.topic.TopicController
@@ -34,7 +34,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs fetched
    * @return a [DataProvider] for [List] of [EphemeralTopic] combined with [TopicProgress]
    */
-  fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<EphemeralTopic>> {
+  fun getAllTopicsWithProgress(profileId: LegacyProfileId): DataProvider<List<EphemeralTopic>> {
     val topicListProvider = topicListController.getTopicList(profileId)
     // TODO(#4564): Migrate this to use transformDynamic to avoid the awkward force-retrieve
     //  mechanism (which also breaks notifications for downstream topics changing).
@@ -53,7 +53,7 @@ class ModifyLessonProgressController @Inject constructor(
    *     combined with [StoryProgress]
    */
   fun getStoryMapWithProgress(
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): DataProvider<Map<String, List<EphemeralStorySummary>>> {
     return getAllTopicsWithProgress(profileId).transform(GET_ALL_STORIES_PROVIDER_ID) { topics ->
       topics.associate { it.topic.topicId to it.storiesList }
@@ -94,7 +94,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @param profileId: the ID corresponding to the profile for which progress needs modified.
    * @param topicIdList: the list of topic IDs for which progress needs modified.
    */
-  fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
+  fun markMultipleTopicsCompleted(profileId: LegacyProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
       val topic = checkNotNull(topicController.retrieveTopic(topicId)) {
         "Expected topic to be present in order to update its completion state: $topicId."
@@ -120,7 +120,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @param storyMap: the list of topic IDs mapped to corresponding story IDs for which progress
    * needs modified.
    */
-  fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
+  fun markMultipleStoriesCompleted(profileId: LegacyProfileId, storyMap: Map<String, String>) {
     storyMap.forEach {
       val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
       storySummary.chapterList.forEach { chapterSummary ->
@@ -143,7 +143,7 @@ class ModifyLessonProgressController @Inject constructor(
    * exploration IDs for which progress needs modified.
    */
   fun markMultipleChaptersCompleted(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     chapterMap: Map<String, Pair<String, String>>
   ) {
     chapterMap.forEach {

@@ -126,15 +126,13 @@ The sub-sections below detail each of the code changes needed to perform these u
 This code change essentially requires replacing the old SDK version number (e.g. 31) with the new one (e.g. 33), but only for compile-time behaviors. All needed changes are detailed below:
 1. [``.github/actions/set-up-android-bazel-build-environment/action.yml``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/.github/actions/set-up-android-bazel-build-environment/action.yml#L75-L78) needs to be updated to install the correct SDK version (via the ``sdkmanager --install`` command).
 2. Bazel [``build_vars.bzl``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/build_vars.bzl#L1) changes to ``BUILD_SDK_VERSION``.
-3. Gradle ``compileSdkVersion`` changes (e.g. for [``app/build.gradle``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/build.gradle#L8)). Note that all module ``.gradle`` files will need to be updated in this way.
 
 #### Step 5.2: Updating the target SDK version
 
-This code change requires changing Bazel, Gradle, and ``AndroidManifest.xml`` files. All needed changes are detailed below:
+All needed changes are detailed below:
 1. The top-level [``BUILD.bazel``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/BUILD.bazel#L118-L130)'s APK targets need to be upgraded to target the correct SDK.
 2. All Bazel AAB targets need to be updated in [``build_flavors.bzl``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/build_flavors.bzl#L45-L146)'s ``_FLAVOR_METADATA`` dict to point to the correct target SDK version (each flavor has its own target SDK declared).
 3. All manifest XML files (e.g. [``app/src/main/AppAndroidManifest.xml``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/src/main/AppAndroidManifest.xml#L4)) that _have_ an ``android:targetSdkVersion`` attribute need to be updated to use the correct version. If a manifest file is missing this attribute, it doesn't need to be changed.
-4. All module ``.gradle`` files must be updated to use the correct target SDK version, e.g. [``app/build.gradle``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/build.gradle#L13).
 
 After the four areas above are completed, the old SDK version is unlikely to be present anywhere in the codebase. This can be verified using a quick "find all" or ``grep`` search. One likely exception is tests (see the caveats list in the main section of step (5) above).
 

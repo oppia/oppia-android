@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -256,7 +257,8 @@ class MathExpressionInteractionsViewModel private constructor(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
+      userAnswerState: UserAnswerState,
+      wrongAnswerList: List<AnswerAndResponse>
     ): StateItemViewModel {
       return MathExpressionInteractionsViewModel(
         interaction,

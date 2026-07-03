@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Library for providing model definitions for Oppia's App Engine backend endpoints.
 """

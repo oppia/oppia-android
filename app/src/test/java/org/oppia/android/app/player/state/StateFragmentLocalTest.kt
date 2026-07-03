@@ -42,8 +42,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -70,10 +68,10 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -136,14 +134,11 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -159,8 +154,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -171,12 +164,11 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
-import org.robolectric.shadows.util.DataSource
-import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -193,26 +185,23 @@ class StateFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  private val AUDIO_URL_1 =
-    createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
-  private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
-
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var editTextInputAction: EditTextInputAction
+
   @Inject lateinit var accessibilityManager: FakeAccessibilityService
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
@@ -228,11 +217,23 @@ class StateFragmentLocalTest {
         .setSourceExecutor(executorService)
     )
     profileTestHelper.initializeProfiles()
-    ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+
+    // Set up a MediaInfoProvider to handle any audio DataSource that the explorations may use.
+    // This is necessary because explorations have many audio files (voiceovers for content,
+    // feedback, hints, solutions) and registering each individually is impractical.
+    ShadowMediaPlayer.setMediaInfoProvider { _ ->
+      // Return a generic MediaInfo for any DataSource. The tests don't actually play audio,
+      // they just need the MediaPlayer to not crash when setDataSource is called.
+      ShadowMediaPlayer.MediaInfo(
+        /* duration= */ 10_000,
+        /* preparationDelay= */ 0
+      )
+    }
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
     // during initialization for the next test).
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1320,8 +1321,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_summary)).check(
         matches(
           withContentDescription(
-            "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
+            "Start by dividing the cake into equal parts:" +
+              "\nThree of the four equal parts are red. So, the answer is 3/4."
           )
         )
       )
@@ -1706,7 +1707,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_stateWithAlgebraicExpr_showSolution_solutionHasCorrectHtmlContentDesc() {
     launchForExploration(TEST_EXPLORATION_ID_5).use { scenario ->
       // Play through the first three states.
@@ -1733,7 +1733,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1760,7 +1759,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1786,7 +1784,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1841,7 +1838,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -1868,7 +1864,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -1896,7 +1891,6 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
@@ -2653,7 +2647,7 @@ class StateFragmentLocalTest {
   }
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
-    onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
+    onView(withId(interactionViewId)).perform(appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -2891,9 +2885,9 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -2997,19 +2991,6 @@ class StateFragmentLocalTest {
   private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
     getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -3067,7 +3048,6 @@ class StateFragmentLocalTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

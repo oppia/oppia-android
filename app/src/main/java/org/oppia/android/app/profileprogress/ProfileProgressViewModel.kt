@@ -8,9 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -24,6 +24,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */
@@ -42,7 +43,7 @@ class ProfileProgressViewModel @Inject constructor(
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var limit: Int = 0
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
@@ -52,7 +53,7 @@ class ProfileProgressViewModel @Inject constructor(
   )
 
   fun setProfileId(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.internalProfileId = internalProfileId
 
     subscribeToProfileLiveData()
@@ -62,7 +63,10 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(), ::processGetProfileResult
+      profileManagementController.getProfile(
+        profileId.toProfileIdPreservingZero()
+      ).toLiveData(),
+      ::processGetProfileResult
     )
   }
 

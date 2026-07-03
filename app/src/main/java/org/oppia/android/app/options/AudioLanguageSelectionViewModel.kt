@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -16,6 +16,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** ViewModel for managing language selection in [AudioLanguageFragment]. */
@@ -26,7 +27,7 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   /** An [ObservableField] to bind the resolved audio language to the dropdown text. */
   val selectedAudioLanguage = ObservableField(OppiaLanguage.LANGUAGE_UNSPECIFIED)
@@ -89,11 +90,11 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
 
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
-    translationController.getAudioLanguagePreselection(profileId)
+    translationController.getAudioLanguagePreselection(profileId.toProfileIdPreservingZero())
   }
 
   /** Receives and sets the current profileId in this viewModel. */
-  fun updateProfileId(profileId: ProfileId) {
+  fun updateProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
   }
 

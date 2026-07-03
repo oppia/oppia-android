@@ -11,6 +11,7 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
@@ -40,6 +41,7 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
@@ -143,6 +145,9 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
 
+  /** Indicates that profiles already exist in the app. */
+  class ProfilesAlreadyExistException(msg: String) : Exception(msg)
+
   /**
    * These statuses correspond to the exceptions above such that if the deferred contains
    * PROFILE_NOT_FOUND, the [ProfileNotFoundException] will be passed to a failed AsyncResult.
@@ -189,6 +194,9 @@ class ProfileManagementController @Inject constructor(
 
     /** Indicates that the operation failed due to the profileType property not supplied. */
     PROFILE_TYPE_UNKNOWN,
+
+    /** Indicates that the operation failed due to profiles already existing in the app. */
+    PROFILES_ALREADY_EXIST
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -228,7 +236,7 @@ class ProfileManagementController @Inject constructor(
       } else {
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "ProfileId ${profileId.internalId} does" +
+            "Profile ID ${profileId.internalId} does" +
               " not match an existing Profile"
           )
         )
@@ -253,6 +261,47 @@ class ProfileManagementController @Inject constructor(
       } else {
         AsyncResult.Failure(DeviceSettingsNotFoundException("Device Settings not found."))
       }
+    }
+  }
+
+  /** Creates a profile with all default attributes. */
+  fun createDefaultProfile(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      if (it.profilesCount > 0) {
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILES_ALREADY_EXIST)
+      }
+
+      val nextProfileId = it.nextProfileId
+
+      val newProfile = Profile.newBuilder().apply {
+        this.name = ""
+        this.pin = ""
+        this.allowDownloadAccess = true
+        this.allowInLessonQuickLanguageSwitching = false
+        this.id = LegacyProfileId.newBuilder().setInternalId(nextProfileId).build()
+        dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
+        this.isAdmin = true
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        numberOfLogins = 0
+
+        avatar = ProfileAvatar.newBuilder().apply {
+          avatarColorRgb = -10710042
+        }.build()
+      }.build()
+
+      val wasProfileEverAdded = it.profilesCount > 0
+
+      val profileDatabaseBuilder =
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfile)
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResult(null, "", deferred)
     }
   }
 
@@ -299,7 +348,7 @@ class ProfileManagementController @Inject constructor(
         this.pin = pin
         this.allowDownloadAccess = allowDownloadAccess
         this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
-        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        this.id = LegacyProfileId.newBuilder().setInternalId(nextProfileId).build()
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -368,7 +417,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfileBuilder = profile.toBuilder()
       if (!profile.startedProfileOnboarding) {
         updatedProfileBuilder.startedProfileOnboarding = true
-        analyticsController.logProfileOnboardingStartedContext(profileId)
+        analyticsController.logProfileOnboardingStartedContext(profileId.toLegacyProfileId())
       }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
@@ -400,7 +449,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfileBuilder = profile.toBuilder()
       if (!profile.completedProfileOnboarding) {
         updatedProfileBuilder.completedProfileOnboarding = true
-        analyticsController.logProfileOnboardingEndedContext(profileId)
+        analyticsController.logProfileOnboardingEndedContext(profileId.toLegacyProfileId())
       }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
@@ -826,7 +875,10 @@ class ProfileManagementController @Inject constructor(
    * @param audioLanguage New audio language for the profile being updated
    * @return a [DataProvider] that indicates the success/failure of this update operation
    */
-  fun updateAudioLanguage(profileId: ProfileId, audioLanguage: AudioLanguage): DataProvider<Any?> {
+  fun updateAudioLanguage(
+    profileId: ProfileId,
+    audioLanguage: AudioLanguage
+  ): DataProvider<Any?> {
     val audioSelection = AudioTranslationLanguageSelection.newBuilder().apply {
       this.selectedLanguage = when (audioLanguage) {
         AudioLanguage.UNRECOGNIZED, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED,
@@ -945,7 +997,7 @@ class ProfileManagementController @Inject constructor(
       }
       AsyncResult.Failure(
         ProfileNotFoundException(
-          "ProfileId ${profileId.internalId} is" +
+          "Profile ID ${profileId.internalId} is" +
             " not associated with an existing profile"
         )
       )
@@ -1010,7 +1062,8 @@ class ProfileManagementController @Inject constructor(
         directoryManagementUtil.deleteDir(internalProfileId.toString())
         learnerAnalyticsLogger.logDeleteProfile(installationId, profileId = null, profile.learnerId)
       }
-      Pair(ProfileDatabase.getDefaultInstance(), ProfileActionStatus.SUCCESS)
+      val clearedDatabase = it.toBuilder().clearProfiles().build()
+      Pair(clearedDatabase, ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       getDeferredResult(profileId = null, name = null, deferred)
@@ -1182,13 +1235,13 @@ class ProfileManagementController @Inject constructor(
       ProfileActionStatus.PROFILE_NOT_FOUND ->
         AsyncResult.Failure(
           ProfileNotFoundException(
-            "ProfileId ${profileId?.internalId} does not match an existing Profile"
+            "Profile ID ${profileId?.internalId} does not match an existing Profile"
           )
         )
       ProfileActionStatus.PROFILE_NOT_ADMIN ->
         AsyncResult.Failure(
           ProfileNotAdminException(
-            "ProfileId ${profileId?.internalId} does not match an existing admin"
+            "Profile ID ${profileId?.internalId} does not match an existing admin"
           )
         )
       ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN ->
@@ -1199,6 +1252,13 @@ class ProfileManagementController @Inject constructor(
         )
       ProfileActionStatus.PROFILE_TYPE_UNKNOWN ->
         AsyncResult.Failure(UnknownProfileTypeException("ProfileType must be set."))
+
+      ProfileActionStatus.PROFILES_ALREADY_EXIST ->
+        AsyncResult.Failure(
+          ProfilesAlreadyExistException(
+            "Failed to create a default profile because profiles already exist."
+          )
+        )
     }
   }
 

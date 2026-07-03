@@ -40,6 +40,9 @@ class StringLanguageTranslationCheckTest {
     private val NIGERIAN_PIDGIN_STRINGS_SHARED = mapOf("shared_string" to "Pause di audio")
     private val NIGERIAN_PIDGIN_STRINGS_EXTRAS =
       mapOf("nigerian_pidgin_only_string" to "Abeg select all di correct choices.")
+
+    private val HINDI_STRINGS_SHARED = mapOf("shared_string" to "ऑडियो रोकें")
+    private val HINDI_STRINGS_EXTRAS = mapOf("hindi_only_string" to "नमस्ते")
   }
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
@@ -88,6 +91,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -101,6 +105,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -122,6 +127,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -143,6 +149,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
     populateSwahiliTranslations(SWAHILI_STRINGS_EXTRAS)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -164,6 +171,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_EXTRAS)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -179,33 +187,60 @@ class StringLanguageTranslationCheckTest {
   }
 
   @Test
+  fun testScript_presentTranslations_missingSomeHindi_outputsMissingTranslations() {
+    populateArabicTranslations(ARABIC_STRINGS_SHARED)
+    populateBrazilianPortugueseTranslations(BRAZILIAN_PORTUGUESE_STRINGS_SHARED)
+    populateEnglishTranslations(ENGLISH_STRINGS_SHARED)
+    populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
+    populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_EXTRAS)
+
+    runScript(tempFolder.root.absolutePath)
+
+    assertThat(outContent.asString().trim()).isEqualTo(
+      """
+      1 translation(s) were found missing.
+      
+      Missing translations:
+      HINDI (1/1):
+      - shared_string
+      """.trimIndent().trim()
+    )
+  }
+
+  @Test
   fun testScript_presentTranslations_missingMultiple_outputsMissingTranslationsWithTotalCount() {
     populateArabicTranslations(ARABIC_STRINGS_EXTRAS)
     populateBrazilianPortugueseTranslations(BRAZILIAN_PORTUGUESE_STRINGS_EXTRAS)
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED + ENGLISH_STRINGS_EXTRAS)
     populateSwahiliTranslations(SWAHILI_STRINGS_EXTRAS)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_EXTRAS)
+    populateHindiTranslations(HINDI_STRINGS_EXTRAS)
 
     runScript(tempFolder.root.absolutePath)
 
     assertThat(outContent.asString().trim()).isEqualTo(
       """
-      8 translation(s) were found missing.
+      10 translation(s) were found missing.
       
       Missing translations:
-      ARABIC (2/8):
+      ARABIC (2/10):
       - shared_string
       - english_only_string
       
-      BRAZILIAN_PORTUGUESE (2/8):
+      BRAZILIAN_PORTUGUESE (2/10):
       - shared_string
       - english_only_string
       
-      SWAHILI (2/8):
+      SWAHILI (2/10):
       - shared_string
       - english_only_string
       
-      NIGERIAN_PIDGIN (2/8):
+      NIGERIAN_PIDGIN (2/10):
+      - shared_string
+      - english_only_string
+
+      HINDI (2/10):
       - shared_string
       - english_only_string
       """.trimIndent().trim()
@@ -223,24 +258,28 @@ class StringLanguageTranslationCheckTest {
     populateNigerianPidginTranslations(
       NIGERIAN_PIDGIN_STRINGS_SHARED + NIGERIAN_PIDGIN_STRINGS_EXTRAS
     )
+    populateHindiTranslations(HINDI_STRINGS_SHARED + HINDI_STRINGS_EXTRAS)
 
     runScript(tempFolder.root.absolutePath)
 
     assertThat(outContent.asString().trim()).isEqualTo(
       """
-      4 translation(s) were found missing.
+      5 translation(s) were found missing.
       
       Missing translations:
-      ARABIC (1/4):
+      ARABIC (1/5):
       - english_only_string
       
-      BRAZILIAN_PORTUGUESE (1/4):
+      BRAZILIAN_PORTUGUESE (1/5):
       - english_only_string
       
-      SWAHILI (1/4):
+      SWAHILI (1/5):
       - english_only_string
       
-      NIGERIAN_PIDGIN (1/4):
+      NIGERIAN_PIDGIN (1/5):
+      - english_only_string
+
+      HINDI (1/5):
       - english_only_string
       """.trimIndent().trim()
     )
@@ -253,6 +292,7 @@ class StringLanguageTranslationCheckTest {
     populateEnglishTranslations(mapOf())
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED)
     populateNigerianPidginTranslations(NIGERIAN_PIDGIN_STRINGS_SHARED)
+    populateHindiTranslations(HINDI_STRINGS_SHARED)
 
     runScript(tempFolder.root.absolutePath)
 
@@ -280,6 +320,10 @@ class StringLanguageTranslationCheckTest {
 
   private fun populateNigerianPidginTranslations(strings: Map<String, String>) {
     populateTranslations(appResources, "values-pcm-rNG", strings)
+  }
+
+  private fun populateHindiTranslations(strings: Map<String, String>) {
+    populateTranslations(appResources, "values-hi", strings)
   }
 
   private fun populateTranslations(

@@ -300,7 +300,8 @@ class AppLanguageLocaleHandlerTest {
    * hasn't been explicitly set (since it then defaults to the system's language).
    */
   private fun retrieveAppLanguageLocale(): OppiaLocale.DisplayLocale {
-    val localeProvider = translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
+    val localeProvider =
+      translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 

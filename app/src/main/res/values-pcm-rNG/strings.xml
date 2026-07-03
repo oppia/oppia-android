@@ -199,8 +199,11 @@
   <string name="topic_prefix">Topic: %s</string>
   <string name="selected_image_region_selection_content_description">Picture wey show %1$s</string>
   <string name="unselected_image_region_selection_content_description">Select the image wey show %1$s</string>
-  <string name="flashback_toolbar_title_text" fuzzy="true">Check the question wey you do before</string>
-  <string name="flashback_state_feedback_text" fuzzy="true">You dey confuse? No wahala. Make we check how we take solve the last question.</string>
+  <string name="flashback_toolbar_title_text">Check the question wey you do before</string>
+  <string name="flashback_state_feedback_text">You dey confuse? No wahala. Make we check how we take solve the last question.</string>
+  <string name="flashback_viewed_feedback_text">You don see example, make we try am again</string>
+  <string name="flashback_feedback_prompt">Your answer no Dey correct. Make we check an example</string>
+  <string name="submitted_answer_label_text">(Answer wey you submit)</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>

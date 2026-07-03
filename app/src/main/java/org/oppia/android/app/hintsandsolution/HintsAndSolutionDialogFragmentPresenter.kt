@@ -11,7 +11,7 @@ import org.oppia.android.app.databinding.databinding.ReturnToLessonButtonItemBin
 import org.oppia.android.app.databinding.databinding.SolutionSummaryBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -51,7 +51,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var writtenTranslationContext: WrittenTranslationContext
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
   private lateinit var explorationId: String
   private lateinit var hintsViewModel: HintsAndSolutionViewModel
@@ -73,7 +73,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
     isSolutionRevealed: Boolean?,
-    profileId: ProfileId
+    profileId: LegacyProfileId
   ): View {
     expandedItemIndexes += expandedItemsList ?: listOf()
     this.expandedHintListIndexListener = expandedHintListIndexListener

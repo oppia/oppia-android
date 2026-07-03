@@ -4,18 +4,19 @@ import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.DeviceSettings
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val userProfileId: ProfileId,
+  private val userProfileId: LegacyProfileId,
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
   /**
@@ -30,7 +31,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   /** Called when topic wifi update permission changes. */
   fun onTopicWifiUpdatePermissionChanged() {
     profileManagementController.updateWifiPermissionDeviceSettings(
-      userProfileId,
+      userProfileId.toProfileIdPreservingZero(),
       !isTopicWifiUpdatePermission.get()!!
     ).toLiveData()
       .observe(
@@ -50,7 +51,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   /** Called when topic auto update permission changes. */
   fun onTopicAutoUpdatePermissionChanged() {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-      userProfileId,
+      userProfileId.toProfileIdPreservingZero(),
       !isTopicAutoUpdatePermission.get()!!
     ).toLiveData().observe(
       fragment,

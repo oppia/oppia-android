@@ -52,7 +52,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -102,7 +102,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -267,7 +266,7 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
     return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, profileId)
   }
 
@@ -364,7 +363,6 @@ class DeveloperOptionsActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

@@ -9,14 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.ProfilePictureActivityBinding
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
     StatusBarColor.statusBarColorUpdate(
@@ -45,7 +46,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
       viewModel = profilePictureActivityViewModel
       lifecycleOwner = activity
     }
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     subscribeToProfileLiveData()
     setUpToolbar()
@@ -67,7 +68,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processGetProfileResult
     )
   }

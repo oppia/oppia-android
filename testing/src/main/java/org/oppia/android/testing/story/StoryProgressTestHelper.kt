@@ -10,7 +10,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -76,7 +76,10 @@ class StoryProgressTestHelper @Inject constructor(
    * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
    *     ago
    */
-  fun markCompletedTestTopic0Story0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -91,7 +94,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete prerequisite chapter first.
     markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
@@ -108,7 +114,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story0Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp2(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete prerequisite chapter first.
     markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
@@ -125,7 +134,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic1Story0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic1Story0Exp0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_1,
@@ -139,7 +151,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 0's story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Complete last chapter (+ previous automatically).
     markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
   }
@@ -148,7 +163,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 1's story 2 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopic1Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic1Story0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -156,7 +174,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all stories in topic 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markCompletedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -164,7 +182,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all stories in topic 1 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic1(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markCompletedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -172,7 +190,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all test topics as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on
    * the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopics(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     // Stories and Explorations for "Test Topic"s are not in chronological order so we want to
     // ensure that the combinations of Topic / Story / Exploration that are visible will be marked
     // as completed.
@@ -187,7 +205,10 @@ class StoryProgressTestHelper @Inject constructor(
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
    */
-  fun markCompletedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0Exp0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -202,7 +223,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete prerequisite chapter first.
     markCompletedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
@@ -219,7 +243,10 @@ class StoryProgressTestHelper @Inject constructor(
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
    */
-  fun markCompletedRatiosStory1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -234,7 +261,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedRatiosStory1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete prerequisite chapter first.
     markCompletedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
@@ -250,7 +280,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios topic story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
     markCompletedRatiosStory0Exp1(profileId, timestampOlderThanOneWeek)
   }
@@ -259,7 +289,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios topic story 1 as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
     markCompletedRatiosStory1Exp1(profileId, timestampOlderThanOneWeek)
   }
@@ -268,7 +298,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all ratios stories as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on
    * the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedRatiosTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosTopic(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markCompletedRatiosStory0(profileId, timestampOlderThanOneWeek)
     markCompletedRatiosStory1(profileId, timestampOlderThanOneWeek)
   }
@@ -280,7 +310,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedFractionsStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedFractionsStory0Exp0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     recordCompletedChapter(
       profileId,
       FRACTIONS_TOPIC_ID,
@@ -295,7 +328,10 @@ class StoryProgressTestHelper @Inject constructor(
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedFractionsStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedFractionsStory0Exp1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete prerequisite chapter first.
     markCompletedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
@@ -311,7 +347,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks fractions topic story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedFractionsStory0(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
     markCompletedFractionsStory0Exp1(profileId, timestampOlderThanOneWeek)
   }
@@ -320,7 +356,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all fractions stories as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedFractionsTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedFractionsTopic(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markCompletedFractionsStory0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -337,7 +373,7 @@ class StoryProgressTestHelper @Inject constructor(
    *     ago
    */
   fun markInProgressSavedTestTopic0Story0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressSaved(
@@ -360,7 +396,7 @@ class StoryProgressTestHelper @Inject constructor(
    *     ago
    */
   fun markInProgressNotSavedTestTopic0Story0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressNotSaved(
@@ -377,7 +413,7 @@ class StoryProgressTestHelper @Inject constructor(
    * parameters and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic0Story0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
@@ -396,7 +432,7 @@ class StoryProgressTestHelper @Inject constructor(
    * parameters and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic0Story0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
@@ -415,7 +451,7 @@ class StoryProgressTestHelper @Inject constructor(
    * parameters and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic0Story0Exp2(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
@@ -434,7 +470,7 @@ class StoryProgressTestHelper @Inject constructor(
    * parameters and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic0Story0Exp2(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
@@ -453,7 +489,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic1Story2Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressSaved(
@@ -470,7 +506,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic1Story2Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressNotSaved(
@@ -487,7 +523,7 @@ class StoryProgressTestHelper @Inject constructor(
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic0Story0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     markInProgressSavedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
@@ -498,7 +534,7 @@ class StoryProgressTestHelper @Inject constructor(
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic0Story0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     markInProgressNotSavedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
@@ -509,7 +545,7 @@ class StoryProgressTestHelper @Inject constructor(
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedTestTopic1Story0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     markInProgressSavedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
@@ -520,7 +556,7 @@ class StoryProgressTestHelper @Inject constructor(
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedTestTopic1Story0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     markInProgressNotSavedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
@@ -530,7 +566,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 0 as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedTestTopic0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -538,7 +577,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 0 as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedTestTopic0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -546,7 +588,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 1 as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedTestTopic1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -554,7 +599,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks test topic 1 as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedTestTopic1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -562,7 +610,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all test topics as in progress saved. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markInProgressSavedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedTestTopics(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedTestTopic0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -570,7 +621,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all test topics as in progress not saved. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markInProgressNotSavedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedTestTopics(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -581,7 +635,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedRatiosStory0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressSaved(
@@ -598,7 +652,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedRatiosStory0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressNotSaved(
@@ -615,7 +669,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedRatiosStory0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -634,7 +688,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedRatiosStory0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -653,7 +707,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedRatiosStory1Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressSaved(
@@ -670,7 +724,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedRatiosStory1Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressNotSaved(
@@ -687,7 +741,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedRatiosStory1Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -706,7 +760,7 @@ class StoryProgressTestHelper @Inject constructor(
    * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedRatiosStory1Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -724,7 +778,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios story 0 as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedRatiosStory0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -732,7 +789,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios story 0 as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedRatiosStory0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -740,7 +800,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios story 1 as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedRatiosStory1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -748,7 +811,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks ratios story 1 as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedRatiosStory1(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -756,7 +822,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks the ratios topic as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedRatios(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markInProgressSavedRatiosStory0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -764,7 +830,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks the ratios topic as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedRatios(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markInProgressNotSavedRatiosStory0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -775,7 +841,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedFractionsStory0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressSaved(
@@ -792,7 +858,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedFractionsStory0Exp0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     recordChapterAsInProgressNotSaved(
@@ -809,7 +875,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markInProgressSavedFractionsStory0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -828,7 +894,7 @@ class StoryProgressTestHelper @Inject constructor(
    * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedFractionsStory0Exp1(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
@@ -846,7 +912,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks fractions story 0 as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedFractionsStory0(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -855,7 +924,7 @@ class StoryProgressTestHelper @Inject constructor(
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markInProgressNotSavedFractionsStory0(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     markInProgressNotSavedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
@@ -865,7 +934,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks the fractions topic as in progress saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressSavedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressSavedFractions(profileId: LegacyProfileId, timestampOlderThanOneWeek: Boolean) {
     markInProgressSavedFractionsStory0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -873,7 +942,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks the fractions topic as in progress not saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markInProgressNotSavedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedFractions(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedFractionsStory0(profileId, timestampOlderThanOneWeek)
   }
 
@@ -883,7 +955,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all lessons as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on the
    * parameters passed to this method, and any other nuances.
    */
-  fun markAllTopicsAsCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markAllTopicsAsCompleted(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markCompletedTestTopics(profileId, timestampOlderThanOneWeek)
     markCompletedRatiosTopic(profileId, timestampOlderThanOneWeek)
     markCompletedFractionsTopic(profileId, timestampOlderThanOneWeek)
@@ -893,7 +968,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all lessons as in_progress_saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markAllTopicsAsInProgressSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markAllTopicsAsInProgressSaved(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressSavedTestTopic0(profileId, timestampOlderThanOneWeek)
     markInProgressSavedTestTopic1(profileId, timestampOlderThanOneWeek)
     markInProgressSavedRatios(profileId, timestampOlderThanOneWeek)
@@ -904,7 +982,10 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks all lessons as in_progress_not_saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markAllTopicsAsInProgressNotSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markAllTopicsAsInProgressNotSaved(
+    profileId: LegacyProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedTestTopic1(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedRatios(profileId, timestampOlderThanOneWeek)
@@ -912,7 +993,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   private fun recordCompletedChapter(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -930,7 +1011,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   private fun recordChapterAsInProgressNotSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -948,7 +1029,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   private fun recordChapterAsInProgressSaved(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,

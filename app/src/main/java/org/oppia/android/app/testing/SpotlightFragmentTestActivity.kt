@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -34,7 +34,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
   companion object {
     /** Returns the [Intent] for opening [SpotlightFragmentTestActivity]. */
     fun createSpotlightFragmentTestActivity(context: Context): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
       return Intent(context, SpotlightFragmentTestActivity::class.java).also {
         it.decorateWithUserProfileId(profileId)
       }

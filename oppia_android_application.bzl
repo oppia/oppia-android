@@ -2,6 +2,9 @@
 Macros pertaining to building & managing Android app bundles.
 """
 
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
 def _convert_apk_to_aab_module_impl(ctx):
     output_file = ctx.outputs.output_file
     input_file = ctx.attr.input_file.files.to_list()[0]
@@ -24,7 +27,7 @@ def _convert_apk_to_aab_module_impl(ctx):
         executable = ctx.executable._aapt2_tool.path,
         arguments = arguments,
         mnemonic = "GenerateAndroidAppBundleModuleFromApk",
-        progress_message = "Generating deployable AAB",
+        progress_message = "Generating app bundle AAB",
     )
     return DefaultInfo(
         files = depset([output_file]),
@@ -62,7 +65,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
         tools = [],
         command = command,
         mnemonic = "ConvertModuleAabToStructuredZip",
-        progress_message = "Generating deployable AAB",
+        progress_message = "Correcting app bundle structure",
     )
     return DefaultInfo(
         files = depset([output_file]),
@@ -82,6 +85,8 @@ def _restrict_languages_in_raw_module_zip_impl(ctx):
         tools = [ctx.executable._filter_per_language_resources_tool],
         executable = ctx.executable._filter_per_language_resources_tool.path,
         arguments = [arguments],
+        mnemonic = "RestrictLanguagesInAabModule",
+        progress_message = "Removing unused language resources",
     )
 
     return DefaultInfo(
@@ -151,11 +156,106 @@ def _package_metadata_into_deployable_aab_impl(ctx):
         tools = [],
         command = command,
         mnemonic = "PackageMetadataIntoDeployableAAB",
-        progress_message = "Generating deployable AAB",
+        progress_message = "Packaging symbols file into AAB",
     )
     return DefaultInfo(
         files = depset([output_aab_file]),
         runfiles = ctx.runfiles(files = [output_aab_file]),
+    )
+
+def _sign_and_rename_aab_impl(ctx):
+    # Extract jarsigner from the Bazel Java runtime.
+    java_runtime = ctx.toolchains["@bazel_tools//tools/jdk:runtime_toolchain_type"].java_runtime
+    java_bin_path = java_runtime.java_executable_exec_path
+    jarsigner_path = java_bin_path[:java_bin_path.rfind("/")] + "/jarsigner"
+
+    input_aab = ctx.file.input_aab
+    extracted_key_alias = ctx.attr.key_alias[BuildSettingInfo].value
+    bundletool = ctx.executable._bundletool_tool
+
+    # Determine which keystore to use.
+    extracted_keystore_filepath = ctx.attr.keystore[BuildSettingInfo].value
+    extracted_keystore_password_filepath = ctx.attr.keystore_password_file[BuildSettingInfo].value
+    additional_keystore_inputs = []
+    if extracted_keystore_filepath and extracted_keystore_password_filepath and extracted_key_alias:
+        keystore_filepath = extracted_keystore_filepath
+        keystore_password_filepath = extracted_keystore_password_filepath
+        key_alias = extracted_key_alias
+    else:
+        # Fall back to the default debug keystore (which requires a password file).
+        keystore_filepath = ctx.file._debug_keystore.path
+        additional_keystore_inputs.append(ctx.file._debug_keystore)
+        key_alias = ctx.attr._debug_key_alias
+
+        debug_password_file = ctx.actions.declare_file(ctx.label.name + "_debug_password.txt")
+        ctx.actions.write(
+            output = debug_password_file,
+            content = "android",
+        )
+        keystore_password_filepath = debug_password_file.path
+        additional_keystore_inputs.append(debug_password_file)
+
+    output_aab = ctx.actions.declare_file(ctx.label.name + ".aab")
+    output_dir = ctx.actions.declare_directory(ctx.label.name + "_release")
+
+    command = """
+    # Ensure that subshells correctly bubble their failures to the outer shell.
+    set -o pipefail
+    mkdir -p {output_dir}
+    cp {input_aab} {output_aab} || exit 255
+
+    VERSION_NAME=$({bundletool} dump manifest --bundle={input_aab} | grep -o 'android:versionName="[^"]*"' | cut -d'"' -f2) || exit 255
+    RENAMED_AAB_PATH="{output_dir}/oppia-android-$VERSION_NAME.aab"
+    cp {input_aab} $RENAMED_AAB_PATH || exit 255
+
+    # Fall back to system jarsigner if the derived path from the toolchain doesn't exist or is not executable
+    # (e.g. when using Bazel's embedded remotejdk which doesn't ship development tools like jarsigner).
+    JARSIGNER="{jarsigner_path}"
+    if [ ! -x "$JARSIGNER" ]; then
+        JARSIGNER="jarsigner"
+    fi
+
+    JARSIGNER_LOG_FILE=$(mktemp)
+    if ! $JARSIGNER -keystore {keystore} -storepass:file {keystore_password_file} -keypass:file {keystore_password_file} $RENAMED_AAB_PATH "{key_alias}" > "$JARSIGNER_LOG_FILE" 2>&1 ; then
+        cat "$JARSIGNER_LOG_FILE" >&2
+        rm -f "$JARSIGNER_LOG_FILE"
+        exit 255
+    fi
+    rm -f "$JARSIGNER_LOG_FILE"
+
+    echo "Dev-only AAB:        bazel-bin/{name}.aab"
+    echo "Renamed Release AAB: bazel-bin/{name}_release/oppia-android-$VERSION_NAME.aab"
+    echo ""
+    """.format(
+        input_aab = input_aab.path,
+        keystore = keystore_filepath,
+        keystore_password_file = keystore_password_filepath,
+        key_alias = key_alias,
+        bundletool = bundletool.path,
+        jarsigner_path = jarsigner_path,
+        output_aab = output_aab.path,
+        output_dir = output_dir.path,
+        name = ctx.label.name,
+    )
+
+    ctx.actions.run_shell(
+        outputs = [output_aab, output_dir],
+        inputs = [input_aab, ctx.info_file] + additional_keystore_inputs,
+        tools = depset(
+            direct = [bundletool],
+            transitive = [java_runtime.files],
+        ),
+        command = command,
+        mnemonic = "SignAndRenameAab",
+        progress_message = "Re-signing/renaming AAB for deployment",
+        execution_requirements = {
+            "no-cache": "1",  # Disable caching to try and coerce re-printing the renamed binary.
+            "local": "1",  # Ensure the local 'jarsigner' command can be accessed, if needed.
+        },
+    )
+    return DefaultInfo(
+        files = depset([output_aab, output_dir]),
+        runfiles = ctx.runfiles(files = [output_aab, output_dir]),
     )
 
 def _generate_universal_apk_impl(ctx):
@@ -299,6 +399,34 @@ _package_metadata_into_deployable_aab = rule(
     implementation = _package_metadata_into_deployable_aab_impl,
 )
 
+_sign_and_rename_aab = rule(
+    attrs = {
+        "input_aab": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "keystore": attr.label(
+            mandatory = True,
+        ),
+        "keystore_password_file": attr.label(
+            mandatory = True,
+        ),
+        "key_alias": attr.label(mandatory = True),
+        "_bundletool_tool": attr.label(
+            executable = True,
+            cfg = "host",
+            default = "//third_party:android_bundletool_binary",
+        ),
+        "_debug_keystore": attr.label(
+            default = Label("@bazel_tools//tools/android:debug_keystore"),
+            allow_single_file = True,
+        ),
+        "_debug_key_alias": attr.string(default = "androiddebugkey"),
+    },
+    toolchains = ["@bazel_tools//tools/jdk:runtime_toolchain_type"],
+    implementation = _sign_and_rename_aab_impl,
+)
+
 _generate_universal_apk = rule(
     attrs = {
         "input_aab_file": attr.label(
@@ -321,7 +449,7 @@ _generate_universal_apk = rule(
     implementation = _generate_universal_apk_impl,
 )
 
-def oppia_android_application(name, config_file, proguard_generate_mapping, **kwargs):
+def oppia_android_application(name, config_file, proguard_generate_mapping, production_release, **kwargs):
     """
     Creates an Android App Bundle (AAB) binary with the specified name and arguments.
 
@@ -337,14 +465,31 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
         config_file: target. The path to the .pb.json bundle configuration file for this build.
         proguard_generate_mapping: boolean. Whether to perform a Proguard optimization step &
             generate Proguard mapping corresponding to the obfuscation step.
+        production_release: boolean. Whether this is a production-facing release build which will
+            undergo additional renaming and, if configured, signing.
         **kwargs: additional arguments. See android_binary for the exact arguments that are
             available.
     """
+
     binary_name = "%s_binary" % name
-    module_aab_name = "%s_module_aab" % name
-    raw_module_zip_name = "%s_raw_module_zip" % name
-    language_restricted_module_zip_name = "%s_lang_restricted_module_zip" % name
-    deployable_aab_name = "%s_deployable" % name
+    binary_file_name = "%s.apk" % binary_name
+    proguard_map_file_name = ":%s_proguard.map" % binary_name
+
+    main_module_name = "%s_main_module" % name
+    main_module_file_name = "%s.aab" % main_module_name
+
+    corrected_structure_app_module_name = "%s_corrected_structure_app_module" % name
+    corrected_structure_app_module_file_name = "%s.zip" % corrected_structure_app_module_name
+
+    language_restricted_module_name = "%s_language_restricted_module" % name
+    language_restricted_module_file_name = "%s.zip" % language_restricted_module_name
+
+    deployable_name = "%s_deployable" % name
+    deployable_file_name = "%s.aab" % deployable_name
+
+    deployable_with_symbols_aab_name = "%s_deployable_with_symbols" % name
+    deployable_with_symbols_aab_file_name = "%s.aab" % deployable_with_symbols_aab_name
+
     native.android_binary(
         name = binary_name,
         tags = ["manual"],
@@ -352,46 +497,56 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
         **kwargs
     )
     _convert_apk_to_module_aab(
-        name = module_aab_name,
-        input_file = ":%s.apk" % binary_name,
-        output_file = "%s.aab" % module_aab_name,
+        name = main_module_name,
+        input_file = binary_file_name,
+        output_file = main_module_file_name,
         tags = ["manual"],
     )
     _convert_module_aab_to_structured_zip(
-        name = raw_module_zip_name,
-        input_file = ":%s.aab" % module_aab_name,
-        output_file = "%s.zip" % raw_module_zip_name,
+        name = corrected_structure_app_module_name,
+        input_file = main_module_file_name,
+        output_file = corrected_structure_app_module_file_name,
         tags = ["manual"],
     )
     _restrict_languages_in_raw_module_zip(
-        name = language_restricted_module_zip_name,
-        input_file = "%s.zip" % raw_module_zip_name,
-        output_file = "%s.zip" % language_restricted_module_zip_name,
+        name = language_restricted_module_name,
+        input_file = corrected_structure_app_module_file_name,
+        output_file = language_restricted_module_file_name,
+        tags = ["manual"],
+    )
+    _bundle_module_zip_into_deployable_aab(
+        name = deployable_name,
+        input_file = language_restricted_module_file_name,
+        config_file = config_file,
+        output_file = deployable_file_name,
         tags = ["manual"],
     )
     if proguard_generate_mapping:
-        _bundle_module_zip_into_deployable_aab(
-            name = deployable_aab_name,
-            input_file = ":%s.zip" % language_restricted_module_zip_name,
-            config_file = config_file,
-            output_file = "%s.aab" % deployable_aab_name,
+        _package_metadata_into_deployable_aab(
+            name = deployable_with_symbols_aab_name,
+            input_aab_file = deployable_file_name,
+            proguard_map_file = proguard_map_file_name,
+            output_aab_file = deployable_with_symbols_aab_file_name,
             tags = ["manual"],
         )
-        _package_metadata_into_deployable_aab(
+        deployable_and_maybe_symbols_added_aab_file_name = deployable_with_symbols_aab_file_name
+    else:
+        deployable_and_maybe_symbols_added_aab_file_name = deployable_file_name
+    if production_release:
+        _sign_and_rename_aab(
             name = name,
-            input_aab_file = ":%s.aab" % deployable_aab_name,
-            proguard_map_file = ":%s_proguard.map" % binary_name,
-            output_aab_file = "%s.aab" % name,
+            input_aab = ":%s" % deployable_and_maybe_symbols_added_aab_file_name,
+            keystore = "//config:keystore_file",
+            keystore_password_file = "//config:keystore_password_file",
+            key_alias = "//config:key_alias",
             tags = ["manual"],
         )
     else:
-        # No extra package step is needed if there's no Proguard map file.
-        _bundle_module_zip_into_deployable_aab(
+        # Copy over the file to its expected location.
+        copy_file(
             name = name,
-            input_file = ":%s.zip" % language_restricted_module_zip_name,
-            config_file = config_file,
-            output_file = "%s.aab" % name,
-            tags = ["manual"],
+            src = deployable_and_maybe_symbols_added_aab_file_name,
+            out = "%s.aab" % name,
         )
 
 def generate_universal_apk(name, aab_target):

@@ -18,9 +18,9 @@ import org.oppia.android.app.databinding.databinding.ProfileChooserFragmentBindi
 import org.oppia.android.app.databinding.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -30,6 +30,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -205,8 +206,8 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
 
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
-      val profileId =
-        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+      val profileId = LegacyProfileId.newBuilder()
+        .setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
@@ -236,13 +237,15 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id)
+      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
     }
   }
 
   private fun loginToProfile(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
-      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
+      profileManagementController.loginToProfile(
+        profile.id.toProfileIdPreservingZero()
+      ).toLiveData().observe(fragment) {
         if (it is AsyncResult.Success) {
           if (enableMultipleClassrooms.value) {
             activity.startActivity(

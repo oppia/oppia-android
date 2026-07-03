@@ -3,7 +3,7 @@ package org.oppia.android.app.topic
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
@@ -22,7 +22,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
   private lateinit var topicId: String
 
   fun handleOnCreate(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?

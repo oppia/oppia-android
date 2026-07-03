@@ -8,8 +8,8 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.ResumeLessonActivityBinding
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.ui.R
@@ -18,6 +18,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val RESUME_LESSON_TAG = "ResumeLesson"
@@ -29,7 +30,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val oppiaLogger: OppiaLogger
 ) {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -39,7 +40,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
 
   /** Handles onCreate() method of the [ResumeLessonActivity]. */
   fun handleOnCreate(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -102,7 +103,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

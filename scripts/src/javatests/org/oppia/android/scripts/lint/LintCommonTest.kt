@@ -22,35 +22,35 @@ class LintCommonTest {
   }
 
   @Test
-  fun testModuleName_allModules_haveCorrectNames() {
-    assertThat(ModuleName.APP.moduleName).isEqualTo("app")
-    assertThat(ModuleName.DOMAIN.moduleName).isEqualTo("domain")
-    assertThat(ModuleName.TESTING.moduleName).isEqualTo("testing")
-    assertThat(ModuleName.UTILITY.moduleName).isEqualTo("utility")
-    assertThat(ModuleName.DATA.moduleName).isEqualTo("data")
+  fun testLayerName_allLayers_haveCorrectNames() {
+    assertThat(LayerName.APP.layerName).isEqualTo("app")
+    assertThat(LayerName.DOMAIN.layerName).isEqualTo("domain")
+    assertThat(LayerName.TESTING.layerName).isEqualTo("testing")
+    assertThat(LayerName.UTILITY.layerName).isEqualTo("utility")
+    assertThat(LayerName.DATA.layerName).isEqualTo("data")
   }
 
   @Test
-  fun testModuleName_applicationModule_isAppModule() {
-    assertThat(ModuleName.APPLICATION_MODULE).isEqualTo(ModuleName.APP)
-    assertThat(ModuleName.APPLICATION_MODULE.moduleName).isEqualTo("app")
+  fun testLayerName_applicationLayer_isAppLayer() {
+    assertThat(LayerName.APPLICATION_LAYER).isEqualTo(LayerName.APP)
+    assertThat(LayerName.APPLICATION_LAYER.layerName).isEqualTo("app")
   }
 
   @Test
-  fun testModuleName_libraryModules_containsExpectedModules() {
-    val libraryModules = ModuleName.LIBRARY_MODULES
-    val expectedModules =
-      listOf(ModuleName.DOMAIN, ModuleName.TESTING, ModuleName.UTILITY, ModuleName.DATA)
+  fun testLayerName_libraryLayers_containsExpectedLayers() {
+    val libraryLayers = LayerName.LIBRARY_LAYERS
+    val expectedLayers =
+      listOf(LayerName.DOMAIN, LayerName.TESTING, LayerName.UTILITY, LayerName.DATA)
 
-    assertThat(libraryModules).containsExactlyElementsIn(expectedModules)
-    assertThat(libraryModules).doesNotContain(ModuleName.APP)
+    assertThat(libraryLayers).containsExactlyElementsIn(expectedLayers)
+    assertThat(libraryLayers).doesNotContain(LayerName.APP)
   }
 
   @Test
-  fun testModuleConfig_validConfiguration_createsSuccessfully() {
-    val config = createValidModuleConfig()
+  fun testLayerConfig_validConfiguration_createsSuccessfully() {
+    val config = createValidLayerConfig()
 
-    assertThat(config.name).isEqualTo("test-module")
+    assertThat(config.name).isEqualTo("test-layer")
     assertThat(config.isAndroid).isTrue()
     assertThat(config.isLibrary).isFalse()
     assertThat(config.isTest).isTrue()
@@ -58,25 +58,25 @@ class LintCommonTest {
   }
 
   @Test
-  fun testModuleConfig_defaultLintModelDir_isNull() {
-    val config = createMinimalModuleConfig()
+  fun testLayerConfig_defaultLintModelDir_isNull() {
+    val config = createMinimalLayerConfig()
 
     assertThat(config.lintModelDir).isNull()
   }
 
   @Test
-  fun testModuleConfig_blankName_throwsException() {
+  fun testLayerConfig_blankName_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(name = "")
+      createMinimalLayerConfig(name = "")
     }
 
-    assertThat(exception).hasMessageThat().contains("Module name cannot be blank")
+    assertThat(exception).hasMessageThat().contains("Layer name cannot be blank")
   }
 
   @Test
-  fun testModuleConfig_nonExistentProGuardFile_throwsException() {
+  fun testLayerConfig_nonExistentProGuardFile_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(proGuardFiles = listOf("/non/existent/proguard.pro"))
+      createMinimalLayerConfig(proGuardFiles = listOf("/non/existent/proguard.pro"))
     }
 
     assertThat(exception).hasMessageThat().contains("ProGuard files do not exist")
@@ -84,12 +84,12 @@ class LintCommonTest {
   }
 
   @Test
-  fun testModuleConfig_nonExistentAarFile_throwsException() {
+  fun testLayerConfig_nonExistentAarFile_throwsException() {
     val nonExistentAar =
       AarFileInfo("/non/existent/test.aar", "extracted/path")
 
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(aarFiles = listOf(nonExistentAar))
+      createMinimalLayerConfig(aarFiles = listOf(nonExistentAar))
     }
 
     assertThat(exception).hasMessageThat().contains("AAR files do not exist")
@@ -97,52 +97,52 @@ class LintCommonTest {
   }
 
   @Test
-  fun testModuleConfig_nonExistentResourceDir_throwsException() {
+  fun testLayerConfig_nonExistentResourceDir_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(resourceDirs = listOf("/non/existent/res"))
+      createMinimalLayerConfig(resourceDirs = listOf("/non/existent/res"))
     }
 
     assertThat(exception).hasMessageThat().contains("Missing or invalid resource directories")
   }
 
   @Test
-  fun testModuleConfig_nonExistentSourceFiles_throwsException() {
+  fun testLayerConfig_nonExistentSourceFiles_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(srcFiles = listOf("/non/existent/Source.kt"))
+      createMinimalLayerConfig(srcFiles = listOf("/non/existent/Source.kt"))
     }
 
     assertThat(exception).hasMessageThat().contains("Missing source files")
   }
 
   @Test
-  fun testModuleConfig_nonExistentTestFiles_throwsException() {
+  fun testLayerConfig_nonExistentTestFiles_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(testFiles = listOf("/non/existent/Test.kt"))
+      createMinimalLayerConfig(testFiles = listOf("/non/existent/Test.kt"))
     }
 
     assertThat(exception).hasMessageThat().contains("Missing test files")
   }
 
   @Test
-  fun testModuleConfig_nonExistentJarFiles_throwsException() {
+  fun testLayerConfig_nonExistentJarFiles_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      createMinimalModuleConfig(jarFiles = listOf("/non/existent/lib.jar"))
+      createMinimalLayerConfig(jarFiles = listOf("/non/existent/lib.jar"))
     }
 
     assertThat(exception).hasMessageThat().contains("Missing JAR files")
   }
 
   @Test
-  fun testModuleConfig_libraryModule_hasCorrectFlags() {
-    val config = createMinimalModuleConfig(name = "utility", isLibrary = true)
+  fun testLayerConfig_libraryLayer_hasCorrectFlags() {
+    val config = createMinimalLayerConfig(name = "utility", isLibrary = true)
 
     assertThat(config.isLibrary).isTrue()
     assertThat(config.name).isEqualTo("utility")
   }
 
   @Test
-  fun testModuleConfig_appModule_hasCorrectFlags() {
-    val config = createMinimalModuleConfig(name = "app", isLibrary = false)
+  fun testLayerConfig_appLayer_hasCorrectFlags() {
+    val config = createMinimalLayerConfig(name = "app", isLibrary = false)
 
     assertThat(config.isLibrary).isFalse()
     assertThat(config.name).isEqualTo("app")
@@ -268,8 +268,8 @@ class LintCommonTest {
     assertThat(exception).hasMessageThat().contains("Could not extract Java version from:")
   }
 
-  private fun createMinimalModuleConfig(
-    name: String = "test-module",
+  private fun createMinimalLayerConfig(
+    name: String = "test-layer",
     isLibrary: Boolean = false,
     isAndroid: Boolean = true,
     isTest: Boolean = false,
@@ -279,8 +279,8 @@ class LintCommonTest {
     jarFiles: List<String> = emptyList(),
     aarFiles: List<AarFileInfo> = emptyList(),
     proGuardFiles: List<String> = emptyList()
-  ): ModuleConfig {
-    return ModuleConfig(
+  ): LayerConfig {
+    return LayerConfig(
       name = name,
       isLibrary = isLibrary,
       isAndroid = isAndroid,
@@ -299,7 +299,7 @@ class LintCommonTest {
     )
   }
 
-  private fun createValidModuleConfig(): ModuleConfig {
+  private fun createValidLayerConfig(): LayerConfig {
     val proGuardFile = File(workingDirectory, "proguard-rules.pro").apply { createNewFile() }
     val lintCheckJar = File(workingDirectory, "lint-check.jar").apply { createNewFile() }
     val aarFile = File(workingDirectory, "test.aar").apply { createNewFile() }
@@ -313,8 +313,8 @@ class LintCommonTest {
 
     val resourceDir = File(workingDirectory, "src/main/res").apply { mkdirs() }
 
-    return ModuleConfig(
-      name = "test-module",
+    return LayerConfig(
+      name = "test-layer",
       isAndroid = true,
       isLibrary = false,
       isTest = true,

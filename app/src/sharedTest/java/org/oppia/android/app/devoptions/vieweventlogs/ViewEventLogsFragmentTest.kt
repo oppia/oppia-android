@@ -38,7 +38,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -94,7 +94,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.AnalyticsEventLogger
@@ -616,7 +615,7 @@ class ViewEventLogsFragmentTest {
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -741,7 +740,6 @@ class ViewEventLogsFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

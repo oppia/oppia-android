@@ -20,9 +20,9 @@ import org.oppia.android.app.databinding.databinding.ProfileSelectionFragmentBin
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -36,6 +36,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -90,7 +91,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    adminProfileId: ProfileId,
+    adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
     StatusBarColor.statusBarColorUpdate(
@@ -100,7 +101,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
-      profileManagementController.markProfileOnboardingEnded(adminProfileId)
+      profileManagementController.markProfileOnboardingEnded(
+        adminProfileId.toProfileIdPreservingZero()
+      )
     }
 
     binding =
@@ -292,7 +295,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id)
+      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
     }
   }
 
@@ -320,7 +323,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+  private fun launchOnboardingScreen(profileId: LegacyProfileId, profileName: String) {
     val introActivityParams = IntroActivityParams.newBuilder()
       .setProfileNickname(profileName)
       .setParentScreen(IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN)
@@ -330,8 +333,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun launchHomeScreen(profileId: ProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
+  private fun launchHomeScreen(profileId: LegacyProfileId) {
+    profileManagementController.loginToProfile(
+      profileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
           activity.startActivity(
@@ -346,7 +351,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun launchPinScreen(profileId: ProfileId) {
+  private fun launchPinScreen(profileId: LegacyProfileId) {
     activity.startActivity(
       ProfileLoginActivity.createProfileLoginActivityIntent(
         context,
@@ -358,8 +363,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   /** Handles navigation to either the [AdministratorControlsActivity] or [AdminAuthActivity]. */
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
-      val profileId =
-        ProfileId.newBuilder().setInternalId(chooserViewModel.adminProfileId.internalId).build()
+      val profileId = LegacyProfileId.newBuilder()
+        .setInternalId(chooserViewModel.adminProfileId.internalId).build()
       activity.startActivity(
         AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,

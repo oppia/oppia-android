@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -58,7 +58,7 @@ class FirestoreDataController @Inject constructor(
    */
   fun logEvent(
     eventContext: EventLog.Context,
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long = oppiaClock.getCurrentTimeMs()
   ) {
     CoroutineScope(blockingDispatcher).async {
@@ -76,7 +76,7 @@ class FirestoreDataController @Inject constructor(
 
   /** Returns an event log containing relevant data for event reporting. */
   private fun createEventLog(
-    profileId: ProfileId?,
+    profileId: LegacyProfileId?,
     timestamp: Long,
     context: EventLog.Context
   ): EventLog {

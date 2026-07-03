@@ -21,8 +21,8 @@ import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.ClassroomList
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
@@ -40,6 +40,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -51,7 +52,7 @@ class ClassroomListViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val profileId: ProfileId,
+  private val profileId: LegacyProfileId,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
@@ -74,7 +75,7 @@ class ClassroomListViewModel(
   val selectedClassroomId = ObservableField("")
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
   }
 
   private val promotedActivityListSummaryDataProvider: DataProvider<PromotedActivityList> by lazy {
@@ -304,7 +305,9 @@ class ClassroomListViewModel(
   fun fetchAndUpdateTopicList(classroomId: String = "") {
     if (classroomId.isBlank()) {
       // Retrieve the last selected classroom ID if no specific classroom ID is provided.
-      profileManagementController.retrieveLastSelectedClassroomId(profileId)
+      profileManagementController.retrieveLastSelectedClassroomId(
+        profileId.toProfileIdPreservingZero()
+      )
         .toLiveData().observe(fragment) { lastSelectedClassroomIdResult ->
           when (lastSelectedClassroomIdResult) {
             is AsyncResult.Success -> {
