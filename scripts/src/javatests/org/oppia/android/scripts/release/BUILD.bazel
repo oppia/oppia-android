@@ -5,6 +5,61 @@ Tests for release automation scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "AppFlavorTest",
+    srcs = ["AppFlavorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:app_flavor",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "ChangelogExistenceCheckerTest",
+    srcs = ["ChangelogExistenceCheckerTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:app_flavor",
+        "//scripts/src/java/org/oppia/android/scripts/release:changelog_existence_checker",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "PendingReleaseCheckerTest",
+    srcs = ["PendingReleaseCheckerTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:pending_release_checker",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "VersionInversionCheckerTest",
+    srcs = ["VersionInversionCheckerTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:version_inversion_checker",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "UploadBinaryToPlayConsoleTest",
+    srcs = ["UploadBinaryToPlayConsoleTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:upload_binary_to_play_console_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
+)
+
+kt_jvm_test(
     name = "CloudKmsSignerTest",
     srcs = ["CloudKmsSignerTest.kt"],
     deps = [
@@ -17,6 +72,17 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "FakePlayConsoleClientTest",
+    srcs = ["FakePlayConsoleClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "FakeCloudSignerTest",
     srcs = ["FakeCloudSignerTest.kt"],
     deps = [
@@ -25,6 +91,17 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "GooglePlayConsoleClientTest",
+    srcs = ["GooglePlayConsoleClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:google_play_console_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
 
