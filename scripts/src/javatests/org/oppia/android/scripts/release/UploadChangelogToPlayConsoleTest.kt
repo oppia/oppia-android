@@ -7,7 +7,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 
-
 /**
  * Tests for [auditLiveTracks], [detectChangelogDiff], and [uploadChangelogToTrack] in the
  * upload_changelog_to_play_console script.
