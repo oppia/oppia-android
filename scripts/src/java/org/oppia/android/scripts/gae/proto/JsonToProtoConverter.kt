@@ -78,6 +78,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.M
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto
@@ -983,7 +984,7 @@ class JsonToProtoConverter(
         }
         MATH_EQUATION_INPUT ->
           this.mathEquationInputInstanceAnswerGroup = toMathEquationAnswerGroup(containerId)
-        CONTINUE_INSTANCE, END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
+        CONTINUE_INSTANCE, END_EXPLORATION, NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
           error("Interaction does not support answer groups: $interactionType.")
       }
     }.build()
@@ -1200,7 +1201,7 @@ class JsonToProtoConverter(
           this.algebraicExpressionInputInstanceRuleSpec = toAlgebraicExpressionRuleSpec(containerId)
         MATH_EQUATION_INPUT ->
           this.mathEquationInputInstanceRuleSpec = toMathEquationRuleSpec(containerId)
-        CONTINUE_INSTANCE, END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
+        CONTINUE_INSTANCE, END_EXPLORATION, NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
           error("Interaction does not support rule specs: $interType.")
       }
     }.build()
@@ -1592,7 +1593,7 @@ class JsonToProtoConverter(
           this.mathEquationInputInstanceSolution = toMathEquationInputSolution(containerId)
         // Interactions that do not support solutions.
         CONTINUE_INSTANCE, ITEM_SELECTION_INPUT, MULTIPLE_CHOICE_INPUT, IMAGE_CLICK_INPUT,
-        END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
+        END_EXPLORATION, NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
           error("Interaction does not support solutions: $interType.")
       }
     }.build()
