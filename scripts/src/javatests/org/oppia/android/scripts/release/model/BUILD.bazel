@@ -1,0 +1,55 @@
+"""
+Tests for Google Play Developer API response model data classes: JSON serialization and
+deserialization.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "BundleResponseTest",
+    srcs = ["BundleResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:bundle_response",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+    ],
+)
+
+kt_jvm_test(
+    name = "EditResponseTest",
+    srcs = ["EditResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:edit_response",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+    ],
+)
+
+kt_jvm_test(
+    name = "TrackResponseTest",
+    srcs = ["TrackResponseTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+    ],
+)
+
+kt_jvm_test(
+    name = "TrackUpdateRequestTest",
+    srcs = ["TrackUpdateRequestTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+    ],
+)
+
+kt_jvm_test(
+    name = "InsertEditRequestTest",
+    srcs = ["InsertEditRequestTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
+        "//third_party:com_google_truth_truth",
+    ],
+)

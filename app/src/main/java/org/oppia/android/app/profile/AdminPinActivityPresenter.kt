@@ -20,6 +20,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -121,7 +122,9 @@ class AdminPinActivityPresenter @Inject constructor(
           .setInternalId(args?.internalProfileId ?: -1)
           .build()
 
-      profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
+      profileManagementController.updatePin(
+        profileId.toProfileIdPreservingZero(), inputPin
+      ).toLiveData().observe(
         activity,
         Observer {
           if (it is AsyncResult.Success) {

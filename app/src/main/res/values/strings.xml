@@ -68,6 +68,7 @@
   <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="lesson_progress_indicator_content_description">Completed %1$s lesson checkpoints out of %2$s.</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="image_error_empty_input">Select an image to continue.</string>
@@ -551,6 +552,7 @@
   <string name="stories_for_you">Stories For You</string>
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="revision_card_activity_title">Skill revision page</string>
+  <string name="study_guide_activity_title">Study guide page</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
