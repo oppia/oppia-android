@@ -17,19 +17,22 @@ import java.io.File
  *
  * Usage (called by deploy_updated_changelog.yml via Bazel):
  * ```
- * bazel run //scripts:upload_changelog_to_play_console -- \\
+ * bazel run //scripts:upload_changelog_to_play_console -- \
  *   <workspace_path> <package_name> <version> <gcp_access_token>
  * ```
  *
- * @param args[0] workspace_path — absolute path to the repository root
- * @param args[1] package_name — Play Console app package (e.g. "org.oppia.android")
- * @param args[2] version — version in major.minor format (e.g. "0.17"), used to locate
- *     `config/changelogs/<version>[_<track>].md`
- * @param args[3] gcp_access_token — OAuth2 access token; obtain via
- *     `gcloud auth print-access-token`
+ * Arguments (positional):
+ *   0. workspace_path   — absolute path to the repository root
+ *   1. package_name     — Play Console app package (e.g. "org.oppia.android")
+ *   2. version          — version in major.minor format (e.g. "0.17"), used to locate
+ *       `config/changelogs/<version>[_<track>].md`
+ *   3. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
+ *
+ * An optional 5th argument overrides the API base URL. This is used in tests to route all
+ * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
  */
 fun main(args: Array<String>) {
-  require(args.size == 4) {
+  require(args.size in 4..5) {
     "Usage: upload_changelog_to_play_console <workspace_path> <package_name> <version> " +
       "<gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
   }
@@ -38,6 +41,7 @@ fun main(args: Array<String>) {
   val packageName = args[1]
   val version = args[2]
   val gcpAccessToken = args[3]
+  val apiBaseUrl = args.getOrNull(4) ?: GooglePlayConsoleClient.PRODUCTION_API_BASE_URL
 
   require(workspacePath.isNotBlank()) { "workspace_path must not be blank." }
   require(packageName.isNotBlank()) { "package_name must not be blank." }
@@ -51,7 +55,28 @@ fun main(args: Array<String>) {
   println("  Version : $version")
   println()
 
-  val client = GooglePlayConsoleClient(gcpAccessToken)
+  val client = GooglePlayConsoleClient(gcpAccessToken, apiBaseUrl)
+  runChangelog(client, workspacePath, packageName, version)
+}
+
+/**
+ * Executes the full changelog upload workflow.
+ *
+ * Audits each of the three standard tracks for live releases, resolves the matching changelog
+ * file for [version], and uploads updated notes to every live track that has a corresponding
+ * file. Tracks with no matching file are skipped silently.
+ *
+ * @param client the [PlayConsoleClient] used for all Play Console API calls
+ * @param workspacePath absolute path to the repository root (for changelog lookups)
+ * @param packageName the application package name (e.g. `"org.oppia.android"`)
+ * @param version version in major.minor format (e.g. `"0.17"`)
+ */
+fun runChangelog(
+  client: PlayConsoleClient,
+  workspacePath: String,
+  packageName: String,
+  version: String
+) {
   val liveTracks = auditLiveTracks(client, packageName)
 
   if (liveTracks.isEmpty()) {
@@ -66,8 +91,15 @@ fun main(args: Array<String>) {
       println("Track '$track': no changelog file found for version $version — skipping.")
       continue
     }
-    val versionCode = releases.flatMap { it.versionCodes }.maxOrNull()!!
-    uploadChangelogToTrack(client, packageName, track, versionCode, notes)
+    val versionCode = checkNotNull(releases.flatMap { it.versionCodes }.maxOrNull()) {
+      "Track '$track' has live releases but no version codes — this should not happen."
+    }
+    // Preserve the existing rollout fraction so this changelog-only update does not alter
+    // the staged rollout percentage. inProgress releases carry a rolloutFraction; completed
+    // releases are already at 100% so fall back to 1000.
+    val rolloutFraction =
+      releases.firstOrNull { it.status == "inProgress" }?.rolloutFraction ?: 1000
+    uploadChangelogToTrack(client, packageName, track, versionCode, rolloutFraction, notes)
     updatedCount++
   }
 
@@ -89,7 +121,7 @@ fun main(args: Array<String>) {
  * @return a map from track name to its list of live [PlayConsoleClient.TrackRelease] entries,
  *     containing only tracks that have at least one live release
  */
-fun auditLiveTracks(
+private fun auditLiveTracks(
   client: PlayConsoleClient,
   packageName: String,
   tracks: List<String> = AUDITED_TRACKS
@@ -129,7 +161,7 @@ fun auditLiveTracks(
  * @return `true` if the notes differ and an upload should be performed; `false` if they are
  *     already in sync
  */
-fun detectChangelogDiff(localNotes: String, deployedNotes: String): Boolean {
+private fun detectChangelogDiff(localNotes: String, deployedNotes: String): Boolean {
   val trimmedLocal = localNotes.trim()
   val trimmedDeployed = deployedNotes.trim()
 
@@ -137,13 +169,7 @@ fun detectChangelogDiff(localNotes: String, deployedNotes: String): Boolean {
     println("Changelog is already up to date on this track — no upload needed.")
     false
   } else {
-    val deployedSnippet = trimmedDeployed.take(60) + if (trimmedDeployed.length > 60) "..." else ""
-    val localSnippet = trimmedLocal.take(60) + if (trimmedLocal.length > 60) "..." else ""
-    println(
-      "Changelog diff detected:" +
-        "\n  deployed : $deployedSnippet" +
-        "\n  local    : $localSnippet"
-    )
+    println("Changelog diff detected. Currently deployed notes:\n$trimmedDeployed")
     true
   }
 }
@@ -151,26 +177,26 @@ fun detectChangelogDiff(localNotes: String, deployedNotes: String): Boolean {
 /**
  * Uploads updated release notes to a live Play Console track within a new edit session.
  *
- * Creates a new edit, updates the release notes for the highest live version code on [track], and
- * commits the edit. This is a *changelog-only* update — the binary itself is not changed.
- *
- * **Precondition:** [liveTracks] must contain [track] as a key (i.e., the track must have at
- * least one live release). Call [auditLiveTracks] first and only call this function for tracks
- * present in its result.
+ * Creates a new edit, updates the release notes for [versionCode] on [track], and commits the
+ * edit. This is a *changelog-only* update — the binary itself is not changed. The caller must
+ * pass the existing [rolloutFraction] from the live release to avoid inadvertently altering the
+ * staged rollout percentage.
  *
  * @param client the [PlayConsoleClient] used for all API calls
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param versionCode the version code of the live release to attach the updated notes to
+ * @param rolloutFraction the existing staged rollout fraction from the live release (passed
+ *     through unchanged so the rollout percentage is preserved)
  * @param newNotes map of BCP-47 language codes to updated release notes text (max 500 chars each);
  *     must contain at least an `"en-US"` entry
- * @throws IllegalStateException if [newNotes] is empty or has no `"en-US"` entry
  */
-fun uploadChangelogToTrack(
+private fun uploadChangelogToTrack(
   client: PlayConsoleClient,
   packageName: String,
   track: String,
   versionCode: Long,
+  rolloutFraction: Int,
   newNotes: Map<String, String>
 ) {
   require(newNotes.containsKey("en-US")) {
@@ -186,9 +212,7 @@ fun uploadChangelogToTrack(
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  // Changelog-only updates do not change the binary; use a full rollout (1000 = 100%) so the
-  // track assignment is preserved as-is.
-  client.setTrackRelease(packageName, editId, track, versionCode, 1000, newNotes)
+  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, newNotes)
   println("  Track release notes updated.")
 
   client.commitEdit(packageName, editId)
@@ -208,7 +232,7 @@ fun uploadChangelogToTrack(
  * @return map with `"en-US"` key to notes text, or empty map if no file found
  * @throws IllegalStateException if the resolved file exceeds [MAX_RELEASE_NOTES_LENGTH] characters
  */
-fun resolveNotesForTrack(
+private fun resolveNotesForTrack(
   workspaceRoot: String,
   version: String,
   track: String
