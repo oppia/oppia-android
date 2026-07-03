@@ -68,10 +68,14 @@ jobs:
         run: |
           CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
             --jq '[.files[].filename | select(test("^config/changelogs/.+\\.md$"))] | first // ""')
+          # Only the first changed changelog file is processed. If multiple changelog files are
+          # updated in the same push the coordinator should use workflow_dispatch to trigger a
+          # separate run for each additional version. Handling all files in a single run would
+          # risk concurrent Play Console edit sessions, which are globally exclusive.
 
           if [[ -z "$CHANGED" ]]; then
             echo "No changelog files changed in this push — skipping upload."
-            echo "version=" >> $GITHUB_OUTPUT
+            echo "version=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -85,7 +89,7 @@ jobs:
             exit 1
           fi
 
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Detected: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
   # Runs only on workflow_dispatch: reads and validates the version provided by the release
@@ -112,7 +116,7 @@ jobs:
             exit 1
           fi
 
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Resolved: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
   # Uploads the changelog to Play Console. Runs only when a version was successfully resolved by
@@ -139,7 +143,7 @@ jobs:
           # resolves the correct file per track (track-specific first, then shared fallback), so
           # we only need to confirm that the coordinator hasn't specified a non-existent version.
           GENERIC="config/changelogs/${VERSION}.md"
-          FLAVOR_SPECIFIC=$(find config/changelogs -name "${VERSION}_*.md" 2>/dev/null | head -1)
+          FLAVOR_SPECIFIC=$(find config/changelogs -name "${VERSION}_*.md" -print -quit 2>/dev/null)
 
           if [[ ! -f "$GENERIC" && -z "$FLAVOR_SPECIFIC" ]]; then
             echo "::error::No changelog file found for version $VERSION in config/changelogs/. "\
