@@ -11,7 +11,7 @@ import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
@@ -50,7 +50,7 @@ class HomeActivity :
 
   companion object {
 
-    fun createHomeActivity(context: Context, profileId: ProfileId?): Intent {
+    fun createHomeActivity(context: Context, profileId: LegacyProfileId?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         decorateWithScreenName(HOME_ACTIVITY)
         if (profileId != null) {
@@ -69,14 +69,14 @@ class HomeActivity :
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: LegacyProfileId, classroomId: String, topicId: String) {
     startActivity(
       TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -96,7 +96,7 @@ class HomeActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(LegacyProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

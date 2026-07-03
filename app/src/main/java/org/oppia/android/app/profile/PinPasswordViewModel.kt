@@ -4,8 +4,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -13,6 +13,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 // TODO(#5817): Remove along with PinPasswordActivity when v2 onboarding flow has stabilized.
@@ -23,7 +24,7 @@ class PinPasswordViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   val errorMessage = ObservableField<String>("")
   val showPassword = ObservableField(false)
   val correctPin = ObservableField<String>("")
@@ -34,7 +35,7 @@ class PinPasswordViewModel @Inject constructor(
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -46,7 +47,7 @@ class PinPasswordViewModel @Inject constructor(
   }
 
   fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
+    profileId = LegacyProfileId.newBuilder().setInternalId(id).build()
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {

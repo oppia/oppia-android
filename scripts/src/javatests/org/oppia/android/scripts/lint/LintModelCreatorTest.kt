@@ -29,9 +29,9 @@ class LintModelCreatorTest {
   }
   @Test
   fun testLintModelCreator_generateModelFiles_createsRequiredDirectories() {
-    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+    val layerConfig = createTestLayerConfig("app", isLibrary = false)
 
-    val result = lintModelCreator.generateModelFiles(moduleConfig)
+    val result = lintModelCreator.generateModelFiles(layerConfig)
 
     assertThat(result.exists()).isTrue()
     assertThat(result.isDirectory).isTrue()
@@ -41,9 +41,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_createsModuleXml() {
-    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+    val layerConfig = createTestLayerConfig("utility", isLibrary = true)
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     val moduleXmlFile = File(modelDirectory, "module.xml")
     assertThat(moduleXmlFile.exists()).isTrue()
@@ -59,9 +59,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_createsVariantXml() {
-    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+    val layerConfig = createTestLayerConfig("app", isLibrary = false)
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     val variantXmlFile = File(modelDirectory, "main.xml")
     assertThat(variantXmlFile.exists()).isTrue()
@@ -80,9 +80,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_createsArtifactLibrariesXml() {
-    val moduleConfig = createTestModuleConfig("data", isLibrary = true)
+    val layerConfig = createTestLayerConfig("data", isLibrary = true)
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     val librariesXmlFile = File(modelDirectory, "main-mainArtifact-libraries.xml")
     assertThat(librariesXmlFile.exists()).isTrue()
@@ -94,9 +94,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_createsDependenciesXml() {
-    val moduleConfig = createTestModuleConfig("testing", isLibrary = true)
+    val layerConfig = createTestLayerConfig("testing", isLibrary = true)
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     val dependenciesXmlFile = File(modelDirectory, "main-mainArtifact-dependencies.xml")
     assertThat(dependenciesXmlFile.exists()).isTrue()
@@ -108,9 +108,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_usesCacheWhenInputsUnchanged() {
-    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+    val layerConfig = createTestLayerConfig("app", isLibrary = false)
 
-    val manifestFile = File(moduleConfig.manifestFile)
+    val manifestFile = File(layerConfig.manifestFile)
     manifestFile.parentFile?.mkdirs()
     manifestFile.writeText(
       """
@@ -121,13 +121,13 @@ class LintModelCreatorTest {
       """.trimIndent()
     )
 
-    moduleConfig.srcFiles.forEach { srcFile ->
+    layerConfig.srcFiles.forEach { srcFile ->
       val file = File(srcFile)
       file.parentFile?.mkdirs()
       file.writeText("class AppClass")
     }
 
-    val firstResult = lintModelCreator.generateModelFiles(moduleConfig)
+    val firstResult = lintModelCreator.generateModelFiles(layerConfig)
 
     val moduleXmlFile = File(modelDirectory, "module.xml")
     val variantXmlFile = File(modelDirectory, "main.xml")
@@ -136,7 +136,7 @@ class LintModelCreatorTest {
     val firstModuleXmlTimestamp = moduleXmlFile.lastModified()
     val firstVariantXmlTimestamp = variantXmlFile.lastModified()
 
-    val secondResult = lintModelCreator.generateModelFiles(moduleConfig)
+    val secondResult = lintModelCreator.generateModelFiles(layerConfig)
 
     // Files should not be regenerated (same timestamps)
     assertThat(secondResult).isEqualTo(firstResult)
@@ -153,9 +153,9 @@ class LintModelCreatorTest {
 
   @Test
   fun testLintModelCreator_generateModelFiles_regeneratesWhenInputsChange() {
-    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+    val layerConfig = createTestLayerConfig("utility", isLibrary = true)
 
-    val manifestFile = File(moduleConfig.manifestFile)
+    val manifestFile = File(layerConfig.manifestFile)
     manifestFile.parentFile?.mkdirs()
     manifestFile.writeText(
       """
@@ -166,13 +166,13 @@ class LintModelCreatorTest {
       """.trimIndent()
     )
 
-    moduleConfig.srcFiles.forEach { srcFile ->
+    layerConfig.srcFiles.forEach { srcFile ->
       val file = File(srcFile)
       file.parentFile?.mkdirs()
       file.writeText("class UtilityClass")
     }
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     val moduleXmlFile = File(modelDirectory, "module.xml")
     val cacheFile = File(modelDirectory, ".lint-model-cache")
@@ -189,7 +189,7 @@ class LintModelCreatorTest {
       """.trimIndent()
     )
 
-    lintModelCreator.generateModelFiles(moduleConfig)
+    lintModelCreator.generateModelFiles(layerConfig)
 
     // Files should be regenerated
     assertThat(moduleXmlFile.lastModified()).isGreaterThan(initialModuleXmlTimestamp)
@@ -209,37 +209,37 @@ class LintModelCreatorTest {
     assertThat(moduleXmlContent).contains("type=\"LIBRARY\"")
   }
 
-  private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
-    val basePath = File(tempFolder.root, moduleName)
+  private fun createTestLayerConfig(layerName: String, isLibrary: Boolean): LayerConfig {
+    val basePath = File(tempFolder.root, layerName)
 
     val manifestPath = "$basePath/src/main/AndroidManifest.xml"
     val resourceDirs = listOf("$basePath/src/main/res")
-    val srcFilePath = "$basePath/src/main/java/${moduleName.capitalize()}Class.kt"
-    val testFilePath = "$basePath/src/test/java/${moduleName.capitalize()}ClassTest.kt"
+    val srcFilePath = "$basePath/src/main/java/${layerName.capitalize()}Class.kt"
+    val testFilePath = "$basePath/src/test/java/${layerName.capitalize()}ClassTest.kt"
 
     // Ensure all directories and files exist
     File(resourceDirs[0]).mkdirs()
     File(srcFilePath).apply {
       parentFile?.mkdirs()
-      writeText("// dummy source file for $moduleName")
+      writeText("// dummy source file for $layerName")
     }
     File(testFilePath).apply {
       parentFile?.mkdirs()
-      writeText("// dummy test file for $moduleName")
+      writeText("// dummy test file for $layerName")
     }
     File(manifestPath).apply {
       parentFile?.mkdirs()
       writeText(
         """
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.oppia.android.$moduleName">
+          package="org.oppia.android.$layerName">
       </manifest>
         """.trimIndent()
       )
     }
 
-    return ModuleConfig(
-      name = moduleName,
+    return LayerConfig(
+      name = layerName,
       isLibrary = isLibrary,
       isAndroid = true,
       isTest = false,

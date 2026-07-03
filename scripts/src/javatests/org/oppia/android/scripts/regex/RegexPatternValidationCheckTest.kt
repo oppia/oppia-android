@@ -18,7 +18,7 @@ class RegexPatternValidationCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val activitiesPlacementErrorMessage =
-    "Activities cannot be placed outside the app or testing module."
+    "Activities cannot be placed outside the top-level app or testing directories."
   private val nestedResourceSubdirectoryErrorMessage =
     "Only one level of subdirectories under res/ should be maintained (further subdirectories " +
       "aren't supported by the project configuration)."
@@ -103,7 +103,8 @@ class RegexPatternValidationCheckTest {
     "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
   private val subclassedInjectableAppCompatActivityErrorMessage =
     "Never subclass InjectableAppCompatActivity directly. Instead, use " +
-      "InjectableSystemLocalizedAppCompatActivity or InjectableAutoLocalizedAppCompatActivity."
+      "InjectableSystemLocalizedAppCompatActivity, InjectableAutoLocalizedAppCompatActivity, " +
+      "or InjectableEnglishOnlyAppCompatActivity."
   private val subclassedDialogFragmentErrorMessage =
     "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   private val androidActivityConfigChangesErrorMessage =
@@ -1442,8 +1443,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }
@@ -1470,8 +1470,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }
@@ -1498,8 +1497,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }

@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
@@ -43,6 +43,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -98,7 +99,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -162,7 +165,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -226,7 +231,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -242,7 +249,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -258,7 +267,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -328,7 +339,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -344,7 +357,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -360,7 +375,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -432,7 +449,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -448,7 +467,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -464,7 +485,9 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -537,7 +560,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0.toProfileIdPreservingZero())
     )
 
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
@@ -547,7 +570,7 @@ class SurveyGatingControllerTest {
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1.toProfileIdPreservingZero())
     )
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
@@ -579,16 +602,18 @@ class SurveyGatingControllerTest {
   @Test
   fun testGating_criteriaMetOnProfileTwo_afterSurveyShownOnProfileOne_triggersSurveyProfileTwo() {
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0.toProfileIdPreservingZero())
     )
 
     // The surveyLastShownTimestamp is updated every time a survey is shown
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
     )
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1.toProfileIdPreservingZero())
     )
 
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
@@ -610,7 +635,7 @@ class SurveyGatingControllerTest {
 
   private fun startAndEndExplorationSession(
     sessionLengthMs: Long,
-    profileId: ProfileId,
+    profileId: LegacyProfileId,
     topicId: String
   ) {
     explorationActiveTimeController.onAppInForeground()
@@ -723,7 +748,7 @@ class SurveyGatingControllerTest {
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
     private const val LATE_NIGHT_UTC_TIMESTAMP_MILLIS = 1556061720000
 
-    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
   }
 }

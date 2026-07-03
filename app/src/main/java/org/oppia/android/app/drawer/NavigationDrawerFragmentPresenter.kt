@@ -25,9 +25,9 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
@@ -41,6 +41,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -62,7 +63,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var binding: DrawerFragmentBinding
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
   private var previousMenuItemId: Int? = null
   private var internalProfileId: Int = -1
 
@@ -122,7 +123,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -470,6 +471,29 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.post { drawerToggle.syncState() }
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal && previousMenuItemId != -1) {
         fragment.requireActivity().finish()
+      }
+    }
+  }
+
+  fun updateDrawerHighlights() {
+    binding.fragmentDrawerNavView.menu.forEach { it.isChecked = false }
+    footerViewModel.isAdministratorControlsSelected.set(false)
+    footerViewModel.isDeveloperOptionsSelected.set(false)
+    previousMenuItemId?.let { itemId ->
+      when {
+        itemId != 0 && itemId != -1 -> {
+          binding.fragmentDrawerNavView.menu
+            .findItem(itemId)
+            ?.isChecked = true
+        }
+        itemId == 0 -> {
+          footerViewModel.isAdministratorControlsSelected.set(true)
+          uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+        }
+        itemId == -1 -> {
+          footerViewModel.isDeveloperOptionsSelected.set(true)
+          uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+        }
       }
     }
   }

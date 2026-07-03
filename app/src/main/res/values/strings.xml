@@ -68,6 +68,7 @@
   <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="lesson_progress_indicator_content_description">Completed %1$s lesson checkpoints out of %2$s.</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="image_error_empty_input">Select an image to continue.</string>
@@ -261,7 +262,7 @@
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize manage profiles on the device.</string>
-  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_pin_description">Do &lt;b&gt;not&lt;/b&gt; use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
@@ -418,9 +419,14 @@
   <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
-  <string name="app_version_name">App Version %s</string>
-  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="app_version_label">App Version</string>
+  <string name="app_version_name">%s</string>
+  <string name="app_last_update_date">The last update was installed on %s. Please share the above version when sending feedback about bugs.</string>
   <string name="app_version_activity_title">App Version</string>
+  <string name="copy_app_version">Copy app version</string>
+  <string name="installation_id_label">Installation ID</string>
+  <string name="installation_id_explanation">This ID uniquely identifies this app installation. You may be asked to provide this when filing feedback about the app or using certain features.</string>
+  <string name="copy_installation_id">Copy installation ID</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Preferred Audio Language</string>
@@ -546,6 +552,7 @@
   <string name="stories_for_you">Stories For You</string>
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="revision_card_activity_title">Skill revision page</string>
+  <string name="study_guide_activity_title">Study guide page</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>

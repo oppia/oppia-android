@@ -82,7 +82,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
@@ -703,12 +702,13 @@ class AppLanguageResourceHandlerTest {
 
   private fun updateAndSetAppLanguage(appLanguageSelection: AppLanguageSelection) {
     // First, update the app language in the controller.
+    val defaultProfileId = ProfileId.getDefaultInstance()
     val updateProvider =
-      translationController.updateAppLanguage(ProfileId.getDefaultInstance(), appLanguageSelection)
+      translationController.updateAppLanguage(defaultProfileId, appLanguageSelection)
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     // Second, compute the new display locale.
-    val localeProvider = translationController.getAppLanguageLocale(ProfileId.getDefaultInstance())
+    val localeProvider = translationController.getAppLanguageLocale(defaultProfileId)
     val displayLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
 
     // Third, update the singleton to use the new display locale.
@@ -739,7 +739,6 @@ class AppLanguageResourceHandlerTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

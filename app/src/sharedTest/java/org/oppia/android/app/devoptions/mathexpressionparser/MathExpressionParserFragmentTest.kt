@@ -73,7 +73,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -83,7 +83,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -114,7 +113,6 @@ class MathExpressionParserFragmentTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Before
@@ -1393,7 +1391,7 @@ class MathExpressionParserFragmentTest {
   private fun typeIntoView(@IdRes viewId: Int, text: String) {
     // First, ensure the view is visible before trying to input text.
     scrollToView(viewId)
-    onView(withId(viewId)).perform(editTextInputAction.replaceText(text))
+    onView(withId(viewId)).perform(replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1438,7 +1436,6 @@ class MathExpressionParserFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

@@ -94,7 +94,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -109,7 +108,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -1006,7 +1004,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1034,7 +1032,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_configChange_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1061,7 +1059,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_orientationChange_languageSelectionIsRestored() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1143,7 +1141,6 @@ class OnboardingFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

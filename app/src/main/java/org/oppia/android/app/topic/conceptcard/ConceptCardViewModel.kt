@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralConceptCard
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -19,13 +19,13 @@ class ConceptCardViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private lateinit var skillId: String
-  private lateinit var profileId: ProfileId
+  private lateinit var profileId: LegacyProfileId
 
   val conceptCardLiveData: LiveData<EphemeralConceptCard> by lazy {
     processConceptCardLiveData()
   }
 
-  fun initialize(skillId: String, profileId: ProfileId) {
+  fun initialize(skillId: String, profileId: LegacyProfileId) {
     this.skillId = skillId
     this.profileId = profileId
   }

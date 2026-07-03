@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.TopicInfoFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -23,7 +23,7 @@ class TopicInfoFragment : InjectableFragment() {
     const val TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY = "TopicInfoFragment.arguments"
 
     /** Returns a new [TopicInfoFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicInfoFragment {
+    fun newInstance(profileId: LegacyProfileId, topicId: String): TopicInfoFragment {
       val args = TopicInfoFragmentArguments.newBuilder().setTopicId(topicId).build()
 
       return TopicInfoFragment().apply {
@@ -53,7 +53,7 @@ class TopicInfoFragment : InjectableFragment() {
       TopicInfoFragmentArguments.getDefaultInstance()
     )
 
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId = arguments?.extractCurrentUserProfileId() ?: LegacyProfileId.getDefaultInstance()
 
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."

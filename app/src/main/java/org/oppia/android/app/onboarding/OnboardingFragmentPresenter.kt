@@ -14,10 +14,10 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -29,6 +29,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val ONBOARDING_FRAGMENT_SAVED_STATE_KEY = "OnboardingFragment.saved_state"
@@ -45,7 +46,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val appLanguageViewModel: AppLanguageViewModel
 ) {
   private lateinit var binding: AppLanguageSelectionFragmentBinding
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+  private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
   private lateinit var selectedLanguage: OppiaLanguage
   private lateinit var supportedLanguages: List<OppiaLanguage>
 
@@ -151,7 +152,9 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(profileId, selection).toLiveData()
+    translationController.updateAppLanguage(
+      profileId.toProfileIdPreservingZero(), selection
+    ).toLiveData()
       .observe(
         fragment,
         { result ->
@@ -247,14 +250,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun createDefaultProfile() {
-    profileManagementController.addProfile(
-      name = "",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    ).toLiveData()
+    profileManagementController.createDefaultProfile()
+      .toLiveData()
       .observe(
         fragment,
         { result ->

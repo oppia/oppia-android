@@ -1,0 +1,155 @@
+# Builds a release AAB for the given flavor at the given source ref, signs it using
+# Cloud KMS HSM via jarsigner + jsign JCA provider (sign_release_binary Kotlin script), and
+# uploads the signed binary to the flavor-specific GCS archive bucket.
+#
+# The private key NEVER leaves the KMS HSM boundary — only the AAB digest is sent to KMS
+# and the RSA signature is returned. The GCP access token is obtained post-WIF-auth and passed
+# as GCP_ACCESS_TOKEN to sign_release_binary, which configures jarsigner accordingly.
+# The public certificate is committed at config/certificate/upload_certificate.pem.
+#
+# This workflow must be triggered manually by a release coordinator. It requires approval from
+# a required reviewer via the oppia-android-release-env GitHub environment before any steps
+# execute. Only one build+sign run per flavor is allowed at a time to prevent GCS archive
+# conflicts (cancel-in-progress is disabled so in-flight builds are never interrupted).
+
+name: Build and Sign Release
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'App flavor to build and sign'
+        required: true
+        type: choice
+        options:
+          - alpha
+          - beta
+          - ga
+      source_ref:
+        description: "Git ref to build from. Must be 'latest-alpha' or a release branch in the form 'release-X.Y' (e.g. 'release-0.17')."
+        required: true
+        type: string
+
+concurrency:
+  group: build-and-sign-${{ github.event.inputs.flavor }}
+  cancel-in-progress: false
+
+jobs:
+  build_and_sign:
+    name: Build and Sign (${{ github.event.inputs.flavor }})
+    runs-on: ubuntu-24.04
+    environment: oppia-android-release-env
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Validate inputs
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
+          SOURCE_REF: ${{ github.event.inputs.source_ref }}
+        run: |
+
+          # Flavor is enforced by the 'choice' type above, but we re-validate here so that
+          # future workflow_call usages (e.g. auto_release_alpha.yml) also get this check.
+          if [[ "$FLAVOR" != "alpha" && "$FLAVOR" != "beta" && "$FLAVOR" != "ga" ]]; then
+            echo "::error::Invalid flavor '$FLAVOR'. Must be one of: alpha, beta, ga."
+            exit 1
+          fi
+
+          # source_ref must be 'latest-alpha' or match the 'release-X.Y' pattern exactly.
+          if [[ "$SOURCE_REF" != "latest-alpha" && ! "$SOURCE_REF" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid source_ref '$SOURCE_REF'."
+            echo "::error::Must be 'latest-alpha' or match 'release-X.Y' (e.g. 'release-0.17')."
+            exit 1
+          fi
+
+          echo "Input validation passed: flavor=$FLAVOR, source_ref=$SOURCE_REF"
+
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.inputs.source_ref }}
+          fetch-depth: 0
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@8cb04a772ab4c1eb984e9c1b493a182e96c5e425
+        with:
+          bazelisk-cache: true
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f
+
+      # Obtain an OAuth2 access token for the WIF-impersonated service account.
+      # sign_release_binary reads this from the GCP_ACCESS_TOKEN environment variable
+      # when configuring the jsign JCA provider to reach Cloud KMS.
+      - name: Get GCP access token
+        run: echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
+
+      - name: Build unsigned AAB
+        run: |
+          bazel build --compilation_mode=opt \
+            -- //:oppia_${{ github.event.inputs.flavor }}
+
+      # The Bazel rule renames (but does not sign) the AAB to:
+      # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
+      # This step locates the unsigned output and extracts version/RC for the GCS archive path.
+      - name: Locate unsigned AAB
+        run: |
+          FLAVOR="${{ github.event.inputs.flavor }}"
+          # Use workspace-relative bazel-bin symlink — 'find bazel-bin' can fail in CI
+          # because bazel-bin is a symlink that may not resolve in a separate step.
+          UNSIGNED_AAB_PATH=$(ls bazel-bin/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
+          if [[ -z "$UNSIGNED_AAB_PATH" ]]; then
+            echo "::error::Unsigned AAB not found in bazel-bin/oppia_${FLAVOR}_release/. Build may have failed."
+            exit 1
+          fi
+          AAB_NAME=$(basename "$UNSIGNED_AAB_PATH")
+          VERSION=$(echo "$AAB_NAME" | grep -oP '(?<=oppia-android-)\d+\.\d+')
+          RC_NUM=$(echo "$AAB_NAME" | grep -oP '(?<=rc)\d+')
+          echo "UNSIGNED_AAB_PATH=$UNSIGNED_AAB_PATH" >> $GITHUB_ENV
+          echo "SIGNED_AAB_PATH=${{ github.workspace }}/signed-${AAB_NAME}" >> $GITHUB_ENV
+          echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
+          echo "Found unsigned: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+
+      # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
+      # only the digest is sent to KMS and the signature returned via the jsign JCA provider.
+      # GCP_ACCESS_TOKEN (set above) is read by sign_release_binary at runtime.
+      - name: Sign AAB with Cloud KMS
+        env:
+          GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
+        run: |
+          bazel run //scripts:sign_release_binary -- \
+            "${{ github.workspace }}/$UNSIGNED_AAB_PATH" \
+            "${{ secrets.KMS_KEY_RESOURCE_NAME }}" \
+            "${{ github.workspace }}/config/certificate/upload_certificate.pem" \
+            "$SIGNED_AAB_PATH"
+          echo "Signed AAB written to: $SIGNED_AAB_PATH"
+
+      - name: Upload signed AAB to GCS archive
+        run: |
+          FLAVOR="${{ github.event.inputs.flavor }}"
+          GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
+
+          # TODO(#6292): Check for GCS path existence here (before the build) to save CI
+          #   time when re-running an already-built ref. Requires externalizing the version
+          #   components of TransformAndroidManifest so the AAB name can be derived up-front.
+          # Fail if binary already exists — enforces the build-once guarantee.
+          if gsutil ls "$GCS_PATH" 2>/dev/null; then
+            echo "::error::Binary already exists at $GCS_PATH."
+            echo "::error::Re-running build_and_sign for the same ref is not allowed."
+            echo "::error::If this is a new RC, ensure the release branch has a new commit."
+            exit 1
+          fi
+
+          gsutil cp "$SIGNED_AAB_PATH" "$GCS_PATH"
+          echo "Uploaded to: $GCS_PATH"

@@ -12,7 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -48,7 +48,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -76,11 +75,11 @@ class QuestionTrainingControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private lateinit var profileId1: ProfileId
+  private lateinit var profileId1: LegacyProfileId
 
   @Before
   fun setUp() {
-    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+    profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
   }
 
   @Test
@@ -269,7 +268,6 @@ class QuestionTrainingControllerTest {
       AlgebraicExpressionInputModule::class,
       ApplicationLifecycleModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       DragDropSortInputModule::class,
       FakeOppiaClockModule::class,

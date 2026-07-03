@@ -18,21 +18,27 @@ class ProfileNameValidator @Inject constructor() {
    * @return whether the profile name whether is a valid, acceptable name
    */
   fun isNameValid(name: String): Boolean {
-    return containsOnlyLettersAndAllowedSymbols(name) && containsNoRepeatedUseOfAllowedSymbols(name)
+    return containsOnlyLettersAndAllowedSymbols(name) &&
+      containsNoRepeatedUseOfAllowedSymbols(name) &&
+      doesNotContainOnlyAllowedSymbolsAndSpaces(name)
   }
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
-    name.forEach {
-      if (!(it.isAlphabetic() || it in repeatableSymbols)) {
-        return false
-      }
-    }
-    return true
+    return name.all { it.isAlphabetic() || it in repeatableSymbols }
   }
 
+  /** Makes sure that there are no repeated symbols in the name. */
   private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {
     return !name.contains(noRepeatedAllowedSymbolsRegex)
+  }
+
+  /**
+   * Ensures the name is not made up exclusively of allowed symbols
+   * (i.e. it must contain at least one alphabetic character).
+   */
+  private fun doesNotContainOnlyAllowedSymbolsAndSpaces(name: String): Boolean {
+    return name.any { it.isAlphabetic() }
   }
 
   private fun Char.isAlphabetic(): Boolean {
