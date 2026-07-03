@@ -124,7 +124,8 @@ class UploadChangelogToPlayConsoleTest {
 
     runChangelog(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
 
-    assertThat(fakeClient.trackUpdates.single().releaseNotes).containsEntry("en-US", "Shared notes.")
+    assertThat(fakeClient.trackUpdates.single().releaseNotes)
+      .containsEntry("en-US", "Shared notes.")
   }
 
   @Test
