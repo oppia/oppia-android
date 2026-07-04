@@ -269,7 +269,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_multipleLiveTracksOneWithNoFile_uploadsOnlyToTrackWithFile() {
+  fun testMaybeUploadUpdatedChangelogs_oneTrackHasNoFile_uploadsOnlyToTrackWithFile() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
