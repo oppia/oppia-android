@@ -186,6 +186,14 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "update_rollout_fraction",
+    main_class = "org.oppia.android.scripts.release.UpdateRolloutFractionKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
+    ],
+)
+
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
     name = "accessibility_label_exemption_assets",
     accessibility_label_exemptions_name = ["accessibility_label_exemptions"],
