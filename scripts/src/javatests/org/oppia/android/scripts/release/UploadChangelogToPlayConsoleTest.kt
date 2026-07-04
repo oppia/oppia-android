@@ -158,7 +158,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_liveTrackWithTrackSpecificChangelog_usesTrackSpecificNotes() {
+  fun testMaybeUploadUpdatedChangelogs_trackSpecificChangelog_usesTrackSpecificNotes() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
