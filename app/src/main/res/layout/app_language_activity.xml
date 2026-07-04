@@ -25,20 +25,20 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <TextView
-            android:id="@+id/app_language_toolbar_title"
-            style="@style/ToolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text="@string/app_language_activity_title"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/ToolbarTextAppearance" />
-      </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/app_language_toolbar_title"
+        style="@style/ToolbarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="@string/app_language_activity_title"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/ToolbarTextAppearance" />
+  </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

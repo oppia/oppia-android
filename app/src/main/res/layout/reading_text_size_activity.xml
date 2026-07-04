@@ -22,8 +22,7 @@
       android:minHeight="?attr/actionBarSize"
       app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator">
-
-    <TextView
+      <TextView
         android:id="@+id/reading_text_size_toolbar_title"
         style="@style/ToolbarTitle"
         android:layout_width="wrap_content"

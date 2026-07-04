@@ -26,10 +26,10 @@ class FAQListActivityPresenter @Inject constructor(
     }
     faqListActivityToolbar = binding.faqListActivityToolbar
     activity.setSupportActionBar(faqListActivityToolbar)
-    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+    activity.supportActionBar!!.setDisplayShowTitleEnabled(false)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-    val toolbarTitle: TextView = activity.findViewById(R.id.faq_list_activity_toolbar_title)
+    val toolbarTitle: TextView = binding.faqListActivityToolbarTitle
     toolbarTitle.text = resourceHandler.getStringInLocale(R.string.FAQs)
     toolbarTitle.isSelected = true
     binding.faqListActivityToolbar.setNavigationOnClickListener {

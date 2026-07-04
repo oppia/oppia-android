@@ -118,6 +118,7 @@ class ReadingTextSizeActivityTest {
     val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.READING_TEXT_SIZE_ACTIVITY)
   }
+
   @Test
   fun testReadingTextSize_toolbarTitle_marqueeEnabled_isDisplayedCorrectly() {
     runWithLaunchedActivity {
@@ -125,7 +126,7 @@ class ReadingTextSizeActivityTest {
         val toolbarTitle: TextView =
           activity.findViewById(R.id.reading_text_size_toolbar_title)
         assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-        assertThat(toolbarTitle.isSelected).isEqualTo(true)
+        assertThat(toolbarTitle.isSelected).isTrue()
         assertThat(toolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
