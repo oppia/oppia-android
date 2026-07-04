@@ -56,22 +56,21 @@ fun main(args: Array<String>) {
   println()
 
   val client = GooglePlayConsoleClient(gcpAccessToken, apiBaseUrl)
-  runChangelog(client, workspacePath, packageName, version)
+  maybeUploadUpdatedChangelogs(client, workspacePath, packageName, version)
 }
 
 /**
- * Executes the full changelog upload workflow.
+ * Audits all live Play Console tracks and uploads updated release notes for [version] to each
+ * track that has a corresponding changelog file in `config/changelogs/`.
  *
- * Audits each of the three standard tracks for live releases, resolves the matching changelog
- * file for [version], and uploads updated notes to every live track that has a corresponding
- * file. Tracks with no matching file are skipped silently.
+ * Tracks with no matching file are skipped silently. This is a no-op if no tracks are live.
  *
  * @param client the [PlayConsoleClient] used for all Play Console API calls
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
  */
-fun runChangelog(
+fun maybeUploadUpdatedChangelogs(
   client: PlayConsoleClient,
   workspacePath: String,
   packageName: String,
