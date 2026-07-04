@@ -38,7 +38,9 @@ class UploadChangelogToPlayConsoleTest {
 
   @Test
   fun testMaybeUploadUpdatedChangelogs_noLiveTracks_doesNotCreateAnyEdits() {
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.createdEdits).isEmpty()
   }
@@ -51,7 +53,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.createdEdits).isEmpty()
   }
@@ -64,7 +68,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.createdEdits).isEmpty()
   }
@@ -77,7 +83,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("alpha")
@@ -98,7 +106,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("beta")
@@ -116,7 +126,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("production")
@@ -137,7 +149,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Shared notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Shared notes.")
@@ -152,7 +166,9 @@ class UploadChangelogToPlayConsoleTest {
     createSharedChangelog(testVersion, "Shared notes.")
     createTrackChangelog(testVersion, "alpha", "Alpha-specific notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Alpha-specific notes.")
@@ -167,7 +183,9 @@ class UploadChangelogToPlayConsoleTest {
     // No changelog file created for testVersion — only the dir exists.
     File(tempFolder.root, "config/changelogs").mkdirs()
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.createdEdits).isEmpty()
   }
@@ -181,21 +199,25 @@ class UploadChangelogToPlayConsoleTest {
     // No shared file — only the beta-specific one.
     createTrackChangelog(testVersion, "beta", "Beta-specific notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Beta-specific notes.")
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_changelogFileWithTrailingWhitespace_uploadsTrimmedNotes() {
+  fun testMaybeUploadUpdatedChangelogs_changelogWithTrailingWhitespace_uploadsTrimmedNotes() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
     )
     createSharedChangelog(testVersion, "  Release notes.  \n")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Release notes.")
@@ -210,7 +232,9 @@ class UploadChangelogToPlayConsoleTest {
     createSharedChangelog(testVersion, "A".repeat(501))
 
     val exception = assertThrows<IllegalStateException> {
-      maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("exceeds the 500 character limit")
@@ -232,7 +256,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.committedEdits).hasSize(2)
     assertThat(fakeClient.trackUpdates).hasSize(2)
@@ -255,7 +281,9 @@ class UploadChangelogToPlayConsoleTest {
     // Only alpha-specific file — no shared file for beta to fall back on.
     createTrackChangelog(testVersion, "alpha", "Alpha notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.committedEdits).hasSize(1)
     val update = fakeClient.trackUpdates.single()
@@ -279,7 +307,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, testNotes)
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.committedEdits).hasSize(3)
     assertThat(fakeClient.trackUpdates).hasSize(3)
@@ -299,7 +329,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
@@ -314,13 +346,15 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_liveReleasesWithNoVersionCodes_throwsIllegalStateException() {
+  fun testMaybeUploadUpdatedChangelogs_noVersionCodes_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(versionCodes = emptyList(), status = "completed"))
@@ -328,7 +362,9 @@ class UploadChangelogToPlayConsoleTest {
     createSharedChangelog(testVersion, "Notes.")
 
     val exception = assertThrows<IllegalStateException> {
-      maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("no version codes")
@@ -346,13 +382,15 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressReleaseWithPartialRollout_preservesExistingFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithPartialRollout_preservesExistingFraction() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -363,13 +401,15 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(250)
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressReleaseWithFullRollout_preservesFullFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithFullRollout_preservesFullFraction() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -380,7 +420,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
   }
@@ -397,7 +439,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.createdEdits).hasSize(1)
     assertThat(fakeClient.trackUpdates).hasSize(1)
@@ -411,7 +455,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     assertThat(fakeClient.committedEdits).hasSize(1)
     assertThat(fakeClient.committedEdits.single()).isEqualTo(fakeClient.createdEdits.single())
@@ -425,7 +471,9 @@ class UploadChangelogToPlayConsoleTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    maybeUploadUpdatedChangelogs(fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion)
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("production")

@@ -37,7 +37,9 @@ class UpdateRolloutFractionTest {
   @Test
   fun testUpdateRollout_noLiveReleases_throwsIllegalStateException() {
     val exception = assertThrows<IllegalStateException> {
-      updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("no live releases")
@@ -51,7 +53,9 @@ class UpdateRolloutFractionTest {
     )
 
     val exception = assertThrows<IllegalStateException> {
-      updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("no live releases")
@@ -66,7 +70,9 @@ class UpdateRolloutFractionTest {
     createSharedChangelog(testVersion, "Notes.")
 
     val exception = assertThrows<IllegalStateException> {
-      updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("no version codes")
@@ -88,7 +94,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(500)
   }
@@ -120,7 +128,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
@@ -137,7 +147,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 1000)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 1000
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
   }
@@ -154,7 +166,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 0)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 0
+    )
 
     assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(0)
   }
@@ -171,7 +185,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Shared release notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Shared release notes.")
@@ -186,7 +202,9 @@ class UpdateRolloutFractionTest {
     createSharedChangelog(testVersion, "Shared notes.")
     createTrackChangelog(testVersion, "alpha", "Alpha-specific notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes)
       .containsEntry("en-US", "Alpha-specific notes.")
@@ -201,7 +219,9 @@ class UpdateRolloutFractionTest {
     // No changelog file created.
     File(tempFolder.root, "config/changelogs").mkdirs()
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates.single().releaseNotes).isEmpty()
   }
@@ -215,7 +235,9 @@ class UpdateRolloutFractionTest {
     createSharedChangelog(testVersion, "A".repeat(501))
 
     val exception = assertThrows<IllegalStateException> {
-      updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+      )
     }
 
     assertThat(exception).hasMessageThat().contains("exceeds the 500 character limit")
@@ -233,7 +255,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+    )
 
     assertThat(fakeClient.createdEdits).hasSize(1)
     assertThat(fakeClient.trackUpdates).hasSize(1)
@@ -249,7 +273,9 @@ class UpdateRolloutFractionTest {
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 750)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 750
+    )
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("beta")
