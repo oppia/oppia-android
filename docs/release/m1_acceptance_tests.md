@@ -31,7 +31,7 @@ These tests verify that the automated release infrastructure behaves as expected
 
 | Step | Action | Expected Outcome | Actual Outcome / Status |
 | :--- | :--- | :--- | :--- |
-| 1 | Navigate to Actions → `deploy_to_play_store`. Select flavor: `beta`, track: `beta`, source ref: `release-0.17`, rollout: `25`. Click "Run workflow". | The workflow starts and authenticates to Play Console API via WIF. Downloads AAB from GCS. | ⬜️ Pending |
+| 1 | Navigate to Actions → `deploy_to_play_console`. Select flavor: `beta`, track: `beta`, source ref: `release-0.17`, rollout: `25`. Click "Run workflow". | The workflow starts and authenticates to Play Console API via WIF. Downloads AAB from GCS. | ⬜️ Pending |
 | 2 | Observe the "Upload" step. | A new edit is created. The signed AAB is uploaded to the `beta` track with the correct changelog. | ⬜️ Pending |
 | 3 | Observe the "Set Rollout" step. | Rollout fraction is set to `0.25` (25%). | ⬜️ Pending |
 | 4 | Observe the "Commit" step. | The edit is committed. Workflow summary shows version code, track, and rollout percentage. | ⬜️ Pending |
