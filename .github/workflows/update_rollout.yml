@@ -32,7 +32,8 @@ on:
         type: string
 
 concurrency:
-  # Shared with deploy_updated_changelog to prevent simultaneous edit sessions.
+  # Shared with deploy_to_play_console.yml and the changelog upload workflow to prevent
+  # simultaneous Play Console edit sessions. The API enforces one active edit per app at a time.
   group: play-console-edit-session
   cancel-in-progress: false
 

@@ -30,8 +30,9 @@ on:
         default: "1.0"
 
 concurrency:
-  # One Play Console deployment per track at a time to prevent overlapping edit sessions.
-  group: deploy-play-console-${{ github.event.inputs.track }}
+  # Shared with update_rollout.yml and the changelog upload workflow to prevent simultaneous
+  # Play Console edit sessions. The API enforces one active edit per app at a time.
+  group: play-console-edit-session
   cancel-in-progress: false
 
 jobs:
