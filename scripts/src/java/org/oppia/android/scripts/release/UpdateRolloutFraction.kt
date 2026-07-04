@@ -71,7 +71,8 @@ fun main(args: Array<String>) {
 /**
  * Executes the rollout fraction update workflow.
  *
- * Verifies that [track] has a live release, reads the current release notes from
+ * Verifies that [track] has a live release, checks that [rolloutFraction] is strictly greater
+ * than the current rollout (rollout can only go up), reads the current release notes from
  * `config/changelogs/` for [version], and updates the rollout fraction via a new Play Console
  * edit session. The release notes are read from the local file and passed through unchanged so
  * they are preserved; only the rollout fraction is updated.
@@ -81,7 +82,8 @@ fun main(args: Array<String>) {
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
- * @param rolloutFraction the new staged rollout fraction as an integer in [0, 1000]
+ * @param rolloutFraction the new staged rollout fraction as an integer in [0, 1000]; must be
+ *     strictly greater than the current live rollout fraction
  */
 fun updateRollout(
   client: PlayConsoleClient,
@@ -100,6 +102,13 @@ fun updateRollout(
 
   val versionCode = checkNotNull(liveReleases.flatMap { it.versionCodes }.maxOrNull()) {
     "Track '$track' has live releases but no version codes — this should not happen."
+  }
+
+  val currentRolloutFraction = liveReleases.mapNotNull { it.rolloutFraction }.maxOrNull() ?: 0
+  check(rolloutFraction > currentRolloutFraction) {
+    "Rollout fraction can only increase: current rollout on track '$track' is " +
+      "${currentRolloutFraction / 10.0}%, requested ${rolloutFraction / 10.0}%. " +
+      "Provide a value strictly greater than $currentRolloutFraction."
   }
 
   println("Live release found on '$track': version code $versionCode.")

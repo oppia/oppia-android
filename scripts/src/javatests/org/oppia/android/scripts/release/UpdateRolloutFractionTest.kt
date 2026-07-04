@@ -155,22 +155,47 @@ class UpdateRolloutFractionTest {
   }
 
   @Test
-  fun testUpdateRollout_zeroRolloutFraction_setsTo0() {
+  fun testUpdateRollout_rolloutFractionLessThanCurrent_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 500
         )
       )
     )
     createSharedChangelog(testVersion, "Notes.")
 
-    updateRollout(
-      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 0
-    )
+    val exception = assertThrows<IllegalStateException> {
+      // 250 < 500 → rollout regression
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 250
+      )
+    }
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(0)
+    assertThat(exception).hasMessageThat().contains("can only increase")
+  }
+
+  @Test
+  fun testUpdateRollout_rolloutFractionEqualToCurrent_throwsIllegalStateException() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "inProgress", rolloutFraction = 500
+        )
+      )
+    )
+    createSharedChangelog(testVersion, "Notes.")
+
+    val exception = assertThrows<IllegalStateException> {
+      // 500 == 500 → not strictly greater, treated as a regression
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 500
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("can only increase")
   }
 
   // ---------------------------------------------------------------------------
