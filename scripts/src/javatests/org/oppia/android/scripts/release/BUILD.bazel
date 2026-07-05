@@ -116,3 +116,27 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "UploadChangelogToPlayConsoleTest",
+    srcs = ["UploadChangelogToPlayConsoleTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:upload_changelog_to_play_console_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "UpdateRolloutFractionTest",
+    srcs = ["UpdateRolloutFractionTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
