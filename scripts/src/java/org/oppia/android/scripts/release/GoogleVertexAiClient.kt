@@ -1,0 +1,119 @@
+package org.oppia.android.scripts.release
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+
+/**
+ * Production implementation of [VertexAiClient] that calls the Vertex AI REST API.
+ *
+ * Authentication is performed via a GCP Bearer token, typically obtained via Workload Identity
+ * Federation inside a GitHub Actions workflow:
+ * ```
+ * gcloud auth print-access-token
+ * ```
+ *
+ * Requests are sent synchronously to the Vertex AI `generateContent` endpoint for the configured
+ * [gcpProject], [location], and [modelId].
+ *
+ * @property gcpProject GCP project ID that has Vertex AI enabled (e.g. "sandesh-oppia-release-dev")
+ * @property location Vertex AI region (e.g. "us-central1")
+ * @property modelId Vertex AI model identifier (e.g. "gemini-1.5-flash")
+ * @property gcpAccessToken GCP Bearer token for authenticating with the Vertex AI API
+ */
+class GoogleVertexAiClient(
+  private val gcpProject: String,
+  private val location: String,
+  private val modelId: String,
+  private val gcpAccessToken: String
+) : VertexAiClient {
+
+  private val httpClient by lazy { OkHttpClient.Builder().build() }
+  private val moshi by lazy { Moshi.Builder().build() }
+  private val requestAdapter by lazy {
+    moshi.adapter(GenerateContentRequest::class.java)
+  }
+  private val responseAdapter by lazy {
+    moshi.adapter(GenerateContentResponse::class.java)
+  }
+
+  override fun generateText(prompt: String): String {
+    val endpoint = buildEndpointUrl()
+    val requestBody = GenerateContentRequest(
+      contents = listOf(
+        Content(parts = listOf(Part(text = prompt)))
+      )
+    )
+    val jsonBody = checkNotNull(requestAdapter.toJson(requestBody)) {
+      "Failed to serialize Vertex AI request body."
+    }
+
+    val request = Request.Builder()
+      .url(endpoint)
+      .addHeader("Authorization", "Bearer $gcpAccessToken")
+      .addHeader("Content-Type", "application/json")
+      .post(jsonBody.toRequestBody(JSON_MEDIA_TYPE))
+      .build()
+
+    val responseBody = httpClient.newCall(request).execute().use { response ->
+      check(response.isSuccessful) {
+        "Vertex AI API call failed with HTTP ${response.code}: ${response.body?.string()}"
+      }
+      checkNotNull(response.body?.string()) {
+        "Vertex AI returned an empty response body."
+      }
+    }
+
+    val parsed = checkNotNull(responseAdapter.fromJson(responseBody)) {
+      "Failed to parse Vertex AI response: $responseBody"
+    }
+    return checkNotNull(
+      parsed.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text
+    ) {
+      "Vertex AI response contained no text candidates: $responseBody"
+    }.trim()
+  }
+
+  private fun buildEndpointUrl(): String {
+    return "$apiBaseUrl/v1/projects/$gcpProject/locations/$location" +
+      "/publishers/google/models/$modelId:generateContent"
+  }
+
+  // --- Moshi model classes for JSON serialization ---
+
+  @JsonClass(generateAdapter = true)
+  data class GenerateContentRequest(
+    @Json(name = "contents") val contents: List<Content>
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class Content(
+    @Json(name = "parts") val parts: List<Part>
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class Part(
+    @Json(name = "text") val text: String
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class GenerateContentResponse(
+    @Json(name = "candidates") val candidates: List<Candidate>?
+  )
+
+  @JsonClass(generateAdapter = true)
+  data class Candidate(
+    @Json(name = "content") val content: Content?
+  )
+
+  companion object {
+    /** The Vertex AI REST API base URL. Exposed as a `var` so tests can override it. */
+    var apiBaseUrl = "https://us-central1-aiplatform.googleapis.com"
+
+    private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
+  }
+}
