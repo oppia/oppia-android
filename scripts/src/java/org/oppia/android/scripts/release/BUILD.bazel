@@ -2,7 +2,7 @@
 Libraries for release automation scripts.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "app_flavor",
@@ -126,8 +126,8 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":vertex_ai_client",
-        "//third_party:moshi",
         "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:moshi",
     ],
 )
 
