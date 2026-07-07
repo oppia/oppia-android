@@ -22,3 +22,11 @@ feature_flag_definition {
   id: LOAD_IMAGES_FROM_ASSETS
   default_is_enabled: true
 }
+feature_flag_definition {
+  id: LESSON_PROGRESS_VISUALIZATION
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: STUDY_GUIDES
+  default_is_enabled: true
+}

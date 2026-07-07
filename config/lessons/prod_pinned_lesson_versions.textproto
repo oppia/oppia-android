@@ -27,19 +27,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 7
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 9
+    content_version: 4
   }
   subtopic_info {
     index: 3
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 9
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -79,23 +79,23 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 10
+    content_version: 4
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 5
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 7
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -135,19 +135,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 10
+    content_version: 3
   }
   subtopic_info {
     index: 2
-    content_version: 10
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 13
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 12
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -166,7 +166,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "WulCxGAmGE61"
-      exploration_content_version: 809
+      exploration_content_version: 815
     }
     chapter_info {
       exploration_id: "lOU0XPC2BnE9"
@@ -179,15 +179,15 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 8
+    content_version: 3
   }
 }
 tracked_topic_info {
@@ -267,43 +267,43 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 4
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 6
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 7
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 8
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 9
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 10
-    content_version: 5
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -347,19 +347,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 2
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 4
-    content_version: 8
+    content_version: 1
   }
 }
 tracked_skill_info {

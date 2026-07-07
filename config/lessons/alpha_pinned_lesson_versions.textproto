@@ -27,19 +27,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 7
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 9
+    content_version: 4
   }
   subtopic_info {
     index: 3
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 9
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -79,23 +79,23 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 10
+    content_version: 4
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 5
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 7
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -135,19 +135,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 10
+    content_version: 3
   }
   subtopic_info {
     index: 2
-    content_version: 10
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 13
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 12
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -166,7 +166,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "WulCxGAmGE61"
-      exploration_content_version: 809
+      exploration_content_version: 815
     }
     chapter_info {
       exploration_id: "lOU0XPC2BnE9"
@@ -179,15 +179,15 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 8
+    content_version: 3
   }
 }
 tracked_topic_info {
@@ -267,43 +267,43 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 4
+    content_version: 2
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 6
+    content_version: 2
   }
   subtopic_info {
     index: 4
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 6
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 7
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 8
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 9
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 10
-    content_version: 5
+    content_version: 2
   }
 }
 tracked_topic_info {
@@ -383,27 +383,27 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 5
+    content_version: 1
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 1
   }
   subtopic_info {
     index: 3
-    content_version: 5
+    content_version: 1
   }
   subtopic_info {
     index: 4
-    content_version: 7
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 6
-    content_version: 7
+    content_version: 1
   }
 }
 tracked_topic_info {
@@ -455,31 +455,31 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 7
-    content_version: 9
+    content_version: 1
   }
   subtopic_info {
     index: 1
-    content_version: 12
+    content_version: 1
   }
   subtopic_info {
     index: 2
-    content_version: 9
+    content_version: 1
   }
   subtopic_info {
     index: 3
-    content_version: 6
+    content_version: 1
   }
   subtopic_info {
     index: 4
-    content_version: 5
+    content_version: 1
   }
   subtopic_info {
     index: 5
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 6
-    content_version: 3
+    content_version: 1
   }
 }
 tracked_topic_info {
@@ -523,19 +523,19 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 2
-    content_version: 5
+    content_version: 2
   }
   subtopic_info {
     index: 3
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 4
-    content_version: 8
+    content_version: 1
   }
 }
 tracked_topic_info {
@@ -571,88 +571,24 @@ tracked_topic_info {
   }
   subtopic_info {
     index: 1
-    content_version: 4
+    content_version: 1
   }
   subtopic_info {
     index: 2
-    content_version: 8
+    content_version: 1
   }
   subtopic_info {
     index: 3
-    content_version: 2
+    content_version: 1
   }
   subtopic_info {
     index: 4
-    content_version: 3
+    content_version: 1
   }
 }
 tracked_topic_info {
   id: "5cbCOcglPdrn"
-  content_version: 59
-  story_info {
-    id: "6ZbyRnajbHXy"
-    content_version: 25
-    chapter_info {
-      exploration_id: "ua7FTOXRaRjb"
-      exploration_content_version: 24
-    }
-    chapter_info {
-      exploration_id: "sRqParMOyWWB"
-      exploration_content_version: 45
-    }
-    chapter_info {
-      exploration_id: "fRXacq7caMoO"
-      exploration_content_version: 18
-    }
-    chapter_info {
-      exploration_id: "Sl4TGJQhSjmk"
-      exploration_content_version: 84
-    }
-    chapter_info {
-      exploration_id: "2EOuIfQHljkN"
-      exploration_content_version: 16
-    }
-    chapter_info {
-      exploration_id: "9S3bMbqFwDMR"
-      exploration_content_version: 29
-    }
-    chapter_info {
-      exploration_id: "JCZC79V2FeIl"
-      exploration_content_version: 36
-    }
-    chapter_info {
-      exploration_id: "4HssuJT0enVP"
-      exploration_content_version: 30
-    }
-    chapter_info {
-      exploration_id: "Uwpgt08xfr9I"
-      exploration_content_version: 51
-    }
-    chapter_info {
-      exploration_id: "PbS53dnzysLu"
-      exploration_content_version: 17
-    }
-  }
-  subtopic_info {
-    index: 4
-    content_version: 4
-  }
-  subtopic_info {
-    index: 5
-    content_version: 2
-  }
-  subtopic_info {
-    index: 1
-    content_version: 3
-  }
-  subtopic_info {
-    index: 2
-    content_version: 2
-  }
-  subtopic_info {
-    index: 3
-    content_version: 3
-  }
+  content_version: 3
 }
 tracked_topic_info {
   id: "bdO7c687WBBW"
@@ -1320,98 +1256,6 @@ tracked_skill_info {
 }
 tracked_skill_info {
   id: "jAMbDCZxnHb4"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "F2i3mndaaiAt"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "vGTxPqw3taby"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "a81k6CLJoOT6"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "JvyqptQge8Se"
-  content_version: 5
-}
-tracked_skill_info {
-  id: "PUlyLJWsIY1o"
-  content_version: 5
-}
-tracked_skill_info {
-  id: "AbwyG1aRW82g"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "nUZrZ5rFzoh6"
-  content_version: 2
-}
-tracked_skill_info {
-  id: "sL9nqLaYnXDb"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "AjzrZRxb9CU6"
-  content_version: 6
-}
-tracked_skill_info {
-  id: "uL8zXBwCd9D0"
-  content_version: 6
-}
-tracked_skill_info {
-  id: "g5xFIbJ3cs3e"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "acOEn1mJxpbQ"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "e644wN7vDUkn"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "uNSFlseW3o7F"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "ExZMpRr1jMxJ"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "S1IAgTEqO4YG"
-  content_version: 6
-}
-tracked_skill_info {
-  id: "bBIpo3XCLO13"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "SALxtMf9dh6H"
-  content_version: 3
-}
-tracked_skill_info {
-  id: "bkmpgbM4WzWo"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "pDN147cftGnk"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "DZdlhhambykY"
-  content_version: 2
-}
-tracked_skill_info {
-  id: "Kg9odbViYNhU"
-  content_version: 4
-}
-tracked_skill_info {
-  id: "KQ7ZH7le6U9m"
   content_version: 4
 }
 tracked_skill_info {
