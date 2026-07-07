@@ -96,6 +96,9 @@ jobs:
       - name: Write prod server key
         run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
 
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       - name: Build unsigned AAB
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
@@ -110,7 +113,8 @@ jobs:
             --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
             --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
             --//config:download_license_texts=true \
-            --//config:enable_firebase_analytics=true
+            --//config:enable_firebase_analytics=true \
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
       # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
