@@ -2,6 +2,9 @@ package org.oppia.android.app.help.faq
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -119,6 +122,19 @@ class FAQListActivityTest {
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
         assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+      }
+    }
+  }
+
+  @Test
+  fun testFaqList_toolbarTitle_marqueeEnabled_isDisplayedCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val toolbarTitle: TextView =
+          activity.findViewById(R.id.faq_list_activity_toolbar_title)
+        assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(toolbarTitle.isSelected).isTrue()
+        assertThat(toolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }

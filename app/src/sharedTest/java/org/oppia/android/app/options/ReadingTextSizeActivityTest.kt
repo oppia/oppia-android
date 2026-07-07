@@ -3,6 +3,9 @@ package org.oppia.android.app.options
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -121,6 +124,19 @@ class ReadingTextSizeActivityTest {
 
     val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.READING_TEXT_SIZE_ACTIVITY)
+  }
+
+  @Test
+  fun testReadingTextSize_toolbarTitle_marqueeEnabled_isDisplayedCorrectly() {
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val toolbarTitle: TextView =
+          activity.findViewById(R.id.reading_text_size_toolbar_title)
+        assertThat(toolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(toolbarTitle.isSelected).isTrue()
+        assertThat(toolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   @Test

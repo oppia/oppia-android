@@ -21,9 +21,22 @@
       android:fontFamily="sans-serif"
       android:minHeight="?attr/actionBarSize"
       app:navigationContentDescription="@string/navigate_up"
-      app:navigationIcon="?attr/homeAsUpIndicator"
-      app:title="@string/title_reading_text_size"
-      app:titleTextAppearance="@style/ToolbarTextAppearance" />
+      app:navigationIcon="?attr/homeAsUpIndicator">
+      <TextView
+        android:id="@+id/reading_text_size_toolbar_title"
+        style="@style/ToolbarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="@string/title_reading_text_size"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/ToolbarTextAppearance" />
+    </androidx.appcompat.widget.Toolbar>
+
   </com.google.android.material.appbar.AppBarLayout>
 
   <FrameLayout

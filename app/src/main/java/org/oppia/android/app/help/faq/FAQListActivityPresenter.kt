@@ -1,5 +1,6 @@
 package org.oppia.android.app.help.faq
 
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -23,17 +24,17 @@ class FAQListActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
     }
-
     faqListActivityToolbar = binding.faqListActivityToolbar
     activity.setSupportActionBar(faqListActivityToolbar)
-    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(R.string.FAQs)
+    activity.supportActionBar!!.setDisplayShowTitleEnabled(false)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+    val toolbarTitle: TextView = binding.faqListActivityToolbarTitle
+    toolbarTitle.text = resourceHandler.getStringInLocale(R.string.FAQs)
+    toolbarTitle.isSelected = true
     binding.faqListActivityToolbar.setNavigationOnClickListener {
       (activity as FAQListActivity).finish()
     }
-
     if (getFAQListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.faq_list_fragment_placeholder,
