@@ -114,7 +114,9 @@ jobs:
             --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
             --//config:download_license_texts=true \
             --//config:enable_firebase_analytics=true \
-            --action_env=GOOGLE_APPLICATION_CREDENTIALS
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
+            --host_jvm_args=-Xmx6g \
+            --local_ram_resources=HOST_RAM*.6
 
       # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
