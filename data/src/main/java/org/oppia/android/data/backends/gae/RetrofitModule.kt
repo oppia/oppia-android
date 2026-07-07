@@ -18,6 +18,7 @@ class RetrofitModule {
   fun provideRetrofitInstance(
     moshi: Moshi,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+    retryInterceptor: RetryInterceptor,
     networkLoggingInterceptor: NetworkLoggingInterceptor,
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     @BaseUrl baseUrl: String
@@ -32,6 +33,7 @@ class RetrofitModule {
           // registered last so that the network logging interceptor receives a response with the
           // XSSI prefix correctly removed.
           addInterceptor(remoteAuthNetworkInterceptor)
+          addInterceptor(retryInterceptor)
           addInterceptor(networkLoggingInterceptor)
           addInterceptor(jsonPrefixNetworkInterceptor)
         }.build()
@@ -42,4 +44,9 @@ class RetrofitModule {
   @Provides
   @Singleton
   fun provideMoshi(): Moshi = Moshi.Builder().add(GaePlatformParameterValue.Adapter).build()
+
+  @Provides
+  fun provideNetworkDelayHandler(
+    realNetworkDelayHandler: RealNetworkDelayHandler
+  ): NetworkDelayHandler = realNetworkDelayHandler
 }

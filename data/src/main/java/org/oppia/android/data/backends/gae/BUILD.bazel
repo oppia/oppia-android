@@ -8,8 +8,11 @@ kt_android_library(
     name = "network_interceptors",
     srcs = [
         "JsonPrefixNetworkInterceptor.kt",
+        "NetworkDelayHandler.kt",
         "NetworkLoggingInterceptor.kt",
+        "RealNetworkDelayHandler.kt",
         "RemoteAuthNetworkInterceptor.kt",
+        "RetryInterceptor.kt",
     ],
     visibility = [
         "//:oppia_api_visibility",
