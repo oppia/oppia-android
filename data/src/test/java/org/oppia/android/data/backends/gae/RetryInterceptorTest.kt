@@ -21,7 +21,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [RetryInterceptor]. */
@@ -63,7 +62,7 @@ class RetryInterceptorTest {
 
   private class FakeNetworkDelayHandler : NetworkDelayHandler {
     val recordedDelays = mutableListOf<Long>()
-    
+
     override fun delay(millis: Long) {
       recordedDelays.add(millis)
     }

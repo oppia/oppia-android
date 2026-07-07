@@ -1,15 +1,14 @@
 package org.oppia.android.data.backends.gae
 
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.oppia.android.data.backends.gae.Constants.HTTP_BAD_GATEWAY
 import org.oppia.android.data.backends.gae.Constants.HTTP_GATEWAY_TIMEOUT
 import org.oppia.android.data.backends.gae.Constants.HTTP_REQUEST_TIMEOUT
 import org.oppia.android.data.backends.gae.Constants.HTTP_SERVICE_UNAVAILABLE
-
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Interceptor on top of Retrofit to retry requests when transient HTTP errors occur. */
 @Singleton
@@ -23,7 +22,11 @@ class RetryInterceptor @Inject constructor(
     var response = chain.proceed(request)
     var tryCount = 0
 
-    while (!response.isSuccessful && shouldRetry(response.code) && tryCount < RETRY_DELAYS_MILLIS.size) {
+    while (
+      !response.isSuccessful &&
+      shouldRetry(response.code) &&
+      tryCount < RETRY_DELAYS_MILLIS.size
+    ) {
       // Close the previous response body before retrying to avoid resource leaks.
       response.close()
 
