@@ -46,7 +46,8 @@ class RetrofitModule {
   fun provideMoshi(): Moshi = Moshi.Builder().add(GaePlatformParameterValue.Adapter).build()
 
   @Provides
+  @Singleton
   fun provideNetworkDelayHandler(
-    realNetworkDelayHandler: RealNetworkDelayHandler
-  ): NetworkDelayHandler = realNetworkDelayHandler
+    networkDelayHandlerImpl: NetworkDelayHandlerImpl
+  ): NetworkDelayHandler = networkDelayHandlerImpl
 }

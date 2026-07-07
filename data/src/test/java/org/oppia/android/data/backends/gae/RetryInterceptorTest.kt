@@ -1,14 +1,7 @@
 package org.oppia.android.data.backends.gae
 
-import android.app.Application
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.BindsInstance
-import dagger.Component
-import dagger.Module
-import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
@@ -17,16 +10,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
 
 /** Tests for [RetryInterceptor]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = RetryInterceptorTest.TestApplication::class)
 class RetryInterceptorTest {
 
   private companion object {
@@ -42,7 +30,6 @@ class RetryInterceptorTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
     setUpClient()
   }
 
@@ -53,6 +40,7 @@ class RetryInterceptorTest {
 
   private fun setUpClient() {
     mockWebServer = MockWebServer()
+    mockWebServer.start()
     fakeNetworkDelayHandler = FakeNetworkDelayHandler()
     retryInterceptor = RetryInterceptor(fakeNetworkDelayHandler)
     okHttpClient = OkHttpClient.Builder()
@@ -88,6 +76,22 @@ class RetryInterceptorTest {
 
     assertThat(response.code).isEqualTo(404)
     assertThat(mockWebServer.requestCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testIntercept_networkReturns408_retriesThreeTimes_returns408() {
+    // OkHttp's built-in RetryAndFollowUpInterceptor also automatically retries 408s.
+    // We enqueue extra responses here so MockWebServer doesn't run out of responses 
+    // and cause a SocketTimeoutException.
+    for (i in 1..10) {
+      mockWebServer.enqueue(MockResponse().setResponseCode(408).setBody("{}"))
+    }
+
+    val request = Request.Builder().url(mockWebServer.url("/")).build()
+    val response = okHttpClient.newCall(request).execute()
+
+    assertThat(response.code).isEqualTo(408)
+    assertThat(mockWebServer.requestCount).isAtLeast(4)
   }
 
   @Test
@@ -160,49 +164,5 @@ class RetryInterceptorTest {
         EXPECTED_RETRY_DELAY_3_MILLIS
       )
       .inOrder()
-  }
-
-  private fun getTestApplication() = ApplicationProvider.getApplicationContext<TestApplication>()
-
-  private fun setUpTestApplicationComponent() {
-    getTestApplication().inject(this)
-  }
-
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context = application
-  }
-
-  @Singleton
-  @Component(
-    modules = [
-      RobolectricModule::class,
-      TestDispatcherModule::class,
-      TestModule::class
-    ]
-  )
-  interface TestApplicationComponent {
-    @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-      fun build(): TestApplicationComponent
-    }
-
-    fun inject(test: RetryInterceptorTest)
-  }
-
-  class TestApplication : Application() {
-    private val component: TestApplicationComponent by lazy {
-      DaggerRetryInterceptorTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
-    }
-
-    fun inject(test: RetryInterceptorTest) {
-      component.inject(test)
-    }
   }
 }

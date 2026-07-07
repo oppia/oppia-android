@@ -9,8 +9,8 @@ kt_android_library(
     srcs = [
         "JsonPrefixNetworkInterceptor.kt",
         "NetworkDelayHandler.kt",
+        "NetworkDelayHandlerImpl.kt",
         "NetworkLoggingInterceptor.kt",
-        "RealNetworkDelayHandler.kt",
         "RemoteAuthNetworkInterceptor.kt",
         "RetryInterceptor.kt",
     ],

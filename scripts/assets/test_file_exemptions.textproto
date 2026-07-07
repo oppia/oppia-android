@@ -4944,6 +4944,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/RealNetworkDelayHandler.kt"
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandlerImpl.kt"
   test_file_not_required: true
 }
