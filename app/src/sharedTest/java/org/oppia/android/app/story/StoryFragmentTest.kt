@@ -46,6 +46,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
@@ -165,6 +166,7 @@ class StoryFragmentTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+  @Mock lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
   @Captor lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
@@ -905,6 +907,95 @@ class StoryFragmentTest {
     }
   }
 
+  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
+  fun testStoryFragment_notStartedChapter_clickChapter_routesToExploration() {
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToExplorationListener)
+        .routeToExploration(
+          anyOrNull(), anyString(), anyString(), anyString(), anyString(), anyOrNull(), anyBoolean()
+      )
+    }
+  }
+
+  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
+  fun testStoryFragment_completedChapter_clickChapter_routesToExplorationAsReplay() {
+    setStoryPartialProgressForFractions()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToExplorationListener)
+        .routeToExploration(
+          anyOrNull(), anyString(), anyString(), anyString(), anyString(), anyOrNull(), eq(false)
+      )
+    }
+  }
+
+  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
+  fun testStoryFragment_inProgressSavedChapter_clickChapter_routesToResumeLesson() {
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToResumeLessonListener)
+        .routeToResumeLesson(
+          anyOrNull(), anyString(), anyString(), anyString(), anyString(), anyOrNull(), anyOrNull()
+      )
+    }
+  }
+
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
@@ -1124,6 +1215,7 @@ class StoryFragmentTest {
     ActivityScenario.launch<StoryFragmentTestActivity>(intent).use { scenario ->
       scenario.onActivity { activity ->
         activity.mockRouteToExplorationListener = mockRouteToExplorationListener
+        activity.mockRouteToResumeLessonListener = mockRouteToResumeLessonListener
         activity.setContentView(R.layout.test_activity)
         activity.supportFragmentManager.beginTransaction()
           .add(R.id.test_fragment_placeholder, fragment)
@@ -1137,6 +1229,7 @@ class StoryFragmentTest {
   class StoryFragmentTestActivity :
     TestActivity(), RouteToExplorationListener, RouteToResumeLessonListener {
     lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+    lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
 
     override fun routeToExploration(
       profileId: LegacyProfileId,
@@ -1167,6 +1260,15 @@ class StoryFragmentTest {
       parentScreen: ExplorationActivityParams.ParentScreen,
       explorationCheckpoint: ExplorationCheckpoint
     ) {
+      mockRouteToResumeLessonListener.routeToResumeLesson(
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        parentScreen,
+        explorationCheckpoint
+      )
     }
   }
 
