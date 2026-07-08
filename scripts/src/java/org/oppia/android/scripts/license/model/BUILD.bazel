@@ -6,7 +6,6 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "model",
-    testonly = True,
     srcs = [
         "CopyrightLicense.kt",
         "Dependency.kt",

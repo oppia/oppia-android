@@ -11,6 +11,7 @@ import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ProfileProgressActivity]. */
@@ -65,7 +66,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
 
   fun updateProfileAvatar(intent: Intent?) {
     profileManagementController.updateProfileAvatar(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       intent?.data,
       /* colorRgb= */ 10710042
     )
