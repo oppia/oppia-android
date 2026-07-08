@@ -89,10 +89,12 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Authenticate to GCP via Workload Identity Federation
+        id: auth
         uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f
@@ -100,8 +102,14 @@ jobs:
       # Obtain an OAuth2 access token for the WIF-impersonated service account.
       # sign_release_binary reads this from the GCP_ACCESS_TOKEN environment variable
       # when configuring the jsign JCA provider to reach Cloud KMS.
-      - name: Get GCP access token
-        run: echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
+      # token_format='access_token' in the auth step generates this directly — avoids
+      # gcloud auth print-access-token which fails with WIF external_account credentials.
+      # The token is immediately masked so it is never exposed in workflow logs.
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
       - name: Write prod server key
         run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
