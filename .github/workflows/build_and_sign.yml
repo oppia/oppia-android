@@ -106,6 +106,11 @@ jobs:
       - name: Write prod server key
         run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
 
+      # Required by tools/google_services.bzl which calls `firebase apps:sdkconfig`
+      # when --//config:download_firebase_config=true is set during Phase 2 and 3.
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       # -----------------------------------------------------------------------
       # Phase 1: Pre-build all scripts (filter_per_language_resources,
       # retrieve_license_texts, transform_android_manifest, download_lessons,
