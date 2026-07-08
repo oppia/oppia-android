@@ -99,7 +99,10 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Build unsigned AAB
+      # Step 1: compile everything into the Bazel disk cache. This is the memory-intensive phase.
+      # Splitting into two steps with a bazel shutdown between them avoids JVM OOM on the runner,
+      # following the same pattern used in regular binary build CI runs.
+      - name: Build unsigned AAB (compile)
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           # Alpha builds include pre-release lessons so they need alpha assets; all other
@@ -114,9 +117,28 @@ jobs:
             --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
             --//config:download_license_texts=true \
             --//config:enable_firebase_analytics=true \
-            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
-            --host_jvm_args=-Xmx6g \
-            --local_ram_resources=HOST_RAM*.6
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS
+
+      # Shut down the Bazel JVM to free accumulated heap memory before the final link/package phase.
+      - name: Shutdown Bazel to free memory
+        run: bazel shutdown
+
+      # Step 2: re-run the same build. All compilation is cached on disk; Bazel only needs to
+      # link and package the final AAB — much lower peak memory usage.
+      - name: Build unsigned AAB (finish)
+        run: |
+          FLAVOR="${{ github.event.inputs.flavor }}"
+          ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
+          bazel build --compilation_mode=opt \
+            //:oppia_${FLAVOR} \
+            --//config:assets_type=${ASSETS_TYPE} \
+            --//config:web_api_key_file=/tmp/prod_server.key \
+            --//config:download_firebase_config=true \
+            --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
+            --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
+            --//config:download_license_texts=true \
+            --//config:enable_firebase_analytics=true \
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
       # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
