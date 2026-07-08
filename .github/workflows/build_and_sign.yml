@@ -146,9 +146,11 @@ jobs:
       - name: Locate unsigned AAB
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
-          # Use workspace-relative bazel-bin symlink — 'find bazel-bin' can fail in CI
-          # because bazel-bin is a symlink that may not resolve in a separate step.
-          UNSIGNED_AAB_PATH=$(ls bazel-bin/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
+          # Resolve bazel-bin to its real absolute path NOW, before 'bazel run' in the
+          # signing step starts a new server and shifts the bazel-bin symlink to the
+          # host/JVM output directory (which would make the Android AAB invisible).
+          BAZEL_BIN_REAL=$(readlink -f bazel-bin)
+          UNSIGNED_AAB_PATH=$(ls "$BAZEL_BIN_REAL"/oppia_${FLAVOR}_release/oppia-android-*.aab 2>/dev/null | head -1)
           if [[ -z "$UNSIGNED_AAB_PATH" ]]; then
             echo "::error::Unsigned AAB not found in bazel-bin/oppia_${FLAVOR}_release/. Build may have failed."
             exit 1
@@ -170,8 +172,9 @@ jobs:
         env:
           GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
         run: |
+          # UNSIGNED_AAB_PATH is already an absolute real path (resolved in Locate step).
           bazel run //scripts:sign_release_binary -- \
-            "${{ github.workspace }}/$UNSIGNED_AAB_PATH" \
+            "$UNSIGNED_AAB_PATH" \
             "${{ secrets.KMS_KEY_RESOURCE_NAME }}" \
             "${{ github.workspace }}/config/certificate/upload_certificate.pem" \
             "$SIGNED_AAB_PATH"
