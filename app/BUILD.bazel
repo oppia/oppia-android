@@ -13,6 +13,7 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//tools:google_services.bzl", "prepare_google_services_json")
 
 package(default_visibility = [
     "//domain:__subpackages__",
@@ -148,6 +149,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/survey/DismissSurveyListener.kt",
     "src/main/java/org/oppia/android/app/survey/SelectedAnswerAvailabilityReceiver.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
+    "src/main/java/org/oppia/android/app/topic/RouteToStudyGuideListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
@@ -278,6 +280,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FlashbackButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/LessonProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt",
@@ -351,6 +354,10 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideSectionContentViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideSectionHeadingViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/studyguide/StudyGuideViewModel.kt",
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalViewModel.kt",
@@ -368,6 +375,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/CopyIdMaterialButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
+    "src/main/java/org/oppia/android/app/customview/LessonProgressIndicatorView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/OppiaCurveBackgroundView.kt",
     "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
@@ -424,7 +432,10 @@ android_library(
         exclude = DATABINDING_LAYOUTS,
     ),
     visibility = ["//app:__subpackages__"],
-    deps = ["//third_party:com_google_android_material_material"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/thirdparty:resources",
+        "//third_party:com_google_android_material_material",
+    ],
 )
 
 # Library for layout resource files.
@@ -639,6 +650,7 @@ kt_android_library(
         "//:dagger",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_auto_localized_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_english_only_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_system_localized_app_compat_activity",
         "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_bottom_sheet_dialog_fragment",
@@ -751,6 +763,8 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/testing:platform_parameter_service_test_orchestrator",
     "//domain",
+    "//domain:domain_dev_assets",
+    "//domain:domain_test_assets",
     "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
@@ -813,7 +827,6 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
-    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
     "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
@@ -855,9 +868,15 @@ TEST_DEPS = [
 # To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
 # to your build rule's dependency list.
 
+prepare_google_services_json(
+    name = "processed_google_services_json",
+    developer_google_services_file = "google-services.json",
+    output_file = "google_services_processed.json",
+)
+
 GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.android",
-    google_services_json = "google-services.json",
+    google_services_json = "google_services_processed.json",
 )
 
 crashlytics_android_library(

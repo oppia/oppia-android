@@ -106,7 +106,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -116,6 +115,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -166,6 +166,7 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
@@ -518,6 +519,19 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
       .isEqualTo(2)
     assertThat(ephemeralState.completedState.getAnswer(1).feedback.html).contains("Correct!")
+  }
+
+  @Test
+  fun testGetCurrentState_lessonProgressDisabled_checkpointExploration_hasNoCheckpointProgress() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // With the feature disabled the indicator is never populated, even for an exploration that does
+    // have checkpoint states.
+    assertThat(ephemeralState.hasCheckpointProgress()).isFalse()
   }
 
   @Test
@@ -3153,7 +3167,10 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLangProvider =
+      translationController.getWrittenTranslationContentLanguage(
+        profileId.toProfileIdPreservingZero()
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.SWAHILI)
   }
@@ -3209,7 +3226,9 @@ class ExplorationProgressControllerTest {
 
     // Verify that the other learner's profile-wide content language hasn't changed.
     val contentLangProvider =
-      translationController.getWrittenTranslationContentLanguage(arabicProfileId)
+      translationController.getWrittenTranslationContentLanguage(
+        arabicProfileId.toProfileIdPreservingZero()
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ARABIC)
   }
@@ -3232,7 +3251,10 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLangProvider =
+      translationController.getWrittenTranslationContentLanguage(
+        profileId.toProfileIdPreservingZero()
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ENGLISH)
   }
@@ -4144,7 +4166,7 @@ class ExplorationProgressControllerTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -4215,7 +4237,7 @@ class ExplorationProgressControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 
@@ -4256,10 +4278,6 @@ class ExplorationProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

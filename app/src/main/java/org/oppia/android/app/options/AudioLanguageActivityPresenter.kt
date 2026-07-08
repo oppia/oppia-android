@@ -39,6 +39,9 @@ class AudioLanguageActivityPresenter @Inject constructor(
     }
     val binding: AudioLanguageActivityBinding =
       DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
+    activity.setSupportActionBar(binding.audioLanguageToolbar)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+    binding.audioLanguageToolbarTitle.isSelected = true
     binding.audioLanguageToolbar.setNavigationOnClickListener {
       finishWithResult()
     }

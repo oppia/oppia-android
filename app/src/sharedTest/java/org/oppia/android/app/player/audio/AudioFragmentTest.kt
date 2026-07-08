@@ -104,7 +104,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -541,6 +540,95 @@ class AudioFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_changeNetworkToCellular_reloadContent_showsWarningAndKeepsPlayingAudio() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_pause_description)
+          )
+        )
+      )
+
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadMainContentAudio(allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_description)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_changeNetworkToNone_reloadMainContent_showsOfflineAndStopsPlayingAudio() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_pause_description)
+          )
+        )
+      )
+
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadMainContentAudio(allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.audio_dialog_offline_positive)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
   @Test
   fun testFragment_initialLoad_audioControlsAreDisplayed() {
     addMediaInfo()
@@ -719,7 +807,6 @@ class AudioFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

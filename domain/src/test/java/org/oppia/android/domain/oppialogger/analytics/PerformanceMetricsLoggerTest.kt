@@ -260,6 +260,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   private fun setUpApplicationInDefaultMode() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     setUpFakePerformanceMetricsUtils()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)

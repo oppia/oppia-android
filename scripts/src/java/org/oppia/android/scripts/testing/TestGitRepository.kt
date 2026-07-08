@@ -25,10 +25,10 @@ class TestGitRepository(
   private val userName: String?
     get() = maybeExecuteGitCommand("config", "--local", "--get", "user.name")?.joinOutput()?.trim()
 
-  /** Creates the repository using git init. */
+  /** Creates the repository using git init, pre-creating the `develop` branch. */
   fun init() {
     verifyNotInGitRepository()
-    executeSuccessfulGitCommand("init")
+    executeSuccessfulGitCommand("init", "--initial-branch=develop")
   }
 
   /** Sets the user's [email] and [name] using git config. */
@@ -100,20 +100,63 @@ class TestGitRepository(
     executeSuccessfulGitCommand(*arguments.toTypedArray())
   }
 
+  /**
+   * Initializes the repository with a specified number of historical commits.
+   *
+   * This method uses `git fast-import` to efficiently import empty commits onto the `develop`
+   * branch. It requires that git user information is set first.
+   *
+   * Note that this method is intended strictly for initialization purposes and will fail if the Git
+   * repository is not empty (i.e. if there are existing commits in the history).
+   *
+   * @param commitCount the number of historical commits to import onto the `develop` branch
+   */
+  fun initializeHistoricalCommits(commitCount: Int) {
+    verifyInGitRepository()
+    verifyUserIsSet()
+    val name = userName
+    val email = userEmail
+    val timeMillis = System.currentTimeMillis()
+    val commitsToImport = List(commitCount) { index ->
+      """
+      commit refs/heads/develop
+      committer $name <$email> $timeMillis +0000
+      data <<EOF
+      Historical commit $index.
+      EOF
+
+      """.trimIndent()
+    }
+    val commitLines = commitsToImport.asSequence().flatMap { it.split("\n") }
+    executeSuccessfulGitCommand("fast-import", inputLines = commitLines)
+  }
+
   /** Returns the result of git status. */
   fun status(checkForGitRepository: Boolean = true): String {
     if (checkForGitRepository) verifyInGitRepository()
     return executeGitCommand("status").joinOutput()
   }
 
-  private fun executeGitCommand(vararg arguments: String): CommandResult =
-    commandExecutor.executeCommand(rootDirectory, "git", *arguments)
+  /** Creates a remote tracking branch with the specified name pointing to HEAD. */
+  fun createRemoteBranchRef(branchName: String, pointTo: String = "HEAD") {
+    verifyInGitRepository()
+    executeSuccessfulGitCommand("update-ref", "refs/remotes/$branchName", pointTo)
+  }
+
+  private fun executeGitCommand(
+    vararg arguments: String,
+    inputLines: Sequence<String> = emptySequence()
+  ): CommandResult {
+    return commandExecutor.executeCommand(rootDirectory, "git", *arguments, inputLines = inputLines)
+  }
 
   private fun maybeExecuteGitCommand(vararg arguments: String): CommandResult? =
     executeGitCommand(*arguments).takeIf { it.exitCode == 0 }
 
-  private fun executeSuccessfulGitCommand(vararg arguments: String) =
-    verifySuccessfulCommand(executeGitCommand(*arguments))
+  private fun executeSuccessfulGitCommand(
+    vararg arguments: String,
+    inputLines: Sequence<String> = emptySequence()
+  ) = verifySuccessfulCommand(executeGitCommand(*arguments, inputLines = inputLines))
 
   private fun verifySuccessfulCommand(result: CommandResult) {
     assertWithMessage("Output: ${result.joinOutput()}")

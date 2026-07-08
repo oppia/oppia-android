@@ -30,6 +30,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
@@ -116,7 +117,7 @@ class RevisionCardActivityPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

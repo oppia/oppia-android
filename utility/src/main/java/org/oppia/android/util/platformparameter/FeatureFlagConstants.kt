@@ -209,8 +209,27 @@ const val ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE = false
 @Qualifier
 annotation class EnableEdgeToEdge
 
-/** Name of the feature flag that controls whether to enable edge-to-edge display support. */
-const val EDGE_TO_EDGE = "android_enable_edge_to_edge"
+/**
+ * Corresponds to an injectable boolean indicating whether images (including thumbnails) should be
+ * retrieved from the app's local assets.
+ */
+@Qualifier annotation class LoadImagesFromAssets
 
-/** Default value for the feature flag corresponding to [EnableEdgeToEdge]. */
-const val ENABLE_EDGE_TO_EDGE_DEFAULT_VALUE = false
+/**
+ * Corresponds to an injectable boolean indicating whether lessons are contained in the app's local
+ * assets, and that these lessons are encoded using protos.
+ */
+@Qualifier
+annotation class LoadLessonProtosFromAssets
+
+/**
+ * Qualifier for the feature flag that controls whether to enable lesson progress or not.
+ */
+@Qualifier
+annotation class EnableLessonProgressVisualization
+
+/**
+ * Qualifier for the feature flag that controls whether to enable study guides or not.
+ */
+@Qualifier
+annotation class EnableStudyGuides

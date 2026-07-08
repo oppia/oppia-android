@@ -1,0 +1,40 @@
+"""
+Data models for Google Play Developer API responses used by the release automation scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "edit_response",
+    srcs = ["EditResponse.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "bundle_response",
+    srcs = ["BundleResponse.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "track_response",
+    srcs = ["TrackResponse.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "insert_edit_request",
+    srcs = ["InsertEditRequest.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "track_update_request",
+    srcs = ["TrackUpdateRequest.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)

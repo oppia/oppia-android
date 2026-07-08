@@ -1,0 +1,117 @@
+# Downloads a signed release AAB from the GCS archive and uploads it to the Google Play Console
+# via the UploadBinaryToPlayConsole Kotlin script. The AAB must have been previously produced by
+# build_and_sign.yml and archived in GCS. Precondition checks (version inversion, pending release,
+# changelog existence) are enforced by the script before any upload is attempted.
+#
+# Authentication uses the same Workload Identity Federation setup as build_and_sign.yml. The WIF
+# service account must have the "Release to production" permission on the target Play Console app.
+
+name: Deploy to Play Console
+
+on:
+  workflow_dispatch:
+    inputs:
+      gcs_aab_path:
+        description: "Full GCS path to the signed AAB from the archive (e.g. gs://oppia-android-alpha-releases/0.17/RC01/oppia-android-0.17-rc01-alpha-abc1234567.aab)"
+        required: true
+        type: string
+      track:
+        description: "Play Console track to deploy to"
+        required: true
+        type: choice
+        options:
+          - alpha
+          - beta
+          - production
+      rollout_fraction:
+        description: "Rollout fraction for staged rollouts, between 0.0 and 1.0 (e.g. 0.1 for 10%). Use 1.0 for a full rollout."
+        required: false
+        type: string
+        default: "1.0"
+
+concurrency:
+  # Shared with update_rollout.yml and the changelog upload workflow to prevent simultaneous
+  # Play Console edit sessions. The API enforces one active edit per app at a time.
+  group: play-console-edit-session
+  cancel-in-progress: false
+
+jobs:
+  deploy_to_play_console:
+    name: Deploy to Play Console (${{ github.event.inputs.track }})
+    runs-on: ubuntu-24.04
+    environment: oppia-android-release-env
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # Validates inputs and extracts the flavor from the GCS path for downstream steps.
+      - name: Validate inputs and extract flavor
+        run: |
+          GCS_PATH="${{ github.event.inputs.gcs_aab_path }}"
+          ROLLOUT="${{ github.event.inputs.rollout_fraction }}"
+
+          if [[ ! "$GCS_PATH" =~ ^gs://oppia-android-(alpha|beta|ga)-releases/.+\.aab$ ]]; then
+            echo "::error::Invalid gcs_aab_path: '$GCS_PATH'"
+            echo "::error::Must match: gs://oppia-android-{alpha|beta|ga}-releases/<path>.aab"
+            exit 1
+          fi
+
+          if ! [[ "$ROLLOUT" =~ ^(0(\.[0-9]+)?|1(\.0+)?)$ ]]; then
+            echo "::error::Invalid rollout_fraction: '$ROLLOUT'. Must be a decimal between 0.0 and 1.0."
+            exit 1
+          fi
+
+          FLAVOR=$(echo "$GCS_PATH" | grep -oP '(?<=oppia-android-)(alpha|beta|ga)(?=-releases)')
+          AAB_NAME=$(basename "$GCS_PATH")
+
+          echo "FLAVOR=$FLAVOR" >> $GITHUB_ENV
+          echo "AAB_NAME=$AAB_NAME" >> $GITHUB_ENV
+          echo "Inputs validated: flavor=$FLAVOR, track=${{ github.event.inputs.track }}, aab=$AAB_NAME, rollout=$ROLLOUT"
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # Downloads the signed AAB from the GCS archive to a temp path for the upload script.
+      # Uses gsutil instead of gcloud storage: gcloud storage applies DNS-compliant bucket name
+      # validation that rejects bucket names containing hyphens in certain configurations,
+      # whereas gsutil does not apply this validation.
+      - name: Download signed AAB from GCS
+        run: |
+          gsutil cp "${{ github.event.inputs.gcs_aab_path }}" "/tmp/$AAB_NAME"
+
+          # Verify the download produced a non-empty file.
+          if [[ ! -s "/tmp/$AAB_NAME" ]]; then
+            echo "::error::Downloaded AAB is empty or missing at /tmp/$AAB_NAME"
+            exit 1
+          fi
+
+          echo "AAB_LOCAL_PATH=/tmp/$AAB_NAME" >> $GITHUB_ENV
+          FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
+          echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
+
+      # Runs the UploadBinaryToPlayConsole Kotlin script which enforces all precondition checks
+      # (pending release, version inversion, changelog existence) before uploading the AAB.
+      - name: Upload AAB to Play Console
+        run: |
+          bazel run //scripts:upload_binary_to_play_console -- \
+            "$(pwd)" \
+            "$AAB_LOCAL_PATH" \
+            "${{ github.event.inputs.track }}" \
+            "${{ secrets.GCP_PROJECT_ID }}" \
+            "${{ github.event.inputs.rollout_fraction }}"

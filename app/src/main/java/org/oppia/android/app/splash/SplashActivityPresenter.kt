@@ -58,6 +58,7 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -522,7 +523,7 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun logInToProfile(profileId: LegacyProfileId) {
-      profileManagementController.loginToProfile(profileId)
+      profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero())
         .toLiveData()
         .observe(activity) { result ->
           if (result is AsyncResult.Success && !activity.isFinishing) {
