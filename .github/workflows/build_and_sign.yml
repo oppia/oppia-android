@@ -167,13 +167,18 @@ jobs:
 
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
       # only the digest is sent to KMS and the signature returned via the jsign JCA provider.
-      # GCP_ACCESS_TOKEN (set above) is read by sign_release_binary at runtime.
+      # GCP_ACCESS_TOKEN is read by sign_release_binary at runtime via the jsign JCA provider.
+      # --action_env ensures both credential env vars are passed into the Bazel sandbox so the
+      # signing tool can authenticate to Cloud KMS (Bazel strips env vars by default).
       - name: Sign AAB with Cloud KMS
         env:
           GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
         run: |
           # UNSIGNED_AAB_PATH is already an absolute real path (resolved in Locate step).
-          bazel run //scripts:sign_release_binary -- \
+          bazel run //scripts:sign_release_binary \
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
+            --action_env=GCP_ACCESS_TOKEN \
+            -- \
             "$UNSIGNED_AAB_PATH" \
             "${{ secrets.KMS_KEY_RESOURCE_NAME }}" \
             "${{ github.workspace }}/config/certificate/upload_certificate.pem" \
