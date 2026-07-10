@@ -89,10 +89,14 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Authenticate to GCP via Workload Identity Federation
+        id: auth
         uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          create_credentials_file: true
+          export_environment_variables: true
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f
@@ -100,16 +104,25 @@ jobs:
       # Obtain an OAuth2 access token for the WIF-impersonated service account.
       # sign_release_binary reads this from the GCP_ACCESS_TOKEN environment variable
       # when configuring the jsign JCA provider to reach Cloud KMS.
-      - name: Get GCP access token
-        run: echo "GCP_ACCESS_TOKEN=$(gcloud auth print-access-token)" >> $GITHUB_ENV
+      # token_format='access_token' in the auth step generates this directly — avoids
+      # gcloud auth print-access-token which fails with WIF external_account credentials.
+      # The token is immediately masked so it is never exposed in workflow logs.
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
       - name: Write prod server key
         run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
 
       # Required by tools/google_services.bzl which calls `firebase apps:sdkconfig`
       # when --//config:download_firebase_config=true is set during Phase 2 and 3.
+      # Pinned to 15.22.3 which fixes the Node 24.17.0 keep-alive regression
+      # (FetchError: Premature close during STS token exchange, silently swallowed
+      # as "Failed to authenticate" — firebase-tools issue #10726 / v15.22.3 changelog).
       - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+        run: npm install -g firebase-tools@15.22.3
 
       # -----------------------------------------------------------------------
       # Phase 1: Pre-build all scripts (filter_per_language_resources,
