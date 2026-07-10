@@ -144,6 +144,9 @@ class ExplorationActivityLocalTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
   private val internalProfileId: Int = 0
+  private val profileId by lazy {
+    ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
   private val afternoonUtcTimestampMillis = 1556101812000
 
   @Before
@@ -213,7 +216,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -267,7 +270,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -312,7 +315,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -378,7 +381,7 @@ class ExplorationActivityLocalTest {
       )
     ).use { scenario ->
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -437,7 +440,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -479,8 +482,8 @@ class ExplorationActivityLocalTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
-    spotlightStateController.markSpotlightViewed(profileId, feature)
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(legacyProfileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -496,7 +499,7 @@ class ExplorationActivityLocalTest {
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+          profileId,
           classroomId,
           topicId,
           storyId,

@@ -128,7 +128,7 @@ class ExplorationDataController @Inject constructor(
 
   /**
    * Restarts the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the user corresponding to [profileId], and returns a [DataProvider] tracking whether
    * the start succeeded.
    *
    * This method behaves the same as [resumeExploration] except any prior progress the user might
@@ -159,7 +159,7 @@ class ExplorationDataController @Inject constructor(
 
   /**
    * Replays the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the user corresponding to [profileId], and returns a [DataProvider] tracking whether
    * the start succeeded.
    *
    * This method behaves the same as [startPlayingNewExploration] except no progress is tracked

@@ -35,6 +35,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 ) {
 
   private var profileId: Int = 1
+  private val profileIdProto get() = ProfileId.newBuilder().setInternalId(profileId).build()
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -87,7 +88,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(profileId).build(),
+      profileIdProto,
       explorationId
     )
     stopExploration(isCompletion)
@@ -106,12 +107,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        ProfileId.newBuilder().setInternalId(profileId).build(),
+        profileIdProto,
         classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        ProfileId.newBuilder().setInternalId(profileId).build(),
+        profileIdProto,
         classroomId, topicId, storyId, explorationId
       )
     }

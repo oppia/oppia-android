@@ -18,8 +18,8 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -72,7 +72,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -105,7 +104,7 @@ class ExplorationProgressControllerLessonProgressTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -246,7 +245,7 @@ class ExplorationProgressControllerLessonProgressTest {
     storyId: String = TEST_STORY_ID_0
   ) {
     val startPlayingProvider = explorationDataController.startPlayingNewExploration(
-      profileId.toProfileIdPreservingZero(), TEST_CLASSROOM_ID_0, topicId, storyId, explorationId
+      profileId, TEST_CLASSROOM_ID_0, topicId, storyId, explorationId
     )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }

@@ -119,6 +119,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     saveCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -149,6 +150,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     saveCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -180,6 +182,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     updateCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -211,6 +214,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     updateCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -247,6 +251,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     profileId: LegacyProfileId,
     version: Int,
   ) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     saveCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -278,6 +283,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForRatiosStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     updateCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
   }
 
@@ -319,6 +325,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param explorationId the ID of the exploration for which checkpoint was saved
    */
   fun verifyExplorationProgressIsSaved(profileId: LegacyProfileId, explorationId: String) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     verifyExplorationProgressIsSaved(profileId.toProfileIdPreservingZero(), explorationId)
   }
 
@@ -361,6 +368,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param explorationId the ID of the exploration for which checkpoint should be deleted
    */
   fun verifyExplorationProgressIsDeleted(profileId: LegacyProfileId, explorationId: String) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
     verifyExplorationProgressIsDeleted(profileId.toProfileIdPreservingZero(), explorationId)
   }
 
