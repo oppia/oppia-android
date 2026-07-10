@@ -57,7 +57,6 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.model.TopicLessonsFragmentArguments
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -144,6 +143,7 @@ import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

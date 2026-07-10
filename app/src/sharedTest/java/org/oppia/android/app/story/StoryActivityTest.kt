@@ -36,7 +36,6 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
