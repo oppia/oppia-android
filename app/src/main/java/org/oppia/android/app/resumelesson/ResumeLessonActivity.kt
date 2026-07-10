@@ -18,6 +18,8 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.toLegacyProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
@@ -34,7 +36,7 @@ class ResumeLessonActivity :
 
     val params = intent.getProtoExtra(PARAMS_KEY, ResumeLessonActivityParams.getDefaultInstance())
     resumeLessonActivityPresenter.handleOnCreate(
-      params.profileId,
+      params.profileId.toLegacyProfileId(),
       params.classroomId,
       params.topicId,
       params.storyId,
@@ -72,7 +74,7 @@ class ResumeLessonActivity :
       checkpoint: ExplorationCheckpoint
     ): Intent {
       val params = ResumeLessonActivityParams.newBuilder().apply {
-        this.profileId = profileId
+        this.profileId = profileId.toProfileIdPreservingZero()
         this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId

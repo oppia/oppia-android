@@ -14,6 +14,8 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.toLegacyProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Fragment that allows the user to resume a saved exploration. */
@@ -35,7 +37,7 @@ class ResumeLessonFragment : InjectableFragment() {
       readingTextSize: ReadingTextSize
     ): ResumeLessonFragment {
       val args = ResumeLessonFragmentArguments.newBuilder().apply {
-        this.profileId = profileId
+        this.profileId = profileId.toProfileIdPreservingZero()
         this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId
@@ -75,7 +77,7 @@ class ResumeLessonFragment : InjectableFragment() {
     return resumeLessonFragmentPresenter.handleOnCreate(
       inflater,
       container,
-      args.profileId,
+      args.profileId.toLegacyProfileId(),
       args.classroomId,
       args.topicId,
       args.storyId,
