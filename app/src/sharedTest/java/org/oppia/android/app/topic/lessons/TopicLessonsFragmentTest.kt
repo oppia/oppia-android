@@ -57,6 +57,7 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.model.StoryActivityParams
 import org.oppia.android.app.model.TopicLessonsFragmentArguments
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -741,7 +742,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = profileId
+        profileId = this@TopicLessonsFragmentTest.profileId.toProfileIdPreservingZero()
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -797,7 +798,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = profileId
+        profileId = this@TopicLessonsFragmentTest.profileId.toProfileIdPreservingZero()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -835,7 +836,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = profileId
+        profileId = this@TopicLessonsFragmentTest.profileId.toProfileIdPreservingZero()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -878,7 +879,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = profileId
+        profileId = this@TopicLessonsFragmentTest.profileId.toProfileIdPreservingZero()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -920,7 +921,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = profileId
+        profileId = this@TopicLessonsFragmentTest.profileId.toProfileIdPreservingZero()
         isCheckpointingEnabled = false
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()

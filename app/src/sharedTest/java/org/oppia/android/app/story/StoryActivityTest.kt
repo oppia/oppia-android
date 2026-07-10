@@ -37,6 +37,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -196,7 +197,7 @@ class StoryActivityTest {
         storyId = TEST_STORY_ID_0
         topicId = TEST_TOPIC_ID_0
         classroomId = TEST_CLASSROOM_ID_0
-        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
         isCheckpointingEnabled = true
       }.build()
