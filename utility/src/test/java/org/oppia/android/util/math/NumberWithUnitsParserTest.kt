@@ -4710,7 +4710,7 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_divisionWithNoNumeratorUnit_returnsUnitExpectedError() {
+  fun testParser_divisionWithNoNumeratorUnit_returnsMissingDenominatorError() {
     val error = parseNumberWithUnitsExpectingFailure("10 /s")
     assertThat(error).isInstanceOf(MissingDenominatorError::class.java)
   }
@@ -4765,7 +4765,7 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_numberInDenominator_returnsTrailingTokensError() {
+  fun testParser_numberInDenominator_returnsUnitExpectedAfterDivisionError() {
     // "10 m/3" → '3' is not a unit
     val error = parseNumberWithUnitsExpectingFailure("10 m/3")
     assertThat(error).isInstanceOf(UnitExpectedAfterDivisionError::class.java)
