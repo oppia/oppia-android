@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.release
 
-import net.jsign.jca.JsignJcaProvider
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
 import java.io.File
@@ -67,38 +66,99 @@ class CloudKmsSigner(
       .take(6) // projects/<id>/locations/<loc>/keyRings/<ring>
       .joinToString("/")
 
-    // Resolve the jsign JAR from the current classpath so the jarsigner subprocess can load it
-    // via -providerPath. jarsigner starts a fresh JVM process and does not inherit security
-    // providers registered in this process via Security.addProvider().
-    val jsignJarPath =
-      JsignJcaProvider::class.java.protectionDomain.codeSource.location.path
-
     // Copy unsigned AAB to output path, then sign in-place with jarsigner.
     // jarsigner is used instead of ApkSigner because AABs use JAR signing (v1 scheme), and
     // ApkSigner is designed for APK v2/v3 signing schemes.
     unsignedAabPath.toFile().copyTo(absoluteOutputFile, overwrite = true)
 
+    // Resolve jarsigner using the running JVM's java.home rather than relying on PATH.
+    // bazel run modifies the subprocess's PATH and may resolve a different (incompatible)
+    // jarsigner than the JDK that's actually running this script.
+    val javaHome = requireNotNull(System.getProperty("java.home")) { "java.home not set" }
+    val jarsignerBin = java.io.File(javaHome, "bin/jarsigner").also {
+      check(it.exists()) { "jarsigner not found at: ${it.absolutePath}. java.home=$javaHome" }
+    }.absolutePath
+    println("  jarsigner   : $jarsignerBin")
+
+    // Pass the full classpath of the current JVM (populated by Bazel with all transitive deps)
+    // to jarsigner's JVM. java.class.path contains relative paths (e.g. "scripts/foo.jar",
+    // "..maven/net/jsign/...") that are relative to Bazel's execroot. jarsigner runs in
+    // parentDir (the output directory) where these paths don't resolve. Fix: convert each
+    // entry to an absolute path using the Kotlin binary's CWD before passing to jarsigner.
+    val absoluteClasspath = checkNotNull(System.getProperty("java.class.path")) {
+      "java.class.path is null; cannot pass full classpath to jarsigner"
+    }.split(File.pathSeparator)
+      .filter { it.isNotBlank() }
+      .joinToString(File.pathSeparator) { entry ->
+        val f = File(entry)
+        if (f.isAbsolute) entry else f.absoluteFile.canonicalPath
+      }
+    println("  classpath    : $absoluteClasspath")
+
+    // val jarsignerResult: CommandResult = commandExecutor.executeCommand(
+    //   workingDir = parentDir,
+    //   command = jarsignerBin,
+    //   "-keystore", certPath.toAbsolutePath().toString(),
+    //   "-storetype", "GOOGLECLOUD",
+    //   "-storepass", gcpAccessToken,
+    //   "-certchain", certPath.toAbsolutePath().toString(),
+    //   "-sigalg", "SHA256withRSA",
+    //   "-digestalg", "SHA-256",
+    //   // Pass the FULL Bazel classpath so jarsigner's JVM has all jsign transitive deps.
+    //   // -providerPath was only added in JDK 19 (JDK-8281175); use -J-cp instead.
+    //   "-J-cp", "-J$absoluteClasspath",
+    //   // java.sql required by jsign on JDK 9+ (single-token = avoids parser bug).
+    //   "-J--add-modules=java.sql",
+    //   // -providerArg must immediately follow -providerClass (strict jarsigner parser).
+    //   "-providerClass", "net.jsign.jca.JsignJcaProvider",
+    //   "-providerArg", keyRingPath,
+    //   "-signedjar", absoluteOutputFile.absolutePath,
+    //   absoluteOutputFile.absolutePath,
+    //   // The alias for GOOGLECLOUD keystores is the full KMS key resource name.
+    //   kmsKeyResourceName.substringAfterLast("/")
+    // )
+
+    // Extract the CryptoKey name (e.g. "oppia-android-signing-key") from the full resource path.
+    // Format: projects/<id>/locations/<loc>/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>
+    // substringAfterLast("/") would return the VERSION NUMBER (e.g. "2"), not the key name.
+    val keyParts = kmsKeyResourceName.split("/")
+    val cryptoKeyIndex = keyParts.indexOf("cryptoKeys")
+    check(cryptoKeyIndex >= 0 && cryptoKeyIndex + 1 < keyParts.size) {
+      "Could not extract cryptoKey name from kms_key_resource_name: $kmsKeyResourceName"
+    }
+    val alias = keyParts[cryptoKeyIndex + 1] // e.g. "oppia-android-signing-key"
+
+    // Jsign's GOOGLECLOUD keystore looks for a file named "<alias>.pem" in the working directory
+    // to use as the certificate, since GCP KMS does not store X.509 certificates. Create it here
+    // so jsign can discover the certificate without fetching from the keystore.
+    val jsignCertFile = File(parentDir, "$alias.pem")
+    certPath.toFile().copyTo(jsignCertFile, overwrite = true)
+
     val jarsignerResult: CommandResult = commandExecutor.executeCommand(
       workingDir = parentDir,
-      command = "jarsigner",
+      command = jarsignerBin,
+      // Jsign REQUIRES the -keystore parameter to be the GCP KeyRing path
       "-keystore", "NONE",
       "-storetype", "GOOGLECLOUD",
       "-storepass", gcpAccessToken,
+      // We still pass certchain for jarsigner's internal manifest checks
       "-certchain", certPath.toAbsolutePath().toString(),
       "-sigalg", "SHA256withRSA",
       "-digestalg", "SHA-256",
-      "-providerPath", jsignJarPath,
+      "-J-cp", "-J$absoluteClasspath",
+      "-J--add-modules=java.sql",
       "-providerClass", "net.jsign.jca.JsignJcaProvider",
       "-providerArg", keyRingPath,
       "-signedjar", absoluteOutputFile.absolutePath,
       absoluteOutputFile.absolutePath,
-      // The alias for GOOGLECLOUD keystores is the full KMS key resource name.
-      kmsKeyResourceName
+      // The exact alias matching the newly created .pem file
+      alias
     )
 
     check(jarsignerResult.exitCode == 0) {
-      "jarsigner failed with exit code ${jarsignerResult.exitCode}:\n" +
-        jarsignerResult.errorOutput.joinToString("\n")
+      "jarsigner failed with exit code ${jarsignerResult.exitCode}.\n" +
+        "stdout: ${jarsignerResult.output.joinToString("\n")}\n" +
+        "stderr: ${jarsignerResult.errorOutput.joinToString("\n")}"
     }
 
     // Load the public certificate and validate that the signature embedded in the signed AAB

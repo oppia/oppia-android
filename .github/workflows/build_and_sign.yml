@@ -21,7 +21,6 @@
 # execute. Only one build+sign run per flavor is allowed at a time to prevent GCS archive
 # conflicts (cancel-in-progress is disabled so in-flight builds are never interrupted).
 
-
 name: Build and Sign Release
 on:
   workflow_dispatch:
@@ -65,8 +64,9 @@ jobs:
             exit 1
           fi
 
-          # source_ref must be 'latest-alpha' or match the 'release-X.Y' pattern exactly.
-          if [[ "$SOURCE_REF" != "latest-alpha" && ! "$SOURCE_REF" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
+          # TEST ONLY (fork): also allow 'develop' for fork integration testing.
+          # source_ref must be 'latest-alpha', 'develop', or match the 'release-X.Y' pattern exactly.
+          if [[ "$SOURCE_REF" != "latest-alpha" && "$SOURCE_REF" != "develop" && ! "$SOURCE_REF" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Invalid source_ref '$SOURCE_REF'."
             echo "::error::Must be 'latest-alpha' or match 'release-X.Y' (e.g. 'release-0.17')."
             exit 1
@@ -124,6 +124,29 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools@15.22.3
 
+      # DIAGNOSTIC: verify credentials are set and firebase CLI works standalone
+      - name: Diagnose Firebase CLI auth
+        run: |
+          echo "Firebase version: $(firebase --version)"
+          echo "GOOGLE_APPLICATION_CREDENTIALS is set: $([ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && echo YES || echo NO)"
+          echo "Credentials file exists: $([ -f "$GOOGLE_APPLICATION_CREDENTIALS" ] && echo YES || echo NO)"
+          echo "Credentials type: $(python3 -c "import json; d=json.load(open('$GOOGLE_APPLICATION_CREDENTIALS')); print(d.get('type','unknown'))" 2>/dev/null || echo 'unreadable')"
+          echo "=== SA being impersonated ==="
+          python3 -c "
+          import json
+          d=json.load(open('$GOOGLE_APPLICATION_CREDENTIALS'))
+          url=d.get('service_account_impersonation_url','NOT_FOUND')
+          print('Impersonation URL:', url)
+          import re
+          m=re.search(r'serviceAccounts/([^:]+):', url)
+          print('SA email:', m.group(1) if m else 'NOT_FOUND')
+          " 2>/dev/null || echo 'Could not parse credentials'
+                    echo "--- Testing firebase CLI directly ---"
+                    firebase apps:sdkconfig ANDROID "${{ secrets.FIREBASE_APP_ID }}" \
+                      --project "${{ secrets.FIREBASE_PROJECT_ID }}" \
+                      --non-interactive \
+                      --debug 2>&1 | tail -30 || true   
+
       # -----------------------------------------------------------------------
       # Phase 1: Pre-build all scripts (filter_per_language_resources,
       # retrieve_license_texts, transform_android_manifest, download_lessons,
@@ -145,22 +168,20 @@ jobs:
 
       # -----------------------------------------------------------------------
       # Phase 2: Build the deployable target (//:oppia_${FLAVOR}_deployable).
-      # This builds the binary up to (but not including) full AAB packaging,
-      # which is the Proguard-heavy step that causes OOM on GitHub runners.
-      # The heavy compilation work is done here and cached to disk.
+      # TEST ONLY: assets_type=dev skips network asset/lesson downloads.
+      # Firebase config download is enabled since fork has FIREBASE_APP_ID/PROJECT_ID.
+      # License texts download skipped (no license SA configured on fork).
       # -----------------------------------------------------------------------
       - name: "Phase 2: Build app binary (deployable)"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
-          ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
           bazel build --compilation_mode=opt \
             //:oppia_${FLAVOR}_deployable \
-            --//config:assets_type=${ASSETS_TYPE} \
-            --//config:web_api_key_file=/tmp/prod_server.key \
+            --//config:assets_type=dev \
             --//config:download_firebase_config=true \
             --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
             --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
-            --//config:download_license_texts=true \
+            --//config:download_license_texts=false \
             --//config:enable_firebase_analytics=true \
             --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
@@ -175,15 +196,13 @@ jobs:
       - name: "Phase 3: Build full AAB"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
-          ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
           bazel build --compilation_mode=opt \
             //:oppia_${FLAVOR} \
-            --//config:assets_type=${ASSETS_TYPE} \
-            --//config:web_api_key_file=/tmp/prod_server.key \
+            --//config:assets_type=dev \
             --//config:download_firebase_config=true \
             --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
             --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
-            --//config:download_license_texts=true \
+            --//config:download_license_texts=false \
             --//config:enable_firebase_analytics=true \
             --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
@@ -224,10 +243,17 @@ jobs:
         env:
           GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
         run: |
+          # Ensure the JDK's jarsigner (not a stripped-down runtime version) is first in PATH.
+          # Bazel may invoke the binary with a modified PATH; --action_env=PATH ensures it passes through.
+          export PATH="$JAVA_HOME/bin:$PATH"
+          echo "jarsigner path: $(which jarsigner)"
+          jarsigner -version 2>&1 || true
+
           # UNSIGNED_AAB_PATH is already an absolute real path (resolved in Locate step).
           bazel run //scripts:sign_release_binary \
             --action_env=GOOGLE_APPLICATION_CREDENTIALS \
             --action_env=GCP_ACCESS_TOKEN \
+            --action_env=PATH \
             -- \
             "$UNSIGNED_AAB_PATH" \
             "${{ secrets.KMS_KEY_RESOURCE_NAME }}" \
