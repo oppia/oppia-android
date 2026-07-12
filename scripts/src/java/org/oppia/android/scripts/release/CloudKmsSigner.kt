@@ -95,28 +95,6 @@ class CloudKmsSigner(
       }
     println("  classpath    : $absoluteClasspath")
 
-    // val jarsignerResult: CommandResult = commandExecutor.executeCommand(
-    //   workingDir = parentDir,
-    //   command = jarsignerBin,
-    //   "-keystore", certPath.toAbsolutePath().toString(),
-    //   "-storetype", "GOOGLECLOUD",
-    //   "-storepass", gcpAccessToken,
-    //   "-certchain", certPath.toAbsolutePath().toString(),
-    //   "-sigalg", "SHA256withRSA",
-    //   "-digestalg", "SHA-256",
-    //   // Pass the FULL Bazel classpath so jarsigner's JVM has all jsign transitive deps.
-    //   // -providerPath was only added in JDK 19 (JDK-8281175); use -J-cp instead.
-    //   "-J-cp", "-J$absoluteClasspath",
-    //   // java.sql required by jsign on JDK 9+ (single-token = avoids parser bug).
-    //   "-J--add-modules=java.sql",
-    //   // -providerArg must immediately follow -providerClass (strict jarsigner parser).
-    //   "-providerClass", "net.jsign.jca.JsignJcaProvider",
-    //   "-providerArg", keyRingPath,
-    //   "-signedjar", absoluteOutputFile.absolutePath,
-    //   absoluteOutputFile.absolutePath,
-    //   // The alias for GOOGLECLOUD keystores is the full KMS key resource name.
-    //   kmsKeyResourceName.substringAfterLast("/")
-    // )
 
     // Extract the CryptoKey name (e.g. "oppia-android-signing-key") from the full resource path.
     // Format: projects/<id>/locations/<loc>/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>
