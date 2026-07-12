@@ -165,7 +165,6 @@ class ExplorationActivityLocalTest {
   fun testExploration_onLaunch_logsEvent() {
     setUpTestApplicationComponent()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -198,7 +197,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -248,7 +246,6 @@ class ExplorationActivityLocalTest {
   fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
     setUpTestWithNpsEnabled()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -297,7 +294,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -363,7 +359,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -422,7 +417,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -488,7 +482,6 @@ class ExplorationActivityLocalTest {
   }
 
   private fun getApplicationDependencies(
-    internalProfileId: Int,
     classroomId: String,
     topicId: String,
     storyId: String,

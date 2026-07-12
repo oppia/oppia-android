@@ -95,7 +95,7 @@ class ExplorationDataController @Inject constructor(
 
   /**
    * Resumes the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId] by restoring the provided
+   * the user corresponding to [profileId] by restoring the provided
    * [explorationCheckpoint], and returns a [DataProvider] tracking whether the start succeeded.
    *
    * This method behaves the same as [startPlayingNewExploration] except it resumes a previous
