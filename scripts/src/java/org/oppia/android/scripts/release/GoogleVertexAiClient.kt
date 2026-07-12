@@ -56,7 +56,7 @@ class GoogleVertexAiClient(
       .url(endpoint)
       .addHeader("Authorization", "Bearer $gcpAccessToken")
       .addHeader("Content-Type", "application/json")
-      .post(jsonBody.toRequestBody(JSON_MEDIA_TYPE))
+      .method("POST", jsonBody.toRequestBody(JSON_MEDIA_TYPE))
       .build()
 
     val responseBody = httpClient.newCall(request).execute().use { response ->
@@ -85,26 +85,51 @@ class GoogleVertexAiClient(
 
   // --- Moshi model classes for JSON serialization ---
 
+  /**
+   * Top-level request body sent to the Vertex AI generateContent endpoint.
+   *
+   * @property contents the list of content turns to send to the model
+   */
   @JsonClass(generateAdapter = true)
   data class GenerateContentRequest(
     @Json(name = "contents") val contents: List<Content>
   )
 
+  /**
+   * Represents a single content turn containing one or more parts.
+   *
+   * @property parts the list of content parts in this turn
+   */
   @JsonClass(generateAdapter = true)
   data class Content(
     @Json(name = "parts") val parts: List<Part>
   )
 
+  /**
+   * A single text part within a [Content] turn.
+   *
+   * @property text the text content of this part
+   */
   @JsonClass(generateAdapter = true)
   data class Part(
     @Json(name = "text") val text: String
   )
 
+  /**
+   * Top-level response from the Vertex AI generateContent endpoint.
+   *
+   * @property candidates the list of generated response candidates, or null if none were returned
+   */
   @JsonClass(generateAdapter = true)
   data class GenerateContentResponse(
     @Json(name = "candidates") val candidates: List<Candidate>?
   )
 
+  /**
+   * A single candidate response from the model.
+   *
+   * @property content the content of this candidate, or null if the model returned no content
+   */
   @JsonClass(generateAdapter = true)
   data class Candidate(
     @Json(name = "content") val content: Content?
