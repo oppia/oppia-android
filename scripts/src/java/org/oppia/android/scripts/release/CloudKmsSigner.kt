@@ -95,7 +95,6 @@ class CloudKmsSigner(
       }
     println("  classpath    : $absoluteClasspath")
 
-
     // Extract the CryptoKey name (e.g. "oppia-android-signing-key") from the full resource path.
     // Format: projects/<id>/locations/<loc>/keyRings/<ring>/cryptoKeys/<key>/cryptoKeyVersions/<ver>
     // substringAfterLast("/") would return the VERSION NUMBER (e.g. "2"), not the key name.
