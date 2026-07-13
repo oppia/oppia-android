@@ -114,7 +114,7 @@ class CloudKmsSigner(
     val jarsignerResult: CommandResult = commandExecutor.executeCommand(
       workingDir = parentDir,
       command = jarsignerBin,
-      // Jsign REQUIRES the -keystore parameter to be the GCP KeyRing path
+      // GOOGLECLOUD storetype requires -keystore NONE; the KeyRing path is passed via -providerArg.
       "-keystore", "NONE",
       "-storetype", "GOOGLECLOUD",
       "-storepass", gcpAccessToken,
