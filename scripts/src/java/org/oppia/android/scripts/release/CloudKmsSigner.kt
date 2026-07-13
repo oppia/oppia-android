@@ -75,7 +75,7 @@ class CloudKmsSigner(
     // bazel run modifies the subprocess's PATH and may resolve a different (incompatible)
     // jarsigner than the JDK that's actually running this script.
     val javaHome = requireNotNull(System.getProperty("java.home")) { "java.home not set" }
-    val jarsignerBin = java.io.File(javaHome, "bin/jarsigner").also {
+    val jarsignerBin = File(javaHome, "bin/jarsigner").also {
       check(it.exists()) { "jarsigner not found at: ${it.absolutePath}. java.home=$javaHome" }
     }.absolutePath
     println("  jarsigner   : $jarsignerBin")
@@ -90,8 +90,11 @@ class CloudKmsSigner(
     }.split(File.pathSeparator)
       .filter { it.isNotBlank() }
       .joinToString(File.pathSeparator) { entry ->
-        val f = File(entry)
-        if (f.isAbsolute) entry else f.absoluteFile.canonicalPath
+        // Preserve already-absolute entries to avoid the extra I/O of canonicalPath.
+        // Relative entries (common under Bazel's execroot) are resolved to absolute canonical
+        // paths so jarsigner's JVM can locate them regardless of its working directory.
+        val file = File(entry)
+        if (file.isAbsolute) entry else file.absoluteFile.canonicalPath
       }
     println("  classpath    : $absoluteClasspath")
 
