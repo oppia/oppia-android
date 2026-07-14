@@ -119,7 +119,7 @@ class GaeAndroidEndpointJsonImpl(
       }
       val constraints =
         CompatibilityConstraints(
-          supportedInteractionIds = SUPPORTED_INTERACTION_IDS,
+          supportedInteractionIds = downloadConfig.allowedInteractionIdsList.toSet(),
           supportedDefaultLanguages = SUPPORTED_DEFAULT_LANGUAGES,
           requiredTranslationLanguages = additionalLanguages + defaultLanguage,
           supportedImageFormats = SUPPORTED_IMAGE_FORMATS,
@@ -849,14 +849,6 @@ class GaeAndroidEndpointJsonImpl(
   }
 
   private companion object {
-    private val SUPPORTED_INTERACTION_IDS =
-      setOf(
-        "Continue", "FractionInput", "ItemSelectionInput", "MultipleChoiceInput",
-        "NumericInput", "TextInput", "DragAndDropSortInput", "ImageClickInput",
-        "RatioExpressionInput", "EndExploration", "NumericExpressionInput",
-        "AlgebraicExpressionInput", "MathEquationInput" // , "NumberWithUnits"
-      )
-
     // TODO: Remove gif and png since we only want to use svg(z) and webp moving forward.
     private val SUPPORTED_IMAGE_FORMATS = setOf("png", "webp", "svg", "svgz", "gif")
 

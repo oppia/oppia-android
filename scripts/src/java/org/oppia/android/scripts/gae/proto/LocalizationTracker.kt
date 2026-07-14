@@ -408,17 +408,17 @@ class LocalizationTracker private constructor(
     fun verifyContentId(contentId: String) = ensureDefaultLanguageHasContent(contentId)
 
     fun recordSingleTranslation(language: LanguageType, contentId: String, text: String) {
-      ensureDefaultLanguageHasContent(contentId)
+      ensureDefaultLanguageHasContent(contentId, language)
       retrieveAssetsForLanguage(language).recordSingleTranslation(id, contentId, text)
     }
 
     fun recordMultiTranslation(language: LanguageType, contentId: String, texts: List<String>) {
-      ensureDefaultLanguageHasContent(contentId)
+      ensureDefaultLanguageHasContent(contentId, language)
       retrieveAssetsForLanguage(language).recordMultiTranslation(id, contentId, texts)
     }
 
     fun recordVoiceover(language: LanguageType, contentId: String, voiceover: VoiceoverFileDto) {
-      ensureDefaultLanguageHasContent(contentId)
+      ensureDefaultLanguageHasContent(contentId, language)
       retrieveAssetsForLanguage(language).recordVoiceover(id, contentId, voiceover)
     }
 
@@ -469,7 +469,7 @@ class LocalizationTracker private constructor(
     private fun retrieveAssetsForLanguage(language: LanguageType) =
       languages.getOrPut(language) { TrackedAssets(language, downloadConfig = downloadConfig) }
 
-    private fun ensureDefaultLanguageHasContent(contentId: String) {
+    private fun ensureDefaultLanguageHasContent(contentId: String, languageType: LanguageType? = null) {
       val expectedExemptionCase = if (id is ContainerId.Exploration) {
         val exemption = downloadConfig.defaultIdExemptionsList.find {
           it.explorationId == id.id && it.contentId == contentId
@@ -480,12 +480,8 @@ class LocalizationTracker private constructor(
       check(expectedExemptionCase == 0) { "Exemption $expectedExemptionCase should be removed." }
       if (contentId !in defaultContentIds) {
         errors +=
-          "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
-          " $id, content ID: $contentId."
-      }
-      require(contentId in defaultContentIds) {
-        "Attempting to add an asset for a content ID that hasn't been defaulted in container:" +
-          " $id, content ID: $contentId."
+          "Attempting to add an asset for a content ID that hasn't been defaulted in container" +
+            " (for language: ${languageType ?: "any"}): $id, content ID: $contentId."
       }
     }
   }
@@ -609,10 +605,6 @@ class LocalizationTracker private constructor(
           "Translation already recorded for content ID: $contentId, for language: $language, in" +
           " container: $id."
         return
-      }
-      require(contentId !in textTranslations) {
-        "Translation already recorded for content ID: $contentId, for language: $language, in" +
-          " container: $id."
       }
       textTranslations[contentId] = localization
     }

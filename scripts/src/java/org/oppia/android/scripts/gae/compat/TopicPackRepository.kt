@@ -348,14 +348,21 @@ class TopicPackRepository(
     var checkedReference: GenericStructureReference? =
       versionStructureMapManager.findMostRecent(structureId)
     var lastInvalidReference: GenericStructureReference? = null
+    var failSafe = 10 // Don't allow the script to skip more than this number of versions.
+    var firstFailure: LoadResult.Failure<*>? = null
     while (checkedReference != null) {
       val result = tryLoadStructure(structureId, checkedReference)
       if (lastInvalidReference != null) {
         versionStructureMapManager.invalidateVersion(structureId, lastInvalidReference)
       }
       if (result is LoadResult.Success<*>) return result
+      if (result is LoadResult.Failure<*> && firstFailure == null) firstFailure = result
       lastInvalidReference = checkedReference // This structure isn't compatible.
       checkedReference = checkedReference.toPreviousVersion()
+      require(--failSafe > 0) {
+        "Didn't find a compatible version in 10 steps--something's probably wrong with the script." +
+          " Structure: $structureId. First failures:\n${firstFailure?.failures?.joinToString("\n") { "- $it" }}"
+      }
     }
 
     // If no versions match, return the failures of the oldest structure (since all others have been
@@ -931,6 +938,8 @@ private class VersionStructureMapManagerTakeLatestImpl(
 ) : VersionStructureMapManager {
   private val cachedStructures =
     mutableMapOf<StructureId, MutableMap<GenericStructureReference, GenericLoadResult>>()
+  private val invalidatedStructures =
+    mutableMapOf<StructureId, MutableSet<GenericStructureReference>>()
   // TODO: Move over to an actor pattern to be more cooperative with coroutines.
   private val lock = ReentrantLock()
 
@@ -989,11 +998,18 @@ private class VersionStructureMapManagerTakeLatestImpl(
   override fun invalidateVersion(structureId: StructureId, reference: GenericStructureReference) {
     lock.withLock {
       val structureMap = cachedStructures.getValue(structureId)
+      val invalidatedRefs = invalidatedStructures.getOrPut(structureId) {
+        mutableSetOf()
+      }
+      if (reference in invalidatedRefs) {
+        return // The reference has already been invalidated.
+      }
       require(reference == findMostRecent(reference.structureId)) {
         "Can only invalidate the most recent version of a structure."
       }
       check(structureMap.size > 1) { "Cannot remove the final structure." }
       structureMap.remove(reference)
+      invalidatedRefs.add(reference)
     }
   }
 

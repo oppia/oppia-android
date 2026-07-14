@@ -6,5 +6,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeStoryReference(
   @Json(name = "story_id") val storyId: String,
-  @Json(name = "story_is_published") val storyIsPublished: Boolean
+  @Json(name = "story_is_published") val storyIsPublished: Boolean,
+  @Json(name = "story_unpublish_type") val storyUnpublishType: String?
 )

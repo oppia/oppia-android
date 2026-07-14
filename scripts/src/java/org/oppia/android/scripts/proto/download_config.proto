@@ -8,6 +8,7 @@ option java_multiple_files = true;
 message DownloadConfig {
   repeated string allowed_classrooms = 1;
   repeated string allowed_topic_ids = 2;
+  repeated string allowed_interaction_ids = 5;
   repeated RequiredDefaultIdPresenceExemption default_id_exemptions = 3;
   repeated TranslationExemption translation_exemptions = 4;
 

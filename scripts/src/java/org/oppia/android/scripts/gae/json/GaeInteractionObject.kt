@@ -130,8 +130,17 @@ sealed class GaeInteractionObject {
       ): NumberWithUnits {
         val parsableNumberWithUnits = jsonReader.nextCustomValue(parsableNumberWithUnitsAdapter)
         return when (val type = parsableNumberWithUnits.type) {
-          "real" ->
-            RealWithUnits(checkNotNull(parsableNumberWithUnits.real), parsableNumberWithUnits.units)
+          // TODO: Revert this back to expecting real/fraction when types match. Oppia web currently
+          // has an inconsistency where it can specify 'real' but actually provide a fraction.
+          "real" -> when {
+            parsableNumberWithUnits.real == null -> {
+              FractionWithUnits(
+                checkNotNull(parsableNumberWithUnits.fraction), parsableNumberWithUnits.units
+              )
+            }
+            else ->
+              RealWithUnits(checkNotNull(parsableNumberWithUnits.real), parsableNumberWithUnits.units)
+          }
           "fraction" -> {
             FractionWithUnits(
               checkNotNull(parsableNumberWithUnits.fraction), parsableNumberWithUnits.units

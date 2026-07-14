@@ -7,6 +7,20 @@ allowed_topic_ids: "qW12maD4hiA8"
 allowed_topic_ids: "0abdeaJhmfPm"
 allowed_topic_ids: "5g0nxGUmx5J5"
 
+allowed_interaction_ids: "Continue"
+allowed_interaction_ids: "FractionInput"
+allowed_interaction_ids: "ItemSelectionInput"
+allowed_interaction_ids: "MultipleChoiceInput"
+allowed_interaction_ids: "NumericInput"
+allowed_interaction_ids: "TextInput"
+allowed_interaction_ids: "DragAndDropSortInput"
+allowed_interaction_ids: "ImageClickInput"
+allowed_interaction_ids: "RatioExpressionInput"
+allowed_interaction_ids: "EndExploration"
+allowed_interaction_ids: "NumericExpressionInput"
+allowed_interaction_ids: "AlgebraicExpressionInput"
+allowed_interaction_ids: "MathEquationInput"
+
 # TODO: Remove these specific exemptions once they're fixed on upstream web.
 default_id_exemptions {
   exploration_id: "bWHHbghtVQKU"
@@ -102,6 +116,351 @@ default_id_exemptions {
   exploration_id: "53Ka3mQ6ra5A"
   content_id: "ca_buttonText_23"
   exemption_case: 44
+}
+default_id_exemptions {
+  exploration_id: "PsfDKdhd6Esz"
+  content_id: "feedback_41"
+  exemption_case: 46
+}
+default_id_exemptions {
+  exploration_id: "PsfDKdhd6Esz"
+  content_id: "feedback_42"
+  exemption_case: 47
+}
+default_id_exemptions {
+  exploration_id: "PsfDKdhd6Esz"
+  content_id: "feedback_43"
+  exemption_case: 47
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "ca_buttonText_55"
+  exemption_case: 48
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_54"
+  exemption_case: 49
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_51"
+  exemption_case: 50
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_52"
+  exemption_case: 51
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_53"
+  exemption_case: 52
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_52"
+  exemption_case: 53
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_53"
+  exemption_case: 54
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_52"
+  exemption_case: 55
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_53"
+  exemption_case: 56
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_52"
+  exemption_case: 57
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_53"
+  exemption_case: 58
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_52"
+  exemption_case: 59
+}
+default_id_exemptions {
+  exploration_id: "MjZzEVOG47_1"
+  content_id: "hint_53"
+  exemption_case: 60
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "ca_buttonText_64"
+  exemption_case: 61
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 62
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 63
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 64
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "ca_buttonText_64"
+  exemption_case: 65
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 66
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 67
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 68
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 69
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 70
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 71
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "ca_buttonText_64"
+  exemption_case: 72
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 73
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 74
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 75
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "ca_buttonText_64"
+  exemption_case: 76
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 77
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 78
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 79
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "ca_buttonText_64"
+  exemption_case: 80
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_61"
+  exemption_case: 81
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_62"
+  exemption_case: 82
+}
+default_id_exemptions {
+  exploration_id: "9trAQhj6uUC2"
+  content_id: "hint_63"
+  exemption_case: 83
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_89"
+  exemption_case: 84
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_88"
+  exemption_case: 85
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_89"
+  exemption_case: 86
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_88"
+  exemption_case: 87
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_89"
+  exemption_case: 88
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_88"
+  exemption_case: 89
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_89"
+  exemption_case: 90
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_88"
+  exemption_case: 91
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_89"
+  exemption_case: 92
+}
+default_id_exemptions {
+  exploration_id: "rfX8jNkPnA-1"
+  content_id: "hint_88"
+  exemption_case: 93
+}
+default_id_exemptions {
+  exploration_id: "670bU6d9JGBh"
+  content_id: "feedback_208"
+  exemption_case: 94
+}
+default_id_exemptions {
+  exploration_id: "670bU6d9JGBh"
+  content_id: "feedback_208"
+  exemption_case: 95
+}
+default_id_exemptions {
+  exploration_id: "670bU6d9JGBh"
+  content_id: "feedback_208"
+  exemption_case: 96
+}
+default_id_exemptions {
+  exploration_id: "670bU6d9JGBh"
+  content_id: "feedback_208"
+  exemption_case: 97
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "content_287"
+  exemption_case: 98
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "default_outcome_288"
+  exemption_case: 99
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "feedback_289"
+  exemption_case: 100
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "ca_customPlaceholder_290"
+  exemption_case: 101
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "content_287"
+  exemption_case: 102
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "default_outcome_288"
+  exemption_case: 103
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "feedback_289"
+  exemption_case: 104
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "ca_customPlaceholder_290"
+  exemption_case: 105
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "content_287"
+  exemption_case: 106
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "default_outcome_288"
+  exemption_case: 107
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "feedback_289"
+  exemption_case: 108
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "ca_customPlaceholder_290"
+  exemption_case: 109
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "content_287"
+  exemption_case: 110
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "default_outcome_288"
+  exemption_case: 111
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "feedback_289"
+  exemption_case: 112
+}
+default_id_exemptions {
+  exploration_id: "6Q6IyIDkjpYC"
+  content_id: "ca_customPlaceholder_290"
+  exemption_case: 113
 }
 
 # TODO: Remove these exemptions once they're fixed in web.
