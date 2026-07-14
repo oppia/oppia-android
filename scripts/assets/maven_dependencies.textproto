@@ -923,6 +923,17 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.android.tools.build:aapt2-proto:8.3.2-10880808"
+  artifact_version: "8.3.2-10880808"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.crashlytics.sdk.android:answers:1.4.6"
   artifact_version: "1.4.6"
   license {
@@ -1646,8 +1657,18 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.protobuf:protobuf-javalite:4.27.1"
-  artifact_version: "4.27.1"
+  artifact_name: "com.google.protobuf:protobuf-java:4.28.3"
+  artifact_version: "4.28.3"
+  license {
+    license_name: "3-Clause BSD License"
+    extracted_copy_link {
+      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/refs/heads/develop/bsd-3-clause-license.txt"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.google.protobuf:protobuf-javalite:4.28.3"
+  artifact_version: "4.28.3"
   license {
     license_name: "3-Clause BSD License"
     extracted_copy_link {
