@@ -30,6 +30,7 @@ kt_android_library(
         "LiTagHandler.kt",
         "MathTagHandler.kt",
         "PolicyPageTagHandler.kt",
+        "WorkedExampleTagHandler.kt",
     ],
     visibility = ["//utility:__subpackages__"],
     deps = [
