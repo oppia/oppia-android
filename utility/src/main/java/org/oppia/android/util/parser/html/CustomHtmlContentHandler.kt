@@ -20,7 +20,8 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?
+  private val imageRetriever: ImageRetriever?,
+  private val customHtmlParser: CustomHtmlParser
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -149,10 +150,14 @@ class CustomHtmlContentHandler private constructor(
 
         if (imageRetriever == null) {
           customTagHandlers.getValue(tag)
-            .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
+            .handleTagForContentDescription(
+              attributes, openTagIndex, output.length, output, customHtmlParser
+            )
         } else {
           customTagHandlers.getValue(tag)
-            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+            .handleTag(
+              attributes, openTagIndex, output.length, output, imageRetriever, customHtmlParser
+            )
         }
       }
     }
@@ -191,6 +196,12 @@ class CustomHtmlContentHandler private constructor(
     return rawDesc.replace(Regex("\n+"), "\n").trim()
   }
 
+  /** Parser interface for converting nested HTML into a [Spannable]. */
+  interface CustomHtmlParser {
+    /** Returns a [Spannable] parsed from [html]. */
+    fun parseHtml(html: String): Spannable
+  }
+
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
     /**
@@ -201,13 +212,15 @@ class CustomHtmlContentHandler private constructor(
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
      * @param imageRetriever a utility to load image drawables if needed by the handler
+     * @param customHtmlParser a parser for nested HTML content
      */
     fun handleTag(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: ImageRetriever?
+      imageRetriever: ImageRetriever?,
+      customHtmlParser: CustomHtmlParser
     ) {
     }
 
@@ -218,12 +231,14 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which content can be added
+     * @param customHtmlParser a parser for nested HTML content
      */
     fun handleTagForContentDescription(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      customHtmlParser: CustomHtmlParser
     ) {
     }
 
@@ -303,7 +318,8 @@ class CustomHtmlContentHandler private constructor(
     ): String {
       val handler = CustomHtmlContentHandler(
         customTagHandlers,
-        null
+        null,
+        createCustomHtmlParser(imageRetriever = null, customTagHandlers)
       )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
@@ -343,8 +359,23 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
+        CustomHtmlContentHandler(
+          customTagHandlers,
+          imageRetriever,
+          createCustomHtmlParser(imageRetriever, customTagHandlers)
+        ),
       ) as Spannable
+    }
+
+    private fun <T> createCustomHtmlParser(
+      imageRetriever: T?,
+      customTagHandlers: Map<String, CustomTagHandler>
+    ): CustomHtmlParser where T : Html.ImageGetter, T : ImageRetriever {
+      return object : CustomHtmlParser {
+        override fun parseHtml(html: String): Spannable {
+          return fromHtml(html, imageRetriever, customTagHandlers)
+        }
+      }
     }
   }
 }

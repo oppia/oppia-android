@@ -38,7 +38,8 @@ class MathTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(
@@ -113,7 +114,8 @@ class MathTagHandler(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
-    output: Editable
+    output: Editable,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
   ) {
     val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     val contentDescription = mathVal?.let { "Math content $it" } ?: "Math content"

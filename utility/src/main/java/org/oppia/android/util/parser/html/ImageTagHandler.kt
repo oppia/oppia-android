@@ -28,7 +28,8 @@ class ImageTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)

@@ -36,6 +36,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomHtmlParser
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
@@ -205,6 +206,39 @@ class CustomHtmlContentHandlerTest {
     assertThat(outerFakeTagHandler.handleTagCalled).isTrue()
     assertThat(innerFakeTagHandler.handleTagCalled).isTrue()
     assertThat(parsedHtml.toString()).isEqualTo("some other content")
+  }
+
+  @Test
+  fun testParseHtml_customHandlerParsesNestedCustomHtml_returnsProcessedContent() {
+    val nestedHtml =
+      "<inner-tag custom-attribute=\"value\">content</inner-tag>"
+
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = "<outer-tag></outer-tag>",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          "outer-tag" to NestedHtmlTagHandler(nestedHtml),
+          "inner-tag" to ReplacingTagHandler("custom-attribute")
+        )
+      )
+
+    assertThat(parsedHtml.toString()).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_nullImageRetriever_customHandlerParsesNestedHtml_returnsStyledContent() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = "<custom-tag></custom-tag>",
+        imageRetriever = null,
+        customTagHandlers = mapOf(
+          "custom-tag" to NestedHtmlTagHandler("<strong>Nested content</strong>")
+        )
+      )
+
+    assertThat(parsedHtml.toString()).isEqualTo("Nested content")
+    assertThat(parsedHtml.getSpansFromWholeString(StyleSpan::class)).hasLength(1)
   }
 
   @Test
@@ -503,7 +537,8 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+      customHtmlParser: CustomHtmlParser
     ) {}
 
     override fun getContentDescription(attributes: Attributes): String {
@@ -527,7 +562,8 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+      customHtmlParser: CustomHtmlParser
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -538,7 +574,8 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      customHtmlParser: CustomHtmlParser
     ) {
       handleTagForContentDescriptionCalled = true
       handleTagForContentDescriptionCallIndex = methodCallCount++
@@ -571,9 +608,35 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+      customHtmlParser: CustomHtmlParser
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
+    }
+  }
+
+  private class NestedHtmlTagHandler(
+    private val nestedHtml: String
+  ) : CustomTagHandler {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
+      customHtmlParser: CustomHtmlParser
+    ) {
+      output.replace(openIndex, closeIndex, customHtmlParser.parseHtml(nestedHtml))
+    }
+
+    override fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      customHtmlParser: CustomHtmlParser
+    ) {
+      output.replace(openIndex, closeIndex, customHtmlParser.parseHtml(nestedHtml))
     }
   }
 
