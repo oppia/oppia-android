@@ -202,7 +202,14 @@ private class TransformAndroidManifest(
     val releaseVersionOffset = possibleReleaseCount * VERSION_CODES_PER_RELEASE
     val rcVersionOffset = (releaseCandidateNumber - 1) * MAX_FLAVORS_PER_RC
     val flavorVersionOffset = buildFlavor.index
-    return BASE_VERSION_CODE + releaseVersionOffset + rcVersionOffset + flavorVersionOffset
+    val versionCode =
+      BASE_VERSION_CODE + releaseVersionOffset + rcVersionOffset + flavorVersionOffset
+    check(versionCode > 0) {
+      "Computed version code ($versionCode) is zero or negative. " +
+        "This is likely due to using a shallow Git clone. " +
+        "Please run 'git fetch --unshallow' and try again."
+    }
+    return versionCode
   }
 
   // The format here is defined as part of the app's release process.

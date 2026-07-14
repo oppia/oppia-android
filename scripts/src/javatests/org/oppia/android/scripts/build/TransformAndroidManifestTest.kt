@@ -737,6 +737,31 @@ class TransformAndroidManifestTest {
     )
   }
 
+  @Test
+  fun testUtility_developBranch_shallowClone_negativeVersionCode_throwsException() {
+    initializeShallowGitRepositoryWithHistory()
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+          writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+        }.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("git fetch --unshallow")
+  }
+
   /** Runs the transform_android_manifest utility. */
   private fun runScript(vararg args: String) {
     main(args.toList().toTypedArray())
@@ -748,6 +773,14 @@ class TransformAndroidManifestTest {
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.initializeHistoricalCommits(commitCount = 2289)
+    testGitRepository.createRemoteBranchRef("origin/develop")
+  }
+
+  private fun initializeShallowGitRepositoryWithHistory() {
+    // Initialize the git repository with a small number of commits to simulate a shallow clone.
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+    testGitRepository.initializeHistoricalCommits(commitCount = 10)
     testGitRepository.createRemoteBranchRef("origin/develop")
   }
 
