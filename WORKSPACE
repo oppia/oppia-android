@@ -292,6 +292,6 @@ pinned_maven_install()
 # Pinned lesson download pipeline script branch.
 git_repository(
     name = "oppia_android_asset_pipeline",
-    commit = "8210906da718968bdc1468af873b74db1a5284f9",
+    commit = "50b321afce8a67307ac2fcc328d0de28d00787b5",
     remote = "https://github.com/oppia/oppia-android.git",
 )
