@@ -58,7 +58,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "W0xq3jW5GzDF"
-      exploration_content_version: 875
+      exploration_content_version: 876
     }
     chapter_info {
       exploration_id: "53Ka3mQ6ra5A"
@@ -158,7 +158,7 @@ tracked_topic_info {
     content_version: 20
     chapter_info {
       exploration_id: "8HTzQQUPiK5i"
-      exploration_content_version: 557
+      exploration_content_version: 561
     }
     chapter_info {
       exploration_id: "40a3vjmZ7Fwu"
@@ -166,7 +166,7 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "WulCxGAmGE61"
-      exploration_content_version: 815
+      exploration_content_version: 816
     }
     chapter_info {
       exploration_id: "lOU0XPC2BnE9"
@@ -192,10 +192,10 @@ tracked_topic_info {
 }
 tracked_topic_info {
   id: "0abdeaJhmfPm"
-  content_version: 92
+  content_version: 95
   story_info {
     id: "3M5VBajMccXO"
-    content_version: 31
+    content_version: 34
     chapter_info {
       exploration_id: "umPkwp0L1M0-"
       exploration_content_version: 838
