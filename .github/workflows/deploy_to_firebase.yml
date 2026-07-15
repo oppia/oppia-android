@@ -33,6 +33,9 @@ jobs:
     name: Deploy to Firebase App Distribution
     runs-on: ubuntu-24.04
     environment: oppia-android-release-env
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
