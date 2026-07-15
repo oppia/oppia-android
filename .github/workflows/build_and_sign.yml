@@ -5,10 +5,11 @@
 # The build is split into three phases to avoid JVM OOM on GitHub Actions runners:
 #   Phase 1: Pre-build all Kotlin scripts (including sign_release_binary) in opt mode so
 #            they are cached before the app binary build starts.
-#   Phase 2: Build the deployable target (//:oppia_${FLAVOR}_deployable) — this compiles
-#            the binary up to the Proguard step, which is the memory-intensive phase.
-#   Phase 3: Build the full AAB (//:oppia_${FLAVOR}) — all compilation is cached; Bazel
-#            only packages the final AAB, which has much lower peak memory.
+#   Phase 2: Build the application source package for the flavor — caches all compilation
+#            and dexing work before Proguard runs. Proguard is triggered by the
+#            android_binary() rule in Phase 3, not by this target.
+#   Phase 3: Build the full AAB (//:oppia_${FLAVOR}) — Proguard and AAB packaging run
+#            here on already-cached sources, with much lower peak memory usage.
 # A bazel shutdown is issued between each phase to free accumulated JVM heap.
 #
 # The private key NEVER leaves the KMS HSM boundary — only the AAB digest is sent to KMS
@@ -130,27 +131,19 @@ jobs:
       - name: Shutdown Bazel after Phase 1
         run: bazel shutdown
 
-      # Build the deployable target — compiles up to (but not including) full AAB packaging.
-      # This is the Proguard-heavy step; splitting it from Phase 3 keeps peak memory lower.
-      - name: "Phase 2: Build app binary (deployable)"
+      # Build the application source package — caches all compilation and dexing work
+      # before Proguard runs. Proguard is triggered by the android_binary() rule in Phase 3,
+      # not by this target, so this step has much lower peak memory usage.
+      - name: "Phase 2: Build application source"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
-          ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
           bazel build --compilation_mode=opt \
-            //:oppia_${FLAVOR}_deployable \
-            --//config:assets_type=${ASSETS_TYPE} \
-            --//config:web_api_key_file=/tmp/prod_server.key \
-            --//config:download_firebase_config=true \
-            --//config:firebase_project_id=${{ secrets.FIREBASE_PROJECT_ID }} \
-            --//config:firebase_app_id=${{ secrets.FIREBASE_APP_ID }} \
-            --//config:download_license_texts=true \
-            --//config:enable_firebase_analytics=true \
-            --action_env=GOOGLE_APPLICATION_CREDENTIALS
+            //app/src/main/java/org/oppia/android/app/application/${FLAVOR}/...
 
       - name: Shutdown Bazel after Phase 2
         run: bazel shutdown
 
-      # All compilation is cached from Phase 2; this step only packages the final AAB.
+      # All source is cached from Phase 2. Proguard and AAB packaging run in this step.
       - name: "Phase 3: Build full AAB"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
