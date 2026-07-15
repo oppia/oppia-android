@@ -25,6 +25,9 @@ on:
       - develop
     paths:
       - 'config/changelogs/**.md'
+  pull_request:
+    paths:
+      - 'config/changelogs/**.md'
   workflow_dispatch:
     inputs:
       version:
@@ -39,13 +42,50 @@ on:
         type: string
 
 concurrency:
-  # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
-  # The group is intentionally not scoped to github.ref so that push and dispatch triggers
-  # across different refs are also serialized — Play Console edits must be globally exclusive.
-  group: deploy-updated-changelog
-  cancel-in-progress: false
+  # Serialize deploy runs globally to avoid concurrent Play Console edit sessions.
+  # PR validation runs are scoped per PR and can cancel each other (but not deploy runs).
+  group: ${{ github.event_name == 'pull_request' && format('changelog-validate-{0}', github.event.pull_request.number) || 'deploy-updated-changelog' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+
+  # Runs on pull_request: validates that every changelog file touched by the PR
+  # is within the 500-character limit enforced by Play Console at upload time.
+  # Catching this at PR review is far less disruptive than discovering it post-merge.
+  validate_changelog:
+    name: Validate changelog character limit
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check 500-character limit for changed changelogs
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch origin "$BASE_REF" --depth=1
+          CHANGED=$(git diff --name-only "origin/${BASE_REF}" -- 'config/changelogs/*.md')
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changelog files changed — nothing to validate."
+            exit 0
+          fi
+          FAILED=false
+          for file in $CHANGED; do
+            if [[ ! -f "$file" ]]; then continue; fi
+            char_count=$(python3 -c "print(len(open('$file').read().rstrip()))")
+            if [[ "$char_count" -gt 500 ]]; then
+              echo "::error file=$file::Changelog '$file' exceeds the 500-character Play Console limit (${char_count}/500 chars). Shorten it before merging."
+              FAILED=true
+            else
+              echo "✓ $file: ${char_count}/500 characters"
+            fi
+          done
+          if [[ "$FAILED" == "true" ]]; then exit 1; fi
 
   # Runs only on push: uses the GitHub API to list files changed across the entire push (not just
   # the head commit) and extracts the changelog version from the filename (e.g. 0.17_alpha.md →
