@@ -233,7 +233,8 @@ jobs:
           # the AAB multi-signed. Play Console rejects multi-signed AABs, so we remove the
           # old signatures here before archiving. apksigner (used at deploy time) will replace
           # these with the upload certificate during signing.
-          zip -d "$SIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA" || true
+          zip -d "$SIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA" \
+            || { ZIP_EXIT=$?; [[ $ZIP_EXIT -eq 12 ]] || exit $ZIP_EXIT; }
 
           gsutil cp "$SIGNED_AAB_PATH" "$GCS_PATH"
           echo "Uploaded to: $GCS_PATH"
