@@ -71,15 +71,24 @@ jobs:
           echo "Inputs validated: flavor=$FLAVOR, track=${{ github.event.inputs.track }}, aab=$AAB_NAME, rollout=$ROLLOUT"
 
       - name: Authenticate to GCP via Workload Identity Federation
+        id: auth
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/androidpublisher'
           create_credentials_file: true
           export_environment_variables: true
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -107,15 +116,13 @@ jobs:
           FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
           echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
-      # Runs the UploadBinaryToPlayConsole Kotlin script which enforces all precondition checks
-      # (pending release, version inversion, changelog existence) before uploading the AAB.
       - name: Upload AAB to Play Console
         run: |
           bazel run //scripts:upload_binary_to_play_console \
-            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
             -- \
             "$(pwd)" \
             "$AAB_LOCAL_PATH" \
             "${{ github.event.inputs.track }}" \
-            "${{ secrets.GCP_PROJECT_ID }}" \
+            "$ACCESS_TOKEN" \
             "${{ github.event.inputs.rollout_fraction }}"
+

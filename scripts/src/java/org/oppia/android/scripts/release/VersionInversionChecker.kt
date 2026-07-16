@@ -30,14 +30,22 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
    * @param packageName the application package name (e.g. "org.oppia.android")
    * @param targetTrack the Play Console track being deployed to ("alpha", "beta", or "production")
    * @param newVersionCode the version code of the binary about to be uploaded
+   * @param existingEditId the already-open edit session ID from the upload flow; passed to
+   *   [PlayConsoleClient.getTrackReleases] so that track queries reuse the caller's edit rather
+   *   than opening a new temporary session (the Play Developer API only allows one active edit)
    * @throws IllegalStateException if [newVersionCode] violates the cross-track ordering constraint
    */
-  fun verify(packageName: String, targetTrack: String, newVersionCode: Long) {
-    val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK)
+  fun verify(
+    packageName: String,
+    targetTrack: String,
+    newVersionCode: Long,
+    existingEditId: String
+  ) {
+    val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-    val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK)
+    val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-    val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK)
+    val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
 
     val maxBeta = betaVersionCodes.maxOrNull()

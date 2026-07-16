@@ -61,7 +61,7 @@ class PlayConsoleServiceTest {
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).isEqualTo("/org.oppia.android/edits")
+    assertThat(request.path).isEqualTo("/androidpublisher/v3/applications/org.oppia.android/edits")
   }
 
   @Test
@@ -87,7 +87,9 @@ class PlayConsoleServiceTest {
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).contains("org.oppia.android/edits/edit-1/bundles")
+    assertThat(request.path).contains(
+      "upload/androidpublisher/v3/applications/org.oppia.android/edits/edit-1/bundles"
+    )
   }
 
   // ---------------------------------------------------------------------------
@@ -103,7 +105,9 @@ class PlayConsoleServiceTest {
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("PUT")
-    assertThat(request.path).contains("org.oppia.android/edits/edit-1/tracks/alpha")
+    assertThat(request.path).contains(
+      "androidpublisher/v3/applications/org.oppia.android/edits/edit-1/tracks/alpha"
+    )
   }
 
   // ---------------------------------------------------------------------------
@@ -118,7 +122,9 @@ class PlayConsoleServiceTest {
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("POST")
-    assertThat(request.path).contains("org.oppia.android/edits/edit-1:commit")
+    assertThat(request.path).contains(
+      "androidpublisher/v3/applications/org.oppia.android/edits/edit-1:commit"
+    )
   }
 
   // ---------------------------------------------------------------------------
@@ -133,6 +139,8 @@ class PlayConsoleServiceTest {
 
     val request = server.takeRequest()
     assertThat(request.method).isEqualTo("GET")
-    assertThat(request.path).contains("org.oppia.android/edits/edit-1/tracks/alpha")
+    assertThat(request.path).contains(
+      "androidpublisher/v3/applications/org.oppia.android/edits/edit-1/tracks/alpha"
+    )
   }
 }
