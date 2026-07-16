@@ -393,10 +393,6 @@ class VersionInversionCheckerTest {
     assertThat(exception).hasMessageThat().contains("305")
   }
 
-  // ---------------------------------------------------------------------------
-  // Unknown track — should hard-fail rather than silently no-op
-  // ---------------------------------------------------------------------------
-
   @Test
   fun testVerify_unknownTrack_throwsWithTrackName() {
     val exception = assertThrows<IllegalStateException>() {
@@ -410,45 +406,17 @@ class VersionInversionCheckerTest {
 
     assertThat(exception).hasMessageThat().contains("internal")
   }
-  // ---------------------------------------------------------------------------
-  // existingEditId — passed through to getTrackReleases on all three tracks
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testVerify_existingEditId_isPassedToAllThreeTrackQueries() {
-    // The FakePlayConsoleClient records the existingEditId received by getTrackReleases via
-    // the last queried editId. We use a custom fake to capture the IDs.
-    val capturedEditIds = mutableListOf<String?>()
-    val capturingFake = object : PlayConsoleClient {
-      override fun createEdit(packageName: String) = error("Should not create edit")
-      override fun uploadAab(packageName: String, editId: String, aabPath: String) = 0L
-      override fun setTrackRelease(
-        packageName: String,
-        editId: String,
-        track: String,
-        versionCode: Long,
-        rolloutFraction: Int,
-        releaseNotes: Map<String, String>
-      ) = Unit
-      override fun commitEdit(packageName: String, editId: String) = Unit
-      override fun getTrackReleases(
-        packageName: String,
-        track: String,
-        existingEditId: String?
-      ): List<PlayConsoleClient.TrackRelease> {
-        capturedEditIds.add(existingEditId)
-        return emptyList()
-      }
-    }
-    val capturingChecker = VersionInversionChecker(capturingFake)
-
-    capturingChecker.verify(
+    // fakeClient.queriedEditIds records the existingEditId received by each getTrackReleases call.
+    checker.verify(
       "org.oppia.android", "alpha", newVersionCode = 100L, existingEditId = "upload-edit-42"
     )
 
     // verify() queries all three tracks; each must receive the same existingEditId.
-    assertThat(capturedEditIds).hasSize(3)
-    assertThat(capturedEditIds).containsExactly(
+    assertThat(fakeClient.queriedEditIds).hasSize(3)
+    assertThat(fakeClient.queriedEditIds).containsExactly(
       "upload-edit-42", "upload-edit-42", "upload-edit-42"
     )
   }

@@ -260,6 +260,7 @@ class GooglePlayConsoleClientTest {
 
     assertThat(exception).hasMessageThat().contains("404")
   }
+  
   @Test
   fun testGetTrackReleases_withExistingEditId_reusesEditWithoutCreatingNew() {
     // Only one request should be made (getTrack) — no createEdit when existingEditId is provided.
