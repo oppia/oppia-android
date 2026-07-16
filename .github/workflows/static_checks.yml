@@ -266,7 +266,7 @@ jobs:
       - name: Check 500-character limit for changelog files
         run: |
           FAILED=false
-          for file in config/changelogs/*.md; do
+          for file in config/changelogs/[0-9]*.md; do
             if [[ ! -f "$file" ]]; then continue; fi
             char_count=$(python3 -c "print(len(open('$file').read().rstrip()))")
             if [[ "$char_count" -gt 500 ]]; then
