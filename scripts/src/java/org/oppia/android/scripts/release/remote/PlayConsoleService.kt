@@ -55,7 +55,11 @@ interface PlayConsoleService {
    * @param aabBody the AAB file content as a raw [RequestBody]
    * @return the [BundleResponse] containing the assigned version code
    */
-  @POST("upload/androidpublisher/v3/applications/{packageName}/edits/{editId}/bundles?uploadType=media")
+  @POST(
+    "upload/androidpublisher/v3/applications/{packageName}/edits/{editId}/" +
+      "bundles?uploadType=media"
+  )
+
   fun uploadBundle(
     @Path("packageName") packageName: String,
     @Path("editId") editId: String,
