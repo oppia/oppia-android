@@ -409,12 +409,10 @@ class VersionInversionCheckerTest {
 
   @Test
   fun testVerify_existingEditId_isPassedToAllThreeTrackQueries() {
-    // fakeClient.queriedEditIds records the existingEditId received by each getTrackReleases call.
     checker.verify(
       "org.oppia.android", "alpha", newVersionCode = 100L, existingEditId = "upload-edit-42"
     )
 
-    // verify() queries all three tracks; each must receive the same existingEditId.
     assertThat(fakeClient.queriedEditIds).hasSize(3)
     assertThat(fakeClient.queriedEditIds).containsExactly(
       "upload-edit-42", "upload-edit-42", "upload-edit-42"
