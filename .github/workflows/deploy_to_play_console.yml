@@ -24,10 +24,10 @@ on:
           - beta
           - production
       rollout_fraction:
-        description: "Rollout fraction for staged rollouts, between 0.0 and 1.0 (e.g. 0.1 for 10%). Use 1.0 for a full rollout."
+        description: "Rollout fraction as an integer between 0 and 1000 (e.g. 100 for 10%, 1000 for full rollout)."
         required: false
         type: string
-        default: "1.0"
+        default: "1000"
 
 concurrency:
   # Shared with update_rollout.yml and the changelog upload workflow to prevent simultaneous
@@ -58,8 +58,8 @@ jobs:
             exit 1
           fi
 
-          if ! [[ "$ROLLOUT" =~ ^(0(\.[0-9]+)?|1(\.0+)?)$ ]]; then
-            echo "::error::Invalid rollout_fraction: '$ROLLOUT'. Must be a decimal between 0.0 and 1.0."
+          if ! [[ "$ROLLOUT" =~ ^[0-9]+$ ]] || [[ "$ROLLOUT" -lt 0 ]] || [[ "$ROLLOUT" -gt 1000 ]]; then
+            echo "::error::Invalid rollout_fraction: '$ROLLOUT'. Must be an integer between 0 and 1000 (e.g. 100 for 10%)."
             exit 1
           fi
 
@@ -120,7 +120,9 @@ jobs:
       # Script args: workspaceRoot, aabPath, track, accessToken, rolloutFraction
       - name: Upload AAB to Play Console
         run: |
-          bazel run //scripts:upload_binary_to_play_console -- \
+          bazel run //scripts:upload_binary_to_play_console \
+            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
+            -- \
             "$(pwd)" \
             "$AAB_LOCAL_PATH" \
             "${{ github.event.inputs.track }}" \
