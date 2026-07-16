@@ -85,6 +85,12 @@ jobs:
           token_format: 'access_token'
           access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/androidpublisher'
 
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
+
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
@@ -96,4 +102,4 @@ jobs:
             "${{ github.event.inputs.track }}" \
             "${{ steps.validate.outputs.VERSION }}" \
             "${{ steps.validate.outputs.ROLLOUT }}" \
-            "$(gcloud auth print-access-token)"
+            "$ACCESS_TOKEN"
