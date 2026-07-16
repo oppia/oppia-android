@@ -321,11 +321,20 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_compoundUnit_withExponent_returnsTrailingTokensError() {
-    // "Nm^2" is ambiguous (N*m^2 vs (N*m)^2), so the parser should fail.
-    // Decomposition produces [N, m], then "^2" remains unconsumed.
-    val error = parseNumberWithUnitsExpectingFailure("5 Nm^2")
-    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
+  fun testParser_compoundUnit_withExponent_appliesExponentToLastUnit() {
+    val result = parseNumberWithUnitsExpectingSuccess("5 Nm^2")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(5.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+    }
   }
 
   @Test
@@ -810,9 +819,83 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_compoundUnit_jouleSecond_withExponent_returnsTrailingTokensError() {
-    val error = parseNumberWithUnitsExpectingFailure("5 Js^2")
-    assertThat(error).isInstanceOf(TrailingTokensError::class.java)
+  fun testParser_compoundUnit_jouleSecond_withExponent_appliesExponentToLastUnit() {
+    val result = parseNumberWithUnitsExpectingSuccess("5 Js^2")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(5.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.JOULE)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withNegativeExponent_appliesExponentToLastUnit() {
+    val result = parseNumberWithUnitsExpectingSuccess("5 Nm^-2")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(5.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(-2)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withExponent_spacedEquivalent_matchesCompound() {
+    val spacedResult = parseNumberWithUnitsExpectingSuccess("5 N m^2")
+    val compoundResult = parseNumberWithUnitsExpectingSuccess("5 Nm^2")
+    assertThat(spacedResult).isEqualTo(compoundResult)
+  }
+
+  @Test
+  fun testParser_compoundUnit_withExponentAndDivision_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("10 Nm^2/s")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(10.0)
+      hasUnitCountThat().isEqualTo(3)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.NEWTON)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+      hasSuffixWithIndexThat(index = 2).apply {
+        hasUnitThat().isEqualTo(Unit.SECOND)
+        hasExponentThat().isEqualTo(-1)
+      }
+    }
+  }
+
+  @Test
+  fun testParser_compoundUnit_withSiPrefix_andExponent_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("3 kgm^2")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(3.0)
+      hasUnitCountThat().isEqualTo(2)
+      hasSuffixWithIndexThat(index = 0).apply {
+        hasUnitThat().isEqualTo(Unit.GRAM)
+        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
+        hasExponentThat().isEqualTo(1)
+      }
+      hasSuffixWithIndexThat(index = 1).apply {
+        hasUnitThat().isEqualTo(Unit.METER)
+        hasExponentThat().isEqualTo(2)
+      }
+    }
   }
 
   @Test

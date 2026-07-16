@@ -264,6 +264,9 @@ class NumberWithUnitsParser private constructor(
    *
    * First attempts standard single-unit parsing (with optional exponent). If that fails due to
    * an unrecognized unit, attempts to decompose the token into multiple known units.
+   *
+   * When decomposition succeeds and a trailing exponent is present, the exponent
+   * is applied only to the last unit in the decomposed list.
    */
   private fun parseUnitsFromNextToken(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
     val singleResult = parseUnitWithExponent()
@@ -277,7 +280,21 @@ class NumberWithUnitsParser private constructor(
       val decomposed = tryDecomposeCompoundUnit(token.unit, token)
       if (decomposed != null && decomposed.size > 1) {
         tokens.next() // Consume the compound token.
-        return NumberWithUnitsParsingResult.Success(decomposed)
+
+        // Look ahead for an exponent extension following the compound token.
+        // If present, apply the exponent only to the last unit in the decomposed list.
+        return parseExponentExtension().map { exponentMultiplier ->
+          if (exponentMultiplier != 1) {
+            val mutableDecomposed = decomposed.toMutableList()
+            val lastUnit = mutableDecomposed.last()
+            mutableDecomposed[mutableDecomposed.lastIndex] = lastUnit.toBuilder()
+              .setExponent(lastUnit.exponent * exponentMultiplier)
+              .build()
+            mutableDecomposed
+          } else {
+            decomposed
+          }
+        }
       }
     }
 
@@ -293,31 +310,42 @@ class NumberWithUnitsParser private constructor(
    */
   private fun parseUnitWithExponent(): NumberWithUnitsParsingResult<NumberUnitExpression> {
     return parseSuffixUnit().flatMap { parsedUnit ->
-      var finalExponent = parsedUnit.exponent
-      if (tokens.peek() is Token.ExponentiationSymbol) {
-        tokens.next() // consume '^'
-
-        val negativeExponent = if (tokens.peek() is Token.MinusSymbol) {
-          true.also { tokens.next() } // consume '-'
-        } else false
-
-        val expToken = tokens.peek()
-        if (expToken is Token.PositiveInteger) {
-          tokens.next()
-          val exponentMultiplier = if (negativeExponent) {
-            -expToken.parsedValue
-          } else {
-            expToken.parsedValue
-          }
-          finalExponent *= exponentMultiplier
-        } else {
-          return@flatMap NumberWithUnitsParsingError.MissingExponentError.toFailure()
-        }
+      parseExponentExtension().map { exponentMultiplier ->
+        parsedUnit.toBuilder()
+          .setExponent(parsedUnit.exponent * exponentMultiplier)
+          .build()
       }
-      NumberWithUnitsParsingResult.Success(
-        parsedUnit.toBuilder().setExponent(finalExponent).build()
-      )
     }
+  }
+
+  /**
+   * Parses an exponent extension if one follows the current position in the token stream.
+   *
+   * @return a [NumberWithUnitsParsingResult] containing the exponent multiplier value (1 if no
+   *   exponent is present)
+   */
+  private fun parseExponentExtension(): NumberWithUnitsParsingResult<Int> {
+    if (tokens.peek() is Token.ExponentiationSymbol) {
+      tokens.next() // consume '^'
+
+      val negativeExponent = if (tokens.peek() is Token.MinusSymbol) {
+        true.also { tokens.next() } // consume '-'
+      } else false
+
+      val expToken = tokens.peek()
+      return if (expToken is Token.PositiveInteger) {
+        tokens.next()
+        val exponentMultiplier = if (negativeExponent) {
+          -expToken.parsedValue
+        } else {
+          expToken.parsedValue
+        }
+        NumberWithUnitsParsingResult.Success(exponentMultiplier)
+      } else {
+        NumberWithUnitsParsingError.MissingExponentError.toFailure()
+      }
+    }
+    return NumberWithUnitsParsingResult.Success(1)
   }
 
   /**
