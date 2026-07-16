@@ -759,6 +759,12 @@ class TransformAndroidManifestTest {
 
     assertThat(exception)
       .hasMessageThat()
+      .contains("Computed version code")
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("zero or negative")
+    assertThat(exception)
+      .hasMessageThat()
       .contains("git fetch --unshallow")
   }
 
