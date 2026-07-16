@@ -14,7 +14,7 @@ import org.oppia.android.util.math.NumberWithUnitsTokenizer.Companion.Token
 /**
  * A Truth [Subject] for testing [Token] objects from [NumberWithUnitsTokenizer].
  */
-class NumberWithUnitsTokenSubject(
+class NumberWithUnitsTokenSubject private constructor(
   metadata: FailureMetadata,
   private val actual: Token
 ) : Subject(metadata, actual) {
