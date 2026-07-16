@@ -260,27 +260,13 @@ jobs:
   check_changelog_limit:
     name: Check changelog character limit
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
 
-      - name: Check 500-character limit for changed changelogs
-        env:
-          BASE_REF: ${{ github.base_ref }}
+      - name: Check 500-character limit for changelog files
         run: |
-          git fetch origin "$BASE_REF" --depth=1
-          CHANGED=$(git diff --name-only "origin/${BASE_REF}" -- 'config/changelogs/*.md')
-          if [[ -z "$CHANGED" ]]; then
-            echo "No changelog files changed — nothing to validate."
-            exit 0
-          fi
           FAILED=false
-          for file in $CHANGED; do
+          for file in config/changelogs/*.md; do
             if [[ ! -f "$file" ]]; then continue; fi
             char_count=$(python3 -c "print(len(open('$file').read().rstrip()))")
             if [[ "$char_count" -gt 500 ]]; then
