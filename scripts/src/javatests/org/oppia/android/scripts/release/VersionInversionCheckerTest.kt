@@ -25,7 +25,7 @@ class VersionInversionCheckerTest {
   @Test
   fun testVerify_alpha_allTracksEmpty_passes() {
     // No existing releases on any track — any version code is valid.
-    checker.verify("org.oppia.android", "alpha", newVersionCode = 1L)
+    checker.verify("org.oppia.android", "alpha", newVersionCode = 1L, existingEditId = "test-edit")
   }
 
   @Test
@@ -34,7 +34,7 @@ class VersionInversionCheckerTest {
       "beta",
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L)))
     )
-    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L)
+    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L, existingEditId = "test-edit")
   }
 
   @Test
@@ -47,7 +47,7 @@ class VersionInversionCheckerTest {
       "production",
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(100L)))
     )
-    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L)
+    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L, existingEditId = "test-edit")
   }
 
   @Test
@@ -57,7 +57,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(300L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "alpha", newVersionCode = 299L)
+      checker.verify("org.oppia.android", "alpha", newVersionCode = 299L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("Version inversion")
     assertThat(exception).hasMessageThat().contains("beta")
@@ -71,7 +71,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(500L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "alpha", newVersionCode = 499L)
+      checker.verify("org.oppia.android", "alpha", newVersionCode = 499L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("ga")
     assertThat(exception).hasMessageThat().contains("500")
@@ -83,7 +83,7 @@ class VersionInversionCheckerTest {
 
   @Test
   fun testVerify_beta_allTracksEmpty_passes() {
-    checker.verify("org.oppia.android", "beta", newVersionCode = 100L)
+    checker.verify("org.oppia.android", "beta", newVersionCode = 100L, existingEditId = "test-edit")
   }
 
   @Test
@@ -96,7 +96,7 @@ class VersionInversionCheckerTest {
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(300L)))
     )
-    checker.verify("org.oppia.android", "beta", newVersionCode = 200L)
+    checker.verify("org.oppia.android", "beta", newVersionCode = 200L, existingEditId = "test-edit")
   }
 
   @Test
@@ -106,7 +106,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "beta", newVersionCode = 100L)
+      checker.verify("org.oppia.android", "beta", newVersionCode = 100L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("ga")
     assertThat(exception).hasMessageThat().contains("200")
@@ -119,7 +119,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "beta", newVersionCode = 300L)
+      checker.verify("org.oppia.android", "beta", newVersionCode = 300L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("alpha")
     assertThat(exception).hasMessageThat().contains("200")
@@ -132,7 +132,7 @@ class VersionInversionCheckerTest {
 
   @Test
   fun testVerify_ga_allTracksEmpty_passes() {
-    checker.verify("org.oppia.android", "production", newVersionCode = 100L)
+    checker.verify("org.oppia.android", "production", newVersionCode = 100L, existingEditId = "test-edit")
   }
 
   @Test
@@ -145,7 +145,7 @@ class VersionInversionCheckerTest {
       "alpha",
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(300L)))
     )
-    checker.verify("org.oppia.android", "production", newVersionCode = 100L)
+    checker.verify("org.oppia.android", "production", newVersionCode = 100L, existingEditId = "test-edit")
   }
 
   @Test
@@ -155,7 +155,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(200L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "production", newVersionCode = 300L)
+      checker.verify("org.oppia.android", "production", newVersionCode = 300L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("beta")
     assertThat(exception).hasMessageThat().contains("200")
@@ -169,7 +169,7 @@ class VersionInversionCheckerTest {
       listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(300L)))
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "production", newVersionCode = 400L)
+      checker.verify("org.oppia.android", "production", newVersionCode = 400L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("alpha")
     assertThat(exception).hasMessageThat().contains("300")
@@ -190,7 +190,7 @@ class VersionInversionCheckerTest {
       )
     )
     // 201 > 200 (max beta) → passes
-    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L)
+    checker.verify("org.oppia.android", "alpha", newVersionCode = 201L, existingEditId = "test-edit")
   }
 
   @Test
@@ -202,7 +202,7 @@ class VersionInversionCheckerTest {
       )
     )
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "alpha", newVersionCode = 300L)
+      checker.verify("org.oppia.android", "alpha", newVersionCode = 300L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("400")
   }
@@ -216,7 +216,7 @@ class VersionInversionCheckerTest {
       )
     )
     // 304 < 305 (min alpha) → passes
-    checker.verify("org.oppia.android", "beta", newVersionCode = 304L)
+    checker.verify("org.oppia.android", "beta", newVersionCode = 304L, existingEditId = "test-edit")
   }
 
   @Test
@@ -229,7 +229,7 @@ class VersionInversionCheckerTest {
     )
     // 307 lies between alpha's 305 and 310 — must fail (307 > min alpha = 305).
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "beta", newVersionCode = 307L)
+      checker.verify("org.oppia.android", "beta", newVersionCode = 307L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("305")
   }
@@ -243,7 +243,7 @@ class VersionInversionCheckerTest {
       )
     )
     // 199 < 200 (min beta) → passes
-    checker.verify("org.oppia.android", "production", newVersionCode = 199L)
+    checker.verify("org.oppia.android", "production", newVersionCode = 199L, existingEditId = "test-edit")
   }
 
   @Test
@@ -256,7 +256,7 @@ class VersionInversionCheckerTest {
     )
     // 205 lies between beta's 200 and 210 — must fail (205 > min beta = 200).
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "production", newVersionCode = 205L)
+      checker.verify("org.oppia.android", "production", newVersionCode = 205L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("200")
   }
@@ -270,7 +270,7 @@ class VersionInversionCheckerTest {
       )
     )
     // 304 < 305 (min alpha) → passes
-    checker.verify("org.oppia.android", "production", newVersionCode = 304L)
+    checker.verify("org.oppia.android", "production", newVersionCode = 304L, existingEditId = "test-edit")
   }
 
   @Test
@@ -283,7 +283,7 @@ class VersionInversionCheckerTest {
     )
     // 307 lies between alpha's 305 and 310 — must fail (307 > min alpha = 305).
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "production", newVersionCode = 307L)
+      checker.verify("org.oppia.android", "production", newVersionCode = 307L, existingEditId = "test-edit")
     }
     assertThat(exception).hasMessageThat().contains("305")
   }
@@ -295,9 +295,51 @@ class VersionInversionCheckerTest {
   @Test
   fun testVerify_unknownTrack_throwsWithTrackName() {
     val exception = assertThrows<IllegalStateException>() {
-      checker.verify("org.oppia.android", "internal", newVersionCode = 100L)
+      checker.verify("org.oppia.android", "internal", newVersionCode = 100L, existingEditId = "test-edit")
     }
 
     assertThat(exception).hasMessageThat().contains("internal")
+  }
+  // ---------------------------------------------------------------------------
+  // existingEditId — passed through to getTrackReleases on all three tracks
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testVerify_existingEditId_isPassedToAllThreeTrackQueries() {
+    // The FakePlayConsoleClient records the existingEditId received by getTrackReleases via
+    // the last queried editId. We use a custom fake to capture the IDs.
+    val capturedEditIds = mutableListOf<String?>()
+    val capturingFake = object : PlayConsoleClient {
+      override fun createEdit(packageName: String) = error("Should not create edit")
+      override fun uploadAab(packageName: String, editId: String, aabPath: String) = 0L
+      override fun setTrackRelease(
+        packageName: String,
+        editId: String,
+        track: String,
+        versionCode: Long,
+        rolloutFraction: Int,
+        releaseNotes: Map<String, String>
+      ) = Unit
+      override fun commitEdit(packageName: String, editId: String) = Unit
+      override fun getTrackReleases(
+        packageName: String,
+        track: String,
+        existingEditId: String?
+      ): List<PlayConsoleClient.TrackRelease> {
+        capturedEditIds.add(existingEditId)
+        return emptyList()
+      }
+    }
+    val capturingChecker = VersionInversionChecker(capturingFake)
+
+    capturingChecker.verify(
+      "org.oppia.android", "alpha", newVersionCode = 100L, existingEditId = "upload-edit-42"
+    )
+
+    // verify() queries all three tracks; each must receive the same existingEditId.
+    assertThat(capturedEditIds).hasSize(3)
+    assertThat(capturedEditIds).containsExactly(
+      "upload-edit-42", "upload-edit-42", "upload-edit-42"
+    )
   }
 }

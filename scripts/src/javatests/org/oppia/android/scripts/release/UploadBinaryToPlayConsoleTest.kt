@@ -370,6 +370,34 @@ class UploadBinaryToPlayConsoleTest {
     assertThat(lastGetRequest.path).contains("/tracks/production")
   }
 
+  @Test
+  fun testRunUpload_versionInversionChecker_reusesUploadEditIdForAllThreeTrackQueries() {
+    // This test validates the core fix: VersionInversionChecker must reuse the upload edit session
+    // rather than opening a new one. The Play Developer API only allows one active edit at a time,
+    // so creating a temporary edit during the upload would invalidate the in-progress session.
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    enqueueSuccessfulUpload()
+
+    runMain(aab.absolutePath)
+
+    // Request order: (0) pending-createEdit, (1) pending-getTrack, (2) upload-createEdit → "e-up",
+    // (3) uploadBundle, (4) version-getTrack/alpha, (5) version-getTrack/beta,
+    // (6) version-getTrack/production, (7) setTrackRelease, (8) commitEdit.
+    skipRequests(4) // Skip to first VersionInversionChecker request.
+    val alphaRequest = server.takeRequest()
+    val betaRequest = server.takeRequest()
+    val productionRequest = server.takeRequest()
+
+    // All three track queries must use the upload edit ID "e-up", not a freshly created edit.
+    assertThat(alphaRequest.path).contains("e-up")
+    assertThat(betaRequest.path).contains("e-up")
+    assertThat(productionRequest.path).contains("e-up")
+    assertThat(alphaRequest.path).contains("/tracks/alpha")
+    assertThat(betaRequest.path).contains("/tracks/beta")
+    assertThat(productionRequest.path).contains("/tracks/production")
+  }
+
   // ---------------------------------------------------------------------------
   // Rollout fraction forwarding
   // ---------------------------------------------------------------------------
