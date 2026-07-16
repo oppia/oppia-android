@@ -261,5 +261,4 @@ class GooglePlayConsoleClientTest {
 
     assertThat(exception).hasMessageThat().contains("404")
   }
-
 }

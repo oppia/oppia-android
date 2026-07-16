@@ -80,7 +80,6 @@ interface PlayConsoleClient {
    */
   fun commitEdit(packageName: String, editId: String)
 
-
   /**
    * Represents a single release entry on a Play Console track.
    *

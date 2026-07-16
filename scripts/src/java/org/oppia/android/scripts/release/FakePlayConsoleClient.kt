@@ -78,7 +78,6 @@ class FakePlayConsoleClient : PlayConsoleClient {
     committedEdits.add(editId)
   }
 
-
   /**
    * Configures the releases returned by [getTrackReleases] for the given [track].
    *
