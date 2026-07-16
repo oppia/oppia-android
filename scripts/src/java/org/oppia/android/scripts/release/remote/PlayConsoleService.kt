@@ -8,7 +8,6 @@ import org.oppia.android.scripts.release.model.TrackResponse
 import org.oppia.android.scripts.release.model.TrackUpdateRequest
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -132,22 +131,4 @@ interface PlayConsoleService {
     @Path("track") track: String,
     @Header("Authorization") authorizationBearer: String
   ): Call<TrackResponse>
-  /**
-   * Deletes (discards) an edit session without committing it.
-   *
-   * Used to clean up temporary read-only edits created by [getTrack] so they do not
-   * invalidate a concurrent upload edit session.
-   *
-   * API reference: https://developers.google.com/android-publisher/api-ref/rest/v3/edits/delete
-   *
-   * @param packageName the application package name
-   * @param editId the edit session ID to discard
-   * @param authorizationBearer the OAuth2 bearer token for authentication
-   */
-  @DELETE("androidpublisher/v3/applications/{packageName}/edits/{editId}")
-  fun deleteEdit(
-    @Path("packageName") packageName: String,
-    @Path("editId") editId: String,
-    @Header("Authorization") authorizationBearer: String
-  ): Call<Unit>
 }

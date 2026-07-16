@@ -4,8 +4,8 @@ package org.oppia.android.scripts.release
  * In-memory fake implementation of [PlayConsoleClient] for use in unit tests.
  *
  * Records all API calls for verification and returns pre-configured responses. Callers can inspect
- * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], [committedEdits], and
- * [deletedEdits]. Error conditions can be simulated by setting [shouldFailNextCall] to true.
+ * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], and [committedEdits].
+ * Error conditions can be simulated by setting [shouldFailNextCall] to true.
  *
  * Track releases returned by [getTrackReleases] can be configured per-track via
  * [setTrackReleases].
@@ -30,9 +30,6 @@ class FakePlayConsoleClient : PlayConsoleClient {
   /** All edit session IDs committed via [commitEdit], in order. */
   val committedEdits = mutableListOf<String>()
 
-  /** All edit session IDs discarded via [deleteEdit], in order. */
-  val deletedEdits = mutableListOf<String>()
-
   private var nextVersionCode = 1L
   private val trackReleasesMap = mutableMapOf<String, List<PlayConsoleClient.TrackRelease>>()
 
@@ -49,6 +46,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
     maybeFailCall("getTrackReleases")
+    // The existingEditId is ignored in the fake; the in-memory map is always used directly.
     // Sort by descending version code to honour the PlayConsoleClient contract, which documents
     // that releases are returned "sorted by version code descending".
     return (trackReleasesMap[track] ?: emptyList())
@@ -80,10 +78,6 @@ class FakePlayConsoleClient : PlayConsoleClient {
     committedEdits.add(editId)
   }
 
-  override fun deleteEdit(packageName: String, editId: String) {
-    maybeFailCall("deleteEdit")
-    deletedEdits.add(editId)
-  }
 
   /**
    * Configures the releases returned by [getTrackReleases] for the given [track].
@@ -113,7 +107,6 @@ class FakePlayConsoleClient : PlayConsoleClient {
     uploadedBundles.clear()
     trackUpdates.clear()
     committedEdits.clear()
-    deletedEdits.clear()
     trackReleasesMap.clear()
   }
 

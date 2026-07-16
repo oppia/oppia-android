@@ -223,7 +223,7 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_parsesReleasesFromResponse() {
-    // getTrackReleases internally calls createEdit then getTrack (no deleteEdit).
+    // getTrackReleases internally calls createEdit then getTrack.
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(
       MockResponse()
@@ -262,29 +262,4 @@ class GooglePlayConsoleClientTest {
     assertThat(exception).hasMessageThat().contains("404")
   }
 
-  // ---------------------------------------------------------------------------
-  // deleteEdit
-  // ---------------------------------------------------------------------------
-
-  @Test
-  fun testDeleteEdit_successResponse_doesNotThrow() {
-    server.enqueue(MockResponse().setResponseCode(204))
-
-    client.deleteEdit("org.oppia.android", "edit-1")
-
-    val request = server.takeRequest()
-    assertThat(request.method).isEqualTo("DELETE")
-    assertThat(request.path).contains("edit-1")
-  }
-
-  @Test
-  fun testDeleteEdit_errorResponse_throwsWithDetails() {
-    server.enqueue(MockResponse().setResponseCode(404).setBody("Not Found"))
-
-    val exception = assertThrows<IllegalStateException>() {
-      client.deleteEdit("org.oppia.android", "edit-1")
-    }
-
-    assertThat(exception).hasMessageThat().contains("404")
-  }
 }

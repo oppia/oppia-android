@@ -83,7 +83,8 @@ class GooglePlayConsoleClient(
     track: String,
     existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
-    // A temporary edit is needed to read track info via the API.
+    // Use the caller's open edit when provided to avoid creating a new temporary edit session.
+    // If no edit ID is supplied, create a temporary one just for this read.
     val editId = existingEditId ?: createEdit(packageName)
     val response = playConsoleService
       .getTrack(packageName, editId, track, authorizationBearer)
@@ -160,15 +161,6 @@ class GooglePlayConsoleClient(
     }
   }
 
-  override fun deleteEdit(packageName: String, editId: String) {
-    val response = playConsoleService
-      .deleteEdit(packageName, editId, authorizationBearer)
-      .execute()
-    check(response.isSuccessful) {
-      "Failed to delete edit '$editId' for '$packageName': " +
-        "${response.code()} ${response.message()}\n${response.errorBody()?.string()}"
-    }
-  }
 
   companion object {
     /** Default HTTP timeout of 2 minutes to accommodate large AAB uploads (~150 MB). */

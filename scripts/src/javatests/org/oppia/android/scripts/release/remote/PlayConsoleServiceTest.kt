@@ -143,21 +143,4 @@ class PlayConsoleServiceTest {
       "androidpublisher/v3/applications/org.oppia.android/edits/edit-1/tracks/alpha"
     )
   }
-
-  // ---------------------------------------------------------------------------
-  // deleteEdit
-  // ---------------------------------------------------------------------------
-
-  @Test
-  fun testDeleteEdit_sendsDeleteToCorrectPath() {
-    server.enqueue(MockResponse().setResponseCode(204))
-
-    service.deleteEdit("org.oppia.android", "edit-1", "Bearer token").execute()
-
-    val request = server.takeRequest()
-    assertThat(request.method).isEqualTo("DELETE")
-    assertThat(request.path).contains(
-      "androidpublisher/v3/applications/org.oppia.android/edits/edit-1"
-    )
-  }
 }

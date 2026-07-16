@@ -116,16 +116,13 @@ jobs:
           FILE_SIZE=$(stat --printf="%s" "/tmp/$AAB_NAME")
           echo "Downloaded: $AAB_NAME ($FILE_SIZE bytes)"
 
-      # Runs the UploadBinaryToPlayConsole Kotlin script which enforces all precondition checks
-      # (pending release, version inversion, changelog existence) before uploading the AAB.
-      # Script args: workspaceRoot, aabPath, track, accessToken, rolloutFraction
       - name: Upload AAB to Play Console
         run: |
           bazel run //scripts:upload_binary_to_play_console \
-            --action_env=GOOGLE_APPLICATION_CREDENTIALS \
             -- \
             "$(pwd)" \
             "$AAB_LOCAL_PATH" \
             "${{ github.event.inputs.track }}" \
             "$ACCESS_TOKEN" \
             "${{ github.event.inputs.rollout_fraction }}"
+
