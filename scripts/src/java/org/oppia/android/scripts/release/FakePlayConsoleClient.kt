@@ -4,8 +4,8 @@ package org.oppia.android.scripts.release
  * In-memory fake implementation of [PlayConsoleClient] for use in unit tests.
  *
  * Records all API calls for verification and returns pre-configured responses. Callers can inspect
- * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], and [committedEdits].
- * Error conditions can be simulated by setting [shouldFailNextCall] to true.
+ * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], [committedEdits], and
+ * [deletedEdits]. Error conditions can be simulated by setting [shouldFailNextCall] to true.
  *
  * Track releases returned by [getTrackReleases] can be configured per-track via
  * [setTrackReleases].
@@ -27,8 +27,11 @@ class FakePlayConsoleClient : PlayConsoleClient {
   /** All track updates via [setTrackRelease], as recorded [TrackUpdate] entries. */
   val trackUpdates = mutableListOf<TrackUpdate>()
 
-  /** All edit IDs committed via [commitEdit], in order. */
+  /** All edit session IDs committed via [commitEdit], in order. */
   val committedEdits = mutableListOf<String>()
+
+  /** All edit session IDs discarded via [deleteEdit], in order. */
+  val deletedEdits = mutableListOf<String>()
 
   private var nextVersionCode = 1L
   private val trackReleasesMap = mutableMapOf<String, List<PlayConsoleClient.TrackRelease>>()
@@ -76,6 +79,11 @@ class FakePlayConsoleClient : PlayConsoleClient {
     committedEdits.add(editId)
   }
 
+  override fun deleteEdit(packageName: String, editId: String) {
+    maybeFailCall("deleteEdit")
+    deletedEdits.add(editId)
+  }
+
   /**
    * Configures the releases returned by [getTrackReleases] for the given [track].
    *
@@ -104,6 +112,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     uploadedBundles.clear()
     trackUpdates.clear()
     committedEdits.clear()
+    deletedEdits.clear()
     trackReleasesMap.clear()
   }
 

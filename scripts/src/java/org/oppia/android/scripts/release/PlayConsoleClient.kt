@@ -72,6 +72,17 @@ interface PlayConsoleClient {
   fun commitEdit(packageName: String, editId: String)
 
   /**
+   * Deletes (discards) an uncommitted edit session, freeing it so a new edit can be opened.
+   *
+   * Must be called after any temporary read-only edit created inside [getTrackReleases] to
+   * prevent it from invalidating a concurrent upload edit session.
+   *
+   * @param packageName the application package name
+   * @param editId the edit session ID to discard
+   */
+  fun deleteEdit(packageName: String, editId: String)
+
+  /**
    * Represents a single release entry on a Play Console track.
    *
    * @property versionCodes the version codes included in this release

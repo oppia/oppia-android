@@ -223,7 +223,7 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_parsesReleasesFromResponse() {
-    // getTrackReleases internally calls createEdit first.
+    // getTrackReleases internally calls createEdit, getTrack, then deleteEdit.
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(
       MockResponse()
@@ -232,6 +232,7 @@ class GooglePlayConsoleClientTest {
         )
         .setResponseCode(200)
     )
+    server.enqueue(MockResponse().setResponseCode(204))
 
     val releases = client.getTrackReleases("org.oppia.android", "alpha")
 
@@ -243,6 +244,7 @@ class GooglePlayConsoleClientTest {
   fun testGetTrackReleases_nullReleasesField_returnsEmpty() {
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody("""{"releases":null}""").setResponseCode(200))
+    server.enqueue(MockResponse().setResponseCode(204))
 
     val releases = client.getTrackReleases("org.oppia.android", "alpha")
 
@@ -251,12 +253,38 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_errorOnTrackGet_throwsWithDetails() {
-    // createEdit succeeds, but getTrack fails.
+    // createEdit succeeds, but getTrack fails. deleteEdit is never reached.
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(MockResponse().setResponseCode(404).setBody("Not Found"))
 
     val exception = assertThrows<IllegalStateException>() {
       client.getTrackReleases("org.oppia.android", "alpha")
+    }
+
+    assertThat(exception).hasMessageThat().contains("404")
+  }
+
+  // ---------------------------------------------------------------------------
+  // deleteEdit
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testDeleteEdit_successResponse_doesNotThrow() {
+    server.enqueue(MockResponse().setResponseCode(204))
+
+    client.deleteEdit("org.oppia.android", "edit-1")
+
+    val request = server.takeRequest()
+    assertThat(request.method).isEqualTo("DELETE")
+    assertThat(request.path).contains("edit-1")
+  }
+
+  @Test
+  fun testDeleteEdit_errorResponse_throwsWithDetails() {
+    server.enqueue(MockResponse().setResponseCode(404).setBody("Not Found"))
+
+    val exception = assertThrows<IllegalStateException>() {
+      client.deleteEdit("org.oppia.android", "edit-1")
     }
 
     assertThat(exception).hasMessageThat().contains("404")

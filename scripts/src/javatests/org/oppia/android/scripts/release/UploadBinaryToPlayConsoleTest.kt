@@ -228,7 +228,7 @@ class UploadBinaryToPlayConsoleTest {
 
     // Verify that commitEdit (the 12th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
-    skipRequests(11)
+    skipRequests(15)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -243,7 +243,7 @@ class UploadBinaryToPlayConsoleTest {
 
     // Verify that commitEdit (the 12th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
-    skipRequests(11)
+    skipRequests(15)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -259,10 +259,10 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Verify the full 12-step flow completed by confirming commitEdit (step 12) was called.
-    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) + 1 (setTrackRelease) +
+    // Verify the full 16-step flow completed by confirming commitEdit (step 16) was called.
+    // Flow: 3 (pending check) + 2 (upload) + 9 (version check) + 1 (setTrackRelease) +
     // 1 (commitEdit). The :commit suffix on the path uniquely identifies the commit call.
-    skipRequests(11)
+    skipRequests(15)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -274,8 +274,9 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Request 4 (index 3) is the uploadBundle call; skip the first 3 requests.
-    skipRequests(3)
+    // Request 5 (index 4) is the uploadBundle call; skip the first 4 requests.
+    // Flow: 3 (pending check: createEdit + getTrack + deleteEdit) + 1 (createEdit upload) = 4.
+    skipRequests(4)
     assertThat(server.takeRequest().bodySize).isEqualTo(64L)
   }
 
@@ -287,8 +288,8 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Request 11 (index 10) is setTrackRelease; skip the first 10 requests.
-    skipRequests(10)
+    // Flow: 3 + 2 + 9 = 14 previous requests.
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"301\"")
   }
@@ -301,7 +302,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("User-facing release notes.")
     assertThat(setTrackBody).contains("en-US")
@@ -339,9 +340,7 @@ class UploadBinaryToPlayConsoleTest {
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
 
     assertThat(exception).hasMessageThat().contains("changelog")
-    // ChangelogExistenceChecker throws after the pending check but before any upload HTTP call.
-    // Verify the last request made was the pending check's GET .../tracks/alpha, not a bundle
-    // upload.
+    // Flow: 3 + 2 + 9 = 14 previous requests.
     skipRequests(1)
     val lastRequest = server.takeRequest()
     assertThat(lastRequest.method).isEqualTo("GET")
@@ -362,13 +361,13 @@ class UploadBinaryToPlayConsoleTest {
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
 
     assertThat(exception).hasMessageThat().contains("Version inversion")
-    // Verify the last request was VersionInversionChecker's final GET .../tracks/production,
+    // Verify the 13th request was VersionInversionChecker's final GET .../tracks/production,
     // confirming setTrackRelease (PUT) and commitEdit were never called.
-    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) = 10 total.
-    skipRequests(9)
-    val lastRequest = server.takeRequest()
-    assertThat(lastRequest.method).isEqualTo("GET")
-    assertThat(lastRequest.path).contains("/tracks/production")
+    // Flow: 3 (pending check) + 2 (upload) + (alpha: 3) + (beta: 3) + (production: createEdit 1) = 12 skipped.
+    skipRequests(12)
+    val lastGetRequest = server.takeRequest()
+    assertThat(lastGetRequest.method).isEqualTo("GET")
+    assertThat(lastGetRequest.path).contains("/tracks/production")
   }
 
   // ---------------------------------------------------------------------------
@@ -383,7 +382,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath, rolloutFraction = 1000)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"status\":\"completed\"")
     assertThat(setTrackBody).doesNotContain("userFraction")
@@ -397,7 +396,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath, rolloutFraction = 250)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"status\":\"inProgress\"")
     assertThat(setTrackBody).contains("0.25")
@@ -416,7 +415,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("Alpha-specific notes.")
     assertThat(setTrackBody).doesNotContain("Default notes.")
@@ -430,7 +429,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     // When the changelog is empty, no release-note entries are included.
     assertThat(setTrackBody).contains("\"releaseNotes\":[]")
@@ -451,8 +450,8 @@ class UploadBinaryToPlayConsoleTest {
     assertThat(exception).hasMessageThat().contains("600")
     // Verify the last request was VersionInversionChecker's final GET .../tracks/production,
     // confirming setTrackRelease (PUT) was never called.
-    // Flow: 2 (pending check) + 2 (upload) + 6 (version check) = 10 total.
-    skipRequests(9)
+    // Flow: 3 (pending check) + 2 (upload) + (alpha: 3) + (beta: 3) + (production: createEdit 1) = 12 skipped.
+    skipRequests(12)
     val lastRequest = server.takeRequest()
     assertThat(lastRequest.method).isEqualTo("GET")
     assertThat(lastRequest.path).contains("/tracks/production")
@@ -466,7 +465,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(10)
+    skipRequests(14)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("b".repeat(500))
   }
@@ -531,6 +530,7 @@ class UploadBinaryToPlayConsoleTest {
   ) {
     server.enqueue(MockResponse().setBody("""{"id":"e-pc"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(trackBody).setResponseCode(200))
+    server.enqueue(MockResponse().setResponseCode(204))
   }
 
   /**
@@ -560,10 +560,13 @@ class UploadBinaryToPlayConsoleTest {
   ) {
     server.enqueue(MockResponse().setBody("""{"id":"e-vi-a"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(alphaBody).setResponseCode(200))
+    server.enqueue(MockResponse().setResponseCode(204))
     server.enqueue(MockResponse().setBody("""{"id":"e-vi-b"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(betaBody).setResponseCode(200))
+    server.enqueue(MockResponse().setResponseCode(204))
     server.enqueue(MockResponse().setBody("""{"id":"e-vi-p"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody(productionBody).setResponseCode(200))
+    server.enqueue(MockResponse().setResponseCode(204))
   }
 
   /**

@@ -94,6 +94,10 @@ class GooglePlayConsoleClient(
     val trackResponse = checkNotNull(response.body()) {
       "Track response returned null body for '$packageName' track '$track'."
     }
+    // Discard the temporary edit now that we have the data we need. Leaving it open would
+    // invalidate any concurrent upload edit session, since Play Console only allows one active
+    // edit per app at a time.
+    deleteEdit(packageName, editId)
     // Sort by version code descending; Play Console does not guarantee ordering on releases.
     return trackResponse.releases
       ?.map { it.toTrackRelease() }
@@ -155,6 +159,16 @@ class GooglePlayConsoleClient(
       .execute()
     check(response.isSuccessful) {
       "Failed to commit edit '$editId' for '$packageName': " +
+        "${response.code()} ${response.message()}\n${response.errorBody()?.string()}"
+    }
+  }
+
+  override fun deleteEdit(packageName: String, editId: String) {
+    val response = playConsoleService
+      .deleteEdit(packageName, editId, authorizationBearer)
+      .execute()
+    check(response.isSuccessful) {
+      "Failed to delete edit '$editId' for '$packageName': " +
         "${response.code()} ${response.message()}\n${response.errorBody()?.string()}"
     }
   }

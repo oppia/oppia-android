@@ -168,6 +168,36 @@ class FakePlayConsoleClientTest {
   }
 
   // ---------------------------------------------------------------------------
+  // deleteEdit
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testDeleteEdit_recordsDeletedEdit() {
+    fake.deleteEdit("org.oppia.android", "edit-abc")
+
+    assertThat(fake.deletedEdits).containsExactly("edit-abc")
+  }
+
+  @Test
+  fun testDeleteEdit_multipleDeletes_recordsAll() {
+    fake.deleteEdit("org.oppia.android", "edit-1")
+    fake.deleteEdit("org.oppia.android", "edit-2")
+
+    assertThat(fake.deletedEdits).containsExactly("edit-1", "edit-2").inOrder()
+  }
+
+  @Test
+  fun testDeleteEdit_simulatedFailure_throws() {
+    fake.shouldFailNextCall = true
+
+    val exception = assertThrows<IllegalStateException>() {
+      fake.deleteEdit("org.oppia.android", "edit-1")
+    }
+
+    assertThat(exception).hasMessageThat().contains("deleteEdit")
+  }
+
+  // ---------------------------------------------------------------------------
   // reset()
   // ---------------------------------------------------------------------------
 
@@ -176,6 +206,7 @@ class FakePlayConsoleClientTest {
     fake.createEdit("org.oppia.android")
     fake.uploadAab("org.oppia.android", "edit-1", "/aab.aab")
     fake.commitEdit("org.oppia.android", "edit-1")
+    fake.deleteEdit("org.oppia.android", "edit-1")
     fake.shouldFailNextCall = true
 
     fake.reset()
@@ -183,6 +214,7 @@ class FakePlayConsoleClientTest {
     assertThat(fake.createdEdits).isEmpty()
     assertThat(fake.uploadedBundles).isEmpty()
     assertThat(fake.committedEdits).isEmpty()
+    assertThat(fake.deletedEdits).isEmpty()
     assertThat(fake.trackUpdates).isEmpty()
     assertThat(fake.shouldFailNextCall).isFalse()
   }
