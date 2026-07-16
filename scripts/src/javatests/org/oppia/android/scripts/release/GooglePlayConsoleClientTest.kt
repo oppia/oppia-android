@@ -223,7 +223,7 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_parsesReleasesFromResponse() {
-    // getTrackReleases internally calls createEdit, getTrack, then deleteEdit.
+    // getTrackReleases internally calls createEdit then getTrack (no deleteEdit).
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(
       MockResponse()
@@ -232,7 +232,6 @@ class GooglePlayConsoleClientTest {
         )
         .setResponseCode(200)
     )
-    server.enqueue(MockResponse().setResponseCode(204))
 
     val releases = client.getTrackReleases("org.oppia.android", "alpha")
 
@@ -244,7 +243,6 @@ class GooglePlayConsoleClientTest {
   fun testGetTrackReleases_nullReleasesField_returnsEmpty() {
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(MockResponse().setBody("""{"releases":null}""").setResponseCode(200))
-    server.enqueue(MockResponse().setResponseCode(204))
 
     val releases = client.getTrackReleases("org.oppia.android", "alpha")
 
@@ -253,7 +251,7 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_errorOnTrackGet_throwsWithDetails() {
-    // createEdit succeeds, but getTrack fails. deleteEdit is never reached.
+    // createEdit succeeds, but getTrack fails.
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(MockResponse().setResponseCode(404).setBody("Not Found"))
 

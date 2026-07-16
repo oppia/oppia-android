@@ -32,12 +32,17 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
    * @param newVersionCode the version code of the binary about to be uploaded
    * @throws IllegalStateException if [newVersionCode] violates the cross-track ordering constraint
    */
-  fun verify(packageName: String, targetTrack: String, newVersionCode: Long) {
-    val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK)
+  fun verify(
+    packageName: String,
+    targetTrack: String,
+    newVersionCode: Long,
+    existingEditId: String
+  ) {
+    val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-    val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK)
+    val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-    val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK)
+    val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
 
     val maxBeta = betaVersionCodes.maxOrNull()

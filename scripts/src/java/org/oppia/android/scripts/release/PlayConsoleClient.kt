@@ -26,7 +26,11 @@ interface PlayConsoleClient {
    * @param track the Play Console track to query (e.g. "alpha", "beta", "production")
    * @return the list of [TrackRelease] entries currently live on the track
    */
-  fun getTrackReleases(packageName: String, track: String): List<TrackRelease>
+  fun getTrackReleases(
+    packageName: String,
+    track: String,
+    existingEditId: String? = null
+  ): List<TrackRelease>
 
   /**
    * Uploads the AAB at [aabPath] within [editId] and returns its assigned version code.
@@ -73,9 +77,6 @@ interface PlayConsoleClient {
 
   /**
    * Deletes (discards) an uncommitted edit session, freeing it so a new edit can be opened.
-   *
-   * Must be called after any temporary read-only edit created inside [getTrackReleases] to
-   * prevent it from invalidating a concurrent upload edit session.
    *
    * @param packageName the application package name
    * @param editId the edit session ID to discard

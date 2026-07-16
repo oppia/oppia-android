@@ -45,7 +45,8 @@ class FakePlayConsoleClient : PlayConsoleClient {
 
   override fun getTrackReleases(
     packageName: String,
-    track: String
+    track: String,
+    existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
     maybeFailCall("getTrackReleases")
     // Sort by descending version code to honour the PlayConsoleClient contract, which documents

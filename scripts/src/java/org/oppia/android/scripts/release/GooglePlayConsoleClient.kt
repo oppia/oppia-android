@@ -80,10 +80,11 @@ class GooglePlayConsoleClient(
 
   override fun getTrackReleases(
     packageName: String,
-    track: String
+    track: String,
+    existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
     // A temporary edit is needed to read track info via the API.
-    val editId = createEdit(packageName)
+    val editId = existingEditId ?: createEdit(packageName)
     val response = playConsoleService
       .getTrack(packageName, editId, track, authorizationBearer)
       .execute()
@@ -94,10 +95,6 @@ class GooglePlayConsoleClient(
     val trackResponse = checkNotNull(response.body()) {
       "Track response returned null body for '$packageName' track '$track'."
     }
-    // Discard the temporary edit now that we have the data we need. Leaving it open would
-    // invalidate any concurrent upload edit session, since Play Console only allows one active
-    // edit per app at a time.
-    deleteEdit(packageName, editId)
     // Sort by version code descending; Play Console does not guarantee ordering on releases.
     return trackResponse.releases
       ?.map { it.toTrackRelease() }
