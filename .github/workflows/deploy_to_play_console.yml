@@ -77,6 +77,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
           token_format: 'access_token'
+          access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/androidpublisher'
           create_credentials_file: true
           export_environment_variables: true
 
