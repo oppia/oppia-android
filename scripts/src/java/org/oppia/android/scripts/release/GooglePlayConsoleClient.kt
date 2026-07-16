@@ -166,8 +166,7 @@ class GooglePlayConsoleClient(
     private val OCTET_STREAM_MEDIA_TYPE = "application/octet-stream".toMediaType()
 
     /** Base URL for the Google Play Developer Publishing API v3 production endpoint. */
-    const val PRODUCTION_API_BASE_URL =
-      "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/"
+    const val PRODUCTION_API_BASE_URL = "https://androidpublisher.googleapis.com/"
   }
 
   private fun TrackResponse.ReleaseEntry.toTrackRelease(): PlayConsoleClient.TrackRelease {
