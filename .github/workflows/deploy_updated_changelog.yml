@@ -166,7 +166,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-          service_account: ${{ secrets.GCP_PLAY_CONSOLE_SERVICE_ACCOUNT }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
