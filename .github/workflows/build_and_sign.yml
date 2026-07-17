@@ -196,12 +196,10 @@ jobs:
       # Strip any pre-existing META-INF signature files from the unsigned AAB before signing.
       # jarsigner appends its signature alongside any existing signatures rather than replacing
       # them. Removing old signatures first ensures the signed AAB contains only the upload
-      # certificate, which is required by Play Console. Exit code 12 from zip means no matching
-      # files were found (the AAB is already clean) — that is safe to ignore.
+      # certificate, which is required by Play Console.
       - name: Strip pre-existing META-INF signatures from AAB
         run: |
-          zip -d "$UNSIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA" \
-            || [ $? -eq 12 ]
+          zip -d "$UNSIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
 
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
       # only the digest is sent to KMS and the signature returned via the jsign JCA provider.

@@ -37,7 +37,7 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
     packageName: String,
     targetTrack: String,
     newVersionCode: Long,
-    existingEditId: String? = null
+    existingEditId: String
   ) {
     val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
