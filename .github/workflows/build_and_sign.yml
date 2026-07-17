@@ -193,6 +193,14 @@ jobs:
           echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
           echo "Found unsigned: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
 
+      # Strip any pre-existing META-INF signature files from the unsigned AAB before signing.
+      # jarsigner appends its signature alongside any existing signatures rather than replacing
+      # them. Removing old signatures first ensures the signed AAB contains only the upload
+      # certificate, which is required by Play Console.
+      - name: Strip pre-existing META-INF signatures from AAB
+        run: |
+          zip -d "$UNSIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
+
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
       # only the digest is sent to KMS and the signature returned via the jsign JCA provider.
       # GCP_ACCESS_TOKEN is read by sign_release_binary at runtime via the jsign JCA provider.
@@ -227,13 +235,6 @@ jobs:
             echo "::error::If this is a new RC, ensure the release branch has a new commit."
             exit 1
           fi
-
-          # Strip jarsigner-appended META-INF signature files before upload.
-          # jarsigner appends new signing certs rather than replacing the originals, leaving
-          # the AAB multi-signed. Play Console rejects multi-signed AABs, so we remove the
-          # old signatures here before archiving. apksigner (used at deploy time) will replace
-          # these with the upload certificate during signing.
-          zip -d "$SIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
 
           gsutil cp "$SIGNED_AAB_PATH" "$GCS_PATH"
           echo "Uploaded to: $GCS_PATH"
