@@ -159,6 +159,12 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
+  fun testParser_dollarPrefix_bareMinus_returnsError() {
+    val error = parseNumberWithUnitsExpectingFailure("$-")
+    assertThat(error).isInstanceOf(NumberExpectedAfterCurrencyPrefixError::class.java)
+  }
+
+  @Test
   fun testParser_rupeePrefix_integer_parsesCorrectly() {
     val result = parseNumberWithUnitsExpectingSuccess("₹500")
     assertThat(result).apply {
@@ -2109,6 +2115,12 @@ class NumberWithUnitsParserTest {
   @Test
   fun testParser_unitAlone_noNumber_returnsNumberExpectedError() {
     val error = parseNumberWithUnitsExpectingFailure("kg")
+    assertThat(error).isInstanceOf(NumberExpectedError::class.java)
+  }
+
+  @Test
+  fun testParser_bareMinus_returnsNumberExpectedError() {
+    val error = parseNumberWithUnitsExpectingFailure("-")
     assertThat(error).isInstanceOf(NumberExpectedError::class.java)
   }
 

@@ -65,7 +65,7 @@ class NumberWithUnitsParser private constructor(
     val prefixUnit = parseCurrencyPrefixUnit()
       ?: return NumberWithUnitsParsingError.GenericError.toFailure()
 
-    return parseNumber().flatMap { expressionBuilder ->
+    return parseNumber(hasCurrencyPrefix = true).flatMap { expressionBuilder ->
       if (isAtSuffixUnit()) {
         parseCompoundUnit().maybeFail { suffixUnits ->
           // Check for duplicate currency: a currency prefix was already added, so if any suffix
@@ -125,7 +125,9 @@ class NumberWithUnitsParser private constructor(
    * literal at this stage. Unit division (for example `m/s`) is parsed later as part of
    * `compound_unit`.
    */
-  private fun parseNumber(): NumberWithUnitsParsingResult<NumberWithUnitsExpression.Builder> {
+  private fun parseNumber(
+    hasCurrencyPrefix: Boolean = false
+  ): NumberWithUnitsParsingResult<NumberWithUnitsExpression.Builder> {
     val isNegative = if (tokens.peek() is Token.MinusSymbol) {
       true.also { tokens.next() } // consume '-'
     } else false
@@ -176,7 +178,13 @@ class NumberWithUnitsParser private constructor(
         }
       }
 
-      else -> NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError.toFailure()
+      else -> {
+        if (hasCurrencyPrefix) {
+          NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError.toFailure()
+        } else {
+          NumberWithUnitsParsingError.NumberExpectedError.toFailure()
+        }
+      }
     }
   }
 
