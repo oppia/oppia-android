@@ -266,7 +266,6 @@ class NumberWithUnitsTokenizer private constructor() {
       while (peek()?.isWhitespace() == true) next()
     }
 
-
     /**
      * The set of characters that are valid within a unit token.
      *
