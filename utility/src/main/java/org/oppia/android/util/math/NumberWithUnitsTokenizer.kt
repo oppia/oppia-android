@@ -266,23 +266,6 @@ class NumberWithUnitsTokenizer private constructor() {
       while (peek()?.isWhitespace() == true) next()
     }
 
-    /**
-     * Verifies that the next characters in the iterator exactly match the expected string.
-     *
-     * This method is used to validate unit names by checking that the remaining characters
-     * in the iterator match the expected unit suffix. It consumes the characters if they match.
-     *
-     * @param chars the expected string to match
-     * @return true if all characters match exactly, false otherwise
-     */
-    private fun PeekableIterator<Char>.expectNextCharsForUnit(
-      chars: String
-    ): Boolean {
-      for (c in chars) {
-        expectNextValue { c } ?: return false
-      }
-      return true
-    }
 
     /**
      * The set of characters that are valid within a unit token.
