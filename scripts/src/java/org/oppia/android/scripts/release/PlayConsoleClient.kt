@@ -22,13 +22,13 @@ interface PlayConsoleClient {
   /**
    * Returns all active releases on [track] for [packageName], sorted by version code descending.
    *
-   * If [existingEditId] is provided, the caller's already-open edit session is reused for the
-   * track query; no new edit is created and none is deleted on return. If [existingEditId] is
-   * `null`, a temporary edit is created for the query.
+   * If [existingEditId] is provided, the query reuses that edit session rather than creating a new
+   * temporary one. The Play Developer API only allows one active edit at a time, so passing the
+   * already-open upload edit ID avoids invalidating the in-progress session.
    *
    * @param packageName the application package name
    * @param track the Play Console track to query (e.g. "alpha", "beta", "production")
-   * @param existingEditId an open edit session ID to reuse, or `null` to create a temporary one
+   * @param existingEditId an already-open edit session ID to reuse, or null to open a new one
    * @return the list of [TrackRelease] entries currently live on the track
    */
   fun getTrackReleases(
