@@ -1,6 +1,5 @@
 package org.oppia.android.util.math
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
@@ -8,6 +7,11 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.NumberUnitExpression.SiPrefix
 import org.oppia.android.app.model.NumberUnitExpression.Unit
 import org.oppia.android.app.model.NumberWithUnitsExpression
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.oppia.android.util.math.NumberWithUnitsParsingError.DuplicateCurrencyError
@@ -29,10 +33,15 @@ import org.robolectric.annotation.LooperMode
 /** Tests for [NumberWithUnitsParser]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(AndroidJUnit4::class)
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config
 class NumberWithUnitsParserTest {
+  @Parameter lateinit var input: String
+  @Parameter lateinit var expectedUnit: String
+  @Parameter lateinit var expectedSiPrefix: String
+
   @Test
   fun testParser_emptyString_returnsEmptyExpressionError() {
     val error = parseNumberWithUnitsExpectingFailure("")
@@ -197,26 +206,62 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_dollarSuffix_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 dollars")
+  @Iteration("dollarSuffix", "input=100 dollars", "expectedUnit=DOLLAR")
+  @Iteration("centSuffix", "input=50 cents", "expectedUnit=CENT")
+  @Iteration("rupeeSuffix", "input=100 rupees", "expectedUnit=RUPEE")
+  @Iteration("paiseSuffix", "input=50 paise", "expectedUnit=PAISA")
+  @Iteration("meterSpelledOut", "input=10 meter", "expectedUnit=METER")
+  @Iteration("metersPlural", "input=10 meters", "expectedUnit=METER")
+  @Iteration("gramsPlural", "input=500 grams", "expectedUnit=GRAM")
+  @Iteration("feetSpelledOut", "input=6 feet", "expectedUnit=FOOT")
+  @Iteration("footSpelledOut", "input=1 foot", "expectedUnit=FOOT")
+  @Iteration("inchSpelledOut", "input=12 inch", "expectedUnit=INCH")
+  @Iteration("inchesPlural", "input=12 inches", "expectedUnit=INCH")
+  @Iteration("yardSpelledOut", "input=10 yard", "expectedUnit=YARD")
+  @Iteration("yardsPlural", "input=10 yards", "expectedUnit=YARD")
+  @Iteration("jouleSpelledOut", "input=100 joule", "expectedUnit=JOULE")
+  @Iteration("joulesPlural", "input=100 joules", "expectedUnit=JOULE")
+  @Iteration("wattSpelledOut", "input=60 watt", "expectedUnit=WATT")
+  @Iteration("wattsPlural", "input=60 watts", "expectedUnit=WATT")
+  @Iteration("ampereSpelledOut", "input=5 ampere", "expectedUnit=AMPERE")
+  @Iteration("voltSpelledOut", "input=220 volt", "expectedUnit=VOLT")
+  @Iteration("voltsPlural", "input=220 volts", "expectedUnit=VOLT")
+  @Iteration("ohmSpelledOut", "input=100 ohms", "expectedUnit=OHM")
+  @Iteration("newtonSpelledOut", "input=10 newton", "expectedUnit=NEWTON")
+  @Iteration("hertzSpelledOut", "input=50 hertz", "expectedUnit=HERTZ")
+  @Iteration("kelvinSpelledOut", "input=300 kelvin", "expectedUnit=KELVIN")
+  @Iteration("celsiusSpelledOut", "input=25 celsius", "expectedUnit=CELSIUS")
+  @Iteration("radianSpelledOut", "input=3 radian", "expectedUnit=RADIAN")
+  @Iteration("radiansPlural", "input=3 radians", "expectedUnit=RADIAN")
+  @Iteration("degreeSpelledOut", "input=90 degree", "expectedUnit=DEGREE")
+  @Iteration("degreesPlural", "input=90 degrees", "expectedUnit=DEGREE")
+  @Iteration("secondSpelledOut", "input=60 second", "expectedUnit=SECOND")
+  @Iteration("secondsPlural", "input=60 seconds", "expectedUnit=SECOND")
+  @Iteration("minuteSpelledOut", "input=30 minute", "expectedUnit=MINUTE")
+  @Iteration("minutesPlural", "input=30 minutes", "expectedUnit=MINUTE")
+  @Iteration("hourSpelledOut", "input=2 hour", "expectedUnit=HOUR")
+  @Iteration("hoursPlural", "input=2 hours", "expectedUnit=HOUR")
+  @Iteration("moleSpelledOut", "input=2 mole", "expectedUnit=MOLE")
+  @Iteration("molesPlural", "input=2 moles", "expectedUnit=MOLE")
+  @Iteration("candelaSpelledOut", "input=10 candela", "expectedUnit=CANDELA")
+  @Iteration("ounceSpelledOut", "input=8 ounce", "expectedUnit=OUNCE")
+  @Iteration("ouncesPlural", "input=8 ounces", "expectedUnit=OUNCE")
+  @Iteration("grainSpelledOut", "input=100 grain", "expectedUnit=GRAIN")
+  @Iteration("grainsPlural", "input=100 grains", "expectedUnit=GRAIN")
+  @Iteration("literSpelledOut", "input=5 liter", "expectedUnit=LITER")
+  @Iteration("litersPlural", "input=5 liters", "expectedUnit=LITER")
+  @Iteration("litreSpelling", "input=5 litre", "expectedUnit=LITER")
+  @Iteration("litresPlural", "input=5 litres", "expectedUnit=LITER")
+  @Iteration("pascalSpelledOut", "input=100 Pa", "expectedUnit=PASCAL")
+  @Iteration("sqfeet", "input=20 sqfeet", "expectedUnit=SQUARE_FOOT")
+  @Iteration("sqinch", "input=30 sqinch", "expectedUnit=SQUARE_INCH")
+  @Iteration("sqyard", "input=40 sqyard", "expectedUnit=SQUARE_YARD")
+  fun testParser_spelledOutOrPluralUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess(input)
     assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
       hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DOLLAR)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_centSuffix_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 cents")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CENT)
+        hasUnitThat().isEqualTo(Unit.valueOf(expectedUnit))
         hasExponentThat().isEqualTo(1)
       }
     }
@@ -911,468 +956,46 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_rupeeSuffix_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 rupees")
+  @Iteration("integerWithMeter", "input=10 m", "expectedUnit=METER")
+  @Iteration("integerWithGram", "input=5 g", "expectedUnit=GRAM")
+  @Iteration("integerWithSecond", "input=60 s", "expectedUnit=SECOND")
+  @Iteration("integerWithKelvin", "input=300 K", "expectedUnit=KELVIN")
+  @Iteration("integerWithCelsius", "input=25 degC", "expectedUnit=CELSIUS")
+  @Iteration("integerWithNewton", "input=10 N", "expectedUnit=NEWTON")
+  @Iteration("integerWithJoule", "input=100 J", "expectedUnit=JOULE")
+  @Iteration("integerWithWatt", "input=60 W", "expectedUnit=WATT")
+  @Iteration("integerWithPascal", "input=101325 Pa", "expectedUnit=PASCAL")
+  @Iteration("integerWithAmpere", "input=5 A", "expectedUnit=AMPERE")
+  @Iteration("integerWithVolt", "input=220 V", "expectedUnit=VOLT")
+  @Iteration("integerWithOhm", "input=100 ohm", "expectedUnit=OHM")
+  @Iteration("integerWithHertz", "input=50 Hz", "expectedUnit=HERTZ")
+  @Iteration("integerWithMole", "input=2 mol", "expectedUnit=MOLE")
+  @Iteration("integerWithCandela", "input=10 cd", "expectedUnit=CANDELA")
+  @Iteration("integerWithRadian", "input=3 rad", "expectedUnit=RADIAN")
+  @Iteration("integerWithDegree", "input=90 deg", "expectedUnit=DEGREE")
+  @Iteration("integerWithLiter", "input=5 L", "expectedUnit=LITER")
+  @Iteration("integerWithInch", "input=12 in", "expectedUnit=INCH")
+  @Iteration("integerWithFoot", "input=6 ft", "expectedUnit=FOOT")
+  @Iteration("integerWithYard", "input=10 yd", "expectedUnit=YARD")
+  @Iteration("integerWithGrain", "input=100 gr", "expectedUnit=GRAIN")
+  @Iteration("integerWithOunce", "input=8 oz", "expectedUnit=OUNCE")
+  @Iteration("integerWithSquareInch", "input=25 sqinch", "expectedUnit=SQUARE_INCH")
+  @Iteration("integerWithSquareFoot", "input=100 sqft", "expectedUnit=SQUARE_FOOT")
+  @Iteration("integerWithSquareYard", "input=50 sqyd", "expectedUnit=SQUARE_YARD")
+  @Iteration("integerWithCc", "input=250 cc", "expectedUnit=CUBIC_CENTIMETER")
+  @Iteration("integerWithCubicInch", "input=10 cuin", "expectedUnit=CUBIC_INCH")
+  @Iteration("integerWithCubicFoot", "input=5 cuft", "expectedUnit=CUBIC_FOOT")
+  @Iteration("integerWithCubicYard", "input=3 cuyd", "expectedUnit=CUBIC_YARD")
+  @Iteration("integerWithSquareMeter", "input=20 m2", "expectedUnit=SQUARE_METER")
+  @Iteration("integerWithCubicMeter", "input=8 m3", "expectedUnit=CUBIC_METER")
+  @Iteration("integerWithMinute", "input=30 min", "expectedUnit=MINUTE")
+  @Iteration("integerWithHour", "input=2 hr", "expectedUnit=HOUR")
+  fun testParser_abbreviatedUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess(input)
     assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
       hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RUPEE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_paiseSuffix_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 paise")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PAISA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 m")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithGram_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 g")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAM)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 s")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithKelvin_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("300 K")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(300.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.KELVIN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCelsius_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("25 degC")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(25.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CELSIUS)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithNewton_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 N")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.NEWTON)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithJoule_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 J")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithWatt_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 W")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.WATT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithPascal_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("101325 Pa")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(101325.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PASCAL)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithAmpere_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 A")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.AMPERE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithVolt_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("220 V")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(220.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.VOLT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithOhm_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 ohm")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.OHM)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithHertz_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 Hz")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HERTZ)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithMole_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 mol")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MOLE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCandela_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 cd")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CANDELA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithRadian_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("3 rad")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(3.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RADIAN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithDegree_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("90 deg")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(90.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DEGREE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithLiter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 L")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithInch_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("12 in")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(12.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithFoot_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("6 ft")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(6.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithYard_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 yd")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithGrain_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 gr")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAIN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithOunce_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("8 oz")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(8.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.OUNCE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithSquareInch_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("25 sqinch")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(25.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithSquareFoot_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 sqft")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithSquareYard_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 sqyd")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCc_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("250 cc")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(250.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CUBIC_CENTIMETER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCubicInch_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 cuin")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CUBIC_INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCubicFoot_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 cuft")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CUBIC_FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCubicYard_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("3 cuyd")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(3.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CUBIC_YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithSquareMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("20 m2")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(20.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_METER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithCubicMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("8 m3")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(8.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CUBIC_METER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithMinute_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("30 min")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(30.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MINUTE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_integerWithHour_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 hr")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HOUR)
+        hasUnitThat().isEqualTo(Unit.valueOf(expectedUnit))
         hasExponentThat().isEqualTo(1)
       }
     }
@@ -1475,322 +1098,36 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_kiloGram_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 kg")
+  @Iteration("kiloGram", "input=5 kg", "expectedUnit=GRAM", "expectedSiPrefix=KILO")
+  @Iteration("milliMeter", "input=100 mm", "expectedUnit=METER", "expectedSiPrefix=MILLI")
+  @Iteration("centiMeter", "input=50 cm", "expectedUnit=METER", "expectedSiPrefix=CENTI")
+  @Iteration("milliGram", "input=500 mg", "expectedUnit=GRAM", "expectedSiPrefix=MILLI")
+  @Iteration("megaWatt", "input=5 MW", "expectedUnit=WATT", "expectedSiPrefix=MEGA")
+  @Iteration("gigaHertz", "input=2 GHz", "expectedUnit=HERTZ", "expectedSiPrefix=GIGA")
+  @Iteration("nanoSecond", "input=100 ns", "expectedUnit=SECOND", "expectedSiPrefix=NANO")
+  @Iteration("microMeter", "input=10 um", "expectedUnit=METER", "expectedSiPrefix=MICRO")
+  @Iteration("picoSecond", "input=50 ps", "expectedUnit=SECOND", "expectedSiPrefix=PICO")
+  @Iteration("femtoMeter", "input=1 fm", "expectedUnit=METER", "expectedSiPrefix=FEMTO")
+  @Iteration("hectoPascal", "input=1013 hPa", "expectedUnit=PASCAL", "expectedSiPrefix=HECTO")
+  @Iteration("decaMeter", "input=10 dam", "expectedUnit=METER", "expectedSiPrefix=DECA")
+  @Iteration("deciLiter", "input=5 dL", "expectedUnit=LITER", "expectedSiPrefix=DECI")
+  @Iteration("teraWatt", "input=3 TW", "expectedUnit=WATT", "expectedSiPrefix=TERA")
+  @Iteration("petaJoule", "input=1 PJ", "expectedUnit=JOULE", "expectedSiPrefix=PETA")
+  @Iteration("exaJoule", "input=2 EJ", "expectedUnit=JOULE", "expectedSiPrefix=EXA")
+  @Iteration("zettaJoule", "input=1 ZJ", "expectedUnit=JOULE", "expectedSiPrefix=ZETTA")
+  @Iteration("yottaJoule", "input=1 YJ", "expectedUnit=JOULE", "expectedSiPrefix=YOTTA")
+  @Iteration("attoSecond", "input=500 as", "expectedUnit=SECOND", "expectedSiPrefix=ATTO")
+  @Iteration("zeptoSecond", "input=1 zs", "expectedUnit=SECOND", "expectedSiPrefix=ZEPTO")
+  @Iteration("yoctoSecond", "input=1 ys", "expectedUnit=SECOND", "expectedSiPrefix=YOCTO")
+  @Iteration("kiloLiter", "input=2 kL", "expectedUnit=LITER", "expectedSiPrefix=KILO")
+  @Iteration("milliMole", "input=10 mmol", "expectedUnit=MOLE", "expectedSiPrefix=MILLI")
+  fun testParser_siPrefixedUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess(input)
     assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
       hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAM)
-        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_milliMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 mm")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_centiMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 cm")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.CENTI)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_milliGram_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("500 mg")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(500.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAM)
-        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_megaWatt_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 MW")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.WATT)
-        hasSiPrefixThat().isEqualTo(SiPrefix.MEGA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_gigaHertz_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 GHz")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HERTZ)
-        hasSiPrefixThat().isEqualTo(SiPrefix.GIGA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_nanoSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 ns")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasSiPrefixThat().isEqualTo(SiPrefix.NANO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_microMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 um")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.MICRO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_picoSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 ps")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasSiPrefixThat().isEqualTo(SiPrefix.PICO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_femtoMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 fm")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.FEMTO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_hectoPascal_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1013 hPa")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1013.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PASCAL)
-        hasSiPrefixThat().isEqualTo(SiPrefix.HECTO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_decaMeter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 dam")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.DECA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_deciLiter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 dL")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.DECI)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_teraWatt_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("3 TW")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(3.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.WATT)
-        hasSiPrefixThat().isEqualTo(SiPrefix.TERA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_petaJoule_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 PJ")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasSiPrefixThat().isEqualTo(SiPrefix.PETA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_exaJoule_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 EJ")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasSiPrefixThat().isEqualTo(SiPrefix.EXA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_zettaJoule_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 ZJ")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasSiPrefixThat().isEqualTo(SiPrefix.ZETTA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_yottaJoule_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 YJ")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasSiPrefixThat().isEqualTo(SiPrefix.YOTTA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_attoSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("500 as")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(500.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasSiPrefixThat().isEqualTo(SiPrefix.ATTO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_zeptoSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 zs")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasSiPrefixThat().isEqualTo(SiPrefix.ZEPTO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_yoctoSecond_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 ys")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasSiPrefixThat().isEqualTo(SiPrefix.YOCTO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_kiloLiter_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 kL")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasSiPrefixThat().isEqualTo(SiPrefix.KILO)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_milliMole_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 mmol")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MOLE)
-        hasSiPrefixThat().isEqualTo(SiPrefix.MILLI)
+        hasUnitThat().isEqualTo(Unit.valueOf(expectedUnit))
+        hasSiPrefixThat().isEqualTo(SiPrefix.valueOf(expectedSiPrefix))
         hasExponentThat().isEqualTo(1)
       }
     }
@@ -2265,741 +1602,23 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_meterSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 meter")
+  @Iteration("centSymbol", "input=50 ¢", "expectedUnit=CENT")
+  @Iteration("dollarCapitalized", "input=100 Dollar", "expectedUnit=DOLLAR")
+  @Iteration("dollarsCapitalized", "input=100 Dollars", "expectedUnit=DOLLAR")
+  @Iteration("centCapitalized", "input=50 Cent", "expectedUnit=CENT")
+  @Iteration("centsCapitalized", "input=50 Cents", "expectedUnit=CENT")
+  @Iteration("rupeeCapitalized", "input=100 Rupee", "expectedUnit=RUPEE")
+  @Iteration("rupeesCapitalized", "input=100 Rupees", "expectedUnit=RUPEE")
+  @Iteration("paisaSpelledOut", "input=50 paisa", "expectedUnit=PAISA")
+  @Iteration("paisaCapitalized", "input=50 Paisa", "expectedUnit=PAISA")
+  @Iteration("paiseCapitalized", "input=50 Paise", "expectedUnit=PAISA")
+  @Iteration("usd", "input=100 USD", "expectedUnit=DOLLAR")
+  fun testParser_caseInsensitiveCurrencyAlias_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess(input)
     assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
       hasUnitCountThat().isEqualTo(1)
       hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_metersPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 meters")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.METER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_gramsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("500 grams")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(500.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAM)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_feetSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("6 feet")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(6.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_footSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("1 foot")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(1.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_inchSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("12 inch")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(12.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_inchesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("12 inches")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(12.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_yardSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 yard")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_yardsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 yards")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_jouleSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 joule")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_joulesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 joules")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.JOULE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_wattSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 watt")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.WATT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_wattsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 watts")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.WATT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_ampereSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 ampere")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.AMPERE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_voltSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("220 volt")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(220.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.VOLT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_voltsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("220 volts")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(220.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.VOLT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_ohmSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 ohms")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.OHM)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_newtonSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 newton")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.NEWTON)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_hertzSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 hertz")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HERTZ)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_kelvinSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("300 kelvin")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(300.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.KELVIN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_celsiusSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("25 celsius")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(25.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CELSIUS)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_radianSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("3 radian")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(3.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RADIAN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_radiansPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("3 radians")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(3.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RADIAN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_degreeSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("90 degree")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(90.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DEGREE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_degreesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("90 degrees")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(90.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DEGREE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_secondSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 second")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_secondsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("60 seconds")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(60.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SECOND)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_minuteSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("30 minute")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(30.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MINUTE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_minutesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("30 minutes")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(30.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MINUTE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_hourSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 hour")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HOUR)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_hoursPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 hours")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.HOUR)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_moleSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 mole")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MOLE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_molesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("2 moles")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(2.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.MOLE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_candelaSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("10 candela")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(10.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CANDELA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_ounceSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("8 ounce")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(8.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.OUNCE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_ouncesPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("8 ounces")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(8.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.OUNCE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_grainSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 grain")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAIN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_grainsPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 grains")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.GRAIN)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_literSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 liter")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_litersPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 liters")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_litreSpelling_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 litre")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_litresPlural_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("5 litres")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(5.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.LITER)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_pascalSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 Pa")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PASCAL)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_sqfeet_parsesAsSquareFoot() {
-    val result = parseNumberWithUnitsExpectingSuccess("20 sqfeet")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(20.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_FOOT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_sqinch_parsesAsSquareInch() {
-    val result = parseNumberWithUnitsExpectingSuccess("30 sqinch")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(30.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_INCH)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_sqyard_parsesAsSquareYard() {
-    val result = parseNumberWithUnitsExpectingSuccess("40 sqyard")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(40.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.SQUARE_YARD)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_centSymbol_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 ¢")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CENT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_dollarCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 Dollar")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DOLLAR)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_dollarsCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 Dollars")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DOLLAR)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_centCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 Cent")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CENT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_centsCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 Cents")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.CENT)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_rupeeCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 Rupee")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RUPEE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_rupeesCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 Rupees")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.RUPEE)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_paisaSpelledOut_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 paisa")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PAISA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_paisaCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 Paisa")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PAISA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_paiseCapitalized_parsesCorrectly() {
-    val result = parseNumberWithUnitsExpectingSuccess("50 Paise")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(50.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.PAISA)
-        hasExponentThat().isEqualTo(1)
-      }
-    }
-  }
-
-  @Test
-  fun testParser_usd_parsesAsDollar() {
-    val result = parseNumberWithUnitsExpectingSuccess("100 USD")
-    assertThat(result).apply {
-      hasRealValueThat().isWithin(1e-5).of(100.0)
-      hasUnitCountThat().isEqualTo(1)
-      hasSuffixWithIndexThat(index = 0).apply {
-        hasUnitThat().isEqualTo(Unit.DOLLAR)
+        hasUnitThat().isEqualTo(Unit.valueOf(expectedUnit))
         hasExponentThat().isEqualTo(1)
       }
     }
