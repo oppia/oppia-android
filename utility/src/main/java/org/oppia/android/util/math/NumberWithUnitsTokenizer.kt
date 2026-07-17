@@ -5,11 +5,12 @@ import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 /**
  * A tokenizer for parsing mathematical expressions containing numbers and units.
  *
- * The tokenizer supports whitespace between tokens and can handle various unit formats
- * including both singular and plural forms, abbreviated forms, and different naming conventions.
+ * This class only lexes raw unit text by consuming contiguous valid unit characters and does
+ * not interpret singular/plural forms, abbreviations, or naming conventions. Unit normalization
+ * and interpretation are handled by [NumberWithUnitsParser].
  *
  * See https://docs.google.com/document/d/1PF1LdzBUwNO3tSqucCoMdYpPOWUySI3yS4m_knfLdtE for the
- * various units supported by this tokenizer.
+ * various units supported by the parser.
  */
 class NumberWithUnitsTokenizer private constructor() {
   companion object {
@@ -71,7 +72,7 @@ class NumberWithUnitsTokenizer private constructor() {
      * Tokenizes a number (either integer or real) starting from the current position.
      *
      * This method handles both integers (e.g., "123") and real numbers with decimal points (e.g., "123.45").
-     * Whitespace is allowed between digits and around the decimal point.
+     * Whitespace is allowed around the decimal point, but not between digits.
      *
      * @param chars the peekable iterator positioned at the start of a number
      * @return a [Token.PositiveInteger], [Token.PositiveRealNumber], or [Token.InvalidToken]
@@ -105,7 +106,9 @@ class NumberWithUnitsTokenizer private constructor() {
     }
 
     /**
-     * Parses a sequence of digits into a string representation of an integer.
+     * Parses a contiguous sequence of digits into a string representation of an integer.
+     *
+     * This method stops parsing if it encounters whitespace or any non-digit character.
      *
      * @param chars the peekable iterator to parse from
      * @return the parsed integer as a string, or null if no digits were found
@@ -135,13 +138,15 @@ class NumberWithUnitsTokenizer private constructor() {
     }
 
     /**
-     * Tokenizes a unit or SI prefix starting from the current position.
+     * Tokenizes a raw unit string starting from the current position by consuming contiguous
+     * valid unit characters.
      *
-     * The method supports both singular and plural forms, abbreviated forms,
-     * and different case conventions where applicable.
+     * This method does not interpret unit semantics. Unit normalization (such as handling
+     * singular or plural forms and abbreviations) is performed by [NumberWithUnitsParser].
      *
+     * @param input the original string input being tokenized
      * @param chars the [PeekableIterator] positioned at the start of a unit
-     * @return the appropriate [Token] representing the unit or an [Token.InvalidToken]
+     * @return the appropriate [Token] representing the raw unit text
      */
     private fun tokenizeUnit(input: String, chars: PeekableIterator<Char>): Token {
       val startIndex = chars.getRetrievalCount()
