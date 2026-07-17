@@ -7,6 +7,7 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -385,11 +386,28 @@ class CustomHtmlContentHandler private constructor(
  * if the corresponding value doesn't exist in this attributes map.
  */
 fun Attributes.getJsonStringValue(name: String): String? {
-  // Note that the attribute is actually an encoded JSON string (so it has escaped quotes around
-  // it). Since it's only a source string, the quotes can simply be removed in order to extract
-  // the string value.
-  return getValue(name)?.replace("&quot;", "")
+  val rawValue = getValue(name) ?: return null
+  val unescapedValue = rawValue.unescapeHtml()
+
+  // Some older test and policy tags use unquoted values. Preserve support for those while fully
+  // parsing quoted JSON strings so escaped quotes inside nested HTML aren't discarded.
+  return if (unescapedValue.startsWith('"')) {
+    try {
+      JSONTokener(unescapedValue).nextValue() as? String
+    } catch (e: JSONException) {
+      null
+    }
+  } else {
+    unescapedValue
+  }
 }
+
+private fun String.unescapeHtml(): String =
+  replace("&quot;", "\"")
+    .replace("&#39;", "'")
+    .replace("&lt;", "<")
+    .replace("&gt;", ">")
+    .replace("&amp;", "&")
 
 /**
  * Returns a [JSONObject] value from this [Attributes] object that was encoded as a string, or null

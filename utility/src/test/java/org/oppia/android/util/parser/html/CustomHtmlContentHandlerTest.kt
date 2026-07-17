@@ -299,6 +299,32 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
+  fun testAttributeHelpers_getJsonStringValue_nestedHtml_returnsDecodedHtmlWithAttributes() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(
+      name = "attrib",
+      value = "&quot;&lt;nested-tag text-with-value=\\&quot;&amp;quot;Nested content" +
+        "&amp;quot;\\&quot;&gt;&lt;/nested-tag&gt;&quot;"
+    )
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isEqualTo(
+      "<nested-tag text-with-value=\"&quot;Nested content&quot;\"></nested-tag>"
+    )
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_malformedQuotedJson_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;unterminated")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
   fun testAttributeHelpers_getJsonObjectValue_valueMissing_returnsNull() {
     val attributes = AttributesImpl()
 

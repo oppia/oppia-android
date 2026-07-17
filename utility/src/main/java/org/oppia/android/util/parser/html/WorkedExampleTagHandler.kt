@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser.html
 
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
@@ -24,11 +25,15 @@ class WorkedExampleTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
     customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
   ) {
-    val question = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_QUESTION_ATTRIBUTE)
-    val answer = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE)
+    val questionHtml = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_QUESTION_ATTRIBUTE)
+    val answerHtml = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE)
 
-    if (question != null && answer != null) {
-      output.replace(openIndex, closeIndex, "$question\n$answer")
+    if (!questionHtml.isNullOrBlank() && !answerHtml.isNullOrBlank()) {
+      val parsedWorkedExample = SpannableStringBuilder()
+        .append(customHtmlParser.parseHtml(questionHtml))
+        .append('\n')
+        .append(customHtmlParser.parseHtml(answerHtml))
+      output.replace(openIndex, closeIndex, parsedWorkedExample)
     } else {
       consoleLogger.e("WorkedExampleTagHandler", "Failed to parse worked example tag")
     }
