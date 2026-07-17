@@ -1854,6 +1854,18 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
+  fun testParser_unitWithMissingExponentFollowedByCompoundUnit_returnsError() {
+    val error = parseNumberWithUnitsExpectingFailure("10 kg^Nm")
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
+  }
+
+  @Test
+  fun testParser_unitWithMissingExponentFollowedByUnit_returnsError() {
+    val error = parseNumberWithUnitsExpectingFailure("10 kg^N")
+    assertThat(error).isInstanceOf(MissingExponentError::class.java)
+  }
+
+  @Test
   fun testParser_twoUnitsMultiplied_parsesCorrectly() {
     val result = parseNumberWithUnitsExpectingSuccess("10 kg m")
     assertThat(result).apply {

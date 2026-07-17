@@ -277,30 +277,34 @@ class NumberWithUnitsParser private constructor(
    * is applied only to the last unit in the decomposed list.
    */
   private fun parseUnitsFromNextToken(): NumberWithUnitsParsingResult<List<NumberUnitExpression>> {
+    val initialRetrievalCount = tokens.getRetrievalCount()
     val singleResult = parseUnitWithExponent()
     if (singleResult !is NumberWithUnitsParsingResult.Failure) {
       return singleResult.map { listOf(it) }
     }
 
-    // Single-unit parsing failed. Try decomposing compound unit tokens.
-    val token = tokens.peek()
-    if (token is Token.Unit) {
-      val decomposed = tryDecomposeCompoundUnit(token.unit, token)
-      if (decomposed != null && decomposed.size > 1) {
-        tokens.next() // Consume the compound token.
+    // Single-unit parsing failed. Try decomposing compound unit tokens
+    // only if the single-unit parse didn't consume any tokens.
+    if (tokens.getRetrievalCount() == initialRetrievalCount) {
+      val token = tokens.peek()
+      if (token is Token.Unit) {
+        val decomposed = tryDecomposeCompoundUnit(token.unit, token)
+        if (decomposed != null && decomposed.size > 1) {
+          tokens.next() // Consume the compound token.
 
-        // Look ahead for an exponent extension following the compound token.
-        // If present, apply the exponent only to the last unit in the decomposed list.
-        return parseExponentExtension().map { exponentMultiplier ->
-          if (exponentMultiplier != 1) {
-            val mutableDecomposed = decomposed.toMutableList()
-            val lastUnit = mutableDecomposed.last()
-            mutableDecomposed[mutableDecomposed.lastIndex] = lastUnit.toBuilder()
-              .setExponent(lastUnit.exponent * exponentMultiplier)
-              .build()
-            mutableDecomposed
-          } else {
-            decomposed
+          // Look ahead for an exponent extension following the compound token.
+          // If present, apply the exponent only to the last unit in the decomposed list.
+          return parseExponentExtension().map { exponentMultiplier ->
+            if (exponentMultiplier != 1) {
+              val mutableDecomposed = decomposed.toMutableList()
+              val lastUnit = mutableDecomposed.last()
+              mutableDecomposed[mutableDecomposed.lastIndex] = lastUnit.toBuilder()
+                .setExponent(lastUnit.exponent * exponentMultiplier)
+                .build()
+              mutableDecomposed
+            } else {
+              decomposed
+            }
           }
         }
       }
