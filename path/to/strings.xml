@@ -1,0 +1,36 @@
+# complete code
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Screen/Toolbar Titles -->
+    <!-- AdministratorControlActivity -->
+    <string name="administrator_controls_activity_title">Administrator Controls</string>
+    <string name="administrator_controls_activity_app_version_item">App Version</string>
+    <string name="administrator_controls_activity_account_actions_label">Account Actions</string>
+    <string name="administrator_controls_activity_logout_item_text">Logout</string>
+    <!-- AppContentActivity -->
+    <string name="app_content_activity_title">App Content</string>
+    <string name="app_content_activity_profile_management_label">Profile Management</string>
+    <string name="app_content_activity_account_actions_label">Account Actions</string>
+    <string name="app_content_activity_logout_item_text">Logout</string>
+    <!-- ProfileResetPinActivity -->
+    <string name="profile_reset_pin_activity_title">Profile Reset Pin</string>
+    <string name="profile_reset_pin_activity_pin_label">Pin</string>
+    <string name="profile_reset_pin_activity_reset_label">Reset</string>
+    <!-- ProfileAndDeviceIdActivity -->
+    <string name="profile_and_device_id_activity_title">Profile and Device ID</string>
+    <string name="profile_and_device_id_activity_profile_label">Profile</string>
+    <string name="profile_and_device_id_activity_device_id_label">Device ID</string>
+    <!-- GeneralAvailabilityUpgradeNoticeDialogFragment -->
+    <string name="general_availability_upgrade_notice_dialog_fragment_title">General Availability Upgrade Notice</string>
+    <string name="general_availability_upgrade_notice_dialog_fragment_message">This is a message.</string>
+    <!-- ProgressDatabaseFullDialog -->
+    <string name="progress_database_full_dialog_title">Progress Database Full</string>
+    <string name="progress_database_full_dialog_message">This is a message.</string>
+    <!-- Shared Strings -->
+    <string name="reading_text_size_item_text_small">Small</string>
+    <string name="reading_text_size_item_medium">Medium</string>
+    <!-- Test Strings -->
+    <string name="test_file_name_view_component_type">Test File Name View Component Type</string>
+    <!-- Dialogs -->
+    <string name="dialog_name_view_component_type">Dialog Name View Component Type</string>
+</resources>

@@ -1,0 +1,8 @@
+# complete code
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LearnerAnalyticsActivity -->
+    <string name="learner_analytics_activity_title">Learner Analytics</string>
+    <string name="learner_analytics_activity_profile_label">Profile</string>
+    <string name="learner_analytics_activity_device_id_label">Device ID</string>
+</resources>

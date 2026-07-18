@@ -1,0 +1,9 @@
+# complete code
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AdministratorControlActivity -->
+    <string name="administrator_controls_activity_title">Administrator Controls</string>
+    <string name="administrator_controls_activity_app_version_item">App Version</string>
+    <string name="administrator_controls_activity_account_actions_label">Account Actions</string>
+    <string name="administrator_controls_activity_logout_item_text">Logout</string>
+</resources>

@@ -1,0 +1,9 @@
+# complete code
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AppVersionActivity -->
+    <string name="app_version_activity_title">App Version</string>
+    <string name="app_version_activity_app_version_item">App Version</string>
+    <string name="app_version_activity_account_actions_label">Account Actions</string>
+    <string name="app_version_activity_logout_item_text">Logout</string>
+</resources>
