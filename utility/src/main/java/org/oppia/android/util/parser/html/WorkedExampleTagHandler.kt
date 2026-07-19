@@ -1,7 +1,11 @@
 package org.oppia.android.util.parser.html
 
+import android.graphics.Typeface
 import android.text.Editable
+import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.style.LeadingMarginSpan
+import android.text.style.StyleSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
@@ -15,7 +19,10 @@ private const val CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE = "answer-with-value"
  * A custom tag handler for supporting worked examples parsed with [CustomHtmlContentHandler].
  */
 class WorkedExampleTagHandler(
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val questionLabel: String,
+  private val answerLabel: String,
+  private val leadingMarginPx: Int
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -29,13 +36,55 @@ class WorkedExampleTagHandler(
     val answerHtml = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE)
 
     if (!questionHtml.isNullOrBlank() && !answerHtml.isNullOrBlank()) {
-      val parsedWorkedExample = SpannableStringBuilder()
-        .append(customHtmlParser.parseHtml(questionHtml))
+      val parsedQuestion = customHtmlParser.parseHtml(questionHtml).trimNewlines()
+      val parsedAnswer = customHtmlParser.parseHtml(answerHtml).trimNewlines()
+      if (parsedQuestion.isBlank() || parsedAnswer.isBlank()) {
+        consoleLogger.e("WorkedExampleTagHandler", "Failed to parse worked example tag")
+        return
+      }
+      val parsedWorkedExample = SpannableStringBuilder().apply {
+        if (openIndex > 0 && output[openIndex - 1] != '\n') append('\n')
+      }
+      val workedExampleStart = parsedWorkedExample.length
+      parsedWorkedExample
+        .appendBoldLabel(questionLabel)
         .append('\n')
-        .append(customHtmlParser.parseHtml(answerHtml))
+        .append(parsedQuestion)
+        .append("\n\n")
+        .appendBoldLabel(answerLabel)
+        .append('\n')
+        .append(parsedAnswer)
+        .append('\n')
+        .apply {
+          setSpan(
+            LeadingMarginSpan.Standard(leadingMarginPx),
+            /* start= */ workedExampleStart,
+            /* end= */ length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+          )
+        }
       output.replace(openIndex, closeIndex, parsedWorkedExample)
     } else {
       consoleLogger.e("WorkedExampleTagHandler", "Failed to parse worked example tag")
     }
+  }
+
+  private fun SpannableStringBuilder.appendBoldLabel(label: String) = apply {
+    val labelStart = length
+    append(label)
+    setSpan(
+      StyleSpan(Typeface.BOLD),
+      labelStart,
+      length,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+  }
+
+  private fun Spannable.trimNewlines(): CharSequence {
+    val text = toString()
+    val firstContentIndex = text.indexOfFirst { it != '\n' }
+    if (firstContentIndex < 0) return ""
+    val lastContentIndex = text.indexOfLast { it != '\n' } + 1
+    return subSequence(firstContentIndex, lastContentIndex)
   }
 }

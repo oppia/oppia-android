@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
+import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -56,6 +57,11 @@ private const val WORKED_EXAMPLE_WITH_EMPTY_ANSWER_MARKUP =
     "question-with-value=\"&amp;quot;A question&amp;quot;\" " +
     "answer-with-value=\"&amp;quot;&amp;quot;\"></oppia-noninteractive-workedexample>"
 
+private const val WORKED_EXAMPLE_WITH_VISUALLY_EMPTY_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;&amp;lt;p&amp;gt;&amp;lt;/p&amp;gt;&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
 private const val WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP =
   "<oppia-noninteractive-workedexample " +
     "question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Is 1 &amp;amp;lt; 2?" +
@@ -80,6 +86,9 @@ private const val WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP =
 
 private const val CUSTOM_NESTED_TAG = "nested-tag"
 private const val CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE = "text-with-value"
+private const val QUESTION_LABEL = "Question:"
+private const val ANSWER_LABEL = "Answer:"
+private const val WORKED_EXAMPLE_LEADING_MARGIN_PX = 16
 
 /** Tests for [WorkedExampleTagHandler]. */
 @RunWith(AndroidJUnit4::class)
@@ -95,7 +104,12 @@ class WorkedExampleTagHandlerTest {
     setUpTestApplicationComponent()
     fakeImageRetriever = FakeImageRetriever()
     tagHandlersWithWorkedExampleSupport = mapOf(
-      CUSTOM_WORKED_EXAMPLE_TAG to WorkedExampleTagHandler(consoleLogger),
+      CUSTOM_WORKED_EXAMPLE_TAG to WorkedExampleTagHandler(
+        consoleLogger,
+        questionLabel = QUESTION_LABEL,
+        answerLabel = ANSWER_LABEL,
+        leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX
+      ),
       CUSTOM_NESTED_TAG to NestedTagHandler()
     )
   }
@@ -112,8 +126,32 @@ class WorkedExampleTagHandlerTest {
     val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
 
     assertThat(parsedHtml.toString()).isEqualTo(
-      "What is a fraction?\nA fraction represents part of a whole."
+      "Question:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole.\n"
     )
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExample_addsBoldQuestionAndAnswerLabels() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
+
+    val boldSpans = parsedHtml.getSpansFromWholeString(StyleSpan::class)
+      .filter { it.style == Typeface.BOLD }
+    assertThat(boldSpans.map { parsedHtml.getTextForSpan(it) })
+      .containsExactly(QUESTION_LABEL, ANSWER_LABEL)
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExample_indentsWholeWorkedExample() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
+
+    val leadingMarginSpan =
+      parsedHtml.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(parsedHtml.getSpanStart(leadingMarginSpan)).isEqualTo(0)
+    assertThat(parsedHtml.getSpanEnd(leadingMarginSpan)).isEqualTo(parsedHtml.length)
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ true))
+      .isEqualTo(WORKED_EXAMPLE_LEADING_MARGIN_PX)
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ false))
+      .isEqualTo(WORKED_EXAMPLE_LEADING_MARGIN_PX)
   }
 
   @Test
@@ -145,12 +183,26 @@ class WorkedExampleTagHandlerTest {
   }
 
   @Test
+  fun testParseHtml_withWorkedExampleVisuallyEmptyQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_VISUALLY_EMPTY_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
   fun testParseHtml_withWorkedExampleBetweenText_preservesSurroundingText() {
     val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_MARKUP After")
 
     assertThat(parsedHtml.toString()).isEqualTo(
-      "Before What is a fraction?\nA fraction represents part of a whole. After"
+      "Before \nQuestion:\nWhat is a fraction?\n\nAnswer:\n" +
+        "A fraction represents part of a whole.\nAfter"
     )
+    val leadingMarginSpan =
+      parsedHtml.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(parsedHtml.getSpanStart(leadingMarginSpan))
+      .isEqualTo(parsedHtml.toString().indexOf(QUESTION_LABEL))
+    assertThat(parsedHtml.getSpanEnd(leadingMarginSpan))
+      .isEqualTo(parsedHtml.toString().indexOf("After"))
   }
 
   @Test
@@ -158,12 +210,14 @@ class WorkedExampleTagHandlerTest {
     val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP)
 
     assertThat(parsedHtml.toString()).isEqualTo(
-      "Is 1 < 2?\nYes, one is less than two."
+      "Question:\nIs 1 < 2?\n\nAnswer:\nYes, one is less than two.\n"
     )
     val styleSpans = parsedHtml.getSpansFromWholeString(StyleSpan::class)
     assertThat(styleSpans.map { it.style })
-      .containsExactly(Typeface.BOLD, Typeface.ITALIC)
-    val boldSpan = styleSpans.single { it.style == Typeface.BOLD }
+      .containsExactly(Typeface.BOLD, Typeface.BOLD, Typeface.BOLD, Typeface.ITALIC)
+    val boldSpan = styleSpans.single {
+      it.style == Typeface.BOLD && parsedHtml.getTextForSpan(it) == "Is 1 < 2?"
+    }
     val italicSpan = styleSpans.single { it.style == Typeface.ITALIC }
     assertThat(parsedHtml.getTextForSpan(boldSpan)).isEqualTo("Is 1 < 2?")
     assertThat(parsedHtml.getTextForSpan(italicSpan)).isEqualTo("Yes, one is less than two.")
@@ -173,8 +227,9 @@ class WorkedExampleTagHandlerTest {
   fun testParseHtml_withNestedBlockHtmlBetweenText_parsesWithoutLiteralMarkup() {
     val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP After")
 
-    assertThat(parsedHtml.toString()).contains("lorem ipsum")
-    assertThat(parsedHtml.toString()).contains("A worked answer")
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Before \nQuestion:\nlorem ipsum\n\nAnswer:\nA worked answer\nAfter"
+    )
     assertThat(parsedHtml.toString()).doesNotContain("&lt;")
     assertThat(parsedHtml.toString()).doesNotContain("<p>")
     assertThat(parsedHtml.toString()).doesNotContain("<pre>")
@@ -184,7 +239,9 @@ class WorkedExampleTagHandlerTest {
   fun testParseHtml_withNestedCustomTag_processesNestedTagHandler() {
     val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP)
 
-    assertThat(parsedHtml.toString()).isEqualTo("Nested custom content\nNested answer")
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question:\nNested custom content\n\nAnswer:\nNested answer\n"
+    )
   }
 
   private fun parseHtml(html: String) =
