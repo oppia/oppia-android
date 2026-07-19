@@ -160,7 +160,10 @@ class MathTagHandler(
     }
   }
 
-  override fun getContentDescription(attributes: Attributes): String {
+  override fun getContentDescription(
+    attributes: Attributes,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ): String {
     val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     return mathVal?.let { "Math content $it" } ?: ""
   }

@@ -23,7 +23,8 @@ class WorkedExampleTagHandler(
   private val questionLabel: String,
   private val answerLabel: String,
   private val leadingMarginPx: Int
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler,
+  CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -67,6 +68,39 @@ class WorkedExampleTagHandler(
     } else {
       consoleLogger.e("WorkedExampleTagHandler", "Failed to parse worked example tag")
     }
+  }
+
+  override fun handleTagForContentDescription(
+    attributes: Attributes,
+    openIndex: Int,
+    closeIndex: Int,
+    output: Editable,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ) {
+    createContentDescription(attributes, customHtmlParser)?.let { contentDescription ->
+      output.replace(openIndex, closeIndex, contentDescription)
+    }
+  }
+
+  override fun getContentDescription(
+    attributes: Attributes,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ): String? = createContentDescription(attributes, customHtmlParser)
+
+  private fun createContentDescription(
+    attributes: Attributes,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ): String? {
+    val questionHtml = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_QUESTION_ATTRIBUTE)
+    val answerHtml = attributes.getJsonStringValue(CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE)
+    if (questionHtml.isNullOrBlank() || answerHtml.isNullOrBlank()) return null
+
+    val questionDescription =
+      customHtmlParser.parseHtmlForContentDescription(questionHtml).trim()
+    val answerDescription = customHtmlParser.parseHtmlForContentDescription(answerHtml).trim()
+    return if (questionDescription.isNotBlank() && answerDescription.isNotBlank()) {
+      "$questionLabel $questionDescription\n$answerLabel $answerDescription"
+    } else null
   }
 
   private fun SpannableStringBuilder.appendBoldLabel(label: String) = apply {

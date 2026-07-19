@@ -59,7 +59,10 @@ class ConceptCardTagHandler(
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 
-  override fun getContentDescription(attributes: Attributes): String? {
+  override fun getContentDescription(
+    attributes: Attributes,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ): String? {
     val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
     return if (!skillId.isNullOrBlank()) {
       "$skillId concept card"

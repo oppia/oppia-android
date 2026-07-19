@@ -325,6 +325,16 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
+  fun testAttributeHelpers_getJsonStringValue_quotedJsonWithTrailingContent_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;value&quot;trailing content")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
   fun testAttributeHelpers_getJsonObjectValue_valueMissing_returnsNull() {
     val attributes = AttributesImpl()
 
@@ -567,7 +577,10 @@ class CustomHtmlContentHandlerTest {
       customHtmlParser: CustomHtmlParser
     ) {}
 
-    override fun getContentDescription(attributes: Attributes): String {
+    override fun getContentDescription(
+      attributes: Attributes,
+      customHtmlParser: CustomHtmlParser
+    ): String {
       return contentDesc
     }
   }

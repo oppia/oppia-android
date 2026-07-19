@@ -84,7 +84,10 @@ class PolicyPageTagHandler(
     fun onPolicyPageLinkClicked(policyType: PolicyType)
   }
 
-  override fun getContentDescription(attributes: Attributes): String {
+  override fun getContentDescription(
+    attributes: Attributes,
+    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+  ): String {
     return when (attributes.getJsonStringValue("link")) {
       TERMS_OF_SERVICE_PAGE, PRIVACY_POLICY_PAGE -> "Link to "
       else -> ""

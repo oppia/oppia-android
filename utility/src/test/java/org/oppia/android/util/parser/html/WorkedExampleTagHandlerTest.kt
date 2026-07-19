@@ -244,10 +244,84 @@ class WorkedExampleTagHandlerTest {
     )
   }
 
+  @Test
+  fun testGetContentDescription_withWorkedExample_readsQuestionBeforeAnswer() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedHtml_returnsTextWithoutMarkup() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: Is 1 < 2?\nAnswer: Yes, one is less than two."
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedBlockHtml_preservesLogicalReadingOrder() {
+    val contentDescription =
+      getContentDescription(WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: lorem ipsum\nAnswer: A worked answer"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedCustomTag_includesNestedDescription() {
+    val contentDescription =
+      getContentDescription(WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: Nested custom content\nAnswer: Nested answer"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withWorkedExampleBetweenText_preservesReadingOrder() {
+    val contentDescription = getContentDescription("Before $WORKED_EXAMPLE_MARKUP After")
+
+    assertThat(contentDescription).isEqualTo(
+      "Before Question: What is a fraction?\n" +
+        "Answer: A fraction represents part of a whole. After"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withMissingQuestion_doesNotAddDescription() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_WITHOUT_QUESTION_MARKUP)
+
+    assertThat(contentDescription).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_nullImageRetrieverWithWorkedExample_returnsContentDescription() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = WORKED_EXAMPLE_MARKUP,
+      imageRetriever = null,
+      customTagHandlers = tagHandlersWithWorkedExampleSupport
+    )
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
   private fun parseHtml(html: String) =
     CustomHtmlContentHandler.fromHtml(
       html = html,
       imageRetriever = fakeImageRetriever,
+      customTagHandlers = tagHandlersWithWorkedExampleSupport
+    )
+
+  private fun getContentDescription(html: String) =
+    CustomHtmlContentHandler.getContentDescription(
+      html = html,
       customTagHandlers = tagHandlersWithWorkedExampleSupport
     )
 
@@ -314,7 +388,9 @@ class WorkedExampleTagHandlerTest {
     ) = throw UnsupportedOperationException("Math is not expected in these tests.")
   }
 
-  private class NestedTagHandler : CustomTagHandler {
+  private class NestedTagHandler :
+    CustomTagHandler,
+    CustomHtmlContentHandler.ContentDescriptionProvider {
     override fun handleTag(
       attributes: Attributes,
       openIndex: Int,
@@ -327,5 +403,10 @@ class WorkedExampleTagHandlerTest {
         output.replace(openIndex, closeIndex, text)
       }
     }
+
+    override fun getContentDescription(
+      attributes: Attributes,
+      customHtmlParser: CustomHtmlParser
+    ): String? = attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)
   }
 }

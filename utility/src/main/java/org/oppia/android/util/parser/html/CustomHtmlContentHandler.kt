@@ -142,7 +142,7 @@ class CustomHtmlContentHandler private constructor(
 
         val handler = customTagHandlers.getValue(tag)
         if (handler is ContentDescriptionProvider) {
-          val contentDesc = handler.getContentDescription(attributes)
+          val contentDesc = handler.getContentDescription(attributes, customHtmlParser)
           if (contentDesc != null) {
             tagContentDescriptions[openTagIndex] = contentDesc
           }
@@ -201,6 +201,9 @@ class CustomHtmlContentHandler private constructor(
   interface CustomHtmlParser {
     /** Returns a [Spannable] parsed from [html]. */
     fun parseHtml(html: String): Spannable
+
+    /** Returns a content description parsed from [html]. */
+    fun parseHtmlForContentDescription(html: String): String
   }
 
   /** Handler interface for a custom tag and its attributes. */
@@ -270,8 +273,13 @@ class CustomHtmlContentHandler private constructor(
     /**
      * Returns a content description string for this tag based on its attributes,
      * or null if no description is available.
+     *
+     * @param customHtmlParser a parser for nested HTML content
      */
-    fun getContentDescription(attributes: Attributes): String?
+    fun getContentDescription(
+      attributes: Attributes,
+      customHtmlParser: CustomHtmlParser
+    ): String?
   }
 
   /**
@@ -376,6 +384,10 @@ class CustomHtmlContentHandler private constructor(
         override fun parseHtml(html: String): Spannable {
           return fromHtml(html, imageRetriever, customTagHandlers)
         }
+
+        override fun parseHtmlForContentDescription(html: String): String {
+          return getContentDescription(html, customTagHandlers)
+        }
       }
     }
   }
@@ -393,7 +405,9 @@ fun Attributes.getJsonStringValue(name: String): String? {
   // parsing quoted JSON strings so escaped quotes inside nested HTML aren't discarded.
   return if (unescapedValue.startsWith('"')) {
     try {
-      JSONTokener(unescapedValue).nextValue() as? String
+      val jsonTokener = JSONTokener(unescapedValue)
+      val parsedValue = jsonTokener.nextValue() as? String
+      parsedValue?.takeIf { jsonTokener.nextClean() == '\u0000' }
     } catch (e: JSONException) {
       null
     }
