@@ -646,9 +646,49 @@ class GenerateChangelogsTest {
     assertThat(expectedPath.exists()).isTrue()
   }
 
+
+  @Test
+  fun testGenerateChangelogs_ghPrCreate_usesCorrectBranchName() {
+    writeVersionBzl(major = 0, minor = 18)
+    var capturedGhArgs: List<String> = emptyList()
+    setupStandardGitHandlers(mergeBaseSha = "deadbeef")
+    fakeExecutor.registerHandler("gh") { _, args, out, _ ->
+      capturedGhArgs = args
+      out.println("https://github.com/oppia/oppia-android/pull/9999")
+      0
+    }
+
+    generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+
+    assertThat(capturedGhArgs).contains("--head")
+    val headIndex = capturedGhArgs.indexOf("--head")
+    assertThat(capturedGhArgs[headIndex + 1]).isEqualTo("automated/changelog-0.17")
+  }
+
+  @Test
+  fun testGenerateChangelogs_ghPrCreate_bodyContainsVersionAndCommitRange() {
+    writeVersionBzl(major = 0, minor = 18)
+    var capturedGhArgs: List<String> = emptyList()
+    setupStandardGitHandlers(mergeBaseSha = "deadbeef")
+    fakeExecutor.registerHandler("gh") { _, args, out, _ ->
+      capturedGhArgs = args
+      out.println("https://github.com/oppia/oppia-android/pull/9999")
+      0
+    }
+
+    generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+
+    val bodyIndex = capturedGhArgs.indexOf("--body")
+    assertThat(bodyIndex).isGreaterThan(-1)
+    val prBody = capturedGhArgs[bodyIndex + 1]
+    assertThat(prBody).contains("0.17")
+    assertThat(prBody).contains("deadbeef")
+  }
+
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
+
 
   private fun writeVersionBzl(major: Int, minor: Int) {
     tempFolder.newFile("version.bzl").writeText(
