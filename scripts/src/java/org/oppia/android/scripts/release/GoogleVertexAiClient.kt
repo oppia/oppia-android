@@ -29,7 +29,8 @@ class GoogleVertexAiClient(
   private val gcpProject: String,
   private val location: String,
   private val modelId: String,
-  private val gcpAccessToken: String
+  private val gcpAccessToken: String,
+  private val apiBaseUrl: String = DEFAULT_API_BASE_URL
 ) : VertexAiClient {
 
   private val httpClient by lazy { OkHttpClient.Builder().build() }
@@ -136,8 +137,8 @@ class GoogleVertexAiClient(
   )
 
   companion object {
-    /** The Vertex AI REST API base URL. Exposed as a `var` so tests can override it. */
-    var apiBaseUrl = "https://us-central1-aiplatform.googleapis.com"
+    /** Default Vertex AI REST API base URL used in production. */
+    const val DEFAULT_API_BASE_URL = "https://us-central1-aiplatform.googleapis.com"
 
     private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
   }

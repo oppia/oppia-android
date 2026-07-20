@@ -51,11 +51,15 @@ fun main(args: Array<String>) {
   val vertexModel = args[3]
   val gcpAccessToken = args[4]
 
-  if (args.size == 6) GoogleVertexAiClient.apiBaseUrl = args[5]
+  val overrideApiBaseUrl = if (args.size == 6) args[5] else null
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
-    val vertexAiClient = GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken)
+    val vertexAiClient = if (overrideApiBaseUrl != null) {
+      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken, overrideApiBaseUrl)
+    } else {
+      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken)
+    }
     generateChangelogs(
       workspaceRoot = File(workspaceRoot),
       commandExecutor = commandExecutor,
