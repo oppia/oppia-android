@@ -646,7 +646,6 @@ class GenerateChangelogsTest {
     assertThat(expectedPath.exists()).isTrue()
   }
 
-
   @Test
   fun testGenerateChangelogs_ghPrCreate_usesCorrectBranchName() {
     writeVersionBzl(major = 0, minor = 18)
@@ -688,8 +687,6 @@ class GenerateChangelogsTest {
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
-
-
   private fun writeVersionBzl(major: Int, minor: Int) {
     tempFolder.newFile("version.bzl").writeText(
       "MAJOR_VERSION = $major\nMINOR_VERSION = $minor\n"
