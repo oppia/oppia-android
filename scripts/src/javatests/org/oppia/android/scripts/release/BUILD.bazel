@@ -15,6 +15,16 @@ kt_jvm_library(
 )
 
 kt_jvm_test(
+    name = "FakeVertexAiClientTest",
+    srcs = ["FakeVertexAiClientTest.kt"],
+    deps = [
+        ":fake_vertex_ai_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "AppFlavorTest",
     srcs = ["AppFlavorTest.kt"],
     deps = [
