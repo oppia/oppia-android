@@ -87,6 +87,8 @@ class WorkedExampleTagHandler(
     customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
   ): String? = createContentDescription(attributes, customHtmlParser)
 
+  override fun shouldHandleNestedHtml(): Boolean = false
+
   private fun createContentDescription(
     attributes: Attributes,
     customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser

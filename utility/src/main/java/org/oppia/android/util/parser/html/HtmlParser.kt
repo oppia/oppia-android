@@ -13,12 +13,23 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Qualifier
+
+/** Qualifies the app string resource ID for the worked example question label. */
+@Qualifier
+annotation class WorkedExampleQuestionLabelStringId
+
+/** Qualifies the app string resource ID for the worked example answer label. */
+@Qualifier
+annotation class WorkedExampleAnswerLabelStringId
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -30,6 +41,9 @@ class HtmlParser private constructor(
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
   private val cacheLatexRendering: Boolean,
+  private val enableWorkedExamples: Boolean,
+  private val workedExampleQuestionLabelStringId: Int,
+  private val workedExampleAnswerLabelStringId: Int,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
   displayLocale: OppiaLocale.DisplayLocale
@@ -57,6 +71,24 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
+  private val workedExampleTagHandler by lazy {
+    WorkedExampleTagHandler(
+      consoleLogger,
+      questionLabel = displayLocale.run {
+        context.resources.getStringInLocale(workedExampleQuestionLabelStringId)
+      },
+      answerLabel = displayLocale.run {
+        context.resources.getStringInLocale(workedExampleAnswerLabelStringId)
+      },
+      leadingMarginPx = context.resources.getDimensionPixelSize(
+        R.dimen.worked_example_leading_margin
+      )
+    )
+  }
+  private val noOpWorkedExampleTagHandler = object :
+    CustomHtmlContentHandler.CustomTagHandler {
+    override fun shouldHandleNestedHtml(): Boolean = false
+  }
 
   private val isRtl by lazy {
     displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -174,6 +206,8 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
+    handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] =
+      if (enableWorkedExamples) workedExampleTagHandler else noOpWorkedExampleTagHandler
     return handlersMap
   }
 
@@ -227,7 +261,12 @@ class HtmlParser private constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
     private val context: Context,
-    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>
+    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>,
+    @EnableWorkedExamples private val enableWorkedExamples: PlatformParameterValue<Boolean>,
+    @WorkedExampleQuestionLabelStringId
+    private val workedExampleQuestionLabelStringId: Int,
+    @WorkedExampleAnswerLabelStringId
+    private val workedExampleAnswerLabelStringId: Int
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -251,6 +290,9 @@ class HtmlParser private constructor(
         imageCenterAlign = imageCenterAlign,
         consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
+        enableWorkedExamples = enableWorkedExamples.value,
+        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
+        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = customOppiaTagActionListener,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale
@@ -274,6 +316,9 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
+        enableWorkedExamples = enableWorkedExamples.value,
+        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
+        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale
@@ -299,6 +344,9 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger = consoleLogger,
         cacheLatexRendering = false,
+        enableWorkedExamples = enableWorkedExamples.value,
+        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
+        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = policyOppiaTagActionListener,
         displayLocale = displayLocale

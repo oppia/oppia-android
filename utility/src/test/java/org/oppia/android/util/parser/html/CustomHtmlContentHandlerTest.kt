@@ -400,6 +400,36 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_withAdjacentEmptyTags_preservesAllDescriptions() {
+    val firstHandler = FakeContentDescriptionTagHandler("First ")
+    val secondHandler = FakeContentDescriptionTagHandler("Second ")
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<first-tag></first-tag><second-tag></second-tag>",
+      customTagHandlers = mapOf(
+        "first-tag" to firstHandler,
+        "second-tag" to secondHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("First Second")
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedEmptyTags_preservesOpeningOrder() {
+    val outerHandler = FakeContentDescriptionTagHandler("Outer ")
+    val innerHandler = FakeContentDescriptionTagHandler("Inner ")
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<outer-tag><inner-tag></inner-tag></outer-tag>",
+      customTagHandlers = mapOf(
+        "outer-tag" to outerHandler,
+        "inner-tag" to innerHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Outer Inner")
+  }
+
+  @Test
   fun testGetContentDescription_whitespaceHandling_normalizedCorrectly() {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =

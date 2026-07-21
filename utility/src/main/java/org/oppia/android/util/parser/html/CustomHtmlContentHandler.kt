@@ -28,7 +28,8 @@ class CustomHtmlContentHandler private constructor(
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
   private val contentDescriptionBuilder = StringBuilder()
-  private val tagContentDescriptions = mutableMapOf<Int, String>()
+  private val tagContentDescriptions = mutableListOf<TagContentDescription>()
+  private var nextContentDescriptionTagOrder = 0
   private var isInListItem = false
   private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
   // Indicates if a newline should be added before the next text content for block elements.
@@ -72,7 +73,13 @@ class CustomHtmlContentHandler private constructor(
   override fun startElement(uri: String?, localName: String?, qName: String?, atts: Attributes?) {
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
-    currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
+    val trackedTag = TrackedTag(
+      tag = checkNotNull(localName),
+      attributes = checkNotNull(atts),
+      contentDescriptionOpenTagIndex = contentDescriptionBuilder.length,
+      contentDescriptionTagOrder = nextContentDescriptionTagOrder++
+    )
+    currentTrackedTag = trackedTag
     val tagName = qName ?: localName
     if (tagName in blockTags) {
       pendingNewline = true
@@ -81,7 +88,11 @@ class CustomHtmlContentHandler private constructor(
     if (tagName == "a") {
       val href = atts.getValue("href")
       if (href != null) {
-        tagContentDescriptions[contentDescriptionBuilder.length] = "$href "
+        tagContentDescriptions += TagContentDescription(
+          trackedTag.contentDescriptionOpenTagIndex,
+          trackedTag.contentDescriptionTagOrder,
+          "$href "
+        )
       }
     }
     originalContentHandler?.startElement(uri, localName, qName, atts)
@@ -124,7 +135,11 @@ class CustomHtmlContentHandler private constructor(
             "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
           }
           currentTrackedCustomTags += TrackedCustomTag(
-            localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
+            tag = localCurrentTrackedTag.tag,
+            attributes = localCurrentTrackedTag.attributes,
+            openTagIndex = output.length,
+            contentDescriptionOpenTagIndex = localCurrentTrackedTag.contentDescriptionOpenTagIndex,
+            contentDescriptionTagOrder = localCurrentTrackedTag.contentDescriptionTagOrder
           )
           customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
@@ -138,13 +153,16 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
-        val (_, attributes, openTagIndex) = currentTrackedCustomTag
+        val (_, attributes, openTagIndex, contentDescriptionOpenTagIndex, tagOrder) =
+          currentTrackedCustomTag
 
         val handler = customTagHandlers.getValue(tag)
         if (handler is ContentDescriptionProvider) {
           val contentDesc = handler.getContentDescription(attributes, customHtmlParser)
           if (contentDesc != null) {
-            tagContentDescriptions[openTagIndex] = contentDesc
+            tagContentDescriptions += TagContentDescription(
+              contentDescriptionOpenTagIndex, tagOrder, contentDesc
+            )
           }
         }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
@@ -164,11 +182,25 @@ class CustomHtmlContentHandler private constructor(
     }
   }
 
-  private data class TrackedTag(val tag: String, val attributes: Attributes)
+  private data class TrackedTag(
+    val tag: String,
+    val attributes: Attributes,
+    val contentDescriptionOpenTagIndex: Int,
+    val contentDescriptionTagOrder: Int
+  )
+
   private data class TrackedCustomTag(
     val tag: String,
     val attributes: Attributes,
-    val openTagIndex: Int
+    val openTagIndex: Int,
+    val contentDescriptionOpenTagIndex: Int,
+    val contentDescriptionTagOrder: Int
+  )
+
+  private data class TagContentDescription(
+    val index: Int,
+    val tagOrder: Int,
+    val description: String
   )
 
   /**
@@ -178,7 +210,9 @@ class CustomHtmlContentHandler private constructor(
   private fun getContentDescription(): String {
     val rawDesc = buildString {
       var lastIndex = 0
-      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
+      tagContentDescriptions.sortedWith(
+        compareBy<TagContentDescription> { it.index }.thenBy { it.tagOrder }
+      ).forEach { (index, _, description) ->
         if (index > lastIndex && index <= contentDescriptionBuilder.length) {
           append(
             contentDescriptionBuilder.substring(
@@ -266,6 +300,9 @@ class CustomHtmlContentHandler private constructor(
      * @param indentation The zero-based indentation level of this item.
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+
+    /** Returns whether this handler should be available when parsing nested HTML content. */
+    fun shouldHandleNestedHtml(): Boolean = true
   }
 
   /** Handler Interface for tag handlers that provide content descriptions. */
@@ -380,13 +417,16 @@ class CustomHtmlContentHandler private constructor(
       imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>
     ): CustomHtmlParser where T : Html.ImageGetter, T : ImageRetriever {
+      val nestedCustomTagHandlers = customTagHandlers.filterValues {
+        it.shouldHandleNestedHtml()
+      }
       return object : CustomHtmlParser {
         override fun parseHtml(html: String): Spannable {
-          return fromHtml(html, imageRetriever, customTagHandlers)
+          return fromHtml(html, imageRetriever, nestedCustomTagHandlers)
         }
 
         override fun parseHtmlForContentDescription(html: String): String {
-          return getContentDescription(html, customTagHandlers)
+          return getContentDescription(html, nestedCustomTagHandlers)
         }
       }
     }

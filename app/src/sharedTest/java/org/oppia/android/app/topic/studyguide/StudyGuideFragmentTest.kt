@@ -196,6 +196,7 @@ class StudyGuideFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableWorkedExamples(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -271,6 +272,29 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("test_skill_id_0 concept card"))))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_testTopicSubtopic1_secondSectionShowsOnlyValidWorkedExample() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("Question:\nWhat is one half as a fraction?"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("Answer:\nOne half is 1/2."))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("This answer should be ignored.")))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("This question should be ignored.")))))
     }
   }
 

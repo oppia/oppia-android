@@ -169,6 +169,7 @@ class HtmlParserTest {
   @After
   fun tearDown() {
     Intents.release()
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -684,6 +685,75 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withWorkedExample_flagDisabled_ignoresWorkedExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+
+    assertThat(htmlResult.toString().trim()).isEmpty()
+    assertThat(textView.contentDescription.toString()).isEmpty()
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_flagEnabled_rendersWorkedExample() {
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    setUpTestApplicationComponentWithWorkedExamplesEnabled()
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = displayLocale
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+
+    assertThat(htmlResult.toString()).isEqualTo(
+      "Question:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole."
+    )
+    assertThat(textView.contentDescription.toString()).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
+  // TODO(#3840): Make this test work on Espresso.
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testHtmlContent_withWorkedExample_rtlLocale_preservesLogicalReadingOrder() {
+    setUpTestApplicationComponentWithWorkedExamplesEnabled()
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+    )
+    val textView = TextView(context)
+    ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(htmlResult.toString().indexOf("Question:"))
+      .isLessThan(htmlResult.toString().indexOf("Answer:"))
+    assertThat(textView.contentDescription.toString().indexOf("Question:"))
+      .isLessThan(textView.contentDescription.toString().indexOf("Answer:"))
+  }
+
+  @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create(
       gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
@@ -1136,6 +1206,15 @@ class HtmlParserTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpTestApplicationComponentWithWorkedExamplesEnabled() {
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceEnableWorkedExamples(true)
+    val component = DaggerHtmlParserTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build() as TestApplicationComponent
+    component.inject(this)
+  }
+
   private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
     ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
       scenario.onActivity { it.setContentView(R.layout.test_html_parser_activity) }
@@ -1252,6 +1331,12 @@ class HtmlParserTest {
   }
 
   private companion object {
+
+    private const val WORKED_EXAMPLE_MARKUP =
+      "<oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;What is a fraction?&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;A fraction represents part of a whole.&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample>"
 
     private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
       usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS

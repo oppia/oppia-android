@@ -12,4 +12,5 @@
   <dimen name="maximum_content_item_padding">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
   <dimen name="maximum_image_size">200dp</dimen>
+  <dimen name="worked_example_leading_margin">16dp</dimen>
 </resources>

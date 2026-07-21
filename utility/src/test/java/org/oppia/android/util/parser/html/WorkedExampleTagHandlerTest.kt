@@ -3,11 +3,14 @@ package org.oppia.android.util.parser.html
 import android.app.Application
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
+import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -15,6 +18,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,6 +65,14 @@ private const val WORKED_EXAMPLE_WITH_VISUALLY_EMPTY_QUESTION_MARKUP =
   "<oppia-noninteractive-workedexample " +
     "question-with-value=\"&amp;quot;&amp;lt;p&amp;gt;&amp;lt;/p&amp;gt;&amp;quot;\" " +
     "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_MALFORMED_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;Malformed question\" " +
+    "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_MALFORMED_ANSWER_MARKUP =
+  "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;A question&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;Malformed answer\"></oppia-noninteractive-workedexample>"
 
 private const val WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP =
   "<oppia-noninteractive-workedexample " +
@@ -110,7 +122,21 @@ class WorkedExampleTagHandlerTest {
         answerLabel = ANSWER_LABEL,
         leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX
       ),
-      CUSTOM_NESTED_TAG to NestedTagHandler()
+      CUSTOM_NESTED_TAG to NestedTagHandler(),
+      CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
+      CUSTOM_MATH_TAG to MathTagHandler(
+        consoleLogger,
+        ApplicationProvider.getApplicationContext<Application>().assets,
+        lineHeight = 16f,
+        cacheLatexRendering = true,
+        application = ApplicationProvider.getApplicationContext()
+      ),
+      CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+        object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+          override fun onConceptCardLinkClicked(view: View, skillId: String) {}
+        },
+        consoleLogger
+      )
     )
   }
 
@@ -190,6 +216,20 @@ class WorkedExampleTagHandlerTest {
   }
 
   @Test
+  fun testParseHtml_withWorkedExampleMalformedQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_MALFORMED_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleMalformedAnswer_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_MALFORMED_ANSWER_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
   fun testParseHtml_withWorkedExampleBetweenText_preservesSurroundingText() {
     val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_MARKUP After")
 
@@ -241,6 +281,135 @@ class WorkedExampleTagHandlerTest {
 
     assertThat(parsedHtml.toString()).isEqualTo(
       "Question:\nNested custom content\n\nAnswer:\nNested answer\n"
+    )
+  }
+
+  @Test
+  fun testParseHtml_withNestedImage_processesImageHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """<oppia-noninteractive-image filepath-with-value="test.png" """ +
+          """alt-with-value="A fraction diagram" caption-with-value="Fraction diagram">""" +
+          "</oppia-noninteractive-image>",
+      answerHtml = "The diagram shows one half."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("A fraction diagram")
+    assertThat(parsedHtml.toString()).contains("Fraction diagram")
+    assertThat(fakeImageRetriever.loadedImageFilenames).containsExactly("test.png")
+  }
+
+  @Test
+  fun testParseHtml_withNestedMath_processesMathHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """Compute <oppia-noninteractive-math render-type="inline" """ +
+          """math_content-with-value="{&quot;raw_latex&quot;:""" +
+          """&quot;\\frac{1}{2}&quot;}"></oppia-noninteractive-math>.""",
+      answerHtml = "The result is one half."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("Compute ")
+    assertThat(parsedHtml.toString()).contains("\uFFFC")
+    assertThat(fakeImageRetriever.loadedMathExpressions).containsExactly("\\frac{1}{2}")
+  }
+
+  @Test
+  fun testParseHtml_withNestedConceptCard_processesConceptCardHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """Review <oppia-noninteractive-skillreview """ +
+          """skill_id-with-value="fraction_skill" text-with-value="fraction concept card">""" +
+          "</oppia-noninteractive-skillreview>.",
+      answerHtml = "Then solve the problem."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("fraction concept card")
+    assertThat(parsedHtml.getSpansFromWholeString(ClickableSpan::class)).hasLength(1)
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedCustomHandlers_includesAllDescriptions() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """<oppia-noninteractive-image alt-with-value="A fraction diagram">""" +
+          "</oppia-noninteractive-image> " +
+          """<oppia-noninteractive-math math_content-with-value="{""" +
+          """&quot;raw_latex&quot;:&quot;\\frac{1}{2}&quot;}">""" +
+          "</oppia-noninteractive-math> " +
+          """<oppia-noninteractive-skillreview skill_id-with-value="fraction_skill">""" +
+          "</oppia-noninteractive-skillreview>",
+      answerHtml = "These are the supporting details."
+    )
+
+    val contentDescription = getContentDescription(workedExampleMarkup)
+
+    assertThat(contentDescription).contains("Image illustrating A fraction diagram")
+    assertThat(contentDescription).contains("Math content")
+    assertThat(contentDescription).contains("fraction_skill concept card")
+    assertThat(contentDescription).contains("Answer: These are the supporting details.")
+  }
+
+  @Test
+  fun testParseHtml_withNestedWorkedExample_ignoresNestedWorkedExample() {
+    val nestedWorkedExample = createWorkedExampleMarkup(
+      questionHtml = "Nested question",
+      answerHtml = "Nested answer"
+    )
+    val outerWorkedExample = createWorkedExampleMarkup(
+      questionHtml = nestedWorkedExample,
+      answerHtml = "Outer answer"
+    )
+
+    val parsedHtml = parseHtml(outerWorkedExample)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withNoOpWorkedExampleHandler_ignoresWorkedExample() {
+    val noOpWorkedExampleHandler = object : CustomTagHandler {
+      override fun shouldHandleNestedHtml(): Boolean = false
+    }
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = WORKED_EXAMPLE_MARKUP,
+      imageRetriever = fakeImageRetriever,
+      customTagHandlers = mapOf(CUSTOM_WORKED_EXAMPLE_TAG to noOpWorkedExampleHandler)
+    )
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withRtlLabels_preservesLogicalQuestionThenAnswerOrder() {
+    val rtlTagHandlers = mapOf(
+      CUSTOM_WORKED_EXAMPLE_TAG to WorkedExampleTagHandler(
+        consoleLogger,
+        questionLabel = "السؤال:",
+        answerLabel = "الإجابة:",
+        leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX
+      )
+    )
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "ما هو الكسر؟",
+      answerHtml = "الكسر هو جزء من الكل."
+    )
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = workedExampleMarkup,
+      imageRetriever = fakeImageRetriever,
+      customTagHandlers = rtlTagHandlers
+    )
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "السؤال:\nما هو الكسر؟\n\nالإجابة:\nالكسر هو جزء من الكل.\n"
     )
   }
 
@@ -325,6 +494,21 @@ class WorkedExampleTagHandlerTest {
       customTagHandlers = tagHandlersWithWorkedExampleSupport
     )
 
+  private fun createWorkedExampleMarkup(questionHtml: String, answerHtml: String): String {
+    return "<$CUSTOM_WORKED_EXAMPLE_TAG " +
+      "question-with-value=\"${questionHtml.encodeAsWorkedExampleAttribute()}\" " +
+      "answer-with-value=\"${answerHtml.encodeAsWorkedExampleAttribute()}\">" +
+      "</$CUSTOM_WORKED_EXAMPLE_TAG>"
+  }
+
+  private fun String.encodeAsWorkedExampleAttribute(): String {
+    return JSONObject.quote(this)
+      .replace("&", "&amp;amp;")
+      .replace("\"", "&amp;quot;")
+      .replace("<", "&amp;lt;")
+      .replace(">", "&amp;gt;")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
@@ -373,19 +557,28 @@ class WorkedExampleTagHandlerTest {
   private class FakeImageRetriever :
     Html.ImageGetter,
     CustomHtmlContentHandler.ImageRetriever {
+    val loadedImageFilenames = mutableListOf<String>()
+    val loadedMathExpressions = mutableListOf<String>()
+
     override fun getDrawable(source: String?) = null
 
     override fun loadDrawable(
       filename: String,
       type: CustomHtmlContentHandler.ImageRetriever.Type
-    ) = throw UnsupportedOperationException("Images are not expected in these tests.")
+    ): ColorDrawable {
+      loadedImageFilenames += filename
+      return ColorDrawable().apply { setBounds(0, 0, 10, 10) }
+    }
 
     override fun loadMathDrawable(
       rawLatex: String,
       lineHeight: Float,
       equationColor: Int,
       type: CustomHtmlContentHandler.ImageRetriever.Type
-    ) = throw UnsupportedOperationException("Math is not expected in these tests.")
+    ): ColorDrawable {
+      loadedMathExpressions += rawLatex
+      return ColorDrawable().apply { setBounds(0, 0, 10, 10) }
+    }
   }
 
   private class NestedTagHandler :
