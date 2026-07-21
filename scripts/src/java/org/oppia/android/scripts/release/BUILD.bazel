@@ -112,8 +112,6 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
-
-
 kt_jvm_library(
     name = "google_vertex_ai_client",
     srcs = ["GoogleVertexAiClient.kt"],
