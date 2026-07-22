@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
 import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -298,6 +299,7 @@ class WorkedExampleTagHandlerTest {
 
     assertThat(parsedHtml.toString()).contains("A fraction diagram")
     assertThat(parsedHtml.toString()).contains("Fraction diagram")
+    assertThat(parsedHtml.getSpansFromWholeString(ImageSpan::class)).hasLength(1)
     assertThat(fakeImageRetriever.loadedImageFilenames).containsExactly("test.png")
   }
 

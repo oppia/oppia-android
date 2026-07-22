@@ -234,7 +234,7 @@ class HtmlParser private constructor(
     // ensure the image's dimensions are measured). Note that this needs to be a visible character
     // to remedy the bug.
     // TODO(#1796): Find a better workaround for this bug.
-    return if (spannable.toString().all { it == '\uFFFC' }) {
+    return if (spannable.isNotEmpty() && spannable.toString().all { it == '\uFFFC' }) {
       spannable.insert(/* where= */ 0, " ").append(" ")
     } else spannable
   }

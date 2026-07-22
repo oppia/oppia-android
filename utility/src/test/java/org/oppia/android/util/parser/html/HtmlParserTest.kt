@@ -218,22 +218,20 @@ class HtmlParserTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     runWithLaunchedActivity {
-      val (textView, htmlResult) = onActivityWithResult {
+      val htmlResult = onActivityWithResult {
         val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-        val htmlResult = htmlParser.parseOppiaHtml(
+        htmlParser.parseOppiaHtml(
           "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
             "</oppia-noninteractive-image>",
           textView
         )
-        return@onActivityWithResult textView to htmlResult
       }
 
-      // Verify that the image span is 0 as image support is not enabled.
+      // Verify that no image span is added since image support isn't enabled.
       val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
       assertThat(imageSpans).hasLength(0)
-      // The two strings aren't equal because this html parser does not support Oppia image tags.
-      assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
-      onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
+      assertThat(htmlResult.toString()).isEmpty()
+      onView(withId(R.id.test_html_content_text_view)).check(matches(withText("")))
     }
   }
 
@@ -697,8 +695,29 @@ class HtmlParserTest {
 
     val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
 
-    assertThat(htmlResult.toString().trim()).isEmpty()
+    assertThat(htmlResult.toString()).isEmpty()
     assertThat(textView.contentDescription.toString()).isEmpty()
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_flagDisabled_preservesSurroundingContent() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      "Content before.$WORKED_EXAMPLE_MARKUP Content after.",
+      textView
+    )
+
+    assertThat(htmlResult.toString()).isEqualTo("Content before. Content after.")
+    assertThat(textView.contentDescription.toString())
+      .isEqualTo("Content before. Content after.")
   }
 
   @Test
