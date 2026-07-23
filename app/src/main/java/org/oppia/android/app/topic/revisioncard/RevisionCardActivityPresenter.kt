@@ -18,8 +18,8 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -91,7 +91,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       EdgeToEdgeHelper.applyToAppBarLayout(
         activity,
         revisionCardToolbar,
-        R.color.component_color_shared_activity_status_bar_color
+        R.color.component_color_revision_card_activity_status_bar_color
       )
     }
     activity.supportActionBar?.setDisplayShowTitleEnabled(false)

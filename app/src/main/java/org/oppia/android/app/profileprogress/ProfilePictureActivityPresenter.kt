@@ -13,7 +13,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -66,7 +66,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
       EdgeToEdgeHelper.applyToAppBarLayout(
         activity,
         toolbar,
-        R.color.component_color_shared_activity_status_bar_color
+        R.color.component_color_shared_profile_status_bar_color
       )
     }
   }
