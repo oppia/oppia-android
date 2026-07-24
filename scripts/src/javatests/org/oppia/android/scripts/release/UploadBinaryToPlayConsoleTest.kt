@@ -499,7 +499,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Frozen version code preservation (#6330)
+  // Frozen version code preservation
   // ---------------------------------------------------------------------------
 
   @Test
