@@ -6,11 +6,6 @@
   - when this PR is merged.
   -->
 
-## Disclosure of LLM Usage
-<!-- Please answer the following two questions. -->
-- **Did you use AI/LLMs when working on this PR?** Type `Yes` or `No`.
-- **If yes, describe the extent AI was used:** e.g. brainstorming, debugging, writing code, writing tests, reviewing code, etc. See https://github.com/oppia/oppia-android/pull/6062 for an example.
-
 ## Essential Checklist
 <!-- Please tick the relevant boxes by putting an "x" in them. -->
 - [ ] The PR title starts with "Fix #bugnum: " (If this PR fixes part of an issue, prefix the title with "Fix part of #bugnum: ...".)
@@ -21,6 +16,11 @@
 - [ ] The PR is made from a branch that's **not** called "develop" and is up-to-date with "develop".
 - [ ] The PR is **assigned** to the appropriate reviewers ([reference](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#clarification-regarding-assignees-and-reviewers-section)).
 
+## Disclosure of LLM Usage
+<!-- Please answer the following two questions. -->
+- **Did you use AI/LLMs when working on this PR?** Type `Yes` or `No`.
+- **If yes, describe the extent AI was used:** e.g. brainstorming, debugging, writing code, writing tests, reviewing code, etc. See https://github.com/oppia/oppia-android/pull/6062 for an example.
+  
 ## For UI-specific PRs only
 <!-- Delete these section if this PR does not include UI-related changes. -->
 If your PR includes UI-related changes, then:
