@@ -419,7 +419,7 @@ class UpdateRolloutFractionTest {
     createSharedChangelog(testVersion, notes = "Release notes.")
 
     updateRollout(
-    fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
     )
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
@@ -435,10 +435,12 @@ class UpdateRolloutFractionTest {
       listOf(PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutFraction = 250))
     )
     createSharedChangelog(
-    testVersion, notes = "Release notes."
+      testVersion, notes = "Release notes."
     )
 
-    updateRollout(fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 500)
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 500
+    )
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")

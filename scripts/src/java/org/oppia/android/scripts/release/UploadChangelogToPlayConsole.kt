@@ -220,7 +220,7 @@ private fun uploadChangelogToTrack(
   println("  Edit session: $editId")
 
   client.setTrackRelease(
-  packageName, editId, track, versionCode, rolloutFraction, newNotes, frozenVersionCodes
+    packageName, editId, track, versionCode, rolloutFraction, newNotes, frozenVersionCodes
   )
   println("  Track release notes updated.")
 
