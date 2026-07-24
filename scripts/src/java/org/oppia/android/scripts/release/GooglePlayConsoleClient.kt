@@ -141,8 +141,12 @@ class GooglePlayConsoleClient(
     // Pass each preserved release through completely unmodified so the Play Console API does not
     // treat it as changed. versionCodes, status, userFraction, and releaseNotes are all copied
     // exactly as fetched, ensuring the diff Play Console sees is scoped only to the new release.
+    // The new upload's version code is stripped from any preserved release that contains it (e.g.
+    // if the release was previously live and is now being replaced); the entry is kept as long as
+    // it still has at least one remaining version code.
     val frozenEntries = preservedReleases
-      .filter { release -> release.versionCodes.none { it == versionCode } }
+      .map { release -> release.copy(versionCodes = release.versionCodes.filter { it != versionCode }) }
+      .filter { release -> release.versionCodes.isNotEmpty() }
       .map { release ->
         TrackUpdateRequest.ReleaseEntry(
           versionCodes = release.versionCodes.map { it.toString() },
