@@ -145,7 +145,11 @@ class GooglePlayConsoleClient(
     // if the release was previously live and is now being replaced); the entry is kept as long as
     // it still has at least one remaining version code.
     val frozenEntries = preservedReleases
-      .map { release -> release.copy(versionCodes = release.versionCodes.filter { it != versionCode }) }
+      .map { release ->
+        release.copy(
+          versionCodes = release.versionCodes.filter { it != versionCode }
+        )
+      }
       .filter { release -> release.versionCodes.isNotEmpty() }
       .map { release ->
         TrackUpdateRequest.ReleaseEntry(
