@@ -78,7 +78,12 @@ class FakePlayConsoleClient : PlayConsoleClient {
     maybeFailCall("setTrackRelease")
     trackUpdates.add(
       TrackUpdate(
-        packageName, editId, track, versionCode, rolloutFraction, releaseNotes, preservedVersionCodes
+        packageName,
+        editId, track,
+        versionCode,
+        rolloutFraction,
+        releaseNotes,
+        preservedVersionCodes
       )
     )
   }
