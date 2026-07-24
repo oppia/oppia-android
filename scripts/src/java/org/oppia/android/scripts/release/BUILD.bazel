@@ -50,7 +50,11 @@ kt_jvm_library(
     testonly = True,
     srcs = ["FakePlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_test_visibility"],
-    deps = [":play_console_client"],
+    deps = [
+        ":google_play_console_client",
+        ":play_console_client",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
 )
 
 kt_jvm_library(
