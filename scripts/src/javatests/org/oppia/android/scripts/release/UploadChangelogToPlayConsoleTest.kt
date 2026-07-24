@@ -548,6 +548,50 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
+  // Frozen version code preservation (#6330)
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_alphaTrack_preservesFrozenKitKatVersionCodeInUpdate() {
+    // vc 16 is permanently frozen on alpha; it must be re-included in every setTrackRelease call
+    // so the Play Console API does not deactivate it during the changelog-only update.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(listOf(201L), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(16L), "completed")
+      )
+    )
+    createSharedChangelog(testVersion, notes = "Updated release notes.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
+
+    assertThat(fakeClient.trackUpdates).hasSize(1)
+    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
+    assertThat(fakeClient.trackUpdates[0].preservedVersionCodes).containsExactly(16L)
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_betaTrack_doesNotIncludeAnyFrozenVersionCodes() {
+    // Beta has no frozen builds; the update should not include any preserved version codes.
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(PlayConsoleClient.TrackRelease(listOf(201L), "completed"))
+    )
+    createSharedChangelog(testVersion, notes = "Updated release notes.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
+    )
+
+    assertThat(fakeClient.trackUpdates).hasSize(1)
+    assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
+    assertThat(fakeClient.trackUpdates[0].preservedVersionCodes).isEmpty()
+  }
+
+  // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
 

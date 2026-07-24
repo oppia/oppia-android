@@ -52,6 +52,12 @@ interface PlayConsoleClient {
    *
    * Must be called after [uploadAab] and before [commitEdit].
    *
+   * If [preservedVersionCodes] is non-empty, each listed version code is included as an additional
+   * `completed` entry in the track update request alongside the new release. This is required for
+   * OS-level frozen builds that must remain active on the track indefinitely (see #6258, #6330):
+   * the Play Developer API replaces the entire track contents on each `tracks.update` call, so any
+   * version code not explicitly included in the request is deactivated.
+   *
    * @param packageName the application package name
    * @param editId the active edit session ID returned by [createEdit]
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
@@ -60,6 +66,8 @@ interface PlayConsoleClient {
    *     1000 means full rollout (status: "completed") and any value below 1000 produces a staged
    *     rollout (status: "inProgress"). For example: 250 = 25%, 334 = 33.4%, 1000 = 100%.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
+   * @param preservedVersionCodes version codes of frozen OS-specific builds that must be kept
+   *     alive on the track alongside [versionCode]; defaults to empty (no preserved builds)
    */
   fun setTrackRelease(
     packageName: String,
@@ -67,7 +75,8 @@ interface PlayConsoleClient {
     track: String,
     versionCode: Long,
     rolloutFraction: Int,
-    releaseNotes: Map<String, String>
+    releaseNotes: Map<String, String>,
+    preservedVersionCodes: Set<Long> = emptySet()
   )
 
   /**

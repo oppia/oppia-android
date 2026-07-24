@@ -125,22 +125,35 @@ class GooglePlayConsoleClient(
     track: String,
     versionCode: Long,
     rolloutFraction: Int,
-    releaseNotes: Map<String, String>
+    releaseNotes: Map<String, String>,
+    preservedVersionCodes: Set<Long>
   ) {
     val fraction = rolloutFraction / 1000.0
     val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
+    val newRelease = TrackUpdateRequest.ReleaseEntry(
+      versionCodes = listOf(versionCode.toString()),
+      status = status,
+      releaseNotes = releaseNotes.map { (lang, text) ->
+        TrackUpdateRequest.LocalizedText(language = lang, text = text)
+      },
+      userFraction = if (rolloutFraction < 1000) fraction else null
+    )
+    // Each frozen version code is re-included as a separate completed entry so the Play Developer
+    // API does not deactivate it. The API replaces the entire track contents on each update, so
+    // any version code not included in the request would be silently dropped.
+    val frozenEntries = preservedVersionCodes
+      .filter { it != versionCode }
+      .map { frozenVc ->
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = listOf(frozenVc.toString()),
+          status = "completed",
+          releaseNotes = emptyList(),
+          userFraction = null
+        )
+      }
     val trackUpdate = TrackUpdateRequest(
       track = track,
-      releases = listOf(
-        TrackUpdateRequest.ReleaseEntry(
-          versionCodes = listOf(versionCode.toString()),
-          status = status,
-          releaseNotes = releaseNotes.map { (lang, text) ->
-            TrackUpdateRequest.LocalizedText(language = lang, text = text)
-          },
-          userFraction = if (rolloutFraction < 1000) fraction else null
-        )
-      )
+      releases = listOf(newRelease) + frozenEntries
     )
     val response = playConsoleService
       .updateTrack(packageName, editId, track, authorizationBearer, trackUpdate)

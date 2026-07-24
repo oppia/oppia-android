@@ -499,6 +499,46 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
+  // Frozen version code preservation (#6330)
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testRunUpload_alphaTrack_includesFrozenKitKatVersionCodeInTrackUpdateRequest() {
+    // The alpha track has a permanently frozen KitKat build (vc 16) that must be re-included in
+    // every setTrackRelease call. Without it the Play Console API would deactivate vc 16.
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    enqueueSuccessfulUpload(versionCode = 202L)
+
+    runMain(aab.absolutePath, track = "alpha")
+
+    // Request 8 (index 7) is the PUT setTrackRelease for the alpha track.
+    skipRequests(7)
+    val setTrackBody = server.takeRequest().body.readUtf8()
+    assertThat(setTrackBody).contains("\"16\"")
+    assertThat(setTrackBody).contains("\"202\"")
+    // The frozen entry must be marked completed (no userFraction), while the new release has its
+    // own status. Verify both version codes appear in the releases list.
+    assertThat(setTrackBody).contains("\"releases\"")
+  }
+
+  @Test
+  fun testRunUpload_betaTrack_doesNotIncludeAnyFrozenVersionCodesInTrackUpdateRequest() {
+    // Beta currently has no frozen builds; the setTrackRelease body should only contain the new vc.
+    val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    enqueueSuccessfulUpload(versionCode = 202L)
+
+    runMain(aab.absolutePath, track = "beta")
+
+    // Request 8 (index 7) is the PUT setTrackRelease for the beta track.
+    skipRequests(7)
+    val setTrackBody = server.takeRequest().body.readUtf8()
+    assertThat(setTrackBody).contains("\"202\"")
+    assertThat(setTrackBody).doesNotContain("\"16\"")
+  }
+
+  // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
 

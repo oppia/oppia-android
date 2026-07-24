@@ -98,7 +98,10 @@ fun maybeUploadUpdatedChangelogs(
     // releases are already at 100% so fall back to 1000.
     val rolloutFraction =
       releases.firstOrNull { it.status == "inProgress" }?.rolloutFraction ?: 1000
-    uploadChangelogToTrack(client, packageName, track, versionCode, rolloutFraction, notes)
+    uploadChangelogToTrack(
+      client, packageName, track, versionCode, rolloutFraction, notes,
+      FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+    )
     updatedCount++
   }
 
@@ -177,9 +180,12 @@ private fun detectChangelogDiff(localNotes: String, deployedNotes: String): Bool
  * Uploads updated release notes to a live Play Console track within a new edit session.
  *
  * Creates a new edit, updates the release notes for [versionCode] on [track], and commits the
- * edit. This is a *changelog-only* update — the binary itself is not changed. The caller must
+ * edit. This is a *changelog-only* update -- the binary itself is not changed. The caller must
  * pass the existing [rolloutFraction] from the live release to avoid inadvertently altering the
  * staged rollout percentage.
+ *
+ * Any [frozenVersionCodes] are re-included as separate completed entries so the Play Developer
+ * API does not deactivate them during the track update (see #6330).
  *
  * @param client the [PlayConsoleClient] used for all API calls
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
@@ -189,6 +195,7 @@ private fun detectChangelogDiff(localNotes: String, deployedNotes: String): Bool
  *     through unchanged so the rollout percentage is preserved)
  * @param newNotes map of BCP-47 language codes to updated release notes text (max 500 chars each);
  *     must contain at least an `"en-US"` entry
+ * @param frozenVersionCodes version codes of OS-specific frozen builds to preserve on the track
  */
 private fun uploadChangelogToTrack(
   client: PlayConsoleClient,
@@ -196,7 +203,8 @@ private fun uploadChangelogToTrack(
   track: String,
   versionCode: Long,
   rolloutFraction: Int,
-  newNotes: Map<String, String>
+  newNotes: Map<String, String>,
+  frozenVersionCodes: Set<Long> = emptySet()
 ) {
   require(newNotes.containsKey("en-US")) {
     "newNotes must contain an 'en-US' entry. Got keys: ${newNotes.keys}"
@@ -211,7 +219,7 @@ private fun uploadChangelogToTrack(
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, newNotes)
+  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, newNotes, frozenVersionCodes)
   println("  Track release notes updated.")
 
   client.commitEdit(packageName, editId)
@@ -265,3 +273,22 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 
 /** Relative path within the workspace root where changelog files are stored. */
 private const val CHANGELOGS_DIR = "config/changelogs"
+
+/**
+ * Version codes that must be preserved alongside any new release on their respective tracks.
+ *
+ * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
+ * version code not explicitly included in the request would be silently deactivated. These are
+ * OS-level frozen builds released once to support a specific minimum API level and kept active
+ * indefinitely so devices on that API level continue to receive the app.
+ *
+ * Currently frozen:
+ * - alpha vc 16: KitKat (API 16) build, frozen permanently per #6258.
+ *
+ * When a new API level is deprecated and its final build must be frozen, add its version code to
+ * the appropriate track(s) here. Keep this map in sync with the equivalent constants in
+ * [UploadBinaryToPlayConsole] and [UpdateRolloutFraction].
+ */
+private val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
+  "alpha" to setOf(16L)
+)

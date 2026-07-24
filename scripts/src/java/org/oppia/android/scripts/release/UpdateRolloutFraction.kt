@@ -126,7 +126,10 @@ fun updateRollout(
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
+  client.setTrackRelease(
+    packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
+    FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  )
   println("  Rollout fraction updated.")
 
   client.commitEdit(packageName, editId)
@@ -182,3 +185,22 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 
 /** Relative path within the workspace root where changelog files are stored. */
 private const val CHANGELOGS_DIR = "config/changelogs"
+
+/**
+ * Version codes that must be preserved alongside any new release on their respective tracks.
+ *
+ * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
+ * version code not explicitly included in the request would be silently deactivated. These are
+ * OS-level frozen builds released once to support a specific minimum API level and kept active
+ * indefinitely so devices on that API level continue to receive the app.
+ *
+ * Currently frozen:
+ * - alpha vc 16: KitKat (API 16) build, frozen permanently per #6258.
+ *
+ * When a new API level is deprecated and its final build must be frozen, add its version code to
+ * the appropriate track(s) here. Keep this map in sync with the equivalent constants in
+ * [UploadBinaryToPlayConsole] and [UploadChangelogToPlayConsole].
+ */
+private val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
+  "alpha" to setOf(16L)
+)
