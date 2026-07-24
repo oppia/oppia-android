@@ -34,7 +34,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController

@@ -8,7 +8,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.FaqSingleActivityBinding
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge

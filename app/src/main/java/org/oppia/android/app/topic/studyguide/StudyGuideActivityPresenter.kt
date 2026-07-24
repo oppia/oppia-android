@@ -19,6 +19,7 @@ import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.topic.revisioncard.ReturnToTopicClickListener
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -27,6 +28,8 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
@@ -40,6 +43,8 @@ class StudyGuideActivityPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   @Inject lateinit var accessibilityService: AccessibilityService
 
@@ -58,6 +63,9 @@ class StudyGuideActivityPresenter @Inject constructor(
     subtopicIndex: Int,
     subtopicListSize: Int
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.study_guide_activity)
     this.profileId = profileId
     this.topicId = topicId
@@ -73,6 +81,13 @@ class StudyGuideActivityPresenter @Inject constructor(
     studyGuideToolbar = activity.findViewById(R.id.study_guide_toolbar)
     studyGuideToolbarTitle = activity.findViewById(R.id.study_guide_toolbar_title)
     activity.setSupportActionBar(studyGuideToolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        studyGuideToolbar,
+        R.color.component_color_revision_card_activity_status_bar_color
+      )
+    }
     activity.supportActionBar?.setDisplayShowTitleEnabled(false)
 
     studyGuideToolbar.setNavigationOnClickListener {

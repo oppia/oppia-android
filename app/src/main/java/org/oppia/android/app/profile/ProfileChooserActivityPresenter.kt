@@ -8,7 +8,7 @@ import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge

@@ -7,7 +7,7 @@ import org.oppia.android.app.databinding.databinding.ProfileResetPinActivityBind
 import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge

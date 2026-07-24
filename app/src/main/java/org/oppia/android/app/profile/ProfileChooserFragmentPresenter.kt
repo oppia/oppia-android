@@ -30,7 +30,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController

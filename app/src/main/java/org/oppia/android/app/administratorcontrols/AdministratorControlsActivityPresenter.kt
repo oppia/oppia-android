@@ -16,7 +16,7 @@ import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue

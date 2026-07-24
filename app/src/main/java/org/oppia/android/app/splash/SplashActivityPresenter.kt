@@ -37,7 +37,7 @@ import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController

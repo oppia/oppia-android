@@ -33,8 +33,8 @@ import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.utility.EdgeToEdgeHelper
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
