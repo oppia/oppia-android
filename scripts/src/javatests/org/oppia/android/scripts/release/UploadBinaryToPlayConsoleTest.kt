@@ -512,7 +512,8 @@ class UploadBinaryToPlayConsoleTest {
     // the production code can pass it through unmodified to the setTrackRelease PUT.
     enqueueSuccessfulUpload(
       versionCode = 202L,
-      frozenTrackBody = """{"releases":[{"versionCodes":["16"],"status":"completed"}]}"""
+      frozenTrackBody =
+        """{"releases":[{"versionCodes":["16"],"status":"completed"}]}"""
     )
 
     runMain(aab.absolutePath, track = "alpha")
