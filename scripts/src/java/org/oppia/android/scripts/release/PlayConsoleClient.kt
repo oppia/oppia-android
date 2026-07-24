@@ -76,7 +76,7 @@ interface PlayConsoleClient {
     versionCode: Long,
     rolloutFraction: Int,
     releaseNotes: Map<String, String>,
-    preservedVersionCodes: Set<Long> = emptySet()
+    preservedReleases: List<TrackRelease> = emptyList()
   )
 
   /**
@@ -98,10 +98,13 @@ interface PlayConsoleClient {
    * @property rolloutFraction the staged rollout fraction as an integer in [0, 1000], where
    *     1000 = 100%. Null for [status] values that do not have a rollout percentage
    *     ("completed", "halted", "draft").
+   * @property releaseNotes map of BCP-47 language codes to release notes text, as returned by
+   *     the Play Developer API. Empty if no release notes were set for this release.
    */
   data class TrackRelease(
     val versionCodes: List<Long>,
     val status: String,
-    val rolloutFraction: Int? = null
+    val rolloutFraction: Int? = null,
+    val releaseNotes: Map<String, String> = emptyMap()
   )
 }

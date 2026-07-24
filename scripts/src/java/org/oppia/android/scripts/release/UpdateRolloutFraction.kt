@@ -121,14 +121,20 @@ fun updateRollout(
     )
   }
 
-  println("Updating rollout fraction to ${rolloutFraction / 10.0}%...")
+  // Filter the already-fetched live releases to find frozen OS-specific builds and pass them
+  // through completely unmodified (preserving versionCodes, status, userFraction, and
+  // releaseNotes) so the Play Console API does not treat them as changed.
+  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  val frozenReleases = liveReleases.filter { release ->
+    release.versionCodes.any { it in frozenVersionCodes }
+  }
 
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
   client.setTrackRelease(
     packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
-    FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+    frozenReleases
   )
   println("  Rollout fraction updated.")
 
@@ -187,15 +193,19 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 private const val CHANGELOGS_DIR = "config/changelogs"
 
 /**
- * Version codes that must be preserved alongside any new release on their respective tracks.
+ * Version codes of OS-specific frozen builds that must be preserved on their respective tracks.
  *
  * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
- * version code not explicitly included in the request would be silently deactivated. These are
- * OS-level frozen builds released once to support a specific minimum API level and kept active
- * indefinitely so devices on that API level continue to receive the app.
+ * release not explicitly included in the request would be silently deactivated. These are builds
+ * released once to support a specific minimum API level and kept active indefinitely so devices on
+ * that API level continue to receive the app.
+ *
+ * The already-fetched live releases are filtered against these version codes. Those matching
+ * releases are then passed through completely unmodified (preserving their versionCodes, status,
+ * userFraction, and releaseNotes).
  *
  * Currently frozen:
- * - alpha vc 16: KitKat (API 16) build, frozen permanently per #6258.
+ * - alpha vc 16: KitKat (API 16) build, frozen permanently.
  *
  * When a new API level is deprecated and its final build must be frozen, add its version code to
  * the appropriate track(s) here. Keep this map in sync with the equivalent constants in

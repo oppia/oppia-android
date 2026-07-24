@@ -126,7 +126,7 @@ class GooglePlayConsoleClient(
     versionCode: Long,
     rolloutFraction: Int,
     releaseNotes: Map<String, String>,
-    preservedVersionCodes: Set<Long>
+    preservedReleases: List<PlayConsoleClient.TrackRelease>
   ) {
     val fraction = rolloutFraction / 1000.0
     val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
@@ -138,17 +138,19 @@ class GooglePlayConsoleClient(
       },
       userFraction = if (rolloutFraction < 1000) fraction else null
     )
-    // Each frozen version code is re-included as a separate completed entry so the Play Developer
-    // API does not deactivate it. The API replaces the entire track contents on each update, so
-    // any version code not included in the request would be silently dropped.
-    val frozenEntries = preservedVersionCodes
-      .filter { it != versionCode }
-      .map { frozenVc ->
+    // Pass each preserved release through completely unmodified so the Play Console API does not
+    // treat it as changed. versionCodes, status, userFraction, and releaseNotes are all copied
+    // exactly as fetched, ensuring the diff Play Console sees is scoped only to the new release.
+    val frozenEntries = preservedReleases
+      .filter { release -> release.versionCodes.none { it == versionCode } }
+      .map { release ->
         TrackUpdateRequest.ReleaseEntry(
-          versionCodes = listOf(frozenVc.toString()),
-          status = "completed",
-          releaseNotes = emptyList(),
-          userFraction = null
+          versionCodes = release.versionCodes.map { it.toString() },
+          status = release.status,
+          releaseNotes = release.releaseNotes.map { (lang, text) ->
+            TrackUpdateRequest.LocalizedText(language = lang, text = text)
+          },
+          userFraction = release.rolloutFraction?.let { it / 1000.0 }
         )
       }
     val trackUpdate = TrackUpdateRequest(
@@ -188,7 +190,8 @@ class GooglePlayConsoleClient(
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status,
-      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() }
+      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() },
+      releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap()
     )
   }
 }

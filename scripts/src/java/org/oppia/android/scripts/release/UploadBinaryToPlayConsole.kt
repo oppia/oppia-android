@@ -124,6 +124,17 @@ private fun runUpload(
     properties.majorMinorVersion,
     properties.flavor.id
   )
+  // Fetch the current track state so frozen OS-specific releases can be passed through
+  // completely unmodified in the setTrackRelease call. The Play Console API replaces the entire
+  // track on each update, so any release not included would be silently deactivated.
+  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  val frozenReleases = if (frozenVersionCodes.isNotEmpty()) {
+    println("Fetching current track state to preserve frozen release(s)...")
+    client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
+      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
+  } else {
+    emptyList()
+  }
   client.setTrackRelease(
     PACKAGE_NAME,
     editId,
@@ -131,7 +142,7 @@ private fun runUpload(
     uploadedVersionCode,
     rolloutFraction,
     releaseNotes,
-    FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+    frozenReleases
   )
   println("Track '$track' updated.")
 
@@ -228,15 +239,19 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 private val VALID_TRACKS = setOf("alpha", "beta", "production")
 
 /**
- * Version codes that must be preserved alongside any new release on their respective tracks.
+ * Version codes of OS-specific frozen builds that must be preserved on their respective tracks.
  *
  * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
- * version code not explicitly included in the request would be silently deactivated. These are
- * OS-level frozen builds released once to support a specific minimum API level and kept active
- * indefinitely so devices on that API level continue to receive the app.
+ * release not explicitly included in the request would be silently deactivated. These are builds
+ * released once to support a specific minimum API level and kept active indefinitely so devices on
+ * that API level continue to receive the app.
+ *
+ * The current track state is fetched before each [setTrackRelease] call to find the releases
+ * matching these version codes. Those releases are then passed through unmodified (preserving
+ * their versionCodes, status, userFraction, and releaseNotes).
  *
  * Currently frozen:
- * - alpha vc 16: KitKat (API 16) build, frozen permanently per #6258.
+ * - alpha vc 16: KitKat (API 16) build, frozen permanently.
  *
  * When a new API level is deprecated and its final build must be frozen, add its version code to
  * the appropriate track(s) here. Keep this map in sync with the equivalent constants in

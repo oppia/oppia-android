@@ -570,7 +570,8 @@ class UploadChangelogToPlayConsoleTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
-    assertThat(fakeClient.trackUpdates[0].preservedVersionCodes).containsExactly(16L)
+    assertThat(fakeClient.trackUpdates[0].preservedReleases).hasSize(1)
+    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].versionCodes).containsExactly(16L)
   }
 
   @Test
@@ -588,7 +589,7 @@ class UploadChangelogToPlayConsoleTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
-    assertThat(fakeClient.trackUpdates[0].preservedVersionCodes).isEmpty()
+    assertThat(fakeClient.trackUpdates[0].preservedReleases).isEmpty()
   }
 
   // ---------------------------------------------------------------------------
