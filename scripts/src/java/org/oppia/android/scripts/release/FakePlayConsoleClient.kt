@@ -4,7 +4,8 @@ package org.oppia.android.scripts.release
  * In-memory fake implementation of [PlayConsoleClient] for use in unit tests.
  *
  * Records all API calls for verification and returns pre-configured responses. Callers can inspect
- * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], and [committedEdits].
+ * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], [committedEdits], and
+ * [queriedEditIds].
  * Error conditions can be simulated by setting [shouldFailNextCall] to true.
  *
  * Track releases returned by [getTrackReleases] can be configured per-track via
@@ -27,8 +28,14 @@ class FakePlayConsoleClient : PlayConsoleClient {
   /** All track updates via [setTrackRelease], as recorded [TrackUpdate] entries. */
   val trackUpdates = mutableListOf<TrackUpdate>()
 
-  /** All edit IDs committed via [commitEdit], in order. */
+  /** All edit session IDs committed via [commitEdit], in order. */
   val committedEdits = mutableListOf<String>()
+
+  /**
+   * The [existingEditId] argument passed to each [getTrackReleases] call, in order.
+   * `null` entries indicate calls where no existing edit was provided.
+   */
+  val queriedEditIds = mutableListOf<String?>()
 
   private var nextVersionCode = 1L
   private val trackReleasesMap = mutableMapOf<String, List<PlayConsoleClient.TrackRelease>>()
@@ -42,9 +49,11 @@ class FakePlayConsoleClient : PlayConsoleClient {
 
   override fun getTrackReleases(
     packageName: String,
-    track: String
+    track: String,
+    existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
     maybeFailCall("getTrackReleases")
+    queriedEditIds.add(existingEditId)
     // Sort by descending version code to honour the PlayConsoleClient contract, which documents
     // that releases are returned "sorted by version code descending".
     return (trackReleasesMap[track] ?: emptyList())
@@ -104,6 +113,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     uploadedBundles.clear()
     trackUpdates.clear()
     committedEdits.clear()
+    queriedEditIds.clear()
     trackReleasesMap.clear()
   }
 

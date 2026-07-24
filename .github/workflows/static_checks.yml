@@ -256,3 +256,24 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
+
+  check_changelog_limit:
+    name: Check changelog character limit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check 500-character limit for changelog files
+        run: |
+          FAILED=false
+          for file in config/changelogs/[0-9]*.md; do
+            if [[ ! -f "$file" ]]; then continue; fi
+            char_count=$(python3 -c "print(len(open('$file').read().rstrip()))")
+            if [[ "$char_count" -gt 500 ]]; then
+              echo "::error file=$file::Changelog '$file' exceeds the 500-character Play Console limit (${char_count}/500 chars). Shorten it before merging."
+              FAILED=true
+            else
+              echo "✓ $file: ${char_count}/500 characters"
+            fi
+          done
+          if [[ "$FAILED" == "true" ]]; then exit 1; fi

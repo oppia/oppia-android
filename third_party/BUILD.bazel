@@ -59,14 +59,6 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-# A wrapper dependency for the aapt2 resource protos which are compiled from source (see the
-# @aapt2_protos declaration in //:WORKSPACE for context).
-alias(
-    name = "com_android_tools_build_aapt2-proto",
-    actual = "@aapt2_protos//:resources_java_proto",
-    visibility = ["//visibility:public"],
-)
-
 java_library(
     name = "moshi",
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
