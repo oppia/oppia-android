@@ -22,11 +22,20 @@ interface PlayConsoleClient {
   /**
    * Returns all active releases on [track] for [packageName], sorted by version code descending.
    *
+   * If [existingEditId] is provided, the query reuses that edit session rather than creating a new
+   * temporary one. The Play Developer API only allows one active edit at a time, so passing the
+   * already-open upload edit ID avoids invalidating the in-progress session.
+   *
    * @param packageName the application package name
    * @param track the Play Console track to query (e.g. "alpha", "beta", "production")
+   * @param existingEditId an already-open edit session ID to reuse, or null to open a new one
    * @return the list of [TrackRelease] entries currently live on the track
    */
-  fun getTrackReleases(packageName: String, track: String): List<TrackRelease>
+  fun getTrackReleases(
+    packageName: String,
+    track: String,
+    existingEditId: String? = null
+  ): List<TrackRelease>
 
   /**
    * Uploads the AAB at [aabPath] within [editId] and returns its assigned version code.

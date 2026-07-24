@@ -115,7 +115,7 @@ private fun runUpload(
   println("Uploaded — assigned version code: $uploadedVersionCode")
 
   println("Running version inversion check...")
-  VersionInversionChecker(client).verify(PACKAGE_NAME, track, uploadedVersionCode)
+  VersionInversionChecker(client).verify(PACKAGE_NAME, track, uploadedVersionCode, editId)
   println("Version inversion check passed.")
   println()
 

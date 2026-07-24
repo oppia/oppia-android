@@ -132,7 +132,7 @@ class CloudKmsSignerTest {
   }
 
   @Test
-  fun testSign_withValidAab_invokesJarsignerWithFullKmsResourceNameAsAlias() {
+  fun testSign_withValidAab_invokesJarsignerWithCryptoKeyNameAsAlias() {
     val capturedArgs = mutableListOf<String>()
     val signer = CloudKmsSigner(
       workingDir = tempFolder.root,
@@ -149,9 +149,10 @@ class CloudKmsSignerTest {
     }
 
     assertThat(exception).hasMessageThat().contains("exit code 1")
-    // The last argument to jarsigner must be the full KMS resource name (the key alias), not an
-    // arbitrary name like "oppia-signer".
-    assertThat(capturedArgs.last()).isEqualTo(kmsKeyResourceName)
+    // The last argument to jarsigner must be the CryptoKey name extracted from the resource path
+    // (e.g. "k" from "projects/p/.../cryptoKeys/k/cryptoKeyVersions/1"), not the full resource
+    // name. jsign's GOOGLECLOUD keystore resolves the key by name within the keyring.
+    assertThat(capturedArgs.last()).isEqualTo("k")
   }
 
   @Test
@@ -253,7 +254,9 @@ class CloudKmsSignerTest {
       signer.sign(unsignedAab.toPath(), cert, output)
     }
 
-    assertThat(capturedArgs.first()).isEqualTo("jarsigner")
+    // jarsigner is resolved to an absolute path via java.home to avoid PATH conflicts when
+    // running under Bazel. Verify it resolves to the jarsigner binary regardless of full path.
+    assertThat(capturedArgs.first()).endsWith("jarsigner")
   }
 
   @Test

@@ -56,6 +56,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.7.1",
     "androidx.work:work-runtime-ktx": "2.7.1",
+    "com.android.tools.build:aapt2-proto": "8.3.2-10880808",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
@@ -74,7 +75,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.gms:google-services": "4.3.10",
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
-    "com.google.protobuf:protobuf-javalite": "4.27.1",
+    "com.google.protobuf:protobuf-javalite": "4.28.3",
     "com.squareup.moshi:moshi-kotlin": "1.13.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.13.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
@@ -115,8 +116,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.android.tools.lint:lint-tests": "30.3.1",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.github.weisj:jsvg": "1.0.0",
-    "com.google.protobuf:protobuf-java": "4.27.1",
-    "com.google.protobuf:protobuf-java-util": "4.27.1",
+    "com.google.protobuf:protobuf-java": "4.28.3",
+    "com.google.protobuf:protobuf-java-util": "4.28.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
@@ -138,10 +139,6 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 HTTP_DEPENDENCY_VERSIONS = {
-    "aapt2_protos": {
-        "sha": "d5e2f3e1e1eb06224b6875f5e513c72a65182342745718160caf191d46a96664",
-        "version": "7.3.1-8691043",
-    },
     "android_bundletool": {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
@@ -159,7 +156,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "31.0.1",
     },
     "oppia_proto_api": {
-        "version": "2df5068f16a1995a5111d7b9824bc699bc9d543a",
+        "version": "677891eb25c34994d767f8acf87a610f9111ab38",
     },
     "protobuf_tools": {
         "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
