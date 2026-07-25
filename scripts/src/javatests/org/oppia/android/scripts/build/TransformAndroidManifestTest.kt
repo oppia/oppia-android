@@ -738,8 +738,36 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_developBranch_shallowClone_negativeVersionCode_throwsException() {
+  fun testUtility_developBranch_shallowClone_throwsException() {
     initializeShallowGitRepositoryWithHistory()
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+          writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+        }.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("You're in a shallow clone")
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("git fetch --unshallow")
+  }
+
+  @Test
+  fun testUtility_developBranch_invalidVersioning_negativeVersionCode_throwsException() {
+    initializeGitRepositoryWithLowCommitCount()
 
     val exception = assertThrows<IllegalStateException>() {
       runScript(
@@ -762,10 +790,7 @@ class TransformAndroidManifestTest {
       .contains("Computed version code")
     assertThat(exception)
       .hasMessageThat()
-      .contains("zero or negative")
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("git fetch --unshallow")
+      .contains("Please check versioning inputs")
   }
 
   /** Runs the transform_android_manifest utility. */
@@ -783,7 +808,16 @@ class TransformAndroidManifestTest {
   }
 
   private fun initializeShallowGitRepositoryWithHistory() {
-    // Initialize the git repository with a small number of commits to simulate a shallow clone.
+    // Initialize the git repository with a small number of commits and a shallow file.
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+    testGitRepository.initializeHistoricalCommits(commitCount = 10)
+    testGitRepository.createRemoteBranchRef("origin/develop")
+    File(tempFolder.root, ".git/shallow").createNewFile()
+  }
+
+  private fun initializeGitRepositoryWithLowCommitCount() {
+    // Initialize the git repository with a small number of commits to simulate invalid version math.
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.initializeHistoricalCommits(commitCount = 10)

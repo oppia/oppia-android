@@ -196,6 +196,13 @@ private class TransformAndroidManifest(
   }
 
   private fun computeVersionCode(): Int {
+    if (gitClient.isShallowRepository) {
+      error(
+        "You're in a shallow clone of the repository. " +
+          "Please run 'git fetch --unshallow' and try again."
+      )
+    }
+
     val developCommitCount = gitClient.countCommits(gitClient.branchMergeBase)
     // The number of potential releases since the new version strategy was introduced.
     val possibleReleaseCount = developCommitCount - NEW_VERSION_STRATEGY_STARTING_COMMIT_NUMBER
@@ -206,8 +213,7 @@ private class TransformAndroidManifest(
       BASE_VERSION_CODE + releaseVersionOffset + rcVersionOffset + flavorVersionOffset
     check(versionCode > 0) {
       "Computed version code ($versionCode) is zero or negative. " +
-        "This is likely due to using a shallow Git clone. " +
-        "Please run 'git fetch --unshallow' and try again."
+        "Please check versioning inputs (flavor offset, base version code, etc.)."
     }
     return versionCode
   }
