@@ -62,6 +62,14 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "fake_vertex_ai_client",
+    testonly = True,
+    srcs = ["FakeVertexAiClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":vertex_ai_client"],
+)
+
+kt_jvm_library(
     name = "version_inversion_checker",
     srcs = ["VersionInversionChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],

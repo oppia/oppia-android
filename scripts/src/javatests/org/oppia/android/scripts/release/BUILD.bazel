@@ -4,21 +4,11 @@ Tests for release automation scripts.
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library", "kt_jvm_test")
 
-kt_jvm_library(
-    name = "fake_vertex_ai_client",
-    testonly = True,
-    srcs = ["FakeVertexAiClient.kt"],
-    visibility = ["//scripts:oppia_script_test_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/release:vertex_ai_client",
-    ],
-)
-
 kt_jvm_test(
     name = "FakeVertexAiClientTest",
     srcs = ["FakeVertexAiClientTest.kt"],
     deps = [
-        ":fake_vertex_ai_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],
@@ -165,7 +155,7 @@ kt_jvm_test(
     name = "GenerateChangelogsTest",
     srcs = ["GenerateChangelogsTest.kt"],
     deps = [
-        ":fake_vertex_ai_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
         "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//scripts/src/java/org/oppia/android/scripts/release:generate_changelogs_lib",
         "//scripts/src/java/org/oppia/android/scripts/release:vertex_ai_client",
