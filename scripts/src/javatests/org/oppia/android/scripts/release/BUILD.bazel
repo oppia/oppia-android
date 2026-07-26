@@ -155,8 +155,8 @@ kt_jvm_test(
     name = "GenerateChangelogsTest",
     srcs = ["GenerateChangelogsTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
         "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
         "//scripts/src/java/org/oppia/android/scripts/release:generate_changelogs_lib",
         "//scripts/src/java/org/oppia/android/scripts/release:vertex_ai_client",
         "//testing:assertion_helpers",
