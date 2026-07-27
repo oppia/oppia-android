@@ -85,7 +85,7 @@ fun main(args: Array<String>) {
  * @param track the Play Console track ("alpha", "beta", or "production")
  * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
-internal fun runUpload(
+fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
@@ -185,7 +185,7 @@ private val AAB_FILENAME_REGEX =
  *
  * @return parsed [AabProperties], or `null` if the filename does not match the expected format
  */
-internal fun parseAabFilename(aabName: String): AabProperties? {
+fun parseAabFilename(aabName: String): AabProperties? {
   val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
   val (major, minor, rc, flavorId) = match.destructured
   val flavor = AppFlavor.fromId(flavorId) ?: return null
