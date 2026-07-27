@@ -80,10 +80,12 @@ class GooglePlayConsoleClient(
 
   override fun getTrackReleases(
     packageName: String,
-    track: String
+    track: String,
+    existingEditId: String?
   ): List<PlayConsoleClient.TrackRelease> {
-    // A temporary edit is needed to read track info via the API.
-    val editId = createEdit(packageName)
+    // Use the caller's open edit when provided to avoid creating a new temporary edit session.
+    // If no edit ID is supplied, create a temporary one just for this read.
+    val editId = existingEditId ?: createEdit(packageName)
     val response = playConsoleService
       .getTrack(packageName, editId, track, authorizationBearer)
       .execute()
@@ -166,8 +168,7 @@ class GooglePlayConsoleClient(
     private val OCTET_STREAM_MEDIA_TYPE = "application/octet-stream".toMediaType()
 
     /** Base URL for the Google Play Developer Publishing API v3 production endpoint. */
-    const val PRODUCTION_API_BASE_URL =
-      "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/"
+    const val PRODUCTION_API_BASE_URL = "https://androidpublisher.googleapis.com/"
   }
 
   private fun TrackResponse.ReleaseEntry.toTrackRelease(): PlayConsoleClient.TrackRelease {

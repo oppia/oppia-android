@@ -163,10 +163,19 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Authenticate to GCP via Workload Identity Federation
+        id: auth
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-          service_account: ${{ secrets.GCP_PLAY_CONSOLE_SERVICE_ACCOUNT }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/androidpublisher'
+
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -182,4 +191,4 @@ jobs:
             "$GITHUB_WORKSPACE" \
             "org.oppia.android" \
             "$VERSION" \
-            "$(gcloud auth print-access-token)"
+            "$ACCESS_TOKEN"

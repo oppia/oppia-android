@@ -5,10 +5,11 @@
 # The build is split into three phases to avoid JVM OOM on GitHub Actions runners:
 #   Phase 1: Pre-build all Kotlin scripts (including sign_release_binary) in opt mode so
 #            they are cached before the app binary build starts.
-#   Phase 2: Build the deployable target (//:oppia_${FLAVOR}_deployable) — this compiles
-#            the binary up to the Proguard step, which is the memory-intensive phase.
-#   Phase 3: Build the full AAB (//:oppia_${FLAVOR}) — all compilation is cached; Bazel
-#            only packages the final AAB, which has much lower peak memory.
+#   Phase 2: Build the deploy JAR (//:oppia_${FLAVOR}_binary_deploy.jar) — this target is
+#            part of the android_binary() build pathway and covers almost everything prior
+#            to the Proguard pass, using the same flags as Phase 3.
+#   Phase 3: Build the full AAB (//:oppia_${FLAVOR}) — Proguard and AAB packaging run
+#            here on already-cached sources, with much lower peak memory usage.
 # A bazel shutdown is issued between each phase to free accumulated JVM heap.
 #
 # The private key NEVER leaves the KMS HSM boundary — only the AAB digest is sent to KMS
@@ -130,14 +131,15 @@ jobs:
       - name: Shutdown Bazel after Phase 1
         run: bazel shutdown
 
-      # Build the deployable target — compiles up to (but not including) full AAB packaging.
-      # This is the Proguard-heavy step; splitting it from Phase 3 keeps peak memory lower.
-      - name: "Phase 2: Build app binary (deployable)"
+      # Build the deploy JAR — this target is part of the android_binary() build pathway
+      # and covers almost everything prior to the Proguard pass. The same flags as Phase 3
+      # are required since this is technically part of the binary build (not just source).
+      - name: "Phase 2: Build deploy JAR (pre-Proguard)"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
           bazel build --compilation_mode=opt \
-            //:oppia_${FLAVOR}_deployable \
+            //:oppia_${FLAVOR}_binary_deploy.jar \
             --//config:assets_type=${ASSETS_TYPE} \
             --//config:web_api_key_file=/tmp/prod_server.key \
             --//config:download_firebase_config=true \
@@ -150,7 +152,7 @@ jobs:
       - name: Shutdown Bazel after Phase 2
         run: bazel shutdown
 
-      # All compilation is cached from Phase 2; this step only packages the final AAB.
+      # All source is cached from Phase 2. Proguard and AAB packaging run in this step.
       - name: "Phase 3: Build full AAB"
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
@@ -190,6 +192,18 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "RC_NUM=$RC_NUM" >> $GITHUB_ENV
           echo "Found unsigned: $AAB_NAME (version=$VERSION, RC=$RC_NUM)"
+
+      # Strip any pre-existing META-INF signature files from the unsigned AAB before signing.
+      # jarsigner appends its signature alongside any existing signatures rather than replacing
+      # them. Removing old signatures first ensures the signed AAB contains only the upload
+      # certificate, which is required by Play Console.
+      # The AAB is first copied to the workspace because Bazel's output directory is read-only.
+      - name: Strip pre-existing META-INF signatures from AAB
+        run: |
+          WRITABLE_AAB_PATH="${{ github.workspace }}/unsigned-${AAB_NAME}"
+          cp "$UNSIGNED_AAB_PATH" "$WRITABLE_AAB_PATH"
+          zip -d "$WRITABLE_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
+          echo "UNSIGNED_AAB_PATH=$WRITABLE_AAB_PATH" >> $GITHUB_ENV
 
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
       # only the digest is sent to KMS and the signature returned via the jsign JCA provider.

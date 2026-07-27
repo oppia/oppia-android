@@ -45,7 +45,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1779917831 -0700",
+    shallow_since = "1783966663 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -192,35 +192,6 @@ http_archive(
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
 
-# The aapt2 resource proto definitions, extracted from the aapt2-proto Maven artifact (which is
-# just a zip containing both the .proto sources and Java classes prebuilt against protobuf 3.x).
-# The protos are compiled from source here so that their generated Java code matches the protobuf
-# runtime version used by the rest of the build (the prebuilt classes reference
-# GeneratedMessageV3 which no longer exists in the protobuf 4.x runtime).
-http_archive(
-    name = "aapt2_protos",
-    build_file_content = """
-load("@rules_proto//proto:defs.bzl", "proto_library")
-
-proto_library(
-    name = "resources_proto",
-    srcs = [
-        "Configuration.proto",
-        "Resources.proto",
-    ],
-)
-
-java_proto_library(
-    name = "resources_java_proto",
-    visibility = ["//visibility:public"],
-    deps = [":resources_proto"],
-)
-""",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["aapt2_protos"]["sha"],
-    type = "zip",
-    urls = ["https://dl.google.com/android/maven2/com/android/tools/build/aapt2-proto/{0}/aapt2-proto-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["aapt2_protos"]["version"])],
-)
-
 # Bind python headers to satisfy a transitive dependency in order to enable pre-fetching support.
 # This is done such that it should satisfiy the requirement for pre-fetching but cause an actual
 # build failure for any real dependencies on the target.
@@ -292,6 +263,6 @@ pinned_maven_install()
 # Pinned lesson download pipeline script branch.
 git_repository(
     name = "oppia_android_asset_pipeline",
-    commit = "8210906da718968bdc1468af873b74db1a5284f9",
+    commit = "50b321afce8a67307ac2fcc328d0de28d00787b5",
     remote = "https://github.com/oppia/oppia-android.git",
 )
