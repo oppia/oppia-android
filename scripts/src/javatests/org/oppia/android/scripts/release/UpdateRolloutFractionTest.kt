@@ -424,8 +424,14 @@ class UpdateRolloutFractionTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
+    assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
     assertThat(fakeClient.trackUpdates[0].preservedReleases).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].preservedReleases[0].versionCodes).containsExactly(16L)
+    // Verify the frozen release is passed through completely unmodified (status, rolloutFraction,
+    // and releaseNotes must match the values configured in setTrackReleases above).
+    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].status).isEqualTo("completed")
+    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].rolloutFraction).isNull()
+    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].releaseNotes).isEmpty()
   }
 
   @Test

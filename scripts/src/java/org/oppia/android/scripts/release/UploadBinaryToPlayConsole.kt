@@ -85,13 +85,14 @@ fun main(args: Array<String>) {
  * @param track the Play Console track ("alpha", "beta", or "production")
  * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
-private fun runUpload(
+internal fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
   properties: AabProperties,
   track: String,
-  rolloutFraction: Int
+  rolloutFraction: Int,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   println("Running pre-upload precondition checks...")
   PendingReleaseChecker(client).verify(PACKAGE_NAME, track)
@@ -127,7 +128,7 @@ private fun runUpload(
   // Fetch the current track state so frozen OS-specific releases can be passed through
   // completely unmodified in the setTrackRelease call. The Play Console API replaces the entire
   // track on each update, so any release not included would be silently deactivated.
-  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
   val frozenReleases = if (frozenVersionCodes.isNotEmpty()) {
     println("Fetching current track state to preserve frozen release(s)...")
     client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
@@ -184,7 +185,7 @@ private val AAB_FILENAME_REGEX =
  *
  * @return parsed [AabProperties], or `null` if the filename does not match the expected format
  */
-private fun parseAabFilename(aabName: String): AabProperties? {
+internal fun parseAabFilename(aabName: String): AabProperties? {
   val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
   val (major, minor, rc, flavorId) = match.destructured
   val flavor = AppFlavor.fromId(flavorId) ?: return null
@@ -238,25 +239,3 @@ private const val CHANGELOGS_DIR = "config/changelogs"
 private const val MAX_RELEASE_NOTES_LENGTH = 500
 private val VALID_TRACKS = setOf("alpha", "beta", "production")
 
-/**
- * Version codes of OS-specific frozen builds that must be preserved on their respective tracks.
- *
- * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
- * release not explicitly included in the request would be silently deactivated. These are builds
- * released once to support a specific minimum API level and kept active indefinitely so devices on
- * that API level continue to receive the app.
- *
- * The current track state is fetched before each [setTrackRelease] call to find the releases
- * matching these version codes. Those releases are then passed through unmodified (preserving
- * their versionCodes, status, userFraction, and releaseNotes).
- *
- * Currently frozen:
- * - alpha vc 16: KitKat (API 16) build, frozen permanently.
- *
- * When a new API level is deprecated and its final build must be frozen, add its version code to
- * the appropriate track(s) here. Keep this map in sync with the equivalent constants in
- * [UploadChangelogToPlayConsole] and [UpdateRolloutFraction].
- */
-private val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
-  "alpha" to setOf(16L)
-)

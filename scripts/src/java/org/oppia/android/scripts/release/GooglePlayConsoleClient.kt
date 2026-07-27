@@ -138,19 +138,14 @@ class GooglePlayConsoleClient(
       },
       userFraction = if (rolloutFraction < 1000) fraction else null
     )
-    // Pass each preserved release through completely unmodified so the Play Console API does not
-    // treat it as changed. versionCodes, status, userFraction, and releaseNotes are all copied
-    // exactly as fetched, ensuring the diff Play Console sees is scoped only to the new release.
-    // The new upload's version code is stripped from any preserved release that contains it (e.g.
-    // if the release was previously live and is now being replaced); the entry is kept as long as
-    // it still has at least one remaining version code.
+    // Only releases whose version codes appear in FROZEN_VERSION_CODES_PER_TRACK for this track
+    // are included in the request. This is a defence-in-depth guard: callers already pre-filter
+    // preservedReleases to frozen-only entries, but enforcing the invariant here ensures a mistaken
+    // call can never accidentally preserve a non-frozen release (e.g. a half-rolled-out release
+    // whose versionCode happens to be in the list).
+    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
     val frozenEntries = preservedReleases
-      .map { release ->
-        release.copy(
-          versionCodes = release.versionCodes.filter { it != versionCode }
-        )
-      }
-      .filter { release -> release.versionCodes.isNotEmpty() }
+      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
       .map { release ->
         TrackUpdateRequest.ReleaseEntry(
           versionCodes = release.versionCodes.map { it.toString() },

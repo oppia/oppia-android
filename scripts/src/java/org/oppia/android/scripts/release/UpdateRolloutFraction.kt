@@ -192,25 +192,3 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 /** Relative path within the workspace root where changelog files are stored. */
 private const val CHANGELOGS_DIR = "config/changelogs"
 
-/**
- * Version codes of OS-specific frozen builds that must be preserved on their respective tracks.
- *
- * The Play Developer API replaces the entire track contents on each `tracks.update` call, so any
- * release not explicitly included in the request would be silently deactivated. These are builds
- * released once to support a specific minimum API level and kept active indefinitely so devices on
- * that API level continue to receive the app.
- *
- * The already-fetched live releases are filtered against these version codes. Those matching
- * releases are then passed through completely unmodified (preserving their versionCodes, status,
- * userFraction, and releaseNotes).
- *
- * Currently frozen:
- * - alpha vc 16: KitKat (API 16) build, frozen permanently.
- *
- * When a new API level is deprecated and its final build must be frozen, add its version code to
- * the appropriate track(s) here. Keep this map in sync with the equivalent constants in
- * [UploadBinaryToPlayConsole] and [UploadChangelogToPlayConsole].
- */
-private val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
-  "alpha" to setOf(16L)
-)

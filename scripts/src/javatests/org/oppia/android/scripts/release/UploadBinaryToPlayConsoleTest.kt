@@ -523,8 +523,42 @@ class UploadBinaryToPlayConsoleTest {
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"16\"")
     assertThat(setTrackBody).contains("\"202\"")
-    // The frozen entry is passed through with "completed" status and no userFraction.
-    assertThat(setTrackBody).contains("\"releases\"")
+    // Exactly 2 releases must appear: the new upload and the frozen KitKat entry, no more.
+    assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(2)
+    // The frozen entry is passed through with "completed" status.
+    assertThat(setTrackBody).contains("\"completed\"")
+  }
+
+  @Test
+  fun testRunUpload_alphaTrack_includesAllFrozenVersionCodesWhenMultipleFrozenBuildsExist() {
+    // Regression: when a second build is added to the frozen map (e.g. a future Lollipop freeze),
+    // both frozen version codes must survive in the setTrackRelease call alongside the new upload.
+    // Uses FakePlayConsoleClient with an injected two-entry frozen map to avoid HTTP mock overhead.
+    val fakeClient = FakePlayConsoleClient()
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(listOf(16L), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(21L), "completed")
+      )
+    )
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fakeClient,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = parseAabFilename(aab.name)!!,
+      track = "alpha",
+      rolloutFraction = 10,
+      frozenVersionCodesPerTrack = mapOf("alpha" to setOf(16L, 21L))
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.preservedReleases).hasSize(2)
+    val preservedVcs = update.preservedReleases.flatMap { it.versionCodes }
+    assertThat(preservedVcs).containsExactly(16L, 21L)
   }
 
   @Test
