@@ -290,4 +290,3 @@ private const val MAX_RELEASE_NOTES_LENGTH = 500
 
 /** Relative path within the workspace root where changelog files are stored. */
 private const val CHANGELOGS_DIR = "config/changelogs"
-

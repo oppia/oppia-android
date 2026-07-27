@@ -238,4 +238,3 @@ private const val PACKAGE_NAME = "org.oppia.android"
 private const val CHANGELOGS_DIR = "config/changelogs"
 private const val MAX_RELEASE_NOTES_LENGTH = 500
 private val VALID_TRACKS = setOf("alpha", "beta", "production")
-
