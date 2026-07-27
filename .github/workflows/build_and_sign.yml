@@ -197,9 +197,14 @@ jobs:
       # jarsigner appends its signature alongside any existing signatures rather than replacing
       # them. Removing old signatures first ensures the signed AAB contains only the upload
       # certificate, which is required by Play Console.
+      # The AAB is first copied to the workspace because Bazel's output directory is read-only.
       - name: Strip pre-existing META-INF signatures from AAB
         run: |
-          zip -d "$UNSIGNED_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
+          WRITABLE_AAB_PATH="${{ github.workspace }}/unsigned-${AAB_NAME}"
+          cp "$UNSIGNED_AAB_PATH" "$WRITABLE_AAB_PATH"
+          chmod 755 "$WRITABLE_AAB_PATH"
+          zip -d "$WRITABLE_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF"
+          echo "UNSIGNED_AAB_PATH=$WRITABLE_AAB_PATH" >> $GITHUB_ENV
 
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
       # only the digest is sent to KMS and the signature returned via the jsign JCA provider.
