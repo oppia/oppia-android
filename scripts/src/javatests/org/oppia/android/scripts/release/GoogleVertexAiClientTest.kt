@@ -38,7 +38,6 @@ class GoogleVertexAiClientTest {
     server.shutdown()
   }
 
-
   @Test
   fun testGenerateText_sendsPostRequest() {
     server.enqueue(successResponse("Generated text."))
