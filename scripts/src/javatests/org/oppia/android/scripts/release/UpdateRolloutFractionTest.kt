@@ -451,6 +451,8 @@ class UpdateRolloutFractionTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
+    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
+    assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
     assertThat(fakeClient.trackUpdates[0].preservedReleases).isEmpty()
   }
 
