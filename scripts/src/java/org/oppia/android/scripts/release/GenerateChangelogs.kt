@@ -222,7 +222,8 @@ fun findCommitRange(
     } catch (e: IllegalStateException) {
       // Re-throw if this isn't a "branch not found" failure — don't mask unrelated errors.
       if ("unknown revision" !in (e.message ?: "") &&
-        "ambiguous argument" !in (e.message ?: "")) throw e
+        "ambiguous argument" !in (e.message ?: "")
+      ) throw e
       // Previous release branch doesn't exist on the remote — fall back to first commit.
       println(
         "WARNING: Previous release branch '$prevReleaseBranch' not found on remote. " +

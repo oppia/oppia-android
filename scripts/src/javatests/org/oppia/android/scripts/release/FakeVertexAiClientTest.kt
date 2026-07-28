@@ -16,7 +16,6 @@ class FakeVertexAiClientTest {
     fake = FakeVertexAiClient()
   }
 
-
   @Test
   fun testGenerateText_defaultResponse_returnsDefaultText() {
     val result = fake.generateText("any prompt")

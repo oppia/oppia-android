@@ -224,7 +224,6 @@ class GenerateChangelogsTest {
     assertThat(result).containsExactly(5999)
   }
 
-
   @Test
   fun testParseFixedIssueNumbers_caseInsensitiveFixesKeyword_returnsIssueNumber() {
     val result = parseFixedIssueNumbers(listOf("abc1234 FIXES #6100 (#6270)"))
