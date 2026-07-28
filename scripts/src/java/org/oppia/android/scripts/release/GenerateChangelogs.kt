@@ -128,15 +128,19 @@ fun generateChangelogs(
   println()
 
   // Step 5 — Build the LLM prompt and invoke Vertex AI. Fall back on failure.
-  val prListText = prEntries.joinToString("\n") { "- ${it.title} (#${it.number})" }
+  val prListText = if (prEntries.isEmpty()) {
+    "(none)"
+  } else {
+    prEntries.joinToString("\n") { "- ${it.title} (#${it.number})" }
+  }
   val issueListText = if (issueNumbers.isEmpty()) {
     "(none)"
   } else {
     issueNumbers.joinToString("\n") { "- #$it" }
   }
-  val prompt = buildPrompt(changelogVersion, prListText, issueListText)
-
-  val (summary, llmFailed) = invokeLlmWithFallback(vertexAiClient, prompt)
+  val (summary, llmFailed) = invokeLlmWithFallback(
+    vertexAiClient, buildPrompt(changelogVersion, prListText, issueListText)
+  )
 
   // Step 6 — Write the changelog file.
   val changelogContent = buildChangelogContent(
@@ -170,10 +174,6 @@ fun generateChangelogs(
   )
 }
 
-// ---------------------------------------------------------------------------
-// version.bzl parsing
-// ---------------------------------------------------------------------------
-
 /**
  * Reads `version.bzl` from [workspaceRoot] and extracts the `MAJOR_VERSION` and `MINOR_VERSION`
  * values.
@@ -191,10 +191,6 @@ fun parseVersionBzl(workspaceRoot: File): Pair<Int, Int> {
     ?: error("Could not parse MINOR_VERSION from version.bzl")
   return major to minor
 }
-
-// ---------------------------------------------------------------------------
-// Commit-range computation
-// ---------------------------------------------------------------------------
 
 /**
  * Computes the `fromSha..toSha` range for the changelog commit collection.
@@ -216,14 +212,17 @@ fun findCommitRange(
   prevReleaseBranch: String,
   prevMinor: Int
 ): Pair<String, String> {
-  val toSha = gitMergeBase(workspaceRoot, commandExecutor, releaseBranch, "origin/develop")
+  val toSha = gitMergeBase(workspaceRoot, commandExecutor, releaseBranch, "$REMOTE/$DEVELOP_BRANCH")
   val fromSha = if (prevMinor <= 0) {
     // First-ever release: include all commits from the beginning of develop.
     gitFirstCommit(workspaceRoot, commandExecutor)
   } else {
     try {
-      gitMergeBase(workspaceRoot, commandExecutor, prevReleaseBranch, "origin/develop")
+      gitMergeBase(workspaceRoot, commandExecutor, prevReleaseBranch, "$REMOTE/$DEVELOP_BRANCH")
     } catch (e: IllegalStateException) {
+      // Re-throw if this isn't a "branch not found" failure — don't mask unrelated errors.
+      if ("unknown revision" !in (e.message ?: "") &&
+        "ambiguous argument" !in (e.message ?: "")) throw e
       // Previous release branch doesn't exist on the remote — fall back to first commit.
       println(
         "WARNING: Previous release branch '$prevReleaseBranch' not found on remote. " +
@@ -259,10 +258,6 @@ private fun gitFirstCommit(workspaceRoot: File, commandExecutor: CommandExecutor
   }
   return result.output.first().trim()
 }
-
-// ---------------------------------------------------------------------------
-// Commit collection and PR / issue parsing
-// ---------------------------------------------------------------------------
 
 /**
  * Returns all commit subject lines between [fromSha] (exclusive) and [toSha] (inclusive) on
@@ -305,14 +300,19 @@ fun parsePrEntries(commitLines: List<String>): List<PrEntry> {
     val subject = line.substringAfter(" ")
     val match = PR_REFERENCE_REGEX.find(subject) ?: return@mapNotNull null
     val number = match.groupValues[1].toIntOrNull() ?: return@mapNotNull null
-    val title = subject.substringBefore(" (#").trim()
+    // Extract the title as everything before the PR-number reference, so that
+    // subjects like "Fix #123: Add feature (#6300)" yield "Fix #123: Add feature"
+    // rather than being truncated at the first " (#" occurrence.
+    val title = subject.substring(0, match.range.first).trim()
     PrEntry(number = number, title = title)
   }
 }
 
 /**
- * Extracts GitHub issue numbers from `Fixes #NNNN` / `Closes #NNNN` / `Fix #NNNN` patterns in
- * [commitLines].
+ * Extracts GitHub issue numbers from `Fix #NNNN` / `Fixes #NNNN` patterns in [commitLines].
+ *
+ * The short SHA prefix present in `git log --oneline` lines is hex-only and can never match
+ * these keywords, so stripping it is not necessary.
  *
  * @return deduplicated, sorted list of issue numbers
  */
@@ -322,10 +322,6 @@ fun parseFixedIssueNumbers(commitLines: List<String>): List<Int> {
     .toSortedSet()
     .toList()
 }
-
-// ---------------------------------------------------------------------------
-// LLM invocation and fallback
-// ---------------------------------------------------------------------------
 
 /**
  * Builds the prompt sent to the Vertex AI model for changelog summary generation.
@@ -371,14 +367,10 @@ fun invokeLlmWithFallback(
     summary to false
   } catch (e: Exception) {
     println("WARNING: Vertex AI call failed — using fallback raw commit list.")
-    println("  Reason: ${e.message}")
+    println("Reason: ${e.message}")
     LLM_FALLBACK_MARKER to true
   }
 }
-
-// ---------------------------------------------------------------------------
-// Changelog file content
-// ---------------------------------------------------------------------------
 
 /**
  * Builds the markdown content for `config/changelogs/<version>.md`.
@@ -399,24 +391,20 @@ fun buildChangelogContent(
       "<!-- Replace the marker above with a 2-3 sentence user-facing summary before release -->"
     )
     sb.appendLine()
-  }
-  sb.appendLine(summary)
-  if (llmFailed && prEntries.isNotEmpty()) {
-    sb.appendLine()
-    sb.appendLine("### Changes in this release")
-    prEntries.forEach { sb.appendLine("- ${it.title}") }
-  }
-  if (llmFailed && issueNumbers.isNotEmpty()) {
-    sb.appendLine()
-    sb.appendLine("### Issues addressed")
-    issueNumbers.forEach { sb.appendLine("- #$it") }
+    if (prEntries.isNotEmpty()) {
+      sb.appendLine("### Changes in this release")
+      prEntries.forEach { sb.appendLine("- ${it.title}") }
+      sb.appendLine()
+    }
+    if (issueNumbers.isNotEmpty()) {
+      sb.appendLine("### Issues addressed")
+      issueNumbers.forEach { sb.appendLine("- #$it") }
+    }
+  } else {
+    sb.appendLine(summary)
   }
   return sb.toString().trimEnd() + "\n"
 }
-
-// ---------------------------------------------------------------------------
-// PR creation
-// ---------------------------------------------------------------------------
 
 /**
  * Builds the PR description body with links to all reference material.
@@ -554,11 +542,9 @@ private fun runGitAllowFailure(
   commandExecutor.executeCommand(workspaceRoot, "git", *args)
 }
 
-// ---------------------------------------------------------------------------
-// Constants and regex
-// ---------------------------------------------------------------------------
-
 private const val CHANGELOGS_DIR = "config/changelogs"
+private const val REMOTE = "origin"
+private const val DEVELOP_BRANCH = "develop"
 private const val REPO_OWNER = "oppia"
 private const val REPO_NAME = "oppia-android"
 private const val GIT_AUTHOR_EMAIL = "actions@github.com"
@@ -579,8 +565,5 @@ private val MINOR_VERSION_REGEX = Regex("""MINOR_VERSION\s*=\s*(\d+)""")
  */
 private val PR_REFERENCE_REGEX = Regex("""\(#(\d+)\)\s*$""")
 
-/**
- * Matches `Fixes #NNNN`, `Fix #NNNN`, `Closes #NNNN`, `Close #NNNN` (case-insensitive).
- * Example: `Fix part of #6106: ...` → group 1 = `6106`
- */
-private val FIXES_ISSUE_REGEX = Regex("""(?i)(?:fix(?:es)?|clos(?:es?)) #(\d+)""")
+/** Matches `Fix #NNNN` / `Fixes #NNNN` patterns in commit messages (case-insensitive). */
+private val FIXES_ISSUE_REGEX = Regex("""(?i)fix(?:es)? #(\d+)""")

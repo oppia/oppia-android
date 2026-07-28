@@ -224,19 +224,6 @@ class GenerateChangelogsTest {
     assertThat(result).containsExactly(5999)
   }
 
-  @Test
-  fun testParseFixedIssueNumbers_closesKeyword_returnsIssueNumber() {
-    val result = parseFixedIssueNumbers(listOf("abc1234 Closes #6050 (#6210)"))
-
-    assertThat(result).containsExactly(6050)
-  }
-
-  @Test
-  fun testParseFixedIssueNumbers_closeKeyword_returnsIssueNumber() {
-    val result = parseFixedIssueNumbers(listOf("abc1234 Close #6051 (#6211)"))
-
-    assertThat(result).containsExactly(6051)
-  }
 
   @Test
   fun testParseFixedIssueNumbers_caseInsensitiveFixesKeyword_returnsIssueNumber() {
@@ -260,7 +247,7 @@ class GenerateChangelogsTest {
   @Test
   fun testParseFixedIssueNumbers_multipleIssuesInOneCommit_returnsAllSorted() {
     val result = parseFixedIssueNumbers(
-      listOf("abc Fixes #6200, Closes #6100 (#6300)")
+      listOf("abc Fixes #6200, Fixes #6100 (#6300)")
     )
 
     assertThat(result).containsExactly(6100, 6200).inOrder()
@@ -589,8 +576,8 @@ class GenerateChangelogsTest {
           if (mergeBaseCallCount == 1) {
             out.println(toSha); 0
           } else {
-            // Previous release branch not found -- simulate failure.
-            1
+            // Previous release branch not found -- simulate failure with realistic git output.
+            out.println("fatal: Not a valid object name: unknown revision 'release-0.16'"); 1
           }
         }
         args.contains("--max-parents=0") -> { out.println(firstCommit); 0 }
