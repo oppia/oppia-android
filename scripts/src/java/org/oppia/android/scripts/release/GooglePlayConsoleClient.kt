@@ -125,22 +125,40 @@ class GooglePlayConsoleClient(
     track: String,
     versionCode: Long,
     rolloutFraction: Int,
-    releaseNotes: Map<String, String>
+    releaseNotes: Map<String, String>,
+    preservedReleases: List<PlayConsoleClient.TrackRelease>
   ) {
     val fraction = rolloutFraction / 1000.0
     val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
-    val trackUpdate = TrackUpdateRequest(
-      track = track,
-      releases = listOf(
+    val newRelease = TrackUpdateRequest.ReleaseEntry(
+      versionCodes = listOf(versionCode.toString()),
+      status = status,
+      releaseNotes = releaseNotes.map { (lang, text) ->
+        TrackUpdateRequest.LocalizedText(language = lang, text = text)
+      },
+      userFraction = if (rolloutFraction < 1000) fraction else null
+    )
+    // Only releases whose version codes appear in FROZEN_VERSION_CODES_PER_TRACK for this track
+    // are included in the request. This is a defence-in-depth guard: callers already pre-filter
+    // preservedReleases to frozen-only entries, but enforcing the invariant here ensures a mistaken
+    // call can never accidentally preserve a non-frozen release (e.g. a half-rolled-out release
+    // whose versionCode happens to be in the list).
+    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+    val frozenEntries = preservedReleases
+      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
+      .map { release ->
         TrackUpdateRequest.ReleaseEntry(
-          versionCodes = listOf(versionCode.toString()),
-          status = status,
-          releaseNotes = releaseNotes.map { (lang, text) ->
+          versionCodes = release.versionCodes.map { it.toString() },
+          status = release.status,
+          releaseNotes = release.releaseNotes.map { (lang, text) ->
             TrackUpdateRequest.LocalizedText(language = lang, text = text)
           },
-          userFraction = if (rolloutFraction < 1000) fraction else null
+          userFraction = release.rolloutFraction?.let { it / 1000.0 }
         )
-      )
+      }
+    val trackUpdate = TrackUpdateRequest(
+      track = track,
+      releases = listOf(newRelease) + frozenEntries
     )
     val response = playConsoleService
       .updateTrack(packageName, editId, track, authorizationBearer, trackUpdate)
@@ -175,7 +193,8 @@ class GooglePlayConsoleClient(
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status,
-      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() }
+      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() },
+      releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap()
     )
   }
 }

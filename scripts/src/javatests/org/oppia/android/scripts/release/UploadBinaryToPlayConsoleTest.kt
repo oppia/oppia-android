@@ -226,9 +226,9 @@ class UploadBinaryToPlayConsoleTest {
     // rollout_fraction = 0 is valid; the full upload flow should complete without errors.
     runMain(aab.absolutePath, rolloutFraction = 0)
 
-    // Verify that commitEdit (the 9th and final request) was actually called, confirming the
+    // Verify that commitEdit (the 10th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
-    skipRequests(8)
+    skipRequests(9)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -241,9 +241,9 @@ class UploadBinaryToPlayConsoleTest {
     // rollout_fraction = 1000 (100%) is valid; the full upload flow should complete.
     runMain(aab.absolutePath, rolloutFraction = 1000)
 
-    // Verify that commitEdit (the 9th and final request) was actually called, confirming the
+    // Verify that commitEdit (the 10th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
-    skipRequests(8)
+    skipRequests(9)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -259,10 +259,10 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Verify the full 9-step flow completed by confirming commitEdit (step 9) was called.
-    // Flow: 2 (pending check) + 2 (upload) + 3 (version check) + 1 (setTrackRelease) +
-    // 1 (commitEdit). The :commit suffix on the path uniquely identifies the commit call.
-    skipRequests(8)
+    // Verify the full 10-step flow completed by confirming commitEdit (step 10) was called.
+    // Flow: 2 (pending check) + 2 (upload) + 3 (version check) + 1 (frozen GET) +
+    // 1 (setTrackRelease) + 1 (commitEdit). The :commit suffix uniquely identifies the call.
+    skipRequests(9)
     assertThat(server.takeRequest().path).endsWith(":commit")
   }
 
@@ -288,8 +288,8 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Flow: 2 (pending) + 2 (upload) + 3 (version check) = 7 previous requests.
-    skipRequests(7)
+    // Flow: 2 (pending) + 2 (upload) + 3 (version check) + 1 (frozen GET) = 8 previous requests.
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"301\"")
   }
@@ -302,7 +302,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("User-facing release notes.")
     assertThat(setTrackBody).contains("en-US")
@@ -410,7 +410,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath, rolloutFraction = 1000)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"status\":\"completed\"")
     assertThat(setTrackBody).doesNotContain("userFraction")
@@ -424,7 +424,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath, rolloutFraction = 250)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("\"status\":\"inProgress\"")
     assertThat(setTrackBody).contains("0.25")
@@ -443,7 +443,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("Alpha-specific notes.")
     assertThat(setTrackBody).doesNotContain("Default notes.")
@@ -457,7 +457,7 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     // When the changelog is empty, no release-note entries are included.
     assertThat(setTrackBody).contains("\"releaseNotes\":[]")
@@ -493,9 +493,89 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    skipRequests(7)
+    skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
     assertThat(setTrackBody).contains("b".repeat(500))
+  }
+
+  // ---------------------------------------------------------------------------
+  // Frozen version code preservation
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testRunUpload_alphaTrack_includesFrozenKitKatVersionCodeInTrackUpdateRequest() {
+    // The alpha track has a permanently frozen KitKat build (vc 16) that must be re-included in
+    // every setTrackRelease call. Without it the Play Console API would deactivate vc 16.
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    // Configure the frozen release lookup GET response (request 8, index 7) to return vc 16 so
+    // the production code can pass it through unmodified to the setTrackRelease PUT.
+    enqueueSuccessfulUpload(
+      versionCode = 202L,
+      frozenTrackBody =
+        """{"releases":[{"versionCodes":["16"],"status":"completed"}]}"""
+    )
+
+    runMain(aab.absolutePath, track = "alpha")
+
+    // Request 9 (index 8) is the PUT setTrackRelease for the alpha track.
+    skipRequests(8)
+    val setTrackBody = server.takeRequest().body.readUtf8()
+    assertThat(setTrackBody).contains("\"16\"")
+    assertThat(setTrackBody).contains("\"202\"")
+    // Exactly 2 releases must appear: the new upload and the frozen KitKat entry, no more.
+    assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(2)
+    // The frozen entry is passed through with "completed" status.
+    assertThat(setTrackBody).contains("\"completed\"")
+  }
+
+  @Test
+  fun testRunUpload_alphaTrack_includesAllFrozenVersionCodesWhenMultipleFrozenBuildsExist() {
+    // Regression: when a second build is added to the frozen map (e.g. a future Lollipop freeze),
+    // both frozen version codes must survive in the setTrackRelease call alongside the new upload.
+    // Uses FakePlayConsoleClient with an injected two-entry frozen map to avoid HTTP mock overhead.
+    val fakeClient = FakePlayConsoleClient()
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(listOf(16L), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(21L), "completed")
+      )
+    )
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fakeClient,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = parseAabFilename(aab.name)!!,
+      track = "alpha",
+      rolloutFraction = 10,
+      frozenVersionCodesPerTrack = mapOf("alpha" to setOf(16L, 21L))
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.preservedReleases).hasSize(2)
+    val preservedVcs = update.preservedReleases.flatMap { it.versionCodes }
+    assertThat(preservedVcs).containsExactly(16L, 21L)
+  }
+
+  @Test
+  fun testRunUpload_betaTrack_doesNotIncludeAnyFrozenVersionCodesInTrackUpdateRequest() {
+    // Beta currently has no frozen builds; the setTrackRelease body should only contain the new vc.
+    // Beta has no frozen codes so no frozen-release GET is issued; the flow stays at 9 requests.
+    val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    enqueueSuccessfulUpload(versionCode = 202L, frozenTrackBody = null)
+
+    runMain(aab.absolutePath, track = "beta")
+
+    // Request 8 (index 7) is the PUT setTrackRelease for the beta track (no frozen GET precedes).
+    skipRequests(7)
+    val setTrackBody = server.takeRequest().body.readUtf8()
+    assertThat(setTrackBody).contains("\"202\"")
+    assertThat(setTrackBody).doesNotContain("\"16\"")
   }
 
   // ---------------------------------------------------------------------------
@@ -592,12 +672,17 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   /**
-   * Enqueues all 9 responses for a successful end-to-end upload flow:
+   * Enqueues all responses for a successful end-to-end upload flow:
    * - [enqueuePendingCheck] (2)
    * - [enqueueUpload] (2)
    * - [enqueueVersionCheck] (3)
+   * - frozen release lookup GET (1) -- only enqueued when [frozenTrackBody] is non-null
    * - setTrackRelease (1)
    * - commitEdit (1)
+   *
+   * For tracks that have frozen version codes (alpha), pass a non-null [frozenTrackBody] to
+   * simulate the GET response returned by the frozen-release lookup. For tracks without frozen
+   * codes (e.g. beta), pass `null` to omit the frozen GET entirely (9 responses total).
    */
   private fun enqueueSuccessfulUpload(
     versionCode: Long = 1L,
@@ -608,11 +693,18 @@ class UploadBinaryToPlayConsoleTest {
     betaBody: String =
       """{"releases":[]}""",
     productionBody: String =
+      """{"releases":[]}""",
+    frozenTrackBody: String? =
       """{"releases":[]}"""
   ) {
     enqueuePendingCheck(pendingBody)
     enqueueUpload(versionCode)
     enqueueVersionCheck(alphaBody, betaBody, productionBody)
+    // Frozen release lookup: enqueue only when the track has frozen version codes.
+    // Pass frozenTrackBody = null when testing tracks with no frozen codes (e.g. beta).
+    if (frozenTrackBody != null) {
+      server.enqueue(MockResponse().setBody(frozenTrackBody).setResponseCode(200))
+    }
     // setTrackRelease: Retrofit parses the body as TrackResponse even if we don't use it.
     server.enqueue(MockResponse().setBody("""{"releases":[]}""").setResponseCode(200))
     // commitEdit: Retrofit parses the body as EditResponse.

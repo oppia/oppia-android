@@ -121,12 +121,21 @@ fun updateRollout(
     )
   }
 
-  println("Updating rollout fraction to ${rolloutFraction / 10.0}%...")
+  // Filter the already-fetched live releases to find frozen OS-specific builds and pass them
+  // through completely unmodified (preserving versionCodes, status, userFraction, and
+  // releaseNotes) so the Play Console API does not treat them as changed.
+  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  val frozenReleases = liveReleases.filter { release ->
+    release.versionCodes.any { it in frozenVersionCodes }
+  }
 
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
+  client.setTrackRelease(
+    packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
+    frozenReleases
+  )
   println("  Rollout fraction updated.")
 
   client.commitEdit(packageName, editId)
