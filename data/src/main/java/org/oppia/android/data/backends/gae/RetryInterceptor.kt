@@ -16,32 +16,41 @@ class RetryInterceptor @Inject constructor(
   private val networkDelayHandler: NetworkDelayHandler
 ) : Interceptor {
 
-  @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
-    var response = chain.proceed(request)
-    var tryCount = 0
+    var lastException: IOException? = null
 
-    while (
-      !response.isSuccessful &&
-      shouldRetry(response.code) &&
-      tryCount < RETRY_DELAYS_MILLIS.size
-    ) {
-      // Close the previous response body before retrying to avoid resource leaks.
-      response.close()
-
+    for (tryCount in 0..RETRY_DELAYS_MILLIS.size) {
       try {
-        networkDelayHandler.delay(RETRY_DELAYS_MILLIS[tryCount])
-      } catch (e: InterruptedException) {
-        Thread.currentThread().interrupt()
-        throw IOException("Retry interrupted", e)
+        val response = chain.proceed(request)
+        val isLastAttempt = tryCount == RETRY_DELAYS_MILLIS.size
+        // Return the response if it succeeded, if we can't retry this error code, or if we've
+        // exhausted all retry attempts.
+        if (response.isSuccessful || !shouldRetry(response.code) || isLastAttempt) {
+          return response
+        }
+        // Close the response body before retrying to avoid resource leaks.
+        response.close()
+      } catch (e: IOException) {
+        lastException = e
+        // If this was the last attempt, rethrow so the caller knows the request failed.
+        if (tryCount == RETRY_DELAYS_MILLIS.size) throw e
       }
-
-      tryCount++
-      response = chain.proceed(request)
+      delayBeforeRetry(tryCount)
     }
 
-    return response
+    // This point is theoretically unreachable since the for-loop always exits via return or throw.
+    // The compiler requires a return/throw here because it can't statically verify that.
+    throw lastException ?: IOException("Request failed after retries")
+  }
+
+  private fun delayBeforeRetry(tryCount: Int) {
+    try {
+      networkDelayHandler.delay(RETRY_DELAYS_MILLIS[tryCount])
+    } catch (e: InterruptedException) {
+      Thread.currentThread().interrupt()
+      throw IOException("Retry interrupted", e)
+    }
   }
 
   private fun shouldRetry(statusCode: Int): Boolean {

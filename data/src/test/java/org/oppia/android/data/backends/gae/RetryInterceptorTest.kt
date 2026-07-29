@@ -6,11 +6,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.LooperMode
+import java.io.IOException
 
 /** Tests for [RetryInterceptor]. */
 @RunWith(AndroidJUnit4::class)
@@ -156,6 +159,64 @@ class RetryInterceptorTest {
 
     val request = Request.Builder().url(mockWebServer.url("/")).build()
     okHttpClient.newCall(request).execute()
+
+    assertThat(fakeNetworkDelayHandler.recordedDelays)
+      .containsExactly(
+        EXPECTED_RETRY_DELAY_1_MILLIS,
+        EXPECTED_RETRY_DELAY_2_MILLIS,
+        EXPECTED_RETRY_DELAY_3_MILLIS
+      )
+      .inOrder()
+  }
+
+  @Test
+  fun testIntercept_networkDisconnectsOnEveryAttempt_retriesThreeTimes_throwsIOException() {
+    // Original request + 3 retries = 4 total attempts.
+    repeat(4) {
+      mockWebServer.enqueue(
+        MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AT_START }
+      )
+    }
+    val request = Request.Builder().url(mockWebServer.url("/")).build()
+
+    assertThrows(IOException::class.java) {
+      okHttpClient.newCall(request).execute()
+    }
+
+    assertThat(mockWebServer.requestCount).isEqualTo(4)
+  }
+
+  @Test
+  fun testIntercept_networkDisconnectsTwiceThen200_retriesTwice_returns200() {
+    mockWebServer.enqueue(
+      MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AT_START }
+    )
+    mockWebServer.enqueue(
+      MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AT_START }
+    )
+    mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
+
+    val request = Request.Builder().url(mockWebServer.url("/")).build()
+
+    val response = okHttpClient.newCall(request).execute()
+
+    assertThat(response.code).isEqualTo(200)
+    assertThat(mockWebServer.requestCount).isEqualTo(3)
+  }
+
+  @Test
+  fun testIntercept_networkDisconnectsThreeTimes_verifiesBackoffDelays() {
+    // Original request + 3 retries = 4 total attempts.
+    repeat(4) {
+      mockWebServer.enqueue(
+        MockResponse().apply { socketPolicy = SocketPolicy.DISCONNECT_AT_START }
+      )
+    }
+    val request = Request.Builder().url(mockWebServer.url("/")).build()
+
+    assertThrows(IOException::class.java) {
+      okHttpClient.newCall(request).execute()
+    }
 
     assertThat(fakeNetworkDelayHandler.recordedDelays)
       .containsExactly(
