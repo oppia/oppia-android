@@ -85,13 +85,14 @@ fun main(args: Array<String>) {
  * @param track the Play Console track ("alpha", "beta", or "production")
  * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
-private fun runUpload(
+fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
   properties: AabProperties,
   track: String,
-  rolloutFraction: Int
+  rolloutFraction: Int,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   println("Running pre-upload precondition checks...")
   PendingReleaseChecker(client).verify(PACKAGE_NAME, track)
@@ -115,7 +116,7 @@ private fun runUpload(
   println("Uploaded — assigned version code: $uploadedVersionCode")
 
   println("Running version inversion check...")
-  VersionInversionChecker(client).verify(PACKAGE_NAME, track, uploadedVersionCode)
+  VersionInversionChecker(client).verify(PACKAGE_NAME, track, uploadedVersionCode, editId)
   println("Version inversion check passed.")
   println()
 
@@ -124,13 +125,25 @@ private fun runUpload(
     properties.majorMinorVersion,
     properties.flavor.id
   )
+  // Fetch the current track state so frozen OS-specific releases can be passed through
+  // completely unmodified in the setTrackRelease call. The Play Console API replaces the entire
+  // track on each update, so any release not included would be silently deactivated.
+  val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+  val frozenReleases = if (frozenVersionCodes.isNotEmpty()) {
+    println("Fetching current track state to preserve frozen release(s)...")
+    client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
+      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
+  } else {
+    emptyList()
+  }
   client.setTrackRelease(
     PACKAGE_NAME,
     editId,
     track,
     uploadedVersionCode,
     rolloutFraction,
-    releaseNotes
+    releaseNotes,
+    frozenReleases
   )
   println("Track '$track' updated.")
 
@@ -172,7 +185,7 @@ private val AAB_FILENAME_REGEX =
  *
  * @return parsed [AabProperties], or `null` if the filename does not match the expected format
  */
-private fun parseAabFilename(aabName: String): AabProperties? {
+fun parseAabFilename(aabName: String): AabProperties? {
   val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
   val (major, minor, rc, flavorId) = match.destructured
   val flavor = AppFlavor.fromId(flavorId) ?: return null

@@ -33,7 +33,7 @@ interface PlayConsoleService {
    * @param authorizationBearer the OAuth2 bearer token for authentication
    * @return the [EditResponse] containing the new edit session ID
    */
-  @POST("{packageName}/edits")
+  @POST("androidpublisher/v3/applications/{packageName}/edits")
   fun insertEdit(
     @Path("packageName") packageName: String,
     @Header("Authorization") authorizationBearer: String,
@@ -55,7 +55,11 @@ interface PlayConsoleService {
    * @param aabBody the AAB file content as a raw [RequestBody]
    * @return the [BundleResponse] containing the assigned version code
    */
-  @POST("{packageName}/edits/{editId}/bundles?uploadType=media")
+  @POST(
+    "upload/androidpublisher/v3/applications/{packageName}/edits/{editId}/" +
+      "bundles?uploadType=media"
+  )
+
   fun uploadBundle(
     @Path("packageName") packageName: String,
     @Path("editId") editId: String,
@@ -79,7 +83,7 @@ interface PlayConsoleService {
    * @param trackBody the track update configuration
    * @return the [TrackResponse] reflecting the updated track state
    */
-  @PUT("{packageName}/edits/{editId}/tracks/{track}")
+  @PUT("androidpublisher/v3/applications/{packageName}/edits/{editId}/tracks/{track}")
   fun updateTrack(
     @Path("packageName") packageName: String,
     @Path("editId") editId: String,
@@ -102,7 +106,7 @@ interface PlayConsoleService {
    * @param authorizationBearer the OAuth2 bearer token for authentication
    * @return the [EditResponse] confirming the committed edit
    */
-  @POST("{packageName}/edits/{editId}:commit")
+  @POST("androidpublisher/v3/applications/{packageName}/edits/{editId}:commit")
   fun commitEdit(
     @Path("packageName") packageName: String,
     @Path("editId") editId: String,
@@ -120,7 +124,7 @@ interface PlayConsoleService {
    * @param authorizationBearer the OAuth2 bearer token for authentication
    * @return the [TrackResponse] containing the current releases on the track
    */
-  @GET("{packageName}/edits/{editId}/tracks/{track}")
+  @GET("androidpublisher/v3/applications/{packageName}/edits/{editId}/tracks/{track}")
   fun getTrack(
     @Path("packageName") packageName: String,
     @Path("editId") editId: String,

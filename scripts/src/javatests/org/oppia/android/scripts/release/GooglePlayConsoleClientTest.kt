@@ -223,7 +223,6 @@ class GooglePlayConsoleClientTest {
 
   @Test
   fun testGetTrackReleases_parsesReleasesFromResponse() {
-    // getTrackReleases internally calls createEdit first.
     server.enqueue(MockResponse().setBody("""{"id":"temp-edit"}""").setResponseCode(200))
     server.enqueue(
       MockResponse()
@@ -260,5 +259,45 @@ class GooglePlayConsoleClientTest {
     }
 
     assertThat(exception).hasMessageThat().contains("404")
+  }
+
+  @Test
+  fun testGetTrackReleases_withExistingEditId_reusesEditWithoutCreatingNew() {
+    // Only one request should be made (getTrack) — no createEdit when existingEditId is provided.
+    server.enqueue(
+      MockResponse()
+        .setBody("""{"releases":[{"versionCodes":["200"],"status":"completed"}]}""")
+        .setResponseCode(200)
+    )
+
+    val releases = client.getTrackReleases("org.oppia.android", "alpha", "existing-edit-1")
+
+    // Verify only one request was sent (getTrack, not createEdit + getTrack).
+    assertThat(server.requestCount).isEqualTo(1)
+    val request = server.takeRequest()
+    assertThat(request.path).contains("existing-edit-1")
+    assertThat(releases).hasSize(1)
+  }
+
+  @Test
+  fun testGetTrackReleases_withoutExistingEditId_createsNewEditFirst() {
+    // Two requests: createEdit then getTrack.
+    server.enqueue(MockResponse().setBody("""{"id":"new-edit-99"}""").setResponseCode(200))
+    server.enqueue(
+      MockResponse()
+        .setBody("""{"releases":[{"versionCodes":["100"],"status":"completed"}]}""")
+        .setResponseCode(200)
+    )
+
+    client.getTrackReleases("org.oppia.android", "alpha", existingEditId = null)
+
+    assertThat(server.requestCount).isEqualTo(2)
+    // First request must be the edit insert (POST .../edits).
+    val firstRequest = server.takeRequest()
+    assertThat(firstRequest.method).isEqualTo("POST")
+    assertThat(firstRequest.path).endsWith("/edits")
+    // Second request must use the newly created edit ID.
+    val secondRequest = server.takeRequest()
+    assertThat(secondRequest.path).contains("new-edit-99")
   }
 }
