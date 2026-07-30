@@ -1,0 +1,159 @@
+# Runs weekly to refresh the pinned lesson version files (config/lessons/*.textproto) by
+# executing download_lesson_list against the live Oppia server, then opens (or force-pushes to)
+# a dedicated PR on the `chore/update-pinned-lesson-versions` branch so the coordinator can
+# review and merge the diff.
+#
+# The workflow runs against latest develop so the textproto diff is always computed relative
+# to the current checked-in state. If the files are already up-to-date the commit step is
+# skipped and no PR changes are proposed.
+#
+# Secrets required:
+#   PROD_SERVER_LESSON_SECRET -- service key for the Oppia production server
+#   BOT_TOKEN                 -- GitHub PAT with `repo` scope for opening/updating the PR
+#                                (GITHUB_TOKEN cannot open PRs targeting other branches in
+#                                all configurations, so a dedicated PAT is used here)
+
+name: Pull Latest Lesson Versions
+
+on:
+  schedule:
+    # Every Monday at 02:30 UTC (matches the existing lesson_checks.yml schedule offset by
+    # 30 minutes so the two jobs don't contend on the Bazel remote cache simultaneously).
+    - cron: "30 02 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  # Serialize runs so a manually-triggered dispatch doesn't race a scheduled run that is
+  # still in progress. cancel-in-progress is false so the in-flight run always completes
+  # and the new run queues rather than being dropped.
+  group: pull-latest-lesson-versions
+  cancel-in-progress: false
+
+jobs:
+  update_pinned_lesson_versions:
+    name: Update pinned lesson versions
+    runs-on: ubuntu-24.04
+    permissions:
+      # contents:write is required for the commit step (git push to the dedicated branch).
+      # pull-requests:write is required for the gh pr create/edit step.
+      # id-token and contents:read are sufficient for checkout; write is declared here
+      # because the same token is reused for the push step.
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Check out develop
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so the git log used for the PR body is accurate and so
+          # force-pushing the dedicated branch does not lose branch history context.
+          fetch-depth: 0
+          # Use the BOT_TOKEN so that the push and PR creation steps are authenticated
+          # with an account that has the required scopes. GITHUB_TOKEN is intentionally
+          # not used here because PRs opened by GITHUB_TOKEN cannot trigger CI workflows.
+          token: ${{ secrets.BOT_TOKEN }}
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Prepare lesson secret
+        env:
+          PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
+        run: |
+          echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
+          mkdir -p release_assets
+
+      - name: Download alpha pinned lesson versions
+        run: |
+          bazel run //scripts:download_lesson_list -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
+
+      - name: Download prod pinned lesson versions
+        run: |
+          bazel run //scripts:download_lesson_list -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet config/lessons/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected in config/lessons/ — skipping PR update."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected:"
+            git diff --stat config/lessons/
+          fi
+
+      - name: Commit and push to dedicated branch
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          BRANCH="chore/update-pinned-lesson-versions"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Always reset the dedicated branch to the current develop HEAD so the diff
+          # in the PR is always exactly the textproto update and nothing else.
+          git checkout -B "$BRANCH"
+
+          git add config/lessons/alpha_pinned_lesson_versions.textproto \
+                  config/lessons/prod_pinned_lesson_versions.textproto
+
+          git commit -m "chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
+
+          # Force-push so that repeated weekly runs replace the previous branch state
+          # rather than appending commits. The PR is always a single, clean diff.
+          git push --force origin "$BRANCH"
+
+      - name: Create or update pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          BRANCH="chore/update-pinned-lesson-versions"
+          TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
+          BODY="## Automated lesson version update
+
+          This PR was opened automatically by the \`pull_latest_lesson_versions\` workflow.
+
+          It refreshes \`config/lessons/alpha_pinned_lesson_versions.textproto\` and
+          \`config/lessons/prod_pinned_lesson_versions.textproto\` to reflect the latest
+          lesson content versions from the live Oppia server.
+
+          **Review checklist:**
+          - [ ] Confirm the content version numbers look reasonable (monotonically increasing)
+          - [ ] Merge once CI passes
+
+          _Triggered by: \`${{ github.event_name }}\` on \`${{ github.sha }}\`_"
+
+          # If a PR already exists for this branch, update its title/body and move on.
+          # gh pr edit exits non-zero only when the branch has no open PR, so we use ||
+          # to fall through to gh pr create in that case.
+          if gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' \
+              | grep -qE '^[0-9]+$'; then
+            PR_NUMBER=$(gh pr list --head "$BRANCH" --state open \
+              --json number --jq '.[0].number')
+            echo "Updating existing PR #$PR_NUMBER"
+            gh pr edit "$PR_NUMBER" --title "$TITLE" --body "$BODY"
+          else
+            echo "Opening new PR"
+            gh pr create \
+              --head "$BRANCH" \
+              --base develop \
+              --title "$TITLE" \
+              --body "$BODY"
+          fi
