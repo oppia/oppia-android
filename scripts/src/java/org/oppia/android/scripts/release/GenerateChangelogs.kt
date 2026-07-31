@@ -99,7 +99,8 @@ fun generateChangelogs(
   if (changelogVersionOverride != null) {
     val parts = changelogVersionOverride.split(".")
     require(parts.size == 2 && parts.all { it.toIntOrNull() != null }) {
-      "TARGET_VERSION must be in 'MAJOR.MINOR' format (e.g. '0.17'), got: '$changelogVersionOverride'"
+      "TARGET_VERSION must be in 'MAJOR.MINOR' format (e.g. '0.17'), " +
+        "got: '$changelogVersionOverride'"
     }
     majorVersion = parts[0].toInt()
     prevMinor = parts[1].toInt()
