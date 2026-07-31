@@ -22,6 +22,14 @@ on:
     paths:
       - 'version.bzl'
   workflow_dispatch:
+    inputs:
+      target_version:
+        description: >-
+          Version to generate changelog for (e.g. "0.17"). If empty, the version
+          is read from version.bzl at HEAD. Use this to regenerate a changelog
+          for an older release without modifying version.bzl.
+        required: false
+        default: ''
 
 # Only one changelog generation may run at a time. An in-flight run is never cancelled
 # (cancel-in-progress: false) so that a rapid double-push to version.bzl does not leave
