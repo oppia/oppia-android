@@ -348,7 +348,7 @@ fun buildPrompt(version: String, prListText: String, issueListText: String): Str
     Do not mention pull request numbers, issue numbers, or developer jargon.
     Keep it simple, positive, and friendly.
     IMPORTANT: Your response must be 500 characters or fewer (including spaces and punctuation).
-    This limit is enforced by the Google Play Console release notes field.
+    The Google Play Console release notes field has a 500-character maximum.
   """.trimIndent()
 }
 
