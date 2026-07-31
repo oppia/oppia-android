@@ -3,7 +3,7 @@
 #   1. Reads the new MINOR_VERSION from version.bzl and derives the *previous* version
 #      (e.g. 0.17->0.18 bump generates the changelog for 0.17).
 #   2. Collects all PRs merged into develop between the two most recent release branches.
-#   3. Parses "Fixes #NNNN" / "Closes #NNNN" references to surface issue titles.
+#   3. Parses "Fix #NNNN" / "Fixes #NNNN" references to surface issue titles.
 #   4. Calls Vertex AI (Gemini) to produce a 2-3 sentence user-facing changelog summary.
 #   5. Writes config/changelogs/<major>.<minor>.md and opens a PR on develop for review.
 #
@@ -12,12 +12,6 @@
 # coordinator then writes the summary manually.
 #
 # Can also be triggered manually via workflow_dispatch to test or regenerate a changelog.
-#
-# Note: this workflow authenticates to GCP to call the Vertex AI API. The environment
-# (oppia-android-release-env) must NOT have required reviewers configured, since the
-# workflow is triggered automatically on every version.bzl push. If required reviewers
-# are needed for other workflows in that environment, consider creating a separate
-# non-gated environment for changelog generation (e.g. oppia-android-automation-env).
 
 name: Generate Changelog
 
@@ -47,7 +41,7 @@ jobs:
       pull-requests: write # Required so the script can open the PR via gh.
 
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/checkout@v4
         with:
           # Full history is required: the script uses `git log` to collect commits between
           # release branches and needs the complete DAG to find merge bases correctly.
@@ -70,13 +64,13 @@ jobs:
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Authenticate to GCP via Workload Identity Federation
-        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f
+        uses: google-github-actions/setup-gcloud@v2
 
       # Obtain a short-lived OAuth2 access token for the WIF-impersonated service account.
       # GenerateChangelogs passes this as the Bearer token when calling the Vertex AI API.
@@ -86,12 +80,8 @@ jobs:
           echo "::add-mask::$ACCESS_TOKEN"
           echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
 
-      # The GenerateChangelogs script is a pure Kotlin script with no Android resources.
-      # The Android build environment (NDK, SDK, etc.) is not needed here.
       - name: Set up Bazel
-        uses: bazel-contrib/setup-bazel@8cb04a772ab4c1eb984e9c1b493a182e96c5e425
-        with:
-          bazelisk-cache: true
+        uses: abhinavsingh/setup-bazel@v3
 
       # Run the GenerateChangelogs script. It will:
       #   - Determine the version to generate for from version.bzl.
