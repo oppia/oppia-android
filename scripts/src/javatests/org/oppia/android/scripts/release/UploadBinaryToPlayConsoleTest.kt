@@ -353,16 +353,17 @@ class UploadBinaryToPlayConsoleTest {
 
     runMain(aab.absolutePath)
 
-    // Four GET /tracks/ calls in total: one from PendingReleaseChecker (using a temp edit) and
-    // three from VersionInversionChecker (all reusing the upload edit ID).
-    assertThat(fake.trackQueriedEditIds).hasSize(4)
+    // Five GET /tracks/ calls in total: one from PendingReleaseChecker (using a temp edit),
+    // three from VersionInversionChecker (all reusing the upload edit ID), and one more from
+    // the frozen-release lookup (also reusing the upload edit ID).
+    assertThat(fake.trackQueriedEditIds).hasSize(5)
     val pendingCheckEditId = fake.trackQueriedEditIds[0]
     val uploadEditId = fake.trackQueriedEditIds[1]
     // The upload edit is a fresh session distinct from the pending-check temp edit.
     assertThat(uploadEditId).isNotEqualTo(pendingCheckEditId)
-    // VersionInversionChecker must reuse the upload edit ID for all three track queries.
+    // VersionInversionChecker and the frozen-release lookup must all reuse the upload edit ID.
     assertThat(fake.trackQueriedEditIds.drop(1))
-      .containsExactly(uploadEditId, uploadEditId, uploadEditId)
+      .containsExactly(uploadEditId, uploadEditId, uploadEditId, uploadEditId)
       .inOrder()
   }
 
@@ -446,6 +447,81 @@ class UploadBinaryToPlayConsoleTest {
 
     assertThat(fake.trackUpdateBodies).hasSize(1)
     assertThat(fake.trackUpdateBodies.first()).contains("b".repeat(500))
+  }
+
+  // ---------------------------------------------------------------------------
+  // Frozen version code preservation
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testRunUpload_alphaTrack_includesFrozenKitKatVersionCodeInTrackUpdateRequest() {
+    // The alpha track has a permanently frozen KitKat build (vc 16) that must be re-included in
+    // every setTrackRelease call. Without it the Play Console API would deactivate vc 16.
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    // Configure the alpha track to return vc 16 when the frozen-release GET is issued, so
+    // the production code picks it up and passes it through unmodified to setTrackRelease.
+    fake.setTrackReleases(
+      "alpha",
+      listOf(PlayConsoleClient.TrackRelease(listOf(16L), "completed"))
+    )
+    fake.setNextVersionCode(202L)
+
+    runMain(aab.absolutePath, track = "alpha")
+
+    val setTrackBody = fake.trackUpdateBodies.first()
+    assertThat(setTrackBody).contains("\"16\"")
+    assertThat(setTrackBody).contains("\"202\"")
+    // Exactly 2 releases must appear: the new upload and the frozen KitKat entry, no more.
+    assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(2)
+    // The frozen entry is passed through with "completed" status.
+    assertThat(setTrackBody).contains("\"completed\"")
+  }
+
+  @Test
+  fun testRunUpload_alphaTrack_includesAllFrozenVersionCodesWhenMultipleFrozenBuildsExist() {
+    // Regression: when a second build is added to the frozen map (e.g. a future Lollipop freeze),
+    // both frozen version codes must survive in the setTrackRelease call alongside the new upload.
+    // Uses FakePlayConsoleClient with an injected two-entry frozen map to avoid HTTP mock overhead.
+    val fakeClient = FakePlayConsoleClient()
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(listOf(16L), "completed"),
+        PlayConsoleClient.TrackRelease(listOf(21L), "completed")
+      )
+    )
+    val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+
+    runUpload(
+      client = fakeClient,
+      workspaceRoot = tempFolder.root.absolutePath,
+      aabPath = aab.absolutePath,
+      properties = parseAabFilename(aab.name)!!,
+      track = "alpha",
+      rolloutFraction = 10,
+      frozenVersionCodesPerTrack = mapOf("alpha" to setOf(16L, 21L))
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.preservedReleases).hasSize(2)
+    val preservedVcs = update.preservedReleases.flatMap { it.versionCodes }
+    assertThat(preservedVcs).containsExactly(16L, 21L)
+  }
+
+  @Test
+  fun testRunUpload_betaTrack_doesNotIncludeAnyFrozenVersionCodesInTrackUpdateRequest() {
+    // Beta currently has no frozen builds; the setTrackRelease body should only contain the new vc.
+    val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
+    createChangelog("0.17", content = "Release notes.")
+    fake.setNextVersionCode(202L)
+
+    runMain(aab.absolutePath, track = "beta")
+
+    assertThat(fake.trackUpdateBodies).hasSize(1)
+    assertThat(fake.trackUpdateBodies.first()).contains("\"202\"")
+    assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"16\"")
   }
 
   // ---------------------------------------------------------------------------

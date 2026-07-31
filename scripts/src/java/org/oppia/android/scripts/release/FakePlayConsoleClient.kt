@@ -161,11 +161,20 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     track: String,
     versionCode: Long,
     rolloutFraction: Int,
-    releaseNotes: Map<String, String>
+    releaseNotes: Map<String, String>,
+    preservedReleases: List<PlayConsoleClient.TrackRelease>
   ) {
     maybeFailCall("setTrackRelease")
     trackUpdates.add(
-      TrackUpdate(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
+      TrackUpdate(
+        packageName,
+        editId,
+        track,
+        versionCode,
+        rolloutFraction,
+        releaseNotes,
+        preservedReleases
+      )
     )
     delegate.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
   }
@@ -294,6 +303,10 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
    * @property versionCode the version code assigned to the track
    * @property rolloutFraction the staged rollout fraction in [0, 1000] (1000 = 100%)
    * @property releaseNotes the release notes map (BCP-47 language code to text)
+   * @property rolloutFraction the staged rollout fraction (1.0 = full rollout)
+   * @property releaseNotes the release notes map (language code to text)
+   * @property preservedReleases the frozen OS-specific releases included alongside [versionCode]
+   *     to prevent them being deactivated by the track update
    */
   data class TrackUpdate(
     val packageName: String,
@@ -301,6 +314,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     val track: String,
     val versionCode: Long,
     val rolloutFraction: Int,
-    val releaseNotes: Map<String, String>
+    val releaseNotes: Map<String, String>,
+    val preservedReleases: List<PlayConsoleClient.TrackRelease> = emptyList()
   )
 }
