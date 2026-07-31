@@ -53,6 +53,10 @@ fun main(args: Array<String>) {
 
   val overrideApiBaseUrl = if (args.size == 6) args[5] else null
 
+  // TARGET_VERSION is set by the workflow when the user triggers workflow_dispatch with a
+  // specific version (e.g. "0.17"). When empty or absent, version is derived from version.bzl.
+  val changelogVersionOverride = System.getenv("TARGET_VERSION")?.takeIf { it.isNotBlank() }
+
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val vertexAiClient = if (overrideApiBaseUrl != null) {
@@ -63,7 +67,8 @@ fun main(args: Array<String>) {
     generateChangelogs(
       workspaceRoot = File(workspaceRoot),
       commandExecutor = commandExecutor,
-      vertexAiClient = vertexAiClient
+      vertexAiClient = vertexAiClient,
+      changelogVersionOverride = changelogVersionOverride
     )
   }
 }
@@ -81,21 +86,38 @@ fun main(args: Array<String>) {
 fun generateChangelogs(
   workspaceRoot: File,
   commandExecutor: CommandExecutor,
-  vertexAiClient: VertexAiClient
+  vertexAiClient: VertexAiClient,
+  changelogVersionOverride: String? = null
 ) {
-  // Step 1 — Parse version.bzl to determine which version's changelog to generate.
-  val (majorVersion, minorVersion) = parseVersionBzl(workspaceRoot)
-  val prevMinor = minorVersion - 1
-  check(prevMinor >= 0) {
-    "Cannot generate changelog: MINOR_VERSION in version.bzl is $minorVersion. " +
-      "Expected a value ≥ 1 (need a previous version to generate a changelog for)."
+  // Step 1 — Determine which version's changelog to generate.
+  // If changelogVersionOverride is set (from TARGET_VERSION env / workflow_dispatch input),
+  // use it directly. Otherwise derive the version from version.bzl.
+  val majorVersion: Int
+  val prevMinor: Int
+  val changelogVersion: String
+
+  if (changelogVersionOverride != null) {
+    val parts = changelogVersionOverride.split(".")
+    require(parts.size == 2 && parts.all { it.toIntOrNull() != null }) {
+      "TARGET_VERSION must be in 'MAJOR.MINOR' format (e.g. '0.17'), got: '$changelogVersionOverride'"
+    }
+    majorVersion = parts[0].toInt()
+    prevMinor = parts[1].toInt()
+    changelogVersion = changelogVersionOverride
+  } else {
+    val (major, minor) = parseVersionBzl(workspaceRoot)
+    majorVersion = major
+    prevMinor = minor - 1
+    check(prevMinor >= 0) {
+      "Cannot generate changelog: MINOR_VERSION in version.bzl is $minor. " +
+        "Expected a value ≥ 1 (need a previous version to generate a changelog for)."
+    }
+    changelogVersion = "$majorVersion.$prevMinor"
   }
-  val changelogVersion = "$majorVersion.$prevMinor"
   val changelogFileName = "$changelogVersion.md"
   val changelogFile = File(workspaceRoot, "$CHANGELOGS_DIR/$changelogFileName")
 
   println("=== Generate Changelog ===")
-  println("  Current version : $majorVersion.$minorVersion")
   println("  Changelog for   : $changelogVersion")
   println()
 
