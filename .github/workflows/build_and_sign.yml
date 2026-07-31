@@ -202,7 +202,8 @@ jobs:
         run: |
           WRITABLE_AAB_PATH="${{ github.workspace }}/unsigned-${AAB_NAME}"
           cp "$UNSIGNED_AAB_PATH" "$WRITABLE_AAB_PATH"
-          zip -d "$WRITABLE_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF" "META-INF/*.DSA"
+          chmod 755 "$WRITABLE_AAB_PATH"
+          zip -d "$WRITABLE_AAB_PATH" "META-INF/*.RSA" "META-INF/*.SF"
           echo "UNSIGNED_AAB_PATH=$WRITABLE_AAB_PATH" >> $GITHUB_ENV
 
       # Signs the unsigned AAB using Cloud KMS HSM. The private key never leaves the HSM —
