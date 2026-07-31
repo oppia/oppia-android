@@ -591,6 +591,63 @@ class GenerateChangelogsTest {
   }
 
   @Test
+  fun testGenerateChangelogs_prevBranchAmbiguousArgument_fallsBackToFirstCommit() {
+    // Simulates the second git error phrase that indicates a missing branch:
+    // "ambiguous argument" (e.g. git merge-base release-0.16 origin/develop).
+    writeVersionBzl(major = 0, minor = 18)
+    val firstCommit = "firstcommitsha"
+    val toSha = "toshasha456"
+    var mergeBaseCallCount = 0
+    fakeExecutor.registerHandler("git") { _, args, out, _ ->
+      when {
+        args.contains("merge-base") -> {
+          mergeBaseCallCount++
+          if (mergeBaseCallCount == 1) {
+            out.println(toSha); 0
+          } else {
+            // Simulate "ambiguous argument" failure for the previous release branch.
+            out.println("fatal: ambiguous argument 'release-0.16': unknown revision"); 1
+          }
+        }
+        args.contains("--max-parents=0") -> { out.println(firstCommit); 0 }
+        args.contains("log") -> { out.println(""); 0 }
+        else -> { out.println(""); 0 }
+      }
+    }
+
+    generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+
+    assertThat(fakeVertexAiClient.receivedPrompts).hasSize(1)
+  }
+
+  @Test
+  fun testGenerateChangelogs_prevBranchMergeBaseFailsWithUnrelatedError_rethrows() {
+    // If git merge-base fails for a reason unrelated to a missing branch (e.g. a corrupt
+    // repository), the exception must propagate rather than being silently swallowed.
+    writeVersionBzl(major = 0, minor = 18)
+    val toSha = "toshasha789"
+    var mergeBaseCallCount = 0
+    fakeExecutor.registerHandler("git") { _, args, out, _ ->
+      when {
+        args.contains("merge-base") -> {
+          mergeBaseCallCount++
+          if (mergeBaseCallCount == 1) {
+            out.println(toSha); 0
+          } else {
+            // Simulate an unrelated git failure that must NOT be swallowed.
+            out.println("fatal: unable to read tree"); 1
+          }
+        }
+        else -> { out.println(""); 0 }
+      }
+    }
+
+    assertThrows<IllegalStateException> {
+      generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+    }
+  }
+
+  @Test
   fun testGenerateChangelogs_firstEverRelease_prevMinorIsZero_usesFirstCommit() {
     // minor=1 means prevMinor=0, which triggers the first-release path.
     writeVersionBzl(major = 0, minor = 1)
