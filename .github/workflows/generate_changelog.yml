@@ -104,6 +104,10 @@ jobs:
       - name: Generate changelog and open PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Passed through to the GenerateChangelogs script. When set (manual workflow_dispatch
+          # with a specific version), the script skips reading version.bzl and uses this value
+          # directly. Empty on automatic push triggers — script falls back to version.bzl.
+          TARGET_VERSION: ${{ inputs.target_version }}
         run: |
           bazel run //scripts:generate_changelogs -- \
             "$(pwd)" \
