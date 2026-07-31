@@ -128,19 +128,19 @@ written_translation {
     translation_mapping {
       key: "pt"
       value {
-        html: "<p>Esta se\303\247\303\243o revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cart\303\243o de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+        html: "<p>Esta se\303\247\303\243o revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cart\303\243o de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Exemplos resolvidos:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Qual \303\251 a representa\303\247\303\243o de um meio como fra\303\247\303\243o?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Um meio \303\251 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
       }
     }
     translation_mapping {
       key: "ar"
       value {
-        html: "<p>\331\212\330\261\330\247\330\254\330\271 \331\207\330\260\330\247 \330\247\331\204\331\202\330\263\331\205 \331\205\331\207\330\247\330\261\330\251 \330\260\330\247\330\252 \330\265\331\204\330\251: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;\330\250\330\267\330\247\331\202\330\251 \331\205\331\201\331\207\331\210\331\205 test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+        html: "<p>\331\212\330\261\330\247\330\254\330\271 \331\207\330\260\330\247 \330\247\331\204\331\202\330\263\331\205 \331\205\331\207\330\247\330\261\330\251 \330\260\330\247\330\252 \330\265\331\204\330\251: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;\330\250\330\267\330\247\331\202\330\251 \331\205\331\201\331\207\331\210\331\205 test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>\330\243\331\205\330\253\331\204\330\251 \331\205\330\255\331\204\331\210\331\204\330\251:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;\331\205\330\247 \331\207\331\210 \330\247\331\204\331\206\330\265\331\201 \331\201\331\212 \330\265\331\210\330\261\330\251 \331\203\330\263\330\261\330\237&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;\330\247\331\204\331\206\330\265\331\201 \331\207\331\210 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
       }
     }
     translation_mapping {
       key: "sw"
       value {
-        html: "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+        html: "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Mifano iliyofanyiwa kazi:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Nusu moja ni nini kama sehemu?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Nusu moja ni 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
       }
     }
   }

@@ -510,7 +510,7 @@ class StudyGuideFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStudyGuide_englishContentLang_switchToArabic_sectionContentIsInArabic() {
+  fun testStudyGuide_englishContentLang_switchToArabic_workedExampleIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,
@@ -522,20 +522,22 @@ class StudyGuideFragmentTest {
       updateContentLanguage(profileId, OppiaLanguage.ARABIC)
       testCoroutineDispatchers.runCurrent()
 
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.study_guide_section_recycler_view,
-          position = 1,
-          targetViewId = R.id.study_guide_section_content_text
-        )
-      ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("النصف هو 1/2."))))
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStudyGuide_withArabicContentLang_sectionContentIsInArabic() {
+  fun testStudyGuide_withArabicContentLang_contentAndWorkedExampleAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,
@@ -549,6 +551,19 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("النصف هو 1/2."))))
+      onView(workedExampleContent)
+        .check(matches(withContentDescription(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withContentDescription(containsString("النصف هو 1/2."))))
     }
   }
 
