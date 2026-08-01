@@ -1,6 +1,6 @@
 # Runs weekly to refresh the pinned lesson version files (config/lessons/*.textproto) by
 # executing download_lesson_list against the live Oppia server, then opens (or force-pushes to)
-# a dedicated PR on the `chore/update-pinned-lesson-versions` branch so the coordinator can
+# a dedicated PR on the `automated/lesson-versions` branch so the coordinator can
 # review and merge the diff.
 #
 # The workflow runs against latest develop so the textproto diff is always computed relative
@@ -101,7 +101,7 @@ jobs:
       - name: Commit and push to dedicated branch
         if: steps.diff.outputs.changed == 'true'
         run: |
-          BRANCH="chore/update-pinned-lesson-versions"
+          BRANCH="automated/lesson-versions"
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -124,7 +124,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          BRANCH="chore/update-pinned-lesson-versions"
+          BRANCH="automated/lesson-versions"
           TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
           BODY=$'## Automated lesson version update\n\n'
           BODY+=$'This PR was opened automatically by the `pull_latest_lesson_versions` workflow.\n\n'
