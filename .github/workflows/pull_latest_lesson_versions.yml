@@ -51,40 +51,24 @@ jobs:
           # Use the BOT_TOKEN so that the push and PR creation steps are authenticated
           # with an account that has the required scopes. GITHUB_TOKEN is intentionally
           # not used here because PRs opened by GITHUB_TOKEN cannot trigger CI workflows.
-          token: ${{ secrets.BOT_TOKEN }}
+          # NOTE (fork-test): using GITHUB_TOKEN — on the real workflow BOT_TOKEN is
+          # needed so that the created PR triggers CI; GITHUB_TOKEN is fine for local testing.
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
 
-      - name: Prepare lesson secret
-        env:
-          PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
+      # NOTE (fork-test): real download_lesson_list steps replaced with a mock that appends
+      # a timestamped comment to both textproto files so the diff/commit/PR logic is exercised
+      # without needing PROD_SERVER_LESSON_SECRET or access to the Oppia production server.
+      - name: Simulate lesson version update (fork test only)
         run: |
-          echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
-
-      - name: Download alpha pinned lesson versions
-        run: |
-          bazel run //scripts:download_lesson_list -- \
-            https://www.oppia.org \
-            https://storage.googleapis.com \
-            oppiaserver-resources \
-            $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
-
-      - name: Download prod pinned lesson versions
-        run: |
-          bazel run //scripts:download_lesson_list -- \
-            https://www.oppia.org \
-            https://storage.googleapis.com \
-            oppiaserver-resources \
-            $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
-
-      - name: Clean up lesson secret
-        if: always()
-        run: rm -f prod_server.key
+          echo "# fork-test update: $(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+            >> config/lessons/alpha_pinned_lesson_versions.textproto
+          echo "# fork-test update: $(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+            >> config/lessons/prod_pinned_lesson_versions.textproto
 
       - name: Check for changes
         id: diff
@@ -122,7 +106,9 @@ jobs:
       - name: Create or update pull request
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          # NOTE (fork-test): GITHUB_TOKEN used — the PR won't trigger CI but creation/update
+          # logic is fully exercised. Use BOT_TOKEN on the real workflow.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="automated/lesson-versions"
           TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
