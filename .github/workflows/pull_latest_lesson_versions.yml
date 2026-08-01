@@ -58,15 +58,11 @@ jobs:
         with:
           version: 6.5.0
 
-      - name: Set up build environment
-        uses: ./.github/actions/set-up-android-bazel-build-environment
-
       - name: Prepare lesson secret
         env:
           PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
         run: |
           echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
-          mkdir -p release_assets
 
       - name: Download alpha pinned lesson versions
         run: |
@@ -86,6 +82,10 @@ jobs:
             $(pwd)/prod_server.key \
             $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
 
+      - name: Clean up lesson secret
+        if: always()
+        run: rm -f prod_server.key
+
       - name: Check for changes
         id: diff
         run: |
@@ -104,7 +104,7 @@ jobs:
           BRANCH="chore/update-pinned-lesson-versions"
 
           git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           # Always reset the dedicated branch to the current develop HEAD so the diff
           # in the PR is always exactly the textproto update and nothing else.
@@ -126,19 +126,22 @@ jobs:
         run: |
           BRANCH="chore/update-pinned-lesson-versions"
           TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
-          BODY="## Automated lesson version update
+          BODY=$(cat <<'PREOF'
+## Automated lesson version update
 
-          This PR was opened automatically by the \`pull_latest_lesson_versions\` workflow.
+This PR was opened automatically by the `pull_latest_lesson_versions` workflow.
 
-          It refreshes \`config/lessons/alpha_pinned_lesson_versions.textproto\` and
-          \`config/lessons/prod_pinned_lesson_versions.textproto\` to reflect the latest
-          lesson content versions from the live Oppia server.
+It refreshes `config/lessons/alpha_pinned_lesson_versions.textproto` and
+`config/lessons/prod_pinned_lesson_versions.textproto` to reflect the latest
+lesson content versions from the live Oppia server.
 
-          **Review checklist:**
-          - [ ] Confirm the content version numbers look reasonable (monotonically increasing)
-          - [ ] Merge once CI passes
+**Review checklist:**
+- [ ] Confirm the content version numbers look reasonable (monotonically increasing)
+- [ ] Merge once CI passes
 
-          _Triggered by: \`${{ github.event_name }}\` on \`${{ github.sha }}\`_"
+_Triggered by: `${{ github.event_name }}` on `${{ github.sha }}`_
+PREOF
+)
 
           # If a PR already exists for this branch, update its title/body and move on.
           # gh pr edit exits non-zero only when the branch has no open PR, so we use ||
