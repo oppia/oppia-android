@@ -126,22 +126,15 @@ jobs:
         run: |
           BRANCH="chore/update-pinned-lesson-versions"
           TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
-          BODY=$(cat <<'PREOF'
-## Automated lesson version update
-
-This PR was opened automatically by the `pull_latest_lesson_versions` workflow.
-
-It refreshes `config/lessons/alpha_pinned_lesson_versions.textproto` and
-`config/lessons/prod_pinned_lesson_versions.textproto` to reflect the latest
-lesson content versions from the live Oppia server.
-
-**Review checklist:**
-- [ ] Confirm the content version numbers look reasonable (monotonically increasing)
-- [ ] Merge once CI passes
-
-_Triggered by: `${{ github.event_name }}` on `${{ github.sha }}`_
-PREOF
-)
+          BODY=$'## Automated lesson version update\n\n'
+          BODY+=$'This PR was opened automatically by the `pull_latest_lesson_versions` workflow.\n\n'
+          BODY+=$'It refreshes `config/lessons/alpha_pinned_lesson_versions.textproto` and\n'
+          BODY+=$'`config/lessons/prod_pinned_lesson_versions.textproto` to reflect the latest\n'
+          BODY+=$'lesson content versions from the live Oppia server.\n\n'
+          BODY+=$'**Review checklist:**\n'
+          BODY+=$'- [ ] Confirm the content version numbers look reasonable (monotonically increasing)\n'
+          BODY+=$'- [ ] Merge once CI passes\n\n'
+          BODY+=$'_Triggered by: `${{ github.event_name }}` on `${{ github.sha }}`_'
 
           # If a PR already exists for this branch, update its title/body and move on.
           # gh pr edit exits non-zero only when the branch has no open PR, so we use ||
