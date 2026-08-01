@@ -45,6 +45,11 @@ jobs:
       - name: Check out develop
         uses: actions/checkout@v4
         with:
+          # Always check out develop explicitly so that both scheduled runs and manual
+          # workflow_dispatch invocations branch from the same base. Without ref: develop,
+          # a dispatch triggered from a non-develop branch would create the dedicated branch
+          # from the wrong HEAD, causing the PR diff to include unrelated commits.
+          ref: develop
           # Fetch full history so the git log used for the PR body is accurate and so
           # force-pushing the dedicated branch does not lose branch history context.
           fetch-depth: 0
