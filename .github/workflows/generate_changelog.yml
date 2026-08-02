@@ -55,6 +55,13 @@ jobs:
           # release branches and needs the complete DAG to find merge bases correctly.
           fetch-depth: 0
 
+      # actions/checkout only creates a local branch for the ref it checks out. The
+      # GenerateChangelogs script calls `git merge-base release-X.Y origin/develop` using
+      # local branch names — without this step the script fails with
+      # "fatal: Not a valid object name release-X.Y".
+      - name: Fetch all release branches as local branches
+        run: git fetch origin '+refs/heads/release-*:refs/heads/release-*'
+
       # Configure a bot identity so that the commit the script creates on the changelog
       # branch is attributed to github-actions[bot] rather than an arbitrary user.
       - name: Configure git identity
