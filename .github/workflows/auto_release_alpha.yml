@@ -1,0 +1,119 @@
+# Runs weekly to identify the newest fully-green commit on develop, promote it to the
+# `latest-alpha` tag, and kick off the build+sign workflow for the alpha flavor.
+#
+# Workflow sequence:
+#   1. FindAlphaCandidate — walks the most recent commits on develop and returns the SHA of
+#      the newest one whose GitHub CI check runs are all passing.
+#   2. Force-push `latest-alpha` tag — moves the well-known ref that build_and_sign.yml uses
+#      as its source when flavor=alpha and source_ref=latest-alpha.
+#   3. Dispatch build_and_sign — triggers the build+sign workflow. That workflow runs under
+#      the oppia-android-release-env environment (reviewer approval required before steps
+#      execute, per environment protection rules).
+#
+# If FindAlphaCandidate finds no passing commit within the search window, the workflow exits
+# with code 1 and the tag-update and dispatch steps are skipped.
+#
+# Secrets required:
+#   BOT_TOKEN    — GitHub PAT with `repo` + `workflow` scopes. GITHUB_TOKEN cannot dispatch
+#                  other workflows in all configurations; a PAT is required here (same
+#                  rationale as pull_latest_lesson_versions.yml).
+#   GITHUB_TOKEN — automatically provided by Actions; used by FindAlphaCandidate for
+#                  read-only commit and check-run queries.
+
+name: Auto Release Alpha
+
+on:
+  schedule:
+    # Tuesdays at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:30) to avoid
+    # Bazel remote cache contention and to give the weekly lesson-version update a chance to
+    # land and go green on develop before the alpha candidate search begins.
+    - cron: "30 03 * * 2"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to search for the alpha candidate (default: develop)"
+        required: false
+        default: "develop"
+      commit_limit:
+        description: "Number of recent commits to inspect (1–100, default: 50)"
+        required: false
+        default: "50"
+
+# Only one auto-release run at a time. cancel-in-progress is false so an in-flight run is
+# never interrupted mid-way through tagging or dispatching.
+concurrency:
+  group: auto-release-alpha
+  cancel-in-progress: false
+
+jobs:
+  auto_release_alpha:
+    name: Auto Release Alpha
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Required to force-push the latest-alpha tag.
+
+    steps:
+      - name: Check out develop
+        uses: actions/checkout@v4
+        with:
+          # Always check out the target branch explicitly so scheduled runs and manual
+          # dispatches both start from the same base.
+          ref: ${{ github.event.inputs.branch || 'develop' }}
+          # Full history is required so that the FindAlphaCandidate script can correctly
+          # resolve commit SHAs via the GitHub API.
+          fetch-depth: 0
+          # Use BOT_TOKEN so the subsequent force-push of the latest-alpha tag is
+          # authenticated with an account that has the required write scope.
+          token: ${{ secrets.BOT_TOKEN }}
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      # Required on ubuntu-24.04 to ensure the Bazel binary is on PATH. Mirrors the pattern
+      # used in generate_changelog.yml and lesson_checks.yml for the same runner version.
+      - name: Set up Android + Bazel build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # FindAlphaCandidate walks the most recent commits on the branch (newest first) and
+      # returns the SHA of the first commit whose GitHub CI check runs are all passing.
+      # The SHA is written to the step output so subsequent steps can reference it.
+      - name: Find alpha candidate
+        id: candidate
+        env:
+          # Read-only — FindAlphaCandidate only calls GET /repos/.../commits and
+          # GET /repos/.../commits/{ref}/check-runs. No write access is needed here.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
+            "$GITHUB_TOKEN" \
+            "${{ github.event.inputs.branch || 'develop' }}" \
+            "${{ github.event.inputs.commit_limit || '50' }}")
+          echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
+          echo "Alpha candidate: $CANDIDATE_SHA"
+
+      # Force-push the well-known `latest-alpha` tag to the candidate commit.
+      # build_and_sign.yml checks out from this tag when source_ref=latest-alpha.
+      - name: Update latest-alpha tag
+        run: |
+          CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --force latest-alpha "$CANDIDATE_SHA"
+          git push --force origin refs/tags/latest-alpha
+          echo "Moved latest-alpha → $CANDIDATE_SHA"
+
+      # Dispatch the build+sign workflow for the alpha flavor. The build_and_sign.yml workflow
+      # runs under the oppia-android-release-env environment, so a required reviewer must
+      # approve before any job steps execute (provides a human gate before deployment).
+      - name: Dispatch build-and-sign for alpha
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          gh workflow run build_and_sign.yml \
+            --repo "${{ github.repository }}" \
+            --ref develop \
+            --field flavor=alpha \
+            --field source_ref=latest-alpha
+          echo "Dispatched build_and_sign.yml (flavor=alpha, source_ref=latest-alpha)"
