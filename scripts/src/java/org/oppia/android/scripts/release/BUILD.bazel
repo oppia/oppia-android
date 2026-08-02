@@ -157,3 +157,21 @@ kt_jvm_library(
         "//third_party:com_squareup_retrofit2_retrofit",
     ],
 )
+
+kt_jvm_library(
+    name = "find_alpha_candidate_lib",
+    srcs = ["FindAlphaCandidate.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":github_ci_client",
+        ":google_github_ci_client",
+    ],
+)
+
+kt_jvm_library(
+    name = "fake_github_ci_client",
+    testonly = True,
+    srcs = ["FakeGitHubCiClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":github_ci_client"],
+)
