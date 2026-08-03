@@ -42,7 +42,12 @@ jobs:
   generate_changelog:
     name: Generate Changelog
     runs-on: ubuntu-24.04
-    environment: oppia-android-release-env
+    # oppia-android-automation-env holds the WIF provider + service-account secrets needed
+    # for Vertex AI but has NO required-reviewer gate. This is intentional: this workflow
+    # only opens a PR that still needs human review before merging — it never deploys
+    # anything directly. The approval gate on oppia-android-release-env is reserved for
+    # build / sign / deploy workflows where a human check before execution is critical.
+    environment: oppia-android-automation-env
     permissions:
       id-token: write      # Required for Workload Identity Federation (Vertex AI auth).
       contents: write      # Required so the script can push the changelog branch.
