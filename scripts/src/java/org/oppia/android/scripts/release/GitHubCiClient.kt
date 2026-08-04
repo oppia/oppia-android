@@ -49,10 +49,22 @@ interface GitHubCiClient {
   /**
    * The overall CI result for a specific commit, derived from its GitHub check runs.
    *
-   * - [PASSING]  — all check runs completed successfully (or were skipped/neutral)
-   * - [FAILING]  — at least one check run completed with a non-success conclusion
-   * - [PENDING]  — at least one check run is still queued or in progress (and none have failed)
+   * - [PASSING]   — all check runs completed successfully (or were skipped/neutral)
+   * - [FAILING]   — at least one check run completed with a non-success conclusion
+   * - [PENDING]   — at least one check run is still queued or in progress (and none have failed)
    * - [NO_CHECKS] — the commit has no check runs at all (treat as not yet ready for deployment)
    */
-  enum class CiStatus { PASSING, FAILING, PENDING, NO_CHECKS }
+  enum class CiStatus {
+    /** All check runs for this commit completed with a passing or neutral conclusion. */
+    PASSING,
+
+    /** At least one check run completed with a failure, timeout, or cancellation conclusion. */
+    FAILING,
+
+    /** At least one check run is still queued or in progress (and none have conclusively failed). */
+    PENDING,
+
+    /** This commit has no check runs associated with it; treat as not yet ready for deployment. */
+    NO_CHECKS,
+  }
 }
