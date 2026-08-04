@@ -270,7 +270,8 @@ class GoogleGitHubCiClientTest {
 
   /** Wraps a list of check-run JSON strings in a full check-runs page response. */
   private fun checkRunsPage(totalCount: Int, runs: List<String>): MockResponse {
-    val body = """{"total_count":$totalCount,"check_runs":[${runs.joinToString(",")}]}"""
+    val body =
+      """{"total_count":$totalCount,"check_runs":[${runs.joinToString(",")}]}"""
     return MockResponse().setResponseCode(200).setBody(body)
   }
 }
