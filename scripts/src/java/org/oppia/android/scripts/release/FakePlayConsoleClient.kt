@@ -243,6 +243,11 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     }
   }
 
+  // NOTE: The mutable collections written here (committedEdits, uploadedVersionCodes, etc.) are
+  // modified on OkHttp's background dispatch thread, then read on the test thread. This is safe
+  // because every PlayConsoleClient call uses Retrofit's synchronous .execute(), whose internal
+  // wait/notify provides the JMM happens-before ordering needed for visibility. Do NOT change
+  // client calls to enqueue()/async — that would silently break this guarantee.
   private inner class PlayConsoleDispatcher : Dispatcher() {
     override fun dispatch(request: RecordedRequest): MockResponse {
       val path = request.path ?: ""
@@ -303,8 +308,6 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
    * @property versionCode the version code assigned to the track
    * @property rolloutFraction the staged rollout fraction in [0, 1000] (1000 = 100%)
    * @property releaseNotes the release notes map (BCP-47 language code to text)
-   * @property rolloutFraction the staged rollout fraction (1.0 = full rollout)
-   * @property releaseNotes the release notes map (language code to text)
    * @property preservedReleases the frozen OS-specific releases included alongside [versionCode]
    *     to prevent them being deactivated by the track update
    */
