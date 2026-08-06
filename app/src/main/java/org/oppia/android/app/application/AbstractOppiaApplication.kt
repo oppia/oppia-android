@@ -48,7 +48,10 @@ abstract class AbstractOppiaApplication(
   override fun onCreate() {
     super.onCreate()
 
-    // Allow startup listeners to early initialize.
+    // Allow startup listeners to early initialize. Nothing at this stage should be startup-state
+    // sensitive. It's also fine for parameters to not be fully initialized at this point because
+    // each app entry point already accounts for potentially uninitialized parameters: splash,
+    // direct activity recreation, and waking up the app to kick off a worker.
     val startupListeners = component.getApplicationStartupListeners()
     startupListeners.forEach(ApplicationStartupListener::onCreateStarted)
 
@@ -56,6 +59,7 @@ abstract class AbstractOppiaApplication(
     // initialized here because it will automatically initialize itself due to the application being
     // a Configuration provider.
     FirebaseApp.initializeApp(applicationContext)
+
     // FirebaseAppCheck protects our API resources from abuse. It works with Firebase
     // services, Google Cloud services, and can also be implemented for our own APIs. See
     // https://firebase.google.com/docs/app-check for currently supported Firebase products.
@@ -63,12 +67,11 @@ abstract class AbstractOppiaApplication(
     // by App Check (Analytics is NOT affected).
     FirebaseAppCheck.getInstance().installAppCheckProviderFactory(firebaseAppCheckProviderFactory)
 
-    // Kick off a background task to finish startup initialization. Nothing at this stage should be
-    // startup-state sensitive. It's also fine for parameters to not be fully initialized at this
-    // point because each app entry point already accounts for potentially uninitialized parameters:
-    // splash, direct activity recreation, and waking up the app to kick off a worker. Finally,
-    // since this is using 'launch' any uncaught exceptions should correctly trigger a failure in
-    // app startup (which is ideal in this case because we can't reliably and safely start the app).
+    // Kick off a background task to finish startup initialization. Listeners at this stage can
+    // actually start depending on platform parameters and feature flags since they will be
+    // guaranteed as fully initialized. Finally, since this is using 'launch' any uncaught
+    // exceptions should correctly trigger a failure in app startup (which is ideal in this case
+    // because it means the app cannot be reliably and safely started).
     CoroutineScope(component.getBackgroundDispatcher()).launch {
       // Wait for parameters to load before running any startup routines that may depend on them.
       component.getPlatformParameterController().loadParametersAsync().await()

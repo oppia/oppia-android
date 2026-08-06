@@ -46,13 +46,12 @@ import javax.inject.Singleton
 /**
  * A general-purpose, all-in-one test utility when interacting with [WorkManager] in Oppia tests.
  *
- * This utility contains a bunch of critical setup and interaction pathways that tests needing to
- * run or instead jobs will need to use. This utility is used over direct interactions with
- * [WorkManager]'s library to help simplify changes and limitations in the API across versions, and
- * because some of the specific operations sometimes require version-sensitive operations (such as
- * accessing [WorkManager]'s internals). It's expected that [WorkManager] never needs to be
- * interacted with directly in tests, and any missing functionality should be added directly to this
- * utility as needed.
+ * This utility is needed for ensuring tests are properly set up for running and testing
+ * [WorkManager] jobs. This utility is used over direct interactions with [WorkManager]'s testing
+ * library to help simplify changes and limitations in the API across versions, and because some of
+ * the specific operations sometimes require version-sensitive operations (such as accessing
+ * [WorkManager]'s internals). It's expected that [WorkManager] never needs to be interacted with
+ * directly in tests, and any missing functionality should be added directly to this utility.
  *
  * Note that [initializeWorkManager] *must* be called before this driver can be interacted with.
  * Also, this driver must be used over [androidx.work.testing.TestDriver] and
