@@ -178,6 +178,7 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_withDisabledMetricsCollection_doesNotLogAnyEvent() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
     setUpTestApplicationComponent()
 
     runInActivity {}

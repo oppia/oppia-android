@@ -14,6 +14,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -147,7 +148,7 @@ class ApplicationLifecycleLogger @Inject constructor(
       val installationId = loggingIdentifierController.fetchInstallationId()
       val profileId = profileManagementController.getCurrentProfileId()
       val learnerId = profileManagementController.fetchCurrentLearnerId()
-      logMethod(installationId, profileId, learnerId, timestamp)
+      logMethod(installationId, profileId?.toLegacyProfileId(), learnerId, timestamp)
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(

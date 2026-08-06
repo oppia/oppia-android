@@ -182,7 +182,7 @@ class TestPlatformParameterModule {
     fun forceEnableTopicPracticeTab(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
     }
- 
+
     fun forceEnableEdgeToEdge(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(EDGE_TO_EDGE, value)
     }

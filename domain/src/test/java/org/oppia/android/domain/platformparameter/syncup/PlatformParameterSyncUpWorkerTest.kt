@@ -13,9 +13,6 @@ import dagger.Component
 import dagger.Module
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.After
-import dagger.Provides
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -33,9 +30,6 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -72,11 +66,6 @@ class PlatformParameterSyncUpWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var serviceOrchestrator: PlatformParameterServiceTestOrchestrator
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
-  }
 
   // TODO(#5835): Finish the tests for this suite.
 
@@ -138,7 +127,6 @@ class PlatformParameterSyncUpWorkerTest {
       LoggerModule::class,
       PlatformParameterSingletonModule::class,
       WorkManagerConfigurationModule::class,
-      TestPlatformParameterModule::class,
       PlatformParameterSyncUpWorkerModule::class
     ]
   )
