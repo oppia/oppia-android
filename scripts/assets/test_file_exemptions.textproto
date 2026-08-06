@@ -4951,3 +4951,7 @@ test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandlerImpl.kt"
   test_file_not_required: true
 }
+test_file_exemption {
+  exempted_file_path: "data/src/test/java/org/oppia/android/data/backends/gae/RetryInterceptorIntegrationTest.kt",
+  is_extra_test_file: true
+}
