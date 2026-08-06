@@ -44,6 +44,7 @@
   <color name="color_def_grey_shade_05">#05395FD0</color>
   <color name="color_def_grey_shade_10">#10395FD0</color>
   <color name="color_def_grey_shade_20">#D6D6D6</color>
+  <color name="color_def_silver_grey">#BDBDBD</color>
   <color name="color_def_blue_shade_100">#0F0086FB</color>
   <color name="color_def_blue_shade_200">#6B0086FB</color>
   <color name="color_def_green_shade">#44A85A</color>

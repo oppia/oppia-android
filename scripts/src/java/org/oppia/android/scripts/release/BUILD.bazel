@@ -1,0 +1,138 @@
+"""
+Libraries for release automation scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "app_flavor",
+    srcs = ["AppFlavor.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "play_console_client",
+    srcs = ["PlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "frozen_release_config",
+    srcs = ["FrozenReleaseConfig.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "google_play_console_client",
+    srcs = ["GooglePlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":frozen_release_config",
+        ":play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
+        "//scripts/src/java/org/oppia/android/scripts/release/remote:play_console_service",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)
+
+kt_jvm_library(
+    name = "cloud_signer",
+    srcs = [
+        "CloudKmsSigner.kt",
+        "CloudSigner.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//third_party:net_jsign_jsign-core",
+    ],
+)
+
+kt_jvm_library(
+    name = "fake_play_console_client",
+    testonly = True,
+    srcs = ["FakePlayConsoleClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":play_console_client"],
+)
+
+kt_jvm_library(
+    name = "fake_cloud_signer",
+    testonly = True,
+    srcs = ["FakeCloudSigner.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":cloud_signer"],
+)
+
+kt_jvm_library(
+    name = "version_inversion_checker",
+    srcs = ["VersionInversionChecker.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":play_console_client"],
+)
+
+kt_jvm_library(
+    name = "pending_release_checker",
+    srcs = ["PendingReleaseChecker.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":play_console_client"],
+)
+
+kt_jvm_library(
+    name = "changelog_existence_checker",
+    srcs = ["ChangelogExistenceChecker.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":app_flavor"],
+)
+
+kt_jvm_library(
+    name = "upload_binary_to_play_console_lib",
+    srcs = ["UploadBinaryToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":app_flavor",
+        ":changelog_existence_checker",
+        ":frozen_release_config",
+        ":google_play_console_client",
+        ":pending_release_checker",
+        ":play_console_client",
+        ":version_inversion_checker",
+    ],
+)
+
+kt_jvm_library(
+    name = "upload_changelog_to_play_console_lib",
+    srcs = ["UploadChangelogToPlayConsole.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":frozen_release_config",
+        ":google_play_console_client",
+        ":play_console_client",
+    ],
+)
+
+kt_jvm_library(
+    name = "sign_release_binary_lib",
+    srcs = ["SignReleaseBinary.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":cloud_signer",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+    ],
+)
+
+kt_jvm_library(
+    name = "update_rollout_fraction_lib",
+    srcs = ["UpdateRolloutFraction.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":frozen_release_config",
+        ":google_play_console_client",
+        ":play_console_client",
+    ],
+)

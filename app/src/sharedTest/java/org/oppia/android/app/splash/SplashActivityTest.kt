@@ -120,7 +120,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -1193,6 +1192,38 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_afterDataReset_recreatesActivitySuccessfully() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    // Simulate a data reset by resetting the onboarding state (which deleteAllProfiles would do).
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify the splash activity can successfully launch after reset without crashing.
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_afterDataReset_localeInitialization_succeeds() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    forceDefaultLocale(Locale.ENGLISH)
+    // Simulate a data reset.
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityFully {
+      // Verify locale initialization still works after reset. The locale handler should be
+      // re-initialized with the system's default locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    }
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -1357,7 +1388,6 @@ class SplashActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

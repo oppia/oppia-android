@@ -10,16 +10,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDGE_TO_EDGE
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LESSON_PROGRESS_VISUALIZATION
+import org.oppia.android.app.model.FeatureFlagId.LOAD_IMAGES_FROM_ASSETS
+import org.oppia.android.app.model.FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
+import org.oppia.android.app.model.FeatureFlagId.STUDY_GUIDES
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
 import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -176,6 +181,26 @@ class TestPlatformParameterModule {
 
     fun forceEnableTopicPracticeTab(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(TOPIC_PRACTICE_TAB, value)
+    }
+ 
+    fun forceEnableEdgeToEdge(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(EDGE_TO_EDGE, value)
+    }
+
+    fun forceEnableLessonProgressVisualization(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LESSON_PROGRESS_VISUALIZATION, value)
+    }
+
+    fun forceLoadLessonProtosFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_LESSON_PROTOS_FROM_ASSETS, value)
+    }
+
+    fun forceLoadImagesFromAssets(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOAD_IMAGES_FROM_ASSETS, value)
+    }
+
+    fun forceEnableStudyGuides(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(STUDY_GUIDES, value)
     }
 
     fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {

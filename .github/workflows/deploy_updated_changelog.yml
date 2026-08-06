@@ -1,0 +1,194 @@
+# Detects when a changelog file in config/changelogs/ is pushed to develop, then runs
+# UploadChangelogToPlayConsole to compare the local changelog against the deployed release notes
+# on Play Console and upload any differences.
+#
+# Triggered automatically on push to develop (detects the modified changelog file and extracts
+# the version from the filename) or manually via workflow_dispatch (coordinator provides version
+# and optional flavor).
+#
+# Flavor-specific changelogs (e.g. config/changelogs/0.17_alpha.md) take precedence over the
+# generic changelog (e.g. config/changelogs/0.17.md) for the matching flavor's track.
+#
+# Prerequisites:
+#   - A live release for the changelog version must already exist on Play Console. The script
+#     fails with an error if the version is not yet live (preventing race conditions against the
+#     initial binary deployment done by deploy_to_play_console.yml).
+#   - The GCP service account must have "Release to production" permission in Play Console.
+#
+# Authentication uses Workload Identity Federation, identical to build_and_sign.yml.
+
+name: Deploy Updated Changelog
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'config/changelogs/**.md'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Changelog version in major.minor format (e.g. '0.17'). Must match a file in config/changelogs/<version>[_flavor].md."
+        required: true
+        type: string
+      flavor:
+        description: "Optional app flavor for a flavor-specific changelog (leave blank to use the generic changelog for all flavors)."
+        required: false
+        # type: string allows empty/blank values; type: choice with an empty option is invalid in
+        # workflow_dispatch and causes the workflow to fail at parse time.
+        type: string
+
+concurrency:
+  # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
+  # The group is intentionally not scoped to github.ref so that push and dispatch triggers
+  # across different refs are also serialized — Play Console edits must be globally exclusive.
+  group: play-console-edit-session
+  cancel-in-progress: false
+
+jobs:
+
+  # Runs only on push: uses the GitHub API to list files changed across the entire push (not just
+  # the head commit) and extracts the changelog version from the filename (e.g. 0.17_alpha.md →
+  # 0.17). The compare endpoint covers all commits in the push so a changelog changed in an
+  # earlier commit is still detected even if the head commit did not touch it.
+  # No checkout required since the GitHub API provides the changed-file list directly.
+  resolve_push:
+    name: Resolve version (push)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.detect.outputs.version }}
+    steps:
+      - name: Detect changed changelog file
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
+            --jq '[.files[].filename | select(test("^config/changelogs/.+\\.md$"))] | first // ""')
+          # Only the first changed changelog file is processed. If multiple changelog files are
+          # updated in the same push the coordinator should use workflow_dispatch to trigger a
+          # separate run for each additional version. Handling all files in a single run would
+          # risk concurrent Play Console edit sessions, which are globally exclusive.
+
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changelog files changed in this push — skipping upload."
+            echo "version=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASENAME=$(basename "$CHANGED" .md)
+          VERSION="${BASENAME%%_*}"
+          FLAVOR_SUFFIX="${BASENAME#${VERSION}}"
+          FLAVOR="${FLAVOR_SUFFIX#_}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version '$VERSION' extracted from '$CHANGED'."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected: version=$VERSION, flavor=${FLAVOR:-<generic>}"
+
+  # Runs only on workflow_dispatch: reads and validates the version provided by the release
+  # coordinator. Inputs are passed via env vars to prevent shell injection before the regex guard.
+  resolve_dispatch:
+    name: Resolve version (dispatch)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - name: Validate and resolve inputs
+        id: resolve
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_FLAVOR: ${{ github.event.inputs.flavor }}
+        run: |
+          VERSION="$INPUT_VERSION"
+          FLAVOR="$INPUT_FLAVOR"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version '$VERSION'. Must be in major.minor format (e.g. '0.17')."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved: version=$VERSION, flavor=${FLAVOR:-<generic>}"
+
+  # Uploads the changelog to Play Console. Runs only when a version was successfully resolved by
+  # either of the preceding jobs, and shows as skipped in the GitHub Actions UI otherwise.
+  upload_changelog:
+    name: Upload changelog to Play Console
+    needs: [resolve_push, resolve_dispatch]
+    if: |
+      always() && !cancelled() &&
+      (needs.resolve_push.outputs.version != '' || needs.resolve_dispatch.outputs.version != '')
+    runs-on: ubuntu-24.04
+    environment: oppia-android-release-env
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate changelog version
+        run: |
+          VERSION="${{ needs.resolve_push.outputs.version || needs.resolve_dispatch.outputs.version }}"
+
+          # Verify that at least one changelog file exists for this version. The upload script
+          # resolves the correct file per track (track-specific first, then shared fallback), so
+          # we only need to confirm that the coordinator hasn't specified a non-existent version.
+          GENERIC="config/changelogs/${VERSION}.md"
+          FLAVOR_SPECIFIC=$(find config/changelogs -name "${VERSION}_*.md" -print -quit 2>/dev/null)
+
+          if [[ ! -f "$GENERIC" && -z "$FLAVOR_SPECIFIC" ]]; then
+            echo "::error::No changelog file found for version $VERSION in config/changelogs/. "\
+              "Expected config/changelogs/${VERSION}[_<track>].md."
+            exit 1
+          fi
+
+          echo "Changelog validated: version=$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/androidpublisher'
+
+      - name: Set and mask GCP access token
+        run: |
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # Runs UploadChangelogToPlayConsole which:
+      #   1. Audits alpha, beta, and production tracks for live releases.
+      #   2. For each live track, resolves the changelog file (track-specific first, then shared).
+      #   3. Uploads updated notes to any track where a changelog file is found.
+      # The script skips tracks with no matching changelog file silently.
+      - name: Upload updated changelog to Play Console
+        run: |
+          bazel run //scripts:upload_changelog_to_play_console -- \
+            "$GITHUB_WORKSPACE" \
+            "org.oppia.android" \
+            "$VERSION" \
+            "$ACCESS_TOKEN"

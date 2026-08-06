@@ -75,7 +75,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -183,6 +182,113 @@ class TestFontScaleConfigurationUtilActivityTest {
     }
   }
 
+  @Test
+  fun testFontScaleConfigurationUtil_smallTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_mediumTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_text_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_largeTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_extraLargeTextSize_afterRecreate_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_unspecifiedTextSize_defaultsToMediumDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
+    ).use {
+      // Verify that an unspecified text size defaults to the medium text size.
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(context.resources.getDimension(R.dimen.font_scale_content_text_size))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFontScaleConfigurationUtil_unspecifiedTextSize_afterRecreate_defaultsToMediumDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.configUtilActivityPresenter.handleOnCreate(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      scenario.recreate()
+      onView(withId(R.id.font_scale_content_text_view)).check(
+        matches(
+          withFontSize(context.resources.getDimension(R.dimen.font_scale_content_text_size))
+        )
+      )
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -195,7 +301,6 @@ class TestFontScaleConfigurationUtilActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

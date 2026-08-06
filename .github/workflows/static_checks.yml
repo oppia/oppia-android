@@ -176,7 +176,14 @@ jobs:
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
         if:  ${{ !cancelled() }}
         run: |
-          bazel run //scripts:android_lint_check -- $(pwd)
+          bazel run //scripts:android_lint_check -- $(pwd) --mode=full
+
+      - name: Lint Check Catalog Consistency
+        # Verifies that LintCheckCatalog is in sync with the linter's actual check list.
+        # This always runs regardless of other changes to catch drift after lint upgrades.
+        if:  ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:android_lint_check -- $(pwd) --mode=check-script-consistency
 
       - name: Testfile Presence Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
@@ -215,6 +222,13 @@ jobs:
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
 
+      - name: Binary File Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:binary_file_check -- $(pwd) scripts/assets/binary_file_exemptions.pb
+
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
@@ -243,9 +257,23 @@ jobs:
         run: |
           bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
 
-      - name: License Texts Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
+  check_changelog_limit:
+    name: Check changelog character limit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check 500-character limit for changelog files
         run: |
-          bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
+          FAILED=false
+          for file in config/changelogs/[0-9]*.md; do
+            if [[ ! -f "$file" ]]; then continue; fi
+            char_count=$(python3 -c "print(len(open('$file').read().rstrip()))")
+            if [[ "$char_count" -gt 500 ]]; then
+              echo "::error file=$file::Changelog '$file' exceeds the 500-character Play Console limit (${char_count}/500 chars). Shorten it before merging."
+              FAILED=true
+            else
+              echo "✓ $file: ${char_count}/500 characters"
+            fi
+          done
+          if [[ "$FAILED" == "true" ]]; then exit 1; fi

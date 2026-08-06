@@ -12,6 +12,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID = "get_exploration_by_id_provider_id"
@@ -40,7 +41,9 @@ class ExplorationDataController @Inject constructor(
     id: String
   ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(
+        profileId.toProfileIdPreservingZero()
+      )
     val explorationProvider = dataProviders.createInMemoryDataProviderAsync(
       GET_EXPLORATION_BY_ID_PROVIDER_ID
     ) { retrieveExplorationById(id) }
@@ -89,7 +92,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -121,7 +125,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint,
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
@@ -151,7 +156,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = true, // Implied since only checkpoints can be restarted.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = true
+      isRestart = true,
+      isReplay = false
     )
   }
 
@@ -184,7 +190,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = true
     )
   }
 
@@ -212,6 +219,7 @@ class ExplorationDataController @Inject constructor(
    * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
    *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
    *     instance.
+   * @param isReplay whether the user is replaying this lesson after having previously completed it
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
@@ -223,7 +231,8 @@ class ExplorationDataController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -233,7 +242,8 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint,
-      isRestart
+      isRestart,
+      isReplay
     )
   }
 

@@ -1,0 +1,20 @@
+"""
+Retrofit service definitions for the Google Play Developer Publishing API.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "play_console_service",
+    srcs = ["PlayConsoleService.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/model:bundle_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:edit_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:track_update_request",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)

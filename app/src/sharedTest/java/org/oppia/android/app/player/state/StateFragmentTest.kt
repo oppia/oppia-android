@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -51,8 +52,6 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -93,6 +92,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.LESSON_PROGRESS_INDICATOR
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
@@ -167,7 +167,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.replaceText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -184,8 +184,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -196,6 +194,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -219,7 +218,6 @@ class StateFragmentTest {
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var translationController: TranslationController
@@ -5335,7 +5333,9 @@ class StateFragmentTest {
 
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
-      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+      profileManagementController.updateSurveyLastShownTimestamp(
+        profileId.toProfileIdPreservingZero()
+      )
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -6037,6 +6037,182 @@ class StateFragmentTest {
       // over stale content from State 2's recycled feedback view.
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_firstCheckpoint_indicatorShowsFirstOfFiveCheckpoints() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The initial card is the first of the exploration's five checkpoints, so the indicator is
+      // shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_advancePastCheckpoint_progressCountIncrements() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Initially the learner is on the first of five checkpoints.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+
+      // Advance to the multiple choice card, the exploration's second checkpoint, so the count
+      // increments to "2 of 5".
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 2, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_noCheckpointExploration_indicatorIsNotShown() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // TEST_EXPLORATION_ID_4 contains no checkpoints, so the domain attaches no checkpoint progress
+      // and the indicator is never assembled even with the feature enabled. Scrolling to the bottom
+      // of the player and checking the indicator is absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.state_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOff_indicatorIsNotShown() {
+    setUpTestWithLessonProgressFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // With the feature flag off the indicator is never assembled, even for an exploration that
+      // does have checkpoints. Scrolling to the bottom of the player and checking the indicator is
+      // absent from the view tree proves it isn't shown.
+      scrollToEndOfRecyclerView(R.id.state_recycler_view)
+      onView(withId(R.id.lesson_progress_indicator)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_continueInteractionCard_indicatorIsAboveContinueButton() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // The first card uses an auto-navigating Continue interaction that renders its own inline
+      // button, so the indicator is inserted directly above that button instead of above a separate
+      // navigation button. This is the specially-handled placement case.
+      scrollToViewType(CONTINUE_INTERACTION)
+      verifyIndicatorIsDirectlyAbove(CONTINUE_INTERACTION)
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_answeredCard_indicatorIsAboveContinueNavButton() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Advance to the fraction-input card and submit a correct answer so a standalone Continue
+      // navigation button appears. The indicator is added before the navigation buttons, so it sits
+      // directly above that Continue button -- the placement case for non-auto-navigating cards.
+      playThroughPrototypeState1()
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      verifyIndicatorIsDirectlyAbove(CONTINUE_NAVIGATION_BUTTON)
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testStateFragment_lessonProgressOn_tabletPortrait_indicatorShowsFirstOfFive() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // On a tablet in portrait the indicator is unchanged: the first card is the first of five
+      // checkpoints, so it's shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testStateFragment_lessonProgressOn_tabletLandscape_indicatorShowsFirstOfFive() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // On a tablet in landscape the indicator is unchanged: the first card is the first of five
+      // checkpoints, so it's shown and announces "1 of 5" for TalkBack.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      onView(withId(R.id.lesson_progress_indicator)).check(matches(isDisplayed()))
+      onView(withId(R.id.lesson_progress_indicator)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.lesson_progress_indicator_content_description, 1, 5)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_rtlLayout_indicatorIsLaidOutRightToLeft() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      // The custom view mirrors its drawing so progress fills from the right when its layout
+      // direction resolves to RTL (see LessonProgressIndicatorView.onDraw). Verify the indicator
+      // adopts the RTL layout direction it inherits -- the condition that mirror keys off.
+      scenario.onActivity { activity ->
+        val indicator = activity.findViewById<View>(R.id.lesson_progress_indicator)
+        assertThat(indicator.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+      }
     }
   }
 
@@ -6757,7 +6933,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      replaceText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -6808,9 +6984,55 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun scrollToEndOfRecyclerView(recyclerViewId: Int) {
+    onView(withId(recyclerViewId)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String = "scroll to the last item of the RecyclerView"
+
+        override fun perform(uiController: UiController, view: View) {
+          val recyclerView = view as RecyclerView
+          val itemCount = recyclerView.adapter?.itemCount ?: 0
+          if (itemCount > 0) recyclerView.scrollToPosition(itemCount - 1)
+          uiController.loopMainThreadUntilIdle()
+        }
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * Asserts that the lesson progress indicator is present in the state RecyclerView and occupies the
+   * adapter position immediately above [belowViewType] (e.g. a continue button), which is where the
+   * assembler places it.
+   */
+  private fun verifyIndicatorIsDirectlyAbove(belowViewType: StateItemViewModel.ViewType) {
+    val positions = intArrayOf(-1, -1)
+    onView(withId(R.id.state_recycler_view)).perform(
+      object : ViewAction {
+        override fun getConstraints(): Matcher<View> = isDisplayed()
+
+        override fun getDescription(): String =
+          "find adapter positions of the lesson progress indicator and $belowViewType"
+
+        override fun perform(uiController: UiController, view: View) {
+          val adapter = checkNotNull((view as RecyclerView).adapter)
+          val viewTypes = (0 until adapter.itemCount).map(adapter::getItemViewType)
+          positions[0] = viewTypes.indexOf(LESSON_PROGRESS_INDICATOR.ordinal)
+          positions[1] = viewTypes.indexOf(belowViewType.ordinal)
+        }
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+    // The indicator must be present and sit immediately above the trailing button.
+    assertThat(positions[0]).isAtLeast(0)
+    assertThat(positions[1]).isEqualTo(positions[0] + 1)
+  }
+
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -6820,7 +7042,7 @@ class StateFragmentTest {
 
   private fun enableInLessonLanguageSwitching() {
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId, allowInLessonQuickLanguageSwitching = true
+      profileId.toProfileIdPreservingZero(), allowInLessonQuickLanguageSwitching = true
     )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
@@ -6895,6 +7117,7 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
   }
@@ -6920,6 +7143,16 @@ class StateFragmentTest {
   }
   private fun setUpTestWithFlashbackFeatureOff() {
     TestPlatformParameterModule.forceEnableFlashbackSupport(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithLessonProgressFeatureOn() {
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithLessonProgressFeatureOff() {
+    TestPlatformParameterModule.forceEnableLessonProgressVisualization(false)
     setUpTest()
   }
 
@@ -6964,6 +7197,27 @@ class StateFragmentTest {
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource3, IOException("Test does not have networking"))
     }
+    setUpShadowMediaPlayerProvider()
+  }
+
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -7093,17 +7347,6 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   @Singleton
   @Component(
     modules = [
@@ -7159,7 +7402,6 @@ class StateFragmentTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

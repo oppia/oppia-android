@@ -1738,6 +1738,9 @@ class EventLogSubject private constructor(
      */
     fun hasVersionThat(): IntegerSubject = assertThat(actual.explorationVersion)
 
+    /** Returns a [BooleanSubject] to test [EventLog.ExplorationContext.getIsReplay]. */
+    fun hasIsReplayThat(): BooleanSubject = assertThat(actual.isReplay)
+
     /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getStateName].
      *

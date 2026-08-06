@@ -16,6 +16,11 @@ import kotlinx.coroutines.channels.actor
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject

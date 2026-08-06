@@ -266,6 +266,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addRedirectionSupport()
+      .addLessonProgressIndicatorSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,

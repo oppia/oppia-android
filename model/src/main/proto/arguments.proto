@@ -876,6 +876,33 @@ message RevisionCardFragmentArguments {
   ReadingTextSize reading_text_size = 7;
 }
 
+// Represents the parameters needed to create StudyGuideActivity.
+message StudyGuideActivityParams {
+  // The ID of the topic containing the subtopic being viewed.
+  string topic_id = 1;
+
+  // The index of the subtopic being viewed.
+  int32 subtopic_index = 2;
+
+  // The number of subtopics in the parent topic.
+  int32 subtopic_list_size = 3;
+}
+
+// Arguments required when creating a StudyGuideFragment.
+message StudyGuideFragmentArguments {
+  // The ID of the topic containing the subtopic being viewed.
+  string topic_id = 1;
+
+  // The index of the subtopic being viewed.
+  int32 subtopic_index = 2;
+
+  // The number of subtopics in the parent topic.
+  int32 subtopic_list_size = 3;
+
+  // The text size at which content in the study guide should be rendered.
+  ReadingTextSize reading_text_size = 4;
+}
+
 // Represents the parameters needed to create TestFontScaleConfigurationUtilActivity.
 message TestFontScaleConfigurationUtilActivityParams {
   // The text size at which content in the exploration should be rendered.
