@@ -3,7 +3,6 @@ package org.oppia.android.scripts.release
 import com.google.common.truth.Truth.assertThat
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.testing.assertThrows
