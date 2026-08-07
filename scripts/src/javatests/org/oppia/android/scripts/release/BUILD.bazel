@@ -150,8 +150,10 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/release:fake_github_ci_client",
         "//scripts/src/java/org/oppia/android/scripts/release:find_alpha_candidate_lib",
         "//scripts/src/java/org/oppia/android/scripts/release:github_ci_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:google_github_ci_client",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
 

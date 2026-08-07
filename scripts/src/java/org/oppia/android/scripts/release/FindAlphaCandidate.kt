@@ -9,12 +9,14 @@ package org.oppia.android.scripts.release
  * requested commit window.
  *
  * Usage:
- *   bazel run //scripts:find_alpha_candidate -- <github_token> [branch] [commit_limit]
+ *   bazel run //scripts:find_alpha_candidate -- <github_token> [branch] [commit_limit] [override_api_base_url]
  *
  * Positional arguments:
- *   github_token   – GitHub PAT or Actions GITHUB_TOKEN for API authentication
- *   branch         – branch to search (default: "develop")
- *   commit_limit   – number of recent commits to inspect (default: 50, max: 100)
+ *   github_token          – GitHub PAT or Actions GITHUB_TOKEN for API authentication
+ *   branch                – branch to search (default: "develop")
+ *   commit_limit          – number of recent commits to inspect (default: 50, max: 100)
+ *   override_api_base_url – optional base URL for the GitHub API (default: https://api.github.com).
+ *                           Intended for testing only; do not set in production.
  *
  * Exit codes:
  *   0 – candidate found; its full 40-character SHA is printed to stdout
@@ -22,13 +24,17 @@ package org.oppia.android.scripts.release
  */
 fun main(args: Array<String>) {
   require(args.isNotEmpty()) {
-    "Usage: find_alpha_candidate <github_token> [branch] [commit_limit]"
+    "Usage: find_alpha_candidate <github_token> [branch] [commit_limit] [override_api_base_url]"
   }
   val githubToken = args[0]
   val branch = if (args.size > 1) args[1] else "develop"
   val commitLimit = if (args.size > 2) args[2].toInt() else 50
+  val overrideApiBaseUrl = if (args.size > 3) args[3] else null
 
-  val client: GitHubCiClient = GoogleGitHubCiClient(accessToken = githubToken)
+  val client: GitHubCiClient = GoogleGitHubCiClient(
+    accessToken = githubToken,
+    overrideApiBaseUrl = overrideApiBaseUrl
+  )
   val candidateSha = findAlphaCandidate(
     gitHubCiClient = client,
     branch = branch,
