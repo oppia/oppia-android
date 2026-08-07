@@ -2,11 +2,8 @@ package org.oppia.android.data.backends.gae
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.oppia.android.data.backends.gae.Constants.HTTP_BAD_GATEWAY
-import org.oppia.android.data.backends.gae.Constants.HTTP_GATEWAY_TIMEOUT
-import org.oppia.android.data.backends.gae.Constants.HTTP_REQUEST_TIMEOUT
-import org.oppia.android.data.backends.gae.Constants.HTTP_SERVICE_UNAVAILABLE
 import java.io.IOException
+import java.net.HttpURLConnection
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,10 +17,10 @@ class RetryInterceptor @Inject constructor(
     val request = chain.request()
     var lastException: IOException? = null
 
-    for (tryCount in 0..RETRY_DELAYS_MILLIS.size) {
+    for (tryCount in 0..MAX_RETRIES) {
       try {
         val response = chain.proceed(request)
-        val isLastAttempt = tryCount == RETRY_DELAYS_MILLIS.size
+        val isLastAttempt = tryCount == MAX_RETRIES
         // Return the response if it succeeded, if we can't retry this error code, or if we've
         // exhausted all retry attempts.
         if (response.isSuccessful || !shouldRetry(response.code) || isLastAttempt) {
@@ -34,7 +31,7 @@ class RetryInterceptor @Inject constructor(
       } catch (e: IOException) {
         lastException = e
         // If this was the last attempt, rethrow so the caller knows the request failed.
-        if (tryCount == RETRY_DELAYS_MILLIS.size) throw e
+        if (tryCount == MAX_RETRIES) throw e
       }
       delayBeforeRetry(tryCount)
     }
@@ -54,10 +51,10 @@ class RetryInterceptor @Inject constructor(
   }
 
   private fun shouldRetry(statusCode: Int): Boolean {
-    return statusCode == HTTP_REQUEST_TIMEOUT ||
-      statusCode == HTTP_BAD_GATEWAY ||
-      statusCode == HTTP_SERVICE_UNAVAILABLE ||
-      statusCode == HTTP_GATEWAY_TIMEOUT
+    return statusCode == HttpURLConnection.HTTP_CLIENT_TIMEOUT ||
+      statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+      statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
+      statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT
   }
 
   companion object {
@@ -70,5 +67,7 @@ class RetryInterceptor @Inject constructor(
       RETRY_DELAY_2_MILLIS,
       RETRY_DELAY_3_MILLIS
     )
+
+    private val MAX_RETRIES = RETRY_DELAYS_MILLIS.size
   }
 }
