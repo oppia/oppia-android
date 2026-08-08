@@ -85,9 +85,6 @@ class GoogleGitHubCiClient(
     return deriveStatus(allRuns)
   }
 
-  // ---------------------------------------------------------------------------
-  // Private helpers
-  // ---------------------------------------------------------------------------
 
   /**
    * Fetches every page of check-run results for [commitSha], collecting them into a single list.

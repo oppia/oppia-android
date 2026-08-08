@@ -18,9 +18,6 @@ class FindAlphaCandidateTest {
     fakeClient = FakeGitHubCiClient()
   }
 
-  // ---------------------------------------------------------------------------
-  // Happy-path tests
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testFindAlphaCandidate_firstCommitPassing_returnsFirstSha() {
@@ -78,9 +75,6 @@ class FindAlphaCandidateTest {
     assertThat(findAlphaCandidate(fakeClient, "develop")).isEqualTo("sha-c")
   }
 
-  // ---------------------------------------------------------------------------
-  // No-candidate cases
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testFindAlphaCandidate_emptyCommitList_returnsNull() {
@@ -116,9 +110,6 @@ class FindAlphaCandidateTest {
     assertThat(findAlphaCandidate(fakeClient, "develop")).isNull()
   }
 
-  // ---------------------------------------------------------------------------
-  // commitLimit tests
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testFindAlphaCandidate_passingCommitBeyondLimit_returnsNull() {
@@ -157,9 +148,6 @@ class FindAlphaCandidateTest {
     assertThat(exception).hasMessageThat().contains("commitLimit")
   }
 
-  // ---------------------------------------------------------------------------
-  // main() tests
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testMain_emptyArgs_throwsIllegalArgumentException() {

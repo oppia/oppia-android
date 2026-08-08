@@ -35,9 +35,6 @@ interface GitHubCiClient {
    */
   fun getCheckRunStatus(commitSha: String): CiStatus
 
-  // ---------------------------------------------------------------------------
-  // Value types
-  // ---------------------------------------------------------------------------
 
   /**
    * A lightweight summary of a single commit as returned by the list-commits endpoint.

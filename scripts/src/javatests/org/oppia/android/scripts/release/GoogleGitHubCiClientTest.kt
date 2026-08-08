@@ -37,9 +37,6 @@ class GoogleGitHubCiClientTest {
     server.shutdown()
   }
 
-  // ---------------------------------------------------------------------------
-  // listCommits
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testListCommits_successResponse_returnsCorrectCommitSummaries() {
@@ -100,9 +97,6 @@ class GoogleGitHubCiClientTest {
     assertThat(request.getHeader("X-GitHub-Api-Version")).isEqualTo("2022-11-28")
   }
 
-  // ---------------------------------------------------------------------------
-  // getCheckRunStatus
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testGetCheckRunStatus_noRuns_returnsNoChecks() {
@@ -258,9 +252,6 @@ class GoogleGitHubCiClientTest {
     assertThat(exception).hasMessageThat().contains("404")
   }
 
-  // ---------------------------------------------------------------------------
-  // Private helpers
-  // ---------------------------------------------------------------------------
 
   /** Produces the JSON string for a single check-run entry. */
   private fun checkRunJson(status: String, conclusion: String?): String {
