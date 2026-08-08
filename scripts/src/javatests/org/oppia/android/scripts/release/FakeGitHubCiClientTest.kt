@@ -15,7 +15,6 @@ class FakeGitHubCiClientTest {
     fake = FakeGitHubCiClient()
   }
 
-
   @Test
   fun testListCommits_noCommitsConfigured_returnsEmptyList() {
     assertThat(fake.listCommits("develop", limit = 10)).isEmpty()
@@ -68,7 +67,6 @@ class FakeGitHubCiClientTest {
     assertThat(commitsDevelop.map { it.sha }).containsExactly("sha-a")
     assertThat(commitsMain.map { it.sha }).containsExactly("sha-a")
   }
-
 
   @Test
   fun testGetCheckRunStatus_noStatusConfigured_returnsNoChecks() {

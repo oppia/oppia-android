@@ -18,7 +18,6 @@ class FindAlphaCandidateTest {
     fakeClient = FakeGitHubCiClient()
   }
 
-
   @Test
   fun testFindAlphaCandidate_firstCommitPassing_returnsFirstSha() {
     fakeClient.setCommits("sha-a", "sha-b")
@@ -75,7 +74,6 @@ class FindAlphaCandidateTest {
     assertThat(findAlphaCandidate(fakeClient, "develop")).isEqualTo("sha-c")
   }
 
-
   @Test
   fun testFindAlphaCandidate_emptyCommitList_returnsNull() {
     // No commits set — fakeClient returns an empty list.
@@ -109,7 +107,6 @@ class FindAlphaCandidateTest {
 
     assertThat(findAlphaCandidate(fakeClient, "develop")).isNull()
   }
-
 
   @Test
   fun testFindAlphaCandidate_passingCommitBeyondLimit_returnsNull() {
@@ -147,7 +144,6 @@ class FindAlphaCandidateTest {
 
     assertThat(exception).hasMessageThat().contains("commitLimit")
   }
-
 
   @Test
   fun testMain_emptyArgs_throwsIllegalArgumentException() {

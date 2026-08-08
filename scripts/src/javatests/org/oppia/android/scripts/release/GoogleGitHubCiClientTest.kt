@@ -37,7 +37,6 @@ class GoogleGitHubCiClientTest {
     server.shutdown()
   }
 
-
   @Test
   fun testListCommits_successResponse_returnsCorrectCommitSummaries() {
     server.enqueue(
@@ -96,7 +95,6 @@ class GoogleGitHubCiClientTest {
     val request = server.takeRequest()
     assertThat(request.getHeader("X-GitHub-Api-Version")).isEqualTo("2022-11-28")
   }
-
 
   @Test
   fun testGetCheckRunStatus_noRuns_returnsNoChecks() {
@@ -251,7 +249,6 @@ class GoogleGitHubCiClientTest {
     assertThat(exception).hasMessageThat().contains("deadbeef")
     assertThat(exception).hasMessageThat().contains("404")
   }
-
 
   /** Produces the JSON string for a single check-run entry. */
   private fun checkRunJson(status: String, conclusion: String?): String {
