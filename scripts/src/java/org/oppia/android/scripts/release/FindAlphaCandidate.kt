@@ -28,7 +28,10 @@ fun main(args: Array<String>) {
   }
   val githubToken = args[0]
   val branch = if (args.size > 1) args[1] else "develop"
-  val commitLimit = if (args.size > 2) args[2].toInt() else 50
+  val commitLimit = if (args.size > 2) {
+    args[2].toIntOrNull()
+      ?: error("commit_limit must be an integer, got '${args[2]}'")
+  } else 50
   val overrideApiBaseUrl = if (args.size > 3) args[3] else null
 
   val client: GitHubCiClient = GoogleGitHubCiClient(

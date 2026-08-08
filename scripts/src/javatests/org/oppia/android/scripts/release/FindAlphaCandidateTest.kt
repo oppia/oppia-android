@@ -190,22 +190,32 @@ class FindAlphaCandidateTest {
   }
 
   @Test
-  fun testMain_withEmptyCommitList_requestsCommitsFromSpecifiedBranch() {
+  fun testMain_withCustomBranch_forwardsBranchNameToApi() {
     val server = MockWebServer()
     server.start()
     try {
-      // Return an empty commit list so main() reaches System.exit(1).
-      // We catch the resulting exception so the test does not fail on the exit call.
-      server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
+      val sha = "aabbccddeeff00112233445566778899aabbccdd"
+      // Enqueue a passing candidate so main() exits normally (no System.exit call).
+      server.enqueue(
+        MockResponse().setResponseCode(200).setBody(
+          """[{"sha":"$sha","commit":{"message":"fix: something"}}]"""
+        )
+      )
+      server.enqueue(
+        MockResponse().setResponseCode(200).setBody(
+          """{
+            "total_count": 1,
+            "check_runs": [
+              {"id":1,"name":"build","status":"completed","conclusion":"success"}
+            ]
+          }"""
+        )
+      )
       val serverUrl = server.url("/").toString()
 
-      try {
-        main(arrayOf("fake-token", "my-branch", "1", serverUrl))
-      } catch (e: Exception) {
-        // System.exit(1) or equivalent — expected when no candidate is found.
-      }
+      main(arrayOf("fake-token", "my-branch", "1", serverUrl))
 
-      // Verify the request targeted the correct branch.
+      // The first request (listCommits) must target the custom branch.
       val recordedRequest = server.takeRequest()
       assertThat(recordedRequest.path).contains("my-branch")
     } finally {
