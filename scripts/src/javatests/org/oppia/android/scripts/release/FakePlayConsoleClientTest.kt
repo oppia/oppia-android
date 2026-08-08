@@ -93,6 +93,26 @@ class FakePlayConsoleClientTest {
     assertThat(exception).hasMessageThat().contains("getTrackReleases")
   }
 
+  @Test
+  fun testGetTrackReleases_queriedEditIds_startsEmpty() {
+    assertThat(fake.queriedEditIds).isEmpty()
+  }
+
+  @Test
+  fun testGetTrackReleases_withExistingEditId_recordsItInQueriedEditIds() {
+    fake.getTrackReleases("org.oppia.android", "alpha", existingEditId = "edit-42")
+    fake.getTrackReleases("org.oppia.android", "beta", existingEditId = "edit-42")
+
+    assertThat(fake.queriedEditIds).containsExactly("edit-42", "edit-42").inOrder()
+  }
+
+  @Test
+  fun testGetTrackReleases_withNullExistingEditId_recordsNullInQueriedEditIds() {
+    fake.getTrackReleases("org.oppia.android", "alpha", existingEditId = null)
+
+    assertThat(fake.queriedEditIds).containsExactly(null)
+  }
+
   // ---------------------------------------------------------------------------
   // uploadAab
   // ---------------------------------------------------------------------------
@@ -175,6 +195,7 @@ class FakePlayConsoleClientTest {
   fun testReset_clearsAllState() {
     fake.createEdit("org.oppia.android")
     fake.uploadAab("org.oppia.android", "edit-1", "/aab.aab")
+    fake.getTrackReleases("org.oppia.android", "alpha", existingEditId = "edit-1")
     fake.commitEdit("org.oppia.android", "edit-1")
     fake.shouldFailNextCall = true
 
@@ -184,6 +205,7 @@ class FakePlayConsoleClientTest {
     assertThat(fake.uploadedBundles).isEmpty()
     assertThat(fake.committedEdits).isEmpty()
     assertThat(fake.trackUpdates).isEmpty()
+    assertThat(fake.queriedEditIds).isEmpty()
     assertThat(fake.shouldFailNextCall).isFalse()
   }
 

@@ -7,6 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.concurrent.TimeUnit
 
 /**
  * Production implementation of [VertexAiClient] that calls the Vertex AI REST API.
@@ -20,7 +21,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
  * Requests are sent synchronously to the Vertex AI `generateContent` endpoint for the configured
  * [gcpProject], [location], and [modelId].
  *
- * @property gcpProject GCP project ID that has Vertex AI enabled (e.g. "sandesh-oppia-release-dev")
+ * @property gcpProject GCP project ID that has Vertex AI enabled (e.g. "oppia-android-prod")
  * @property location Vertex AI region (e.g. "us-central1")
  * @property modelId Vertex AI model identifier (e.g. "gemini-1.5-flash")
  * @property gcpAccessToken GCP Bearer token for authenticating with the Vertex AI API
@@ -30,17 +31,20 @@ class GoogleVertexAiClient(
   private val location: String,
   private val modelId: String,
   private val gcpAccessToken: String,
-  private val apiBaseUrl: String = DEFAULT_API_BASE_URL
+  private val overrideApiBaseUrl: String? = null
 ) : VertexAiClient {
 
-  private val httpClient by lazy { OkHttpClient.Builder().build() }
-  private val moshi by lazy { Moshi.Builder().build() }
-  private val requestAdapter by lazy {
-    moshi.adapter(GenerateContentRequest::class.java)
-  }
-  private val responseAdapter by lazy {
-    moshi.adapter(GenerateContentResponse::class.java)
-  }
+  private val apiBaseUrl: String =
+    overrideApiBaseUrl ?: "https://$location-aiplatform.googleapis.com"
+
+  private val httpClient = OkHttpClient.Builder()
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .callTimeout(90, TimeUnit.SECONDS)
+    .build()
+  private val moshi = Moshi.Builder().build()
+  private val requestAdapter = moshi.adapter(GenerateContentRequest::class.java)
+  private val responseAdapter = moshi.adapter(GenerateContentResponse::class.java)
 
   override fun generateText(prompt: String): String {
     val endpoint = buildEndpointUrl()
@@ -61,10 +65,11 @@ class GoogleVertexAiClient(
       .build()
 
     val responseBody = httpClient.newCall(request).execute().use { response ->
+      val body = response.body?.string()
       check(response.isSuccessful) {
-        "Vertex AI API call failed with HTTP ${response.code}: ${response.body?.string()}"
+        "Vertex AI API call failed with HTTP ${response.code}: $body"
       }
-      checkNotNull(response.body?.string()) {
+      checkNotNull(body) {
         "Vertex AI returned an empty response body."
       }
     }
@@ -83,8 +88,6 @@ class GoogleVertexAiClient(
     return "$apiBaseUrl/v1/projects/$gcpProject/locations/$location" +
       "/publishers/google/models/$modelId:generateContent"
   }
-
-  // --- Moshi model classes for JSON serialization ---
 
   /**
    * Top-level request body sent to the Vertex AI generateContent endpoint.
@@ -137,9 +140,6 @@ class GoogleVertexAiClient(
   )
 
   companion object {
-    /** Default Vertex AI REST API base URL used in production. */
-    const val DEFAULT_API_BASE_URL = "https://us-central1-aiplatform.googleapis.com"
-
     private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
   }
 }

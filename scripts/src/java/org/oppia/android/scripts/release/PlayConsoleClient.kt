@@ -22,11 +22,20 @@ interface PlayConsoleClient {
   /**
    * Returns all active releases on [track] for [packageName], sorted by version code descending.
    *
+   * If [existingEditId] is provided, the query reuses that edit session rather than creating a new
+   * temporary one. The Play Developer API only allows one active edit at a time, so passing the
+   * already-open upload edit ID avoids invalidating the in-progress session.
+   *
    * @param packageName the application package name
    * @param track the Play Console track to query (e.g. "alpha", "beta", "production")
+   * @param existingEditId an already-open edit session ID to reuse, or null to open a new one
    * @return the list of [TrackRelease] entries currently live on the track
    */
-  fun getTrackReleases(packageName: String, track: String): List<TrackRelease>
+  fun getTrackReleases(
+    packageName: String,
+    track: String,
+    existingEditId: String? = null
+  ): List<TrackRelease>
 
   /**
    * Uploads the AAB at [aabPath] within [editId] and returns its assigned version code.
@@ -43,6 +52,12 @@ interface PlayConsoleClient {
    *
    * Must be called after [uploadAab] and before [commitEdit].
    *
+   * If [preservedVersionCodes] is non-empty, each listed version code is included as an additional
+   * `completed` entry in the track update request alongside the new release. This is required for
+   * OS-level frozen builds that must remain active on the track indefinitely (see #6258, #6330):
+   * the Play Developer API replaces the entire track contents on each `tracks.update` call, so any
+   * version code not explicitly included in the request is deactivated.
+   *
    * @param packageName the application package name
    * @param editId the active edit session ID returned by [createEdit]
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
@@ -51,6 +66,8 @@ interface PlayConsoleClient {
    *     1000 means full rollout (status: "completed") and any value below 1000 produces a staged
    *     rollout (status: "inProgress"). For example: 250 = 25%, 334 = 33.4%, 1000 = 100%.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
+   * @param preservedVersionCodes version codes of frozen OS-specific builds that must be kept
+   *     alive on the track alongside [versionCode]; defaults to empty (no preserved builds)
    */
   fun setTrackRelease(
     packageName: String,
@@ -58,7 +75,8 @@ interface PlayConsoleClient {
     track: String,
     versionCode: Long,
     rolloutFraction: Int,
-    releaseNotes: Map<String, String>
+    releaseNotes: Map<String, String>,
+    preservedReleases: List<TrackRelease> = emptyList()
   )
 
   /**
@@ -80,10 +98,13 @@ interface PlayConsoleClient {
    * @property rolloutFraction the staged rollout fraction as an integer in [0, 1000], where
    *     1000 = 100%. Null for [status] values that do not have a rollout percentage
    *     ("completed", "halted", "draft").
+   * @property releaseNotes map of BCP-47 language codes to release notes text, as returned by
+   *     the Play Developer API. Empty if no release notes were set for this release.
    */
   data class TrackRelease(
     val versionCodes: List<Long>,
     val status: String,
-    val rolloutFraction: Int? = null
+    val rolloutFraction: Int? = null,
+    val releaseNotes: Map<String, String> = emptyMap()
   )
 }

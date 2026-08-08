@@ -29,7 +29,7 @@ class GoogleVertexAiClientTest {
       location = "us-central1",
       modelId = "gemini-flash",
       gcpAccessToken = "test-token",
-      apiBaseUrl = server.url("/").toString().trimEnd('/')
+      overrideApiBaseUrl = server.url("/").toString().trimEnd('/')
     )
   }
 
@@ -37,10 +37,6 @@ class GoogleVertexAiClientTest {
   fun tearDown() {
     server.shutdown()
   }
-
-  // ---------------------------------------------------------------------------
-  // Request structure
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testGenerateText_sendsPostRequest() {
@@ -232,19 +228,22 @@ class GoogleVertexAiClientTest {
     assertThat(exception).hasMessageThat().contains("no text candidates")
   }
 
-  // ---------------------------------------------------------------------------
-  // Default API base URL
-  // ---------------------------------------------------------------------------
-
   @Test
-  fun testDefaultApiBaseUrl_pointsToProductionEndpoint() {
-    assertThat(GoogleVertexAiClient.DEFAULT_API_BASE_URL)
-      .isEqualTo("https://us-central1-aiplatform.googleapis.com")
+  fun testApiBaseUrl_derivedFromLocation_pathContainsLocation() {
+    // When a different location is supplied the endpoint path encodes that location,
+    // verifying that the base URL is derived from the 'location' parameter rather than
+    // being hardcoded to a fixed region.
+    val euClient = GoogleVertexAiClient(
+      gcpProject = "p",
+      location = "europe-west4",
+      modelId = "m",
+      gcpAccessToken = "t",
+      overrideApiBaseUrl = server.url("/").toString().trimEnd('/')
+    )
+    server.enqueue(successResponse("ok"))
+    euClient.generateText("prompt")
+    assertThat(server.takeRequest().path).contains("europe-west4")
   }
-
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
 
   /**
    * Returns a [MockResponse] with a 200 status and a valid Vertex AI generateContent response

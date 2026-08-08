@@ -62,6 +62,8 @@ kt_jvm_test(
     name = "UploadBinaryToPlayConsoleTest",
     srcs = ["UploadBinaryToPlayConsoleTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
         "//scripts/src/java/org/oppia/android/scripts/release:upload_binary_to_play_console_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",

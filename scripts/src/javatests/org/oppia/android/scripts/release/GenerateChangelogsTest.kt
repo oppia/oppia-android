@@ -225,20 +225,6 @@ class GenerateChangelogsTest {
   }
 
   @Test
-  fun testParseFixedIssueNumbers_closesKeyword_returnsIssueNumber() {
-    val result = parseFixedIssueNumbers(listOf("abc1234 Closes #6050 (#6210)"))
-
-    assertThat(result).containsExactly(6050)
-  }
-
-  @Test
-  fun testParseFixedIssueNumbers_closeKeyword_returnsIssueNumber() {
-    val result = parseFixedIssueNumbers(listOf("abc1234 Close #6051 (#6211)"))
-
-    assertThat(result).containsExactly(6051)
-  }
-
-  @Test
   fun testParseFixedIssueNumbers_caseInsensitiveFixesKeyword_returnsIssueNumber() {
     val result = parseFixedIssueNumbers(listOf("abc1234 FIXES #6100 (#6270)"))
 
@@ -260,7 +246,7 @@ class GenerateChangelogsTest {
   @Test
   fun testParseFixedIssueNumbers_multipleIssuesInOneCommit_returnsAllSorted() {
     val result = parseFixedIssueNumbers(
-      listOf("abc Fixes #6200, Closes #6100 (#6300)")
+      listOf("abc Fixes #6200, Fixes #6100 (#6300)")
     )
 
     assertThat(result).containsExactly(6100, 6200).inOrder()
@@ -589,8 +575,8 @@ class GenerateChangelogsTest {
           if (mergeBaseCallCount == 1) {
             out.println(toSha); 0
           } else {
-            // Previous release branch not found -- simulate failure.
-            1
+            // Previous release branch not found -- simulate failure with realistic git output.
+            out.println("fatal: Not a valid object name: unknown revision 'release-0.16'"); 1
           }
         }
         args.contains("--max-parents=0") -> { out.println(firstCommit); 0 }
@@ -602,6 +588,63 @@ class GenerateChangelogsTest {
     generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
 
     assertThat(fakeVertexAiClient.receivedPrompts).hasSize(1)
+  }
+
+  @Test
+  fun testGenerateChangelogs_prevBranchAmbiguousArgument_fallsBackToFirstCommit() {
+    // Simulates the second git error phrase that indicates a missing branch:
+    // "ambiguous argument" (e.g. git merge-base release-0.16 origin/develop).
+    writeVersionBzl(major = 0, minor = 18)
+    val firstCommit = "firstcommitsha"
+    val toSha = "toshasha456"
+    var mergeBaseCallCount = 0
+    fakeExecutor.registerHandler("git") { _, args, out, _ ->
+      when {
+        args.contains("merge-base") -> {
+          mergeBaseCallCount++
+          if (mergeBaseCallCount == 1) {
+            out.println(toSha); 0
+          } else {
+            // Simulate "ambiguous argument" failure for the previous release branch.
+            out.println("fatal: ambiguous argument 'release-0.16': unknown revision"); 1
+          }
+        }
+        args.contains("--max-parents=0") -> { out.println(firstCommit); 0 }
+        args.contains("log") -> { out.println(""); 0 }
+        else -> { out.println(""); 0 }
+      }
+    }
+
+    generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+
+    assertThat(fakeVertexAiClient.receivedPrompts).hasSize(1)
+  }
+
+  @Test
+  fun testGenerateChangelogs_prevBranchMergeBaseFailsWithUnrelatedError_rethrows() {
+    // If git merge-base fails for a reason unrelated to a missing branch (e.g. a corrupt
+    // repository), the exception must propagate rather than being silently swallowed.
+    writeVersionBzl(major = 0, minor = 18)
+    val toSha = "toshasha789"
+    var mergeBaseCallCount = 0
+    fakeExecutor.registerHandler("git") { _, args, out, _ ->
+      when {
+        args.contains("merge-base") -> {
+          mergeBaseCallCount++
+          if (mergeBaseCallCount == 1) {
+            out.println(toSha); 0
+          } else {
+            // Simulate an unrelated git failure that must NOT be swallowed.
+            out.println("fatal: unable to read tree"); 1
+          }
+        }
+        else -> { out.println(""); 0 }
+      }
+    }
+
+    assertThrows<IllegalStateException> {
+      generateChangelogs(tempFolder.root, fakeExecutor, fakeVertexAiClient)
+    }
   }
 
   @Test

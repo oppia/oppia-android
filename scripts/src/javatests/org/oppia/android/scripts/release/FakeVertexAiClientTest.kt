@@ -16,10 +16,6 @@ class FakeVertexAiClientTest {
     fake = FakeVertexAiClient()
   }
 
-  // ---------------------------------------------------------------------------
-  // generateText -- default response
-  // ---------------------------------------------------------------------------
-
   @Test
   fun testGenerateText_defaultResponse_returnsDefaultText() {
     val result = fake.generateText("any prompt")
@@ -35,10 +31,6 @@ class FakeVertexAiClientTest {
 
     assertThat(result).isEqualTo("Custom summary.")
   }
-
-  // ---------------------------------------------------------------------------
-  // generateText -- prompt recording
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testGenerateText_singleCall_recordsPrompt() {
@@ -59,10 +51,6 @@ class FakeVertexAiClientTest {
   fun testGenerateText_noCalls_receivedPromptsIsEmpty() {
     assertThat(fake.receivedPrompts).isEmpty()
   }
-
-  // ---------------------------------------------------------------------------
-  // generateText -- failure simulation
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testGenerateText_shouldFailTrue_throwsIllegalStateException() {
@@ -110,10 +98,6 @@ class FakeVertexAiClientTest {
     // Should not throw.
     fake.generateText("prompt")
   }
-
-  // ---------------------------------------------------------------------------
-  // reset()
-  // ---------------------------------------------------------------------------
 
   @Test
   fun testReset_afterPrompts_clearsReceivedPrompts() {

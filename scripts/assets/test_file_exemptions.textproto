@@ -4260,6 +4260,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/FrozenReleaseConfig.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/PlayConsoleClient.kt"
   test_file_not_required: true
 }
