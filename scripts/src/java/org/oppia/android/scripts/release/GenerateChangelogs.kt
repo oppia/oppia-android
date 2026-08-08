@@ -532,8 +532,7 @@ fun createOrUpdateChangelogPr(
     "--base", "develop",
     "--head", branchName,
     "--title", prTitle,
-    "--body", prBody,
-    "--label", "automated-changelog"
+    "--body", prBody
   )
   if (result.exitCode == 0) {
     val prUrl = result.output.lastOrNull { it.startsWith("https://") } ?: "(URL not found)"
