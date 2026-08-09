@@ -80,22 +80,22 @@ fun findAlphaCandidate(
     "commitLimit must be in [1, 100], got $commitLimit"
   }
 
-  println("=== Find Alpha Candidate ===")
-  println("  Branch       : $branch")
-  println("  Commit limit : $commitLimit")
+  System.err.println("=== Find Alpha Candidate ===")
+  System.err.println("  Branch       : $branch")
+  System.err.println("  Commit limit : $commitLimit")
 
   val commits = gitHubCiClient.listCommits(branch, limit = commitLimit)
-  println("  Inspecting ${commits.size} commits (newest first)…")
+  System.err.println("  Inspecting ${commits.size} commits (newest first)…")
 
   for (commit in commits) {
     val status = gitHubCiClient.getCheckRunStatus(commit.sha)
-    println("  ${commit.sha.take(7)} → $status")
+    System.err.println("  ${commit.sha.take(7)} → $status")
     if (status == GitHubCiClient.CiStatus.PASSING) {
-      println("  ✓ Candidate : ${commit.sha}")
+      System.err.println("  ✓ Candidate : ${commit.sha}")
       return commit.sha
     }
   }
 
-  println("  ✗ No passing candidate found.")
+  System.err.println("  ✗ No passing candidate found.")
   return null
 }
