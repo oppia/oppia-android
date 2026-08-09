@@ -86,7 +86,6 @@ kt_android_library(
     deps = [
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 

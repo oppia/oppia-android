@@ -21,15 +21,6 @@ import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import javax.inject.Qualifier
-
-/** Qualifies the app string resource ID for the worked example question label. */
-@Qualifier
-annotation class WorkedExampleQuestionLabelStringId
-
-/** Qualifies the app string resource ID for the worked example answer label. */
-@Qualifier
-annotation class WorkedExampleAnswerLabelStringId
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(

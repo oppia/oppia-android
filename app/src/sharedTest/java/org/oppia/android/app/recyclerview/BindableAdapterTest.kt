@@ -47,6 +47,7 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.html.WorkedExampleLabelsModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
@@ -116,8 +117,6 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.WorkedExampleAnswerLabelStringId
-import org.oppia.android.util.parser.html.WorkedExampleQuestionLabelStringId
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -727,21 +726,6 @@ class BindableAdapterTest {
     fun provideActivityComponentBuilder(
       builder: TestActivityComponent.Builder
     ): ActivityComponentImpl.Builder
-
-    @Module
-    companion object {
-      @Provides
-      @WorkedExampleQuestionLabelStringId
-      @JvmStatic
-      fun provideWorkedExampleQuestionLabelStringId(): Int =
-        R.string.worked_example_question_label
-
-      @Provides
-      @WorkedExampleAnswerLabelStringId
-      @JvmStatic
-      fun provideWorkedExampleAnswerLabelStringId(): Int =
-        R.string.worked_example_answer_label
-    }
   }
 
   @Singleton
@@ -805,7 +789,8 @@ class BindableAdapterTest {
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
-      WorkManagerConfigurationModule::class
+      WorkManagerConfigurationModule::class,
+      WorkedExampleLabelsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
