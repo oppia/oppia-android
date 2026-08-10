@@ -51,6 +51,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write # Required to force-push the latest-alpha tag.
+      checks: read    # Required for FindAlphaCandidate to query check-run status via the GitHub API.
 
     steps:
       - name: Check out develop
@@ -59,8 +60,10 @@ jobs:
           # Always check out the target branch explicitly so scheduled runs and manual
           # dispatches both start from the same base.
           ref: ${{ github.event.inputs.branch || 'develop' }}
-          # Full history is required so that the FindAlphaCandidate script can correctly
-          # resolve commit SHAs via the GitHub API.
+          # fetch-depth: 0 is required so that `git tag --force` (in the
+          # "Update latest-alpha tag" step) can resolve the candidate SHA as a local git
+          # object. A shallow clone only contains the tip commit; any non-HEAD candidate
+          # SHA would cause `git tag` to fail with "not a valid object name".
           fetch-depth: 0
           # Use BOT_TOKEN so the subsequent force-push of the latest-alpha tag is
           # authenticated with an account that has the required write scope.
@@ -86,10 +89,15 @@ jobs:
           # GET /repos/.../commits/{ref}/check-runs. No write access is needed here.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          LIMIT="${{ github.event.inputs.commit_limit || '50' }}"
+          if ! [[ "$LIMIT" =~ ^[0-9]+$ ]] || [[ "$LIMIT" -lt 1 || "$LIMIT" -gt 100 ]]; then
+            echo "::error::commit_limit must be an integer between 1 and 100, got: '$LIMIT'"
+            exit 1
+          fi
           CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
             "$GITHUB_TOKEN" \
             "${{ github.event.inputs.branch || 'develop' }}" \
-            "${{ github.event.inputs.commit_limit || '50' }}")
+            "$LIMIT")
           echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
           echo "Alpha candidate: $CANDIDATE_SHA"
 
