@@ -12,14 +12,14 @@ reaches end users.
 1. [Prerequisites & Roles](#1-prerequisites--roles)
 2. [Binary Release Lifecycle](#2-binary-release-lifecycle)
    - [2.1 Version numbering](#21-version-numbering)
-   - [2.2 Changelog management](#22-changelog-management--generate_changelogymll)
+   - [2.2 Changelog management](#22-changelog-management)
    - [2.3 Release branch creation](#23-release-branch-creation)
-   - [2.4 Build & Sign](#24-build--sign--build_and_signyml)
-   - [2.5 QA via Firebase App Distribution](#25-qa-via-firebase-app-distribution--deploy_to_firebaseyml)
-   - [2.6 Deploy to Play Console](#26-deploy-to-play-console--deploy_to_play_consoleyml)
-   - [2.7 Staged rollout management](#27-staged-rollout-management--update_rolloutyml)
-   - [2.8 Changelog updates post-release](#28-changelog-updates-post-release--deploy_updated_changelogyml)
-   - [2.9 Automated alpha releases](#29-automated-alpha-releases--auto_release_alphayml)
+   - [2.4 Build & Sign](#24-build--sign)
+   - [2.5 QA via Firebase App Distribution](#25-qa-via-firebase-app-distribution)
+   - [2.6 Deploy to Play Console](#26-deploy-to-play-console)
+   - [2.7 Staged rollout management](#27-staged-rollout-management)
+   - [2.8 Changelog updates post-release](#28-changelog-updates-post-release)
+   - [2.9 Automated alpha releases](#29-automated-alpha-releases)
 3. [Feature Flag Lifecycle](#3-feature-flag-lifecycle)
 4. [Diagrams](#4-diagrams)
    - [4.1 End-to-end binary release flow](#41-end-to-end-binary-release-flow)
@@ -66,7 +66,7 @@ MINOR_VERSION = 18
 - Committing a `MINOR_VERSION` bump to `develop` automatically triggers changelog generation
   (see §2.2).
 
-### 2.2 Changelog management — `generate_changelog.yml`
+### 2.2 Changelog management
 
 **Trigger:** Automatically on every push to `develop` that modifies `version.bzl`, or manually
 via `workflow_dispatch`.
@@ -108,7 +108,7 @@ After the version bump and changelog PR have landed on `develop`:
 
 ---
 
-### 2.4 Build & Sign — `build_and_sign.yml`
+### 2.4 Build & Sign
 
 **Trigger:** Manual (`workflow_dispatch`) — requires coordinator to fill in the inputs below.
 
@@ -135,7 +135,7 @@ After the version bump and changelog PR have landed on `develop`:
 
 ---
 
-### 2.5 QA via Firebase App Distribution — `deploy_to_firebase.yml`
+### 2.5 QA via Firebase App Distribution
 
 **Trigger:** Manual (`workflow_dispatch`) — run this after `build_and_sign.yml` succeeds.
 
@@ -157,7 +157,7 @@ before the coordinator proceeds to the Play Console deployment.
 
 ---
 
-### 2.6 Deploy to Play Console — `deploy_to_play_console.yml`
+### 2.6 Deploy to Play Console
 
 **Trigger:** Manual (`workflow_dispatch`) — run this after QA sign-off.
 
@@ -185,7 +185,7 @@ before the coordinator proceeds to the Play Console deployment.
 
 ---
 
-### 2.7 Staged rollout management — `update_rollout.yml`
+### 2.7 Staged rollout management
 
 **Trigger:** Manual (`workflow_dispatch`) — run this each time you want to increase the rollout
 percentage for a live release.
@@ -214,7 +214,7 @@ Console edit sessions (the Play Developer API enforces a single active edit per 
 
 ---
 
-### 2.8 Changelog updates post-release — `deploy_updated_changelog.yml`
+### 2.8 Changelog updates post-release
 
 **Trigger:**
 - **Automatic** — on every push to `develop` that modifies any file matching
@@ -235,7 +235,7 @@ release goes live, and the changes will automatically sync to the Play Console s
 
 ---
 
-### 2.9 Automated alpha releases — `auto_release_alpha.yml`
+### 2.9 Automated alpha releases
 
 > **Note:** This workflow is introduced as part of the ongoing release automation project. It
 > handles the full weekly alpha release cycle without coordinator intervention.
