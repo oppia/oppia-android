@@ -42,7 +42,7 @@ concurrency:
   # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
   # The group is intentionally not scoped to github.ref so that push and dispatch triggers
   # across different refs are also serialized — Play Console edits must be globally exclusive.
-  group: deploy-updated-changelog
+  group: play-console-edit-session
   cancel-in-progress: false
 
 jobs:

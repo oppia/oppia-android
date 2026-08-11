@@ -3364,15 +3364,19 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/Constants.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/JsonPrefixNetworkInterceptor.kt"
   override_min_coverage_percent_required: 28
 }
 test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkApiKey.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandler.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandlerImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3410,6 +3414,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeUserSuppliedFeedback.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "data/src/test/java/org/oppia/android/data/backends/gae/RetryInterceptorIntegrationTest.kt"
+  is_extra_test_file: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/audio/AudioPlayerController.kt"
@@ -4268,6 +4276,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/VertexAiClient.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/telemetry/DecodeUserStudyEventString.kt"
   test_file_not_required: true
 }
@@ -4410,6 +4422,14 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
   override_min_coverage_percent_required: 0
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/NumberWithUnitsSubject.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/NumberWithUnitsTokenSubject.kt"
+  test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/mockito/MockitoKotlinHelper.kt"
@@ -4700,6 +4720,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/NumberWithUnitsParsingError.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/ConnectionStatus.kt"
   test_file_not_required: true
 }
@@ -4943,15 +4967,4 @@ test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/CloudSigner.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandler.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkDelayHandlerImpl.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "data/src/test/java/org/oppia/android/data/backends/gae/RetryInterceptorIntegrationTest.kt",
-  is_extra_test_file: true
-}
+
