@@ -274,8 +274,12 @@ A release coordinator still approves the build step via `oppia-android-release-e
 signing runs — the automation removes the manual "find a good commit and tag it" step, not the
 human sign-off on the actual binary.
 
-If no passing commit is found within the configured limit, the workflow exits with an error and
-the coordinator is notified.
+If no passing commit is found within the configured limit, the outcome depends on why:
+
+- **Commits exist but none have passing CI** — the workflow exits with an error to alert
+  repository maintainers that the alpha channel is blocked on CI flakiness.
+- **No commits at all within the limit** — the workflow logs this and exits cleanly without
+  failing, since there is nothing new to release.
 
 ---
 
@@ -362,12 +366,14 @@ flowchart TD
 flowchart TD
     A["Weekly cron — Tuesday 03:30 UTC\n(or manual dispatch)"] --> B["auto_release_alpha.yml"]
     B --> C["FindAlphaCandidate\nwalks develop commits newest-first\nqueries GitHub Check Runs API"]
-    C --> D{"Any commit with\nall CI checks passing?"}
-    D -- "No" --> E["Workflow exits with error\nCoordinator notified"]
-    D -- "Yes" --> F["Force-push latest-alpha tag\nto candidate SHA"]
-    F --> G["Dispatch build_and_sign.yml\nflavor=alpha, source_ref=latest-alpha"]
-    G --> H["Coordinator approves in\noppia-android-release-env"]
-    H --> I["Signed alpha AAB archived in GCS ✓"]
+    C --> D{"Commits exist\nwithin limit?"}
+    D -- "No commits" --> E["Log: nothing to release\nWorkflow exits cleanly (no error)"]
+    D -- "Commits exist" --> F{"Any with all\nCI checks passing?"}
+    F -- "No" --> G["Exit with error\n(alpha blocked on CI flakiness)\nMaintainers notified"]
+    F -- "Yes" --> H["Force-push latest-alpha tag\nto candidate SHA"]
+    H --> I["Dispatch build_and_sign.yml\nflavor=alpha, source_ref=latest-alpha"]
+    I --> J["Coordinator approves in\noppia-android-release-env"]
+    J --> K["Signed alpha AAB archived in GCS ✓"]
 ```
 
 ### 4.3 Feature flag lifecycle
@@ -397,6 +403,37 @@ stateDiagram-v2
 | `deploy_updated_changelog.yml` | Push to develop (`changelogs/**`) / manual | `version`, `flavor` | Sync edited release notes to Play Console |
 | `auto_release_alpha.yml` | Weekly cron (Tue 03:30 UTC) / manual | `branch`, `commit_limit` | Automated weekly alpha cut |
 | `pull_latest_lesson_versions.yml` | Weekly cron (Mon 02:30 UTC) / manual | — | Update pinned lesson version textprotos, open PR |
+
+---
+
+## 6. How to Manually Trigger a Workflow
+
+All manual workflows in this release process use GitHub's `workflow_dispatch` trigger. Here is
+how to run one:
+
+**Step 1 — Open the Actions tab and select the workflow**
+
+Navigate to the **Actions** tab of the `oppia/oppia-android` repository and click the workflow
+you want to run from the left-hand sidebar. Then click the **"Run workflow"** button on the
+right.
+
+![Step 1: Select the workflow and click Run workflow](SCREENSHOT_1_URL)
+
+**Step 2 — Fill in the inputs**
+
+A dropdown appears with a branch selector and the workflow's input fields. Select the correct
+branch and fill in all required inputs (refer to the relevant section above for the expected
+values).
+
+![Step 2: Fill in the workflow inputs](SCREENSHOT_2_URL)
+
+**Step 3 — Confirm and approve**
+
+Click **"Run workflow"** to queue the run. For workflows that run in the
+`oppia-android-release-env` environment, a reviewer approval gate will appear — an authorized
+reviewer must approve the run in the GitHub Actions UI before any step executes.
+
+![Step 3: Approve the run in the release environment](SCREENSHOT_3_URL)
 
 ---
 
