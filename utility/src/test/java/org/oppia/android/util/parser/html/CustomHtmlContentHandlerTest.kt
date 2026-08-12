@@ -36,7 +36,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomHtmlParser
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
@@ -209,39 +208,6 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
-  fun testParseHtml_customHandlerParsesNestedCustomHtml_returnsProcessedContent() {
-    val nestedHtml =
-      "<inner-tag custom-attribute=\"value\">content</inner-tag>"
-
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = "<outer-tag></outer-tag>",
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          "outer-tag" to NestedHtmlTagHandler(nestedHtml),
-          "inner-tag" to ReplacingTagHandler("custom-attribute")
-        )
-      )
-
-    assertThat(parsedHtml.toString()).isEqualTo("value")
-  }
-
-  @Test
-  fun testParseHtml_nullImageRetriever_customHandlerParsesNestedHtml_returnsStyledContent() {
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = "<custom-tag></custom-tag>",
-        imageRetriever = null,
-        customTagHandlers = mapOf(
-          "custom-tag" to NestedHtmlTagHandler("<strong>Nested content</strong>")
-        )
-      )
-
-    assertThat(parsedHtml.toString()).isEqualTo("Nested content")
-    assertThat(parsedHtml.getSpansFromWholeString(StyleSpan::class)).hasLength(1)
-  }
-
-  @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
@@ -299,7 +265,7 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
-  fun testAttributeHelpers_getJsonStringValue_nestedHtml_returnsDecodedHtmlWithAttributes() {
+  fun testAttributeHelpers_getNestedHtmlValue_nestedHtml_returnsDecodedHtmlWithAttributes() {
     val attributes = AttributesImpl()
     attributes.addAttribute(
       name = "attrib",
@@ -307,7 +273,7 @@ class CustomHtmlContentHandlerTest {
         "&amp;quot;\\&quot;&gt;&lt;/nested-tag&gt;&quot;"
     )
 
-    val value = attributes.getJsonStringValue("attrib")
+    val value = attributes.getNestedHtmlValue("attrib")
 
     assertThat(value).isEqualTo(
       "<nested-tag text-with-value=\"&quot;Nested content&quot;\"></nested-tag>"
@@ -315,23 +281,33 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
-  fun testAttributeHelpers_getJsonStringValue_malformedQuotedJson_returnsNull() {
+  fun testAttributeHelpers_getNestedHtmlValue_malformedQuotedJson_returnsNull() {
     val attributes = AttributesImpl()
     attributes.addAttribute(name = "attrib", value = "&quot;unterminated")
 
-    val value = attributes.getJsonStringValue("attrib")
+    val value = attributes.getNestedHtmlValue("attrib")
 
     assertThat(value).isNull()
   }
 
   @Test
-  fun testAttributeHelpers_getJsonStringValue_quotedJsonWithTrailingContent_returnsNull() {
+  fun testAttributeHelpers_getNestedHtmlValue_quotedJsonWithTrailingContent_returnsNull() {
     val attributes = AttributesImpl()
     attributes.addAttribute(name = "attrib", value = "&quot;value&quot;trailing content")
 
-    val value = attributes.getJsonStringValue("attrib")
+    val value = attributes.getNestedHtmlValue("attrib")
 
     assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getNestedHtmlValue_unquotedValue_returnsDecodedValue() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&lt;strong&gt;value&lt;/strong&gt;")
+
+    val value = attributes.getNestedHtmlValue("attrib")
+
+    assertThat(value).isEqualTo("<strong>value</strong>")
   }
 
   @Test
@@ -412,21 +388,6 @@ class CustomHtmlContentHandlerTest {
     )
 
     assertThat(contentDescription).isEqualTo("First Second")
-  }
-
-  @Test
-  fun testGetContentDescription_withNestedEmptyTags_preservesOpeningOrder() {
-    val outerHandler = FakeContentDescriptionTagHandler("Outer ")
-    val innerHandler = FakeContentDescriptionTagHandler("Inner ")
-    val contentDescription = CustomHtmlContentHandler.getContentDescription(
-      html = "<outer-tag><inner-tag></inner-tag></outer-tag>",
-      customTagHandlers = mapOf(
-        "outer-tag" to outerHandler,
-        "inner-tag" to innerHandler
-      )
-    )
-
-    assertThat(contentDescription).isEqualTo("Outer Inner")
   }
 
   @Test
@@ -603,14 +564,10 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {}
 
-    override fun getContentDescription(
-      attributes: Attributes,
-      customHtmlParser: CustomHtmlParser
-    ): String {
+    override fun getContentDescription(attributes: Attributes): String {
       return contentDesc
     }
   }
@@ -631,8 +588,7 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -643,8 +599,7 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable,
-      customHtmlParser: CustomHtmlParser
+      output: Editable
     ) {
       handleTagForContentDescriptionCalled = true
       handleTagForContentDescriptionCallIndex = methodCallCount++
@@ -677,35 +632,9 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
-    }
-  }
-
-  private class NestedHtmlTagHandler(
-    private val nestedHtml: String
-  ) : CustomTagHandler {
-    override fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
-    ) {
-      output.replace(openIndex, closeIndex, customHtmlParser.parseHtml(nestedHtml))
-    }
-
-    override fun handleTagForContentDescription(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable,
-      customHtmlParser: CustomHtmlParser
-    ) {
-      output.replace(openIndex, closeIndex, customHtmlParser.parseHtml(nestedHtml))
     }
   }
 

@@ -27,8 +27,7 @@ class PolicyPageTagHandler(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
-    output: Editable,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+    output: Editable
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
@@ -84,10 +83,7 @@ class PolicyPageTagHandler(
     fun onPolicyPageLinkClicked(policyType: PolicyType)
   }
 
-  override fun getContentDescription(
-    attributes: Attributes,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
-  ): String {
+  override fun getContentDescription(attributes: Attributes): String {
     return when (attributes.getJsonStringValue("link")) {
       TERMS_OF_SERVICE_PAGE, PRIVACY_POLICY_PAGE -> "Link to "
       else -> ""

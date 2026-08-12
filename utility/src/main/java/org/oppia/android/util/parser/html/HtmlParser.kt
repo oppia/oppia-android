@@ -18,7 +18,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import org.oppia.android.util.platformparameter.CacheLatexRendering
-import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -32,9 +31,6 @@ class HtmlParser private constructor(
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
   private val cacheLatexRendering: Boolean,
-  private val enableWorkedExamples: Boolean,
-  private val workedExampleQuestionLabelStringId: Int,
-  private val workedExampleAnswerLabelStringId: Int,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
   displayLocale: OppiaLocale.DisplayLocale
@@ -62,24 +58,6 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
-  private val workedExampleTagHandler by lazy {
-    WorkedExampleTagHandler(
-      consoleLogger,
-      questionLabel = displayLocale.run {
-        context.resources.getStringInLocale(workedExampleQuestionLabelStringId)
-      },
-      answerLabel = displayLocale.run {
-        context.resources.getStringInLocale(workedExampleAnswerLabelStringId)
-      },
-      leadingMarginPx = context.resources.getDimensionPixelSize(
-        R.dimen.worked_example_leading_margin
-      )
-    )
-  }
-  private val noOpWorkedExampleTagHandler = object :
-    CustomHtmlContentHandler.CustomTagHandler {
-    override fun shouldHandleNestedHtml(): Boolean = false
-  }
 
   private val isRtl by lazy {
     displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -93,13 +71,16 @@ class HtmlParser private constructor(
    * @param supportsLinks whether the provided [TextView] should support link forwarding (it's
    *     recommended not to use this for [TextView]s that are within other layouts that need to
    *     support clicking (default false)
+   * @param workedExampleLabels the localized labels to display with worked examples, or null if
+   *     worked examples shouldn't be displayed (default null)
    * @return a [Spannable] representing the styled text.
    */
   fun parseOppiaHtml(
     rawString: String,
     htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
-    supportsConceptCards: Boolean = false
+    supportsConceptCards: Boolean = false,
+    workedExampleLabels: WorkedExampleLabels? = null
   ): Spannable {
     var htmlContent = rawString
 
@@ -156,7 +137,9 @@ class HtmlParser private constructor(
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent,
       imageGetter,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageGetter
+      )
     )
 
     val urlPattern = Patterns.WEB_URL
@@ -170,14 +153,18 @@ class HtmlParser private constructor(
     }
     htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageRetriever = null
+      )
     )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
   private fun computeCustomTagHandlers(
     supportsConceptCards: Boolean,
-    htmlContentTextView: TextView
+    htmlContentTextView: TextView,
+    workedExampleLabels: WorkedExampleLabels?,
+    imageRetriever: UrlImageParser?
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     bulletTagHandler.setTextView(htmlContentTextView)
@@ -197,8 +184,26 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
-    handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] =
-      if (enableWorkedExamples) workedExampleTagHandler else noOpWorkedExampleTagHandler
+    if (workedExampleLabels != null) {
+      // A worked example's question and answer are HTML that's nested within the tag's attributes,
+      // so they're parsed using the handlers computed above. Note that the snapshot deliberately
+      // excludes the worked example handler itself since worked examples can't be nested.
+      val nestedTagHandlers = handlersMap.toMap()
+      handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] = WorkedExampleTagHandler(
+        consoleLogger,
+        labels = workedExampleLabels,
+        leadingMarginPx = context.resources.getDimensionPixelSize(
+          R.dimen.worked_example_leading_margin
+        ),
+        nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+          override fun parseHtml(html: String): Spannable =
+            CustomHtmlContentHandler.fromHtml(html, imageRetriever, nestedTagHandlers)
+
+          override fun parseHtmlForContentDescription(html: String): String =
+            CustomHtmlContentHandler.getContentDescription(html, nestedTagHandlers)
+        }
+      )
+    }
     return handlersMap
   }
 
@@ -225,6 +230,8 @@ class HtmlParser private constructor(
     // ensure the image's dimensions are measured). Note that this needs to be a visible character
     // to remedy the bug.
     // TODO(#1796): Find a better workaround for this bug.
+    // Note that the emptiness check is needed because all() is vacuously true for an empty
+    // spannable, which would otherwise pad content that parsed to nothing with two spaces.
     return if (spannable.isNotEmpty() && spannable.toString().all { it == '\uFFFC' }) {
       spannable.insert(/* where= */ 0, " ").append(" ")
     } else spannable
@@ -252,12 +259,7 @@ class HtmlParser private constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
     private val context: Context,
-    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>,
-    @EnableWorkedExamples private val enableWorkedExamples: PlatformParameterValue<Boolean>,
-    @WorkedExampleQuestionLabelStringId
-    private val workedExampleQuestionLabelStringId: Int,
-    @WorkedExampleAnswerLabelStringId
-    private val workedExampleAnswerLabelStringId: Int
+    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -281,9 +283,6 @@ class HtmlParser private constructor(
         imageCenterAlign = imageCenterAlign,
         consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
-        enableWorkedExamples = enableWorkedExamples.value,
-        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
-        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = customOppiaTagActionListener,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale
@@ -307,9 +306,6 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger = consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
-        enableWorkedExamples = enableWorkedExamples.value,
-        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
-        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale
@@ -335,9 +331,6 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger = consoleLogger,
         cacheLatexRendering = false,
-        enableWorkedExamples = enableWorkedExamples.value,
-        workedExampleQuestionLabelStringId = workedExampleQuestionLabelStringId,
-        workedExampleAnswerLabelStringId = workedExampleAnswerLabelStringId,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = policyOppiaTagActionListener,
         displayLocale = displayLocale

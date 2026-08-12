@@ -30,8 +30,7 @@ class ConceptCardTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
@@ -59,10 +58,7 @@ class ConceptCardTagHandler(
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 
-  override fun getContentDescription(
-    attributes: Attributes,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
-  ): String? {
+  override fun getContentDescription(attributes: Attributes): String? {
     val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
     return if (!skillId.isNullOrBlank()) {
       "$skillId concept card"

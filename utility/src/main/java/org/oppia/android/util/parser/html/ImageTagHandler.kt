@@ -28,8 +28,7 @@ class ImageTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
@@ -103,10 +102,7 @@ class ImageTagHandler(
     )
   }
 
-  override fun getContentDescription(
-    attributes: Attributes,
-    customHtmlParser: CustomHtmlContentHandler.CustomHtmlParser
-  ): String {
+  override fun getContentDescription(attributes: Attributes): String {
     val altValue = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
     return if (!altValue.isNullOrBlank()) {
       "Image illustrating $altValue"

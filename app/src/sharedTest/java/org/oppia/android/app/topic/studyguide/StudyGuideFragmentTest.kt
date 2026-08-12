@@ -299,6 +299,32 @@ class StudyGuideFragmentTest {
   }
 
   @Test
+  fun testStudyGuide_workedExamplesDisabled_secondSectionDoesNotShowWorkedExample() {
+    // The flags forced in setUp() have to be re-applied together since overriding one of them on
+    // its own would leave the rest of the flags uninitialized.
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableWorkedExamples(false)
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("This section reviews a related skill"))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("Question:")))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("What is one half as a fraction?")))))
+    }
+  }
+
+  @Test
   fun testStudyGuide_clickConceptCardLinkText_opensConceptCard() {
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,

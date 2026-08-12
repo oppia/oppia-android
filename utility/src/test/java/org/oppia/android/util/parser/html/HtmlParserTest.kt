@@ -8,6 +8,7 @@ import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -169,7 +170,6 @@ class HtmlParserTest {
   @After
   fun tearDown() {
     Intents.release()
-    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -227,7 +227,8 @@ class HtmlParserTest {
         )
       }
 
-      // Verify that no image span is added since image support isn't enabled.
+      // Verify that no image span is added since image support isn't enabled, and that nothing at
+      // all is rendered (the AOSP whitespace workaround only applies when there's an image span).
       val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
       assertThat(imageSpans).hasLength(0)
       assertThat(htmlResult.toString()).isEmpty()
@@ -683,7 +684,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_withWorkedExample_flagDisabled_ignoresWorkedExample() {
+  fun testHtmlContent_withWorkedExample_withoutLabels_ignoresWorkedExample() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -695,12 +696,14 @@ class HtmlParserTest {
 
     val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
 
+    // Note that the result is fully empty rather than whitespace: content that parses to nothing
+    // must not pick up the padding that's only meant to work around the AOSP image span bug.
     assertThat(htmlResult.toString()).isEmpty()
     assertThat(textView.contentDescription.toString()).isEmpty()
   }
 
   @Test
-  fun testHtmlContent_withWorkedExample_flagDisabled_preservesSurroundingContent() {
+  fun testHtmlContent_withWorkedExample_withoutLabels_preservesSurroundingContent() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -721,19 +724,21 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_withWorkedExample_flagEnabled_rendersWorkedExample() {
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    setUpTestApplicationComponentWithWorkedExamplesEnabled()
+  fun testHtmlContent_withWorkedExample_withLabels_rendersWorkedExample() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
       imageCenterAlign = false,
-      displayLocale = displayLocale
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val textView = TextView(context)
 
-    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
 
     assertThat(htmlResult.toString()).isEqualTo(
       "Question:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole."
@@ -741,6 +746,30 @@ class HtmlParserTest {
     assertThat(textView.contentDescription.toString()).isEqualTo(
       "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
     )
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withLabels_indentsWorkedExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the worked example is indented. The margin itself comes from a dimension
+    // resource, so it's scaled for the device's density rather than being a fixed pixel size.
+    val leadingMarginSpan =
+      htmlResult.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ true)).isGreaterThan(0)
   }
 
   // TODO(#3840): Make this test work on Espresso.
@@ -752,7 +781,6 @@ class HtmlParserTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHtmlContent_withWorkedExample_rtlLocale_preservesLogicalReadingOrder() {
-    setUpTestApplicationComponentWithWorkedExamplesEnabled()
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -763,7 +791,11 @@ class HtmlParserTest {
     val textView = TextView(context)
     ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
 
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
     assertThat(htmlResult.toString().indexOf("Question:"))
@@ -1225,15 +1257,6 @@ class HtmlParserTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpTestApplicationComponentWithWorkedExamplesEnabled() {
-    TestPlatformParameterModule.reset()
-    TestPlatformParameterModule.forceEnableWorkedExamples(true)
-    val component = DaggerHtmlParserTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build() as TestApplicationComponent
-    component.inject(this)
-  }
-
   private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
     ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
       scenario.onActivity { it.setContentView(R.layout.test_html_parser_activity) }
@@ -1350,6 +1373,9 @@ class HtmlParserTest {
   }
 
   private companion object {
+
+    private val WORKED_EXAMPLE_LABELS =
+      WorkedExampleLabels(questionLabel = "Question:", answerLabel = "Answer:")
 
     private const val WORKED_EXAMPLE_MARKUP =
       "<oppia-noninteractive-workedexample " +

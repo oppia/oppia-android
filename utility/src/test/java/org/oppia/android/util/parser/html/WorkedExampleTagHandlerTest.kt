@@ -29,7 +29,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomHtmlParser
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
@@ -89,14 +88,6 @@ private const val WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP =
     "answer-with-value=\"&amp;quot;&amp;lt;p&amp;gt;A worked answer&amp;lt;/p&amp;gt;" +
     "&amp;quot;\"></oppia-noninteractive-workedexample>"
 
-private const val WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP =
-  "<oppia-noninteractive-workedexample " +
-    "question-with-value=\"&amp;quot;&amp;lt;nested-tag text-with-value=\\&amp;quot;" +
-    "&amp;amp;quot;Nested custom content&amp;amp;quot;\\&amp;quot;&amp;gt;" +
-    "&amp;lt;/nested-tag&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;" +
-    "Nested answer&amp;quot;\">" +
-    "</oppia-noninteractive-workedexample>"
-
 private const val CUSTOM_NESTED_TAG = "nested-tag"
 private const val CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE = "text-with-value"
 private const val QUESTION_LABEL = "Question:"
@@ -110,19 +101,16 @@ class WorkedExampleTagHandlerTest {
   @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var fakeImageRetriever: FakeImageRetriever
+  private lateinit var nestedTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithWorkedExampleSupport: Map<String, CustomTagHandler>
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     fakeImageRetriever = FakeImageRetriever()
-    tagHandlersWithWorkedExampleSupport = mapOf(
-      CUSTOM_WORKED_EXAMPLE_TAG to WorkedExampleTagHandler(
-        consoleLogger,
-        questionLabel = QUESTION_LABEL,
-        answerLabel = ANSWER_LABEL,
-        leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX
-      ),
+    // Note that the worked example handler is deliberately absent from the handlers used for nested
+    // content since worked examples can't contain other worked examples.
+    nestedTagHandlers = mapOf(
       CUSTOM_NESTED_TAG to NestedTagHandler(),
       CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
       CUSTOM_MATH_TAG to MathTagHandler(
@@ -139,6 +127,8 @@ class WorkedExampleTagHandlerTest {
         consoleLogger
       )
     )
+    tagHandlersWithWorkedExampleSupport = nestedTagHandlers +
+      (CUSTOM_WORKED_EXAMPLE_TAG to createWorkedExampleTagHandler(QUESTION_LABEL, ANSWER_LABEL))
   }
 
   @Test
@@ -278,7 +268,7 @@ class WorkedExampleTagHandlerTest {
 
   @Test
   fun testParseHtml_withNestedCustomTag_processesNestedTagHandler() {
-    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP)
+    val parsedHtml = parseHtml(createNestedCustomTagMarkup())
 
     assertThat(parsedHtml.toString()).isEqualTo(
       "Question:\nNested custom content\n\nAnswer:\nNested answer\n"
@@ -375,15 +365,11 @@ class WorkedExampleTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withNoOpWorkedExampleHandler_ignoresWorkedExample() {
-    val noOpWorkedExampleHandler = object : CustomTagHandler {
-      override fun shouldHandleNestedHtml(): Boolean = false
-    }
-
+  fun testParseHtml_withoutWorkedExampleHandler_ignoresWorkedExample() {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = WORKED_EXAMPLE_MARKUP,
       imageRetriever = fakeImageRetriever,
-      customTagHandlers = mapOf(CUSTOM_WORKED_EXAMPLE_TAG to noOpWorkedExampleHandler)
+      customTagHandlers = nestedTagHandlers
     )
 
     assertThat(parsedHtml.toString()).isEmpty()
@@ -392,11 +378,9 @@ class WorkedExampleTagHandlerTest {
   @Test
   fun testParseHtml_withRtlLabels_preservesLogicalQuestionThenAnswerOrder() {
     val rtlTagHandlers = mapOf(
-      CUSTOM_WORKED_EXAMPLE_TAG to WorkedExampleTagHandler(
-        consoleLogger,
+      CUSTOM_WORKED_EXAMPLE_TAG to createWorkedExampleTagHandler(
         questionLabel = "السؤال:",
-        answerLabel = "الإجابة:",
-        leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX
+        answerLabel = "الإجابة:"
       )
     )
     val workedExampleMarkup = createWorkedExampleMarkup(
@@ -445,8 +429,7 @@ class WorkedExampleTagHandlerTest {
 
   @Test
   fun testGetContentDescription_withNestedCustomTag_includesNestedDescription() {
-    val contentDescription =
-      getContentDescription(WORKED_EXAMPLE_WITH_NESTED_CUSTOM_TAG_MARKUP)
+    val contentDescription = getContentDescription(createNestedCustomTagMarkup())
 
     assertThat(contentDescription).isEqualTo(
       "Question: Nested custom content\nAnswer: Nested answer"
@@ -495,6 +478,38 @@ class WorkedExampleTagHandlerTest {
       html = html,
       customTagHandlers = tagHandlersWithWorkedExampleSupport
     )
+
+  private fun createWorkedExampleTagHandler(
+    questionLabel: String,
+    answerLabel: String
+  ): WorkedExampleTagHandler {
+    return WorkedExampleTagHandler(
+      consoleLogger,
+      labels = WorkedExampleLabels(questionLabel, answerLabel),
+      leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX,
+      nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+        override fun parseHtml(html: String): Spannable =
+          CustomHtmlContentHandler.fromHtml(html, fakeImageRetriever, nestedTagHandlers)
+
+        override fun parseHtmlForContentDescription(html: String): String =
+          CustomHtmlContentHandler.getContentDescription(html, nestedTagHandlers)
+      }
+    )
+  }
+
+  /**
+   * Returns markup for a worked example whose question contains a custom tag, with that tag encoded
+   * the way it would be if it appeared on its own (that is, with its value wrapped in an encoded
+   * pair of quotes).
+   */
+  private fun createNestedCustomTagMarkup(): String {
+    return createWorkedExampleMarkup(
+      questionHtml =
+        "<$CUSTOM_NESTED_TAG $CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE=" +
+          "\"&amp;quot;Nested custom content&amp;quot;\"></$CUSTOM_NESTED_TAG>",
+      answerHtml = "Nested answer"
+    )
+  }
 
   private fun createWorkedExampleMarkup(questionHtml: String, answerHtml: String): String {
     return "<$CUSTOM_WORKED_EXAMPLE_TAG " +
@@ -591,17 +606,14 @@ class WorkedExampleTagHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {
       attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)?.let { text ->
         output.replace(openIndex, closeIndex, text)
       }
     }
 
-    override fun getContentDescription(
-      attributes: Attributes,
-      customHtmlParser: CustomHtmlParser
-    ): String? = attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)
+    override fun getContentDescription(attributes: Attributes): String? =
+      attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)
   }
 }

@@ -47,7 +47,6 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.html.WorkedExampleLabelsModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
@@ -789,8 +788,7 @@ class BindableAdapterTest {
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
-      WorkManagerConfigurationModule::class,
-      WorkedExampleLabelsModule::class
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

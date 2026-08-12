@@ -21,15 +21,13 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?,
-  private val customHtmlParser: CustomHtmlParser
+  private val imageRetriever: ImageRetriever?
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
   private val contentDescriptionBuilder = StringBuilder()
   private val tagContentDescriptions = mutableListOf<TagContentDescription>()
-  private var nextContentDescriptionTagOrder = 0
   private var isInListItem = false
   private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
   // Indicates if a newline should be added before the next text content for block elements.
@@ -73,13 +71,7 @@ class CustomHtmlContentHandler private constructor(
   override fun startElement(uri: String?, localName: String?, qName: String?, atts: Attributes?) {
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
-    val trackedTag = TrackedTag(
-      tag = checkNotNull(localName),
-      attributes = checkNotNull(atts),
-      contentDescriptionOpenTagIndex = contentDescriptionBuilder.length,
-      contentDescriptionTagOrder = nextContentDescriptionTagOrder++
-    )
-    currentTrackedTag = trackedTag
+    currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
     val tagName = qName ?: localName
     if (tagName in blockTags) {
       pendingNewline = true
@@ -88,11 +80,7 @@ class CustomHtmlContentHandler private constructor(
     if (tagName == "a") {
       val href = atts.getValue("href")
       if (href != null) {
-        tagContentDescriptions += TagContentDescription(
-          trackedTag.contentDescriptionOpenTagIndex,
-          trackedTag.contentDescriptionTagOrder,
-          "$href "
-        )
+        tagContentDescriptions += TagContentDescription(contentDescriptionBuilder.length, "$href ")
       }
     }
     originalContentHandler?.startElement(uri, localName, qName, atts)
@@ -134,12 +122,14 @@ class CustomHtmlContentHandler private constructor(
           check(localCurrentTrackedTag.tag == tag) {
             "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
           }
+          // Note that the content description index is tracked separately from the output index
+          // since custom tag handlers can replace the tag's region of the output, which makes the
+          // two indexes diverge for any tags that follow.
           currentTrackedCustomTags += TrackedCustomTag(
-            tag = localCurrentTrackedTag.tag,
-            attributes = localCurrentTrackedTag.attributes,
-            openTagIndex = output.length,
-            contentDescriptionOpenTagIndex = localCurrentTrackedTag.contentDescriptionOpenTagIndex,
-            contentDescriptionTagOrder = localCurrentTrackedTag.contentDescriptionTagOrder
+            localCurrentTrackedTag.tag,
+            localCurrentTrackedTag.attributes,
+            output.length,
+            contentDescriptionBuilder.length
           )
           customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
@@ -153,55 +143,38 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
-        val (_, attributes, openTagIndex, contentDescriptionOpenTagIndex, tagOrder) =
-          currentTrackedCustomTag
+        val (_, attributes, openTagIndex, contentDescriptionOpenTagIndex) = currentTrackedCustomTag
 
         val handler = customTagHandlers.getValue(tag)
         if (handler is ContentDescriptionProvider) {
-          val contentDesc = handler.getContentDescription(attributes, customHtmlParser)
+          val contentDesc = handler.getContentDescription(attributes)
           if (contentDesc != null) {
-            tagContentDescriptions += TagContentDescription(
-              contentDescriptionOpenTagIndex, tagOrder, contentDesc
-            )
+            tagContentDescriptions +=
+              TagContentDescription(contentDescriptionOpenTagIndex, contentDesc)
           }
         }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
 
         if (imageRetriever == null) {
           customTagHandlers.getValue(tag)
-            .handleTagForContentDescription(
-              attributes, openTagIndex, output.length, output, customHtmlParser
-            )
+            .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
         } else {
           customTagHandlers.getValue(tag)
-            .handleTag(
-              attributes, openTagIndex, output.length, output, imageRetriever, customHtmlParser
-            )
+            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
         }
       }
     }
   }
 
-  private data class TrackedTag(
-    val tag: String,
-    val attributes: Attributes,
-    val contentDescriptionOpenTagIndex: Int,
-    val contentDescriptionTagOrder: Int
-  )
-
+  private data class TrackedTag(val tag: String, val attributes: Attributes)
   private data class TrackedCustomTag(
     val tag: String,
     val attributes: Attributes,
     val openTagIndex: Int,
-    val contentDescriptionOpenTagIndex: Int,
-    val contentDescriptionTagOrder: Int
+    val contentDescriptionOpenTagIndex: Int
   )
 
-  private data class TagContentDescription(
-    val index: Int,
-    val tagOrder: Int,
-    val description: String
-  )
+  private data class TagContentDescription(val index: Int, val description: String)
 
   /**
    * Returns the complete content description for the processed HTML, including descriptions
@@ -210,9 +183,9 @@ class CustomHtmlContentHandler private constructor(
   private fun getContentDescription(): String {
     val rawDesc = buildString {
       var lastIndex = 0
-      tagContentDescriptions.sortedWith(
-        compareBy<TagContentDescription> { it.index }.thenBy { it.tagOrder }
-      ).forEach { (index, _, description) ->
+      // Note that this sort is stable, so tags that start at the same index (such as two adjacent
+      // custom tags with no text between them) are kept in the order they were encountered.
+      tagContentDescriptions.sortedBy { it.index }.forEach { (index, description) ->
         if (index > lastIndex && index <= contentDescriptionBuilder.length) {
           append(
             contentDescriptionBuilder.substring(
@@ -231,15 +204,6 @@ class CustomHtmlContentHandler private constructor(
     return rawDesc.replace(Regex("\n+"), "\n").trim()
   }
 
-  /** Parser interface for converting nested HTML into a [Spannable]. */
-  interface CustomHtmlParser {
-    /** Returns a [Spannable] parsed from [html]. */
-    fun parseHtml(html: String): Spannable
-
-    /** Returns a content description parsed from [html]. */
-    fun parseHtmlForContentDescription(html: String): String
-  }
-
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
     /**
@@ -250,15 +214,13 @@ class CustomHtmlContentHandler private constructor(
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
      * @param imageRetriever a utility to load image drawables if needed by the handler
-     * @param customHtmlParser a parser for nested HTML content
      */
     fun handleTag(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: ImageRetriever?,
-      customHtmlParser: CustomHtmlParser
+      imageRetriever: ImageRetriever?
     ) {
     }
 
@@ -269,14 +231,12 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which content can be added
-     * @param customHtmlParser a parser for nested HTML content
      */
     fun handleTagForContentDescription(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable,
-      customHtmlParser: CustomHtmlParser
+      output: Editable
     ) {
     }
 
@@ -300,9 +260,6 @@ class CustomHtmlContentHandler private constructor(
      * @param indentation The zero-based indentation level of this item.
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
-
-    /** Returns whether this handler should be available when parsing nested HTML content. */
-    fun shouldHandleNestedHtml(): Boolean = true
   }
 
   /** Handler Interface for tag handlers that provide content descriptions. */
@@ -310,13 +267,8 @@ class CustomHtmlContentHandler private constructor(
     /**
      * Returns a content description string for this tag based on its attributes,
      * or null if no description is available.
-     *
-     * @param customHtmlParser a parser for nested HTML content
      */
-    fun getContentDescription(
-      attributes: Attributes,
-      customHtmlParser: CustomHtmlParser
-    ): String?
+    fun getContentDescription(attributes: Attributes): String?
   }
 
   /**
@@ -364,8 +316,7 @@ class CustomHtmlContentHandler private constructor(
     ): String {
       val handler = CustomHtmlContentHandler(
         customTagHandlers,
-        null,
-        createCustomHtmlParser(imageRetriever = null, customTagHandlers)
+        null
       )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
@@ -405,30 +356,8 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(
-          customTagHandlers,
-          imageRetriever,
-          createCustomHtmlParser(imageRetriever, customTagHandlers)
-        ),
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
       ) as Spannable
-    }
-
-    private fun <T> createCustomHtmlParser(
-      imageRetriever: T?,
-      customTagHandlers: Map<String, CustomTagHandler>
-    ): CustomHtmlParser where T : Html.ImageGetter, T : ImageRetriever {
-      val nestedCustomTagHandlers = customTagHandlers.filterValues {
-        it.shouldHandleNestedHtml()
-      }
-      return object : CustomHtmlParser {
-        override fun parseHtml(html: String): Spannable {
-          return fromHtml(html, imageRetriever, nestedCustomTagHandlers)
-        }
-
-        override fun parseHtmlForContentDescription(html: String): String {
-          return getContentDescription(html, nestedCustomTagHandlers)
-        }
-      }
     }
   }
 }
@@ -438,29 +367,46 @@ class CustomHtmlContentHandler private constructor(
  * if the corresponding value doesn't exist in this attributes map.
  */
 fun Attributes.getJsonStringValue(name: String): String? {
-  val rawValue = getValue(name) ?: return null
-  val unescapedValue = rawValue.unescapeHtml()
+  // Note that the attribute is actually an encoded JSON string (so it has escaped quotes around
+  // it). Since it's only a source string, the quotes can simply be removed in order to extract
+  // the string value.
+  return getValue(name)?.replace("&quot;", "")
+}
 
-  // Some older test and policy tags use unquoted values. Preserve support for those while fully
-  // parsing quoted JSON strings so escaped quotes inside nested HTML aren't discarded.
-  return if (unescapedValue.startsWith('"')) {
-    try {
-      val jsonTokener = JSONTokener(unescapedValue)
-      val parsedValue = jsonTokener.nextValue() as? String
-      parsedValue?.takeIf { jsonTokener.nextClean() == '\u0000' }
-    } catch (e: JSONException) {
-      null
-    }
-  } else {
-    unescapedValue
+/**
+ * Returns a string value from this [Attributes] object that was encoded as a JSON string containing
+ * HTML, or null if the value doesn't exist or isn't a well-formed JSON string.
+ *
+ * Unlike [getJsonStringValue], this decodes the value's HTML entities and then fully parses the
+ * resulting JSON string rather than just removing its quotes. That's necessary for attributes whose
+ * values contain nested HTML since that HTML has its own quoted attributes which would otherwise be
+ * corrupted. Values that aren't quoted are returned as-is (after being decoded) to match
+ * [getJsonStringValue]'s tolerance of unquoted values.
+ */
+fun Attributes.getNestedHtmlValue(name: String): String? {
+  val decodedValue = getValue(name)?.decodeHtmlEntities() ?: return null
+  if (!decodedValue.startsWith('"')) return decodedValue
+  return try {
+    val tokener = JSONTokener(decodedValue)
+    // Only accept the value if it's a single JSON string with nothing trailing it, otherwise it's
+    // malformed and can't be safely rendered.
+    (tokener.nextValue() as? String)?.takeIf { tokener.nextClean() == '\u0000' }
+  } catch (e: JSONException) {
+    null
   }
 }
 
-private fun String.unescapeHtml(): String =
-  replace("&quot;", "\"")
-    .replace("&#39;", "'")
-    .replace("&lt;", "<")
+/**
+ * Returns this string with one level of HTML entity encoding removed.
+ *
+ * Note that '&amp;' must be decoded last so that entities which were themselves encoded (such as
+ * '&amp;amp;quot;') are only decoded by one level.
+ */
+private fun String.decodeHtmlEntities(): String =
+  replace("&lt;", "<")
     .replace("&gt;", ">")
+    .replace("&quot;", "\"")
+    .replace("&#39;", "'")
     .replace("&amp;", "&")
 
 /**

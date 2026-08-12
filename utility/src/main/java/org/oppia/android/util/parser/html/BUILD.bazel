@@ -14,7 +14,6 @@ kt_android_library(
         ":custom_html_content_handler",
         ":list_item_leading_margin_span",
         ":tag_handlers",
-        ":worked_example_label_string_ids",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
         "//utility:resources",
@@ -88,19 +87,6 @@ kt_android_library(
     name = "exploration_html_parser_entity_type",
     srcs = [
         "ExplorationHtmlParserEntityType.kt",
-    ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "worked_example_label_string_ids",
-    srcs = [
-        "WorkedExampleQuestionLabelStringId.kt",
     ],
     visibility = [
         "//:oppia_api_visibility",
