@@ -20,6 +20,7 @@ reaches end users.
    - [2.7 Staged rollout management](#27-staged-rollout-management)
    - [2.8 Changelog updates post-release](#28-changelog-updates-post-release)
    - [2.9 Automated alpha releases](#29-automated-alpha-releases)
+   - [2.10 Automated lesson version updates](#210-automated-lesson-version-updates)
 3. [Feature Flag Lifecycle](#3-feature-flag-lifecycle)
 4. [Diagrams](#4-diagrams)
    - [4.1 End-to-end binary release flow](#41-end-to-end-binary-release-flow)
@@ -33,12 +34,20 @@ reaches end users.
 
 ### Release Coordinator
 The release coordinator is responsible for triggering all manual GitHub Actions workflows
-described in this page. The role requires the following access:
+described in this page. The release coordinator is either the tech lead, or any other approved
+`dev-workflow` or `infrastructure reviewer` codeowner.
+
+**Access required by the coordinator:**
 
 | Access | Purpose |
 |---|---|
 | GitHub: `oppia-android-release-env` environment | Approve build/sign/deploy jobs before they run |
 | GitHub: `oppia-android-automation-env` environment | Approve automated PR-creation workflows |
+
+**Access pre-configured for the automation (as GitHub environment secrets — no manual setup needed by the coordinator):**
+
+| Access | Purpose |
+|---|---|
 | GCP: Workload Identity Federation service account | Sign binaries via Cloud KMS, read/write GCS archive |
 | GCP: Cloud KMS — `oppia-android-release-key` | HSM-backed signing key (key never leaves KMS) |
 | Google Play Console: "Release to production" permission | Upload AABs and update track releases |
@@ -63,13 +72,13 @@ MINOR_VERSION = 18
 - `MINOR_VERSION` is incremented for each release (e.g. 0.17 → 0.18).
 - `MAJOR_VERSION` changes only for breaking platform changes or major product milestones.
 - The resulting `versionName` is `"{MAJOR}.{MINOR}"` (e.g. `"0.18"`).
-- Committing a `MINOR_VERSION` bump to `develop` automatically triggers changelog generation
-  (see §2.2).
+- A version update is performed by committing a `MINOR_VERSION` bump to `develop`.
+  This automatically triggers changelog generation (see [§2.2](#22-changelog-management)).
 
 ### 2.2 Changelog management
 
 **Trigger:** Automatically on every push to `develop` that modifies `version.bzl`, or manually
-via `workflow_dispatch`.
+via `workflow_dispatch` of the `generate_changelog.yml` workflow.
 
 **What it does:**
 
@@ -150,10 +159,15 @@ After the version bump and changelog PR have landed on `develop`:
 
 1. Downloads the signed AAB from GCS.
 2. Distributes it to Firebase App Distribution.
-3. Notifies the relevant tester group for the given flavor.
+3. Automatically notifies the relevant tester group for the given flavor (the tester group
+   assignment is configured in the workflow — no manual coordinator action needed for the
+   notification).
 
 QA testers can then install the build via the Firebase App Distribution app and validate it
 before the coordinator proceeds to the Play Console deployment.
+
+The app's Play Store listing is at:
+[https://play.google.com/store/apps/details?id=org.oppia.android](https://play.google.com/store/apps/details?id=org.oppia.android)
 
 ---
 
@@ -161,12 +175,15 @@ before the coordinator proceeds to the Play Console deployment.
 
 **Trigger:** Manual (`workflow_dispatch`) — run this after QA sign-off.
 
+> **Note:** This workflow runs in the `oppia-android-release-env` environment, which requires
+> an authorized reviewer to **approve** the run before any step executes.
+
 **Inputs:**
 
 | Input | Description | Example |
 |---|---|---|
 | `gcs_aab_path` | Full GCS path from `build_and_sign` | `gs://…/oppia-android-0.18-rc01-alpha-abc1234.aab` |
-| `track` | Play Console track to deploy to | `alpha`, `beta`, `production` |
+| `track` | Play Console track to deploy to | `alpha`, `beta`, `ga` |
 | `rollout_fraction` | Initial staged rollout as integer [0, 1000] where 1000 = 100% (optional, default: `1000`) | `100` for 10% |
 
 **What it does:**
@@ -237,12 +254,9 @@ release goes live, and the changes will automatically sync to the Play Console s
 
 ### 2.9 Automated alpha releases
 
-> **Note:** This workflow is introduced as part of the ongoing release automation project. It
-> handles the full weekly alpha release cycle without coordinator intervention.
-
 **Trigger:**
 - **Automatic** — weekly cron every **Tuesday at 03:30 UTC**
-- **Manual** — via `workflow_dispatch` (useful for off-schedule alpha cuts)
+- **Manual** — via `workflow_dispatch` of the `auto_release_alpha.yml` workflow (useful for off-schedule alpha cuts)
 
 **What it does:**
 
@@ -250,7 +264,9 @@ release goes live, and the changes will automatically sync to the Play Console s
    - Fetches the most recent commits on `develop` (up to a configurable limit, default 50).
    - Walks them newest-first, querying the GitHub Check Runs API for each commit.
    - Returns the **first (newest) SHA** where every check run has completed with a passing,
-     skipped, or neutral conclusion.
+     skipped, or neutral conclusion. A **neutral** conclusion covers check runs that completed
+     without a definitive pass or fail — for example, a check that was skipped because it did
+     not apply to that commit, or one cancelled by a later push to the same branch.
 2. Force-pushes the `latest-alpha` tag to that commit SHA.
 3. Dispatches `build_and_sign.yml` with `flavor=alpha` and `source_ref=latest-alpha`.
 
@@ -260,6 +276,31 @@ human sign-off on the actual binary.
 
 If no passing commit is found within the configured limit, the workflow exits with an error and
 the coordinator is notified.
+
+---
+
+### 2.10 Automated lesson version updates
+
+**Trigger:**
+- **Automatic** — weekly cron every **Monday at 02:30 UTC**
+- **Manual** — via `workflow_dispatch` of the `pull_latest_lesson_versions.yml` workflow
+
+**What it does:**
+
+1. Runs the `download_lesson_list` Bazel script against the live Oppia production server for
+   both `alpha` and `prod` flavors.
+2. Updates the pinned lesson version files:
+   - `config/lessons/alpha_pinned_lesson_versions.textproto`
+   - `config/lessons/prod_pinned_lesson_versions.textproto`
+3. Opens a PR to `develop` on the dedicated `automated/lesson-versions` branch containing only
+   the updated textproto diff (idempotent — if files are already current, no commit or PR is
+   created).
+
+**Coordinator action:** Review and merge the opened lesson-versions PR.
+
+> **Note:** The workflow uses `BOT_TOKEN` rather than `GITHUB_TOKEN` for PR creation so that
+> CI is properly triggered on the opened PR. The dedicated branch is force-pushed on every run,
+> keeping the PR diff clean regardless of how many runs have occurred.
 
 ---
 
@@ -274,18 +315,23 @@ page for the complete guide on defining, enabling, graduating, and removing flag
 
 **Summary of states:**
 
-| State | Who sees it |
+The table below summarises the progression stages. The exact enum values and enabling
+conditions are defined in [`PlatformParameterValue`](../app/src/main/java/org/oppia/android/app/model/)
+and documented in full on the
+[Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki page.
+
+| Stage | Who sees it |
 |---|---|
-| `DevOnly` | Local development builds only |
-| `InternalTest` | Internal/debug flavor builds |
-| `Alpha` | Alpha Play Store track |
-| `Beta` | Beta Play Store track |
-| `GA` | General availability (all users) |
+| Dev-only | Local development builds only |
+| Internal/test | Internal/debug flavor builds |
+| Alpha | Alpha Play Store track |
+| Beta | Beta Play Store track |
+| GA (general availability) | All users |
 | Removed | Flag wrapper deleted; feature is unconditional |
 
-Graduating a flag from one state to the next does **not** require a new binary release — it is
+Graduating a flag from one stage to the next does **not** require a new binary release — it is
 done by updating the flag's default value in code and merging to `develop`. The change reaches
-users on the next alpha automation cycle or the next manual release, depending on the target state.
+users on the next alpha automation cycle or the next manual release, depending on the target stage.
 
 ---
 
@@ -350,6 +396,7 @@ stateDiagram-v2
 | `update_rollout.yml` | Manual | `track`, `version`, `rollout_fraction` [0-1000] | Increase staged rollout percentage |
 | `deploy_updated_changelog.yml` | Push to develop (`changelogs/**`) / manual | `version`, `flavor` | Sync edited release notes to Play Console |
 | `auto_release_alpha.yml` | Weekly cron (Tue 03:30 UTC) / manual | `branch`, `commit_limit` | Automated weekly alpha cut |
+| `pull_latest_lesson_versions.yml` | Weekly cron (Mon 02:30 UTC) / manual | — | Update pinned lesson version textprotos, open PR |
 
 ---
 
