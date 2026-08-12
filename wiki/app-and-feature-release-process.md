@@ -417,7 +417,7 @@ Navigate to the **Actions** tab of the `oppia/oppia-android` repository and clic
 you want to run from the left-hand sidebar. Then click the **"Run workflow"** button on the
 right.
 
-![Step 1: Select the workflow and click Run workflow](https://github.com/user-attachments/assets/cbb9eec6-0763-48b7-a027-62b33d855b84")
+![Step 1: Select the workflow and click Run workflow](https://github.com/user-attachments/assets/cbb9eec6-0763-48b7-a027-62b33d855b84)
 
 **Step 2 — Fill in the inputs**
 
