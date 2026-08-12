@@ -3896,15 +3896,27 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/StartupWorkerScheduleReadinessListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/StartupWorkerScheduleReadinessMonitor.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/debug/DebugWorkerDebugModule.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
   override_min_coverage_percent_required: 68
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsStartupListener.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleListener.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleListener.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ApplicationLifecycleLogger.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3928,6 +3940,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/testing/OppiaWorkManagerTestDriver.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions/ExceptionsController.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -3944,23 +3960,7 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorkerFactory.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/PerformanceMetricsLogScheduler.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogReportWorkerModule.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerFactory.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4040,18 +4040,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkManagerInitializer.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerFactory.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerModule.kt"
   test_file_not_required: true
 }
@@ -4112,10 +4100,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader/FakeLogUploader.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/ConceptCardRetriever.kt"
   test_file_not_required: true
 }
@@ -4160,7 +4144,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/WorkManagerConfigurationModule.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/OppiaWorker.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4612,19 +4596,11 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LogUploader.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LoggerModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LoggingAnnotations.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/MetricLogScheduler.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4649,14 +4625,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseExceptionLogger.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseLogUploader.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseLogUploaderModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
