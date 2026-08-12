@@ -417,7 +417,7 @@ Navigate to the **Actions** tab of the `oppia/oppia-android` repository and clic
 you want to run from the left-hand sidebar. Then click the **"Run workflow"** button on the
 right.
 
-![Step 1: Select the workflow and click Run workflow](SCREENSHOT_1_URL)
+![Step 1: Select the workflow and click Run workflow](https://github.com/user-attachments/assets/cbb9eec6-0763-48b7-a027-62b33d855b84")
 
 **Step 2 — Fill in the inputs**
 
@@ -425,7 +425,7 @@ A dropdown appears with a branch selector and the workflow's input fields. Selec
 branch and fill in all required inputs (refer to the relevant section above for the expected
 values).
 
-![Step 2: Fill in the workflow inputs](SCREENSHOT_2_URL)
+![Step 2: Fill in the workflow inputs](https://github.com/user-attachments/assets/f9805dbb-5c12-48f5-a23f-f7dbb4247668)
 
 **Step 3 — Confirm and approve**
 
@@ -433,7 +433,7 @@ Click **"Run workflow"** to queue the run. For workflows that run in the
 `oppia-android-release-env` environment, a reviewer approval gate will appear — an authorized
 reviewer must approve the run in the GitHub Actions UI before any step executes.
 
-![Step 3: Approve the run in the release environment](SCREENSHOT_3_URL)
+![Step 3: Approve the run in the release environment](https://github.com/user-attachments/assets/80b5ffc1-4154-416e-b19a-fd3e8e3258f0)
 
 ---
 
