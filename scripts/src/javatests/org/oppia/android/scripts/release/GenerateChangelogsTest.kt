@@ -593,7 +593,7 @@ class GenerateChangelogsTest {
   @Test
   fun testGenerateChangelogs_prevBranchAmbiguousArgument_fallsBackToFirstCommit() {
     // Simulates the second git error phrase that indicates a missing branch:
-    // "ambiguous argument" (e.g. git merge-base release-0.16 origin/develop).
+    // "ambiguous argument" (e.g. git merge-base origin/release-0.16 origin/develop).
     writeVersionBzl(major = 0, minor = 18)
     val firstCommit = "firstcommitsha"
     val toSha = "toshasha456"

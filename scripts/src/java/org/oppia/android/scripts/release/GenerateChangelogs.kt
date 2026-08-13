@@ -218,12 +218,17 @@ fun parseVersionBzl(workspaceRoot: File): Pair<Int, Int> {
 /**
  * Computes the `fromSha..toSha` range for the changelog commit collection.
  *
- * The **toSha** is the merge-base of [releaseBranch] and `develop` — the point where the current
- * release branched off (i.e. all commits up to and including the version bump commit).
+ * The **toSha** is the merge-base of `origin/`[releaseBranch] and `origin/develop` — the point
+ * where the current release branched off (i.e. all commits up to and including the version bump
+ * commit).
  *
- * The **fromSha** is the merge-base of [prevReleaseBranch] and `develop` — the point where the
- * *previous* release branched off. If the previous release branch doesn't exist (first release),
- * falls back to the very first commit on `develop`.
+ * The **fromSha** is the merge-base of `origin/`[prevReleaseBranch] and `origin/develop` — the
+ * point where the *previous* release branched off. If the previous release branch doesn't exist on
+ * the remote, falls back to the very first commit on `develop`.
+ *
+ * Both release branch refs are referenced as remote tracking refs (`origin/release-X.Y`) rather
+ * than local branch names. `actions/checkout` with `fetch-depth: 0` fetches all remote tracking
+ * refs, so no explicit `git fetch` step is required in the workflow.
  *
  * @param prevMinor the previous minor version number, used to detect the first-release edge case
  * @return a (fromSha, toSha) pair of full commit SHAs
@@ -235,13 +240,13 @@ fun findCommitRange(
   prevReleaseBranch: String,
   prevMinor: Int
 ): Pair<String, String> {
-  val toSha = gitMergeBase(workspaceRoot, commandExecutor, releaseBranch, "$REMOTE/$DEVELOP_BRANCH")
+  val toSha = gitMergeBase(workspaceRoot, commandExecutor, "$REMOTE/$releaseBranch", "$REMOTE/$DEVELOP_BRANCH")
   val fromSha = if (prevMinor <= 0) {
     // First-ever release: include all commits from the beginning of develop.
     gitFirstCommit(workspaceRoot, commandExecutor)
   } else {
     try {
-      gitMergeBase(workspaceRoot, commandExecutor, prevReleaseBranch, "$REMOTE/$DEVELOP_BRANCH")
+      gitMergeBase(workspaceRoot, commandExecutor, "$REMOTE/$prevReleaseBranch", "$REMOTE/$DEVELOP_BRANCH")
     } catch (e: IllegalStateException) {
       // Re-throw if this isn't a "branch not found" failure — don't mask unrelated errors.
       if ("unknown revision" !in (e.message ?: "") &&

@@ -46,9 +46,13 @@ jobs:
     # this workflow opens a PR for human review and never deploys anything directly, so
     # the required-reviewer gate on oppia-android-release-env is not needed.
     #
-    # The WIF_PROVIDER and GCP_RELEASE_SERVICE_ACCOUNT secrets must be added to
-    # oppia-android-automation-env (duplicated from oppia-android-release-env — do NOT move
-    # them, as the existing build/sign/deploy workflows depend on them in release-env).
+    # GCP_CHANGELOG_SERVICE_ACCOUNT is a dedicated, minimally-scoped service account
+    # (changelog-generator@<project>.iam.gserviceaccount.com) with only
+    # roles/aiplatform.user on the specific Vertex model resource. It is intentionally
+    # separate from GCP_RELEASE_SERVICE_ACCOUNT (which has signing/Play Store permissions)
+    # so that a compromised changelog workflow cannot mint a token with release-level
+    # blast radius. The WIF binding for this SA is tightened via attribute.job_workflow_ref
+    # to only allow tokens when this specific workflow file is running.
     environment: oppia-android-automation-env
     permissions:
       id-token: write      # Required for Workload Identity Federation (Vertex AI auth).
@@ -61,13 +65,6 @@ jobs:
           # Full history is required: the script uses `git log` to collect commits between
           # release branches and needs the complete DAG to find merge bases correctly.
           fetch-depth: 0
-
-      # actions/checkout only creates a local branch for the ref it checks out. The
-      # GenerateChangelogs script calls `git merge-base release-X.Y origin/develop` using
-      # local branch names — without this step the script fails with
-      # "fatal: Not a valid object name release-X.Y".
-      - name: Fetch all release branches as local branches
-        run: git fetch origin '+refs/heads/release-*:refs/heads/release-*'
 
       # Configure a bot identity so that the commit the script creates on the changelog
       # branch is attributed to github-actions[bot] rather than an arbitrary user.
@@ -89,7 +86,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-          service_account: ${{ secrets.GCP_RELEASE_SERVICE_ACCOUNT }}
+          service_account: ${{ secrets.GCP_CHANGELOG_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
