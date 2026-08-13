@@ -246,7 +246,9 @@ fun findCommitRange(
     gitFirstCommit(workspaceRoot, commandExecutor)
   } else {
     try {
-      gitMergeBase(workspaceRoot, commandExecutor, "$REMOTE/$prevReleaseBranch", "$REMOTE/$DEVELOP_BRANCH")
+      gitMergeBase(
+        workspaceRoot, commandExecutor, "$REMOTE/$prevReleaseBranch", "$REMOTE/$DEVELOP_BRANCH"
+      )
     } catch (e: IllegalStateException) {
       // Re-throw if this isn't a "branch not found" failure — don't mask unrelated errors.
       if ("unknown revision" !in (e.message ?: "") &&
