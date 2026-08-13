@@ -306,8 +306,6 @@ If no passing commit is found within the configured limit, the outcome depends o
 > CI is properly triggered on the opened PR. The dedicated branch is force-pushed on every run,
 > keeping the PR diff clean regardless of how many runs have occurred.
 
----
-
 ## 3. Feature Flag Lifecycle
 
 Feature flags (called **platform parameters** in this codebase) allow features to be developed
@@ -315,27 +313,8 @@ and deployed incrementally — enabled for one flavor or environment at a time �
 on a full release.
 
 See the **[Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md)** wiki
-page for the complete guide on defining, enabling, graduating, and removing flags.
-
-**Summary of states:**
-
-The table below summarises the progression stages. The exact enum values and enabling
-conditions are defined in [`PlatformParameterValue`](../app/src/main/java/org/oppia/android/app/model/)
-and documented in full on the
-[Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki page.
-
-| Stage | Who sees it |
-|---|---|
-| Dev-only | Local development builds only |
-| Internal/test | Internal/debug flavor builds |
-| Alpha | Alpha Play Store track |
-| Beta | Beta Play Store track |
-| GA (general availability) | All users |
-| Removed | Flag wrapper deleted; feature is unconditional |
-
-Graduating a flag from one stage to the next does **not** require a new binary release — it is
-done by updating the flag's default value in code and merging to `develop`. The change reaches
-users on the next alpha automation cycle or the next manual release, depending on the target stage.
+page for the complete guide on defining, enabling, graduating, and removing flags, including
+the full progression model and the exact code constructs involved.
 
 ---
 
@@ -378,16 +357,8 @@ flowchart TD
 
 ### 4.3 Feature flag lifecycle
 
-```mermaid
-stateDiagram-v2
-    [*] --> DevOnly : Define flag\n(disabled in all envs)
-    DevOnly --> InternalTest : Enable for debug builds
-    InternalTest --> Alpha : Enable for alpha flavor
-    Alpha --> Beta : Enable for beta flavor
-    Beta --> GA : Enable for GA flavor
-    GA --> Removed : Delete flag wrapper\n(feature is unconditional)
-    Removed --> [*]
-```
+See the [Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki
+page for the definitive guide on the feature flag progression model.
 
 ---
 
