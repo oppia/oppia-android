@@ -301,6 +301,38 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  fun testConceptCardFragment_openDialogFragment1_workedExampleIsDisplayed() {
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_1)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText("Another important skill")))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Explanation with rich text."))))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(containsRichText()))
+      // The labels are shown above the question and the answer so that the example reads as a
+      // worked example rather than as two unrelated blocks of text.
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Question:\nWhat is two plus two?"))))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Answer:\nTwo plus two is 4."))))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withContentDescription(containsString("Question: What is two plus two?"))))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withContentDescription(containsString("Answer: Two plus two is 4."))))
+    }
+  }
+
+  @Test
   fun testConceptCardFragment_openDialogFragment1_configChange_workedExampleIsDisplayed() {
     launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
@@ -326,10 +358,10 @@ class ConceptCardFragmentTest {
         .check(matches(withText(containsString("Answer:\nTwo plus two is 4."))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(matches(withContentDescription(containsString("What is two plus two?"))))
+        .check(matches(withContentDescription(containsString("Question: What is two plus two?"))))
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
-        .check(matches(withContentDescription(containsString("Two plus two is 4."))))
+        .check(matches(withContentDescription(containsString("Answer: Two plus two is 4."))))
     }
   }
 
@@ -381,9 +413,7 @@ class ConceptCardFragmentTest {
     }
   }
 
-  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testConceptCardFragment_profileWithArabicContentLang_workedExampleIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {

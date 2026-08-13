@@ -771,14 +771,12 @@ class HtmlParserTest {
     assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ true)).isGreaterThan(0)
   }
 
-  // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHtmlContent_withWorkedExample_rtlLocale_preservesLogicalReadingOrder() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,

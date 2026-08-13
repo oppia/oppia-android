@@ -391,6 +391,25 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_afterTagThatReplacesOutput_keepsSurroundingTextAndDescription() {
+    // The replacing handler makes the output longer than the text that the content description is
+    // built from, so a tag that follows it starts at a different index in each of the two. The
+    // description therefore has to be positioned using the content description's own index.
+    val replacingHandler = FakeOutputReplacingTagHandler("REPLACED ")
+    val descriptionHandler = FakeContentDescriptionTagHandler("Desc ")
+
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<replacing-tag></replacing-tag>Middle <desc-tag></desc-tag>End",
+      customTagHandlers = mapOf(
+        "replacing-tag" to replacingHandler,
+        "desc-tag" to descriptionHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Middle Desc End")
+  }
+
+  @Test
   fun testGetContentDescription_whitespaceHandling_normalizedCorrectly() {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =
@@ -571,6 +590,20 @@ class CustomHtmlContentHandlerTest {
       return contentDesc
     }
   }
+  /** A handler that replaces its tag's region of the output, the way real handlers do. */
+  private class FakeOutputReplacingTagHandler(
+    private val replacement: String
+  ) : CustomTagHandler {
+    override fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+      output.replace(openIndex, closeIndex, replacement)
+    }
+  }
+
   private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1
