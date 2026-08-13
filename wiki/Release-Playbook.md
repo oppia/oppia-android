@@ -1,7 +1,7 @@
 # Release Playbook
 
 This page is the step-by-step coordinator guide for Oppia Android releases using the automated
-release pipeline (PR series #6106). For conceptual background on any step, see the
+release pipeline. For conceptual background on any step, see the
 [App and Feature Release Process](app-and-feature-release-process.md) wiki page. For manual
 fallback procedures when automation fails, see the
 [In-Depth Release Reference](In-Depth-Release-Reference.md).
