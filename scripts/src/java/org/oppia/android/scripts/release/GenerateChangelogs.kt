@@ -240,7 +240,10 @@ fun findCommitRange(
   prevReleaseBranch: String,
   prevMinor: Int
 ): Pair<String, String> {
-  val toSha = gitMergeBase(workspaceRoot, commandExecutor, "$REMOTE/$releaseBranch", "$REMOTE/$DEVELOP_BRANCH")
+  val toSha =
+    gitMergeBase(
+      workspaceRoot, commandExecutor, "$REMOTE/$releaseBranch", "$REMOTE/$DEVELOP_BRANCH"
+    )
   val fromSha = if (prevMinor <= 0) {
     // First-ever release: include all commits from the beginning of develop.
     gitFirstCommit(workspaceRoot, commandExecutor)
