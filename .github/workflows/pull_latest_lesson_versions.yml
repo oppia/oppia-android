@@ -8,17 +8,17 @@
 # skipped and no PR changes are proposed.
 #
 # Secrets required:
-#   PROD_SERVER_LESSON_SECRET -- service key for the Oppia production server
+#   PROD_SERVER_LESSON_SECRET -- Oppia production server API credential (configured as a
+#                                repository secret in GitHub Actions settings)
 #   BOT_TOKEN                 -- GitHub PAT with `repo` scope for opening/updating the PR
-#                                (GITHUB_TOKEN cannot open PRs targeting other branches in
-#                                all configurations, so a dedicated PAT is used here)
 
 name: Pull Latest Lesson Versions
 
 on:
   schedule:
-    # Every Monday at 02:30 UTC (matches the existing lesson_checks.yml schedule offset by
-    # 30 minutes so the two jobs don't contend on the Bazel remote cache simultaneously).
+    # Every Monday at 02:30 UTC. This workflow updates the pinned lesson version files;
+    # lesson_checks.yml (which runs at 02:00 UTC) only verifies them. The 30-minute offset
+    # prevents the two jobs from contending on the Bazel remote cache simultaneously.
     - cron: "30 02 * * 1"
   workflow_dispatch:
 
@@ -53,15 +53,15 @@ jobs:
           # Fetch full history so the git log used for the PR body is accurate and so
           # force-pushing the dedicated branch does not lose branch history context.
           fetch-depth: 0
-          # Use the BOT_TOKEN so that the push and PR creation steps are authenticated
-          # with an account that has the required scopes. GITHUB_TOKEN is intentionally
-          # not used here because PRs opened by GITHUB_TOKEN cannot trigger CI workflows.
+          # Use BOT_TOKEN so that the commit push and PR creation trigger CI.
           token: ${{ secrets.BOT_TOKEN }}
 
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.8.5
         with:
-          version: 6.5.0
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
 
       - name: Prepare lesson secret
         env:
@@ -69,6 +69,7 @@ jobs:
         run: |
           echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
 
+      # Both alpha and prod versions are committed together into a single branch and PR.
       - name: Download alpha pinned lesson versions
         run: |
           bazel run //scripts:download_lesson_list -- \
