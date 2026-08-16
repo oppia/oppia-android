@@ -78,7 +78,7 @@ MINOR_VERSION = 18
 ### 2.2 Changelog management
 
 **Trigger:** Automatically on every push to `develop` that modifies `version.bzl`, or manually
-via `workflow_dispatch` of the `generate_changelog.yml` workflow.
+via `workflow_dispatch` of the **Generate Changelog** workflow.
 
 **What it does:**
 
@@ -146,7 +146,7 @@ After the version bump and changelog PR have landed on `develop`:
 
 ### 2.5 QA via Firebase App Distribution
 
-**Trigger:** Manual (`workflow_dispatch`) — run this after `build_and_sign.yml` succeeds.
+**Trigger:** Manual (`workflow_dispatch`) — run this after **Build and Sign Release** succeeds.
 
 **Inputs:**
 
@@ -159,9 +159,10 @@ After the version bump and changelog PR have landed on `develop`:
 
 1. Downloads the signed AAB from GCS.
 2. Distributes it to Firebase App Distribution.
-3. Automatically notifies the relevant tester group for the given flavor (the tester group
-   assignment is configured in the workflow — no manual coordinator action needed for the
-   notification).
+3. Associates the release with the `{flavor}-qa-testers` group (e.g. `alpha-qa-testers`);
+   Firebase automatically emails all testers in that group. Tester group membership is
+   managed from the Firebase console — no additional coordinator action is needed for
+   the notification to go out.
 
 QA testers can then install the build via the Firebase App Distribution app and validate it
 before the coordinator proceeds to the Play Console deployment.
@@ -256,7 +257,7 @@ release goes live, and the changes will automatically sync to the Play Console s
 
 **Trigger:**
 - **Automatic** — weekly cron every **Tuesday at 03:30 UTC**
-- **Manual** — via `workflow_dispatch` of the `auto_release_alpha.yml` workflow (useful for off-schedule alpha cuts)
+- **Manual** — via `workflow_dispatch` of the **Auto Release Alpha** workflow (useful for off-schedule alpha cuts)
 
 **What it does:**
 
@@ -287,7 +288,7 @@ If no passing commit is found within the configured limit, the outcome depends o
 
 **Trigger:**
 - **Automatic** — weekly cron every **Monday at 02:30 UTC**
-- **Manual** — via `workflow_dispatch` of the `pull_latest_lesson_versions.yml` workflow
+- **Manual** — via `workflow_dispatch` of the **Pull Latest Lesson Versions** workflow
 
 **What it does:**
 
