@@ -31,6 +31,8 @@
   <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Study Guide</string>
+  <string name="worked_example_question_label">Question:</string>
+  <string name="worked_example_answer_label">Answer:</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="unsaved_exploration_dialog_leave_button">Leave</string>

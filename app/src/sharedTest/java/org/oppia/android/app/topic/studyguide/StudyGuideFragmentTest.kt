@@ -195,6 +195,7 @@ class StudyGuideFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableWorkedExamples(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -270,6 +271,55 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("test_skill_id_0 concept card"))))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_testTopicSubtopic1_secondSectionShowsOnlyValidWorkedExample() {
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("Question:\nWhat is one half as a fraction?"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("Answer:\nOne half is 1/2."))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("This answer should be ignored.")))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("This question should be ignored.")))))
+    }
+  }
+
+  @Test
+  fun testStudyGuide_workedExamplesDisabled_secondSectionDoesNotShowWorkedExample() {
+    // The flags forced in setUp() have to be re-applied together since overriding one of them on
+    // its own would leave the rest of the flags uninitialized.
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableWorkedExamples(false)
+    runWithLaunchedActivityAndAddedFragment(
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ) {
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("This section reviews a related skill"))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("Question:")))))
+      onView(workedExampleContent)
+        .check(matches(not(withText(containsString("What is one half as a fraction?")))))
     }
   }
 
@@ -485,7 +535,7 @@ class StudyGuideFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStudyGuide_englishContentLang_switchToArabic_sectionContentIsInArabic() {
+  fun testStudyGuide_englishContentLang_switchToArabic_workedExampleIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,
@@ -497,20 +547,22 @@ class StudyGuideFragmentTest {
       updateContentLanguage(profileId, OppiaLanguage.ARABIC)
       testCoroutineDispatchers.runCurrent()
 
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.study_guide_section_recycler_view,
-          position = 1,
-          targetViewId = R.id.study_guide_section_content_text
-        )
-      ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("النصف هو 1/2."))))
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStudyGuide_withArabicContentLang_sectionContentIsInArabic() {
+  fun testStudyGuide_withArabicContentLang_contentAndWorkedExampleAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,
@@ -524,6 +576,19 @@ class StudyGuideFragmentTest {
           targetViewId = R.id.study_guide_section_content_text
         )
       ).check(matches(withText(containsString("وصف الموضوع الفرعي هنا"))))
+      val workedExampleContent = atPositionOnView(
+        recyclerViewId = R.id.study_guide_section_recycler_view,
+        position = 3,
+        targetViewId = R.id.study_guide_section_content_text
+      )
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withText(containsString("النصف هو 1/2."))))
+      onView(workedExampleContent)
+        .check(matches(withContentDescription(containsString("ما هو النصف في صورة كسر؟"))))
+      onView(workedExampleContent)
+        .check(matches(withContentDescription(containsString("النصف هو 1/2."))))
     }
   }
 

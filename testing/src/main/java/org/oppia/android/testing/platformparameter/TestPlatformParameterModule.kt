@@ -27,6 +27,7 @@ import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.FeatureFlagId.STUDY_GUIDES
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
+import org.oppia.android.app.model.FeatureFlagId.WORKED_EXAMPLES
 import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
@@ -212,6 +213,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableStudyGuides(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(STUDY_GUIDES, value)
+    }
+
+    fun forceEnableWorkedExamples(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(WORKED_EXAMPLES, value)
     }
 
     fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {

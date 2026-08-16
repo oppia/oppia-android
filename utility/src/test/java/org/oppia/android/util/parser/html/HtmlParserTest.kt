@@ -8,6 +8,7 @@ import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -216,22 +217,21 @@ class HtmlParserTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     runWithLaunchedActivity {
-      val (textView, htmlResult) = onActivityWithResult {
+      val htmlResult = onActivityWithResult {
         val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-        val htmlResult = htmlParser.parseOppiaHtml(
+        htmlParser.parseOppiaHtml(
           "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
             "</oppia-noninteractive-image>",
           textView
         )
-        return@onActivityWithResult textView to htmlResult
       }
 
-      // Verify that the image span is 0 as image support is not enabled.
+      // Verify that no image span is added since image support isn't enabled, and that nothing at
+      // all is rendered (the AOSP whitespace workaround only applies when there's an image span).
       val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
       assertThat(imageSpans).hasLength(0)
-      // The two strings aren't equal because this html parser does not support Oppia image tags.
-      assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
-      onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
+      assertThat(htmlResult.toString()).isEmpty()
+      onView(withId(R.id.test_html_content_text_view)).check(matches(withText("")))
     }
   }
 
@@ -680,6 +680,125 @@ class HtmlParserTest {
       assertThat(htmlResult.toString()).isEqualTo("Visit refresher lesson")
       assertThat(clickableSpans).hasLength(1)
     }
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withoutLabels_ignoresWorkedExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(WORKED_EXAMPLE_MARKUP, textView)
+
+    // Note that the result is fully empty rather than whitespace: content that parses to nothing
+    // must not pick up the padding that's only meant to work around the AOSP image span bug.
+    assertThat(htmlResult.toString()).isEmpty()
+    assertThat(textView.contentDescription.toString()).isEmpty()
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withoutLabels_preservesSurroundingContent() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      "Content before.$WORKED_EXAMPLE_MARKUP Content after.",
+      textView
+    )
+
+    assertThat(htmlResult.toString()).isEqualTo("Content before. Content after.")
+    assertThat(textView.contentDescription.toString())
+      .isEqualTo("Content before. Content after.")
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withLabels_rendersWorkedExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.toString()).isEqualTo(
+      "Question:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole."
+    )
+    assertThat(textView.contentDescription.toString()).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withLabels_indentsWorkedExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the worked example is indented. The margin itself comes from a dimension
+    // resource, so it's scaled for the device's density rather than being a fixed pixel size.
+    val leadingMarginSpan =
+      htmlResult.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ true)).isGreaterThan(0)
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testHtmlContent_withWorkedExample_rtlLocale_preservesLogicalReadingOrder() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+    )
+    val textView = TextView(context)
+    ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(htmlResult.toString().indexOf("Question:"))
+      .isLessThan(htmlResult.toString().indexOf("Answer:"))
+    assertThat(textView.contentDescription.toString().indexOf("Question:"))
+      .isLessThan(textView.contentDescription.toString().indexOf("Answer:"))
   }
 
   @Test
@@ -1250,6 +1369,15 @@ class HtmlParserTest {
   }
 
   private companion object {
+
+    private val WORKED_EXAMPLE_LABELS =
+      WorkedExampleLabels(questionLabel = "Question:", answerLabel = "Answer:")
+
+    private const val WORKED_EXAMPLE_MARKUP =
+      "<oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;What is a fraction?&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;A fraction represents part of a whole.&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample>"
 
     private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
       usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
