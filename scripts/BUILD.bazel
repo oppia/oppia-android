@@ -376,6 +376,14 @@ kt_jvm_binary(
 
 # Release automation binaries — invoked by GitHub Actions release workflows.
 kt_jvm_binary(
+    name = "generate_changelogs",
+    main_class = "org.oppia.android.scripts.release.GenerateChangelogsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:generate_changelogs_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "sign_release_binary",
     main_class = "org.oppia.android.scripts.release.SignReleaseBinaryKt",
     runtime_deps = [

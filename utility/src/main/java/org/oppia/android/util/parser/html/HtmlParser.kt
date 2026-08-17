@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
@@ -70,13 +71,16 @@ class HtmlParser private constructor(
    * @param supportsLinks whether the provided [TextView] should support link forwarding (it's
    *     recommended not to use this for [TextView]s that are within other layouts that need to
    *     support clicking (default false)
+   * @param workedExampleLabels the localized labels to display with worked examples, or null if
+   *     worked examples shouldn't be displayed (default null)
    * @return a [Spannable] representing the styled text.
    */
   fun parseOppiaHtml(
     rawString: String,
     htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
-    supportsConceptCards: Boolean = false
+    supportsConceptCards: Boolean = false,
+    workedExampleLabels: WorkedExampleLabels? = null
   ): Spannable {
     var htmlContent = rawString
 
@@ -133,7 +137,9 @@ class HtmlParser private constructor(
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent,
       imageGetter,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageGetter
+      )
     )
 
     val urlPattern = Patterns.WEB_URL
@@ -147,14 +153,18 @@ class HtmlParser private constructor(
     }
     htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageRetriever = null
+      )
     )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
   private fun computeCustomTagHandlers(
     supportsConceptCards: Boolean,
-    htmlContentTextView: TextView
+    htmlContentTextView: TextView,
+    workedExampleLabels: WorkedExampleLabels?,
+    imageRetriever: UrlImageParser?
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     bulletTagHandler.setTextView(htmlContentTextView)
@@ -174,6 +184,26 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
+    if (workedExampleLabels != null) {
+      // A worked example's question and answer are HTML that's nested within the tag's attributes,
+      // so they're parsed using the handlers computed above. Note that the snapshot deliberately
+      // excludes the worked example handler itself since worked examples can't be nested.
+      val nestedTagHandlers = handlersMap.toMap()
+      handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] = WorkedExampleTagHandler(
+        consoleLogger,
+        labels = workedExampleLabels,
+        leadingMarginPx = context.resources.getDimensionPixelSize(
+          R.dimen.worked_example_leading_margin
+        ),
+        nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+          override fun parseHtml(html: String): Spannable =
+            CustomHtmlContentHandler.fromHtml(html, imageRetriever, nestedTagHandlers)
+
+          override fun parseHtmlForContentDescription(html: String): String =
+            CustomHtmlContentHandler.getContentDescription(html, nestedTagHandlers)
+        }
+      )
+    }
     return handlersMap
   }
 
@@ -200,7 +230,9 @@ class HtmlParser private constructor(
     // ensure the image's dimensions are measured). Note that this needs to be a visible character
     // to remedy the bug.
     // TODO(#1796): Find a better workaround for this bug.
-    return if (spannable.toString().all { it == '\uFFFC' }) {
+    // Note that the emptiness check is needed because all() is vacuously true for an empty
+    // spannable, which would otherwise pad content that parsed to nothing with two spaces.
+    return if (spannable.isNotEmpty() && spannable.toString().all { it == '\uFFFC' }) {
       spannable.insert(/* where= */ 0, " ").append(" ")
     } else spannable
   }

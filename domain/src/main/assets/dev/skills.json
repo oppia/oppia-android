@@ -145,7 +145,7 @@
     "skill_contents": {
       "explanation": {
         "content_id": "explanation",
-        "html": "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+        "html": "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Worked examples:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;What is two plus two?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Two plus two is 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
       },
       "worked_examples": [{
         "question": {
@@ -168,17 +168,17 @@
           "explanation": {
             "pt": {
               "data_format": "html",
-              "translation": {"translation" : "Explicação com <b> rico texto </b>."},
+              "translation": {"translation" : "Explicação com <b> rico texto </b>.<p>Exemplos resolvidos:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Qual é o resultado de dois mais dois?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Dois mais dois é 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
               "needs_update": false
             },
             "ar": {
               "data_format": "html",
-              "translation": {"translation" : "Explanation مع <b> Rich Text </b>."},
+              "translation": {"translation" : "Explanation مع <b> Rich Text </b>.<p>أمثلة محلولة:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;ما حاصل جمع اثنين واثنين؟&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;اثنان زائد اثنان يساوي 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
               "needs_update": false
             },
             "sw": {
               "data_format": "html",
-              "translation": {"translation" : "Maelezo na <b> maandishi tajiri </b>."},
+              "translation": {"translation" : "Maelezo na <b> maandishi tajiri </b>.<p>Mifano iliyofanyiwa kazi:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Mbili jumlisha mbili ni ngapi?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Mbili jumlisha mbili ni 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
               "needs_update": false
             }
           },

@@ -1,7 +1,9 @@
 package org.oppia.android.testing.platformparameter
 
+import android.os.Looper
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,10 @@ import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.FeatureFlagId.STUDY_GUIDES
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_INFO_TAB
 import org.oppia.android.app.model.FeatureFlagId.TOPIC_PRACTICE_TAB
+import org.oppia.android.app.model.FeatureFlagId.WORKED_EXAMPLES
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
 import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
 import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
 import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
@@ -62,21 +68,49 @@ class TestPlatformParameterModule {
   ): PlatformParameterController {
     val prodController = factory.create(processState)
     return object : PlatformParameterController {
+      private var isLoaded = false
+
       override fun loadParametersAsync(): Deferred<Unit> {
-        // Calling code can be blocking which means the returned deferred must run immediately,
-        // hence the use of the Unconfined dispatcher.
-        return CoroutineScope(Dispatchers.Unconfined).async {
-          // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
-          val loadResult = prodController.loadParametersAsync()
-          testCoroutineDispatchers.runCurrent()
-          check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+        // This is a slight hack to allow the PlatformParameterProcessState injector to return
+        // immediately if parameters are already loaded. This is needed in more complex cross-thread
+        // initialization cases such as for background workers.
+        if (isLoaded) {
+          return CompletableDeferred(Unit)
         }
+
+        // Ensure that platform parameters are always loaded on the main thread to avoid potential
+        // contention with other threads (see notes in loadParamsAndRunTestDispatchersOnMainThread).
+        // Do not hop again to the main thread if the main thread is loading platform parameters.
+        // This avoids a specific case of potential deadlocks when waiting for the loading to finish
+        // on the main thread and blocking the second hop back to the main thread that would
+        // actually initialize them.
+        val dispatcher = if (Looper.getMainLooper().thread == Thread.currentThread()) {
+          Dispatchers.Unconfined // Run immediately on the current (main) thread.
+        } else Dispatchers.Main // Defer to the main thread.
+
+        // A Deferred must be used per the API specification but this may actually run immediately
+        // when the returned Deferred is await()ed, per the above logic.
+        return CoroutineScope(dispatcher).async { loadParamsAndRunTestDispatchersOnMainThread() }
       }
 
       override fun getParameterInitializationStatus() =
         prodController.getParameterInitializationStatus()
 
       override fun downloadRemoteParameters() = prodController.downloadRemoteParameters()
+
+      private fun loadParamsAndRunTestDispatchersOnMainThread() {
+        // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
+
+        // Note that this function requires running on the main thread due to the runCurrent() call
+        // below. runCurrent() ensures that parameters are actually fully loaded before returning
+        // (which is necessary since tests may immediately try injecting feature flags) but the use
+        // of runCurrent() off of the main thread can deadlock against other threads trying to
+        // synchronize state.
+        val loadResult = prodController.loadParametersAsync()
+        testCoroutineDispatchers.runCurrent()
+        check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+        isLoaded = true
+      }
     }
   }
 
@@ -91,9 +125,15 @@ class TestPlatformParameterModule {
     platformParameterController: PlatformParameterController,
     testCoroutineDispatchers: TestCoroutineDispatchers
   ): PlatformParameterProcessState {
-    // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
+    // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params. Make
+    //  sure to double check parameter loading in BootstrapOppiaWorker. Commenting out that line
+    //  should trigger test failures once this mechanism is cleaned up. If it doesn't then work will
+    //  be needed in BootstrapOppiaWorkerTest to ensure that line is properly tested (since removing
+    //  it can cause catastrophic problems in deployed apps--it MUST be tested).
     val loadDeferred = platformParameterController.loadParametersAsync()
-    testCoroutineDispatchers.runCurrent()
+    if (!loadDeferred.isCompleted) {
+      testCoroutineDispatchers.runCurrent()
+    }
     check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
     return processState
   }
@@ -173,6 +213,28 @@ class TestPlatformParameterModule {
 
     fun forceEnableStudyGuides(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(STUDY_GUIDES, value)
+    }
+
+    fun forceEnableWorkedExamples(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(WORKED_EXAMPLES, value)
+    }
+
+    fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES, value
+      )
+    }
+
+    fun forcePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES, value
+      )
+    }
+
+    fun forceSyncUpWorkerTimePeriodInHours(value: Int) {
+      TestPlatformParameterConfigRetriever.setParameterOverride(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS, value
+      )
     }
 
     fun reset() {

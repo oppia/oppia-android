@@ -12,4 +12,10 @@
   <dimen name="maximum_content_item_padding">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
   <dimen name="maximum_image_size">200dp</dimen>
+  <!--
+    Space between the start of the line and a worked example's content, so that the example reads as
+    a block that's set apart from the text around it. Like the list spacings above, this is a fixed
+    size since it's spacing within a block of text rather than a screen margin.
+  -->
+  <dimen name="worked_example_leading_margin">16dp</dimen>
 </resources>
