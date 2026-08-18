@@ -177,7 +177,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
       )
     )
     delegate.setTrackRelease(
-      packageName, editId, track, versionCode, rolloutFraction, releaseNotes, preservedReleases
+      packageName, editId, track, versionCode, rolloutFraction, releaseNotes, frozenVersionCodes
     )
   }
 
@@ -310,7 +310,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
    * @property versionCode the version code assigned to the track
    * @property rolloutFraction the staged rollout fraction in [0, 1000] (1000 = 100%)
    * @property releaseNotes the release notes map (BCP-47 language code to text)
-   * @property preservedReleases the frozen OS-specific releases included alongside [versionCode]
+   * @property frozenVersionCodes the frozen OS-specific version codes merged alongside [versionCode]
    *     to prevent them being deactivated by the track update
    */
   data class TrackUpdate(

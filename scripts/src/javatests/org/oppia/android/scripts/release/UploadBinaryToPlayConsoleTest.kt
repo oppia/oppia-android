@@ -32,6 +32,15 @@ class UploadBinaryToPlayConsoleTest {
   @Before
   fun setUp() {
     fake = FakePlayConsoleClient()
+    // Alpha always has a permanently frozen KitKat build (vc 16). Pre-configure it here so that
+    // every test using the default alpha track satisfies the production invariant check that
+    // verifies frozen VCs are present before calling setTrackRelease. Tests that specifically
+    // exercise a different alpha-track state (e.g. pending release) override this via
+    // fake.setTrackReleases("alpha", ...) before calling runMain.
+    fake.setTrackReleases(
+      "alpha",
+      listOf(PlayConsoleClient.TrackRelease(listOf(16L), "completed"))
+    )
   }
 
   @After
@@ -512,6 +521,13 @@ class UploadBinaryToPlayConsoleTest {
     // Beta currently has no frozen builds; the setTrackRelease body should only contain the new vc.
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
+    // Bump alpha to vc 300 so that uploading vc 202 to beta doesn't violate the version-inversion
+    // check (which requires alpha vc > beta vc). setUp pre-configures alpha at vc 16; override it
+    // here to a realistic value that is higher than the beta vc we're about to upload.
+    fake.setTrackReleases(
+      "alpha",
+      listOf(PlayConsoleClient.TrackRelease(listOf(300L), "completed"))
+    )
     fake.setNextVersionCode(202L)
 
     runMain(aab.absolutePath, track = "beta")
