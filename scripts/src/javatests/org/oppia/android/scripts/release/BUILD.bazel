@@ -5,6 +5,16 @@ Tests for release automation scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "FakeVertexAiClientTest",
+    srcs = ["FakeVertexAiClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "AppFlavorTest",
     srcs = ["AppFlavorTest.kt"],
     deps = [
@@ -139,5 +149,29 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "GenerateChangelogsTest",
+    srcs = ["GenerateChangelogsTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/release:fake_vertex_ai_client",
+        "//scripts/src/java/org/oppia/android/scripts/release:generate_changelogs_lib",
+        "//scripts/src/java/org/oppia/android/scripts/release:vertex_ai_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "GoogleVertexAiClientTest",
+    srcs = ["GoogleVertexAiClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:google_vertex_ai_client",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
