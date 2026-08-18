@@ -52,11 +52,16 @@ interface PlayConsoleClient {
    *
    * Must be called after [uploadAab] and before [commitEdit].
    *
-   * If [preservedVersionCodes] is non-empty, each listed version code is included as an additional
-   * `completed` entry in the track update request alongside the new release. This is required for
-   * OS-level frozen builds that must remain active on the track indefinitely (see #6258, #6330):
-   * the Play Developer API replaces the entire track contents on each `tracks.update` call, so any
-   * version code not explicitly included in the request is deactivated.
+   * If [frozenVersionCodes] is non-empty, those version codes are merged into the same release
+   * entry as [versionCode]. This is required for OS-level frozen builds that must remain active
+   * on the track indefinitely (see #6330): the Play Developer API replaces the entire track
+   * contents on each `tracks.update` call, so any version code not explicitly included is
+   * deactivated. Merging frozen VCs into the single new release (rather than sending two separate
+   * release entries) is the only valid approach — the API rejects two releases on the same track
+   * when one supersedes the other.
+   *
+   * Callers are responsible for verifying that every code in [frozenVersionCodes] actually exists
+   * on the live track before calling this method (and hard-crashing if it does not).
    *
    * @param packageName the application package name
    * @param editId the active edit session ID returned by [createEdit]
@@ -66,8 +71,8 @@ interface PlayConsoleClient {
    *     1000 means full rollout (status: "completed") and any value below 1000 produces a staged
    *     rollout (status: "inProgress"). For example: 250 = 25%, 334 = 33.4%, 1000 = 100%.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
-   * @param preservedVersionCodes version codes of frozen OS-specific builds that must be kept
-   *     alive on the track alongside [versionCode]; defaults to empty (no preserved builds)
+   * @param frozenVersionCodes version codes of frozen OS-specific builds to merge into the same
+   *     release entry as [versionCode]; defaults to empty (no frozen builds on this track)
    */
   fun setTrackRelease(
     packageName: String,
@@ -76,7 +81,7 @@ interface PlayConsoleClient {
     versionCode: Long,
     rolloutFraction: Int,
     releaseNotes: Map<String, String>,
-    preservedReleases: List<TrackRelease> = emptyList()
+    frozenVersionCodes: List<Long> = emptyList()
   )
 
   /**
