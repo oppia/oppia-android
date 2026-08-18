@@ -23,6 +23,14 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false
     )
+    profileManagementController.addProfile(
+      name = "Tom",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
     activity.setContentView(R.layout.profile_test_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
