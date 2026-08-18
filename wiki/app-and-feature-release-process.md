@@ -1,32 +1,36 @@
 # App and Feature Release Process
 
 This page describes the end-to-end lifecycle for releasing app binaries and managing feature flags
-in oppia-android. It is the canonical replacement for the old private release Google Doc and is
-intended for **release coordinators** and any contributor who wants to understand how a change
-reaches end users.
+in oppia-android. It supersedes the
+[old private release Google Doc](https://docs.google.com/document/d/1XAoXnQkn2oIAFkd6vY90tn_SSW3J9Eia0_4RhXhJSxQ/edit?tab=t.0#heading=h.1hlri65ueypl)
+and is intended for **release coordinators** and any contributor who wants to understand how a
+change reaches end users.
 
 ---
 
 ## Table of Contents
 
 1. [Prerequisites & Roles](#1-prerequisites--roles)
-2. [Binary Release Lifecycle](#2-binary-release-lifecycle)
-   - [2.1 Version numbering](#21-version-numbering)
-   - [2.2 Changelog management](#22-changelog-management)
-   - [2.3 Release branch creation](#23-release-branch-creation)
-   - [2.4 Build & Sign](#24-build--sign)
-   - [2.5 QA via Firebase App Distribution](#25-qa-via-firebase-app-distribution)
-   - [2.6 Deploy to Play Console](#26-deploy-to-play-console)
-   - [2.7 Staged rollout management](#27-staged-rollout-management)
-   - [2.8 Changelog updates post-release](#28-changelog-updates-post-release)
-   - [2.9 Automated alpha releases](#29-automated-alpha-releases)
-   - [2.10 Automated lesson version updates](#210-automated-lesson-version-updates)
-3. [Feature Flag Lifecycle](#3-feature-flag-lifecycle)
-4. [Diagrams](#4-diagrams)
-   - [4.1 End-to-end binary release flow](#41-end-to-end-binary-release-flow)
-   - [4.2 Automated alpha release flow](#42-automated-alpha-release-flow)
-   - [4.3 Feature flag lifecycle](#43-feature-flag-lifecycle)
-5. [Workflow Quick-Access Table](#5-workflow-quick-access-table)
+2. [How Version Numbers Work](#2-how-version-numbers-work)
+3. [Binary Release Lifecycle](#3-binary-release-lifecycle)
+   - [3.1 Bump the version](#31-bump-the-version)
+   - [3.2 Generate the changelog](#32-generate-the-changelog)
+   - [3.3 Create the release branch](#33-create-the-release-branch)
+   - [3.4 Build and sign the release](#34-build-and-sign-the-release)
+   - [3.5 Validate via Firebase App Distribution](#35-validate-via-firebase-app-distribution)
+   - [3.6 Deploy to Play Console](#36-deploy-to-play-console)
+   - [3.7 Manage the staged rollout](#37-manage-the-staged-rollout)
+   - [3.8 Update the changelog post-release](#38-update-the-changelog-post-release)
+4. [Automated Processes](#4-automated-processes)
+   - [4.1 Run automated alpha releases](#41-run-automated-alpha-releases)
+   - [4.2 Update pinned lesson versions](#42-update-pinned-lesson-versions)
+5. [Feature Flag Lifecycle](#5-feature-flag-lifecycle)
+6. [Diagrams](#6-diagrams)
+   - [6.1 End-to-end binary release flow](#61-end-to-end-binary-release-flow)
+   - [6.2 Automated alpha release flow](#62-automated-alpha-release-flow)
+   - [6.3 Feature flag lifecycle](#63-feature-flag-lifecycle)
+7. [Workflow Quick-Access Table](#7-workflow-quick-access-table)
+8. [How to Manually Trigger a Workflow](#8-how-to-manually-trigger-a-workflow)
 
 ---
 
@@ -52,15 +56,14 @@ described in this page. The release coordinator is either the tech lead, or any 
 | GCP: Cloud KMS — `oppia-android-release-key` | HSM-backed signing key (key never leaves KMS) |
 | Google Play Console: "Release to production" permission | Upload AABs and update track releases |
 
+
 > **Note:** The `oppia-android-release-env` environment enforces a **required reviewer approval**
 > gate. No build, signing, or deployment step executes until an authorized reviewer explicitly
 > approves the run in the GitHub Actions UI.
 
 ---
 
-## 2. Binary Release Lifecycle
-
-### 2.1 Version numbering
+## 2. How Version Numbers Work
 
 The app's version is maintained in [`version.bzl`](../version.bzl) at the repository root:
 
@@ -72,13 +75,36 @@ MINOR_VERSION = 18
 - `MINOR_VERSION` is incremented for each release (e.g. 0.17 → 0.18).
 - `MAJOR_VERSION` changes only for breaking platform changes or major product milestones.
 - The resulting `versionName` is `"{MAJOR}.{MINOR}"` (e.g. `"0.18"`).
-- A version update is performed by committing a `MINOR_VERSION` bump to `develop`.
-  This automatically triggers changelog generation (see [§2.2](#22-changelog-management)).
+- Bumping `MINOR_VERSION` on `develop` automatically triggers changelog generation
+  (see [§3.2](#32-generate-the-changelog)).
 
-### 2.2 Changelog management
+---
 
-**Trigger:** Automatically on every push to `develop` that modifies `version.bzl`, or manually
-via `workflow_dispatch` of the **Generate Changelog** workflow.
+## 3. Binary Release Lifecycle
+
+### 3.1 Bump the version
+
+**Trigger:** Manual — the coordinator commits a `MINOR_VERSION` increment to `version.bzl` on
+`develop` to start the release cycle.
+
+**Coordinator action:**
+
+1. Edit [`version.bzl`](../version.bzl) and increment `MINOR_VERSION` (e.g. `17` → `18`).
+2. Commit and push the change directly to `develop`:
+   ```
+   git commit -m "Bump MINOR_VERSION to 18 for release 0.18"
+   git push upstream develop
+   ```
+
+Pushing this change automatically triggers changelog generation (§3.2).
+
+---
+
+### 3.2 Generate the changelog
+
+**Trigger:**
+- **Automatic** — on every push to `develop` that modifies `version.bzl`
+- **Manual** — via `workflow_dispatch` of the **Generate Changelog** workflow
 
 **What it does:**
 
@@ -103,9 +129,11 @@ AI summary needs adjustment before merging.
 
 ---
 
-### 2.3 Release branch creation
+### 3.3 Create the release branch
 
-After the version bump and changelog PR have landed on `develop`:
+**Trigger:** Manual — after the version bump and changelog PR have landed on `develop`.
+
+**Coordinator action:**
 
 1. Cut a release branch from `develop` HEAD:
    ```
@@ -117,9 +145,12 @@ After the version bump and changelog PR have landed on `develop`:
 
 ---
 
-### 2.4 Build & Sign
+### 3.4 Build and sign the release
 
-**Trigger:** Manual (`workflow_dispatch`) — requires coordinator to fill in the inputs below.
+**Trigger:** Manual (`workflow_dispatch`) — run this after the release branch is ready.
+
+> **Note:** This workflow runs in the `oppia-android-release-env` GitHub environment, which
+> requires an authorized reviewer to **approve** the run before any step executes.
 
 **Inputs:**
 
@@ -139,14 +170,14 @@ After the version bump and changelog PR have landed on `develop`:
    ```
 5. Prints the full GCS path in the job summary — **copy this path** for use in the next steps.
 
-> **Note:** This workflow runs in the `oppia-android-release-env` GitHub environment, which
-> requires an authorized reviewer to **approve** the run before any step executes.
+**Coordinator action:** Dispatch the workflow, approve the run in the `oppia-android-release-env`
+environment, and copy the GCS path from the job summary once it completes.
 
 ---
 
-### 2.5 QA via Firebase App Distribution
+### 3.5 Validate via Firebase App Distribution
 
-**Trigger:** Manual (`workflow_dispatch`) — run this after **Build and Sign Release** succeeds.
+**Trigger:** Manual (`workflow_dispatch`) — run this after **Build and sign the release** succeeds.
 
 **Inputs:**
 
@@ -170,9 +201,12 @@ before the coordinator proceeds to the Play Console deployment.
 The app's Play Store listing is at:
 [https://play.google.com/store/apps/details?id=org.oppia.android](https://play.google.com/store/apps/details?id=org.oppia.android)
 
+**Coordinator action:** Dispatch the workflow and wait for QA testers to confirm the build is
+ready. Proceed to §3.6 only after receiving QA sign-off.
+
 ---
 
-### 2.6 Deploy to Play Console
+### 3.6 Deploy to Play Console
 
 **Trigger:** Manual (`workflow_dispatch`) — run this after QA sign-off.
 
@@ -201,9 +235,12 @@ The app's Play Store listing is at:
 > **Note:** Start with a low rollout fraction (e.g. 10%) and monitor crash rates in Firebase
 > Crashlytics before expanding.
 
+**Coordinator action:** Dispatch the workflow with a low initial `rollout_fraction` (e.g. `100`
+for 10%), approve the run, and monitor Crashlytics before proceeding to §3.7.
+
 ---
 
-### 2.7 Staged rollout management
+### 3.7 Manage the staged rollout
 
 **Trigger:** Manual (`workflow_dispatch`) — run this each time you want to increase the rollout
 percentage for a live release.
@@ -230,9 +267,12 @@ fraction for the current live release on the target track — **without re-uploa
 A concurrency lock shared with `deploy_updated_changelog.yml` prevents two simultaneous Play
 Console edit sessions (the Play Developer API enforces a single active edit per package at a time).
 
+**Coordinator action:** Dispatch the workflow after each monitoring window. Repeat until
+`rollout_fraction=1000` (100%).
+
 ---
 
-### 2.8 Changelog updates post-release
+### 3.8 Update the changelog post-release
 
 **Trigger:**
 - **Automatic** — on every push to `develop` that modifies any file matching
@@ -251,9 +291,17 @@ Console edit sessions (the Play Developer API enforces a single active edit per 
 This means you can edit `config/changelogs/0.18.md` directly on `develop` at any time after a
 release goes live, and the changes will automatically sync to the Play Console store listing.
 
+**Coordinator action:** Edit the changelog file on `develop` and push — the sync runs
+automatically. No additional action is required unless the workflow fails.
+
 ---
 
-### 2.9 Automated alpha releases
+## 4. Automated Processes
+
+These workflows run on a schedule without manual coordinator intervention. The coordinator's
+only role is to review and merge any PRs they open.
+
+### 4.1 Run automated alpha releases
 
 **Trigger:**
 - **Automatic** — weekly cron every **Tuesday at 03:30 UTC**
@@ -282,9 +330,12 @@ If no passing commit is found within the configured limit, the outcome depends o
 - **No commits at all within the limit** — the workflow logs this and exits cleanly without
   failing, since there is nothing new to release.
 
+**Coordinator action:** Approve the dispatched `build_and_sign.yml` run in the
+`oppia-android-release-env` environment.
+
 ---
 
-### 2.10 Automated lesson version updates
+### 4.2 Update pinned lesson versions
 
 **Trigger:**
 - **Automatic** — weekly cron every **Monday at 02:30 UTC**
@@ -301,13 +352,15 @@ If no passing commit is found within the configured limit, the outcome depends o
    the updated textproto diff (idempotent — if files are already current, no commit or PR is
    created).
 
-**Coordinator action:** Review and merge the opened lesson-versions PR.
-
 > **Note:** The workflow uses `BOT_TOKEN` rather than `GITHUB_TOKEN` for PR creation so that
 > CI is properly triggered on the opened PR. The dedicated branch is force-pushed on every run,
 > keeping the PR diff clean regardless of how many runs have occurred.
 
-## 3. Feature Flag Lifecycle
+**Coordinator action:** Review and merge the opened lesson-versions PR.
+
+---
+
+## 5. Feature Flag Lifecycle
 
 Feature flags (called **platform parameters** in this codebase) allow features to be developed
 and deployed incrementally — enabled for one flavor or environment at a time — without gating
@@ -319,9 +372,9 @@ the full progression model and the exact code constructs involved.
 
 ---
 
-## 4. Diagrams
+## 6. Diagrams
 
-### 4.1 End-to-end binary release flow
+### 6.1 End-to-end binary release flow
 
 ```mermaid
 flowchart TD
@@ -340,7 +393,7 @@ flowchart TD
     J --> M["deploy_updated_changelog.yml\n(auto on changelog edits)"]
 ```
 
-### 4.2 Automated alpha release flow
+### 6.2 Automated alpha release flow
 
 ```mermaid
 flowchart TD
@@ -356,14 +409,14 @@ flowchart TD
     J --> K["Signed alpha AAB archived in GCS ✓"]
 ```
 
-### 4.3 Feature flag lifecycle
+### 6.3 Feature flag lifecycle
 
 See the [Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki
 page for the definitive guide on the feature flag progression model.
 
 ---
 
-## 5. Workflow Quick-Access Table
+## 7. Workflow Quick-Access Table
 
 | Workflow file | Trigger | Key inputs | Purpose |
 |---|---|---|---|
@@ -378,7 +431,7 @@ page for the definitive guide on the feature flag progression model.
 
 ---
 
-## 6. How to Manually Trigger a Workflow
+## 8. How to Manually Trigger a Workflow
 
 All manual workflows in this release process use GitHub's `workflow_dispatch` trigger. Here is
 how to run one:
