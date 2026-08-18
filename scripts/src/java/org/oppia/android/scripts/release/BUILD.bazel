@@ -80,8 +80,12 @@ kt_jvm_library(
     name = "version_inversion_checker",
     srcs = ["VersionInversionChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":play_console_client"],
+    deps = [
+        ":frozen_release_config",
+        ":play_console_client",
+    ],
 )
+
 
 kt_jvm_library(
     name = "pending_release_checker",
