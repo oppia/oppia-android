@@ -48,7 +48,8 @@ interface GitHubCiClient {
    * - [PASSING]   — all check runs completed successfully (or were skipped/neutral)
    * - [FAILING]   — at least one check run completed with a non-success conclusion
    * - [PENDING]   — at least one check run is still queued or in progress (and none have failed)
-   * - [NO_CHECKS] — the commit has no check runs at all (treat as not yet ready for deployment)
+   * - [NO_CHECKS] — the commit has no check runs at all; this is unexpected in oppia-android
+   *   (every push triggers CI) and is treated as a hard error by [FindAlphaCandidate]
    */
   enum class CiStatus {
     /** All check runs for this commit completed with a passing or neutral conclusion. */
@@ -60,7 +61,11 @@ interface GitHubCiClient {
     /** At least one check run is still queued or in progress (and none have conclusively failed). */
     PENDING,
 
-    /** This commit has no check runs associated with it; treat as not yet ready for deployment. */
+    /**
+     * This commit has no check runs associated with it. In oppia-android every push triggers CI,
+     * so this status is unexpected and indicates either a transient API error or a commit that
+     * bypassed the required checks. Callers should treat this as an error, not a silent skip.
+     */
     NO_CHECKS,
   }
 }

@@ -60,13 +60,18 @@ class FindAlphaCandidateTest {
   }
 
   @Test
-  fun testFindAlphaCandidate_firstNoChecksSecondPassing_returnsFoundWithSecond() {
+  fun testFindAlphaCandidate_firstCommitHasNoChecks_throwsIllegalStateException() {
     fakeClient.setCommits("sha-a", "sha-b")
     // sha-a defaults to NO_CHECKS (no explicit setStatus call).
     fakeClient.setStatus("sha-b", GitHubCiClient.CiStatus.PASSING)
 
-    assertThat(findAlphaCandidate(fakeClient, "develop"))
-      .isEqualTo(AlphaCandidateResult.Found("sha-b"))
+    // NO_CHECKS on any commit is unexpected in oppia-android (every push triggers CI) and
+    // should throw immediately rather than silently skipping to sha-b.
+    val exception = assertThrows<IllegalStateException> {
+      findAlphaCandidate(fakeClient, "develop")
+    }
+    assertThat(exception).hasMessageThat().contains("sha-a")
+    assertThat(exception).hasMessageThat().contains("no CI check runs")
   }
 
   @Test
@@ -112,12 +117,16 @@ class FindAlphaCandidateTest {
   }
 
   @Test
-  fun testFindAlphaCandidate_allNoChecks_returnsNoPassingCommit() {
+  fun testFindAlphaCandidate_commitWithNoChecks_throwsIllegalStateException() {
     fakeClient.setCommits("sha-a", "sha-b")
-    // Both default to NO_CHECKS.
+    // Both default to NO_CHECKS. The script should throw on the very first one
+    // rather than treating it as a non-passing status and returning NoPassingCommit.
 
-    assertThat(findAlphaCandidate(fakeClient, "develop"))
-      .isEqualTo(AlphaCandidateResult.NoPassingCommit(commitsChecked = 2))
+    val exception = assertThrows<IllegalStateException> {
+      findAlphaCandidate(fakeClient, "develop")
+    }
+    assertThat(exception).hasMessageThat().contains("sha-a")
+    assertThat(exception).hasMessageThat().contains("no CI check runs")
   }
 
   @Test

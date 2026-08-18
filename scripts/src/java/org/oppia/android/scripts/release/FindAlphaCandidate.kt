@@ -108,7 +108,8 @@ fun main(args: Array<String>) {
  * Commits with statuses other than [GitHubCiClient.CiStatus.PASSING] are skipped:
  * - [GitHubCiClient.CiStatus.FAILING]   – the commit should not be deployed
  * - [GitHubCiClient.CiStatus.PENDING]   – CI hasn't finished; a completed commit may follow
- * - [GitHubCiClient.CiStatus.NO_CHECKS] – no CI data; the commit is not ready for deployment
+ * - [GitHubCiClient.CiStatus.NO_CHECKS] – no check runs found; every oppia-android commit should
+ *   have CI, so this is treated as an unexpected error rather than silently skipped
  *
  * @param gitHubCiClient client used to query commit lists and check-run statuses
  * @param branch the branch to walk (e.g. "develop")
@@ -151,9 +152,18 @@ fun findAlphaCandidate(
   for (commit in commits) {
     val status = gitHubCiClient.getCheckRunStatus(commit.sha)
     System.err.println("  ${commit.sha.take(7)} → $status")
-    if (status == GitHubCiClient.CiStatus.PASSING) {
-      System.err.println("  ✓ Candidate : ${commit.sha}")
-      return AlphaCandidateResult.Found(commit.sha)
+    when (status) {
+      GitHubCiClient.CiStatus.PASSING -> {
+        System.err.println("  ✓ Candidate : ${commit.sha}")
+        return AlphaCandidateResult.Found(commit.sha)
+      }
+      GitHubCiClient.CiStatus.NO_CHECKS -> error(
+        "Commit ${commit.sha.take(7)} on '$branch' has no CI check runs. " +
+          "Every commit in oppia-android should trigger CI; this likely indicates a " +
+          "transient API error or a commit that bypassed the required checks. " +
+          "Re-run the workflow once CI has populated check runs for this commit."
+      )
+      else -> { /* FAILING or PENDING — skip and inspect the next commit */ }
     }
   }
 
