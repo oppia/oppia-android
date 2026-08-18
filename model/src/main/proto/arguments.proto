@@ -179,7 +179,7 @@ message ExplorationFragmentArguments {
 // Params required when creating a new ResumeLessonActivity.
 message ResumeLessonActivityParams {
   // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
+  LegacyProfileId profile_id = 1;
 
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;

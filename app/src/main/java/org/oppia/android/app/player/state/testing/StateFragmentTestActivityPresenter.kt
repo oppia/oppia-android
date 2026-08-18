@@ -34,8 +34,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private val stateFragmentTestViewModel: StateFragmentTestViewModel
 ) {
 
-  private var profileId: Int = 1
-  private val profileIdProto get() = ProfileId.newBuilder().setInternalId(profileId).build()
+  private var internalProfileId: Int = 1
+  private val profileId get() = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -56,7 +56,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
       StateFragmentTestActivityParams.getDefaultInstance()
     )
-    profileId = args?.internalProfileId ?: 1
+    internalProfileId = args?.internalProfileId ?: 1
     classroomId = args?.classroomId ?: TEST_CLASSROOM_ID_0
     topicId =
       args?.topicId ?: TEST_TOPIC_ID_0
@@ -68,7 +68,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     shouldSavePartialProgress = args?.shouldSavePartialProgress ?: false
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(
-        profileId,
+        internalProfileId,
         classroomId,
         topicId,
         storyId,
@@ -88,14 +88,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
-      profileIdProto,
+      profileId,
       explorationId
     )
     stopExploration(isCompletion)
   }
 
   private fun startPlayingExploration(
-    profileId: Int,
+    internalProfileId: Int,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -107,12 +107,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration(isCompletion = false)
     val startPlayingProvider = if (shouldSavePartialProgress) {
       explorationDataController.startPlayingNewExploration(
-        profileIdProto,
+        this.profileId,
         classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        profileIdProto,
+        this.profileId,
         classroomId, topicId, storyId, explorationId
       )
     }
@@ -125,7 +125,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
             oppiaLogger.e(TEST_ACTIVITY_TAG, "Failed to load exploration", result.error)
           is AsyncResult.Success -> {
             oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-            initializeExploration(profileId, topicId, storyId, explorationId)
+            initializeExploration(internalProfileId, topicId, storyId, explorationId)
           }
         }
       }
@@ -137,14 +137,16 @@ class StateFragmentTestActivityPresenter @Inject constructor(
    * session is fully started).
    */
   private fun initializeExploration(
-    profileId: Int,
+    internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String
   ) {
     stateFragmentTestViewModel.hasExplorationStarted.set(true)
 
-    val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
+    val stateFragment = StateFragment.newInstance(
+      internalProfileId, topicId, storyId, explorationId
+    )
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,
       stateFragment
