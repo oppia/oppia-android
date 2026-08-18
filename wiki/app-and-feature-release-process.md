@@ -1,10 +1,8 @@
 # App and Feature Release Process
 
 This page describes the end-to-end lifecycle for releasing app binaries and managing feature flags
-in oppia-android. It supersedes the
-[old private release Google Doc](https://docs.google.com/document/d/1XAoXnQkn2oIAFkd6vY90tn_SSW3J9Eia0_4RhXhJSxQ/edit?tab=t.0#heading=h.1hlri65ueypl)
-and is intended for **release coordinators** and any contributor who wants to understand how a
-change reaches end users.
+in oppia-android. It is intended for **release coordinators** and any contributor who wants to
+understand how a change reaches end users.
 
 ---
 
@@ -103,8 +101,16 @@ Pushing this change automatically triggers changelog generation (§3.2).
 ### 3.2 Generate the changelog
 
 **Trigger:**
-- **Automatic** — on every push to `develop` that modifies `version.bzl`
+- **Automatic** — on every push to `develop` that modifies `version.bzl` (triggered by §3.1)
 - **Manual** — via `workflow_dispatch` of the **Generate Changelog** workflow
+
+**Coordinator action:**
+- **If triggered automatically:** No action is needed to start the workflow. Wait for the
+  changelog PR to be opened, then review and merge it (see below).
+- **If triggered manually:** Dispatch the **Generate Changelog** workflow from the Actions tab
+  (see [§8](#8-how-to-manually-trigger-a-workflow)), then wait for the PR to be opened.
+- **After the workflow completes:** Review the opened changelog PR. Edit the AI-generated release
+  notes if they need adjustment, then merge the PR.
 
 **What it does:**
 
@@ -123,9 +129,6 @@ Pushing this change automatically triggers changelog generation (§3.2).
 
 A flavor-specific file always takes precedence over the generic one for its corresponding Play
 Console track.
-
-**Coordinator action:** Review and merge the opened changelog PR. Edit the release notes if the
-AI summary needs adjustment before merging.
 
 ---
 
