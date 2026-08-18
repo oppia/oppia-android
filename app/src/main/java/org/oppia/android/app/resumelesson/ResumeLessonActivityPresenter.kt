@@ -85,7 +85,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
         .remove(getResumeLessonFragment() as Fragment).commitNow()
 
     val resumeLessonFragment = ResumeLessonFragment.newInstance(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       classroomId,
       topicId,
       storyId,

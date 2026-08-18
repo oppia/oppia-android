@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -142,6 +143,9 @@ class ExplorationActivityLocalTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
   private val internalProfileId: Int = 0
+  private val profileId by lazy {
+    ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
   private val afternoonUtcTimestampMillis = 1556101812000
 
   @Before
@@ -160,7 +164,6 @@ class ExplorationActivityLocalTest {
   fun testExploration_onLaunch_logsEvent() {
     setUpTestApplicationComponent()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -193,7 +196,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -211,7 +213,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -243,7 +245,6 @@ class ExplorationActivityLocalTest {
   fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
     setUpTestWithNpsEnabled()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -265,7 +266,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -292,7 +293,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -310,7 +310,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -358,7 +358,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -376,7 +375,7 @@ class ExplorationActivityLocalTest {
       )
     ).use { scenario ->
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -417,7 +416,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -435,7 +433,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -477,13 +475,12 @@ class ExplorationActivityLocalTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
-    spotlightStateController.markSpotlightViewed(profileId, feature)
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(legacyProfileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun getApplicationDependencies(
-    internalProfileId: Int,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -494,7 +491,7 @@ class ExplorationActivityLocalTest {
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          internalProfileId,
+          profileId,
           classroomId,
           topicId,
           storyId,
