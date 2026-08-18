@@ -176,7 +176,9 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
         preservedReleases
       )
     )
-    delegate.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, releaseNotes, preservedReleases)
+    delegate.setTrackRelease(
+      packageName, editId, track, versionCode, rolloutFraction, releaseNotes, preservedReleases
+    )
   }
 
   override fun commitEdit(packageName: String, editId: String) {
