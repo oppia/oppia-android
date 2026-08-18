@@ -409,6 +409,7 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/LessonProgressIndicatorBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
@@ -599,6 +600,7 @@ android_library(
     deps = [
         ":resources",
         ":view_models",
+        ":views",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model/src/main/proto:thumbnail_java_proto_lite",

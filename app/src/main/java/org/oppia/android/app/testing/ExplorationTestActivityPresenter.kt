@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
@@ -53,7 +54,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
   private fun playExplorationButton() {
     explorationDataController.stopPlayingExploration(isCompletion = false)
     explorationDataController.replayExploration(
-      INTERNAL_PROFILE_ID,
+      ProfileId.newBuilder().setInternalId(INTERNAL_PROFILE_ID).build(),
       CLASSROOM_ID,
       TOPIC_ID,
       STORY_ID,

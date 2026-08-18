@@ -455,8 +455,8 @@ class UploadBinaryToPlayConsoleTest {
 
   @Test
   fun testRunUpload_alphaTrack_includesFrozenKitKatVersionCodeInTrackUpdateRequest() {
-    // The alpha track has a permanently frozen KitKat build (vc 16) that must be re-included in
-    // every setTrackRelease call. Without it the Play Console API would deactivate vc 16.
+    // The alpha track has a permanently frozen KitKat build (vc 16) that must be merged into
+    // every new release entry. Without it the Play Console API would deactivate vc 16.
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     // Configure the alpha track to return vc 16 when the frozen-release GET is issued, so
@@ -472,16 +472,15 @@ class UploadBinaryToPlayConsoleTest {
     val setTrackBody = fake.trackUpdateBodies.first()
     assertThat(setTrackBody).contains("\"16\"")
     assertThat(setTrackBody).contains("\"202\"")
-    // Exactly 2 releases must appear: the new upload and the frozen KitKat entry, no more.
-    assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(2)
-    // The frozen entry is passed through with "completed" status.
+    // Both version codes are merged into a SINGLE release entry (not two separate ones).
+    assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(1)
     assertThat(setTrackBody).contains("\"completed\"")
   }
 
   @Test
   fun testRunUpload_alphaTrack_includesAllFrozenVersionCodesWhenMultipleFrozenBuildsExist() {
     // Regression: when a second build is added to the frozen map (e.g. a future Lollipop freeze),
-    // both frozen version codes must survive in the setTrackRelease call alongside the new upload.
+    // both frozen version codes must be merged into the new release entry alongside the new upload.
     // Uses FakePlayConsoleClient with an injected two-entry frozen map to avoid HTTP mock overhead.
     val fakeClient = FakePlayConsoleClient()
     fakeClient.setTrackReleases(
@@ -505,9 +504,7 @@ class UploadBinaryToPlayConsoleTest {
     )
 
     val update = fakeClient.trackUpdates.single()
-    assertThat(update.preservedReleases).hasSize(2)
-    val preservedVcs = update.preservedReleases.flatMap { it.versionCodes }
-    assertThat(preservedVcs).containsExactly(16L, 21L)
+    assertThat(update.frozenVersionCodes).containsExactly(16L, 21L)
   }
 
   @Test

@@ -162,7 +162,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     versionCode: Long,
     rolloutFraction: Int,
     releaseNotes: Map<String, String>,
-    preservedReleases: List<PlayConsoleClient.TrackRelease>
+    frozenVersionCodes: List<Long>
   ) {
     maybeFailCall("setTrackRelease")
     trackUpdates.add(
@@ -173,7 +173,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
         versionCode,
         rolloutFraction,
         releaseNotes,
-        preservedReleases
+        frozenVersionCodes
       )
     )
     delegate.setTrackRelease(
@@ -320,6 +320,6 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     val versionCode: Long,
     val rolloutFraction: Int,
     val releaseNotes: Map<String, String>,
-    val preservedReleases: List<PlayConsoleClient.TrackRelease> = emptyList()
+    val frozenVersionCodes: List<Long> = emptyList()
   )
 }
