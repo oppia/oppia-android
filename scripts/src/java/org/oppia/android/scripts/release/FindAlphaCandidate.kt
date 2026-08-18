@@ -68,12 +68,14 @@ fun main(args: Array<String>) {
     accessToken = githubToken,
     overrideApiBaseUrl = overrideApiBaseUrl
   )
-  when (val result = findAlphaCandidate(
-    gitHubCiClient = client,
-    branch = branch,
-    commitLimit = commitLimit,
-    sinceSha = latestAlphaSha
-  )) {
+  when (
+    val result = findAlphaCandidate(
+      gitHubCiClient = client,
+      branch = branch,
+      commitLimit = commitLimit,
+      sinceSha = latestAlphaSha
+    )
+  ) {
     is AlphaCandidateResult.Found -> println(result.sha)
     is AlphaCandidateResult.NoNewCommits -> {
       System.err.println(
@@ -158,4 +160,3 @@ fun findAlphaCandidate(
   System.err.println("  ✗ No passing candidate found.")
   return AlphaCandidateResult.NoPassingCommit(commits.size)
 }
-
