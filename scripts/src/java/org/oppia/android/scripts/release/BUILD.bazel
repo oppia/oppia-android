@@ -86,7 +86,6 @@ kt_jvm_library(
     ],
 )
 
-
 kt_jvm_library(
     name = "pending_release_checker",
     srcs = ["PendingReleaseChecker.kt"],
