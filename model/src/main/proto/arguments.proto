@@ -1024,6 +1024,24 @@ message ProfileChooserFragmentArguments {
 message StatePlayerRecyclerViewAssemblerState {
   // Indicates whether the previous responses header is expanded.
   bool has_previous_responses_expanded = 1;
+
+  // The state name from the assembler's most recent lesson progress update.
+  string previous_lesson_progress_state_name = 2;
+
+  // Whether the assembler's most recent lesson progress state was pending.
+  bool previous_lesson_progress_state_was_pending = 3;
+
+  // Whether the assembler's most recent lesson progress state was a flashback.
+  bool previous_lesson_progress_was_flashback = 4;
+
+  // The checkpoint count for a progress animation that has not yet been displayed.
+  int32 pending_lesson_progress_animation_checkpoint_count = 5;
+
+  // Whether the assembler's most recent lesson progress state was at a checkpoint.
+  bool previous_lesson_progress_was_at_checkpoint = 6;
+
+  // The completed checkpoint count from the assembler's most recent lesson progress state.
+  int32 previous_lesson_progress_completed_checkpoint_count = 7;
 }
 
 // The bundle of properties that are saved on configuration change in FeatureFlagsFragment.
