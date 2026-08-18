@@ -131,5 +131,3 @@ class VersionInversionChecker(
     private const val GA_TRACK = "production"
   }
 }
-
-

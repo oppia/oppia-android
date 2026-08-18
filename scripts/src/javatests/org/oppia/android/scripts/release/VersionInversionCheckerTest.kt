@@ -431,7 +431,7 @@ class VersionInversionCheckerTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)),   // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
         PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(40000L)) // live
       )
     )
@@ -472,8 +472,8 @@ class VersionInversionCheckerTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)),  // frozen
-        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(100L))  // live
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(100L)) // live
       )
     )
     val frozenCodes = mapOf("alpha" to setOf(16L))
@@ -497,7 +497,7 @@ class VersionInversionCheckerTest {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
-        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)),   // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
         PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(40000L)) // live
       )
     )
@@ -513,4 +513,3 @@ class VersionInversionCheckerTest {
     )
   }
 }
-
