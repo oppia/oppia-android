@@ -419,7 +419,6 @@ class VersionInversionCheckerTest {
     )
   }
 
-
   @Test
   fun testVerify_beta_frozenAlphaVcLowerThanNewBeta_passes() {
     fakeClient.setTrackReleases(
