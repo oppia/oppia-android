@@ -8,9 +8,9 @@
 # skipped and no PR changes are proposed.
 #
 # Secrets required:
-#   PROD_SERVER_LESSON_SECRET -- Oppia production server API credential (configured as a
-#                                repository secret in GitHub Actions settings)
-#   BOT_TOKEN                 -- GitHub PAT with `repo` scope for opening/updating the PR
+#   PROD_SERVER_LESSON_SECRET    -- Oppia production server API credential
+#   LESSON_BOT_APP_ID            -- GitHub App ID for the oppia-android lesson bot
+#   LESSON_BOT_APP_PRIVATE_KEY   -- GitHub App private key (PEM format)
 
 name: Pull Latest Lesson Versions
 
@@ -36,27 +36,27 @@ jobs:
     name: Update pinned lesson versions
     runs-on: ubuntu-24.04
     permissions:
-      # contents:write is required for the commit step (git push to the dedicated branch).
-      # pull-requests:write is required for the gh pr create/edit step.
-      # id-token and contents:read are sufficient for checkout; write is declared here
-      # because the same token is reused for the push step.
-      contents: write
-      pull-requests: write
+      contents: write      # Required to force-push the automated/lesson-versions branch.
+      pull-requests: write # Required to open or update the lesson-versions PR.
 
     steps:
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.LESSON_BOT_APP_ID }}
+          private-key: ${{ secrets.LESSON_BOT_APP_PRIVATE_KEY }}
+
       - name: Check out introduce-asset-download-script
         uses: actions/checkout@v6
         with:
           # The download_lesson_list Bazel target lives on introduce-asset-download-script,
-          # not on develop (it has not been merged yet). This mirrors the checkout pattern
-          # already used by lesson_checks.yml on develop. Once introduce-asset-download-script
+          # not on develop (it has not been merged yet). Once introduce-asset-download-script
           # is merged to develop, this ref should be updated to develop.
           ref: introduce-asset-download-script
-          # fetch-depth: 1 is sufficient — we only need the working tree to detect textproto
-          # diffs and stage the update commit. Full history is not required.
           fetch-depth: 1
-          # Use BOT_TOKEN so that the commit push and PR creation trigger CI.
-          token: ${{ secrets.BOT_TOKEN }}
+          # Use the GitHub App token so the push and PR creation trigger CI.
+          token: ${{ steps.generate_token.outputs.token }}
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -133,7 +133,7 @@ jobs:
       - name: Create or update pull request
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           BRANCH="automated/lesson-versions"
           TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
