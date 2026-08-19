@@ -9,25 +9,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * Real [GitHubCiClient] implementation that talks to GitHub's REST API over HTTPS.
+ * Real [GitHubCiClient] implementation backed by GitHub's REST API.
  *
- * Authentication is performed via a GitHub personal access token (PAT) or GitHub Actions
- * `GITHUB_TOKEN` passed as [accessToken]. The token is sent as a `Bearer` credential on every
- * request and never logged.
+ * [overrideApiBaseUrl] redirects all traffic to a local test server instead of
+ * [GITHUB_API_BASE_URL]; set only in tests.
  *
- * Two API endpoints are used:
- * - `GET /repos/{owner}/{repo}/commits` — walks the branch commit graph
- * - `GET /repos/{owner}/{repo}/commits/{ref}/check-runs` — evaluates CI status per commit
- *
- * Both endpoints are paginated. [listCommits] fetches a single page of up to [limit] results.
- * [getCheckRunStatus] fetches all pages of check runs so that no run is missed even when the
- * total exceeds 100.
- *
- * The [overrideApiBaseUrl] constructor parameter is provided so tests can route all traffic
- * through a local [MockWebServer] instead of the real GitHub endpoint, following the same
- * pattern as [GooglePlayConsoleClient].
- *
- * @property accessToken a GitHub PAT or Actions `GITHUB_TOKEN` used for Bearer authentication
+ * @property accessToken GitHub PAT or Actions `GITHUB_TOKEN` used for Bearer authentication
  * @property repoOwner the GitHub repository owner (defaults to "oppia")
  * @property repoName the GitHub repository name (defaults to "oppia-android")
  * @property overrideApiBaseUrl optional URL override for tests; defaults to [GITHUB_API_BASE_URL]
@@ -85,13 +72,7 @@ class GoogleGitHubCiClient(
     return deriveStatus(allRuns)
   }
 
-  /**
-   * Fetches every page of check-run results for [commitSha], collecting them into a single list.
-   *
-   * The GitHub check-runs API paginates at 100 results per page. A full run of CI for
-   * oppia-android can easily exceed 100 jobs, so all pages must be collected before the
-   * overall status can be evaluated.
-   */
+  /** Fetches all pages of check runs for [commitSha] and returns them as a flat list. */
   private fun fetchAllCheckRunPages(commitSha: String): List<CheckRunsResponse.CheckRun> {
     val allRuns = mutableListOf<CheckRunsResponse.CheckRun>()
     var page = 1
@@ -121,14 +102,8 @@ class GoogleGitHubCiClient(
   }
 
   /**
-   * Derives the overall [GitHubCiClient.CiStatus] from the full list of [CheckRunsResponse.CheckRun]s.
-   *
-   * Evaluation rules (applied in priority order):
-   * 1. No runs → [GitHubCiClient.CiStatus.NO_CHECKS]
-   * 2. Any run with [status] not `"completed"` → [GitHubCiClient.CiStatus.PENDING]
-   *    (checked before failures so a mix of pending + failure is not prematurely concluded)
-   * 3. Any completed run with a conclusive non-success [conclusion] → [GitHubCiClient.CiStatus.FAILING]
-   * 4. All runs completed with success/skipped/neutral → [GitHubCiClient.CiStatus.PASSING]
+   * Derives an overall [GitHubCiClient.CiStatus] from the full list of check runs.
+   * Priority: NO_CHECKS → PENDING → FAILING → PASSING.
    */
   private fun deriveStatus(runs: List<CheckRunsResponse.CheckRun>): GitHubCiClient.CiStatus {
     if (runs.isEmpty()) return GitHubCiClient.CiStatus.NO_CHECKS
@@ -148,13 +123,7 @@ class GoogleGitHubCiClient(
     /** The base URL for GitHub's public REST API. */
     const val GITHUB_API_BASE_URL = "https://api.github.com/"
 
-    /**
-     * Conclusion values that are treated as non-blocking for the purposes of candidate selection.
-     *
-     * - `"success"` — the check explicitly passed
-     * - `"skipped"` — the check was deliberately skipped (e.g. a path filter excluded it)
-     * - `"neutral"` — the check completed without a definitive pass/fail signal
-     */
+    /** Check-run conclusions treated as non-blocking: success, skipped, neutral. */
     private val PASSING_CONCLUSIONS = setOf("success", "skipped", "neutral")
   }
 }

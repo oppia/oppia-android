@@ -2,14 +2,6 @@ package org.oppia.android.scripts.release
 
 /**
  * Represents the outcome of an alpha candidate search.
- *
- * The three cases must be handled distinctly by callers:
- * - [Found] – a candidate was found; its SHA is safe to use for a new alpha cut.
- * - [NoNewCommits] – [findAlphaCandidate] was called with a `sinceSha` reference and no commits
- *   exist on the branch after that point. This is not a failure; the current latest-alpha is
- *   already up to date and no new cut is needed.
- * - [NoPassingCommit] – commits were inspected but none had fully-passing CI. This indicates a
- *   CI health issue on the branch that requires coordinator attention.
  */
 sealed class AlphaCandidateResult {
   /** A passing candidate was found at [sha]. */
@@ -94,28 +86,19 @@ fun main(args: Array<String>) {
 }
 
 /**
- * Walks commits on [branch] (newest first) and returns an [AlphaCandidateResult] describing
- * the outcome of the candidate search.
+ * Walks commits on [branch] (newest first) and returns an [AlphaCandidateResult].
  *
- * When [sinceSha] is provided, only commits that appear strictly before [sinceSha] in the
- * newest-first commit list (i.e., commits newer than [sinceSha]) are inspected. If no such
- * commits exist, [AlphaCandidateResult.NoNewCommits] is returned immediately without making
- * any check-run API calls — indicating that the current latest-alpha is already up to date.
+ * When [sinceSha] is provided, only commits strictly newer than that SHA are inspected.
+ * If no such commits exist, [AlphaCandidateResult.NoNewCommits] is returned immediately.
  *
- * This function is separated from [main] so that unit tests can inject a [FakeGitHubCiClient]
- * and verify the candidate-selection logic without making real network calls.
- *
- * Commits with statuses other than [GitHubCiClient.CiStatus.PASSING] are skipped:
- * - [GitHubCiClient.CiStatus.FAILING]   – the commit should not be deployed
- * - [GitHubCiClient.CiStatus.PENDING]   – CI hasn't finished; a completed commit may follow
- * - [GitHubCiClient.CiStatus.NO_CHECKS] – no check runs found; every oppia-android commit should
- *   have CI, so this is treated as an unexpected error rather than silently skipped
+ * Separated from [main] so unit tests can inject a [FakeGitHubCiClient] without real
+ * network calls.
  *
  * @param gitHubCiClient client used to query commit lists and check-run statuses
  * @param branch the branch to walk (e.g. "develop")
  * @param commitLimit number of recent commits to fetch; must be in [1, 100]
- * @param sinceSha full SHA of the reference commit (e.g. current latest-alpha tag). Only commits
- *     strictly newer than this SHA are inspected. `null` means all fetched commits are inspected.
+ * @param sinceSha reference SHA (e.g. current latest-alpha tag); only commits strictly newer
+ *     than this are inspected. `null` inspects all fetched commits.
  * @return an [AlphaCandidateResult] describing the outcome
  */
 fun findAlphaCandidate(
