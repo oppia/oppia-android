@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,6 +31,11 @@ class UploadChangelogToPlayConsoleTest {
   @Before
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
+  }
+
+  @After
+  fun tearDown() {
+    fakeClient.close()
   }
 
   // ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.testing.assertThrows
@@ -16,6 +17,11 @@ class VersionInversionCheckerTest {
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
     checker = VersionInversionChecker(fakeClient)
+  }
+
+  @After
+  fun tearDown() {
+    fakeClient.close()
   }
 
   // ---------------------------------------------------------------------------

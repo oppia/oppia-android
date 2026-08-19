@@ -1,48 +1,139 @@
 package org.oppia.android.scripts.release
 
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
+
 /**
- * In-memory fake implementation of [PlayConsoleClient] for use in unit tests.
+ * MockWebServer-backed implementation of [PlayConsoleClient] for use in unit tests.
  *
- * Records all API calls for verification and returns pre-configured responses. Callers can inspect
- * the recorded state via [createdEdits], [uploadedBundles], [trackUpdates], [committedEdits], and
- * [queriedEditIds].
- * Error conditions can be simulated by setting [shouldFailNextCall] to true.
+ * The fake internally starts a local [MockWebServer] and delegates all [PlayConsoleClient] method
+ * calls to a real [GooglePlayConsoleClient] pointed at that server. Tests therefore exercise the
+ * full Retrofit and OkHttp pipeline rather than bypassing it, catching serialisation or
+ * HTTP-contract bugs that a purely in-memory fake would miss.
  *
- * Track releases returned by [getTrackReleases] can be configured per-track via
- * [setTrackReleases].
+ * **Direct injection** — for unit tests of classes that accept a [PlayConsoleClient]:
+ * ```kotlin
+ * val fake = FakePlayConsoleClient()
+ * PendingReleaseChecker(fake).verify(packageName, track)
+ * assertThat(fake.queriedEditIds).containsExactly(null)
+ * fake.close()
+ * ```
+ *
+ * **URL injection** — for end-to-end tests that exercise the entry-point [main] function:
+ * ```kotlin
+ * val fake = FakePlayConsoleClient()
+ * main(arrayOf(workspaceRoot, aabPath, track, token, rollout, fake.serverUrl))
+ * assertThat(fake.committedEdits).hasSize(1)
+ * fake.close()
+ * ```
+ *
+ * ## Recorded state
+ *
+ * Two categories of state are recorded, reflecting the two injection styles above.
+ *
+ * **Dispatcher-level** (populated regardless of injection style, because all Play Console HTTP
+ * traffic passes through the embedded server):
+ * - [committedEdits] — edit IDs extracted from `:commit` request URL paths
+ * - [uploadedVersionCodes] — version codes assigned to each bundle upload
+ * - [lastUploadedBodySize] — byte count of the most recent bundle upload body
+ * - [trackUpdateBodies] — raw JSON request bodies from track-update PUT calls
+ * - [trackQueriedEditIds] — edit IDs found in GET track-query URL paths
+ *
+ * **Interface-level** (populated only when the fake is injected directly as a [PlayConsoleClient]):
+ * - [createdEdits] — edit IDs returned by [createEdit]
+ * - [queriedEditIds] — the `existingEditId` arguments passed to [getTrackReleases]
+ * - [uploadedBundles] — `(packageName, editId, aabPath)` triples from [uploadAab]
+ * - [trackUpdates] — typed [TrackUpdate] records from [setTrackRelease]
+ *
+ * Error conditions can be simulated by setting [shouldFailNextCall] to `true` before any call.
+ * Track releases returned by [getTrackReleases] can be configured per-track via [setTrackReleases].
+ * Call [reset] to clear all recorded state between uses of the same instance.
  */
-class FakePlayConsoleClient : PlayConsoleClient {
+class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
 
-  /** Whether the next API call should throw an [IllegalStateException] to simulate a failure. */
-  var shouldFailNextCall = false
+  private val server = MockWebServer()
+  private val delegate: GooglePlayConsoleClient
 
-  /** The edit ID to return from [createEdit]. Incremented after each call. */
-  var nextEditId = 1
-
-  /** All edit session IDs created via [createEdit], in order. */
-  val createdEdits = mutableListOf<String>()
-
-  /** All bundles uploaded via [uploadAab], as (packageName, editId, aabPath) triples. */
-  val uploadedBundles = mutableListOf<Triple<String, String, String>>()
-
-  /** All track updates via [setTrackRelease], as recorded [TrackUpdate] entries. */
-  val trackUpdates = mutableListOf<TrackUpdate>()
-
-  /** All edit session IDs committed via [commitEdit], in order. */
-  val committedEdits = mutableListOf<String>()
-
-  /**
-   * The [existingEditId] argument passed to each [getTrackReleases] call, in order.
-   * `null` entries indicate calls where no existing edit was provided.
-   */
-  val queriedEditIds = mutableListOf<String?>()
-
+  private var nextEditIdNum = 1
   private var nextVersionCode = 1L
   private val trackReleasesMap = mutableMapOf<String, List<PlayConsoleClient.TrackRelease>>()
 
+  /** Whether the next [PlayConsoleClient] method call should throw an [IllegalStateException]. */
+  var shouldFailNextCall = false
+
+  // ---------------------------------------------------------------------------
+  // Dispatcher-level state (available for both direct injection and URL injection)
+  // ---------------------------------------------------------------------------
+
+  /** All edit IDs extracted from `:commit` URL paths, in the order they were committed. */
+  val committedEdits = mutableListOf<String>()
+
+  /** Version codes assigned for each bundle upload call, in order. */
+  val uploadedVersionCodes = mutableListOf<Long>()
+
+  /**
+   * Byte count of the most recent bundle upload request body. Useful for verifying that the real
+   * AAB bytes were transmitted rather than an empty or truncated body. Returns `-1` if no upload
+   * has been made yet.
+   */
+  var lastUploadedBodySize = -1L
+    private set
+
+  /** Raw JSON request bodies sent by each PUT track-update call, in order. */
+  val trackUpdateBodies = mutableListOf<String>()
+
+  /**
+   * Edit IDs extracted from GET track-query URL paths, in the order the queries arrived.
+   *
+   * When [getTrackReleases] is called with a non-null `existingEditId` the value here matches that
+   * ID. When called with `null`, the edit ID is the freshly-created temporary ID generated by the
+   * embedded [GooglePlayConsoleClient].
+   */
+  val trackQueriedEditIds = mutableListOf<String>()
+
+  // ---------------------------------------------------------------------------
+  // Interface-level state (populated only when the fake is used via direct injection)
+  // ---------------------------------------------------------------------------
+
+  /** All edit IDs returned by [createEdit], in order. */
+  val createdEdits = mutableListOf<String>()
+
+  /**
+   * The `existingEditId` argument passed to each [getTrackReleases] call, in order. `null` entries
+   * indicate calls where no existing edit ID was provided.
+   */
+  val queriedEditIds = mutableListOf<String?>()
+
+  /** All bundles uploaded via [uploadAab], as `(packageName, editId, aabPath)` triples. */
+  val uploadedBundles = mutableListOf<Triple<String, String, String>>()
+
+  /** Typed records of every [setTrackRelease] invocation, in order. */
+  val trackUpdates = mutableListOf<TrackUpdate>()
+
+  /**
+   * The base URL of the embedded [MockWebServer].
+   *
+   * Pass this as the optional 6th argument to the script's `main` function to route all Play
+   * Console API traffic through this fake.
+   */
+  val serverUrl: String
+
+  init {
+    server.dispatcher = PlayConsoleDispatcher()
+    server.start()
+    serverUrl = server.url("/").toString()
+    delegate = GooglePlayConsoleClient(
+      accessToken = "fake-token",
+      apiBaseUrl = serverUrl,
+      connectTimeoutMs = 1_000L
+    )
+  }
+
   override fun createEdit(packageName: String): String {
     maybeFailCall("createEdit")
-    val editId = "fake-edit-${nextEditId++}"
+    val editId = delegate.createEdit(packageName)
     createdEdits.add(editId)
     return editId
   }
@@ -54,16 +145,14 @@ class FakePlayConsoleClient : PlayConsoleClient {
   ): List<PlayConsoleClient.TrackRelease> {
     maybeFailCall("getTrackReleases")
     queriedEditIds.add(existingEditId)
-    // Sort by descending version code to honour the PlayConsoleClient contract, which documents
-    // that releases are returned "sorted by version code descending".
-    return (trackReleasesMap[track] ?: emptyList())
-      .sortedByDescending { release -> release.versionCodes.maxOrNull() ?: 0L }
+    return delegate.getTrackReleases(packageName, track, existingEditId)
   }
 
   override fun uploadAab(packageName: String, editId: String, aabPath: String): Long {
     maybeFailCall("uploadAab")
+    val versionCode = delegate.uploadAab(packageName, editId, aabPath)
     uploadedBundles.add(Triple(packageName, editId, aabPath))
-    return nextVersionCode++
+    return versionCode
   }
 
   override fun setTrackRelease(
@@ -87,27 +176,46 @@ class FakePlayConsoleClient : PlayConsoleClient {
         frozenVersionCodes
       )
     )
+    delegate.setTrackRelease(
+      packageName, editId, track, versionCode, rolloutFraction, releaseNotes, frozenVersionCodes
+    )
   }
 
   override fun commitEdit(packageName: String, editId: String) {
     maybeFailCall("commitEdit")
-    committedEdits.add(editId)
+    delegate.commitEdit(packageName, editId)
   }
 
   /**
-   * Configures the releases returned by [getTrackReleases] for the given [track].
+   * Shuts down the embedded [MockWebServer].
    *
-   * @param track the Play Console track name (e.g. "alpha", "beta", "production")
-   * @param releases the list of [PlayConsoleClient.TrackRelease] entries to return
+   * Must be called after each test, typically via an [org.junit.After] method or a
+   * try-with-resources block.
+   */
+  override fun close() {
+    server.shutdown()
+  }
+
+  /**
+   * Configures the list of releases returned by [getTrackReleases] for [track].
+   *
+   * By default all tracks return an empty list. Call this before exercising logic that depends on
+   * the current state of a track (e.g. [PendingReleaseChecker] or [VersionInversionChecker]).
+   *
+   * @param track the Play Console track name (e.g. `"alpha"`, `"beta"`, `"production"`)
+   * @param releases the releases to return for [track]; an empty list (the default) simulates a
+   *     track with no active releases
    */
   fun setTrackReleases(track: String, releases: List<PlayConsoleClient.TrackRelease>) {
     trackReleasesMap[track] = releases
   }
 
   /**
-   * Configures the next version code returned by [uploadAab].
+   * Configures the next version code returned when a bundle is uploaded.
    *
-   * @param versionCode the version code to return on the next upload
+   * Subsequent uploads increment automatically from this value.
+   *
+   * @param versionCode the version code to return for the next [uploadAab] call
    */
   fun setNextVersionCode(versionCode: Long) {
     nextVersionCode = versionCode
@@ -116,13 +224,17 @@ class FakePlayConsoleClient : PlayConsoleClient {
   /** Resets all recorded state and configuration to defaults. */
   fun reset() {
     shouldFailNextCall = false
-    nextEditId = 1
+    nextEditIdNum = 1
     nextVersionCode = 1L
+    committedEdits.clear()
+    uploadedVersionCodes.clear()
+    lastUploadedBodySize = -1L
+    trackUpdateBodies.clear()
+    trackQueriedEditIds.clear()
     createdEdits.clear()
+    queriedEditIds.clear()
     uploadedBundles.clear()
     trackUpdates.clear()
-    committedEdits.clear()
-    queriedEditIds.clear()
     trackReleasesMap.clear()
   }
 
@@ -133,6 +245,62 @@ class FakePlayConsoleClient : PlayConsoleClient {
     }
   }
 
+  // NOTE: The mutable collections written here (committedEdits, uploadedVersionCodes, etc.) are
+  // modified on OkHttp's background dispatch thread, then read on the test thread. This is safe
+  // because every PlayConsoleClient call uses Retrofit's synchronous .execute(), whose internal
+  // wait/notify provides the JMM happens-before ordering needed for visibility. Do NOT change
+  // client calls to enqueue()/async — that would silently break this guarantee.
+  private inner class PlayConsoleDispatcher : Dispatcher() {
+    override fun dispatch(request: RecordedRequest): MockResponse {
+      val path = request.path ?: ""
+      val method = request.method ?: ""
+      return when {
+        // createEdit: POST .../edits
+        method == "POST" && path.endsWith("/edits") -> {
+          val editId = "fake-edit-${nextEditIdNum++}"
+          MockResponse().setResponseCode(200).setBody("""{"id":"$editId"}""")
+        }
+        // uploadBundle: POST .../edits/{editId}/bundles?uploadType=media
+        method == "POST" && "/bundles" in path -> {
+          val vc = nextVersionCode++
+          uploadedVersionCodes.add(vc)
+          lastUploadedBodySize = request.bodySize
+          MockResponse().setResponseCode(200).setBody("""{"versionCode":"$vc"}""")
+        }
+        // commitEdit: POST .../edits/{editId}:commit
+        method == "POST" && ":commit" in path -> {
+          val editId = path.removeSuffix(":commit").substringAfterLast("/")
+          committedEdits.add(editId)
+          MockResponse().setResponseCode(200).setBody("""{"id":"$editId"}""")
+        }
+        // getTrack: GET .../edits/{editId}/tracks/{track}
+        method == "GET" && "/tracks/" in path -> {
+          val editId = path.substringAfter("/edits/").substringBefore("/tracks/")
+          trackQueriedEditIds.add(editId)
+          val track = path.substringAfterLast("/")
+          buildTrackResponse(track)
+        }
+        // setTrackRelease: PUT .../edits/{editId}/tracks/{track}
+        method == "PUT" && "/tracks/" in path -> {
+          val body = request.body.readUtf8()
+          trackUpdateBodies.add(body)
+          MockResponse().setResponseCode(200).setBody("""{"releases":[]}""")
+        }
+        else -> MockResponse().setResponseCode(404).setBody("Unrecognised: $method $path")
+      }
+    }
+
+    private fun buildTrackResponse(track: String): MockResponse {
+      val releases = trackReleasesMap[track] ?: emptyList()
+      val releasesJson = releases.joinToString(",", "[", "]") { r ->
+        val vcs = r.versionCodes.joinToString(",", "[", "]") { "\"$it\"" }
+        val fractionPart = r.rolloutFraction?.let { ""","userFraction":${it / 1000.0}""" } ?: ""
+        """{"versionCodes":$vcs,"status":"${r.status}"$fractionPart}"""
+      }
+      return MockResponse().setResponseCode(200).setBody("""{"releases":$releasesJson}""")
+    }
+  }
+
   /**
    * Records a single [setTrackRelease] invocation for test verification.
    *
@@ -140,10 +308,10 @@ class FakePlayConsoleClient : PlayConsoleClient {
    * @property editId the edit session ID
    * @property track the Play Console track
    * @property versionCode the version code assigned to the track
-   * @property rolloutFraction the staged rollout fraction (1.0 = full rollout)
-   * @property releaseNotes the release notes map (language code to text)
-   * @property frozenVersionCodes the frozen OS-specific version codes merged into the new release
-   *     entry alongside [versionCode] to prevent them being deactivated by the track update
+   * @property rolloutFraction the staged rollout fraction in [0, 1000] (1000 = 100%)
+   * @property releaseNotes the release notes map (BCP-47 language code to text)
+   * @property frozenVersionCodes the frozen OS-specific version codes merged alongside [versionCode]
+   *     to prevent them being deactivated by the track update
    */
   data class TrackUpdate(
     val packageName: String,
