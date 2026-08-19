@@ -1,36 +1,15 @@
 # Runs weekly to identify the newest fully-green commit on develop, promote it to the
 # `latest-alpha` tag, and kick off the build+sign workflow for the alpha flavor.
 #
-# Workflow sequence:
-#   1. FindAlphaCandidate — resolves the current latest-alpha tag SHA and passes it to the
-#      script as a reference point. The script only inspects commits strictly newer than that
-#      SHA, walking newest-first until it finds one whose GitHub CI check runs are all passing.
-#   2. Force-push `latest-alpha` tag — moves the well-known ref that build_and_sign.yml uses
-#      as its source when flavor=alpha and source_ref=latest-alpha. Skipped if no new commits
-#      exist since the current latest-alpha (NoNewCommits outcome).
-#   3. Dispatch build_and_sign — triggers the build+sign workflow. That workflow runs under
-#      the oppia-android-release-env environment (reviewer approval required before steps
-#      execute, per environment protection rules). Skipped on NoNewCommits.
-#
-# Outcomes:
-#   Found        — candidate SHA written to step output; tag updated; build dispatched.
-#   NoNewCommits — no commits exist after latest-alpha; workflow exits 0, steps 2–3 skipped.
-#   NoPassingCommit — commits inspected but none pass CI; workflow exits 1 (coordinator alert).
-#
-# Secrets required:
-#   BOT_TOKEN    — GitHub PAT with `repo` + `workflow` scopes. GITHUB_TOKEN cannot dispatch
-#                  other workflows in all configurations; a PAT is required here (same
-#                  rationale as pull_latest_lesson_versions.yml).
-#   GITHUB_TOKEN — automatically provided by Actions; used by FindAlphaCandidate for
-#                  read-only commit and check-run queries.
+# BOT_TOKEN (repo + workflow scopes) is required because GITHUB_TOKEN cannot dispatch
+# other workflows in all GitHub Actions configurations.
 
 name: Auto Release Alpha
 
 on:
   schedule:
     # Tuesdays at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:30) to avoid
-    # Bazel remote cache contention and to give the weekly lesson-version update a chance to
-    # land and go green on develop before the alpha candidate search begins.
+    # Bazel remote cache contention.
     - cron: "30 03 * * 2"
   workflow_dispatch:
     inputs:
@@ -78,21 +57,15 @@ jobs:
         with:
           version: 6.5.0
 
-      # Required on ubuntu-24.04 to ensure the Bazel binary is on PATH. Mirrors the pattern
-      # used in generate_changelog.yml and lesson_checks.yml for the same runner version.
-      - name: Set up Android + Bazel build environment
+      - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
-      # FindAlphaCandidate walks commits on the branch that are strictly newer than the
-      # current latest-alpha tag (newest first) and returns the SHA of the first commit
-      # whose GitHub CI check runs are all passing.
-      # If no commits exist after latest-alpha, the script exits 0 with no output (NoNewCommits)
-      # and subsequent steps are skipped. If commits exist but none pass, it exits 1.
+      # FindAlphaCandidate inspects commits newer than the current latest-alpha tag
+      # (newest first) and returns the SHA of the first fully-passing commit.
+      # Exits 0 with empty output on NoNewCommits; exits 1 on NoPassingCommit.
       - name: Find alpha candidate
         id: candidate
         env:
-          # Read-only — FindAlphaCandidate only calls GET /repos/.../commits and
-          # GET /repos/.../commits/{ref}/check-runs. No write access is needed here.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           LIMIT="${{ github.event.inputs.commit_limit || '50' }}"
