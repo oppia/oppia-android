@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.LeadingMarginSpan
+import android.text.style.ParagraphStyle
 import android.text.style.StyleSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
@@ -59,20 +60,34 @@ class WorkedExampleTagHandler(
     }
 
     val parsedWorkedExample = SpannableStringBuilder().apply {
-      // Worked examples are always shown on their own line, so start a new one if the preceding
-      // content didn't already end with a line break.
-      if (openIndex > 0 && output[openIndex - 1] != '\n') append('\n')
+      // Worked examples are block content, so they're separated from whatever precedes them by a
+      // blank line. Existing line breaks count towards that blank line, so an example that follows
+      // a paragraph is spaced exactly like one that follows another example.
+      if (openIndex > 0) {
+        var precedingNewlineCount = 0
+        while (precedingNewlineCount < openIndex &&
+          output[openIndex - 1 - precedingNewlineCount] == '\n'
+        ) {
+          precedingNewlineCount++
+        }
+        repeat(2 - precedingNewlineCount) { append('\n') }
+      }
     }
     val workedExampleStart = parsedWorkedExample.length
+    // Note that the question and answer are inserted into the assembled example rather than being
+    // appended to it. Appending would extend any span that ends where the appended text starts,
+    // which would carry the indentation of a trailing list item through the rest of the example.
+    parsedWorkedExample.appendBoldLabel(labels.questionLabel).append('\n')
+    val questionIndex = parsedWorkedExample.length
     parsedWorkedExample
-      .appendBoldLabel(labels.questionLabel)
-      .append('\n')
-      .append(parsedQuestion)
-      .append("\n\n")
+      .appendSeparatingNewlines(count = 2, precedingContent = parsedQuestion)
       .appendBoldLabel(labels.answerLabel)
       .append('\n')
-      .append(parsedAnswer)
-      .append('\n')
+    val answerIndex = parsedWorkedExample.length
+    parsedWorkedExample.appendSeparatingNewlines(count = 1, precedingContent = parsedAnswer)
+    // The answer is inserted first so that the question's insertion index stays valid.
+    parsedWorkedExample.insert(answerIndex, parsedAnswer)
+    parsedWorkedExample.insert(questionIndex, parsedQuestion)
     parsedWorkedExample.setSpan(
       LeadingMarginSpan.Standard(leadingMarginPx),
       /* start= */ workedExampleStart,
@@ -128,8 +143,31 @@ class WorkedExampleTagHandler(
     val text = toString()
     val firstContentIndex = text.indexOfFirst { it != '\n' }
     if (firstContentIndex < 0) return ""
-    val lastContentIndex = text.indexOfLast { it != '\n' } + 1
+    // Any newline that a paragraph span ends on is kept since such spans must end just after a
+    // newline. Trimming one would leave the span on an invalid boundary, which makes Android
+    // drop it (losing a trailing list item's bullet) or grow it over the content that follows.
+    val lastParagraphSpanEnd =
+      getSpans(0, length, ParagraphStyle::class.java).maxOfOrNull { getSpanEnd(it) } ?: 0
+    val lastContentIndex =
+      maxOf(text.indexOfLast { it != '\n' } + 1, lastParagraphSpanEnd.coerceAtMost(length))
     return subSequence(firstContentIndex, lastContentIndex)
+  }
+
+  /**
+   * Appends newlines to this builder such that [precedingContent], once inserted just before them,
+   * ends with exactly [count] of them.
+   */
+  private fun SpannableStringBuilder.appendSeparatingNewlines(
+    count: Int,
+    precedingContent: CharSequence
+  ) = apply {
+    var trailingNewlineCount = 0
+    while (trailingNewlineCount < precedingContent.length &&
+      precedingContent[precedingContent.length - 1 - trailingNewlineCount] == '\n'
+    ) {
+      trailingNewlineCount++
+    }
+    repeat(count - trailingNewlineCount) { append('\n') }
   }
 
   /**
