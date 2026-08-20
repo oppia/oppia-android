@@ -250,10 +250,61 @@ class GoogleGitHubCiClientTest {
     assertThat(exception).hasMessageThat().contains("404")
   }
 
-  /** Produces the JSON string for a single check-run entry. */
-  private fun checkRunJson(status: String, conclusion: String?): String {
+  @Test
+  fun testGetCheckRunStatus_scheduleRunFailing_withPassingPushRuns_returnsPassing() {
+    // Regression test for the 0413998 bug: a cron suite (event=schedule) that fails on the
+    // same commit SHA must not cause the commit to be classified as FAILING.
+    server.enqueue(
+      checkRunsPage(
+        totalCount = 3,
+        runs = listOf(
+          checkRunJson(status = "completed", conclusion = "success", event = "push"),
+          checkRunJson(status = "completed", conclusion = "success", event = "push"),
+          checkRunJson(status = "completed", conclusion = "failure", event = "schedule")
+        )
+      )
+    )
+
+    assertThat(client.getCheckRunStatus("abc123")).isEqualTo(GitHubCiClient.CiStatus.PASSING)
+  }
+
+  @Test
+  fun testGetCheckRunStatus_onlyScheduleRuns_returnsNoChecks() {
+    // If only schedule-triggered runs are present (all filtered out), the result is NO_CHECKS
+    // rather than PASSING — indicating the commit has no push-triggered CI at all.
+    server.enqueue(
+      checkRunsPage(
+        totalCount = 1,
+        runs = listOf(checkRunJson(status = "completed", conclusion = "failure", event = "schedule"))
+      )
+    )
+
+    assertThat(client.getCheckRunStatus("abc123")).isEqualTo(GitHubCiClient.CiStatus.NO_CHECKS)
+  }
+
+  @Test
+  fun testGetCheckRunStatus_runWithNullEvent_isNotFilteredAndCountsAsFailing() {
+    // A run whose check_suite.event is null (field absent from API) must not be filtered out.
+    // We treat unknown events as non-schedule to avoid silently ignoring real CI failures.
+    server.enqueue(
+      checkRunsPage(
+        totalCount = 1,
+        runs = listOf(checkRunJson(status = "completed", conclusion = "failure", event = null))
+      )
+    )
+
+    assertThat(client.getCheckRunStatus("abc123")).isEqualTo(GitHubCiClient.CiStatus.FAILING)
+  }
+
+  /** Produces the JSON string for a single check-run entry with a given suite event. */
+  private fun checkRunJson(
+    status: String,
+    conclusion: String?,
+    event: String? = "push"
+  ): String {
     val conclusionField = if (conclusion != null) "\"$conclusion\"" else "null"
-    return """{"id":1,"name":"test-check","status":"$status","conclusion":$conclusionField}"""
+    val eventField = if (event != null) "\"$event\"" else "null"
+    return """{"id":1,"name":"test-check","status":"$status","conclusion":$conclusionField,"check_suite":{"event":$eventField}}"""
   }
 
   /** Wraps a list of check-run JSON strings in a full check-runs page response. */

@@ -23,6 +23,17 @@ data class CheckRunsResponse(
 ) {
 
   /**
+   * The check suite that contains this check run.
+   *
+   * @property event the GitHub event that triggered the suite (e.g. `"push"`, `"schedule"`,
+   *     `"pull_request"`), or null if the field is not present in the API response.
+   */
+  @JsonClass(generateAdapter = true)
+  data class CheckSuite(
+    @Json(name = "event") val event: String?
+  )
+
+  /**
    * A single GitHub Actions check run entry.
    *
    * @property id the unique numeric identifier of this check run
@@ -32,12 +43,14 @@ data class CheckRunsResponse(
    * @property conclusion the final outcome of the run, or null when [status] is not `"completed"`.
    *     Expected values: `"success"`, `"failure"`, `"neutral"`, `"cancelled"`,
    *     `"skipped"`, `"timed_out"`, `"action_required"`, `"stale"`
+   * @property checkSuite the suite that triggered this run; null if absent from the API response
    */
   @JsonClass(generateAdapter = true)
   data class CheckRun(
     @Json(name = "id") val id: Long,
     @Json(name = "name") val name: String,
     @Json(name = "status") val status: String,
-    @Json(name = "conclusion") val conclusion: String?
+    @Json(name = "conclusion") val conclusion: String?,
+    @Json(name = "check_suite") val checkSuite: CheckSuite?
   )
 }

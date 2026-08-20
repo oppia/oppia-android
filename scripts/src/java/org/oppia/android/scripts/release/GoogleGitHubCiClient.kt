@@ -102,18 +102,24 @@ class GoogleGitHubCiClient(
   }
 
   /**
-   * Derives an overall [GitHubCiClient.CiStatus] from the full list of check runs.
-   * Priority: NO_CHECKS → PENDING → FAILING → PASSING.
+   * Derives an overall [GitHubCiClient.CiStatus] from a list of check runs, ignoring runs
+   * from scheduled (cron) workflows. Priority: NO_CHECKS → PENDING → FAILING → PASSING.
    */
   private fun deriveStatus(runs: List<CheckRunsResponse.CheckRun>): GitHubCiClient.CiStatus {
-    if (runs.isEmpty()) return GitHubCiClient.CiStatus.NO_CHECKS
+    // Exclude runs triggered by cron workflows — they run independently of commit pushes and
+    // are not required status checks. Including them can cause a legitimately passing commit
+    // to appear as FAILING if a cron suite happened to fail on that same commit SHA.
+    // Runs with a null event (field absent from API response) are kept to be safe.
+    val relevantRuns = runs.filter { it.checkSuite?.event != "schedule" }
+
+    if (relevantRuns.isEmpty()) return GitHubCiClient.CiStatus.NO_CHECKS
 
     // A run is "pending" if it hasn't reached a terminal state yet.
-    val hasPending = runs.any { it.status != "completed" }
+    val hasPending = relevantRuns.any { it.status != "completed" }
     if (hasPending) return GitHubCiClient.CiStatus.PENDING
 
     // All runs are "completed" at this point — evaluate their conclusions.
-    val hasFailure = runs.any { it.conclusion !in PASSING_CONCLUSIONS }
+    val hasFailure = relevantRuns.any { it.conclusion !in PASSING_CONCLUSIONS }
     if (hasFailure) return GitHubCiClient.CiStatus.FAILING
 
     return GitHubCiClient.CiStatus.PASSING
