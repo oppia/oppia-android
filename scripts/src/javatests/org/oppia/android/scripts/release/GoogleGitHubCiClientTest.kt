@@ -275,7 +275,9 @@ class GoogleGitHubCiClientTest {
     server.enqueue(
       checkRunsPage(
         totalCount = 1,
-        runs = listOf(checkRunJson(status = "completed", conclusion = "failure", event = "schedule"))
+        runs = listOf(
+          checkRunJson(status = "completed", conclusion = "failure", event = "schedule")
+        )
       )
     )
 
@@ -304,7 +306,8 @@ class GoogleGitHubCiClientTest {
   ): String {
     val conclusionField = if (conclusion != null) "\"$conclusion\"" else "null"
     val eventField = if (event != null) "\"$event\"" else "null"
-    return """{"id":1,"name":"test-check","status":"$status","conclusion":$conclusionField,"check_suite":{"event":$eventField}}"""
+    return """{"id":1,"name":"test-check","status":"$status",""" +
+      "\"conclusion\":$conclusionField,\"check_suite\":{\"event\":$eventField}}"
   }
 
   /** Wraps a list of check-run JSON strings in a full check-runs page response. */
