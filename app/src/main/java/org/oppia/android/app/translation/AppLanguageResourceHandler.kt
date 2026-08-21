@@ -188,7 +188,10 @@ class AppLanguageResourceHandler @Inject constructor(
 
   private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
     // TODO(#3791): Remove this dependency.
-    val locale = Locale(languageCode, regionCode)
+    val locale = Locale().Builder()
+      .setLanguage(languageCode)
+      .setRegion(regionCode)
+      .build()
     return locale.getDisplayLanguage(locale).replaceFirstChar {
       if (it.isLowerCase()) it.titlecase(locale) else it.toString()
     }
