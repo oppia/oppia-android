@@ -218,7 +218,14 @@ class MathBitmapModelLoader private constructor(
       }
 
       override fun drawPath(path: Path, paint: Paint) {
-        val pathBounds = RectF().also { path.computeBounds(it) }
+        val pathBounds = RectF().also {
+          if (android.os.Build.VERSION.SDK_INT >= 36) {
+            path.computeBounds(it)
+          } else {
+            @Suppress("DEPRECATION")
+            path.computeBounds(it, true)
+          }
+        }
         currentBounds.union(pathBounds.intersection(currentClip))
       }
 
