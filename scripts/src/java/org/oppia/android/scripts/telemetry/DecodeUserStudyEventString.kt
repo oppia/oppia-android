@@ -164,7 +164,7 @@ class DecodeUserStudyEventString {
       TextFormat.printer().escapingNonAscii(false).printToString(this)
 
     private fun Message.convertToJson(): String =
-      JsonFormat.printer().includingDefaultValueFields().print(this)
+      JsonFormat.printer().alwaysPrintFieldsWithNoPresence().print(this)
 
     private fun Message.convertToYaml(): String {
       // There's no direct way to convert from proto to yaml, so convert to json first.

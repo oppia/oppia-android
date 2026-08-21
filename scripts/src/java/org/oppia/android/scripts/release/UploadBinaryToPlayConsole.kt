@@ -85,13 +85,14 @@ fun main(args: Array<String>) {
  * @param track the Play Console track ("alpha", "beta", or "production")
  * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
  */
-private fun runUpload(
+fun runUpload(
   client: PlayConsoleClient,
   workspaceRoot: String,
   aabPath: String,
   properties: AabProperties,
   track: String,
-  rolloutFraction: Int
+  rolloutFraction: Int,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   println("Running pre-upload precondition checks...")
   PendingReleaseChecker(client).verify(PACKAGE_NAME, track)
@@ -124,13 +125,30 @@ private fun runUpload(
     properties.majorMinorVersion,
     properties.flavor.id
   )
+  val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+  if (frozenVersionCodes.isNotEmpty()) {
+    // The Play Developer API merges frozen version codes into the new release entry's versionCodes
+    // list on each update. Before passing them, verify they're actually on the live track — if
+    // any are missing, something has gone seriously wrong with the track state.
+    println("Verifying frozen version code(s) $frozenVersionCodes are present on track '$track'...")
+    val liveVersionCodes = client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
+      .flatMap { it.versionCodes }
+      .toSet()
+    val missingFrozen = frozenVersionCodes - liveVersionCodes
+    check(missingFrozen.isEmpty()) {
+      "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+        "are missing from the live track. This indicates a major release state inconsistency."
+    }
+    println("Frozen version code(s) confirmed present on track '$track'.")
+  }
   client.setTrackRelease(
     PACKAGE_NAME,
     editId,
     track,
     uploadedVersionCode,
     rolloutFraction,
-    releaseNotes
+    releaseNotes,
+    frozenVersionCodes.toList()
   )
   println("Track '$track' updated.")
 
@@ -172,7 +190,7 @@ private val AAB_FILENAME_REGEX =
  *
  * @return parsed [AabProperties], or `null` if the filename does not match the expected format
  */
-private fun parseAabFilename(aabName: String): AabProperties? {
+fun parseAabFilename(aabName: String): AabProperties? {
   val match = AAB_FILENAME_REGEX.find(aabName) ?: return null
   val (major, minor, rc, flavorId) = match.destructured
   val flavor = AppFlavor.fromId(flavorId) ?: return null

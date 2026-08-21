@@ -121,12 +121,23 @@ fun updateRollout(
     )
   }
 
-  println("Updating rollout fraction to ${rolloutFraction / 10.0}%...")
+  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+  if (frozenVersionCodes.isNotEmpty()) {
+    val liveVersionCodes = liveReleases.flatMap { it.versionCodes }.toSet()
+    val missingFrozen = frozenVersionCodes - liveVersionCodes
+    check(missingFrozen.isEmpty()) {
+      "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+        "are missing from the live track. This indicates a major release state inconsistency."
+    }
+  }
 
   val editId = client.createEdit(packageName)
   println("  Edit session: $editId")
 
-  client.setTrackRelease(packageName, editId, track, versionCode, rolloutFraction, releaseNotes)
+  client.setTrackRelease(
+    packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
+    frozenVersionCodes.toList()
+  )
   println("  Rollout fraction updated.")
 
   client.commitEdit(packageName, editId)

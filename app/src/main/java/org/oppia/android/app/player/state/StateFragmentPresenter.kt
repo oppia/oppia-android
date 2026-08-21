@@ -57,6 +57,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -503,7 +504,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun markExplorationCompleted() {
     val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,

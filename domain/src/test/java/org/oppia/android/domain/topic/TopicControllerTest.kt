@@ -1280,7 +1280,7 @@ class TopicControllerTest {
    */
   private fun markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters() {
     val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId1,
+      profileId1.toProfileIdPreservingZero(),
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
