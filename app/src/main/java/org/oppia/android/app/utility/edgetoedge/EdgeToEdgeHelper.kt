@@ -166,15 +166,18 @@ object EdgeToEdgeHelper {
   }
 
   /**
-   * Applies edge-to-edge insets to a no-toolbar [ConstraintLayout]. Adds a status-bar spacer using
+   * Applies edge-to-edge insets to a no-toolbar root [View]. Adds a status-bar spacer using
    * [statusBarColorRes], and applies system-bar and display-cutout padding while preserving the
-   * layout's original padding. [statusBarLight] controls whether the status bar uses dark icons.
+   * view's original padding. [statusBarLight] controls whether the status bar uses dark icons.
+   *
+   * This accepts any root view so that screens whose fragment root is not a `ConstraintLayout`
+   * (such as the Compose-backed admin intro and profile login screens) can be handled too.
    *
    * Returns the spacer so callers such as onboarding can update its color with the current page.
    */
-  fun applyToRootConstraintLayout(
+  fun applyToRootView(
     activity: AppCompatActivity,
-    rootLayout: ConstraintLayout,
+    rootLayout: View,
     @ColorRes statusBarColorRes: Int,
     statusBarLight: Boolean = false
   ): View {
@@ -218,6 +221,18 @@ object EdgeToEdgeHelper {
 
     return spacer
   }
+
+  /**
+   * Applies edge-to-edge insets to a no-toolbar [ConstraintLayout]. See [applyToRootView].
+   *
+   * Returns the spacer so callers such as onboarding can update its color with the current page.
+   */
+  fun applyToRootConstraintLayout(
+    activity: AppCompatActivity,
+    rootLayout: ConstraintLayout,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ): View = applyToRootView(activity, rootLayout, statusBarColorRes, statusBarLight)
 
   /**
    * Applies no-toolbar insets when the binding root is unavailable, such as in the splash
