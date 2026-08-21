@@ -11,12 +11,19 @@ import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
-class AudioLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class AudioLanguageActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private lateinit var audioLanguage: AudioLanguage
 
   /** Handles when the activity is first created. */
@@ -27,6 +34,9 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   ) {
     this.audioLanguage = audioLanguage
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding: AudioLanguageActivityBinding =
       DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
     activity.setSupportActionBar(binding.audioLanguageToolbar)
@@ -34,6 +44,14 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
     binding.audioLanguageToolbarTitle.isSelected = true
     binding.audioLanguageToolbar.setNavigationOnClickListener {
       finishWithResult()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.audioLanguageToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     if (getAudioLanguageFragment() == null) {
