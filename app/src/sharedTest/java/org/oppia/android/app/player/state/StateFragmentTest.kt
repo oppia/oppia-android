@@ -2623,7 +2623,12 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_arabicAppLang_defaultContinueInteraction_buttonShowsTranslatedDefault() {
     setUpTestWithLanguageSwitchingFeatureOff()
-    forceDefaultLocale(Locale("ar", "EG"))
+    forceDefaultLocale(
+      Locale.Builder()
+        .setLanguage("ar")
+        .setRegion("EG")
+        .build()
+    )
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()

@@ -188,7 +188,7 @@ class AppLanguageResourceHandler @Inject constructor(
 
   private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
     // TODO(#3791): Remove this dependency.
-    val locale = Locale().Builder()
+    val locale = Locale.Builder()
       .setLanguage(languageCode)
       .setRegion(regionCode)
       .build()

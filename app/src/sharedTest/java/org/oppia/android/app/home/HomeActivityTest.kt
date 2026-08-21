@@ -2289,8 +2289,17 @@ class HomeActivityTest {
   }
 
   private companion object {
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val NIGERIA_NAIJA_LOCALE = Locale.Builder()
+      .setLanguage("pcm")
+      .setRegion("NG")
+      .build()
   }
 }

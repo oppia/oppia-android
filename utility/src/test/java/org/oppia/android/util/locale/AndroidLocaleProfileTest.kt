@@ -40,8 +40,18 @@ import javax.inject.Singleton
 class AndroidLocaleProfileTest {
   @Inject lateinit var androidLocaleProfileFactory: AndroidLocaleProfile.Factory
 
-  private val brazilianPortugueseLocale by lazy { Locale("pt", "BR") }
-  private val kenyaOnlyLocale by lazy { Locale(/* language = */ "", "KE") }
+  private val brazilianPortugueseLocale by lazy {
+    Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+  }
+  private val kenyaOnlyLocale by lazy {
+    Locale.Builder()
+      .setLanguage("")
+      .setRegion("KE")
+      .build()
+  }
 
   @Before
   fun setUp() {
