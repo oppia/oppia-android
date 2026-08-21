@@ -44,6 +44,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AppLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -82,11 +83,13 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -102,7 +105,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -123,6 +125,7 @@ import javax.inject.Singleton
 class AppLanguageFragmentTest {
 
   private companion object {
+    private const val ADMIN_PROFILE_ID = 0
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val KISWAHILI_BUTTON_INDEX = 1
     private const val PORTUGUESE_BUTTON_INDEX = 3
@@ -147,6 +150,12 @@ class AppLanguageFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var translationController: TranslationController
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -482,7 +491,11 @@ class AppLanguageFragmentTest {
   @Test
   fun testFragment_onboardingV2_portugueseSelected_languageDropdownTextIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
-    launch(AppLanguageActivity::class.java).use { scenario ->
+    launch<AppLanguageActivity>(
+      AppLanguageActivity.createAppLanguageActivityIntent(
+        context, OppiaLanguage.ENGLISH, ADMIN_PROFILE_ID
+      )
+    ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
@@ -501,6 +514,13 @@ class AppLanguageFragmentTest {
         onView(withId(R.id.onboarding_language_dropdown)).check(
           matches(withText(R.string.brazilian_portuguese_localized_language_name))
         )
+        val selection = monitorFactory.waitForNextSuccessfulResult(
+          translationController.getAppLanguageSelection(
+            ProfileId.newBuilder().setInternalId(ADMIN_PROFILE_ID).build()
+          )
+        )
+        assertThat(selection.selectedLanguage)
+          .isEqualTo(OppiaLanguage.BRAZILIAN_PORTUGUESE)
       }
     }
   }
@@ -663,7 +683,6 @@ class AppLanguageFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

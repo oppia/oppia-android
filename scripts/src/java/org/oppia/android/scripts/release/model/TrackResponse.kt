@@ -23,12 +23,26 @@ data class TrackResponse(
    * @property status the release lifecycle status. One of: `"statusUnspecified"`, `"draft"`,
    *     `"inProgress"`, `"halted"`, or `"completed"`.
    * @property userFraction the fraction of users receiving this release in a staged rollout
-   *     (range 0.0–1.0, e.g. 0.25 for 25%), or null for completed/halted releases
+   *     (range 0.0-1.0, e.g. 0.25 for 25%), or null for completed/halted releases
+   * @property releaseNotes the localised release notes for this release, or null if none were set
    */
   @JsonClass(generateAdapter = true)
   data class ReleaseEntry(
     @Json(name = "versionCodes") val versionCodes: List<String>?,
     @Json(name = "status") val status: String,
-    @Json(name = "userFraction") val userFraction: Double? = null
+    @Json(name = "userFraction") val userFraction: Double? = null,
+    @Json(name = "releaseNotes") val releaseNotes: List<LocalizedText>? = null
+  )
+
+  /**
+   * Represents a localised text entry, used for release notes.
+   *
+   * @property language the BCP-47 language tag (e.g. `"en-US"`)
+   * @property text the release note text for that language
+   */
+  @JsonClass(generateAdapter = true)
+  data class LocalizedText(
+    @Json(name = "language") val language: String,
+    @Json(name = "text") val text: String
   )
 }

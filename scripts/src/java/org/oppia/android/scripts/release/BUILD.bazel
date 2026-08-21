@@ -17,10 +17,17 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "frozen_release_config",
+    srcs = ["FrozenReleaseConfig.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
     name = "google_play_console_client",
     srcs = ["GooglePlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
+        ":frozen_release_config",
         ":play_console_client",
         "//scripts/src/java/org/oppia/android/scripts/release/model:insert_edit_request",
         "//scripts/src/java/org/oppia/android/scripts/release/model:track_response",
@@ -50,7 +57,11 @@ kt_jvm_library(
     testonly = True,
     srcs = ["FakePlayConsoleClient.kt"],
     visibility = ["//scripts:oppia_script_test_visibility"],
-    deps = [":play_console_client"],
+    deps = [
+        ":google_play_console_client",
+        ":play_console_client",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+    ],
 )
 
 kt_jvm_library(
@@ -62,10 +73,21 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "fake_vertex_ai_client",
+    testonly = True,
+    srcs = ["FakeVertexAiClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":vertex_ai_client"],
+)
+
+kt_jvm_library(
     name = "version_inversion_checker",
     srcs = ["VersionInversionChecker.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":play_console_client"],
+    deps = [
+        ":frozen_release_config",
+        ":play_console_client",
+    ],
 )
 
 kt_jvm_library(
@@ -89,6 +111,7 @@ kt_jvm_library(
     deps = [
         ":app_flavor",
         ":changelog_existence_checker",
+        ":frozen_release_config",
         ":google_play_console_client",
         ":pending_release_checker",
         ":play_console_client",
@@ -101,8 +124,38 @@ kt_jvm_library(
     srcs = ["UploadChangelogToPlayConsole.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        ":frozen_release_config",
         ":google_play_console_client",
         ":play_console_client",
+    ],
+)
+
+kt_jvm_library(
+    name = "vertex_ai_client",
+    srcs = ["VertexAiClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "google_vertex_ai_client",
+    srcs = ["GoogleVertexAiClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":vertex_ai_client",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:moshi",
+    ],
+)
+
+kt_jvm_library(
+    name = "generate_changelogs_lib",
+    srcs = ["GenerateChangelogs.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":google_vertex_ai_client",
+        ":vertex_ai_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
     ],
 )
 
@@ -122,6 +175,7 @@ kt_jvm_library(
     srcs = ["UpdateRolloutFraction.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        ":frozen_release_config",
         ":google_play_console_client",
         ":play_console_client",
     ],

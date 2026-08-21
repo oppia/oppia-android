@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -91,7 +91,7 @@ class ExplorationDataControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
 
-  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -196,7 +196,7 @@ class ExplorationDataControllerTest {
   fun testStartPlayingNewExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -272,7 +272,7 @@ class ExplorationDataControllerTest {
 
     val secondStartProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0, TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
@@ -294,7 +294,7 @@ class ExplorationDataControllerTest {
     val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
     val secondStartProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -309,7 +309,7 @@ class ExplorationDataControllerTest {
   fun testRestartExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.restartExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -331,7 +331,7 @@ class ExplorationDataControllerTest {
 
     val secondStartProvider =
       explorationDataController.restartExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -345,7 +345,7 @@ class ExplorationDataControllerTest {
   fun testReplayExploration_returnsSuccess() {
     val startProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -367,7 +367,7 @@ class ExplorationDataControllerTest {
 
     val secondStartProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -388,7 +388,7 @@ class ExplorationDataControllerTest {
 
     val dataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_1,
         TEST_STORY_ID_2,
@@ -448,7 +448,7 @@ class ExplorationDataControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -461,7 +461,7 @@ class ExplorationDataControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -474,7 +474,7 @@ class ExplorationDataControllerTest {
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -501,7 +501,7 @@ class ExplorationDataControllerTest {
     val checkpoint = retrieveExplorationCheckpoint(explorationId)
     val resumeProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
+        profileId, classroomId, topicId, storyId, explorationId, checkpoint
       )
     monitorFactory.waitForNextSuccessfulResult(resumeProvider)
   }

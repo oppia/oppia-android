@@ -45,6 +45,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
@@ -291,7 +292,9 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
-    explorationDataController.deleteExplorationProgressById(profileId, explorationId)
+    explorationDataController.deleteExplorationProgressById(
+      profileId.toProfileIdPreservingZero(), explorationId
+    )
     stopExploration(isCompletion)
   }
 
@@ -302,7 +305,7 @@ class ExplorationActivityPresenter @Inject constructor(
     // without deleting any checkpoints.
     if (::oldestCheckpointExplorationId.isInitialized) {
       explorationDataController.deleteExplorationProgressById(
-        profileId,
+        profileId.toProfileIdPreservingZero(),
         oldestCheckpointExplorationId
       )
     }
@@ -366,7 +369,9 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(
-      explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
+      explorationDataController.getExplorationById(
+        profileId.toProfileIdPreservingZero(), explorationId
+      ).toLiveData()
     )
   }
 
@@ -519,7 +524,7 @@ class ExplorationActivityPresenter @Inject constructor(
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
-      profileId
+      profileId.toProfileIdPreservingZero()
     ).toLiveData().observe(activity) {
       when (it) {
         is AsyncResult.Success -> {
