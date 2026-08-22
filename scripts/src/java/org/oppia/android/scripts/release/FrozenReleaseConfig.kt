@@ -21,6 +21,5 @@ package org.oppia.android.scripts.release
  * [UpdateRolloutFraction], and [UploadChangelogToPlayConsole].
  */
 val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
-  "alpha" to setOf(16L, 201L),
-  "beta" to setOf(196L)
+  "alpha" to setOf(16L)
 )

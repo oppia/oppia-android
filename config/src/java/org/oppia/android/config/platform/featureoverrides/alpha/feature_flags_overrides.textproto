@@ -34,3 +34,7 @@ feature_flag_definition {
   id: WORKED_EXAMPLES
   default_is_enabled: true
 }
+feature_flag_definition {
+  id: APP_AND_OS_DEPRECATION
+  default_is_enabled: true
+}
