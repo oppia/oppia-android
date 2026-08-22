@@ -43,8 +43,14 @@ class FakeGitHubCiClient : GitHubCiClient {
     statusMap[sha] = status
   }
 
-  override fun listCommits(branch: String, limit: Int): List<GitHubCiClient.CommitSummary> =
-    commits.take(limit)
+  override fun listCommits(
+    branch: String,
+    perPage: Int,
+    page: Int
+  ): List<GitHubCiClient.CommitSummary> {
+    val startIndex = (page - 1) * perPage
+    return commits.drop(startIndex).take(perPage)
+  }
 
   override fun getCheckRunStatus(commitSha: String): GitHubCiClient.CiStatus =
     statusMap[commitSha] ?: GitHubCiClient.CiStatus.NO_CHECKS

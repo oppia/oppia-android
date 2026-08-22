@@ -48,15 +48,18 @@ class GoogleGitHubCiClient(
 
   private val service: GitHubCiService by lazy { retrofit.create(GitHubCiService::class.java) }
 
-  override fun listCommits(branch: String, limit: Int): List<GitHubCiClient.CommitSummary> {
-    require(limit in 1..100) { "limit must be in [1, 100], got $limit." }
+  override fun listCommits(
+    branch: String,
+    perPage: Int,
+    page: Int
+  ): List<GitHubCiClient.CommitSummary> {
     val response = service.listCommits(
       owner = repoOwner,
       repo = repoName,
       branch = branch,
       authorizationBearer = authorizationBearer,
-      perPage = limit,
-      page = 1
+      perPage = perPage,
+      page = page
     ).execute()
     check(response.isSuccessful) {
       "Failed to list commits for branch '$branch': HTTP ${response.code()}\n" +

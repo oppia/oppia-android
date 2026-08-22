@@ -17,32 +17,41 @@ class FakeGitHubCiClientTest {
 
   @Test
   fun testListCommits_noCommitsConfigured_returnsEmptyList() {
-    assertThat(fake.listCommits("develop", limit = 10)).isEmpty()
+    assertThat(fake.listCommits("develop", perPage = 10)).isEmpty()
   }
 
   @Test
   fun testListCommits_commitsConfigured_returnsCommitsInNewestFirstOrder() {
     fake.setCommits("sha-a", "sha-b", "sha-c")
 
-    val commits = fake.listCommits("develop", limit = 100)
+    val commits = fake.listCommits("develop", perPage = 100)
 
     assertThat(commits.map { it.sha }).containsExactly("sha-a", "sha-b", "sha-c").inOrder()
   }
 
   @Test
-  fun testListCommits_limitSmallerThanConfiguredCount_returnsOnlyFirstLimitEntries() {
+  fun testListCommits_perPageSmallerThanCount_returnsFirstPageOnly() {
     fake.setCommits("sha-a", "sha-b", "sha-c")
 
-    val commits = fake.listCommits("develop", limit = 2)
+    val commits = fake.listCommits("develop", perPage = 2)
 
     assertThat(commits.map { it.sha }).containsExactly("sha-a", "sha-b").inOrder()
+  }
+
+  @Test
+  fun testListCommits_page2Requested_returnsSecondBatch() {
+    fake.setCommits("sha-a", "sha-b", "sha-c", "sha-d")
+
+    val commits = fake.listCommits("develop", perPage = 2, page = 2)
+
+    assertThat(commits.map { it.sha }).containsExactly("sha-c", "sha-d").inOrder()
   }
 
   @Test
   fun testListCommits_limitLargerThanConfiguredCount_returnsAllConfiguredCommits() {
     fake.setCommits("sha-a", "sha-b")
 
-    val commits = fake.listCommits("develop", limit = 100)
+    val commits = fake.listCommits("develop", perPage = 100)
 
     assertThat(commits).hasSize(2)
   }
@@ -52,7 +61,7 @@ class FakeGitHubCiClientTest {
     fake.setCommits("sha-a", "sha-b")
     fake.setCommits("sha-c", "sha-d")
 
-    val commits = fake.listCommits("develop", limit = 100)
+    val commits = fake.listCommits("develop", perPage = 100)
 
     assertThat(commits.map { it.sha }).containsExactly("sha-c", "sha-d").inOrder()
   }
@@ -61,8 +70,8 @@ class FakeGitHubCiClientTest {
   fun testListCommits_branchArgumentIgnored_alwaysReturnsConfiguredCommits() {
     fake.setCommits("sha-a")
 
-    val commitsDevelop = fake.listCommits("develop", limit = 10)
-    val commitsMain = fake.listCommits("main", limit = 10)
+    val commitsDevelop = fake.listCommits("develop", perPage = 10)
+    val commitsMain = fake.listCommits("main", perPage = 10)
 
     assertThat(commitsDevelop.map { it.sha }).containsExactly("sha-a")
     assertThat(commitsMain.map { it.sha }).containsExactly("sha-a")

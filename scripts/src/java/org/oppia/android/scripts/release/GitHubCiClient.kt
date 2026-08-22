@@ -14,13 +14,14 @@ package org.oppia.android.scripts.release
 interface GitHubCiClient {
 
   /**
-   * Returns up to [limit] commits on [branch] in reverse-chronological order (newest first).
+   * Returns one page of commits on [branch] in reverse-chronological order (newest first).
    *
    * @param branch the branch name to query (e.g. "develop")
-   * @param limit the maximum number of commits to return; must be in [1, 100]
-   * @return the list of [CommitSummary] entries, newest commit first
+   * @param perPage the number of commits per page; must be in [1, 100] (default: 100)
+   * @param page the 1-indexed page number to retrieve (default: 1)
+   * @return the list of [CommitSummary] entries for this page, newest commit first
    */
-  fun listCommits(branch: String, limit: Int = 100): List<CommitSummary>
+  fun listCommits(branch: String, perPage: Int = 100, page: Int = 1): List<CommitSummary>
 
   /**
    * Returns the overall CI status of the commit identified by [commitSha].

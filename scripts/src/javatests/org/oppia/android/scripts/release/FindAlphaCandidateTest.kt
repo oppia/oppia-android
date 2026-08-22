@@ -130,42 +130,28 @@ class FindAlphaCandidateTest {
   }
 
   @Test
-  fun testFindAlphaCandidate_passingCommitBeyondLimit_returnsNoPassingCommit() {
-    fakeClient.setCommits("sha-a", "sha-b", "sha-c")
-    fakeClient.setStatus("sha-a", GitHubCiClient.CiStatus.FAILING)
-    fakeClient.setStatus("sha-b", GitHubCiClient.CiStatus.FAILING)
-    fakeClient.setStatus("sha-c", GitHubCiClient.CiStatus.PASSING)
+  fun testFindAlphaCandidate_passingCommitOnSecondPage_returnsFound() {
+    // First 100 commits all FAILING, commit #101 PASSING — requires pagination to find.
+    val shas = (1..101).map { "sha-$it" }
+    fakeClient.setCommits(*shas.toTypedArray())
+    shas.take(100).forEach { fakeClient.setStatus(it, GitHubCiClient.CiStatus.FAILING) }
+    fakeClient.setStatus("sha-101", GitHubCiClient.CiStatus.PASSING)
 
-    // With commitLimit=2, sha-c is not inspected.
-    assertThat(findAlphaCandidate(fakeClient, "develop", commitLimit = 2))
-      .isEqualTo(AlphaCandidateResult.NoPassingCommit(commitsChecked = 2))
+    assertThat(findAlphaCandidate(fakeClient, "develop"))
+      .isEqualTo(AlphaCandidateResult.Found("sha-101"))
   }
 
   @Test
-  fun testFindAlphaCandidate_commitLimitOfOne_returnsFoundIfFirstPasses() {
-    fakeClient.setCommits("sha-a", "sha-b")
-    fakeClient.setStatus("sha-a", GitHubCiClient.CiStatus.PASSING)
+  fun testFindAlphaCandidate_sinceShaOnSecondPage_returnsNoPassingCommit() {
+    // 101 commits newest-first; sinceSha = sha-101 (oldest) is on page 2.
+    // sha-1..sha-100 are all FAILING; after paginating and finding sha-101 on page 2 the
+    // script should stop and return NoPassingCommit with commitsChecked = 100.
+    val shas = (1..101).map { "sha-$it" }
+    fakeClient.setCommits(*shas.toTypedArray())
+    shas.take(100).forEach { fakeClient.setStatus(it, GitHubCiClient.CiStatus.FAILING) }
 
-    assertThat(findAlphaCandidate(fakeClient, "develop", commitLimit = 1))
-      .isEqualTo(AlphaCandidateResult.Found("sha-a"))
-  }
-
-  @Test
-  fun testFindAlphaCandidate_commitLimitZero_throwsIllegalArgumentException() {
-    val exception = assertThrows<IllegalArgumentException> {
-      findAlphaCandidate(fakeClient, "develop", commitLimit = 0)
-    }
-
-    assertThat(exception).hasMessageThat().contains("commitLimit")
-  }
-
-  @Test
-  fun testFindAlphaCandidate_commitLimitAbove100_throwsIllegalArgumentException() {
-    val exception = assertThrows<IllegalArgumentException> {
-      findAlphaCandidate(fakeClient, "develop", commitLimit = 101)
-    }
-
-    assertThat(exception).hasMessageThat().contains("commitLimit")
+    assertThat(findAlphaCandidate(fakeClient, "develop", sinceSha = "sha-101"))
+      .isEqualTo(AlphaCandidateResult.NoPassingCommit(commitsChecked = 100))
   }
 
   // endregion
@@ -266,8 +252,8 @@ class FindAlphaCandidateTest {
       )
       val serverUrl = server.url("/").toString()
 
-      // args: github_token, branch, commit_limit, latest_alpha_sha ("" = none), override_api_base_url
-      main(arrayOf("fake-token", "develop", "1", "", serverUrl))
+      // args: github_token, branch, latest_alpha_sha ("" = none), override_api_base_url
+      main(arrayOf("fake-token", "develop", "", serverUrl))
 
       // Verify both requests were made: one for commits, one for check-runs.
       assertThat(server.requestCount).isEqualTo(2)
@@ -300,7 +286,7 @@ class FindAlphaCandidateTest {
       )
       val serverUrl = server.url("/").toString()
 
-      main(arrayOf("fake-token", "my-branch", "1", "", serverUrl))
+      main(arrayOf("fake-token", "my-branch", "", serverUrl))
 
       // The first request (listCommits) must target the custom branch.
       val recordedRequest = server.takeRequest()

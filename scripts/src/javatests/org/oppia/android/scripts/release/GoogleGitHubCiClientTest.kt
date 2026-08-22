@@ -48,7 +48,7 @@ class GoogleGitHubCiClientTest {
       )
     )
 
-    val commits = client.listCommits("develop", limit = 10)
+    val commits = client.listCommits("develop", perPage = 10)
 
     assertThat(commits).hasSize(2)
     assertThat(commits[0].sha).isEqualTo("aaaa0000000000000000000000000000000000aa")
@@ -59,7 +59,7 @@ class GoogleGitHubCiClientTest {
   fun testListCommits_emptyList_returnsEmptyList() {
     server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
-    val commits = client.listCommits("develop", limit = 10)
+    val commits = client.listCommits("develop", perPage = 10)
 
     assertThat(commits).isEmpty()
   }
@@ -69,7 +69,7 @@ class GoogleGitHubCiClientTest {
     server.enqueue(MockResponse().setResponseCode(401).setBody("""{"message":"Bad credentials"}"""))
 
     val exception = assertThrows<IllegalStateException> {
-      client.listCommits("develop", limit = 10)
+      client.listCommits("develop", perPage = 10)
     }
 
     assertThat(exception).hasMessageThat().contains("develop")
@@ -80,7 +80,7 @@ class GoogleGitHubCiClientTest {
   fun testListCommits_sendsAuthorizationHeader() {
     server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
-    client.listCommits("develop", limit = 10)
+    client.listCommits("develop", perPage = 10)
 
     val request = server.takeRequest()
     assertThat(request.getHeader("Authorization")).isEqualTo("Bearer test-token")
@@ -90,7 +90,7 @@ class GoogleGitHubCiClientTest {
   fun testListCommits_sendsGitHubApiVersionHeader() {
     server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
-    client.listCommits("develop", limit = 10)
+    client.listCommits("develop", perPage = 10)
 
     val request = server.takeRequest()
     assertThat(request.getHeader("X-GitHub-Api-Version")).isEqualTo("2022-11-28")
