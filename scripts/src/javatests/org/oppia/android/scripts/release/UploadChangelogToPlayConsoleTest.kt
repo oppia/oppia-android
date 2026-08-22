@@ -382,7 +382,8 @@ class UploadChangelogToPlayConsoleTest {
       listOf(
         PlayConsoleClient.TrackRelease(
           versionCodes = listOf(298L, 300L, 299L),
-          status = "completed"),
+          status = "completed"
+          ),
         FROZEN_ALPHA_BASELINE
       )
     )
