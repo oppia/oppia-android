@@ -32,6 +32,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -41,6 +42,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
@@ -55,7 +58,8 @@ class StoryFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -109,6 +113,14 @@ class StoryFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = storyViewModel
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.storyToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     return binding.root
   }

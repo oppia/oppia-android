@@ -6,13 +6,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Tag for identifying the [ClassroomListFragment] in transactions. */
 private const val TAG_CLASSROOM_LIST_FRAGMENT = "CLASSROOM_LIST_FRAGMENT"
 
 /** The presenter for [ClassroomListActivity]. */
-class ClassroomListActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class ClassroomListActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
   /**
@@ -20,8 +26,18 @@ class ClassroomListActivityPresenter @Inject constructor(private val activity: A
    * and adds the [ClassroomListFragment] if it's not already added.
    */
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.classroom_list_activity)
-    setUpNavigationDrawer()
+    val toolbar = setUpNavigationDrawer()
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     if (getClassroomListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.classroom_list_fragment_placeholder,
@@ -31,7 +47,7 @@ class ClassroomListActivityPresenter @Inject constructor(private val activity: A
     }
   }
 
-  private fun setUpNavigationDrawer() {
+  private fun setUpNavigationDrawer(): Toolbar {
     val toolbar = activity.findViewById<View>(R.id.classroom_list_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -44,6 +60,7 @@ class ClassroomListActivityPresenter @Inject constructor(private val activity: A
       activity.findViewById<View>(R.id.classroom_list_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_home
     )
+    return toolbar
   }
 
   private fun getClassroomListFragment(): ClassroomListFragment? {
