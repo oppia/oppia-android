@@ -21,7 +21,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [ProfilePictureActivity]. */
@@ -39,13 +38,6 @@ class ProfilePictureActivityPresenter @Inject constructor(
   fun handleOnCreate(internalProfileId: Int) {
     if (enableEdgeToEdge.value) {
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
-    } else {
-      StatusBarColor.statusBarColorUpdate(
-        R.color
-          .component_color_shared_profile_status_bar_color,
-        activity,
-        false
-      )
     }
     val binding = DataBindingUtil
       .setContentView<ProfilePictureActivityBinding>(
