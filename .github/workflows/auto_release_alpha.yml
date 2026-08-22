@@ -1,8 +1,12 @@
 # Runs weekly to identify the newest fully-green commit on develop, promote it to the
 # `latest-alpha` tag, and kick off the build+sign workflow for the alpha flavor.
 #
-# BOT_TOKEN (repo + workflow scopes) is required because GITHUB_TOKEN cannot dispatch
-# other workflows in all GitHub Actions configurations.
+# Secrets required (same GitHub App as pull_latest_lesson_versions.yml):
+#   LESSON_BOT_APP_ID         – GitHub App ID
+#   LESSON_BOT_APP_PRIVATE_KEY – GitHub App private key (PEM)
+# The App must have:
+#   Contents: write  – to force-push the latest-alpha tag
+#   Actions:  write  – to dispatch the build_and_sign.yml workflow
 
 name: Auto Release Alpha
 
@@ -33,6 +37,15 @@ jobs:
       checks: read    # Required for FindAlphaCandidate to query check-run status via the GitHub API.
 
     steps:
+      # Generate a short-lived GitHub App token. The App must have Contents:write (to
+      # force-push the latest-alpha tag) and Actions:write (to dispatch build_and_sign.yml).
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.LESSON_BOT_APP_ID }}
+          private-key: ${{ secrets.LESSON_BOT_APP_PRIVATE_KEY }}
+
       - name: Check out develop
         uses: actions/checkout@v4
         with:
@@ -44,9 +57,9 @@ jobs:
           # object. A shallow clone only contains the tip commit; any non-HEAD candidate
           # SHA would cause `git tag` to fail with "not a valid object name".
           fetch-depth: 0
-          # Use BOT_TOKEN so the subsequent force-push of the latest-alpha tag is
-          # authenticated with an account that has the required write scope.
-          token: ${{ secrets.BOT_TOKEN }}
+          # Use the GitHub App token so the subsequent force-push of the latest-alpha tag
+          # is authenticated with the App account that has Contents:write scope.
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -99,7 +112,7 @@ jobs:
       - name: Dispatch build-and-sign for alpha
         if: steps.candidate.outputs.sha != ''
         env:
-          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh workflow run build_and_sign.yml \
             --repo "${{ github.repository }}" \
