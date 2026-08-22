@@ -1,13 +1,17 @@
 package org.oppia.android.app.walkthrough
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.WalkthroughActivityBinding
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -15,12 +19,16 @@ import javax.inject.Inject
 @ActivityScope
 class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val walkthroughViewModel: WalkthroughViewModel
+  private val walkthroughViewModel: WalkthroughViewModel,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
 
     binding.apply {
@@ -28,11 +36,20 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_walkthrough_activity_status_bar_color,
-      activity,
-      true
-    )
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_walkthrough_activity_status_bar_color,
+        statusBarLight = true
+      )
+    } else {
+      StatusBarColor.statusBarColorUpdate(
+        R.color.component_color_walkthrough_activity_status_bar_color,
+        activity,
+        true
+      )
+    }
     val currentFragmentIndex = walkthroughViewModel.currentProgress.get()?.minus(1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {

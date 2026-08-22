@@ -223,6 +223,49 @@ class EdgeToEdgeHelperTest {
   }
 
   @Test
+  fun testApplyToRootConstraintLayout_twice_reusesSpacerAndPreservesPadding() {
+    launchTestActivity { activity ->
+      val root = ConstraintLayout(activity).apply {
+        setPadding(1, 2, 3, 4)
+      }
+      activity.setContentView(root)
+      val contentRoot = activity.findViewById<ViewGroup>(android.R.id.content)
+
+      val firstSpacer = EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        root,
+        STATUS_BAR_COLOR,
+        statusBarLight = true
+      )
+      val secondSpacer = EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        UPDATED_STATUS_BAR_COLOR,
+        statusBarLight = true
+      )
+      dispatchInsets(root)
+      dispatchInsets(secondSpacer)
+
+      assertThat(contentRoot.childCount).isEqualTo(2)
+      assertThat(secondSpacer).isSameInstanceAs(firstSpacer)
+      assertThat(secondSpacer.backgroundColor)
+        .isEqualTo(ContextCompat.getColor(activity, UPDATED_STATUS_BAR_COLOR))
+      assertThat(secondSpacer.layoutParams.height).isEqualTo(25)
+      assertThat(root.paddingLeft).isEqualTo(16)
+      assertThat(root.paddingTop).isEqualTo(27)
+      assertThat(root.paddingRight).isEqualTo(38)
+      assertThat(root.paddingBottom).isEqualTo(44)
+
+      dispatchInsets(root)
+      dispatchInsets(secondSpacer)
+
+      assertThat(root.paddingLeft).isEqualTo(16)
+      assertThat(root.paddingTop).isEqualTo(27)
+      assertThat(root.paddingRight).isEqualTo(38)
+      assertThat(root.paddingBottom).isEqualTo(44)
+    }
+  }
+
+  @Test
   fun testEnableEdgeToEdgeDispatch_doesNotCrash() {
     launchTestActivity(EdgeToEdgeHelper::enableEdgeToEdgeDispatch)
   }
@@ -245,6 +288,7 @@ class EdgeToEdgeHelperTest {
 
   private companion object {
     val STATUS_BAR_COLOR = R.color.component_color_shared_activity_status_bar_color
+    val UPDATED_STATUS_BAR_COLOR = R.color.component_color_shared_profile_status_bar_color
 
     val TEST_INSETS: WindowInsetsCompat = WindowInsetsCompat.Builder()
       .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(10, 20, 30, 40))

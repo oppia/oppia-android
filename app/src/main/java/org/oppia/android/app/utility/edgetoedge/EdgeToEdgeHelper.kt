@@ -19,8 +19,9 @@ import androidx.core.view.WindowInsetsCompat
 import java.util.WeakHashMap
 
 /**
- * Utility that dispatches edge-to-edge window insets to activity toolbars and the navigation
- * drawer while the `EnableEdgeToEdge` platform parameter gates the Android 15 rollout.
+ * Utility that dispatches edge-to-edge window insets to activity toolbars, navigation drawers,
+ * and no-toolbar screens while the `EnableEdgeToEdge` platform parameter gates the Android 15
+ * rollout.
  */
 object EdgeToEdgeHelper {
   private const val STATUS_BAR_SPACER_TAG = "oppia_edge_to_edge_status_bar_spacer"
@@ -162,6 +163,94 @@ object EdgeToEdgeHelper {
       )
       insets
     }
+  }
+
+  /**
+   * Applies edge-to-edge insets to a no-toolbar root [View]. Adds a status-bar spacer using
+   * [statusBarColorRes], and applies system-bar and display-cutout padding while preserving the
+   * view's original padding. [statusBarLight] controls whether the status bar uses dark icons.
+   *
+   * This accepts any root view so that screens whose fragment root is not a `ConstraintLayout`
+   * (such as the Compose-backed admin intro and profile login screens) can be handled too.
+   *
+   * Returns the spacer so callers such as onboarding can update its color with the current page.
+   */
+  fun applyToRootView(
+    activity: AppCompatActivity,
+    rootLayout: View,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ): View {
+    val contentRoot = activity.findViewById<View>(android.R.id.content)
+    val spacer = getOrCreateOverlayStatusBarSpacer(activity, contentRoot, statusBarColorRes)
+
+    ViewCompat.setOnApplyWindowInsetsListener(spacer) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.layoutParams.height = bars.top
+      view.requestLayout()
+      insets
+    }
+    ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+      val bars = insets.systemBarsWithCutout()
+      view.applyInsetPadding(
+        bars,
+        applyLeft = true,
+        applyTop = true,
+        applyRight = true,
+        applyBottom = true
+      )
+      insets
+    }
+
+    disableDecorAncestorFits(activity)
+    applyRootInsetsIfAvailable(rootLayout) { bars ->
+      spacer.layoutParams.height = bars.top
+      spacer.requestLayout()
+      rootLayout.applyInsetPadding(
+        bars,
+        applyLeft = true,
+        applyTop = true,
+        applyRight = true,
+        applyBottom = true
+      )
+    }
+    WindowCompat.getInsetsController(activity.window, rootLayout)
+      ?.isAppearanceLightStatusBars = statusBarLight
+    disableNavBarContrast(activity)
+    ViewCompat.requestApplyInsets(contentRoot)
+
+    return spacer
+  }
+
+  /**
+   * Applies edge-to-edge insets to a no-toolbar [ConstraintLayout]. See [applyToRootView].
+   *
+   * Returns the spacer so callers such as onboarding can update its color with the current page.
+   */
+  fun applyToRootConstraintLayout(
+    activity: AppCompatActivity,
+    rootLayout: ConstraintLayout,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ): View = applyToRootView(activity, rootLayout, statusBarColorRes, statusBarLight)
+
+  /**
+   * Applies no-toolbar insets when the binding root is unavailable, such as in the splash
+   * presenter's post-parameter-loading path.
+   */
+  fun applyToRootConstraintLayout(
+    activity: AppCompatActivity,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ): View {
+    val content = activity.findViewById<FrameLayout>(android.R.id.content)
+    val rootLayout = content.getChildAt(0) as ConstraintLayout
+    return applyToRootConstraintLayout(
+      activity,
+      rootLayout,
+      statusBarColorRes,
+      statusBarLight
+    )
   }
 
   // Used when the toolbar's parent is not a LinearLayout. A separate spacer preserves the

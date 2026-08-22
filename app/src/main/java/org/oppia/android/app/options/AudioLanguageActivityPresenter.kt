@@ -14,6 +14,7 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -22,7 +23,9 @@ import javax.inject.Inject
 class AudioLanguageActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   @EnableEdgeToEdge
-  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private lateinit var audioLanguage: AudioLanguage
 
@@ -46,7 +49,10 @@ class AudioLanguageActivityPresenter @Inject constructor(
       finishWithResult()
     }
 
-    if (enableEdgeToEdge.value) {
+    // In the onboarding V2 flow the fragment hides this toolbar and renders full-screen, so it
+    // applies its own root insets instead; applying the app-bar insets here too would double the
+    // horizontal and bottom padding.
+    if (enableEdgeToEdge.value && !enableOnboardingFlowV2.value) {
       EdgeToEdgeHelper.applyToAppBarLayout(
         activity,
         binding.audioLanguageToolbar,
