@@ -6,6 +6,7 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
+import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.LeadingMarginSpan
@@ -802,6 +803,188 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withWorkedExample_withNestedUnorderedList_usesOppiaBullets() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the list nested in the question is rendered using Oppia's own bullets rather than
+    // Android's built-in ones (which don't match the rest of the app's lists).
+    val bulletSpans = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class)
+    assertThat(bulletSpans.map { htmlResult.getTextForSpan(it).trim() })
+      .containsExactly("Two", "Three")
+    assertThat(htmlResult.getSpansFromWholeString(BulletSpan::class)).isEmpty()
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withNestedOrderedList_usesOppiaNumbering() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the ordered list nested in the answer is numbered rather than being rendered with
+    // Android's built-in bullets.
+    val numberSpans = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class)
+    assertThat(numberSpans.map { htmlResult.getTextForSpan(it).trim() })
+      .containsExactly("Four", "Five")
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withNestedList_doesNotIndentAnswer() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the question's last list item keeps its own bounds. Appending to a spannable
+    // extends the spans that end where the new content starts, so without correction the item's
+    // indentation would carry through the whole answer.
+    val lastQuestionItem =
+      htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class).last()
+    assertThat(htmlResult.getTextForSpan(lastQuestionItem)).doesNotContain("Answer:")
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExample_withNestedList_indentsMarkersWithTheExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the nested lists are positioned against the worked example's own indentation.
+    // Android applies that indentation in addition to each item's margin, so an item that isn't
+    // aware of it draws its bullet or number at the start of the line instead, which leaves a gap
+    // between the marker and the item's text.
+    val exampleMargin = context.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.worked_example_leading_margin
+    )
+    val bulletSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class)
+      .first()
+    assertThat(bulletSpan.absoluteLeadingMargin)
+      .isEqualTo(exampleMargin + bulletSpan.getLeadingMargin(/* first= */ true))
+    val numberSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class)
+      .first()
+    assertThat(numberSpan.absoluteLeadingMargin)
+      .isEqualTo(exampleMargin + numberSpan.getLeadingMargin(/* first= */ true))
+  }
+
+  @Test
+  fun testHtmlContent_withListOutsideWorkedExample_doesNotIndentMarkers() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml("<ul><li>Two</li></ul>", textView)
+
+    // Verify that a list that isn't within indented content still starts at the beginning of the
+    // line.
+    val bulletSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class)
+      .first()
+    assertThat(bulletSpan.absoluteLeadingMargin)
+      .isEqualTo(bulletSpan.getLeadingMargin(/* first= */ true))
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExampleWithinList_parsesOuterAndNestedLists() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      "<ol><li>Outer</li><li>$WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP</li></ol>",
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that a worked example within a list item doesn't disturb the list that contains it
+    // (the nested content is parsed part-way through the outer content's parsing).
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
+      .hasLength(4) // Two outer items, plus the two in the answer's ordered list.
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
+      .hasLength(2)
+    assertThat(htmlResult.toString()).contains("Outer")
+    assertThat(htmlResult.toString()).contains("Question:")
+  }
+
+  @Test
+  fun testHtmlContent_withConsecutiveWorkedExamples_separatesThemWithABlankLine() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      "<p>Intro</p>$WORKED_EXAMPLE_MARKUP$SECOND_WORKED_EXAMPLE_MARKUP<p>Outro</p>",
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the two examples are separated by a blank line, matching the spacing between an
+    // example and the paragraph that precedes it. Without it the second example's question runs
+    // straight into the first example's answer.
+    assertThat(htmlResult.toString()).isEqualTo(
+      "Intro\n\nQuestion:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole." +
+        "\n\nQuestion:\nWhat is a numerator?\n\nAnswer:\nThe number above the line.\n\nOutro"
+    )
+  }
+
+  @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create(
       gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
@@ -1247,6 +1430,9 @@ class HtmlParserTest {
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
   }
 
+  private fun Spannable.getTextForSpan(span: Any): String =
+    subSequence(getSpanStart(span), getSpanEnd(span)).toString()
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
@@ -1372,6 +1558,22 @@ class HtmlParserTest {
 
     private val WORKED_EXAMPLE_LABELS =
       WorkedExampleLabels(questionLabel = "Question:", answerLabel = "Answer:")
+
+    private const val SECOND_WORKED_EXAMPLE_MARKUP =
+      "<oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;What is a numerator?&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;The number above the line.&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample>"
+
+    private const val WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP =
+      "<oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;Pick the primes:&amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;Two" +
+        "&amp;lt;/li&amp;gt;&amp;lt;li&amp;gt;Three&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;" +
+        "&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;In order:&amp;lt;ol&amp;gt;&amp;lt;li&amp;gt;Four" +
+        "&amp;lt;/li&amp;gt;&amp;lt;li&amp;gt;Five&amp;lt;/li&amp;gt;&amp;lt;/ol&amp;gt;" +
+        "&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample>"
 
     private const val WORKED_EXAMPLE_MARKUP =
       "<oppia-noninteractive-workedexample " +

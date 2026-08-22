@@ -225,7 +225,7 @@ class WorkedExampleTagHandlerTest {
     val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_MARKUP After")
 
     assertThat(parsedHtml.toString()).isEqualTo(
-      "Before \nQuestion:\nWhat is a fraction?\n\nAnswer:\n" +
+      "Before \n\nQuestion:\nWhat is a fraction?\n\nAnswer:\n" +
         "A fraction represents part of a whole.\nAfter"
     )
     val leadingMarginSpan =
@@ -259,7 +259,7 @@ class WorkedExampleTagHandlerTest {
     val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP After")
 
     assertThat(parsedHtml.toString()).isEqualTo(
-      "Before \nQuestion:\nlorem ipsum\n\nAnswer:\nA worked answer\nAfter"
+      "Before \n\nQuestion:\nlorem ipsum\n\nAnswer:\nA worked answer\nAfter"
     )
     assertThat(parsedHtml.toString()).doesNotContain("&lt;")
     assertThat(parsedHtml.toString()).doesNotContain("<p>")
