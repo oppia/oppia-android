@@ -330,6 +330,7 @@ object EdgeToEdgeHelper {
     spacer.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
 
     val originalMargins = initialMargins.getOrPut(topBar) { topBar.captureMargins() }
+    parent.ensureChildrenHaveIds()
     ConstraintSet().apply {
       clone(parent)
       connect(spacer.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
@@ -346,6 +347,18 @@ object EdgeToEdgeHelper {
       applyTo(parent)
     }
     return spacer
+  }
+
+  /**
+   * Assigns generated IDs to any direct children of this [ConstraintLayout] that don't already have
+   * one since [ConstraintSet.clone] requires every child to be identifiable (decorative views such
+   * as toolbar drop shadows are often declared without an ID).
+   */
+  private fun ConstraintLayout.ensureChildrenHaveIds() {
+    for (index in 0 until childCount) {
+      val child = getChildAt(index)
+      if (child.id == View.NO_ID) child.id = View.generateViewId()
+    }
   }
 
   private fun getOrCreateOverlayStatusBarSpacer(
