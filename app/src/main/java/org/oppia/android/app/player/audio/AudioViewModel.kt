@@ -143,7 +143,7 @@ class AudioViewModel @Inject constructor(
    * Loads audio for the given [contentId].
    *
    * This method assumes [contentId] is non-null and non-empty, and that all other required state
-   * (exploration ID, language code, etc.) has been verified by [maybeLoadAudio].
+   * (exploration ID, language code, etc.) have been verified by [maybeLoadAudio].
    *
    * @param contentId the non-empty content ID to load audio for
    * @param state the current [State] to look up voiceover mappings from
@@ -179,17 +179,28 @@ class AudioViewModel @Inject constructor(
     }
 
     if (languageCodeForDataSource != null) {
-      // TODO(#3791): Remove this dependency.
-      val locale = Locale.Builder()
-        .setLanguage(languageCodeForDataSource)
-        .build()
-      selectedLanguageName.set(locale.getDisplayLanguage(locale))
+      selectedLanguageName.set(getLanguageName(languageCodeForDataSource))
 
       audioPlayerController.changeDataSource(
         voiceOverToUri(voiceoverMap[languageCodeForDataSource]),
         currentContentId,
         languageCodeForDataSource
       )
+    }
+  }
+
+  /** Perform display-name lookup independent of locale for Oppia-specific Macaronic Languages. */
+  private fun getLanguageName(languageCode: String): String {
+    return when (languageCode) {
+      "hi-en" -> "Hinglish"
+      "pcm-NG" -> "Nigerian Pidgin"
+      else -> {
+        // TODO(#3791): Remove this dependency.
+        val locale = Locale.Builder()
+          .setLanguage(languageCode)
+          .build()
+        locale.getDisplayLanguage(locale).ifEmpty { languageCode }
+      }
     }
   }
 
