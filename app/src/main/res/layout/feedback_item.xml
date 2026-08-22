@@ -45,6 +45,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
+      tools:targetApi="23"
       android:fontFamily="sans-serif"
       android:minWidth="48dp"
       android:minHeight="48dp"

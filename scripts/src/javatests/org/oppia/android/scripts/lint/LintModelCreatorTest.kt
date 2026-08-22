@@ -69,7 +69,7 @@ class LintModelCreatorTest {
     val content = variantXmlFile.readText()
     assertThat(content).contains("<variant")
     assertThat(content).contains("name=\"main\"")
-    assertThat(content).contains("minSdkVersion=\"23\"")
+    assertThat(content).contains("minSdkVersion=\"21\"")
     assertThat(content).contains("targetSdkVersion=\"35\"")
     assertThat(content).contains("debuggable=\"true\"")
     assertThat(content).contains("package=\"org.oppia.android.app\"")
