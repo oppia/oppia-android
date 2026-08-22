@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.app.databinding.databinding.OnboardingFragmentBinding
@@ -17,8 +19,11 @@ import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -31,10 +36,13 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
   private val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) : OnboardingNavigationListener, HtmlParser.PolicyOppiaTagActionListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
+  private var statusBarSpacer: View? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = OnboardingFragmentBinding.inflate(
@@ -48,6 +56,13 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
       it.lifecycleOwner = fragment
       it.presenter = this
       it.viewModel = onboardingViewModel
+    }
+    if (enableEdgeToEdge.value) {
+      statusBarSpacer = EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_onboarding_1_status_bar_color
+      )
     }
     setUpViewPager()
     addDots()
@@ -156,32 +171,17 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
   }
 
   private fun onboardingStatusBarColorUpdate(position: Int) {
-    when (position) {
-      0 -> StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_onboarding_1_status_bar_color,
-        activity,
-        false
-      )
-      1 -> StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_onboarding_2_status_bar_color,
-        activity,
-        false
-      )
-      2 -> StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_onboarding_3_status_bar_color,
-        activity,
-        false
-      )
-      3 -> StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_onboarding_4_status_bar_color,
-        activity,
-        false
-      )
-      else -> StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_shared_activity_status_bar_color,
-        activity,
-        false
-      )
+    val colorRes = when (position) {
+      0 -> R.color.component_color_onboarding_1_status_bar_color
+      1 -> R.color.component_color_onboarding_2_status_bar_color
+      2 -> R.color.component_color_onboarding_3_status_bar_color
+      3 -> R.color.component_color_onboarding_4_status_bar_color
+      else -> R.color.component_color_shared_activity_status_bar_color
+    }
+    if (enableEdgeToEdge.value) {
+      statusBarSpacer?.setBackgroundColor(ContextCompat.getColor(activity, colorRes))
+    } else {
+      StatusBarColor.statusBarColorUpdate(colorRes, activity, false)
     }
   }
 

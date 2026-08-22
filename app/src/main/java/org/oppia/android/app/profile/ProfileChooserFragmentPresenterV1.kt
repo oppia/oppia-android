@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
@@ -23,11 +24,13 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -72,16 +75,19 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_shared_profile_status_bar_color, activity, false
-    )
+    if (!enableEdgeToEdge.value) {
+      StatusBarColor.statusBarColorUpdate(
+        R.color.component_color_shared_profile_status_bar_color, activity, false
+      )
+    }
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,
@@ -97,6 +103,13 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
+    }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_profile_status_bar_color
+      )
     }
     return binding.root
   }
