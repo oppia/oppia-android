@@ -36,7 +36,7 @@ _PRODUCTION_PROGUARD_SPECS = [
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
+        "min_sdk_version": 23,
         "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
@@ -50,7 +50,7 @@ _FLAVOR_METADATA = {
     },
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
+        "min_sdk_version": 23,
         "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
@@ -65,7 +65,7 @@ _FLAVOR_METADATA = {
     },
     "beta": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
+        "min_sdk_version": 23,
         "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
@@ -80,7 +80,7 @@ _FLAVOR_METADATA = {
     },
     "ga": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
+        "min_sdk_version": 23,
         "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,

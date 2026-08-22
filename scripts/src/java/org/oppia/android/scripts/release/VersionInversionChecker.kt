@@ -11,11 +11,23 @@ package org.oppia.android.scripts.release
  * into the ordering, accounting for both live and pending releases on other tracks (since multiple
  * tracks can be deployed simultaneously).
  *
- * Frozen version codes (see [FROZEN_VERSION_CODES_PER_TRACK]) are excluded from all ordering
- * calculations. They represent legacy OS-specific builds that are kept active independently of the
- * mainstream release stream and must not constrain cross-track bounds.
+ * Frozen OS-specific version codes (see [FROZEN_VERSION_CODES_PER_TRACK]) are excluded from the
+ * ordering constraint. These are permanently active builds for deprecated API levels — they were
+ * assigned low version codes before the current version code scheme and do not represent current
+ * releases that must participate in the cross-track ordering.
+ *
+ * Note: Play Console validates version codes within a track but does not enforce the cross-track
+ * ordering constraint. This check provides a clearer pre-flight error message and avoids wasting
+ * an edit session on a guaranteed API rejection.
+ *
+ * @param client the [PlayConsoleClient] used to query track releases
+ * @param frozenVersionCodesPerTrack version codes to exclude from the inversion check per track;
+ *     defaults to [FROZEN_VERSION_CODES_PER_TRACK]
  */
-class VersionInversionChecker(private val client: PlayConsoleClient) {
+class VersionInversionChecker(
+  private val client: PlayConsoleClient,
+  private val frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
+) {
 
   /**
    * Verifies that [newVersionCode] satisfies the cross-track ordering constraint when deploying
@@ -24,8 +36,9 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
    * Specifically:
    * - Deploying to **alpha**: new vc must be greater than the highest version code on beta and ga
    * - Deploying to **beta**: new vc must be greater than the highest on ga, and less than the
-   *   lowest pending/live alpha version code
-   * - Deploying to **production**: new vc must be less than the lowest beta and alpha version codes
+   *   lowest non-frozen alpha version code
+   * - Deploying to **production**: new vc must be less than the lowest non-frozen beta and alpha
+   *   version codes
    *
    * @param packageName the application package name (e.g. "org.oppia.android")
    * @param targetTrack the Play Console track being deployed to ("alpha", "beta", or "production")
@@ -39,18 +52,18 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
     newVersionCode: Long,
     existingEditId: String
   ) {
-    val frozenAlphaCodes = FROZEN_VERSION_CODES_PER_TRACK[ALPHA_TRACK].orEmpty()
-    val frozenBetaCodes = FROZEN_VERSION_CODES_PER_TRACK[BETA_TRACK].orEmpty()
-    val frozenGaCodes = FROZEN_VERSION_CODES_PER_TRACK[GA_TRACK].orEmpty()
+    val frozenAlpha = frozenVersionCodesPerTrack[ALPHA_TRACK] ?: emptySet()
+    val frozenBeta = frozenVersionCodesPerTrack[BETA_TRACK] ?: emptySet()
 
-    // Frozen codes represent legacy OS-specific builds kept active for older devices and must not
-    // participate in the mainstream cross-track ordering constraint.
+    // Exclude frozen version codes before computing min/max so that permanently-active
+    // OS-specific builds (e.g. the KitKat VC 16 on alpha) do not participate in the
+    // cross-track ordering constraint.
     val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-      .filter { it !in frozenAlphaCodes }
+      .filterNot { it in frozenAlpha }
     val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
-      .filter { it !in frozenBetaCodes }
+      .filterNot { it in frozenBeta }
     val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
       .filter { it !in frozenGaCodes }

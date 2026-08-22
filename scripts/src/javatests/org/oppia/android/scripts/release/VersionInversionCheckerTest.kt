@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.testing.assertThrows
@@ -16,6 +17,11 @@ class VersionInversionCheckerTest {
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
     checker = VersionInversionChecker(fakeClient)
+  }
+
+  @After
+  fun tearDown() {
+    fakeClient.close()
   }
 
   // ---------------------------------------------------------------------------
@@ -509,6 +515,90 @@ class VersionInversionCheckerTest {
     assertThat(fakeClient.queriedEditIds).hasSize(3)
     assertThat(fakeClient.queriedEditIds).containsExactly(
       "upload-edit-42", "upload-edit-42", "upload-edit-42"
+    )
+  }
+
+  @Test
+  fun testVerify_beta_frozenAlphaVcLowerThanNewBeta_passes() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(40000L)) // live
+      )
+    )
+    val frozenCodes = mapOf("alpha" to setOf(16L))
+    val checkerWithFrozenCodes = VersionInversionChecker(fakeClient, frozenCodes)
+
+    checkerWithFrozenCodes.verify(
+      "org.oppia.android",
+      "beta",
+      newVersionCode = 37301L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
+  fun testVerify_beta_frozenAlphaVcOnlyAlphaRelease_treatsAlphaAsEmpty_passes() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)))
+    )
+    val frozenCodes = mapOf("alpha" to setOf(16L))
+    val checkerWithFrozenCodes = VersionInversionChecker(fakeClient, frozenCodes)
+
+    checkerWithFrozenCodes.verify(
+      "org.oppia.android",
+      "beta",
+      newVersionCode = 37301L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
+  fun testVerify_beta_nonFrozenAlphaVcLowerThanNewBeta_stillFails() {
+    // The exclusion must NOT suppress a genuine inversion on a non-frozen alpha release.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(100L)) // live
+      )
+    )
+    val frozenCodes = mapOf("alpha" to setOf(16L))
+    val checkerWithFrozenCodes = VersionInversionChecker(fakeClient, frozenCodes)
+
+    val exception = assertThrows<IllegalStateException>() {
+      checkerWithFrozenCodes.verify(
+        "org.oppia.android",
+        "beta",
+        newVersionCode = 200L,
+        existingEditId = "test-edit"
+      )
+    }
+    assertThat(exception).hasMessageThat().isEqualTo(
+      "Version inversion: deploying 200 to beta but alpha has a release at version code 100." +
+        " Beta must be strictly less than all alpha version codes."
+    )
+  }
+
+  @Test
+  fun testVerify_ga_frozenBetaVcLowerThanNewGa_passes() {
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(16L)), // frozen
+        PlayConsoleClient.TrackRelease(status = "completed", versionCodes = listOf(40000L)) // live
+      )
+    )
+    val frozenCodes = mapOf("beta" to setOf(16L))
+    val checkerWithFrozenCodes = VersionInversionChecker(fakeClient, frozenCodes)
+
+    checkerWithFrozenCodes.verify(
+      "org.oppia.android",
+      "production",
+      newVersionCode = 37000L,
+      existingEditId = "test-edit"
     )
   }
 }

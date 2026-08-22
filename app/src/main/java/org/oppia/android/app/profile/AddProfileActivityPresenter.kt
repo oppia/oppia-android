@@ -29,11 +29,13 @@ import org.oppia.android.app.profile.AddProfileActivity.Companion.ADD_PROFILE_AC
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
@@ -44,7 +46,10 @@ class AddProfileActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileViewModel: AddProfileViewModel,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
+  @EnableDownloadsSupport
+  private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var uploadImageView: ImageView
   private var selectedImage: Uri? = null
@@ -60,6 +65,9 @@ class AddProfileActivityPresenter @Inject constructor(
   lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
       activity,
       R.layout.add_profile_activity
@@ -90,6 +98,14 @@ class AddProfileActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
     activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)

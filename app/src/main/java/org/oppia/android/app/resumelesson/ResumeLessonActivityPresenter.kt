@@ -14,10 +14,13 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.exploration.DefaultFontSizeStateListener
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
@@ -28,7 +31,9 @@ class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var profileId: LegacyProfileId
   private lateinit var classroomId: String
@@ -48,6 +53,9 @@ class ResumeLessonActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<ResumeLessonActivityBinding>(
       activity,
       R.layout.resume_lesson_activity
@@ -61,6 +69,13 @@ class ResumeLessonActivityPresenter @Inject constructor(
     this.parentScreen = parentScreen
     val resumeLessonToolbar = binding.resumeLessonActivityToolbar
     activity.setSupportActionBar(resumeLessonToolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        resumeLessonToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
 
     retrieveReadingTextSize().observe(
       activity as ResumeLessonActivity,

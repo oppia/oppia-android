@@ -1,19 +1,29 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 
 /** Tests for [FakePlayConsoleClient]. */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class FakePlayConsoleClientTest {
+  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+
   private lateinit var fake: FakePlayConsoleClient
 
   @Before
   fun setUp() {
     fake = FakePlayConsoleClient()
+  }
+
+  @After
+  fun tearDown() {
+    fake.close()
   }
 
   // ---------------------------------------------------------------------------
@@ -119,8 +129,10 @@ class FakePlayConsoleClientTest {
 
   @Test
   fun testUploadAab_returnsIncrementingVersionCodes() {
-    val first = fake.uploadAab("org.oppia.android", "edit-1", "/path/to/aab")
-    val second = fake.uploadAab("org.oppia.android", "edit-1", "/path/to/aab")
+    val aab = tempFolder.newFile("test.aab").also { it.writeBytes(ByteArray(64)) }
+
+    val first = fake.uploadAab("org.oppia.android", "edit-1", aab.absolutePath)
+    val second = fake.uploadAab("org.oppia.android", "edit-1", aab.absolutePath)
 
     assertThat(first).isEqualTo(1L)
     assertThat(second).isEqualTo(2L)
@@ -128,20 +140,23 @@ class FakePlayConsoleClientTest {
 
   @Test
   fun testUploadAab_recordsUpload() {
-    fake.uploadAab("org.oppia.android", "edit-1", "/path/aab.aab")
+    val aab = tempFolder.newFile("aab.aab").also { it.writeBytes(ByteArray(64)) }
+
+    fake.uploadAab("org.oppia.android", "edit-1", aab.absolutePath)
 
     assertThat(fake.uploadedBundles).hasSize(1)
     val (pkg, edit, path) = fake.uploadedBundles.first()
     assertThat(pkg).isEqualTo("org.oppia.android")
     assertThat(edit).isEqualTo("edit-1")
-    assertThat(path).isEqualTo("/path/aab.aab")
+    assertThat(path).isEqualTo(aab.absolutePath)
   }
 
   @Test
   fun testUploadAab_customVersionCode_returnsConfiguredValue() {
+    val aab = tempFolder.newFile("test.aab").also { it.writeBytes(ByteArray(64)) }
     fake.setNextVersionCode(500L)
 
-    val versionCode = fake.uploadAab("org.oppia.android", "edit-1", "/aab.aab")
+    val versionCode = fake.uploadAab("org.oppia.android", "edit-1", aab.absolutePath)
 
     assertThat(versionCode).isEqualTo(500L)
   }
@@ -193,8 +208,9 @@ class FakePlayConsoleClientTest {
 
   @Test
   fun testReset_clearsAllState() {
+    val aab = tempFolder.newFile("test.aab").also { it.writeBytes(ByteArray(64)) }
     fake.createEdit("org.oppia.android")
-    fake.uploadAab("org.oppia.android", "edit-1", "/aab.aab")
+    fake.uploadAab("org.oppia.android", "edit-1", aab.absolutePath)
     fake.getTrackReleases("org.oppia.android", "alpha", existingEditId = "edit-1")
     fake.commitEdit("org.oppia.android", "edit-1")
     fake.shouldFailNextCall = true
