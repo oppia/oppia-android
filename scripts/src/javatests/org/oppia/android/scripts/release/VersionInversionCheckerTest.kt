@@ -399,11 +399,6 @@ class VersionInversionCheckerTest {
     assertThat(exception).hasMessageThat().contains("305")
   }
 
-  // ---------------------------------------------------------------------------
-  // Frozen version codes — ordering constraints must ignore legacy frozen builds
-  // (See FrozenReleaseConfig: alpha={16L,201L}, beta={196L})
-  // ---------------------------------------------------------------------------
-
   @Test
   fun testVerify_beta_alphaHasFrozenAndCurrentCodes_useNonFrozenMinAlpha() {
     // Alpha has frozen codes {16L, 201L} plus a current non-frozen build at 205L.
