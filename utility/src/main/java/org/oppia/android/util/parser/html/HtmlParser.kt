@@ -180,8 +180,13 @@ class HtmlParser private constructor(
       // Lists are the one exception: LiTagHandler tracks state across the tags that it processes,
       // and a worked example's HTML is parsed part-way through the outer parse, so reusing the
       // outer handler would corrupt any list that the worked example is itself within.
-      val nestedBulletTagHandler =
-        LiTagHandler(context, displayLocale).apply { setTextView(htmlContentTextView) }
+      val workedExampleLeadingMarginPx =
+        context.resources.getDimensionPixelSize(R.dimen.worked_example_leading_margin)
+      // The nested handler is told about the example's own indentation since Android applies that
+      // in addition to a list's, and the list draws its bullets and numbers itself.
+      val nestedBulletTagHandler = LiTagHandler(
+        context, displayLocale, enclosingLeadingMargin = workedExampleLeadingMarginPx
+      ).apply { setTextView(htmlContentTextView) }
       val nestedTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler> =
         handlersMap + mapOf(
           CUSTOM_LIST_LI_TAG to nestedBulletTagHandler,
@@ -191,9 +196,7 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] = WorkedExampleTagHandler(
         consoleLogger,
         labels = workedExampleLabels,
-        leadingMarginPx = context.resources.getDimensionPixelSize(
-          R.dimen.worked_example_leading_margin
-        ),
+        leadingMarginPx = workedExampleLeadingMarginPx,
         nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
           override fun parseHtml(html: String): Spannable =
             CustomHtmlContentHandler.fromHtml(

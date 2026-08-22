@@ -877,6 +877,61 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withWorkedExample_withNestedList_indentsMarkersWithTheExample() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      WORKED_EXAMPLE_WITH_NESTED_LISTS_MARKUP,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    // Verify that the nested lists are positioned against the worked example's own indentation.
+    // Android applies that indentation in addition to each item's margin, so an item that isn't
+    // aware of it draws its bullet or number at the start of the line instead, which leaves a gap
+    // between the marker and the item's text.
+    val exampleMargin = context.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.worked_example_leading_margin
+    )
+    val bulletSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class)
+      .first()
+    assertThat(bulletSpan.absoluteLeadingMargin)
+      .isEqualTo(exampleMargin + bulletSpan.getLeadingMargin(/* first= */ true))
+    val numberSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class)
+      .first()
+    assertThat(numberSpan.absoluteLeadingMargin)
+      .isEqualTo(exampleMargin + numberSpan.getLeadingMargin(/* first= */ true))
+  }
+
+  @Test
+  fun testHtmlContent_withListOutsideWorkedExample_doesNotIndentMarkers() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+
+    val htmlResult = htmlParser.parseOppiaHtml("<ul><li>Two</li></ul>", textView)
+
+    // Verify that a list that isn't within indented content still starts at the beginning of the
+    // line.
+    val bulletSpan = htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class)
+      .first()
+    assertThat(bulletSpan.absoluteLeadingMargin)
+      .isEqualTo(bulletSpan.getLeadingMargin(/* first= */ true))
+  }
+
+  @Test
   fun testHtmlContent_withWorkedExampleWithinList_parsesOuterAndNestedLists() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
