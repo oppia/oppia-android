@@ -380,7 +380,9 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(298L, 300L, 299L), status = "completed"),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(298L, 300L, 299L),
+          status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
