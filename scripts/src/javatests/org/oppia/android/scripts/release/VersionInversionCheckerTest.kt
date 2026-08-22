@@ -493,6 +493,29 @@ class VersionInversionCheckerTest {
   }
 
   @Test
+  fun testVerify_alpha_betaHasOnlyFrozenCodes_noLowerBoundConstraint() {
+    // Beta only has the frozen code {196L}; after filtering, betaVersionCodes is empty so
+    // maxBeta = null and there is no lower-bound constraint on the new alpha.
+    // Without frozen exclusion, maxBeta = 196 and check(100 > 196) would fail.
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "completed",
+          versionCodes = listOf(196L)
+        )
+      )
+    )
+    // 100 < 196 but 196 is a frozen code and must not constrain alpha deployment.
+    checker.verify(
+      "org.oppia.android",
+      "alpha",
+      newVersionCode = 100L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
   fun testVerify_unknownTrack_throwsWithTrackName() {
     val exception = assertThrows<IllegalStateException>() {
       checker.verify(
