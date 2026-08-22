@@ -17,10 +17,6 @@ on:
         description: "Branch to search for the alpha candidate (default: develop)"
         required: false
         default: "develop"
-      commit_limit:
-        description: "Number of recent commits to inspect (1–100, default: 50)"
-        required: false
-        default: "50"
 
 # Only one auto-release run at a time. cancel-in-progress is false so an in-flight run is
 # never interrupted mid-way through tagging or dispatching.
@@ -68,19 +64,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LIMIT="${{ github.event.inputs.commit_limit || '50' }}"
-          if ! [[ "$LIMIT" =~ ^[0-9]+$ ]] || [[ "$LIMIT" -lt 1 || "$LIMIT" -gt 100 ]]; then
-            echo "::error::commit_limit must be an integer between 1 and 100, got: '$LIMIT'"
-            exit 1
-          fi
           # Resolve the current latest-alpha tag to a SHA so FindAlphaCandidate only inspects
           # commits newer than the already-deployed build. On the very first run (tag doesn't
-          # exist yet), pass "" so all recent commits within the window are inspected.
+          # exist yet), pass "" so all recent commits are inspected.
           LATEST_ALPHA_SHA=$(git rev-parse refs/tags/latest-alpha 2>/dev/null || echo "")
           CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
             "$GITHUB_TOKEN" \
             "${{ github.event.inputs.branch || 'develop' }}" \
-            "$LIMIT" \
             "$LATEST_ALPHA_SHA")
           if [[ -z "$CANDIDATE_SHA" ]]; then
             echo "No new commits since latest-alpha (${LATEST_ALPHA_SHA:0:7}). Nothing to cut."
