@@ -181,6 +181,11 @@ class VersionInversionCheckerTest {
   // Deploying to GA (production) — must be less than beta and alpha
   // ---------------------------------------------------------------------------
 
+  // ---------------------------------------------------------------------------
+  // Frozen version codes — ordering constraints must ignore confirmed code
+  // (See FrozenReleaseConfig: alpha={16L})
+  // ---------------------------------------------------------------------------
+
   @Test
   fun testVerify_ga_allTracksEmpty_passes() {
     checker.verify(
@@ -413,7 +418,10 @@ class VersionInversionCheckerTest {
         )
       )
     )
-    checker.verify(
+    val checkerWithFrozen = VersionInversionChecker(
+      fakeClient, mapOf("alpha" to setOf(16L, 201L))
+    )
+    checkerWithFrozen.verify(
       "org.oppia.android",
       "beta",
       newVersionCode = 204L,
@@ -434,8 +442,11 @@ class VersionInversionCheckerTest {
         )
       )
     )
+    val checkerWithFrozen = VersionInversionChecker(
+      fakeClient, mapOf("alpha" to setOf(16L, 201L))
+    )
     // 500 would normally violate alpha constraint if frozen codes were not excluded.
-    checker.verify(
+    checkerWithFrozen.verify(
       "org.oppia.android",
       "beta",
       newVersionCode = 500L,
@@ -457,7 +468,10 @@ class VersionInversionCheckerTest {
         )
       )
     )
-    checker.verify(
+    val checkerWithFrozen = VersionInversionChecker(
+      fakeClient, mapOf("beta" to setOf(196L))
+    )
+    checkerWithFrozen.verify(
       "org.oppia.android",
       "production",
       newVersionCode = 199L,
@@ -479,7 +493,10 @@ class VersionInversionCheckerTest {
         )
       )
     )
-    checker.verify(
+    val checkerWithFrozen = VersionInversionChecker(
+      fakeClient, mapOf("alpha" to setOf(16L, 201L))
+    )
+    checkerWithFrozen.verify(
       "org.oppia.android",
       "production",
       newVersionCode = 204L,
@@ -501,8 +518,11 @@ class VersionInversionCheckerTest {
         )
       )
     )
+    val checkerWithFrozen = VersionInversionChecker(
+      fakeClient, mapOf("beta" to setOf(196L))
+    )
     // 100 < 196 but 196 is a frozen code and must not constrain alpha deployment.
-    checker.verify(
+    checkerWithFrozen.verify(
       "org.oppia.android",
       "alpha",
       newVersionCode = 100L,

@@ -15,8 +15,8 @@ package org.oppia.android.scripts.release
  *
  * Currently frozen:
  * - alpha vc 16 : KitKat (API 16) build, frozen permanently.
- * - alpha vc 201: pre-deprecation build frozen before the new release cycle.
- * - beta  vc 196: pre-deprecation build frozen before the new release cycle.
+ * - alpha vc 201: frozen before the new release cycle.
+ * - beta  vc 196: frozen before the new release cycle.
  *
  * When a new API level is deprecated and its final build must be frozen, add its track and version
  * code here. This single file is the source of truth consumed by [UploadBinaryToPlayConsole],
