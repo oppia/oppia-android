@@ -11,9 +11,9 @@ package org.oppia.android.scripts.release
  * into the ordering, accounting for both live and pending releases on other tracks (since multiple
  * tracks can be deployed simultaneously).
  *
- * Note: Play Console validates version codes within a track but does not enforce the cross-track
- * ordering constraint. This check provides a clearer pre-flight error message and avoids wasting
- * an edit session on a guaranteed API rejection.
+ * Frozen version codes (see [FROZEN_VERSION_CODES_PER_TRACK]) are excluded from all ordering
+ * calculations. They represent legacy OS-specific builds that are kept active independently of the
+ * mainstream release stream and must not constrain cross-track bounds.
  */
 class VersionInversionChecker(private val client: PlayConsoleClient) {
 
@@ -39,12 +39,21 @@ class VersionInversionChecker(private val client: PlayConsoleClient) {
     newVersionCode: Long,
     existingEditId: String
   ) {
+    val frozenAlphaCodes = FROZEN_VERSION_CODES_PER_TRACK[ALPHA_TRACK].orEmpty()
+    val frozenBetaCodes = FROZEN_VERSION_CODES_PER_TRACK[BETA_TRACK].orEmpty()
+    val frozenGaCodes = FROZEN_VERSION_CODES_PER_TRACK[GA_TRACK].orEmpty()
+
+    // Frozen codes represent legacy OS-specific builds kept active for older devices and must not
+    // participate in the mainstream cross-track ordering constraint.
     val alphaVersionCodes = client.getTrackReleases(packageName, ALPHA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
+      .filter { it !in frozenAlphaCodes }
     val betaVersionCodes = client.getTrackReleases(packageName, BETA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
+      .filter { it !in frozenBetaCodes }
     val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
+      .filter { it !in frozenGaCodes }
 
     val maxBeta = betaVersionCodes.maxOrNull()
     val maxGa = gaVersionCodes.maxOrNull()

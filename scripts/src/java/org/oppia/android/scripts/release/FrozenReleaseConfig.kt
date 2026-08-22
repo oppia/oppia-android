@@ -14,12 +14,15 @@ package org.oppia.android.scripts.release
  * hard-crash if any are missing (as that would indicate a major release state inconsistency).
  *
  * Currently frozen:
- * - alpha vc 16: KitKat (API 16) build, frozen permanently.
+ * - alpha vc 16 : KitKat (API 16) build, frozen permanently.
+ * - alpha vc 201: pre-deprecation build frozen before the new release cycle.
+ * - beta  vc 196: pre-deprecation build frozen before the new release cycle.
  *
  * When a new API level is deprecated and its final build must be frozen, add its track and version
  * code here. This single file is the source of truth consumed by [UploadBinaryToPlayConsole],
  * [UpdateRolloutFraction], and [UploadChangelogToPlayConsole].
  */
 val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
-  "alpha" to setOf(16L)
+  "alpha" to setOf(16L, 201L),
+  "beta" to setOf(196L)
 )

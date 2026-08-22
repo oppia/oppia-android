@@ -393,6 +393,99 @@ class VersionInversionCheckerTest {
     assertThat(exception).hasMessageThat().contains("305")
   }
 
+  // ---------------------------------------------------------------------------
+  // Frozen version codes — ordering constraints must ignore legacy frozen builds
+  // (See FrozenReleaseConfig: alpha={16L,201L}, beta={196L})
+  // ---------------------------------------------------------------------------
+
+  @Test
+  fun testVerify_beta_alphaHasFrozenAndCurrentCodes_useNonFrozenMinAlpha() {
+    // Alpha has frozen codes {16L, 201L} plus a current non-frozen build at 205L.
+    // Without frozen exclusion, minAlpha would be 16 and the check (204 < 16) would fail.
+    // With frozen exclusion, minAlpha = 205 and (204 < 205) passes.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "completed",
+          versionCodes = listOf(16L, 201L, 205L)
+        )
+      )
+    )
+    checker.verify(
+      "org.oppia.android",
+      "beta",
+      newVersionCode = 204L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
+  fun testVerify_beta_alphaHasOnlyFrozenCodes_noUpperBoundConstraint() {
+    // Alpha only has frozen codes {16L, 201L}; after filtering, alphaVersionCodes is empty
+    // so minAlpha = null and there is no upper-bound constraint on the new beta.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "completed",
+          versionCodes = listOf(16L, 201L)
+        )
+      )
+    )
+    // 500 would normally violate alpha constraint if frozen codes were not excluded.
+    checker.verify(
+      "org.oppia.android",
+      "beta",
+      newVersionCode = 500L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
+  fun testVerify_ga_betaHasFrozenAndCurrentCodes_useNonFrozenMinBeta() {
+    // Beta has frozen code {196L} plus a current non-frozen build at 200L.
+    // Without frozen exclusion, minBeta = 196 and (199 < 196) would fail.
+    // With frozen exclusion, minBeta = 200 and (199 < 200) passes.
+    fakeClient.setTrackReleases(
+      "beta",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "completed",
+          versionCodes = listOf(196L, 200L)
+        )
+      )
+    )
+    checker.verify(
+      "org.oppia.android",
+      "production",
+      newVersionCode = 199L,
+      existingEditId = "test-edit"
+    )
+  }
+
+  @Test
+  fun testVerify_ga_alphaHasFrozenAndCurrentCodes_useNonFrozenMinAlpha() {
+    // Alpha has frozen codes {16L, 201L} plus a current non-frozen build at 205L.
+    // Without frozen exclusion, minAlpha = 16 and (204 < 16) would fail.
+    // With frozen exclusion, minAlpha = 205 and (204 < 205) passes.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          status = "completed",
+          versionCodes = listOf(16L, 201L, 205L)
+        )
+      )
+    )
+    checker.verify(
+      "org.oppia.android",
+      "production",
+      newVersionCode = 204L,
+      existingEditId = "test-edit"
+    )
+  }
+
   @Test
   fun testVerify_unknownTrack_throwsWithTrackName() {
     val exception = assertThrows<IllegalStateException>() {
@@ -419,3 +512,4 @@ class VersionInversionCheckerTest {
     )
   }
 }
+
