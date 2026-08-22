@@ -252,8 +252,6 @@ class GoogleGitHubCiClientTest {
 
   @Test
   fun testGetCheckRunStatus_scheduleRunFailing_withPassingPushRuns_returnsPassing() {
-    // Regression test for the 0413998 bug: a cron suite (event=schedule) that fails on the
-    // same commit SHA must not cause the commit to be classified as FAILING.
     server.enqueue(
       checkRunsPage(
         totalCount = 3,
