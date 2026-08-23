@@ -43,6 +43,7 @@ private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
 private const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
 private const val TEST_EXPLORATION_ID_13 = "13"
 private const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
+private const val TEST_CHECKPOINTING_BASE_EXPLORATION_ID = "test_checkpointing_base_exploration"
 
 /** Tests for [StateRetriever]. */
 // Function name: test names are conventionally named with underscores.
@@ -362,6 +363,29 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withContinueInteraction_parsesCustomizationArgButtonText() {
+    val state = loadStateFromJson(
+      stateName = "Continue",
+      explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    val buttonTextArg = state.interaction.getCustomizationArgsOrThrow("buttonText")
+    assertThat(buttonTextArg.subtitledUnicode.unicodeStr).isEqualTo("Start exploring")
+  }
+
+  @Test
+  fun testParseState_withContinueInteraction_withNoButtonText_parsesEmptyCustomizationArgs() {
+    val state = loadStateFromJson(
+      stateName = "second_state",
+      explorationName = TEST_CHECKPOINTING_BASE_EXPLORATION_ID
+    )
+
+    // When no buttonText customization arg is present, the map stays empty and the button falls
+    // back to the default string resource ("Continue") in ContinueInteractionViewModel.
+    assertThat(state.interaction.customizationArgsMap).doesNotContainKey("buttonText")
+  }
+
+  @Test
   fun testParseState_withWrittenTranslations_forMultiAndSingleStrDataFormats_parsesTranslations() {
     val state = loadStateFromJson(
       stateName = "Text",
@@ -628,6 +652,22 @@ class StateRetrieverTest {
 
     // The skill ID from the state should be parsed & included in its represented proto structure.
     assertThat(state.linkedSkillId).isEqualTo("test_skill_id_2")
+  }
+
+  @Test
+  fun testParseState_withoutCardIsCheckpoint_doesNotSetIsCheckpoint() {
+    val state = loadStateFromJson(stateName = "Fractions", explorationName = TEST_EXPLORATION_ID_2)
+
+    assertThat(state.isCheckpoint).isFalse()
+  }
+
+  @Test
+  fun testParseState_withCardIsCheckpoint_setsNotSetIsCheckpoint() {
+    val state = loadStateFromJson(
+      stateName = "MultipleChoice", explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    assertThat(state.isCheckpoint).isTrue()
   }
 
   /**

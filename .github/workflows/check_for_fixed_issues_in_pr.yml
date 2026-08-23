@@ -18,11 +18,12 @@ jobs:
     steps:
       - name: Scan PR for issues being addressed
         id: step-1
-        uses: actions/github-script@v7
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' }}
+        uses: actions/github-script@v8
         with:
           script: |
-            const incorrectFormatRegex = /^Fix(?: part of)? #(\d+)$/gm;
-            const correctFormatRegex = /^Fixes(?: part of)? #(\d+)$/gm;
+            const incorrectFormatRegex = /^Fix(?: part of)? #(\d+)[^\S\r\n]*$/gm;
+            const correctFormatRegex = /^Fixes(?: part of)? #(\d+)[^\S\r\n]*$/gm;
             const invalidIssueNumbers = [... (context.payload.pull_request.body || '').matchAll(incorrectFormatRegex)].map((match) => match[1]);
             const issueNumbers = [... (context.payload.pull_request.body || '').matchAll(correctFormatRegex)].map((match) => match[1]);
             core.setOutput('issue_numbers_list_json', JSON.stringify(issueNumbers));
@@ -36,8 +37,8 @@ jobs:
 
       - name: Find issue assignment(s)
         id: step-2
-        if: ${{ steps.step-1.outputs.failure_message == '' }}
-        uses: actions/github-script@v7
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && steps.step-1.outputs.failure_message == '' }}
+        uses: actions/github-script@v8
         env:
           ISSUE_NUMBERS_LIST_JSON: ${{ steps.step-1.outputs.issue_numbers_list_json }}
         with:
@@ -62,7 +63,7 @@ jobs:
       - name: Move PR to draft and add comment
         id: step-3
         if: ${{ steps.step-1.outputs.failure_message != '' || steps.step-2.outputs.failure_message != '' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           FAILURE_MESSAGE_1: ${{ steps.step-1.outputs.failure_message }}
           FAILURE_MESSAGE_2: ${{ steps.step-2.outputs.failure_message }}

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
@@ -28,17 +29,17 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
-   * binding's view.
+   * binding.
    */
   fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /** Handles setting [DragDropInteractionItemsBinding]. */
   fun setDragDropInteractionItemsBinding(
-    view: View
+    binding: ViewDataBinding
   )
 
   /** Handles setting [DragDropInteractionItemsBinding]'s adapter. */
@@ -65,17 +66,17 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
-   * the binding's view.
+   * the binding.
    */
   fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /** Handles setting [DragDropSingleItemBinding]. */
   fun setDragDropSingleItemBinding(
-    view: View
+    binding: ViewDataBinding
   )
 
   /** Handles setting [DragDropSingleItemBinding]'s html content. */
@@ -97,14 +98,14 @@ interface ViewBindingShim {
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /**
    * Handles binding inflation for [org.oppia.android.app.home.promotedlist.PromotedStoryListView]
-   * and returns the view model.
+   * and sets the view model.
    */
   fun providePromotedStoryViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: PromotedStoryViewModel
   )
 
@@ -113,30 +114,30 @@ interface ViewBindingShim {
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
-  /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model. */
+  /** Handles binding inflation for [ComingSoonTopicsListView] and sets the view model. */
   fun provideComingSoonTopicsViewViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: ComingSoonTopicsViewModel
   )
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's root.
+   * returns the binding.
    */
   fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's view model.
+   * Handles binding for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * sets the view model.
    */
   fun provideSelectionInteractionViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: SelectionInteractionContentViewModel,
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -147,20 +148,20 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view.
+   * returns the binding.
    */
   fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view model.
+   * Handles binding for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * sets the view model.
    */
   fun provideMultipleChoiceInteractionItemsViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: SelectionInteractionContentViewModel,
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -171,39 +172,39 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SurveyMultipleChoiceOptionView]'s MultipleChoiceOption and
-   * returns the binding's view.
+   * returns the binding.
    */
   fun provideMultipleChoiceItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /**
-   * Handles binding inflation for [SurveyMultipleChoiceOptionView]'s MultipleChoiceOption and
-   * returns the binding's view model.
+   * Handles binding for [SurveyMultipleChoiceOptionView]'s MultipleChoiceOption and
+   * sets the view model.
    */
   fun provideMultipleChoiceOptionViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: MultipleChoiceOptionContentViewModel
   )
 
   /**
    * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
-   * returns the binding's view.
+   * returns the binding.
    */
   fun provideNpsItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
-  ): View
+  ): ViewDataBinding
 
   /**
-   * Handles binding inflation for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
-   * returns the binding's view model.
+   * Handles binding for [SurveyNpsItemOptionView]'s MultipleChoiceOption and
+   * sets the view model.
    */
   fun provideNpsItemsViewModel(
-    view: View,
+    binding: ViewDataBinding,
     viewModel: MultipleChoiceOptionContentViewModel
   )
 }

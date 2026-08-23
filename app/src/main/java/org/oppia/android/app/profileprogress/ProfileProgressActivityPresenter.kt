@@ -8,6 +8,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ProfileProgressActivity]. */
@@ -51,7 +52,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
 
   fun updateProfileAvatar(intent: Intent?) {
     profileManagementController.updateProfileAvatar(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       intent?.data,
       /* colorRgb= */ 10710042
     )

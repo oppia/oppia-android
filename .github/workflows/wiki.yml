@@ -24,12 +24,12 @@ jobs:
     name: Check Wiki Table of Contents
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          version: 6.5.0
+          bazelisk-cache: true
 
       - name: Check Wiki Table of Contents
         id: checkWikiToc
@@ -45,7 +45,7 @@ jobs:
         os: [ubuntu-24.04]
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Add remote

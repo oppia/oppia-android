@@ -87,7 +87,7 @@ import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -100,7 +100,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -141,9 +140,6 @@ class QuestionPlayerActivityLocalTest {
 
   @Inject
   lateinit var context: Context
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
 
   private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
@@ -361,7 +357,7 @@ class QuestionPlayerActivityLocalTest {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
-      editTextInputAction.appendText("1/2"),
+      appendText("1/2"),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -376,7 +372,7 @@ class QuestionPlayerActivityLocalTest {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
-      editTextInputAction.appendText("1/4"),
+      appendText("1/4"),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -403,7 +399,7 @@ class QuestionPlayerActivityLocalTest {
   private fun submitWrongAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1"))
+    onView(withId(R.id.text_input_interaction_view)).perform(appendText("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))
@@ -497,7 +493,6 @@ class QuestionPlayerActivityLocalTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

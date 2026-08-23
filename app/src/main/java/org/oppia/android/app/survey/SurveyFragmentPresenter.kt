@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.google.android.flexbox.FlexDirection
@@ -143,26 +142,19 @@ class SurveyFragmentPresenter @Inject constructor(
         setViewModel = SurveyMarketFitQuestionLayoutBinding::setViewModel,
         transformViewModel = { it as MarketFitItemsViewModel }
       )
-      .registerViewBinder(
+      .registerViewDataBinder(
         viewType = SurveyAnswerItemViewModel.ViewType.NPS_OPTIONS,
-        inflateView = { parent ->
-          SurveyNpsScoreLayoutBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<SurveyNpsScoreLayoutBinding>(view)!!
-          val npsViewModel = viewModel as NpsItemsViewModel
-          binding.viewModel = npsViewModel
+        inflateDataBinding = SurveyNpsScoreLayoutBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
 
           val flexLayoutManager = FlexboxLayoutManager(activity)
           flexLayoutManager.flexDirection = FlexDirection.ROW
           flexLayoutManager.justifyContent = JustifyContent.CENTER
 
           binding.surveyNpsButtonsContainer.layoutManager = flexLayoutManager
-        }
+        },
+        transformViewModel = { it as NpsItemsViewModel }
       )
       .registerViewDataBinder(
         viewType = SurveyAnswerItemViewModel.ViewType.FREE_FORM_ANSWER,

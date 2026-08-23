@@ -9,9 +9,12 @@ on:
     branches:
       # Push events on develop branch
       - develop
+  merge_group:
+    branches:
+      - develop
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -24,14 +27,14 @@ jobs:
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          version: 6.5.0
+          bazelisk-cache: true
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
@@ -42,7 +45,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -92,5 +95,10 @@ jobs:
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
             bazel build -- //:oppia_${{ matrix.flavor }}
           else
+            # Build the oppia_flavor_binary_deploy.jar first (pre-Proguard-map), then shutdown Bazel to release
+            # JVM memory accumulated during the heavy Proguard step. This avoids OOM crashes
+            # when building the final AAB that packages the Proguard map.
+            bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}_binary_deploy.jar
+            bazel shutdown
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi

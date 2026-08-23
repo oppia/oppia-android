@@ -143,7 +143,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
@@ -160,7 +160,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
@@ -174,6 +173,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -198,7 +198,6 @@ class ExplorationActivityTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
@@ -216,6 +215,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    setUpShadowMediaPlayerProvider()
   }
 
   @After
@@ -943,7 +943,7 @@ class ExplorationActivityTest {
 
       scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_answer_button)).perform(click())
@@ -2239,7 +2239,7 @@ class ExplorationActivityTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -2416,6 +2416,26 @@ class ExplorationActivityTest {
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
 
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = ExplorationActivityTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
+  }
+
   private fun isOnRobolectric(): Boolean {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
@@ -2441,7 +2461,7 @@ class ExplorationActivityTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -2458,7 +2478,7 @@ class ExplorationActivityTest {
   private fun submitFractionAnswer(answerText: String) {
     scrollToViewType(FRACTION_INPUT_INTERACTION)
     onView(withId(R.id.fraction_input_interaction_view)).perform(
-      editTextInputAction.appendText(answerText)
+      appendText(answerText)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -2575,7 +2595,6 @@ class ExplorationActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
