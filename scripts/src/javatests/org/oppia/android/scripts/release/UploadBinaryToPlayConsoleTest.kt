@@ -475,8 +475,11 @@ class UploadBinaryToPlayConsoleTest {
     runMain(aab.absolutePath, track = "alpha")
 
     val setTrackBody = fake.trackUpdateBodies.first()
-    assertThat(setTrackBody).contains("\"16\"")
-    assertThat(setTrackBody).contains("\"201\"")
+    // All frozen alpha version codes must appear in the track update request body; derive the
+    // expected set from FROZEN_VERSION_CODES_PER_TRACK so this stays correct if codes change.
+    FROZEN_VERSION_CODES_PER_TRACK["alpha"]?.forEach { frozenVc ->
+      assertThat(setTrackBody).contains("\"$frozenVc\"")
+    }
     assertThat(setTrackBody).contains("\"202\"")
     // All version codes are merged into a SINGLE release entry (not separate ones).
     assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(1)
@@ -514,9 +517,9 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testRunUpload_betaTrack_includesFrozenBetaVersionCodeInTrackUpdateRequest() {
-    // Beta has a frozen build (vc 196) that must be merged into the track update so the Play
-    // Console API does not deactivate it. Alpha's frozen codes must NOT appear in beta's update.
+  fun testRunUpload_betaTrack_doesNotIncludeAlphaFrozenVersionCodesInTrackUpdateRequest() {
+    // Alpha frozen codes must never bleed into the beta track update; only beta's own frozen
+    // codes (if any) should appear alongside the newly-uploaded version code.
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     // Bump alpha to vc 300 so that uploading vc 202 to beta doesn't violate the version-inversion
@@ -531,10 +534,10 @@ class UploadBinaryToPlayConsoleTest {
 
     assertThat(fake.trackUpdateBodies).hasSize(1)
     assertThat(fake.trackUpdateBodies.first()).contains("\"202\"")
-    assertThat(fake.trackUpdateBodies.first()).contains("\"196\"")
     // Alpha-specific frozen codes must not bleed into the beta track update.
-    assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"16\"")
-    assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"201\"")
+    FROZEN_VERSION_CODES_PER_TRACK["alpha"]?.forEach { alphaFrozenVc ->
+      assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"$alphaFrozenVc\"")
+    }
   }
 
   // ---------------------------------------------------------------------------
