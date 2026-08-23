@@ -323,3 +323,40 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     val frozenVersionCodes: List<Long> = emptyList()
   )
 }
+
+/**
+ * A completed alpha release that holds all currently frozen alpha version codes.
+ *
+ * Tests that set up the alpha track must include this alongside any live release entry so that the
+ * production invariant check (which requires all [FROZEN_VERSION_CODES_PER_TRACK] codes to be
+ * present on the track) does not throw. If [FROZEN_VERSION_CODES_PER_TRACK] is updated, update
+ * the `versionCodes` list here in lockstep.
+ */
+val FROZEN_ALPHA_BASELINE: PlayConsoleClient.TrackRelease =
+  PlayConsoleClient.TrackRelease(versionCodes = listOf(16L, 201L), status = "completed")
+
+/**
+ * A completed beta release that holds all currently frozen beta version codes.
+ *
+ * Tests that set up the beta track must include this alongside any live release entry so that the
+ * production invariant check (which requires all [FROZEN_VERSION_CODES_PER_TRACK] codes to be
+ * present on the track) does not throw. If [FROZEN_VERSION_CODES_PER_TRACK] is updated, update
+ * the `versionCodes` list here in lockstep.
+ */
+val FROZEN_BETA_BASELINE: PlayConsoleClient.TrackRelease =
+  PlayConsoleClient.TrackRelease(versionCodes = listOf(196L), status = "completed")
+
+/**
+ * Populates alpha and beta with their frozen-code baseline releases so that any subsequent call
+ * into [UploadBinaryToPlayConsole], [UpdateRolloutFraction], or [UploadChangelogToPlayConsole]
+ * passes the invariant check that requires all frozen version codes to be present on the live track.
+ *
+ * Call this from a test's `@Before setUp()` (or at the top of individual tests that reach the
+ * invariant check). Tests that need a different track state should call [FakePlayConsoleClient
+ * .setTrackReleases] afterwards, including [FROZEN_ALPHA_BASELINE] or [FROZEN_BETA_BASELINE]
+ * alongside any test-specific releases.
+ */
+fun FakePlayConsoleClient.setUpFrozenBaselines() {
+  setTrackReleases("alpha", listOf(FROZEN_ALPHA_BASELINE))
+  setTrackReleases("beta", listOf(FROZEN_BETA_BASELINE))
+}

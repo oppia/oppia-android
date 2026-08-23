@@ -32,15 +32,11 @@ class UploadBinaryToPlayConsoleTest {
   @Before
   fun setUp() {
     fake = FakePlayConsoleClient()
-    // Alpha always has a permanently frozen KitKat build (vc 16). Pre-configure it here so that
-    // every test using the default alpha track satisfies the production invariant check that
-    // verifies frozen VCs are present before calling setTrackRelease. Tests that specifically
-    // exercise a different alpha-track state (e.g. pending release) override this via
-    // fake.setTrackReleases("alpha", ...) before calling runMain.
-    fake.setTrackReleases(
-      "alpha",
-      listOf(PlayConsoleClient.TrackRelease(listOf(16L), "completed"))
-    )
+    // Pre-configure alpha and beta with their frozen-code baselines so every test satisfies
+    // the production invariant check. Tests that need a different track state override via
+    // fake.setTrackReleases(...) afterwards, including FROZEN_ALPHA_BASELINE / FROZEN_BETA_BASELINE
+    // alongside any test-specific releases.
+    fake.setUpFrozenBaselines()
   }
 
   @After
@@ -310,7 +306,7 @@ class UploadBinaryToPlayConsoleTest {
     createChangelog("0.17", content = "Release notes.")
     fake.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(listOf(299L), "draft"))
+      listOf(FROZEN_ALPHA_BASELINE, PlayConsoleClient.TrackRelease(listOf(299L), "draft"))
     )
 
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
@@ -340,7 +336,7 @@ class UploadBinaryToPlayConsoleTest {
     // Beta has vc=500; uploading vc=1 to alpha violates the alpha > beta constraint.
     fake.setTrackReleases(
       "beta",
-      listOf(PlayConsoleClient.TrackRelease(listOf(500L), "completed"))
+      listOf(FROZEN_BETA_BASELINE, PlayConsoleClient.TrackRelease(listOf(500L), "completed"))
     )
 
     val exception = assertThrows<IllegalStateException>() { runMain(aab.absolutePath) }
@@ -472,7 +468,7 @@ class UploadBinaryToPlayConsoleTest {
     // the production code picks it up and passes it through unmodified to setTrackRelease.
     fake.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(listOf(16L), "completed"))
+      listOf(FROZEN_ALPHA_BASELINE)
     )
     fake.setNextVersionCode(202L)
 
@@ -480,8 +476,9 @@ class UploadBinaryToPlayConsoleTest {
 
     val setTrackBody = fake.trackUpdateBodies.first()
     assertThat(setTrackBody).contains("\"16\"")
+    assertThat(setTrackBody).contains("\"201\"")
     assertThat(setTrackBody).contains("\"202\"")
-    // Both version codes are merged into a SINGLE release entry (not two separate ones).
+    // All version codes are merged into a SINGLE release entry (not separate ones).
     assertThat(setTrackBody.split("\"versionCodes\"").size - 1).isEqualTo(1)
     assertThat(setTrackBody).contains("\"completed\"")
   }
@@ -517,16 +514,16 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testRunUpload_betaTrack_doesNotIncludeAnyFrozenVersionCodesInTrackUpdateRequest() {
-    // Beta currently has no frozen builds; the setTrackRelease body should only contain the new vc.
+  fun testRunUpload_betaTrack_includesFrozenBetaVersionCodeInTrackUpdateRequest() {
+    // Beta has a frozen build (vc 196) that must be merged into the track update so the Play
+    // Console API does not deactivate it. Alpha's frozen codes must NOT appear in beta's update.
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     // Bump alpha to vc 300 so that uploading vc 202 to beta doesn't violate the version-inversion
-    // check (which requires alpha vc > beta vc). setUp pre-configures alpha at vc 16; override it
-    // here to a realistic value that is higher than the beta vc we're about to upload.
+    // check (which requires alpha vc > beta vc).
     fake.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(listOf(300L), "completed"))
+      listOf(FROZEN_ALPHA_BASELINE, PlayConsoleClient.TrackRelease(listOf(300L), "completed"))
     )
     fake.setNextVersionCode(202L)
 
@@ -534,7 +531,10 @@ class UploadBinaryToPlayConsoleTest {
 
     assertThat(fake.trackUpdateBodies).hasSize(1)
     assertThat(fake.trackUpdateBodies.first()).contains("\"202\"")
+    assertThat(fake.trackUpdateBodies.first()).contains("\"196\"")
+    // Alpha-specific frozen codes must not bleed into the beta track update.
     assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"16\"")
+    assertThat(fake.trackUpdateBodies.first()).doesNotContain("\"201\"")
   }
 
   // ---------------------------------------------------------------------------
