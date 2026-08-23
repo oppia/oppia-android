@@ -54,6 +54,7 @@ class VersionInversionChecker(
   ) {
     val frozenAlpha = frozenVersionCodesPerTrack[ALPHA_TRACK] ?: emptySet()
     val frozenBeta = frozenVersionCodesPerTrack[BETA_TRACK] ?: emptySet()
+    val frozenGa = frozenVersionCodesPerTrack[GA_TRACK] ?: emptySet()
 
     // Exclude frozen version codes before computing min/max so that permanently-active
     // OS-specific builds (e.g. the KitKat VC 16 on alpha) do not participate in the
@@ -66,6 +67,7 @@ class VersionInversionChecker(
       .filterNot { it in frozenBeta }
     val gaVersionCodes = client.getTrackReleases(packageName, GA_TRACK, existingEditId)
       .flatMap { it.versionCodes }
+      .filterNot { it in frozenGa }
 
     val maxBeta = betaVersionCodes.maxOrNull()
     val maxGa = gaVersionCodes.maxOrNull()
