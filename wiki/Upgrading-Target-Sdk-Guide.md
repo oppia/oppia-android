@@ -130,10 +130,10 @@ This code change essentially requires replacing the old SDK version number (e.g.
 #### Step 5.2: Updating the target SDK version
 
 All needed changes are detailed below:
-1All Bazel AAB targets need to be updated in [``build_flavors.bzl``](https://github.com/oppia/oppia-android/blob/1022c2ae8babb290852cb72b1a791678462b0061/build_flavors.bzl#L36-L95)'s ``_FLAVOR_METADATA`` dict to point to the correct target SDK version (each flavor has its own target SDK declared).
-2All manifest XML files (e.g. [``app/src/main/AppAndroidManifest.xml``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/src/main/AppAndroidManifest.xml#L4)) that _have_ an ``android:targetSdkVersion`` attribute need to be updated to use the correct version. If a manifest file is missing this attribute, it doesn't need to be changed.
+1. All Bazel AAB targets need to be updated in [``build_flavors.bzl``](https://github.com/oppia/oppia-android/blob/1022c2ae8babb290852cb72b1a791678462b0061/build_flavors.bzl#L36-L95)'s ``_FLAVOR_METADATA`` dict to point to the correct target SDK version (each flavor has its own target SDK declared).
+2. All manifest XML files (e.g. [``app/src/main/AppAndroidManifest.xml``](https://github.com/oppia/oppia-android/blob/dfb9a301280b9a46526cb2f5ca6329532fec6bf0/app/src/main/AppAndroidManifest.xml#L4)) that _have_ an ``android:targetSdkVersion`` attribute need to be updated to use the correct version. If a manifest file is missing this attribute, it doesn't need to be changed.
 
-After the four areas above are completed, the old SDK version is unlikely to be present anywhere in the codebase. This can be verified using a quick "find all" or ``grep`` search. One likely exception is tests (see the caveats list in the main section of step (5) above).
+After refactoring `build_vars.bzl`,`build_flavors.bzl` and all the manifest XML files, the old SDK version is unlikely to be present anywhere in the codebase. This can be verified using a quick "find all" or ``grep`` search. One likely exception is tests (see the caveats list in the main section of step (5) above).
 
 The PR that updates the target SDK version can be marked as fixing and closing the corresponding tracking issue.
 
