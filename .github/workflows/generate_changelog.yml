@@ -1,0 +1,133 @@
+# Triggered when a version-bump PR is merged to develop (path filter: version.bzl).
+# Runs the GenerateChangelogs Kotlin script, which:
+#   1. Reads the new MINOR_VERSION from version.bzl and derives the *previous* version
+#      (e.g. 0.17->0.18 bump generates the changelog for 0.17).
+#   2. Collects all PRs merged into develop between the two most recent release branches.
+#   3. Parses "Fix #NNNN" / "Fixes #NNNN" references to surface issue titles.
+#   4. Calls Vertex AI (Gemini) to produce a 2-3 sentence user-facing changelog summary.
+#   5. Writes config/changelogs/<major>.<minor>.md and opens a PR on develop for review.
+#
+# If the Vertex AI call fails (timeout, quota, API error), the workflow still creates the
+# PR with a raw commit list and an <!-- LLM generation failed --> marker. The release
+# coordinator then writes the summary manually.
+#
+# Can also be triggered manually via workflow_dispatch to test or regenerate a changelog.
+
+name: Generate Changelog
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'version.bzl'
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: >-
+          Version to generate changelog for (e.g. "0.17"). If empty, the version
+          is read from version.bzl at HEAD. Use this to regenerate a changelog
+          for an older release without modifying version.bzl.
+        required: false
+        default: ''
+
+# Only one changelog generation may run at a time. An in-flight run is never cancelled
+# (cancel-in-progress: false) so that a rapid double-push to version.bzl does not leave
+# a half-committed changelog branch in an inconsistent state.
+concurrency:
+  group: generate-changelog
+  cancel-in-progress: false
+
+jobs:
+  generate_changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-24.04
+    # oppia-android-automation-env is used here instead of oppia-android-release-env because
+    # this workflow opens a PR for human review and never deploys anything directly, so
+    # the required-reviewer gate on oppia-android-release-env is not needed.
+    #
+    # GCP_CHANGELOG_SERVICE_ACCOUNT is a dedicated, minimally-scoped service account
+    # (changelog-generator@<project>.iam.gserviceaccount.com) with only
+    # roles/aiplatform.user on the specific Vertex model resource. It is intentionally
+    # separate from GCP_RELEASE_SERVICE_ACCOUNT (which has signing/Play Store permissions)
+    # so that a compromised changelog workflow cannot mint a token with release-level
+    # blast radius. The WIF binding for this SA is tightened via attribute.job_workflow_ref
+    # to only allow tokens when this specific workflow file is running.
+    environment: oppia-android-automation-env
+    permissions:
+      id-token: write      # Required for Workload Identity Federation (Vertex AI auth).
+      contents: write      # Required so the script can push the changelog branch.
+      pull-requests: write # Required so the script can open the PR via gh.
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history is required: the script uses `git log` to collect commits between
+          # release branches and needs the complete DAG to find merge bases correctly.
+          fetch-depth: 0
+
+      # Configure a bot identity so that the commit the script creates on the changelog
+      # branch is attributed to github-actions[bot] rather than an arbitrary user.
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Allow the script to `git push` the changelog branch and `gh pr create` without a
+      # personal access token. The built-in GITHUB_TOKEN is sufficient here because:
+      #   - contents: write allows pushing a new branch.
+      #   - pull-requests: write allows opening the PR.
+      - name: Configure git remote credentials
+        run: |
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_CHANGELOG_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # Obtain a short-lived OAuth2 access token for the WIF-impersonated service account.
+      # GenerateChangelogs passes this as the Bearer token when calling the Vertex AI API.
+      - name: Get and mask GCP access token
+        run: |
+          ACCESS_TOKEN="$(gcloud auth print-access-token)"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+
+      - name: Set up Android + Bazel build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # Run the GenerateChangelogs script. It will:
+      #   - Determine the version to generate for from version.bzl.
+      #   - Collect commits between the two newest release branches.
+      #   - Call Vertex AI and write config/changelogs/<version>.md.
+      #   - Push the automated/changelog-<version> branch and open a PR.
+      #
+      # The GITHUB_TOKEN env var is picked up by the `gh` CLI (used internally by the
+      # script for `gh pr create`). GCP_PROJECT, GCP_LOCATION, and VERTEX_MODEL are
+      # non-sensitive configuration values stored as repository variables
+      # (Settings -> Variables -> Actions).
+      - name: Generate changelog and open PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Passed through to the GenerateChangelogs script. When set (manual workflow_dispatch
+          # with a specific version), the script skips reading version.bzl and uses this value
+          # directly. Empty on automatic push triggers — script falls back to version.bzl.
+          TARGET_VERSION: ${{ inputs.target_version }}
+        run: |
+          bazel run //scripts:generate_changelogs -- \
+            "$(pwd)" \
+            "${{ vars.GCP_PROJECT }}" \
+            "${{ vars.GCP_LOCATION }}" \
+            "${{ vars.VERTEX_MODEL }}" \
+            "$GCP_ACCESS_TOKEN"
