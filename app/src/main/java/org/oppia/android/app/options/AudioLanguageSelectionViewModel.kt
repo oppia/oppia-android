@@ -74,20 +74,23 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
 
   /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> =
-    Transformations.map(supportedOppiaLanguagesLiveData) { languages ->
-      // Order starting with English in the list, then alphabetically by the localized name of the
-      // language to match what is done by the Android OS.
-      val sortedLanguages = languages.sortedWith(
-        compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
-          .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-      )
+  val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> by lazy {
+    Transformations.switchMap(selectedLanguage) {
+      Transformations.map(supportedOppiaLanguagesLiveData) { languages ->
+        // Order starting with English in the list, then alphabetically by the localized name of the
+        // language to match what is done by the Android OS.
+        val sortedLanguages = languages.sortedWith(
+          compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
+            .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+        )
 
-      sortedLanguages
-        .map(::getAudioLanguageFromOppiaLanguage)
-        .filter { it !in IGNORED_AUDIO_LANGUAGES }
-        .map(::createItemViewModel)
+        sortedLanguages
+          .map(::getAudioLanguageFromOppiaLanguage)
+          .filter { it !in IGNORED_AUDIO_LANGUAGES }
+          .map(::createItemViewModel)
+      }
     }
+  }
 
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
     translationController.getAudioLanguagePreselection(profileId.toProfileIdPreservingZero())
