@@ -325,38 +325,57 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
 }
 
 /**
- * A completed alpha release that holds all currently frozen alpha version codes.
+ * A completed alpha release whose `versionCodes` are derived from [FROZEN_VERSION_CODES_PER_TRACK].
  *
- * Tests that set up the alpha track must include this alongside any live release entry so that the
- * production invariant check (which requires all [FROZEN_VERSION_CODES_PER_TRACK] codes to be
- * present on the track) does not throw. If [FROZEN_VERSION_CODES_PER_TRACK] is updated, update
- * the `versionCodes` list here in lockstep.
+ * Including this in a `setTrackReleases("alpha", ...)` call ensures the production invariant check
+ * (which verifies all frozen codes are present on the live track) does not throw. Because the
+ * codes come directly from [FROZEN_VERSION_CODES_PER_TRACK], this constant automatically reflects
+ * any future changes to [FrozenReleaseConfig] without requiring manual test updates.
+ *
+ * Tests that override the alpha track should include this alongside any test-specific releases so
+ * that the invariant check is still satisfied.
  */
 val FROZEN_ALPHA_BASELINE: PlayConsoleClient.TrackRelease =
-  PlayConsoleClient.TrackRelease(versionCodes = listOf(16L, 201L), status = "completed")
+  PlayConsoleClient.TrackRelease(
+    versionCodes = (FROZEN_VERSION_CODES_PER_TRACK["alpha"] ?: emptySet()).toList(),
+    status = "completed"
+  )
 
 /**
- * A completed beta release that holds all currently frozen beta version codes.
+ * A completed beta release whose `versionCodes` are derived from [FROZEN_VERSION_CODES_PER_TRACK].
  *
- * Tests that set up the beta track must include this alongside any live release entry so that the
- * production invariant check (which requires all [FROZEN_VERSION_CODES_PER_TRACK] codes to be
- * present on the track) does not throw. If [FROZEN_VERSION_CODES_PER_TRACK] is updated, update
- * the `versionCodes` list here in lockstep.
+ * Including this in a `setTrackReleases("beta", ...)` call ensures the production invariant check
+ * (which verifies all frozen codes are present on the live track) does not throw. When beta has
+ * no frozen codes the release has an empty `versionCodes` list and is effectively a no-op.
+ *
+ * Tests that override the beta track should include this alongside any test-specific releases so
+ * that the invariant check is still satisfied once beta frozen codes are added in the future.
  */
 val FROZEN_BETA_BASELINE: PlayConsoleClient.TrackRelease =
-  PlayConsoleClient.TrackRelease(versionCodes = listOf(196L), status = "completed")
+  PlayConsoleClient.TrackRelease(
+    versionCodes = (FROZEN_VERSION_CODES_PER_TRACK["beta"] ?: emptySet()).toList(),
+    status = "completed"
+  )
 
 /**
  * Populates alpha and beta with their frozen-code baseline releases so that any subsequent call
  * into [UploadBinaryToPlayConsole], [UpdateRolloutFraction], or [UploadChangelogToPlayConsole]
  * passes the invariant check that requires all frozen version codes to be present on the live track.
  *
- * Call this from a test's `@Before setUp()` (or at the top of individual tests that reach the
- * invariant check). Tests that need a different track state should call [FakePlayConsoleClient
- * .setTrackReleases] afterwards, including [FROZEN_ALPHA_BASELINE] or [FROZEN_BETA_BASELINE]
- * alongside any test-specific releases.
+ * Tracks that currently have no frozen codes in [FROZEN_VERSION_CODES_PER_TRACK] are silently
+ * skipped, so this function remains correct across all [FrozenReleaseConfig] states.
+ *
+ * Call this from a test's `@Before setUp()` (or at the top of individual tests). Tests that need
+ * a different track state should call [FakePlayConsoleClient.setTrackReleases] afterwards,
+ * including [FROZEN_ALPHA_BASELINE] or [FROZEN_BETA_BASELINE] alongside test-specific releases.
  */
 fun FakePlayConsoleClient.setUpFrozenBaselines() {
-  setTrackReleases("alpha", listOf(FROZEN_ALPHA_BASELINE))
-  setTrackReleases("beta", listOf(FROZEN_BETA_BASELINE))
+  val alphaFrozen = FROZEN_VERSION_CODES_PER_TRACK["alpha"]
+  if (!alphaFrozen.isNullOrEmpty()) {
+    setTrackReleases("alpha", listOf(FROZEN_ALPHA_BASELINE))
+  }
+  val betaFrozen = FROZEN_VERSION_CODES_PER_TRACK["beta"]
+  if (!betaFrozen.isNullOrEmpty()) {
+    setTrackReleases("beta", listOf(FROZEN_BETA_BASELINE))
+  }
 }
