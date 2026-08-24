@@ -12,7 +12,6 @@ import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughActivity]. */
@@ -42,12 +41,6 @@ class WalkthroughActivityPresenter @Inject constructor(
         binding.root as ConstraintLayout,
         R.color.component_color_walkthrough_activity_status_bar_color,
         statusBarLight = true
-      )
-    } else {
-      StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_walkthrough_activity_status_bar_color,
-        activity,
-        true
       )
     }
     val currentFragmentIndex = walkthroughViewModel.currentProgress.get()?.minus(1)

@@ -24,7 +24,6 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -106,7 +105,7 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
             onboardingViewModel.slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
           }
           selectDot(position)
-          onboardingStatusBarColorUpdate(position)
+          updateStatusBarSpacerColor(position)
         }
       })
   }
@@ -170,7 +169,7 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
     ONBOARDING_FINAL_SLIDE
   }
 
-  private fun onboardingStatusBarColorUpdate(position: Int) {
+  private fun updateStatusBarSpacerColor(position: Int) {
     val colorRes = when (position) {
       0 -> R.color.component_color_onboarding_1_status_bar_color
       1 -> R.color.component_color_onboarding_2_status_bar_color
@@ -178,11 +177,7 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
       3 -> R.color.component_color_onboarding_4_status_bar_color
       else -> R.color.component_color_shared_activity_status_bar_color
     }
-    if (enableEdgeToEdge.value) {
-      statusBarSpacer?.setBackgroundColor(ContextCompat.getColor(activity, colorRes))
-    } else {
-      StatusBarColor.statusBarColorUpdate(colorRes, activity, false)
-    }
+    statusBarSpacer?.setBackgroundColor(ContextCompat.getColor(activity, colorRes))
   }
 
   override fun clickOnSkip() {

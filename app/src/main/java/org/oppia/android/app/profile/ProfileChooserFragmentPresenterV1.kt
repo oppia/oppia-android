@@ -34,7 +34,6 @@ import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -83,11 +82,6 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    if (!enableEdgeToEdge.value) {
-      StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_shared_profile_status_bar_color, activity, false
-      )
-    }
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,

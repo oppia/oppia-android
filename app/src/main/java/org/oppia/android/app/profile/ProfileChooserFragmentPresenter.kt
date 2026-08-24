@@ -40,7 +40,6 @@ import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -98,12 +97,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
-    if (!enableEdgeToEdge.value) {
-      StatusBarColor.statusBarColorUpdate(
-        R.color.component_color_shared_profile_status_bar_color, activity, false
-      )
-    }
-
     if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
