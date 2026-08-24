@@ -81,12 +81,12 @@ feature_flag_definition {
 feature_flag_definition {
   id: LOAD_LESSON_PROTOS_FROM_ASSETS
   remote_server_name: "android_enable_load_lesson_protos_from_assets"
-  default_is_enabled: false
+  default_is_enabled: true
 }
 feature_flag_definition {
   id: LOAD_IMAGES_FROM_ASSETS
   remote_server_name: "android_enable_load_images_from_assets"
-  default_is_enabled: false
+  default_is_enabled: true
 }
 feature_flag_definition {
   id: LESSON_PROGRESS_VISUALIZATION
