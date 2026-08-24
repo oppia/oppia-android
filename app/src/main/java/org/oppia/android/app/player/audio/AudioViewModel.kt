@@ -43,7 +43,6 @@ class AudioViewModel @Inject constructor(
   private var fallbackLanguageCode: String = defaultLanguage
   var languages = listOf<String>()
   var selectedLanguageUnavailable = ObservableBoolean()
-  var selectedLanguageName = ObservableField<String>("")
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state. */
   enum class UiAudioPlayStatus {
@@ -170,7 +169,6 @@ class AudioViewModel @Inject constructor(
         autoPlay = false
         reloadingMainContent = false
         selectedLanguageUnavailable.set(true)
-        selectedLanguageName.set(getLanguageName(selectedLanguageCode))
 
         (defaultLanguage.takeIf { it in languages } ?: languages.first()).also {
           fallbackLanguageCode = it
@@ -185,22 +183,6 @@ class AudioViewModel @Inject constructor(
         currentContentId,
         languageCodeForDataSource
       )
-    }
-  }
-
-  /** Perform display-name lookup independent of locale for Oppia-specific Macaronic Languages. */
-  private fun getLanguageName(languageCode: String): String {
-    return when (languageCode) {
-      "hi-en" -> resourceHandler.getStringInLocale(R.string.hinglish_localized_language_name)
-      "pcm-ng" ->
-        resourceHandler.getStringInLocale(R.string.nigerian_pidgin_localized_language_name)
-      else -> {
-        // TODO(#3791): Remove this dependency.
-        val locale = Locale.Builder()
-          .setLanguage(languageCode)
-          .build()
-        locale.getDisplayLanguage(locale).ifEmpty { languageCode }
-      }
     }
   }
 
