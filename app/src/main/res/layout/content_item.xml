@@ -63,6 +63,7 @@
       app:explorationViewPaddingBottom="@{@dimen/content_item_exploration_view_padding_bottom}"
       app:explorationViewPaddingEnd="@{@dimen/content_item_exploration_view_padding_end}"
       app:explorationViewPaddingStart="@{@dimen/content_item_exploration_view_padding_start}"
-      app:explorationViewPaddingTop="@{@dimen/content_item_exploration_view_padding_top}" />
+      app:explorationViewPaddingTop="@{@dimen/content_item_exploration_view_padding_top}"
+      tools:targetApi="23"/>
   </FrameLayout>
 </layout>

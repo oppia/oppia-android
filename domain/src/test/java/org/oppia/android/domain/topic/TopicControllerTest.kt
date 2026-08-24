@@ -1414,7 +1414,13 @@ class TopicControllerTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

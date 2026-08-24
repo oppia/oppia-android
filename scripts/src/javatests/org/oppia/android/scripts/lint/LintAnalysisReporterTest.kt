@@ -809,7 +809,7 @@ class LintAnalysisReporterTest {
       LintIssue(
         id = "NewApi",
         severity = LintSeverity.ERROR,
-        message = "Call requires API level 24 (current min is 23): `java.lang.Iterable#forEach`",
+        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
         category = "Correctness",
         explanation = "This check scans through all the Android API " +
           "calls in the application and warns about any calls that are not available",
@@ -839,7 +839,7 @@ class LintAnalysisReporterTest {
     )
     assertThat(output).contains(
       "Message: Call requires API level 24 " +
-        "(current min is 23): `java.lang.Iterable#forEach`"
+        "(current min is 21): `java.lang.Iterable#forEach`"
     )
     assertThat(output).contains(
       "Workaround:\n"
