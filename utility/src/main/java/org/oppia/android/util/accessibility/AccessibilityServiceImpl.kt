@@ -21,6 +21,7 @@ class AccessibilityServiceImpl @Inject constructor(
   override fun announceForAccessibilityForView(view: View, text: CharSequence) {
     if (!accessibilityManager.isEnabled) return
 
+    // TODO(#5927): Migrate to the proper SDK 35+ APIs.
     @Suppress("DEPRECATION")
     // TYPE_ANNOUNCEMENT itself isn't deprecated, only announceForAccessibility()
     val event = AccessibilityEvent.obtain(AccessibilityEvent.TYPE_ANNOUNCEMENT)
