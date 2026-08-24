@@ -141,6 +141,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <View
+      android:id="@+id/admin_pin_toolbar_shadow"
       android:layout_width="0dp"
       android:layout_height="6dp"
       android:background="@drawable/toolbar_drop_shadow"
