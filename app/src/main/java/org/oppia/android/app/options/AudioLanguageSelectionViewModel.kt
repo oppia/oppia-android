@@ -73,7 +73,17 @@ class AudioLanguageSelectionViewModel @Inject constructor(
       }
     }
 
-  /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
+  /**
+   * The list of [AudioLanguageItemViewModel]s that can be bound to a recycler view.
+   *
+   * This list is recomputed whenever [selectedLanguage] emits. Each emission causes the
+   * transformation to subscribe to a new mapping of [supportedOppiaLanguagesLiveData], which uses
+   * its current cached value to generate a fresh list of audio languages.
+   *
+   * The supported languages are ordered with English first, followed by the remaining languages
+   * alphabetically by their localized display names. Languages in [IGNORED_AUDIO_LANGUAGES] are
+   * excluded before the corresponding [AudioLanguageItemViewModel]s are created.
+   */
   val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> by lazy {
     Transformations.switchMap(selectedLanguage) {
       Transformations.map(supportedOppiaLanguagesLiveData) { languages ->
