@@ -9,8 +9,8 @@
 #
 # Secrets required:
 #   PROD_SERVER_LESSON_SECRET    -- Oppia production server API credential
-#   LESSON_BOT_APP_ID            -- GitHub App ID for the oppia-android lesson bot
-#   LESSON_BOT_APP_PRIVATE_KEY   -- GitHub App private key (PEM format)
+#   OPPIA_GITHUB_APP_ID         -- GitHub App ID (shared with oppia-web for consistency)
+#   OPPIA_GITHUB_APP_PRIVATE_KEY -- GitHub App private key (PEM format)
 
 name: Pull Latest Lesson Versions
 
@@ -44,8 +44,8 @@ jobs:
         id: generate_token
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ secrets.LESSON_BOT_APP_ID }}
-          private-key: ${{ secrets.LESSON_BOT_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
+          private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
       - name: Check out introduce-asset-download-script
         uses: actions/checkout@v6
