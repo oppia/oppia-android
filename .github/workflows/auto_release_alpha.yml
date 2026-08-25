@@ -2,8 +2,8 @@
 # `latest-alpha` tag, and kick off the build+sign workflow for the alpha flavor.
 #
 # Secrets required (same GitHub App as pull_latest_lesson_versions.yml):
-#   LESSON_BOT_APP_ID         – GitHub App ID
-#   LESSON_BOT_APP_PRIVATE_KEY – GitHub App private key (PEM)
+#   OPPIA_GITHUB_APP_ID         – GitHub App ID (shared with oppia-web for consistency)
+#   OPPIA_GITHUB_APP_PRIVATE_KEY – GitHub App private key (PEM)
 # The App must have:
 #   Contents: write  – to force-push the latest-alpha tag
 #   Actions:  write  – to dispatch the build_and_sign.yml workflow
@@ -43,8 +43,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ secrets.LESSON_BOT_APP_ID }}
-          private-key: ${{ secrets.LESSON_BOT_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
+          private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
       - name: Check out develop
         uses: actions/checkout@v4
