@@ -55,6 +55,9 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -84,7 +87,8 @@ class StateFragmentPresenter @Inject constructor(
   private val stateViewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val surveyGatingController: SurveyGatingController
+  private val surveyGatingController: SurveyGatingController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -128,6 +132,12 @@ class StateFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+    if (enableEdgeToEdge.value) {
+      // The activity's EdgeToEdgeHelper applies the status-bar inset to the AppBarLayout; the
+      // legacy fitsSystemWindows on this fragment's root would re-apply the same inset as inner
+      // top padding, leaving a blank gap below the toolbar.
+      binding.root.fitsSystemWindows = false
+    }
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, userAnswerState),
       binding.congratulationsTextView,
@@ -494,7 +504,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun markExplorationCompleted() {
     val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,

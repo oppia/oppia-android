@@ -42,7 +42,7 @@ concurrency:
   # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
   # The group is intentionally not scoped to github.ref so that push and dispatch triggers
   # across different refs are also serialized — Play Console edits must be globally exclusive.
-  group: deploy-updated-changelog
+  group: play-console-edit-session
   cancel-in-progress: false
 
 jobs:
@@ -155,9 +155,9 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          version: 6.5.0
+          bazelisk-cache: true
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment

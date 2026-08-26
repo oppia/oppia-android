@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +29,11 @@ class UpdateRolloutFractionTest {
   @Before
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
+  }
+
+  @After
+  fun tearDown() {
+    fakeClient.close()
   }
 
   // ---------------------------------------------------------------------------
@@ -89,7 +95,8 @@ class UpdateRolloutFractionTest {
       listOf(
         PlayConsoleClient.TrackRelease(
           versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
-        )
+        ),
+        FROZEN_ALPHA_BASELINE
       )
     )
     createSharedChangelog(testVersion, "Notes.")
@@ -122,8 +129,9 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(98L, 100L, 99L), status = "inProgress", rolloutFraction = 100
-        )
+          versionCodes = listOf(298L, 300L, 299L), status = "inProgress", rolloutFraction = 100
+        ),
+        FROZEN_ALPHA_BASELINE
       )
     )
     createSharedChangelog(testVersion, "Notes.")
@@ -132,7 +140,7 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
   }
 
   @Test
@@ -142,7 +150,8 @@ class UpdateRolloutFractionTest {
       listOf(
         PlayConsoleClient.TrackRelease(
           versionCodes = listOf(200L), status = "inProgress", rolloutFraction = 500
-        )
+        ),
+        FROZEN_BETA_BASELINE
       )
     )
     createSharedChangelog(testVersion, "Notes.")
@@ -206,7 +215,10 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_withSharedChangelogFile_preservesNotesInUpdate() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"))
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        FROZEN_ALPHA_BASELINE
+      )
     )
     createSharedChangelog(testVersion, "Shared release notes.")
 
@@ -222,7 +234,10 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_withTrackSpecificChangelogFile_usesTrackSpecificNotes() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"))
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        FROZEN_ALPHA_BASELINE
+      )
     )
     createSharedChangelog(testVersion, "Shared notes.")
     createTrackChangelog(testVersion, "alpha", "Alpha-specific notes.")
@@ -239,7 +254,10 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_withNoChangelogFile_doesNotFailButPassesEmptyNotes() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"))
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        FROZEN_ALPHA_BASELINE
+      )
     )
     // No changelog file created.
     File(tempFolder.root, "config/changelogs").mkdirs()
@@ -276,7 +294,10 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_createsEditThenSetsReleaseThenCommits() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"))
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        FROZEN_ALPHA_BASELINE
+      )
     )
     createSharedChangelog(testVersion, "Notes.")
 
@@ -294,7 +315,10 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_setsCorrectTrackAndPackageName() {
     fakeClient.setTrackReleases(
       "beta",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "inProgress"))
+      listOf(
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "inProgress"),
+        FROZEN_BETA_BASELINE
+      )
     )
     createSharedChangelog(testVersion, "Notes.")
 
@@ -406,14 +430,14 @@ class UpdateRolloutFractionTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testUpdateRollout_alphaTrack_preservesFrozenKitKatVersionCodeInTrackUpdate() {
-    // vc 16 is permanently frozen on alpha; it must be re-included in every setTrackRelease call
-    // so the Play Console API does not deactivate it when the rollout fraction is updated.
+  fun testUpdateRollout_alphaTrack_preservesFrozenVersionCodesInTrackUpdate() {
+    // All frozen alpha version codes (16 = KitKat, 201 = pre-cycle freeze) must be merged into
+    // the rollout update entry so the Play Console API does not deactivate them.
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutFraction = 250),
-        PlayConsoleClient.TrackRelease(listOf(16L), "completed")
+        PlayConsoleClient.TrackRelease(listOf(202L), "inProgress", rolloutFraction = 250),
+        FROZEN_ALPHA_BASELINE
       )
     )
     createSharedChangelog(testVersion, notes = "Release notes.")
@@ -423,23 +447,22 @@ class UpdateRolloutFractionTest {
     )
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
-    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
+    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(202L)
     assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
-    assertThat(fakeClient.trackUpdates[0].preservedReleases).hasSize(1)
-    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].versionCodes).containsExactly(16L)
-    // Verify the frozen release is passed through completely unmodified (status, rolloutFraction,
-    // and releaseNotes must match the values configured in setTrackReleases above).
-    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].status).isEqualTo("completed")
-    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].rolloutFraction).isNull()
-    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].releaseNotes).isEmpty()
+    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
+      .containsExactlyElementsIn(setOf(16L, 201L))
   }
 
   @Test
-  fun testUpdateRollout_betaTrack_doesNotIncludeAnyFrozenVersionCodes() {
-    // Beta has no frozen builds; the rollout update should not include any preserved version codes.
+  fun testUpdateRollout_betaTrack_preservesFrozenBetaVersionCodeInTrackUpdate() {
+    // Beta has a frozen build (vc 196); it must be merged into the rollout update so the Play
+    // Console API does not deactivate it.
     fakeClient.setTrackReleases(
       "beta",
-      listOf(PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutFraction = 250))
+      listOf(
+        PlayConsoleClient.TrackRelease(listOf(200L), "inProgress", rolloutFraction = 250),
+        FROZEN_BETA_BASELINE
+      )
     )
     createSharedChangelog(
       testVersion, notes = "Release notes."
@@ -451,9 +474,9 @@ class UpdateRolloutFractionTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
-    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
+    assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(200L)
     assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
-    assertThat(fakeClient.trackUpdates[0].preservedReleases).isEmpty()
+    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes).containsExactly(196L)
   }
 
   // ---------------------------------------------------------------------------

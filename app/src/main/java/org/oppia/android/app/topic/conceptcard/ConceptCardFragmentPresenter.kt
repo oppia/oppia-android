@@ -15,6 +15,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.WorkedExampleLabels
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel. */
@@ -28,7 +31,9 @@ class ConceptCardFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val conceptCardViewModel: ConceptCardViewModel,
   private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  @EnableWorkedExamples
+  private val enableWorkedExamples: PlatformParameterValue<Boolean>
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: LegacyProfileId
 
@@ -86,11 +91,27 @@ class ConceptCardFragmentPresenter @Inject constructor(
           explanationHtml,
           view,
           supportsLinks = true,
-          supportsConceptCards = true
+          supportsConceptCards = true,
+          workedExampleLabels = retrieveWorkedExampleLabels()
         )
     }
 
     return binding.root
+  }
+
+  /**
+   * Returns the labels to display with worked examples, or null if the worked examples feature is
+   * disabled (in which case worked examples aren't displayed at all).
+   */
+  private fun retrieveWorkedExampleLabels(): WorkedExampleLabels? {
+    return if (enableWorkedExamples.value) {
+      WorkedExampleLabels(
+        questionLabel =
+          appLanguageResourceHandler.getStringInLocale(R.string.worked_example_question_label),
+        answerLabel =
+          appLanguageResourceHandler.getStringInLocale(R.string.worked_example_answer_label)
+      )
+    } else null
   }
 
   private fun logConceptCardEvent(skillId: String) {
