@@ -1178,7 +1178,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLocale_updateLanguageToHinglish_returnsEnglishLocale() {
+  fun testGetAudioLocale_updateLanguageToHinglish_returnsHinglishLocale() {
     forceDefaultLocale(Locale.ROOT)
     ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
 
@@ -1187,7 +1187,9 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    // HINGLISH is now a supported audio language (it has audio_translation_id), so it correctly
+    // resolves to HINGLISH rather than falling back to ENGLISH.
+    assertThat(context.languageDefinition.language).isEqualTo(HINGLISH)
     // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
@@ -2034,6 +2036,20 @@ class TranslationControllerTest {
     // the language selection system provides exactly the list of intended languages.
     assertThat(languageListData)
       .containsExactly(ARABIC, ENGLISH, HINDI, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
+  }
+
+  @Test
+  fun testGetSupportedAudioLanguages_returnsAudioLanguageDefinitions() {
+    val languageListProvider = translationController.getSupportedAudioLanguages()
+    val languageListData = monitorFactory.waitForNextSuccessfulResult(languageListProvider)
+
+    // Audio languages include HINGLISH which has an audio_translation_id but no app_string_id,
+    // so it correctly appears here but not in getSupportedAppLanguages(). This is a change
+    // detector test to ensure the audio language selection system provides exactly the list of
+    // intended languages.
+    assertThat(languageListData).containsExactly(
+      ARABIC, ENGLISH, HINDI, HINGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN
+    )
   }
 
   private fun setUpTestApplicationComponent() {
