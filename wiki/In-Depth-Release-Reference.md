@@ -24,7 +24,7 @@ For the standard step-by-step coordinator guide see the
 
 ---
 
-## 1. `generate_changelog.yml` fails
+## 1. generate_changelog.yml fails
 
 **Normal trigger:** Push to `develop` that modifies `version.bzl`, or manual dispatch.
 
@@ -48,7 +48,7 @@ For the standard step-by-step coordinator guide see the
 
 ---
 
-## 2. `auto_release_alpha.yml` fails
+## 2. auto_release_alpha.yml fails
 
 **Normal trigger:** Weekly cron, Tuesday 03:30 UTC.
 
@@ -84,7 +84,7 @@ Then trigger `build_and_sign.yml` via workflow_dispatch:
 
 ---
 
-## 3. `pull_latest_lesson_versions.yml` fails
+## 3. pull_latest_lesson_versions.yml fails
 
 **Normal trigger:** Weekly cron, Monday 02:30 UTC.
 
@@ -101,21 +101,23 @@ opens a PR updating `config/lessons/*.textproto`.
      https://storage.googleapis.com \
      oppiaserver-resources \
      $(pwd)/prod_server.key \
-     $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
+     $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
+     $(pwd)/scripts/assets/alpha_download_config.textproto
 
    bazel run //scripts:download_lesson_list -- \
      https://www.oppia.org \
      https://storage.googleapis.com \
      oppiaserver-resources \
      $(pwd)/prod_server.key \
-     $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
+     $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
+     $(pwd)/scripts/assets/prod_download_config.textproto
    ```
 3. Commit both updated textproto files and open a PR to `develop`.
 4. Delete `prod_server.key` from your local machine after use.
 
 ---
 
-## 4. `deploy_updated_changelog.yml` fails
+## 4. deploy_updated_changelog.yml fails
 
 **Normal trigger:** Push to `develop` that modifies `config/changelogs/**.md`, or manual
 dispatch.
@@ -146,7 +148,7 @@ bazel run //scripts:upload_changelog_to_play_console -- \
 
 ---
 
-## 5. `build_and_sign.yml` fails
+## 5. build_and_sign.yml fails
 
 **Normal trigger:** Manual dispatch (or dispatched by `auto_release_alpha.yml`).
 
@@ -166,7 +168,7 @@ If KMS is unavailable, wait for the outage to resolve before retrying.
 
 ---
 
-## 6. `deploy_to_firebase.yml` fails
+## 6. deploy_to_firebase.yml fails
 
 **Normal trigger:** Manual dispatch after `build_and_sign.yml` succeeds.
 
@@ -188,7 +190,7 @@ If KMS is unavailable, wait for the outage to resolve before retrying.
 
 ---
 
-## 7. `deploy_to_play_console.yml` fails
+## 7. deploy_to_play_console.yml fails
 
 **Normal trigger:** Manual dispatch after QA sign-off.
 
@@ -212,7 +214,7 @@ If the script cannot recover, upload the AAB directly:
 
 ---
 
-## 8. `update_rollout.yml` fails
+## 8. update_rollout.yml fails
 
 **Normal trigger:** Manual dispatch to increase staged rollout fraction.
 
@@ -233,6 +235,3 @@ release without re-uploading the binary.
 | Version not found on track | Verify `version` input matches a release currently live on the track |
 
 ---
-
-*See also: [Release Playbook](Release-Playbook.md) ·
-[App and Feature Release Process](app-and-feature-release-process.md)*
