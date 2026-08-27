@@ -15,12 +15,7 @@ on:
     # Tuesdays at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:30) to avoid
     # Bazel remote cache contention.
     - cron: "30 03 * * 2"
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to search for the alpha candidate (default: develop)"
-        required: false
-        default: "develop"
+  workflow_dispatch: {}
 
 # Only one auto-release run at a time. cancel-in-progress is false so an in-flight run is
 # never interrupted mid-way through tagging or dispatching.
@@ -49,14 +44,17 @@ jobs:
       - name: Check out develop
         uses: actions/checkout@v4
         with:
-          # Always check out the target branch explicitly so scheduled runs and manual
-          # dispatches both start from the same base.
-          ref: ${{ github.event.inputs.branch || 'develop' }}
+          # Always check out develop — this workflow only ever runs on develop since
+          # the latest-alpha tag is only meaningful on that branch.
+          ref: develop
           # fetch-depth: 0 is required so that `git tag --force` (in the
           # "Update latest-alpha tag" step) can resolve the candidate SHA as a local git
           # object. A shallow clone only contains the tip commit; any non-HEAD candidate
           # SHA would cause `git tag` to fail with "not a valid object name".
           fetch-depth: 0
+          # fetch-tags: true ensures the latest-alpha tag is available locally so that
+          # `git rev-parse refs/tags/latest-alpha` in the next step resolves correctly.
+          fetch-tags: true
           # Use the GitHub App token so the subsequent force-push of the latest-alpha tag
           # is authenticated with the App account that has Contents:write scope.
           token: ${{ steps.app-token.outputs.token }}
@@ -78,12 +76,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Resolve the current latest-alpha tag to a SHA so FindAlphaCandidate only inspects
-          # commits newer than the already-deployed build. On the very first run (tag doesn't
+          # commits newer than the most recently deployed build. On the very first run (tag doesn't
           # exist yet), pass "" so all recent commits are inspected.
           LATEST_ALPHA_SHA=$(git rev-parse refs/tags/latest-alpha 2>/dev/null || echo "")
           CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
             "$GITHUB_TOKEN" \
-            "${{ github.event.inputs.branch || 'develop' }}" \
+            "develop" \
             "$LATEST_ALPHA_SHA")
           if [[ -z "$CANDIDATE_SHA" ]]; then
             echo "No new commits since latest-alpha (${LATEST_ALPHA_SHA:0:7}). Nothing to cut."
@@ -114,9 +112,15 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
+          CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
           gh workflow run build_and_sign.yml \
             --repo "${{ github.repository }}" \
             --ref develop \
             --field flavor=alpha \
-            --field source_ref=latest-alpha
-          echo "Dispatched build_and_sign.yml (flavor=alpha, source_ref=latest-alpha)"
+            --field source_ref="$CANDIDATE_SHA"
+          echo "| Step | Result |"
+          echo "|---|---|"
+          echo "| Branch | develop |"
+          echo "| Candidate SHA | [\`${CANDIDATE_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${CANDIDATE_SHA}) |"
+          echo "| latest-alpha tag | moved and force-pushed |"
+          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=${CANDIDATE_SHA:0:7}) |"
