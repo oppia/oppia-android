@@ -100,7 +100,9 @@ Follow this checklist for a full beta or production (GA) release.
 ### Deploy
 
 - [ ] Trigger **Deploy to Play Console** (`deploy_to_play_console.yml`) with `track=beta` or
-  `track=production` and `rollout_fraction=100` (10% initial rollout — see §4).
+  `track=production` and `rollout_fraction=100` (10% initial rollout — see §4):
+
+  ![Deploy to Play Console dispatch dialog](https://github.com/user-attachments/assets/a8c27c48-7fe6-48c1-aea6-3c5393b6db9d)
 
 ---
 
