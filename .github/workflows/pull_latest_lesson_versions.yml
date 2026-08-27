@@ -82,7 +82,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
+            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/alpha_download_config.textproto
 
       - name: Download prod pinned lesson versions
         run: |
@@ -91,7 +92,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
+            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto
 
       - name: Clean up lesson secret
         if: always()
