@@ -251,14 +251,20 @@ class GoogleGitHubCiClientTest {
   }
 
   @Test
-  fun testGetCheckRunStatus_scheduleRunFailing_withPassingPushRuns_returnsPassing() {
+  fun testGetCheckRunStatus_buildStatsRunFailing_withPassingRuns_returnsPassing() {
+    // "Build Stats (...)" runs from stats.yml must be excluded; they compare PR sizes against
+    // develop and fail when a PR has a binary size regression, not when the commit is broken.
     server.enqueue(
       checkRunsPage(
         totalCount = 3,
         runs = listOf(
-          checkRunJson(status = "completed", conclusion = "success", event = "push"),
-          checkRunJson(status = "completed", conclusion = "success", event = "push"),
-          checkRunJson(status = "completed", conclusion = "failure", event = "schedule")
+          checkRunJson(name = "CI Tests", status = "completed", conclusion = "success"),
+          checkRunJson(name = "Lint", status = "completed", conclusion = "success"),
+          checkRunJson(
+            name = "Build Stats (develop, some-pr, repoId)",
+            status = "completed",
+            conclusion = "failure"
+          )
         )
       )
     )
@@ -267,14 +273,23 @@ class GoogleGitHubCiClientTest {
   }
 
   @Test
-  fun testGetCheckRunStatus_onlyScheduleRuns_returnsNoChecks() {
-    // If only schedule-triggered runs are present (all filtered out), the result is NO_CHECKS
-    // rather than PASSING — indicating the commit has no push-triggered CI at all.
+  fun testGetCheckRunStatus_onlyBuildStatsRuns_returnsNoChecks() {
+    // If all check runs are "Build Stats (...)" entries (all filtered out), the result is
+    // NO_CHECKS — indicating the commit has no real CI runs at all.
     server.enqueue(
       checkRunsPage(
-        totalCount = 1,
+        totalCount = 2,
         runs = listOf(
-          checkRunJson(status = "completed", conclusion = "failure", event = "schedule")
+          checkRunJson(
+            name = "Build Stats (develop, pr-a, repoId)",
+            status = "completed",
+            conclusion = "failure"
+          ),
+          checkRunJson(
+            name = "Build Stats (develop, pr-b, repoId)",
+            status = "completed",
+            conclusion = "success"
+          )
         )
       )
     )
@@ -296,15 +311,16 @@ class GoogleGitHubCiClientTest {
     assertThat(client.getCheckRunStatus("abc123")).isEqualTo(GitHubCiClient.CiStatus.FAILING)
   }
 
-  /** Produces the JSON string for a single check-run entry with a given suite event. */
+  /** Produces the JSON string for a single check-run entry. */
   private fun checkRunJson(
+    name: String = "test-check",
     status: String,
     conclusion: String?,
     event: String? = "push"
   ): String {
     val conclusionField = if (conclusion != null) "\"$conclusion\"" else "null"
     val eventField = if (event != null) "\"$event\"" else "null"
-    return """{"id":1,"name":"test-check","status":"$status",""" +
+    return """{"id":1,"name":"$name","status":"$status",""" +
       "\"conclusion\":$conclusionField,\"check_suite\":{\"event\":$eventField}}"
   }
 

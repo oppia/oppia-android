@@ -54,27 +54,32 @@ fun main(args: Array<String>) {
     accessToken = githubToken,
     overrideApiBaseUrl = overrideApiBaseUrl
   )
-  when (
-    val result = findAlphaCandidate(
-      gitHubCiClient = client,
-      branch = branch,
-      sinceSha = latestAlphaSha
-    )
-  ) {
-    is AlphaCandidateResult.Found -> println(result.sha)
-    is AlphaCandidateResult.NoNewCommits -> {
-      System.err.println(
-        "latest-alpha is already the most recent passing commit on '$branch'. No new cut needed."
+  try {
+    when (
+      val result = findAlphaCandidate(
+        gitHubCiClient = client,
+        branch = branch,
+        sinceSha = latestAlphaSha
       )
-      // Exit 0 — not a failure; the calling workflow should skip dispatch.
+    ) {
+      is AlphaCandidateResult.Found -> println(result.sha)
+      is AlphaCandidateResult.NoNewCommits -> {
+        System.err.println(
+          "latest-alpha is already the most recent passing commit on '$branch'. No new cut needed."
+        )
+        // Exit 0 — not a failure; the calling workflow should skip dispatch.
+      }
+      is AlphaCandidateResult.NoPassingCommit -> {
+        System.err.println(
+          "No passing candidate found in the last ${result.commitsChecked} commit(s) on '$branch'. " +
+            "Ensure CI has completed for recent commits and retry."
+        )
+        System.exit(1)
+      }
     }
-    is AlphaCandidateResult.NoPassingCommit -> {
-      System.err.println(
-        "No passing candidate found in the last ${result.commitsChecked} commit(s) on '$branch'. " +
-          "Ensure CI has completed for recent commits and retry."
-      )
-      System.exit(1)
-    }
+  } catch (e: IllegalStateException) {
+    System.err.println("Fatal: ${e.message}")
+    System.exit(1)
   }
 }
 
