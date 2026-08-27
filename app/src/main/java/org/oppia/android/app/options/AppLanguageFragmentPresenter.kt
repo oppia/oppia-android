@@ -12,7 +12,6 @@ import org.oppia.android.app.databinding.databinding.AppLanguageSelectionFragmen
 import org.oppia.android.app.model.AppLanguageFragmentStateBundle
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.LegacyProfileId
-import org.oppia.android.app.model.OnboardingFragmentStateBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.onboarding.AppLanguageViewModel
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
@@ -58,8 +57,8 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
     val savedSelectedLanguage = outState?.getProto(
       FRAGMENT_SAVED_STATE_KEY,
-      OnboardingFragmentStateBundle.getDefaultInstance()
-    )?.selectedLanguage
+      AppLanguageFragmentStateBundle.getDefaultInstance()
+    )?.oppiaLanguage
 
     selectedLanguage = savedSelectedLanguage ?: currentSelection
 
@@ -150,6 +149,16 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
     translationController.updateAppLanguage(profileId.toProfileIdPreservingZero(), selection)
+      .toLiveData()
+      .observe(fragment) { result ->
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e(
+            "AppLanguageFragment",
+            "Failed to update app language to: $selectedLanguage.",
+            result.error
+          )
+        }
+      }
   }
 
   private fun updateAppLanguage(appLanguage: OppiaLanguage) {

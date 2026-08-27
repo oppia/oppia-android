@@ -1,0 +1,164 @@
+# Runs weekly to refresh the pinned lesson version files (config/lessons/*.textproto) by
+# executing download_lesson_list against the live Oppia server, then opens (or force-pushes to)
+# a dedicated PR on the `automated/lesson-versions` branch so the coordinator can
+# review and merge the diff.
+#
+# The workflow runs against latest develop so the textproto diff is always computed relative
+# to the current checked-in state. If the files are already up-to-date the commit step is
+# skipped and no PR changes are proposed.
+#
+# Secrets required:
+#   PROD_SERVER_LESSON_SECRET    -- Oppia production server API credential
+#   OPPIA_GITHUB_APP_ID         -- GitHub App ID (shared with oppia-web for consistency)
+#   OPPIA_GITHUB_APP_PRIVATE_KEY -- GitHub App private key (PEM format)
+
+name: Pull Latest Lesson Versions
+
+on:
+  schedule:
+    # Every Monday at 02:00 UTC. This workflow updates the pinned lesson version files;
+    # lesson_checks.yml (which verifies them) runs at 02:30 UTC so that this workflow has
+    # time to complete and push new versions before the verification pass begins. The
+    # 30-minute offset also prevents the two jobs from contending on the Bazel remote cache
+    # simultaneously.
+    - cron: "00 02 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  # Serialize runs so a manually-triggered dispatch doesn't race a scheduled run that is
+  # still in progress. cancel-in-progress is false so the in-flight run always completes
+  # and the new run queues rather than being dropped.
+  group: pull-latest-lesson-versions
+  cancel-in-progress: false
+
+jobs:
+  update_pinned_lesson_versions:
+    name: Update pinned lesson versions
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write      # Required to force-push the automated/lesson-versions branch.
+      pull-requests: write # Required to open or update the lesson-versions PR.
+
+    steps:
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
+          private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Check out introduce-asset-download-script
+        uses: actions/checkout@v6
+        with:
+          # The download_lesson_list Bazel target lives on introduce-asset-download-script,
+          # not on develop (it has not been merged yet). Once introduce-asset-download-script
+          # is merged to develop, this ref should be updated to develop.
+          ref: introduce-asset-download-script
+          fetch-depth: 1
+          # Use the GitHub App token so the push and PR creation trigger CI.
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: Check Bazel environment
+        run: bazel info
+
+      - name: Prepare lesson secret
+        env:
+          PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
+        run: |
+          echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
+
+      # Both alpha and prod versions are committed together into a single branch and PR.
+      - name: Download alpha pinned lesson versions
+        run: |
+          bazel run //scripts:download_lesson_list -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
+
+      - name: Download prod pinned lesson versions
+        run: |
+          bazel run //scripts:download_lesson_list -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
+
+      - name: Clean up lesson secret
+        if: always()
+        run: rm -f prod_server.key
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet config/lessons/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected in config/lessons/ — skipping PR update."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected:"
+            git diff --stat config/lessons/
+          fi
+
+      - name: Commit and push to dedicated branch
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          BRANCH="automated/lesson-versions"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Always reset the dedicated branch to the current develop HEAD so the diff
+          # in the PR is always exactly the textproto update and nothing else.
+          git checkout -B "$BRANCH"
+
+          git add config/lessons/alpha_pinned_lesson_versions.textproto \
+                  config/lessons/prod_pinned_lesson_versions.textproto
+
+          git commit -m "chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
+
+          # Force-push so that repeated weekly runs replace the previous branch state
+          # rather than appending commits. The PR is always a single, clean diff.
+          git push --force origin "$BRANCH"
+
+      - name: Create or update pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          BRANCH="automated/lesson-versions"
+          TITLE="chore: update pinned lesson versions ($(date -u '+%Y-%m-%d'))"
+          BODY=$'## Automated lesson version update\n\n'
+          BODY+=$'This PR was opened automatically by the `pull_latest_lesson_versions` workflow.\n\n'
+          BODY+=$'It refreshes `config/lessons/alpha_pinned_lesson_versions.textproto` and\n'
+          BODY+=$'`config/lessons/prod_pinned_lesson_versions.textproto` to reflect the latest\n'
+          BODY+=$'lesson content versions from the live Oppia server.\n\n'
+          BODY+=$'**Review checklist:**\n'
+          BODY+=$'- [ ] Confirm the content version numbers look reasonable (monotonically increasing)\n'
+          BODY+=$'- [ ] Merge once CI passes\n\n'
+          BODY+=$'_Triggered by: `${{ github.event_name }}` on `${{ github.sha }}`_'
+
+          # Capture the PR list JSON once to avoid a TOCTOU race and save an API call.
+          PR_JSON=$(gh pr list --head "$BRANCH" --state open --json number)
+          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.[0].number // empty')
+
+          if [ -n "$PR_NUMBER" ]; then
+            echo "Updating existing PR #$PR_NUMBER"
+            gh pr edit "$PR_NUMBER" --title "$TITLE" --body "$BODY"
+          else
+            echo "Opening new PR"
+            gh pr create \
+              --head "$BRANCH" \
+              --base introduce-asset-download-script \
+              --title "$TITLE" \
+              --body "$BODY"
+          fi

@@ -823,8 +823,14 @@ class AppLanguageResourceHandlerTest {
     // Date & time: Wed Apr 24 2019 08:22:03 GMT.
     private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
 
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
-    private val HEBREW_LOCALE = Locale("he", "US")
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
+    private val HEBREW_LOCALE = Locale.Builder()
+      .setLanguage("he")
+      .setRegion("US")
+      .build()
 
     private fun String.extractNumbers(): List<String> =
       "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()

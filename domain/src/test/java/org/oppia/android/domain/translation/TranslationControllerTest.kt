@@ -2180,10 +2180,22 @@ class TranslationControllerTest {
   }
 
   private companion object {
-    private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
-    private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
+    private val BRAZIL_ENGLISH_LOCALE = Locale.Builder()
+      .setLanguage("en")
+      .setRegion("BR")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val INDIA_HINDI_LOCALE = Locale.Builder()
+      .setLanguage("hi")
+      .setRegion("IN")
+      .build()
+    private val KENYA_KISWAHILI_LOCALE = Locale.Builder()
+      .setLanguage("sw")
+      .setRegion("KE")
+      .build()
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0

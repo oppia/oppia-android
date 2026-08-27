@@ -33,7 +33,7 @@ class HtmlParser private constructor(
   private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-  displayLocale: OppiaLocale.DisplayLocale
+  private val displayLocale: OppiaLocale.DisplayLocale
 ) {
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
@@ -107,18 +107,7 @@ class HtmlParser private constructor(
     if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
-    if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
-        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
-    }
-    if ("<ul>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
-        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
-    }
-    if ("<ol>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
-        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
-    }
+    htmlContent = replaceListTags(htmlContent)
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
@@ -188,23 +177,63 @@ class HtmlParser private constructor(
       // A worked example's question and answer are HTML that's nested within the tag's attributes,
       // so they're parsed using the handlers computed above. Note that the snapshot deliberately
       // excludes the worked example handler itself since worked examples can't be nested.
-      val nestedTagHandlers = handlersMap.toMap()
+      // Lists are the one exception: LiTagHandler tracks state across the tags that it processes,
+      // and a worked example's HTML is parsed part-way through the outer parse, so reusing the
+      // outer handler would corrupt any list that the worked example is itself within.
+      val workedExampleLeadingMarginPx =
+        context.resources.getDimensionPixelSize(R.dimen.worked_example_leading_margin)
+      // The nested handler is told about the example's own indentation since Android applies that
+      // in addition to a list's, and the list draws its bullets and numbers itself.
+      val nestedBulletTagHandler = LiTagHandler(
+        context, displayLocale, enclosingLeadingMargin = workedExampleLeadingMarginPx
+      ).apply { setTextView(htmlContentTextView) }
+      val nestedTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler> =
+        handlersMap + mapOf(
+          CUSTOM_LIST_LI_TAG to nestedBulletTagHandler,
+          CUSTOM_LIST_UL_TAG to nestedBulletTagHandler,
+          CUSTOM_LIST_OL_TAG to nestedBulletTagHandler
+        )
       handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] = WorkedExampleTagHandler(
         consoleLogger,
         labels = workedExampleLabels,
-        leadingMarginPx = context.resources.getDimensionPixelSize(
-          R.dimen.worked_example_leading_margin
-        ),
+        leadingMarginPx = workedExampleLeadingMarginPx,
         nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
           override fun parseHtml(html: String): Spannable =
-            CustomHtmlContentHandler.fromHtml(html, imageRetriever, nestedTagHandlers)
+            CustomHtmlContentHandler.fromHtml(
+              replaceListTags(html), imageRetriever, nestedTagHandlers
+            )
 
           override fun parseHtmlForContentDescription(html: String): String =
-            CustomHtmlContentHandler.getContentDescription(html, nestedTagHandlers)
+            CustomHtmlContentHandler.getContentDescription(
+              replaceListTags(html), nestedTagHandlers
+            )
         }
       )
     }
     return handlersMap
+  }
+
+  /**
+   * Returns [html] with its list tags replaced by the custom tags that [LiTagHandler] processes.
+   *
+   * This is needed since Android's built-in list rendering doesn't match Oppia's (in particular, it
+   * renders ordered lists as bullets rather than as numbers).
+   */
+  private fun replaceListTags(html: String): String {
+    var adjustedHtml = html
+    if ("<li>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
+        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
+    }
+    if ("<ul>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
+        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
+    }
+    if ("<ol>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
+        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
+    }
+    return adjustedHtml
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {

@@ -67,7 +67,6 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/release:upload_binary_to_play_console_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
-        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
 

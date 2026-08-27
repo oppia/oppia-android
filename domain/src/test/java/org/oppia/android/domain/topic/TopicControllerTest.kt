@@ -1280,7 +1280,7 @@ class TopicControllerTest {
    */
   private fun markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters() {
     val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId1,
+      profileId1.toProfileIdPreservingZero(),
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
@@ -1414,7 +1414,13 @@ class TopicControllerTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

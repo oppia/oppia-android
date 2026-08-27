@@ -348,7 +348,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/LessonProgressIndicatorView.kt"
-  test_file_not_required: true
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt"
@@ -2435,7 +2435,8 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/DismissSurveyListener.kt"
   test_file_not_required: true
-}test_file_exemption {
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/ExitSurveyConfirmationDialogFragment.kt"
   test_file_not_required: true
 }
@@ -4857,10 +4858,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterValue.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/statusbar/StatusBarColor.kt"
   test_file_not_required: true
 }
 test_file_exemption {

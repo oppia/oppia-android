@@ -67,6 +67,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
@@ -2324,7 +2325,7 @@ class LearnerAnalyticsLoggerTest {
 
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId, expId)
+      explorationDataController.getExplorationById(profileId.toProfileIdPreservingZero(), expId)
     ).exploration
   }
 

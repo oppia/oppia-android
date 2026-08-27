@@ -12,6 +12,7 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -23,6 +24,7 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -96,7 +98,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
-  fun saveCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+  fun saveCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
     val checkpoint = createExplorationCheckpoint(
       explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
       pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME,
@@ -111,12 +113,23 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Saves a checkpoint for topic Fractions, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun saveCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    saveCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Saves a checkpoint for topic Fractions, story 0, exploration 1.
    *
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
-  fun saveCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+  fun saveCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
     val checkpoint = createExplorationCheckpoint(
       explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
       pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME,
@@ -131,13 +144,24 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Saves a checkpoint for topic Fractions, story 0, exploration 1.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun saveCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    saveCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
    *
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
-  fun updateCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+  fun updateCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
     val checkpoint = createUpdatedExplorationCheckpoint(
       explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
       pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME,
@@ -152,13 +176,24 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForFractionsStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    updateCheckpointForFractionsStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 1. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration1].
    *
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
-  fun updateCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+  fun updateCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
     val checkpoint = createUpdatedExplorationCheckpoint(
       explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
       pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME,
@@ -173,13 +208,24 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 1.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForFractionsStory0Exploration1(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    updateCheckpointForFractionsStory0Exploration1(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Saves a checkpoint for topic Ratios, story 0, exploration 0.
    *
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForRatiosStory0Exploration0(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     version: Int,
   ) {
     val checkpoint = createExplorationCheckpoint(
@@ -196,13 +242,27 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Saves a checkpoint for topic Ratios, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun saveCheckpointForRatiosStory0Exploration0(
+    profileId: LegacyProfileId,
+    version: Int,
+  ) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    saveCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
    *
    * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
-  fun updateCheckpointForRatiosStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+  fun updateCheckpointForRatiosStory0Exploration0(profileId: ProfileId, version: Int) {
     val checkpoint = createUpdatedExplorationCheckpoint(
       explorationTitle = RATIOS_EXPLORATION_0_TITLE,
       pendingStateName = RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME,
@@ -217,13 +277,24 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Updates the saved checkpoint for Ratios, story 0, exploration 0.
+   *
+   * @param profileId the legacy profile ID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForRatiosStory0Exploration0(profileId: LegacyProfileId, version: Int) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    updateCheckpointForRatiosStory0Exploration0(profileId.toProfileIdPreservingZero(), version)
+  }
+
+  /**
    * Function to verify progress for the exploration specified by the explorationId exists in the
    * checkpoint database of the specified profileId.
    *
    * @param profileId the profile ID for which the save operation has to be verified
    * @param explorationId the ID of the exploration for which checkpoint was saved
    */
-  fun verifyExplorationProgressIsSaved(profileId: LegacyProfileId, explorationId: String) {
+  fun verifyExplorationProgressIsSaved(profileId: ProfileId, explorationId: String) {
 
     val retrieveCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -248,13 +319,24 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   }
 
   /**
+   * Verifies that progress for the given [explorationId] exists for the specified [profileId].
+   *
+   * @param profileId the legacy profile ID for which the save operation has to be verified
+   * @param explorationId the ID of the exploration for which checkpoint was saved
+   */
+  fun verifyExplorationProgressIsSaved(profileId: LegacyProfileId, explorationId: String) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    verifyExplorationProgressIsSaved(profileId.toProfileIdPreservingZero(), explorationId)
+  }
+
+  /**
    * Function to verify no progress for the exploration specified by the explorationId exists in the
    * checkpoint database of the specified profileId.
    *
    * @param profileId the profile ID for which the delete operation has to be verified
    * @param explorationId the ID of the exploration for which checkpoint should be deleted
    */
-  fun verifyExplorationProgressIsDeleted(profileId: LegacyProfileId, explorationId: String) {
+  fun verifyExplorationProgressIsDeleted(profileId: ProfileId, explorationId: String) {
     val retrieveCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         profileId,
@@ -277,6 +359,17 @@ class ExplorationCheckpointTestHelper @Inject constructor(
         .isFailureThat()
         .isInstanceOf(ExplorationCheckpointNotFoundException::class.java)
     }
+  }
+
+  /**
+   * Verifies that no progress for the given [explorationId] exists for the specified [profileId].
+   *
+   * @param profileId the legacy profile ID for which the delete operation has to be verified
+   * @param explorationId the ID of the exploration for which checkpoint should be deleted
+   */
+  fun verifyExplorationProgressIsDeleted(profileId: LegacyProfileId, explorationId: String) {
+    // TODO(#6203): Remove once app-layer tests are migrated to ProfileId.
+    verifyExplorationProgressIsDeleted(profileId.toProfileIdPreservingZero(), explorationId)
   }
 
   private fun createExplorationCheckpoint(

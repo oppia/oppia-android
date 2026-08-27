@@ -8,6 +8,9 @@ import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBin
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -17,17 +20,28 @@ const val TAG_FORCE_DOWNLOAD_DIALOG = "FORCE_DOWNLOAD_DIALOG_TAG"
 /** The presenter for [DeveloperOptionsActivity]. */
 @ActivityScope
 class DeveloperOptionsActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
 
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.developer_options_activity
     )
     setUpNavigationDrawer()
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        binding.developerOptionsActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     val previousFragment = getDeveloperOptionsFragment()
     if (previousFragment == null) {
       activity.supportFragmentManager.beginTransaction().add(
