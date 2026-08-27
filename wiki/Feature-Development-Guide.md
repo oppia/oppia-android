@@ -87,8 +87,9 @@ Once your flagged feature lands on `develop`, it moves through a defined lifecyc
 reaches production. The lifecycle is:
 
 ```
-develop (flag off) → alpha testing → product review → QA → team lead sign-off
-  → production enablement → cleanup
+develop (flag off) → alpha build (flag on via alpha textproto, if requested)
+  → product review → beta build (flag on via beta textproto)
+  → tech lead sign-off → production (flag on via GA textproto) → cleanup
 ```
 
 ### Flag state across release stages
@@ -96,9 +97,9 @@ develop (flag off) → alpha testing → product review → QA → team lead sig
 | Stage | Where the flag lives | Flag state | Who controls it |
 |---|---|---|---|
 | **Development** | `develop` branch | `false` (default) | Developer |
-| **Alpha** | `release-X.Y` → alpha build | `true` (enabled via gating console for alpha) | Release coordinator |
-| **Beta** | `release-X.Y` → beta build | `true` (if alpha testing passed) | Release coordinator |
-| **Production (GA)** | GA rollout | `true` (after QA + sign-off) | CLaM lead / coordinator |
+| **Alpha** | `release-X.Y` → alpha build | `true` (enabled via [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)) | Release coordinator |
+| **Beta** | `release-X.Y` → beta build | `true` (enabled via [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto), if alpha passed) | Release coordinator |
+| **Production (GA)** | GA rollout | `true` (after QA + product sign-off) | Tech lead / release coordinator |
 | **Cleanup** | Next release cycle | Flag removed entirely | Developer |
 
 ### What you need to do at each stage
@@ -106,15 +107,18 @@ develop (flag off) → alpha testing → product review → QA → team lead sig
 **Before alpha cut:**
 - Ensure all feature code is behind the flag and merged to `develop`.
 - Confirm the flag's default value is `false`.
-- Verify your tracking issue is linked in the PR description.
+- Verify your tracking issue is up to date and linked from all feature PRs that have merged.
+- Add the feature's CUJs to the Android team's CUJ sheet.
 
 **During alpha:**
-- The coordinator enables your flag in the alpha environment via the [Feature Gating Console](https://github.com/oppia/oppia/wiki/Launching-new-features#what-is-the-feature-gating-platform).
+- The coordinator enables your flag for the alpha build by setting it to `true` in
+  [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto).
 - Participate in alpha testing — verify the feature works end-to-end in a real build.
-- Report any regressions on the tracking issue immediately.
+- File any regressions as separate issues, linked to the original tracking issue as child/sub-issues.
 
 **During beta:**
-- If alpha testing passes and product review approves, the coordinator enables the flag in beta.
+- If alpha testing passes and product review approves, the coordinator enables the flag in beta
+  by setting it to `true` in [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto).
 - QA testers verify the feature in the beta build.
 
 **Production:**
@@ -124,19 +128,20 @@ develop (flag off) → alpha testing → product review → QA → team lead sig
 **Cleanup (after production enablement):**
 - Once the flag is fully enabled in production and stable for at least one release cycle, remove
   the flag constant, Dagger binding, gating check, and all flag-specific test branches.
-- Removal PR should reference the original tracking issue.
+- Removal PR should reference and close the original tracking issue.
 
-### How feature releases fit into the binary release timeline
+### How feature flag enablement relates to binary releases
 
-Feature flags are enabled in the **Feature Gating Console** independently of binary releases.
-Enabling or disabling a flag does not require a new binary — the app fetches the flag state from
-the Oppia backend at runtime. This means:
+For oppia-android, flag states are controlled by per-flavor textproto override files that are
+compiled into the binary. Enabling or disabling a flag for a specific release stage requires
+modifying the corresponding override file and shipping a new binary for that flavor:
 
-- A flag can be enabled for alpha users the moment the alpha binary is live.
-- A flag can be rolled back instantly if an issue is discovered, without requiring a hotfix release.
+- **Alpha**: [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)
+- **Beta**: [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto)
+- **Production (GA)**: [`ga/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/ga/feature_flags_overrides.textproto)
 
-For the binary release timeline (branch cut dates, alpha/beta/GA dates), refer to the
-[Release Playbook](Release-Playbook.md).
+This means flag enablement is tied to the binary release cycle. For the binary release timeline
+(branch cut dates, alpha/beta/GA dates), refer to the [Release Playbook](Release-Playbook.md).
 
 ---
 
@@ -156,20 +161,9 @@ Only request production enablement when **all** of the following are true:
 
 ### How to request
 
-Post a comment on your feature's tracking issue with the following information:
-
-```
-**Production enablement request**
-
-- Flag name: `android_enable_<your_flag>` (as defined in FeatureFlagConstants.kt)
-- Tracking issue: #XXXX
-- Beta verification: [link to QA sign-off comment or test report]
-- Product approval: [link to product review approval]
-- Team lead sign-off: [link to sign-off comment]
-- Target release: X.Y (or "next available")
-```
-
-Then assign or ping the **CLaM lead** and the **release coordinator** for the current cycle.
+File a production enablement issue in the product operations tracker, following the requirements
+template at [product-operations-team#46](https://github.com/oppia/product-operations-team/issues/46).
+Then assign or ping the **Tech lead** and the **release coordinator** for the current cycle.
 
 ### Timeline
 
