@@ -5,17 +5,19 @@ feature flag, understand how it moves through the release pipeline, and request 
 in production.
 
 **For the technical mechanics of creating a flag** (constants, Dagger wiring, analytics logging),
-see the [Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags) wiki.
-
-## Table of Contents
-
-- [Gating a Feature Behind a Flag](#gating-a-feature-behind-a-flag)
-- [Navigating the Release Process](#navigating-the-release-process)
-- [Requesting Production Enablement](#requesting-production-enablement)
+see the [Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki.
 
 ---
 
-## Gating a Feature Behind a Flag
+## Table of Contents
+
+1. [Gating a Feature Behind a Flag](#1-gating-a-feature-behind-a-flag)
+2. [Navigating the Release Process](#2-navigating-the-release-process)
+3. [Requesting Production Enablement](#3-requesting-production-enablement)
+
+---
+
+## 1. Gating a Feature Behind a Flag
 
 Feature flags allow large features to land on `develop` incrementally and be enabled only when
 they are fully ready, without blocking other releases. Every integration point of a multi-sprint
@@ -30,7 +32,7 @@ Use a feature flag when your change:
 
 ### Gating code behind a flag
 
-After [creating the flag constant and Dagger binding](Platform-Parameters-&-Feature-Flags#how-to-create-a-feature-flag),
+After [creating the flag constant and Dagger binding](Platform-Parameters-&-Feature-Flags.md#how-to-create-a-feature-flag),
 inject the flag into any class that has a guarded entry point and check it before executing
 feature-specific logic:
 
@@ -58,7 +60,7 @@ class SomeController @Inject constructor(
 ### Writing tests
 
 Test both states of the flag. See
-[How to write tests related to Platform Parameters](Platform-Parameters-&-Feature-Flags#how-to-write-tests-related-to-platform-parameters)
+[How to write tests related to Platform Parameters](Platform-Parameters-&-Feature-Flags.md#how-to-write-tests-related-to-platform-parameters)
 for the full test setup patterns. At minimum:
 
 ```kotlin
@@ -79,7 +81,7 @@ fun testFeature_flagEnabled_works() {
 
 ---
 
-## Navigating the Release Process
+## 2. Navigating the Release Process
 
 Once your flagged feature lands on `develop`, it moves through a defined lifecycle before it
 reaches production. The lifecycle is:
@@ -134,11 +136,11 @@ the Oppia backend at runtime. This means:
 - A flag can be rolled back instantly if an issue is discovered, without requiring a hotfix release.
 
 For the binary release timeline (branch cut dates, alpha/beta/GA dates), refer to the
-[Release Playbook](Release-Playbook).
+[Release Playbook](Release-Playbook.md).
 
 ---
 
-## Requesting Production Enablement
+## 3. Requesting Production Enablement
 
 Once your feature has passed QA in beta and received team lead sign-off, you need to request
 that the release coordinator enable your flag in the production environment.
@@ -175,7 +177,7 @@ Production enablement happens as part of the monthly release cycle. If your requ
 **before the GA rollout step**, the coordinator will enable your flag during that cycle's GA
 rollout. If it arrives after, it targets the next release.
 
-Check the [Release Playbook](Release-Playbook) for the current cycle's GA date.
+Check the [Release Playbook](Release-Playbook.md) for the current cycle's GA date.
 
 ### After production enablement
 
