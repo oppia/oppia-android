@@ -69,7 +69,7 @@ class DragAndDropSortInteractionViewModel private constructor(
       ?: listOf()
   }
 
-  private val contentIdHtmlMap: Map<String, String> =
+  val contentIdHtmlMap: Map<String, String> =
     choiceSubtitledHtmls.associate { subtitledHtml ->
       val translatedHtml =
         translationController.extractString(subtitledHtml, writtenTranslationContext)
@@ -101,6 +101,17 @@ class DragAndDropSortInteractionViewModel private constructor(
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   var errorMessage = ObservableField<String>("")
+
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is DragAndDropSortInteractionViewModel) return false
+    // contentIdHtmlMap is an immutable Map<String, String> built at construction from the proto.
+    // Same map = same set of choices. We avoid comparing _choiceItems (mutable drag ordering)
+    // or lastCheckedOrDefaultChoiceItems (contains child VMs with mutable var htmlContent).
+    return entityId == other.entityId &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      contentIdHtmlMap == other.contentIdHtmlMap
+  }
 
   init {
     val callback: Observable.OnPropertyChangedCallback =

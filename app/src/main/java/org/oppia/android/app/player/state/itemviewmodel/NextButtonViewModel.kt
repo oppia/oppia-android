@@ -10,4 +10,11 @@ class NextButtonViewModel(
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val nextNavigationButtonListener: NextNavigationButtonListener,
   val isSplitView: Boolean
-) : StateItemViewModel(ViewType.NEXT_NAVIGATION_BUTTON)
+) : StateItemViewModel(ViewType.NEXT_NAVIGATION_BUTTON) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is NextButtonViewModel) return false
+    return hasPreviousButton == other.hasPreviousButton &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView
+  }
+}

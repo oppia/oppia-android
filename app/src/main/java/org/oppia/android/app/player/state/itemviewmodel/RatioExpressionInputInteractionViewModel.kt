@@ -44,6 +44,13 @@ class RatioExpressionInputInteractionViewModel private constructor(
   private val numberOfTerms =
     interaction.customizationArgsMap["numberOfTerms"]?.signedInt ?: 0
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is RatioExpressionInputInteractionViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      hintText.toString() == other.hintText.toString()
+  }
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {

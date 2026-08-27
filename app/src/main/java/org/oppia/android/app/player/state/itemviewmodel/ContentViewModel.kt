@@ -12,6 +12,16 @@ class ContentViewModel(
   val customTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler>
 ) : StateItemViewModel(ViewType.CONTENT) {
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is ContentViewModel) return false
+    return htmlContent.toString() == other.htmlContent.toString() &&
+      gcsEntityId == other.gcsEntityId &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      supportsConceptCards == other.supportsConceptCards
+  }
+
+
   private val underscoreRegex = Regex("(?<=\\s|[,.;?!])_{3,}(?=\\s|[,.;?!])")
   private val replacementText = "Blank"
 

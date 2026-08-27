@@ -14,6 +14,23 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  */
 abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel() {
 
+  /**
+   * Returns whether the visual content of this view model is the same as [other].
+   *
+   * This is used to avoid unnecessary RecyclerView redraws (and therefore avoid dismissing the
+   * soft keyboard) when the underlying [EphemeralState] changes but the visible content remains
+   * identical (e.g. when a hint is revealed while the learner is typing an answer).
+   *
+   * Implementations must:
+   * - Return `false` if [other] is a different subclass type.
+   * - Compare only **structural/presentational** `val` fields set at construction.
+   * - Skip mutable user-state fields (e.g. typed answer text, selected items).
+   * - Skip [androidx.databinding.ObservableField]/[androidx.databinding.ObservableBoolean] fields
+   *   because data binding already propagates their changes without a full list redraw.
+   * - Skip injected singletons and listener references (they never change within a session).
+   */
+  abstract fun areContentsTheSame(other: StateItemViewModel): Boolean
+
   /** Corresponds to the type of the view model. */
   enum class ViewType {
     CONTENT,
