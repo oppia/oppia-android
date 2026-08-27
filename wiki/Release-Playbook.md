@@ -80,7 +80,10 @@ Follow this checklist for a full beta or production (GA) release.
 ### Build & sign
 
 - [ ] Trigger **Build and Sign** (`build_and_sign.yml`) with `flavor=beta` or `flavor=ga` and
-  `source_ref=release-0.X`.
+  `source_ref=release-0.X`:
+
+  ![Build and Sign dispatch dialog](https://github.com/user-attachments/assets/c9119df5-5d3a-459e-bb31-ba3b7683b98b)
+
 - [ ] Approve the run in the `oppia-android-release-env` gate.
 - [ ] Copy the signed AAB GCS path from the job summary.
 
