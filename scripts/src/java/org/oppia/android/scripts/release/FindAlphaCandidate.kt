@@ -71,8 +71,8 @@ fun main(args: Array<String>) {
       }
       is AlphaCandidateResult.NoPassingCommit -> {
         System.err.println(
-          "No passing candidate found in the last ${result.commitsChecked} commit(s) on '$branch'. " +
-            "Ensure CI has completed for recent commits and retry."
+          "No passing candidate found in the last ${result.commitsChecked} commit(s) on " +
+            "'$branch'. Ensure CI has completed for recent commits and retry."
         )
         System.exit(1)
       }
