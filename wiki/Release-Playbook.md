@@ -40,7 +40,9 @@ gate.
 - [ ] **Deploy to Play Console** — After QA sign-off, trigger **Deploy to Play Console**
   (`deploy_to_play_console.yml`) with `track=alpha` and `rollout_fraction=1000` (100% of the
   alpha track). The Firebase and Play Console deployments are sequential: QA on Firebase is
-  completed first, then the approved build is pushed to the alpha track.
+  completed first, then the approved build is pushed to the alpha track:
+
+  ![Deploy to Play Console dispatch dialog](https://github.com/user-attachments/assets/76b3dbbd-eede-4a1c-a359-8751d08b304e)
 
 > If **Auto Release Alpha** exits with an error or finds no passing commit, see the
 > [In-Depth Release Reference](In-Depth-Release-Reference.md) for manual fallback steps.
