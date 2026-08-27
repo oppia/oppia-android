@@ -86,7 +86,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -98,7 +98,7 @@ class UploadChangelogToPlayConsoleTest {
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("alpha")
-    assertThat(update.versionCode).isEqualTo(300L)
+    assertThat(update.versionCode).isEqualTo(100L)
     assertThat(update.releaseNotes).containsEntry("en-US", testNotes)
     assertThat(fakeClient.committedEdits).hasSize(1)
   }
@@ -271,7 +271,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -290,7 +290,7 @@ class UploadChangelogToPlayConsoleTest {
     assertThat(fakeClient.trackUpdates.map { it.releaseNotes["en-US"] })
       .containsExactly(testNotes, testNotes)
     assertThat(fakeClient.trackUpdates.map { it.versionCode })
-      .containsExactly(300L, 200L)
+      .containsExactly(100L, 200L)
   }
 
   @Test
@@ -362,7 +362,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -372,7 +372,7 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
 
   @Test
@@ -381,7 +381,7 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(298L, 300L, 299L),
+          versionCodes = listOf(98L, 100L, 99L),
           status = "completed"
         ),
         FROZEN_ALPHA_BASELINE
@@ -393,7 +393,7 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
 
   @Test
@@ -607,8 +607,8 @@ class UploadChangelogToPlayConsoleTest {
 
   @Test
   fun testMaybeUploadUpdatedChangelogs_alphaTrack_preservesFrozenVersionCodesInUpdate() {
-    // All frozen alpha version codes (16 = KitKat, 201 = pre-cycle freeze) must be merged into
-    // every setTrackRelease call so the Play Console API does not deactivate them.
+    // All frozen alpha version codes (defined in FrozenReleaseConfig) must be merged into every
+    // setTrackRelease call so the Play Console API does not deactivate them.
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -624,13 +624,17 @@ class UploadChangelogToPlayConsoleTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(202L)
+    // Assertions derive from FROZEN_VERSION_CODES_PER_TRACK so they stay correct when
+    // FrozenReleaseConfig is updated without requiring manual test changes.
     assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
-      .containsExactlyElementsIn(setOf(16L, 201L))
+      .containsExactlyElementsIn(FROZEN_VERSION_CODES_PER_TRACK["alpha"] ?: emptySet<Long>())
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_betaTrack_preservesFrozenBetaVersionCodeInUpdate() {
-    // Beta has a frozen build (vc 196); it must be merged into every setTrackRelease call.
+  fun testMaybeUploadUpdatedChangelogs_betaTrack_frozenVersionCodesMatchFrozenConfig() {
+    // Beta frozen codes (from FrozenReleaseConfig) must be present in the changelog update. The
+    // assertion derives directly from FROZEN_VERSION_CODES_PER_TRACK so it stays resilient when
+    // codes are added to or removed from the config.
     fakeClient.setTrackReleases(
       "beta",
       listOf(
@@ -646,7 +650,8 @@ class UploadChangelogToPlayConsoleTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
-    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes).containsExactly(196L)
+    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
+      .containsExactlyElementsIn(FROZEN_VERSION_CODES_PER_TRACK["beta"] ?: emptySet<Long>())
   }
 
   // ---------------------------------------------------------------------------

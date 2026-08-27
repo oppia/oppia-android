@@ -129,7 +129,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(298L, 300L, 299L), status = "inProgress", rolloutFraction = 100
+          versionCodes = listOf(98L, 100L, 99L), status = "inProgress", rolloutFraction = 100
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -140,7 +140,7 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
   }
 
   @Test
@@ -431,8 +431,8 @@ class UpdateRolloutFractionTest {
 
   @Test
   fun testUpdateRollout_alphaTrack_preservesFrozenVersionCodesInTrackUpdate() {
-    // All frozen alpha version codes (16 = KitKat, 201 = pre-cycle freeze) must be merged into
-    // the rollout update entry so the Play Console API does not deactivate them.
+    // All frozen alpha version codes (defined in FrozenReleaseConfig) must be merged into every
+    // setTrackRelease call so the Play Console API does not deactivate them.
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -449,14 +449,17 @@ class UpdateRolloutFractionTest {
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(202L)
     assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
+    // Assertions derive from FROZEN_VERSION_CODES_PER_TRACK so they stay correct when
+    // FrozenReleaseConfig is updated without requiring manual test changes.
     assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
-      .containsExactlyElementsIn(setOf(16L, 201L))
+      .containsExactlyElementsIn(FROZEN_VERSION_CODES_PER_TRACK["alpha"] ?: emptySet<Long>())
   }
 
   @Test
-  fun testUpdateRollout_betaTrack_preservesFrozenBetaVersionCodeInTrackUpdate() {
-    // Beta has a frozen build (vc 196); it must be merged into the rollout update so the Play
-    // Console API does not deactivate it.
+  fun testUpdateRollout_betaTrack_frozenVersionCodesMatchFrozenConfig() {
+    // Beta frozen codes (from FrozenReleaseConfig) must be present in the track update. The
+    // assertion derives directly from FROZEN_VERSION_CODES_PER_TRACK so it stays resilient when
+    // codes are added to or removed from the config.
     fakeClient.setTrackReleases(
       "beta",
       listOf(
@@ -476,7 +479,8 @@ class UpdateRolloutFractionTest {
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(200L)
     assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
-    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes).containsExactly(196L)
+    assertThat(fakeClient.trackUpdates[0].frozenVersionCodes)
+      .containsExactlyElementsIn(FROZEN_VERSION_CODES_PER_TRACK["beta"] ?: emptySet<Long>())
   }
 
   // ---------------------------------------------------------------------------

@@ -45,7 +45,6 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.profile.toProfileIdPreservingZero
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
@@ -424,13 +423,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.requireActivity().invalidateOptionsMenu()
-          if (!enableEdgeToEdge.value) {
-            StatusBarColor.statusBarColorUpdate(
-              R.color.component_color_shared_slide_drawer_open_status_bar_color,
-              activity,
-              false
-            )
-          }
         }
 
         override fun onDrawerClosed(drawerView: View) {
@@ -438,13 +430,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           // It's possible in some rare cases for the activity to be gone while the drawer is
           // closing (possibly an out-of-lifecycle call from the AndroidX component).
           fragment.activity?.invalidateOptionsMenu()
-          if (!enableEdgeToEdge.value) {
-            StatusBarColor.statusBarColorUpdate(
-              R.color.component_color_shared_activity_status_bar_color,
-              activity,
-              false
-            )
-          }
         }
       }
       drawerLayout.addDrawerListener(drawerToggle)
@@ -467,25 +452,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.requireActivity().invalidateOptionsMenu()
-          if (!enableEdgeToEdge.value) {
-            StatusBarColor.statusBarColorUpdate(
-              R.color.component_color_shared_slide_drawer_open_status_bar_color,
-              activity,
-              false
-            )
-          }
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.requireActivity().invalidateOptionsMenu()
-          if (!enableEdgeToEdge.value) {
-            StatusBarColor.statusBarColorUpdate(
-              R.color.component_color_shared_activity_status_bar_color,
-              activity,
-              false
-            )
-          }
         }
       }
       drawerLayout.addDrawerListener(drawerToggle)

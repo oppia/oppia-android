@@ -133,12 +133,6 @@ class StateFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    if (enableEdgeToEdge.value) {
-      // The activity's EdgeToEdgeHelper applies the status-bar inset to the AppBarLayout; the
-      // legacy fitsSystemWindows on this fragment's root would re-apply the same inset as inner
-      // top padding, leaving a blank gap below the toolbar.
-      binding.root.fitsSystemWindows = false
-    }
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, userAnswerState),
       binding.congratulationsTextView,

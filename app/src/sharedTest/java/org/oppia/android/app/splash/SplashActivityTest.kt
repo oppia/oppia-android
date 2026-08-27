@@ -1493,10 +1493,22 @@ class SplashActivityTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val NIGERIAN_PIDGIN_LOCALE = Locale("pcm", "NG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val NIGERIAN_PIDGIN_LOCALE = Locale.Builder()
+      .setLanguage("pcm")
+      .setRegion("NG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
 
     private fun onDialogView(matcher: Matcher<View>) = onView(matcher).inRoot(isDialog())
   }

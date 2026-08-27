@@ -130,10 +130,22 @@ class AppLanguageFragmentTest {
     private const val KISWAHILI_BUTTON_INDEX = 1
     private const val PORTUGUESE_BUTTON_INDEX = 3
 
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
-    private val CANADA_FRENCH_LOCALE = Locale("fr", "CA")
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val NIGERIA_NAIJA_LOCALE = Locale.Builder()
+      .setLanguage("pcm")
+      .setRegion("NG")
+      .build()
+    private val CANADA_FRENCH_LOCALE = Locale.Builder()
+      .setLanguage("fr")
+      .setRegion("CA")
+      .build()
   }
 
   @get:Rule

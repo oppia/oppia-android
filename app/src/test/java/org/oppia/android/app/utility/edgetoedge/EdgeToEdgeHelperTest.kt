@@ -155,6 +155,38 @@ class EdgeToEdgeHelperTest {
   }
 
   @Test
+  fun testApplyToToolbarContainer_constraintParentWithUnidentifiedChild_constrainsSpacer() {
+    launchTestActivity { activity ->
+      val root = ConstraintLayout(activity)
+      val toolbar = Toolbar(activity).apply {
+        id = View.generateViewId()
+        setBackgroundColor(Color.RED)
+      }
+      root.addView(toolbar, ConstraintLayout.LayoutParams(0, 56))
+      ConstraintSet().apply {
+        clone(root)
+        connect(toolbar.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        connect(toolbar.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+        connect(toolbar.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        applyTo(root)
+      }
+      // Decorative views (such as toolbar drop shadows) are often declared without an ID.
+      root.addView(View(activity), ConstraintLayout.LayoutParams(0, 6))
+      activity.setContentView(root)
+
+      EdgeToEdgeHelper.applyToToolbarContainer(activity, toolbar, STATUS_BAR_COLOR)
+      val spacer = root.getChildAt(2)
+      dispatchInsets(spacer)
+
+      assertThat(root.childCount).isEqualTo(3)
+      assertThat(spacer.backgroundColor).isEqualTo(expectedStatusBarColor(activity))
+      assertThat(spacer.layoutParams.height).isEqualTo(25)
+      assertThat((toolbar.layoutParams as ConstraintLayout.LayoutParams).topToBottom)
+        .isEqualTo(spacer.id)
+    }
+  }
+
+  @Test
   fun testApplyToToolbarContainer_genericParent_usesOverlayAndPreservesToolbarColorAndMargin() {
     launchTestActivity { activity ->
       val root = FrameLayout(activity)

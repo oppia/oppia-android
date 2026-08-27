@@ -110,7 +110,7 @@ jobs:
         env:
           compute_all_files: ${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
           # See: https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request. Defer to origin/develop outside a PR (such as develop's main CI runs).
-          base_commit_hash: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/develop' }}
+          base_commit_hash: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'develop' }}
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix. Note that the extra fetch is to
         # enusre that the base commit is fully fetched locally so that it can be diffed against.

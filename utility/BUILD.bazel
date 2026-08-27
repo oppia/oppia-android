@@ -21,7 +21,6 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/math/**/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
     "src/main/java/org/oppia/android/util/profile/*.kt",
-    "src/main/java/org/oppia/android/util/statusbar/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
     "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
