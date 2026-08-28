@@ -10,6 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -161,6 +166,7 @@ class ConceptCardFragmentTest {
   fun setUp() {
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableWorkedExamples(true)
+    TestPlatformParameterModule.forceEnableEdgeToEdge(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -189,6 +195,27 @@ class ConceptCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testConceptCardFragment_openCard_toolbarIsPositionedBelowStatusBarInset() {
+    launchTestActivity().use { scenario ->
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val dialog = checkNotNull(activity.retrieveConceptCardDialogFragment().dialog)
+        val toolbar = dialog.findViewById<Toolbar>(R.id.concept_card_toolbar)
+        val spacerId = (toolbar.layoutParams as ConstraintLayout.LayoutParams).topToBottom
+        // The concept card is shown in its own window, so without the dialog's own inset handling
+        // the toolbar stays pinned to the top of the window & underneath the status bar.
+        assertThat(spacerId).isNotEqualTo(ConstraintLayout.LayoutParams.UNSET)
+
+        val statusBarSpacer = dialog.findViewById<View>(spacerId)
+        ViewCompat.dispatchApplyWindowInsets(statusBarSpacer, TEST_STATUS_BAR_INSETS)
+        assertThat(statusBarSpacer.layoutParams.height).isEqualTo(TEST_STATUS_BAR_HEIGHT)
+      }
     }
   }
 
@@ -590,6 +617,9 @@ class ConceptCardFragmentTest {
     }
   }
 
+  private fun AppCompatActivity.retrieveConceptCardDialogFragment(): ConceptCardFragment =
+    supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+
   private fun launchTestActivity(): ActivityScenario<ConceptCardFragmentTestActivity> {
     val scenario = ActivityScenario.launch<ConceptCardFragmentTestActivity>(
       ConceptCardFragmentTestActivity.createIntent(context, profileId)
@@ -733,6 +763,17 @@ class ConceptCardFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private const val TEST_STATUS_BAR_HEIGHT = 25
+
+    private val TEST_STATUS_BAR_INSETS: WindowInsetsCompat = WindowInsetsCompat.Builder()
+      .setInsets(
+        WindowInsetsCompat.Type.systemBars(),
+        Insets.of(/* left= */ 0, TEST_STATUS_BAR_HEIGHT, /* right= */ 0, /* bottom= */ 0)
+      )
+      .build()
   }
 }
 
