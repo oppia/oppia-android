@@ -1,6 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -62,7 +61,6 @@
       app:explorationViewPaddingBottom="@{@dimen/feedback_item_exploration_view_padding_bottom}"
       app:explorationViewPaddingEnd="@{@dimen/feedback_item_exploration_view_padding_end}"
       app:explorationViewPaddingStart="@{@dimen/feedback_item_exploration_view_padding_start}"
-      app:explorationViewPaddingTop="@{@dimen/feedback_item_exploration_view_padding_top}"
-      tools:targetApi="23"/>
+      app:explorationViewPaddingTop="@{@dimen/feedback_item_exploration_view_padding_top}" />
   </FrameLayout>
 </layout>
