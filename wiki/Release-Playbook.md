@@ -75,9 +75,11 @@ Follow this checklist for a full beta or production (GA) release.
 
 ### Pre-release
 
-- [ ] Confirm `MINOR_VERSION` is bumped in `version.bzl` and the changelog PR is merged (§2).
-  If either has not happened, **complete those steps before proceeding** — cutting the release
-  branch without a bumped version or merged changelog will result in a stale release.
+- [ ] Bump `MINOR_VERSION` in `version.bzl` if not already done. This push triggers
+  **Generate Changelogs** automatically.
+- [ ] Review and merge the changelog PR opened by **Generate Changelogs** (§2) if not already
+  merged. **Do not cut the release branch until this PR is merged** — the release branch must
+  include the correct version number and changelog.
 - [ ] Cut the release branch from `develop` HEAD:
   ```
   git checkout -b release-0.X upstream/develop
