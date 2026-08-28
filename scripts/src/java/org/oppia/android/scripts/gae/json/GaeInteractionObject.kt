@@ -139,7 +139,9 @@ sealed class GaeInteractionObject {
               )
             }
             else ->
-              RealWithUnits(checkNotNull(parsableNumberWithUnits.real), parsableNumberWithUnits.units)
+              RealWithUnits(
+                checkNotNull(parsableNumberWithUnits.real), parsableNumberWithUnits.units
+              )
           }
           "fraction" -> {
             FractionWithUnits(

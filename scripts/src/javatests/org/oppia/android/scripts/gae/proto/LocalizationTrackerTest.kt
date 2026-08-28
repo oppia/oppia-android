@@ -1,11 +1,11 @@
 package org.oppia.android.scripts.gae.proto
 
 import com.google.common.truth.Truth.assertThat
-import java.io.EOFException
 import org.junit.Test
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.expandNestedWorkedExampleHtml
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
 import org.oppia.android.testing.assertThrows
+import java.io.EOFException
 
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")

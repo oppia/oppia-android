@@ -469,7 +469,10 @@ class LocalizationTracker private constructor(
     private fun retrieveAssetsForLanguage(language: LanguageType) =
       languages.getOrPut(language) { TrackedAssets(language, downloadConfig = downloadConfig) }
 
-    private fun ensureDefaultLanguageHasContent(contentId: String, languageType: LanguageType? = null) {
+    private fun ensureDefaultLanguageHasContent(
+      contentId: String,
+      languageType: LanguageType? = null
+    ) {
       val expectedExemptionCase = if (id is ContainerId.Exploration) {
         val exemption = downloadConfig.defaultIdExemptionsList.find {
           it.explorationId == id.id && it.contentId == contentId
@@ -481,7 +484,7 @@ class LocalizationTracker private constructor(
       if (contentId !in defaultContentIds) {
         errors +=
           "Attempting to add an asset for a content ID that hasn't been defaulted in container" +
-            " (for language: ${languageType ?: "any"}): $id, content ID: $contentId."
+          " (for language: ${languageType ?: "any"}): $id, content ID: $contentId."
       }
     }
   }
