@@ -21,7 +21,6 @@ class ContentViewModel(
       supportsConceptCards == other.supportsConceptCards
   }
 
-
   private val underscoreRegex = Regex("(?<=\\s|[,.;?!])_{3,}(?=\\s|[,.;?!])")
   private val replacementText = "Blank"
 
