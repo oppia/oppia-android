@@ -46,6 +46,7 @@ import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
+import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.expandNestedWorkedExampleHtml
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.extractMathContentsFromHtml
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.parseColorRgb
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
@@ -666,7 +667,10 @@ class StructureCompatibilityChecker(
       languageType: LanguageType?,
       constraints: CompatibilityConstraints
     ): List<CompatibilityFailure> {
-      val extraTags = html.extractHtmlTags() - constraints.supportedHtmlTags
+      // Worked examples nest HTML inside their attributes, so expand it to ensure the tags and
+      // asset references used there are validated as well.
+      val expandedHtml = expandNestedWorkedExampleHtml(html)
+      val extraTags = expandedHtml.extractHtmlTags() - constraints.supportedHtmlTags
       val tagFailures = if (extraTags.isNotEmpty()) {
         val failure = languageType?.let {
           TranslatedTextHasInvalidTags(contentId, extraTags, it, origin)
@@ -674,8 +678,8 @@ class StructureCompatibilityChecker(
         listOf(failure)
       } else emptyList()
       return tagFailures +
-        html.checkHasValidImageReferences(origin, contentId, constraints) +
-        checkMathTagsForLatex(html, origin, contentId)
+        expandedHtml.checkHasValidImageReferences(origin, contentId, constraints) +
+        checkMathTagsForLatex(expandedHtml, origin, contentId)
     }
 
     private fun String.checkHasValidImageReferences(

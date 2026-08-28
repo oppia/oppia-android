@@ -867,6 +867,7 @@ class GaeAndroidEndpointJsonImpl(
       "oppia-noninteractive-image",
       "oppia-noninteractive-math",
       "oppia-noninteractive-skillreview",
+      "oppia-noninteractive-workedexample",
       "oppia-noninteractive-link", // TODO: This shouldn't be present.
       "oppia-noninteractive-tabs", // TODO: This shouldn't be present.
     )
