@@ -47,13 +47,10 @@ jobs:
           app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
           private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
-      - name: Check out introduce-asset-download-script
+      - name: Check out develop
         uses: actions/checkout@v6
         with:
-          # The download_lesson_list Bazel target lives on introduce-asset-download-script,
-          # not on develop (it has not been merged yet). Once introduce-asset-download-script
-          # is merged to develop, this ref should be updated to develop.
-          ref: introduce-asset-download-script
+          ref: develop
           fetch-depth: 1
           # Use the GitHub App token so the push and PR creation trigger CI.
           token: ${{ steps.generate_token.outputs.token }}
@@ -158,7 +155,7 @@ jobs:
             echo "Opening new PR"
             gh pr create \
               --head "$BRANCH" \
-              --base introduce-asset-download-script \
+              --base develop \
               --title "$TITLE" \
               --body "$BODY"
           fi
