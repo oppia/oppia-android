@@ -360,8 +360,9 @@ class TopicPackRepository(
       lastInvalidReference = checkedReference // This structure isn't compatible.
       checkedReference = checkedReference.toPreviousVersion()
       require(--failSafe > 0) {
-        "Didn't find a compatible version in 10 steps--something's probably wrong with the script." +
-          " Structure: $structureId. First failures:\n${firstFailure?.failures?.joinToString("\n") { "- $it" }}"
+        val firstFailures = firstFailure?.failures?.joinToString("\n") { "- $it" }
+        "Didn't find a compatible version in 10 steps--something's probably wrong with the" +
+          " script. Structure: $structureId. First failures:\n$firstFailures"
       }
     }
 

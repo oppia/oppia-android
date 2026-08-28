@@ -469,7 +469,10 @@ class LocalizationTracker private constructor(
     private fun retrieveAssetsForLanguage(language: LanguageType) =
       languages.getOrPut(language) { TrackedAssets(language, downloadConfig = downloadConfig) }
 
-    private fun ensureDefaultLanguageHasContent(contentId: String, languageType: LanguageType? = null) {
+    private fun ensureDefaultLanguageHasContent(
+      contentId: String,
+      languageType: LanguageType? = null
+    ) {
       val expectedExemptionCase = if (id is ContainerId.Exploration) {
         val exemption = downloadConfig.defaultIdExemptionsList.find {
           it.explorationId == id.id && it.contentId == contentId
@@ -481,7 +484,7 @@ class LocalizationTracker private constructor(
       if (contentId !in defaultContentIds) {
         errors +=
           "Attempting to add an asset for a content ID that hasn't been defaulted in container" +
-            " (for language: ${languageType ?: "any"}): $id, content ID: $contentId."
+          " (for language: ${languageType ?: "any"}): $id, content ID: $contentId."
       }
     }
   }
@@ -632,12 +635,21 @@ class LocalizationTracker private constructor(
     private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
     private const val CUSTOM_MATH_TAG = "oppia-noninteractive-math"
     private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
+    private const val CUSTOM_WORKED_EXAMPLE_QUESTION_ATTRIBUTE = "question-with-value"
+    private const val CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE = "answer-with-value"
     private val customImageTagRegex by lazy {
       Regex("<\\s*$CUSTOM_IMG_TAG.+?$CUSTOM_IMG_FILE_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\"")
     }
     private val customMathTagRegex by lazy {
       Regex(
         "<\\s*$CUSTOM_MATH_TAG.+?$CUSTOM_MATH_SVG_PATH_ATTRIBUTE\\s*=\\s*\"(.+?)\""
+      )
+    }
+    private val customWorkedExampleAttributeRegex by lazy {
+      Regex(
+        "(?:$CUSTOM_WORKED_EXAMPLE_QUESTION_ATTRIBUTE|$CUSTOM_WORKED_EXAMPLE_ANSWER_ATTRIBUTE)" +
+          "\\s*=\\s*\"(.+?)\"",
+        RegexOption.DOT_MATCHES_ALL
       )
     }
     val VALID_LANGUAGE_TYPES = LanguageType.values().filter { it.isValid() }
@@ -683,8 +695,50 @@ class LocalizationTracker private constructor(
       this.durationSecs = this@toProto.durationSecs
     }.build()
 
-    private fun collectAllImageSourcesFromHtml(html: String) =
-      collectImageSourcesFromHtml(html) + collectMathSourcesFromHtml(html)
+    private fun collectAllImageSourcesFromHtml(html: String): Set<String> {
+      // Worked examples nest their own HTML inside tag attributes, so expand it first to ensure any
+      // images/math referenced there are also downloaded.
+      val expandedHtml = expandNestedWorkedExampleHtml(html)
+      return collectImageSourcesFromHtml(expandedHtml) + collectMathSourcesFromHtml(expandedHtml)
+    }
+
+    /**
+     * Returns [html] with the HTML nested inside any worked example question/answer attributes
+     * appended to it.
+     *
+     * Worked example tags store their question and answer as doubly HTML-escaped JSON strings in
+     * attributes, which hides any images or math referenced within them from the tag regexes used
+     * throughout the pipeline. Appending the decoded HTML makes those references discoverable
+     * without needing to change those regexes.
+     *
+     * Note that the result is only suitable for scanning for references: it is deliberately not
+     * well-formed HTML and must never be rendered or written to an asset.
+     */
+    fun expandNestedWorkedExampleHtml(html: String): String {
+      val nestedHtml = customWorkedExampleAttributeRegex.findAll(html)
+        .map { it.destructured }
+        .map { (attributeValue) -> attributeValue.unescapeNestedWorkedExampleHtml() }
+        .toList()
+      return if (nestedHtml.isEmpty()) {
+        html
+      } else nestedHtml.joinToString(separator = "", prefix = html)
+    }
+
+    /**
+     * Decodes a worked example attribute value (which is doubly HTML-escaped, then JSON-encoded)
+     * back into the HTML it represents.
+     */
+    private fun String.unescapeNestedWorkedExampleHtml(): String =
+      unescapeHtmlEntities().unescapeHtmlEntities().replace("\\\"", "\"")
+
+    private fun String.unescapeHtmlEntities(): String {
+      // '&amp;' must be unescaped last, otherwise entities it introduces would be unescaped twice.
+      return replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", "\"")
+        .replace("&#39;", "'")
+        .replace("&amp;", "&")
+    }
 
     private fun collectImageSourcesFromHtml(html: String): Set<String> {
       return customImageTagRegex.findAll(html)
