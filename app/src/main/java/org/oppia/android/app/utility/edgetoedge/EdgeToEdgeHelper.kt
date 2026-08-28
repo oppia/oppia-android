@@ -188,8 +188,16 @@ object EdgeToEdgeHelper {
     rootLayout: View,
     @ColorRes statusBarColorRes: Int,
     statusBarLight: Boolean = false
+  ): View = applyAsRootView(activity.window, rootLayout, statusBarColorRes, statusBarLight)
+
+  // Shared by the activity and dialog no-toolbar entry points, which only differ in whose window
+  // the insets are dispatched to.
+  private fun applyAsRootView(
+    window: Window,
+    rootLayout: View,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean
   ): View {
-    val window = activity.window
     val contentRoot = window.contentRoot
     val spacer = getOrCreateOverlayStatusBarSpacer(window, contentRoot, statusBarColorRes)
 
@@ -280,7 +288,26 @@ object EdgeToEdgeHelper {
     val window = dialog.window ?: return
     WindowCompat.setDecorFitsSystemWindows(window, false)
     applyAsTopBar(window, topBar, statusBarColorRes)
-    ViewCompat.requestApplyInsets(window.contentRoot)
+  }
+
+  /**
+   * Applies edge-to-edge insets to a full-screen [dialog] that has no top bar, adding a status-bar
+   * spacer colored with [statusBarColorRes] over [rootLayout] and padding [rootLayout] by the
+   * system bars. [statusBarLight] controls whether the status bar uses dark icons.
+   *
+   * This is the dialog counterpart to [applyToRootView]. Without it such a dialog keeps drawing
+   * under a transparent status bar, so the system icons are left on whatever the dialog's window
+   * background happens to be — unreadable when the two are both light.
+   */
+  fun applyToDialogRootView(
+    dialog: Dialog,
+    rootLayout: View,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ) {
+    val window = dialog.window ?: return
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    applyAsRootView(window, rootLayout, statusBarColorRes, statusBarLight)
   }
 
   // Used when the toolbar's parent is not a LinearLayout. A separate spacer preserves the

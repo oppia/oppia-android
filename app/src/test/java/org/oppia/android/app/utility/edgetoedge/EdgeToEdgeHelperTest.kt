@@ -337,6 +337,31 @@ class EdgeToEdgeHelperTest {
   }
 
   @Test
+  fun testApplyToDialogRootView_insetsDialogWindowAndAddsStatusBarSpacer() {
+    launchTestActivity { activity ->
+      val root = ConstraintLayout(activity).apply { setPadding(1, 2, 3, 4) }
+      val dialog = Dialog(activity).also { it.setContentView(root) }
+      val dialogContentRoot = dialog.findViewById<ViewGroup>(android.R.id.content)
+
+      EdgeToEdgeHelper.applyToDialogRootView(dialog, root, STATUS_BAR_COLOR)
+      val spacer = dialogContentRoot.getChildAt(1)
+      dispatchInsets(spacer)
+      dispatchInsets(root)
+
+      // The dialog has no top bar, so the spacer overlays the status bar area of its own window.
+      assertThat(dialogContentRoot.childCount).isEqualTo(2)
+      assertThat(spacer.backgroundColor).isEqualTo(expectedStatusBarColor(activity))
+      assertThat(spacer.layoutParams.height).isEqualTo(25)
+      assertThat(root.paddingLeft).isEqualTo(16)
+      assertThat(root.paddingTop).isEqualTo(27)
+      assertThat(root.paddingRight).isEqualTo(38)
+      assertThat(root.paddingBottom).isEqualTo(44)
+      // The dialog's own window is inset, so the activity behind it is left untouched.
+      assertThat(activity.findViewById<ViewGroup>(android.R.id.content).paddingTop).isEqualTo(0)
+    }
+  }
+
+  @Test
   fun testEnableEdgeToEdgeDispatch_doesNotCrash() {
     launchTestActivity(EdgeToEdgeHelper::enableEdgeToEdgeDispatch)
   }
