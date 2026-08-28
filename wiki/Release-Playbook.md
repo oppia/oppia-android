@@ -53,8 +53,11 @@ gate.
 
 The **Generate Changelogs** workflow
 ([`generate_changelog.yml`](../.github/workflows/generate_changelog.yml)) opens a PR to
-`develop` automatically when `version.bzl` is updated with a new `MINOR_VERSION`. It can also
-be triggered manually via `workflow_dispatch`.
+`develop` automatically when `version.bzl` is updated with a new `MINOR_VERSION`. This update
+happens at the start of each release cycle when the RC bumps `MINOR_VERSION` as part of the
+pre-release step in §3. The workflow can also be triggered manually via `workflow_dispatch` if
+the auto-trigger did not fire (e.g. the version bump happened without triggering CI) or if the
+changelog needs to be regenerated after corrections.
 
 ### Steps
 
@@ -73,6 +76,8 @@ Follow this checklist for a full beta or production (GA) release.
 ### Pre-release
 
 - [ ] Confirm `MINOR_VERSION` is bumped in `version.bzl` and the changelog PR is merged (§2).
+  If either has not happened, **complete those steps before proceeding** — cutting the release
+  branch without a bumped version or merged changelog will result in a stale release.
 - [ ] Cut the release branch from `develop` HEAD:
   ```
   git checkout -b release-0.X upstream/develop
@@ -117,6 +122,9 @@ Monitor Firebase Crashlytics between each step; halt and investigate if crash ra
 | 1 | `250` | 25% | Trigger **Update Rollout** after monitoring |
 | 3 | `500` | 50% | Trigger **Update Rollout** |
 | 7+ | `1000` | 100% | Trigger **Update Rollout** for full rollout |
+
+> `rollout_fraction` is specified in **permille** (thousandths out of 1000) as required by the
+> Play Console API — `100` means 10%, `1000` means 100%.
 
 **Inputs for `update_rollout.yml`:**
 
