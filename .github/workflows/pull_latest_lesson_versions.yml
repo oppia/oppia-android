@@ -50,9 +50,9 @@ jobs:
       - name: Check out introduce-asset-download-script
         uses: actions/checkout@v6
         with:
-          # The download_lesson_list Bazel target lives on introduce-asset-download-script,
-          # not on develop (it has not been merged yet). Once introduce-asset-download-script
-          # is merged to develop, this ref should be updated to develop.
+          # The download_lesson_list Bazel target lives on introduce-asset-download-script
+          # (not yet merged to develop). The PR opened later still targets develop — only
+          # the build step needs this branch, matching the pattern used by lesson_checks.yml.
           ref: introduce-asset-download-script
           fetch-depth: 1
           # Use the GitHub App token so the push and PR creation trigger CI.
