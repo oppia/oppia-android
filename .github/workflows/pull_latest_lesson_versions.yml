@@ -47,7 +47,7 @@ jobs:
           app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
           private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
-      - name: Check out introduce-asset-download-script
+      - name: Check out develop
         uses: actions/checkout@v6
         with:
           # The download_lesson_list Bazel target lives on introduce-asset-download-script
@@ -82,7 +82,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto
+            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/alpha_download_config.textproto
 
       - name: Download prod pinned lesson versions
         run: |
@@ -91,7 +92,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto
+            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto
 
       - name: Clean up lesson secret
         if: always()
@@ -168,7 +170,7 @@ jobs:
             echo "Opening new PR"
             gh pr create \
               --head "$BRANCH" \
-              --base introduce-asset-download-script \
+              --base develop \
               --title "$TITLE" \
               --body "$BODY"
           fi
