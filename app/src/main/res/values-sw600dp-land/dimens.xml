@@ -321,7 +321,7 @@
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
   <!-- AdminAuthActivity -->
-  <dimen name="admin_auth_activity_layout_width">0dp</dimen>
+  <dimen name="admin_auth_activity_layout_width">360dp</dimen>
   <dimen name="admin_auth_activity_margin_start">0dp</dimen>
   <dimen name="admin_auth_activity_margin_end">0dp</dimen>
   <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
