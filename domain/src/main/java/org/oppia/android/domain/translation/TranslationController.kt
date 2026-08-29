@@ -53,7 +53,7 @@ private const val AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
   "audio_translation_content_language_resolution"
 private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
-private const val SUPPORTED_AUDIO_LANGUAGES_COMBINATION_ID = "supported_audio_languages"
+private const val SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID = "supported_audio_languages"
 private const val SUPPORTED_AUDIO_LANGUAGES_LIST_DATA_PROVIDER_ID =
   "supported_audio_languages_list"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
@@ -332,7 +332,7 @@ class TranslationController @Inject constructor(
   ): DataProvider<OppiaLocale.ContentLocale> {
     val resolvedLanguageProvider =
       getAudioTranslationContentLanguageSelection(profileId).combineWith(
-        getSupportedAudioLanguages(), SUPPORTED_AUDIO_LANGUAGES_COMBINATION_ID
+        getSupportedAudioLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
       ) { audioLanguageSelection, supportedAudioLanguages ->
         // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
         // In some cases, a language might not be supported but has a fallback configured.

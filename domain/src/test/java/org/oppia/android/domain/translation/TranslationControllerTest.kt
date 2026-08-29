@@ -1195,6 +1195,23 @@ class TranslationControllerTest {
   }
 
   @Test
+  fun testGetAudioLocale_updateLanguageToPortuguese_returnsEnglishLocale() {
+    forceDefaultLocale(Locale.ROOT)
+    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, PORTUGUESE)
+
+    val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
+    // PORTUGUESE does not have an audio_translation_id, so it is unsupported for audio translations.
+    // Therefore, it should fall back to ENGLISH.
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    // This region comes from the default locale.
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+  }
+
+  @Test
   fun testGetAudioLocale_updateLanguageToUseApp_returnsAppLanguage() {
     // First, initialize the language to Hindi before overwriting to use the app language.
     ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINDI)
