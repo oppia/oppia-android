@@ -47,7 +47,7 @@ jobs:
           app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
           private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
-      - name: Check out develop
+      - name: Check out introduce-asset-download-script
         uses: actions/checkout@v6
         with:
           # The download_lesson_list Bazel target lives on introduce-asset-download-script
@@ -102,13 +102,17 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          if git diff --quiet config/lessons/; then
+          # Compare the downloaded textprotos against develop's baseline, not against
+          # introduce-asset-download-script's baseline (which may differ). This ensures the
+          # change-detection and the PR diff are both measuring the same thing.
+          git fetch origin develop --depth=1
+          if git diff --quiet origin/develop -- config/lessons/; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No changes detected in config/lessons/ — skipping PR update."
+            echo "No changes detected in config/lessons/ relative to develop — skipping PR update."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Changes detected:"
-            git diff --stat config/lessons/
+            echo "Changes detected relative to develop:"
+            git diff --stat origin/develop -- config/lessons/
           fi
 
       - name: Commit and push to dedicated branch
@@ -165,7 +169,7 @@ jobs:
 
           if [ -n "$PR_NUMBER" ]; then
             echo "Updating existing PR #$PR_NUMBER"
-            gh pr edit "$PR_NUMBER" --title "$TITLE" --body "$BODY"
+            gh pr edit "$PR_NUMBER" --base develop --title "$TITLE" --body "$BODY"
           else
             echo "Opening new PR"
             gh pr create \
