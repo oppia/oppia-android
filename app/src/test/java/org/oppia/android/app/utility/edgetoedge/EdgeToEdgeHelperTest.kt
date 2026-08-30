@@ -1,6 +1,7 @@
 package org.oppia.android.app.utility.edgetoedge
 
 import android.app.Application
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
@@ -294,6 +295,69 @@ class EdgeToEdgeHelperTest {
       assertThat(root.paddingTop).isEqualTo(27)
       assertThat(root.paddingRight).isEqualTo(38)
       assertThat(root.paddingBottom).isEqualTo(44)
+    }
+  }
+
+  @Test
+  fun testApplyToDialogTopBar_insetsDialogWindowAndPreservesTopBarColor() {
+    launchTestActivity { activity ->
+      val root = ConstraintLayout(activity)
+      val toolbar = Toolbar(activity).apply {
+        id = View.generateViewId()
+        setBackgroundColor(Color.RED)
+      }
+      root.addView(toolbar, ConstraintLayout.LayoutParams(0, 56))
+      ConstraintSet().apply {
+        clone(root)
+        connect(toolbar.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        connect(toolbar.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+        connect(toolbar.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        applyTo(root)
+      }
+      val dialog = Dialog(activity).also { it.setContentView(root) }
+      val dialogContentRoot = dialog.findViewById<ViewGroup>(android.R.id.content)
+
+      EdgeToEdgeHelper.applyToDialogTopBar(dialog, toolbar, STATUS_BAR_COLOR)
+      val spacer = root.getChildAt(1)
+      dispatchInsets(spacer)
+      dispatchInsets(dialogContentRoot)
+
+      assertThat(root.childCount).isEqualTo(2)
+      assertThat(toolbar.backgroundColor).isEqualTo(Color.RED)
+      assertThat(spacer.backgroundColor).isEqualTo(expectedStatusBarColor(activity))
+      assertThat(spacer.layoutParams.height).isEqualTo(25)
+      assertThat((toolbar.layoutParams as ConstraintLayout.LayoutParams).topToBottom)
+        .isEqualTo(spacer.id)
+      assertThat(dialogContentRoot.paddingLeft).isEqualTo(15)
+      assertThat(dialogContentRoot.paddingRight).isEqualTo(35)
+      assertThat(dialogContentRoot.paddingBottom).isEqualTo(40)
+      // The dialog's own window is inset, so the activity behind it is left untouched.
+      assertThat(activity.findViewById<ViewGroup>(android.R.id.content).paddingBottom).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testApplyToDialogRootView_insetsDialogWindowAndAddsStatusBarSpacer() {
+    launchTestActivity { activity ->
+      val root = ConstraintLayout(activity).apply { setPadding(1, 2, 3, 4) }
+      val dialog = Dialog(activity).also { it.setContentView(root) }
+      val dialogContentRoot = dialog.findViewById<ViewGroup>(android.R.id.content)
+
+      EdgeToEdgeHelper.applyToDialogRootView(dialog, root, STATUS_BAR_COLOR)
+      val spacer = dialogContentRoot.getChildAt(1)
+      dispatchInsets(spacer)
+      dispatchInsets(root)
+
+      // The dialog has no top bar, so the spacer overlays the status bar area of its own window.
+      assertThat(dialogContentRoot.childCount).isEqualTo(2)
+      assertThat(spacer.backgroundColor).isEqualTo(expectedStatusBarColor(activity))
+      assertThat(spacer.layoutParams.height).isEqualTo(25)
+      assertThat(root.paddingLeft).isEqualTo(16)
+      assertThat(root.paddingTop).isEqualTo(27)
+      assertThat(root.paddingRight).isEqualTo(38)
+      assertThat(root.paddingBottom).isEqualTo(44)
+      // The dialog's own window is inset, so the activity behind it is left untouched.
+      assertThat(activity.findViewById<ViewGroup>(android.R.id.content).paddingTop).isEqualTo(0)
     }
   }
 

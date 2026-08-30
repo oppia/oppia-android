@@ -1,14 +1,17 @@
 package org.oppia.android.app.topic.conceptcard
 
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.ConceptCardFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.translation.TranslationController
@@ -16,6 +19,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.WorkedExampleLabels
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -33,9 +37,12 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   @EnableWorkedExamples
-  private val enableWorkedExamples: PlatformParameterValue<Boolean>
+  private val enableWorkedExamples: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: LegacyProfileId
+  private lateinit var toolbar: Toolbar
 
   /**
    * Sets up data binding and toolbar.
@@ -58,11 +65,12 @@ class ConceptCardFragmentPresenter @Inject constructor(
     conceptCardViewModel.initialize(skillId, profileId)
     logConceptCardEvent(skillId)
 
-    binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-    binding.conceptCardToolbar.setNavigationContentDescription(
+    toolbar = binding.conceptCardToolbar
+    toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+    toolbar.setNavigationContentDescription(
       R.string.navigate_up
     )
-    binding.conceptCardToolbar.setNavigationOnClickListener {
+    toolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
     }
 
@@ -97,6 +105,21 @@ class ConceptCardFragmentPresenter @Inject constructor(
     }
 
     return binding.root
+  }
+
+  /**
+   * Applies edge-to-edge window insets to the concept card's [dialog].
+   *
+   * The concept card is shown in its own window, so the insets applied to the host activity don't
+   * reach it and its toolbar would otherwise be drawn underneath the status bar.
+   */
+  fun applyEdgeToEdgeInsets(dialog: Dialog) {
+    if (!enableEdgeToEdge.value) return
+    EdgeToEdgeHelper.applyToDialogTopBar(
+      dialog,
+      toolbar,
+      R.color.component_color_shared_fragment_status_bar_color
+    )
   }
 
   /**
