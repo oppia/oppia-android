@@ -1,9 +1,11 @@
 package org.oppia.android.app.utility.edgetoedge
 
+import android.app.Dialog
 import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.ColorRes
@@ -20,8 +22,12 @@ import java.util.WeakHashMap
 
 /**
  * Utility that dispatches edge-to-edge window insets to activity toolbars, navigation drawers,
- * and no-toolbar screens while the `EnableEdgeToEdge` platform parameter gates the Android 15
- * rollout.
+ * no-toolbar screens, and full-screen dialogs while the `EnableEdgeToEdge` platform parameter gates
+ * the Android 15 rollout.
+ *
+ * Every entry point works against a [Window] rather than an activity so that dialogs, which are
+ * shown in their own window and therefore never receive the host activity's insets, can be handled
+ * the same way as the screens hosting them.
  */
 object EdgeToEdgeHelper {
   private const val STATUS_BAR_SPACER_TAG = "oppia_edge_to_edge_status_bar_spacer"
@@ -49,14 +55,15 @@ object EdgeToEdgeHelper {
     toolbar: Toolbar,
     @ColorRes statusBarColorRes: Int
   ) {
+    val window = activity.window
     val parent = toolbar.parent
     if (parent !is LinearLayout) {
-      applyAsTopBar(activity, toolbar, statusBarColorRes)
+      applyAsTopBar(window, toolbar, statusBarColorRes)
       return
     }
     val contentLayout = parent
     val spacer = getOrCreateLinearStatusBarSpacer(
-      activity, contentLayout, statusBarColorRes
+      window, contentLayout, statusBarColorRes
     )
 
     ViewCompat.setOnApplyWindowInsetsListener(spacer) { view, insets ->
@@ -71,7 +78,7 @@ object EdgeToEdgeHelper {
       insets
     }
 
-    disableDecorAncestorFits(activity)
+    disableDecorAncestorFits(window)
     applyRootInsetsIfAvailable(contentLayout) { bars ->
       spacer.layoutParams.height = bars.top
       spacer.requestLayout()
@@ -79,7 +86,7 @@ object EdgeToEdgeHelper {
         bars, applyLeft = true, applyRight = true, applyBottom = true
       )
     }
-    disableNavBarContrast(activity)
+    disableNavBarContrast(window)
   }
 
   /**
@@ -94,14 +101,15 @@ object EdgeToEdgeHelper {
     toolbar: Toolbar,
     @ColorRes statusBarColorRes: Int
   ) {
+    val window = activity.window
     val parent = toolbar.parent
     if (parent !is LinearLayout) {
-      applyAsTopBar(activity, toolbar, statusBarColorRes)
+      applyAsTopBar(window, toolbar, statusBarColorRes)
       return
     }
     val appBarLayout: LinearLayout = parent
-    appBarLayout.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
-    val contentRoot = activity.findViewById<View>(android.R.id.content)
+    appBarLayout.setBackgroundColor(ContextCompat.getColor(window.context, statusBarColorRes))
+    val contentRoot = window.contentRoot
 
     ViewCompat.setOnApplyWindowInsetsListener(appBarLayout) { view, insets ->
       val bars = insets.systemBarsWithCutout()
@@ -114,14 +122,14 @@ object EdgeToEdgeHelper {
       insets
     }
 
-    disableDecorAncestorFits(activity)
+    disableDecorAncestorFits(window)
     applyRootInsetsIfAvailable(appBarLayout) { bars ->
       appBarLayout.applyInsetPadding(bars, applyTop = true)
       contentRoot.applyInsetPadding(
         bars, applyLeft = true, applyRight = true, applyBottom = true
       )
     }
-    disableNavBarContrast(activity)
+    disableNavBarContrast(window)
   }
 
   /**
@@ -141,7 +149,7 @@ object EdgeToEdgeHelper {
     navigationView.fitsSystemWindows = false
 
     val spacer = getOrCreateLinearStatusBarSpacer(
-      activity, drawerContentLayout, statusBarColorRes
+      activity.window, drawerContentLayout, statusBarColorRes
     )
     ViewCompat.setOnApplyWindowInsetsListener(spacer) { view, insets ->
       val bars = insets.systemBarsWithCutout()
@@ -180,9 +188,18 @@ object EdgeToEdgeHelper {
     rootLayout: View,
     @ColorRes statusBarColorRes: Int,
     statusBarLight: Boolean = false
+  ): View = applyAsRootView(activity.window, rootLayout, statusBarColorRes, statusBarLight)
+
+  // Shared by the activity and dialog no-toolbar entry points, which only differ in whose window
+  // the insets are dispatched to.
+  private fun applyAsRootView(
+    window: Window,
+    rootLayout: View,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean
   ): View {
-    val contentRoot = activity.findViewById<View>(android.R.id.content)
-    val spacer = getOrCreateOverlayStatusBarSpacer(activity, contentRoot, statusBarColorRes)
+    val contentRoot = window.contentRoot
+    val spacer = getOrCreateOverlayStatusBarSpacer(window, contentRoot, statusBarColorRes)
 
     ViewCompat.setOnApplyWindowInsetsListener(spacer) { view, insets ->
       val bars = insets.systemBarsWithCutout()
@@ -202,7 +219,7 @@ object EdgeToEdgeHelper {
       insets
     }
 
-    disableDecorAncestorFits(activity)
+    disableDecorAncestorFits(window)
     applyRootInsetsIfAvailable(rootLayout) { bars ->
       spacer.layoutParams.height = bars.top
       spacer.requestLayout()
@@ -214,9 +231,9 @@ object EdgeToEdgeHelper {
         applyBottom = true
       )
     }
-    WindowCompat.getInsetsController(activity.window, rootLayout)
+    WindowCompat.getInsetsController(window, rootLayout)
       ?.isAppearanceLightStatusBars = statusBarLight
-    disableNavBarContrast(activity)
+    disableNavBarContrast(window)
     ViewCompat.requestApplyInsets(contentRoot)
 
     return spacer
@@ -253,21 +270,61 @@ object EdgeToEdgeHelper {
     )
   }
 
-  // Used when the toolbar's parent is not a LinearLayout. A separate spacer preserves the
-  // toolbar's original color instead of turning the whole toolbar into the status-bar color.
-  private fun applyAsTopBar(
-    activity: AppCompatActivity,
+  /**
+   * Applies edge-to-edge insets to a full-screen [dialog] whose [topBar] (a `Toolbar`, or the
+   * `AppBarLayout` wrapping one) is pinned to the top of the dialog's content.
+   *
+   * A dialog is shown in its own [Window], so the handling applied to the activity behind it never
+   * reaches it: without this the [topBar] is drawn underneath the status bar and its navigation
+   * icon lands in the status bar's touch area, making it untappable. A status-bar spacer colored
+   * with [statusBarColorRes] is inserted above [topBar] so the bar keeps its own color, matching
+   * how toolbar-hosted activities are handled.
+   */
+  fun applyToDialogTopBar(
+    dialog: Dialog,
     topBar: View,
     @ColorRes statusBarColorRes: Int
   ) {
-    val contentRoot = activity.findViewById<View>(android.R.id.content)
+    val window = dialog.window ?: return
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    applyAsTopBar(window, topBar, statusBarColorRes)
+  }
+
+  /**
+   * Applies edge-to-edge insets to a full-screen [dialog] that has no top bar, adding a status-bar
+   * spacer colored with [statusBarColorRes] over [rootLayout] and padding [rootLayout] by the
+   * system bars. [statusBarLight] controls whether the status bar uses dark icons.
+   *
+   * This is the dialog counterpart to [applyToRootView]. Without it such a dialog keeps drawing
+   * under a transparent status bar, so the system icons are left on whatever the dialog's window
+   * background happens to be — unreadable when the two are both light.
+   */
+  fun applyToDialogRootView(
+    dialog: Dialog,
+    rootLayout: View,
+    @ColorRes statusBarColorRes: Int,
+    statusBarLight: Boolean = false
+  ) {
+    val window = dialog.window ?: return
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    applyAsRootView(window, rootLayout, statusBarColorRes, statusBarLight)
+  }
+
+  // Used when the toolbar's parent is not a LinearLayout. A separate spacer preserves the
+  // toolbar's original color instead of turning the whole toolbar into the status-bar color.
+  private fun applyAsTopBar(
+    window: Window,
+    topBar: View,
+    @ColorRes statusBarColorRes: Int
+  ) {
+    val contentRoot = window.contentRoot
     val topBarParent = topBar.parent
     val spacer = if (topBarParent is ConstraintLayout && topBar.id != View.NO_ID) {
       getOrCreateConstrainedStatusBarSpacer(
-        activity, topBarParent, topBar, statusBarColorRes
+        window, topBarParent, topBar, statusBarColorRes
       )
     } else {
-      getOrCreateOverlayStatusBarSpacer(activity, contentRoot, statusBarColorRes).also {
+      getOrCreateOverlayStatusBarSpacer(window, contentRoot, statusBarColorRes).also {
         initialMargins.getOrPut(topBar) { topBar.captureMargins() }
       }
     }
@@ -287,7 +344,7 @@ object EdgeToEdgeHelper {
       insets
     }
 
-    disableDecorAncestorFits(activity)
+    disableDecorAncestorFits(window)
     applyRootInsetsIfAvailable(spacer) { bars ->
       spacer.layoutParams.height = bars.top
       spacer.requestLayout()
@@ -298,36 +355,36 @@ object EdgeToEdgeHelper {
         bars, applyLeft = true, applyRight = true, applyBottom = true
       )
     }
-    disableNavBarContrast(activity)
+    disableNavBarContrast(window)
   }
 
   private fun getOrCreateLinearStatusBarSpacer(
-    activity: AppCompatActivity,
+    window: Window,
     parent: LinearLayout,
     @ColorRes statusBarColorRes: Int
   ): View {
-    val spacer = parent.findDirectStatusBarSpacer() ?: View(activity).also {
+    val spacer = parent.findDirectStatusBarSpacer() ?: View(window.context).also {
       it.tag = STATUS_BAR_SPACER_TAG
       it.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0)
       parent.addView(it, 0)
     }
-    spacer.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
+    spacer.setBackgroundColor(ContextCompat.getColor(window.context, statusBarColorRes))
     return spacer
   }
 
   private fun getOrCreateConstrainedStatusBarSpacer(
-    activity: AppCompatActivity,
+    window: Window,
     parent: ConstraintLayout,
     topBar: View,
     @ColorRes statusBarColorRes: Int
   ): View {
-    val spacer = parent.findDirectStatusBarSpacer() ?: View(activity).also {
+    val spacer = parent.findDirectStatusBarSpacer() ?: View(window.context).also {
       it.id = View.generateViewId()
       it.tag = STATUS_BAR_SPACER_TAG
       it.layoutParams = ConstraintLayout.LayoutParams(0, 0)
       parent.addView(it)
     }
-    spacer.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
+    spacer.setBackgroundColor(ContextCompat.getColor(window.context, statusBarColorRes))
 
     val originalMargins = initialMargins.getOrPut(topBar) { topBar.captureMargins() }
     parent.ensureChildrenHaveIds()
@@ -362,12 +419,12 @@ object EdgeToEdgeHelper {
   }
 
   private fun getOrCreateOverlayStatusBarSpacer(
-    activity: AppCompatActivity,
+    window: Window,
     contentRoot: View,
     @ColorRes statusBarColorRes: Int
   ): View {
     val root = contentRoot as ViewGroup
-    val spacer = root.findDirectStatusBarSpacer() ?: View(activity).also {
+    val spacer = root.findDirectStatusBarSpacer() ?: View(window.context).also {
       it.tag = STATUS_BAR_SPACER_TAG
       it.layoutParams = FrameLayout.LayoutParams(
         FrameLayout.LayoutParams.MATCH_PARENT,
@@ -376,9 +433,12 @@ object EdgeToEdgeHelper {
       )
       root.addView(it)
     }
-    spacer.setBackgroundColor(ContextCompat.getColor(activity, statusBarColorRes))
+    spacer.setBackgroundColor(ContextCompat.getColor(window.context, statusBarColorRes))
     return spacer
   }
+
+  private val Window.contentRoot: View
+    get() = findViewById(android.R.id.content)
 
   private fun ViewGroup.findDirectStatusBarSpacer(): View? =
     (0 until childCount)
@@ -392,8 +452,8 @@ object EdgeToEdgeHelper {
   // AppCompat Bridge themes re-apply status-bar top padding via legacy fitsSystemWindows
   // dispatch on ancestors like FitWindowsLinearLayout; clearing those flags avoids double-counting
   // the top inset.
-  private fun disableDecorAncestorFits(activity: AppCompatActivity) {
-    val contentRoot = activity.findViewById<View>(android.R.id.content)
+  private fun disableDecorAncestorFits(window: Window) {
+    val contentRoot = window.contentRoot
     var ancestor: View? = contentRoot.parent as? View
     while (ancestor != null) {
       if (ancestor.fitsSystemWindows) {
@@ -411,9 +471,9 @@ object EdgeToEdgeHelper {
     apply(rootInsets.systemBarsWithCutout())
   }
 
-  private fun disableNavBarContrast(activity: AppCompatActivity) {
+  private fun disableNavBarContrast(window: Window) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      activity.window.isNavigationBarContrastEnforced = false
+      window.isNavigationBarContrastEnforced = false
     }
   }
 
