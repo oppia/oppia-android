@@ -1492,4 +1492,54 @@ class AndroidLintRunnerTest {
 
     return jarFile
   }
+
+  @Test
+  fun testMain_noArguments_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main()
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_nonExistentRepoRoot_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main("non_existent_directory_12345")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_invalidProtoExtension_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main(tempFolder.root.absolutePath, "--proto=invalid.txt")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_validArgs_checkScriptConsistencyMode_throwsSecurityExceptionOnExitZero() {
+    val exception = assertThrows<SecurityException> {
+      main(
+        tempFolder.root.absolutePath,
+        "--mode=check-script-consistency",
+        "--processTimeout=10",
+        "--proto=$pathToProtoBinary",
+        "--checks=HardcodedText",
+        "--group_by_severity",
+        "--timer"
+      )
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    val output = outputStream.toString()
+    assertThat(output).contains("CHECK PASSED: LintCheckCatalog")
+  }
+
+  @Test
+  fun testMain_invalidModeString_printsStacktraceAndExitsWithSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main(tempFolder.root.absolutePath, "--mode=invalid-mode")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
 }
