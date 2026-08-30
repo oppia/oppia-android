@@ -587,6 +587,10 @@ tracked_topic_info {
   }
 }
 tracked_topic_info {
+  id: "5cbCOcglPdrn"
+  content_version: 3
+}
+tracked_topic_info {
   id: "bdO7c687WBBW"
   content_version: 35
   story_info {
