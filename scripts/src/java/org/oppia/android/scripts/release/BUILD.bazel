@@ -180,3 +180,42 @@ kt_jvm_library(
         ":play_console_client",
     ],
 )
+
+kt_jvm_library(
+    name = "github_ci_client",
+    srcs = ["GitHubCiClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "google_github_ci_client",
+    srcs = ["GoogleGitHubCiClient.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":github_ci_client",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:check_runs_response",
+        "//scripts/src/java/org/oppia/android/scripts/release/model:commit_list_entry",
+        "//scripts/src/java/org/oppia/android/scripts/release/remote:github_ci_service",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)
+
+kt_jvm_library(
+    name = "find_alpha_candidate_lib",
+    srcs = ["FindAlphaCandidate.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":github_ci_client",
+        ":google_github_ci_client",
+    ],
+)
+
+kt_jvm_library(
+    name = "fake_github_ci_client",
+    testonly = True,
+    srcs = ["FakeGitHubCiClient.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [":github_ci_client"],
+)
