@@ -84,6 +84,7 @@ import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.MathExpressionInteractionsViewTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
+import org.oppia.android.app.testing.NumberWithUnitsInputInteractionViewTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
@@ -165,6 +166,11 @@ interface ActivityComponentImpl :
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
+  fun inject(
+    numberWithUnitsInputInteractionViewTestActivity:
+      NumberWithUnitsInputInteractionViewTestActivity
+  )
+
   fun inject(textInputInteractionViewTestActivity: TextInputInteractionViewTestActivity)
   fun inject(mathExpressionInteractionsViewTestActivity: MathExpressionInteractionsViewTestActivity)
   fun inject(ratioInputInteractionViewTestActivity: RatioInputInteractionViewTestActivity)
