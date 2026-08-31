@@ -47,14 +47,14 @@ jobs:
           # Always check out develop — this workflow only ever runs on develop since
           # the latest-alpha tag is only meaningful on that branch.
           ref: develop
-          # fetch-depth: 0 is required so that `git tag --force` (in the
-          # "Update latest-alpha tag" step) can resolve the candidate SHA as a local git
-          # object. A shallow clone only contains the tip commit; any non-HEAD candidate
-          # SHA would cause `git tag` to fail with "not a valid object name".
+          # fetch-depth: 0 fetches all history for all branches and tags (per the
+          # actions/checkout docs). This is required for two reasons:
+          # 1. `git rev-parse refs/tags/latest-alpha` in the next step needs the
+          #    latest-alpha tag to be present locally.
+          # 2. `git tag --force latest-alpha "$CANDIDATE_SHA"` needs to resolve any
+          #    non-HEAD commit SHA as a local git object; a shallow clone only contains
+          #    the tip commit and would fail with "not a valid object name".
           fetch-depth: 0
-          # fetch-tags: true ensures the latest-alpha tag is available locally so that
-          # `git rev-parse refs/tags/latest-alpha` in the next step resolves correctly.
-          fetch-tags: true
           # Use the GitHub App token so the subsequent force-push of the latest-alpha tag
           # is authenticated with the App account that has Contents:write scope.
           token: ${{ steps.app-token.outputs.token }}
