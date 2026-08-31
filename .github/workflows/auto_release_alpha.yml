@@ -1,0 +1,128 @@
+# Runs weekly to identify the newest fully-green commit on develop, promote it to the
+# `latest-alpha` tag, and kick off the build+sign workflow for the alpha flavor.
+#
+# Secrets required (same GitHub App as pull_latest_lesson_versions.yml):
+#   OPPIA_GITHUB_APP_ID         – GitHub App ID (shared with oppia-web for consistency)
+#   OPPIA_GITHUB_APP_PRIVATE_KEY – GitHub App private key (PEM)
+# The App must have:
+#   Contents: write  – to force-push the latest-alpha tag
+#   Actions:  write  – to dispatch the build_and_sign.yml workflow
+
+name: Auto Release Alpha
+
+on:
+  schedule:
+    # Tuesdays at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:30) to avoid
+    # Bazel remote cache contention.
+    - cron: "30 03 * * 2"
+  workflow_dispatch: {}
+
+# Only one auto-release run at a time. cancel-in-progress is false so an in-flight run is
+# never interrupted mid-way through tagging or dispatching.
+concurrency:
+  group: auto-release-alpha
+  cancel-in-progress: false
+
+jobs:
+  auto_release_alpha:
+    name: Auto Release Alpha
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Required to force-push the latest-alpha tag.
+      checks: read    # Required for FindAlphaCandidate to query check-run status via the GitHub API.
+
+    steps:
+      # Generate a short-lived GitHub App token. The App must have Contents:write (to
+      # force-push the latest-alpha tag) and Actions:write (to dispatch build_and_sign.yml).
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
+          private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Check out develop
+        uses: actions/checkout@v4
+        with:
+          # Always check out develop — this workflow only ever runs on develop since
+          # the latest-alpha tag is only meaningful on that branch.
+          ref: develop
+          # fetch-depth: 0 fetches all history for all branches and tags (per the
+          # actions/checkout docs). This is required for two reasons:
+          # 1. `git rev-parse refs/tags/latest-alpha` in the next step needs the
+          #    latest-alpha tag to be present locally.
+          # 2. `git tag --force latest-alpha "$CANDIDATE_SHA"` needs to resolve any
+          #    non-HEAD commit SHA as a local git object; a shallow clone only contains
+          #    the tip commit and would fail with "not a valid object name".
+          fetch-depth: 0
+          # Use the GitHub App token so the subsequent force-push of the latest-alpha tag
+          # is authenticated with the App account that has Contents:write scope.
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # FindAlphaCandidate inspects commits newer than the current latest-alpha tag
+      # (newest first) and returns the SHA of the first fully-passing commit.
+      # Exits 0 with empty output on NoNewCommits; exits 1 on NoPassingCommit.
+      - name: Find alpha candidate
+        id: candidate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Resolve the current latest-alpha tag to a SHA so FindAlphaCandidate only inspects
+          # commits newer than the most recently deployed build. On the very first run (tag doesn't
+          # exist yet), pass "" so all recent commits are inspected.
+          LATEST_ALPHA_SHA=$(git rev-parse refs/tags/latest-alpha 2>/dev/null || echo "")
+          CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
+            "$GITHUB_TOKEN" \
+            "develop" \
+            "$LATEST_ALPHA_SHA")
+          if [[ -z "$CANDIDATE_SHA" ]]; then
+            echo "No new commits since latest-alpha (${LATEST_ALPHA_SHA:0:7}). Nothing to cut."
+          else
+            echo "Alpha candidate: $CANDIDATE_SHA"
+          fi
+          echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
+
+      # Force-push the well-known `latest-alpha` tag to the candidate commit.
+      # build_and_sign.yml checks out from this tag when source_ref=latest-alpha.
+      # Skipped when FindAlphaCandidate returns NoNewCommits (candidate SHA is empty).
+      - name: Update latest-alpha tag
+        if: steps.candidate.outputs.sha != ''
+        run: |
+          CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --force latest-alpha "$CANDIDATE_SHA"
+          git push --force origin refs/tags/latest-alpha
+          echo "Moved latest-alpha → $CANDIDATE_SHA"
+
+      # Dispatch the build+sign workflow for the alpha flavor. The build_and_sign.yml workflow
+      # runs under the oppia-android-release-env environment, so a required reviewer must
+      # approve before any job steps execute (provides a human gate before deployment).
+      # Skipped when FindAlphaCandidate returns NoNewCommits (candidate SHA is empty).
+      - name: Dispatch build-and-sign for alpha
+        if: steps.candidate.outputs.sha != ''
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
+          gh workflow run build_and_sign.yml \
+            --repo "${{ github.repository }}" \
+            --ref develop \
+            --field flavor=alpha \
+            --field source_ref="$CANDIDATE_SHA"
+          echo "| Step | Result |"
+          echo "|---|---|"
+          echo "| Branch | develop |"
+          echo "| Candidate SHA | [\`${CANDIDATE_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${CANDIDATE_SHA}) |"
+          echo "| latest-alpha tag | moved and force-pushed |"
+          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=${CANDIDATE_SHA:0:7}) |"
