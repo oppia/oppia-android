@@ -47,8 +47,8 @@ interface GitHubCiService {
     @Path("repo") repo: String,
     @Query("sha") branch: String,
     @Header("Authorization") authorizationBearer: String,
-    @Query("per_page") perPage: Int = 100,
-    @Query("page") page: Int = 1
+    @Query("per_page") perPage: Int,
+    @Query("page") page: Int
   ): Call<List<CommitListEntry>>
 
   /**
@@ -75,7 +75,7 @@ interface GitHubCiService {
     @Path("repo") repo: String,
     @Path("ref") ref: String,
     @Header("Authorization") authorizationBearer: String,
-    @Query("per_page") perPage: Int = 100,
-    @Query("page") page: Int = 1
+    @Query("per_page") perPage: Int,
+    @Query("page") page: Int
   ): Call<CheckRunsResponse>
 }

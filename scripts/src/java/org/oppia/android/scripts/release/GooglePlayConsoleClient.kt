@@ -126,39 +126,27 @@ class GooglePlayConsoleClient(
     versionCode: Long,
     rolloutFraction: Int,
     releaseNotes: Map<String, String>,
-    preservedReleases: List<PlayConsoleClient.TrackRelease>
+    frozenVersionCodes: List<Long>
   ) {
     val fraction = rolloutFraction / 1000.0
     val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
-    val newRelease = TrackUpdateRequest.ReleaseEntry(
-      versionCodes = listOf(versionCode.toString()),
-      status = status,
-      releaseNotes = releaseNotes.map { (lang, text) ->
-        TrackUpdateRequest.LocalizedText(language = lang, text = text)
-      },
-      userFraction = if (rolloutFraction < 1000) fraction else null
-    )
-    // Only releases whose version codes appear in FROZEN_VERSION_CODES_PER_TRACK for this track
-    // are included in the request. This is a defence-in-depth guard: callers already pre-filter
-    // preservedReleases to frozen-only entries, but enforcing the invariant here ensures a mistaken
-    // call can never accidentally preserve a non-frozen release (e.g. a half-rolled-out release
-    // whose versionCode happens to be in the list).
-    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
-    val frozenEntries = preservedReleases
-      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
-      .map { release ->
-        TrackUpdateRequest.ReleaseEntry(
-          versionCodes = release.versionCodes.map { it.toString() },
-          status = release.status,
-          releaseNotes = release.releaseNotes.map { (lang, text) ->
-            TrackUpdateRequest.LocalizedText(language = lang, text = text)
-          },
-          userFraction = release.rolloutFraction?.let { it / 1000.0 }
-        )
-      }
+    // Merge the new version code with any frozen version codes into a single release entry.
+    // The Play Developer API rejects two separate release entries when one supersedes the other
+    // (e.g. a new alpha and the frozen KitKat build), so merging all version codes into a single
+    // entry is the only valid way to keep OS-level frozen builds active alongside the new binary.
+    val allVersionCodes = listOf(versionCode) + frozenVersionCodes
     val trackUpdate = TrackUpdateRequest(
       track = track,
-      releases = listOf(newRelease) + frozenEntries
+      releases = listOf(
+        TrackUpdateRequest.ReleaseEntry(
+          versionCodes = allVersionCodes.map { it.toString() },
+          status = status,
+          releaseNotes = releaseNotes.map { (lang, text) ->
+            TrackUpdateRequest.LocalizedText(language = lang, text = text)
+          },
+          userFraction = if (rolloutFraction < 1000) fraction else null
+        )
+      )
     )
     val response = playConsoleService
       .updateTrack(packageName, editId, track, authorizationBearer, trackUpdate)

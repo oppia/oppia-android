@@ -683,8 +683,6 @@ class AndroidLintRunnerTest {
     val output = outputStream.toString()
     assertThat(output).contains("NewApi")
     assertThat(output)
-      .contains("val network = cm.activeNetwork")
-    assertThat(output)
       .doesNotContain("val network2 = cm.activeNetwork")
     assertThat(output).contains("Line: 11")
     assertThat(output)

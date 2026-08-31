@@ -125,16 +125,21 @@ fun runUpload(
     properties.majorMinorVersion,
     properties.flavor.id
   )
-  // Fetch the current track state so frozen OS-specific releases can be passed through
-  // completely unmodified in the setTrackRelease call. The Play Console API replaces the entire
-  // track on each update, so any release not included would be silently deactivated.
   val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
-  val frozenReleases = if (frozenVersionCodes.isNotEmpty()) {
-    println("Fetching current track state to preserve frozen release(s)...")
-    client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
-      .filter { release -> release.versionCodes.any { it in frozenVersionCodes } }
-  } else {
-    emptyList()
+  if (frozenVersionCodes.isNotEmpty()) {
+    // The Play Developer API merges frozen version codes into the new release entry's versionCodes
+    // list on each update. Before passing them, verify they're actually on the live track — if
+    // any are missing, something has gone seriously wrong with the track state.
+    println("Verifying frozen version code(s) $frozenVersionCodes are present on track '$track'...")
+    val liveVersionCodes = client.getTrackReleases(PACKAGE_NAME, track, existingEditId = editId)
+      .flatMap { it.versionCodes }
+      .toSet()
+    val missingFrozen = frozenVersionCodes - liveVersionCodes
+    check(missingFrozen.isEmpty()) {
+      "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+        "are missing from the live track. This indicates a major release state inconsistency."
+    }
+    println("Frozen version code(s) confirmed present on track '$track'.")
   }
   client.setTrackRelease(
     PACKAGE_NAME,
@@ -143,7 +148,7 @@ fun runUpload(
     uploadedVersionCode,
     rolloutFraction,
     releaseNotes,
-    frozenReleases
+    frozenVersionCodes.toList()
   )
   println("Track '$track' updated.")
 

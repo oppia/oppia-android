@@ -121,12 +121,14 @@ fun updateRollout(
     )
   }
 
-  // Filter the already-fetched live releases to find frozen OS-specific builds and pass them
-  // through completely unmodified (preserving versionCodes, status, userFraction, and
-  // releaseNotes) so the Play Console API does not treat them as changed.
   val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
-  val frozenReleases = liveReleases.filter { release ->
-    release.versionCodes.any { it in frozenVersionCodes }
+  if (frozenVersionCodes.isNotEmpty()) {
+    val liveVersionCodes = liveReleases.flatMap { it.versionCodes }.toSet()
+    val missingFrozen = frozenVersionCodes - liveVersionCodes
+    check(missingFrozen.isEmpty()) {
+      "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+        "are missing from the live track. This indicates a major release state inconsistency."
+    }
   }
 
   val editId = client.createEdit(packageName)
@@ -134,7 +136,7 @@ fun updateRollout(
 
   client.setTrackRelease(
     packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
-    frozenReleases
+    frozenVersionCodes.toList()
   )
   println("  Rollout fraction updated.")
 

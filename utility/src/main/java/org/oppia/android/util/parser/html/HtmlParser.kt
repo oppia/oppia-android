@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
@@ -32,7 +33,7 @@ class HtmlParser private constructor(
   private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-  displayLocale: OppiaLocale.DisplayLocale
+  private val displayLocale: OppiaLocale.DisplayLocale
 ) {
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
@@ -70,13 +71,16 @@ class HtmlParser private constructor(
    * @param supportsLinks whether the provided [TextView] should support link forwarding (it's
    *     recommended not to use this for [TextView]s that are within other layouts that need to
    *     support clicking (default false)
+   * @param workedExampleLabels the localized labels to display with worked examples, or null if
+   *     worked examples shouldn't be displayed (default null)
    * @return a [Spannable] representing the styled text.
    */
   fun parseOppiaHtml(
     rawString: String,
     htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
-    supportsConceptCards: Boolean = false
+    supportsConceptCards: Boolean = false,
+    workedExampleLabels: WorkedExampleLabels? = null
   ): Spannable {
     var htmlContent = rawString
 
@@ -103,18 +107,7 @@ class HtmlParser private constructor(
     if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
-    if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
-        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
-    }
-    if ("<ul>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
-        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
-    }
-    if ("<ol>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
-        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
-    }
+    htmlContent = replaceListTags(htmlContent)
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
@@ -133,7 +126,9 @@ class HtmlParser private constructor(
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent,
       imageGetter,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageGetter
+      )
     )
 
     val urlPattern = Patterns.WEB_URL
@@ -147,14 +142,18 @@ class HtmlParser private constructor(
     }
     htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(
+        supportsConceptCards, htmlContentTextView, workedExampleLabels, imageRetriever = null
+      )
     )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
   private fun computeCustomTagHandlers(
     supportsConceptCards: Boolean,
-    htmlContentTextView: TextView
+    htmlContentTextView: TextView,
+    workedExampleLabels: WorkedExampleLabels?,
+    imageRetriever: UrlImageParser?
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     bulletTagHandler.setTextView(htmlContentTextView)
@@ -174,7 +173,67 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
+    if (workedExampleLabels != null) {
+      // A worked example's question and answer are HTML that's nested within the tag's attributes,
+      // so they're parsed using the handlers computed above. Note that the snapshot deliberately
+      // excludes the worked example handler itself since worked examples can't be nested.
+      // Lists are the one exception: LiTagHandler tracks state across the tags that it processes,
+      // and a worked example's HTML is parsed part-way through the outer parse, so reusing the
+      // outer handler would corrupt any list that the worked example is itself within.
+      val workedExampleLeadingMarginPx =
+        context.resources.getDimensionPixelSize(R.dimen.worked_example_leading_margin)
+      // The nested handler is told about the example's own indentation since Android applies that
+      // in addition to a list's, and the list draws its bullets and numbers itself.
+      val nestedBulletTagHandler = LiTagHandler(
+        context, displayLocale, enclosingLeadingMargin = workedExampleLeadingMarginPx
+      ).apply { setTextView(htmlContentTextView) }
+      val nestedTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler> =
+        handlersMap + mapOf(
+          CUSTOM_LIST_LI_TAG to nestedBulletTagHandler,
+          CUSTOM_LIST_UL_TAG to nestedBulletTagHandler,
+          CUSTOM_LIST_OL_TAG to nestedBulletTagHandler
+        )
+      handlersMap[CUSTOM_WORKED_EXAMPLE_TAG] = WorkedExampleTagHandler(
+        consoleLogger,
+        labels = workedExampleLabels,
+        leadingMarginPx = workedExampleLeadingMarginPx,
+        nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+          override fun parseHtml(html: String): Spannable =
+            CustomHtmlContentHandler.fromHtml(
+              replaceListTags(html), imageRetriever, nestedTagHandlers
+            )
+
+          override fun parseHtmlForContentDescription(html: String): String =
+            CustomHtmlContentHandler.getContentDescription(
+              replaceListTags(html), nestedTagHandlers
+            )
+        }
+      )
+    }
     return handlersMap
+  }
+
+  /**
+   * Returns [html] with its list tags replaced by the custom tags that [LiTagHandler] processes.
+   *
+   * This is needed since Android's built-in list rendering doesn't match Oppia's (in particular, it
+   * renders ordered lists as bullets rather than as numbers).
+   */
+  private fun replaceListTags(html: String): String {
+    var adjustedHtml = html
+    if ("<li>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
+        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
+    }
+    if ("<ul>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
+        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
+    }
+    if ("<ol>" in adjustedHtml) {
+      adjustedHtml = adjustedHtml.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
+        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
+    }
+    return adjustedHtml
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
@@ -200,7 +259,9 @@ class HtmlParser private constructor(
     // ensure the image's dimensions are measured). Note that this needs to be a visible character
     // to remedy the bug.
     // TODO(#1796): Find a better workaround for this bug.
-    return if (spannable.toString().all { it == '\uFFFC' }) {
+    // Note that the emptiness check is needed because all() is vacuously true for an empty
+    // spannable, which would otherwise pad content that parsed to nothing with two spaces.
+    return if (spannable.isNotEmpty() && spannable.toString().all { it == '\uFFFC' }) {
       spannable.insert(/* where= */ 0, " ").append(" ")
     } else spannable
   }

@@ -14,13 +14,14 @@ package org.oppia.android.scripts.release
 interface GitHubCiClient {
 
   /**
-   * Returns up to [limit] commits on [branch] in reverse-chronological order (newest first).
+   * Returns one page of commits on [branch] in reverse-chronological order (newest first).
    *
    * @param branch the branch name to query (e.g. "develop")
-   * @param limit the maximum number of commits to return; must be in [1, 100]
-   * @return the list of [CommitSummary] entries, newest commit first
+   * @param perPage the number of commits per page; must be in [1, 100] (default: 100)
+   * @param page the 1-indexed page number to retrieve (default: 1)
+   * @return the list of [CommitSummary] entries for this page, newest commit first
    */
-  fun listCommits(branch: String, limit: Int = 100): List<CommitSummary>
+  fun listCommits(branch: String, perPage: Int = 100, page: Int = 1): List<CommitSummary>
 
   /**
    * Returns the overall CI status of the commit identified by [commitSha].
@@ -35,10 +36,6 @@ interface GitHubCiClient {
    */
   fun getCheckRunStatus(commitSha: String): CiStatus
 
-  // ---------------------------------------------------------------------------
-  // Value types
-  // ---------------------------------------------------------------------------
-
   /**
    * A lightweight summary of a single commit as returned by the list-commits endpoint.
    *
@@ -49,10 +46,27 @@ interface GitHubCiClient {
   /**
    * The overall CI result for a specific commit, derived from its GitHub check runs.
    *
-   * - [PASSING]  — all check runs completed successfully (or were skipped/neutral)
-   * - [FAILING]  — at least one check run completed with a non-success conclusion
-   * - [PENDING]  — at least one check run is still queued or in progress (and none have failed)
-   * - [NO_CHECKS] — the commit has no check runs at all (treat as not yet ready for deployment)
+   * - [PASSING]   — all check runs completed successfully (or were skipped/neutral)
+   * - [FAILING]   — at least one check run completed with a non-success conclusion
+   * - [PENDING]   — at least one check run is still queued or in progress (and none have failed)
+   * - [NO_CHECKS] — the commit has no check runs at all; this is unexpected in oppia-android
+   *   (every push triggers CI) and is treated as a hard error by [FindAlphaCandidate]
    */
-  enum class CiStatus { PASSING, FAILING, PENDING, NO_CHECKS }
+  enum class CiStatus {
+    /** All check runs for this commit completed with a passing or neutral conclusion. */
+    PASSING,
+
+    /** At least one check run completed with a failure, timeout, or cancellation conclusion. */
+    FAILING,
+
+    /** At least one check run is still queued or in progress (and none have conclusively failed). */
+    PENDING,
+
+    /**
+     * This commit has no check runs associated with it. In oppia-android every push triggers CI,
+     * so this status is unexpected and indicates either a transient API error or a commit that
+     * bypassed the required checks. Callers should treat this as an error, not a silent skip.
+     */
+    NO_CHECKS,
+  }
 }
