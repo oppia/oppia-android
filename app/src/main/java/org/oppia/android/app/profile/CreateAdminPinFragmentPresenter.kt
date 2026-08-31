@@ -68,6 +68,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toLegacyProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [CreateAdminPinFragment]. */
@@ -425,14 +427,15 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   }
 
   private fun updatePin(pin: String) {
-    val profileId = checkNotNull(fragment.arguments?.extractCurrentUserProfileId()) {
-      "Expected profileId to be included in the arguments for CreateAdminPinFragment."
-    }
+    val profileId =
+      checkNotNull(fragment.arguments?.extractCurrentUserProfileId()?.toProfileIdPreservingZero()) {
+        "Expected profileId to be included in the arguments for CreateAdminPinFragment."
+      }
 
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity).also { intent ->
-          intent.decorateWithUserProfileId(profileId)
+          intent.decorateWithUserProfileId(profileId.toLegacyProfileId())
           intent.putProtoExtra(
             PROFILE_CHOOSER_PARAMS_KEY,
             ProfileChooserActivityParams.newBuilder()

@@ -27,8 +27,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -82,13 +82,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -703,7 +701,7 @@ class AppLanguageResourceHandlerTest {
 
   private fun updateAndSetAppLanguage(appLanguageSelection: AppLanguageSelection) {
     // First, update the app language in the controller.
-    val defaultProfileId = LegacyProfileId.getDefaultInstance()
+    val defaultProfileId = ProfileId.getDefaultInstance()
     val updateProvider =
       translationController.updateAppLanguage(defaultProfileId, appLanguageSelection)
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -740,7 +738,6 @@ class AppLanguageResourceHandlerTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -750,7 +747,6 @@ class AppLanguageResourceHandlerTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -827,8 +823,14 @@ class AppLanguageResourceHandlerTest {
     // Date & time: Wed Apr 24 2019 08:22:03 GMT.
     private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
 
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
-    private val HEBREW_LOCALE = Locale("he", "US")
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
+    private val HEBREW_LOCALE = Locale.Builder()
+      .setLanguage("he")
+      .setRegion("US")
+      .build()
 
     private fun String.extractNumbers(): List<String> =
       "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()

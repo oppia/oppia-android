@@ -16,6 +16,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** ViewModel for managing language selection in [AudioLanguageFragment]. */
@@ -72,24 +73,37 @@ class AudioLanguageSelectionViewModel @Inject constructor(
       }
     }
 
-  /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> =
-    Transformations.map(supportedOppiaLanguagesLiveData) { languages ->
-      // Order starting with English in the list, then alphabetically by the localized name of the
-      // language to match what is done by the Android OS.
-      val sortedLanguages = languages.sortedWith(
-        compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
-          .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-      )
+  /**
+   * The list of [AudioLanguageItemViewModel]s that can be bound to a recycler view.
+   *
+   * This list is recomputed whenever [selectedLanguage] emits. Each emission causes the
+   * transformation to subscribe to a new mapping of [supportedOppiaLanguagesLiveData], which uses
+   * its current cached value to generate a fresh list of audio languages.
+   *
+   * The supported languages are ordered with English first, followed by the remaining languages
+   * alphabetically by their localized display names. Languages in [IGNORED_AUDIO_LANGUAGES] are
+   * excluded before the corresponding [AudioLanguageItemViewModel]s are created.
+   */
+  val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> by lazy {
+    Transformations.switchMap(selectedLanguage) {
+      Transformations.map(supportedOppiaLanguagesLiveData) { languages ->
+        // Order starting with English in the list, then alphabetically by the localized name of the
+        // language to match what is done by the Android OS.
+        val sortedLanguages = languages.sortedWith(
+          compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
+            .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+        )
 
-      sortedLanguages
-        .map(::getAudioLanguageFromOppiaLanguage)
-        .filter { it !in IGNORED_AUDIO_LANGUAGES }
-        .map(::createItemViewModel)
+        sortedLanguages
+          .map(::getAudioLanguageFromOppiaLanguage)
+          .filter { it !in IGNORED_AUDIO_LANGUAGES }
+          .map(::createItemViewModel)
+      }
     }
+  }
 
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
-    translationController.getAudioLanguagePreselection(profileId)
+    translationController.getAudioLanguagePreselection(profileId.toProfileIdPreservingZero())
   }
 
   /** Receives and sets the current profileId in this viewModel. */

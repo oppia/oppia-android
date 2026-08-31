@@ -3,6 +3,7 @@ syntax = "proto3";
 package model;
 
 import "subtitled_html.proto";
+import "subtitled_unicode.proto";
 import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
@@ -583,6 +584,31 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
+// Corresponds to a study guide that can be displayed for a specific subtopic. A study guide is an
+// enhanced version of a revision card whose content is broken down into multiple sections, each
+// with its own heading.
+message StudyGuide {
+  // The title corresponding to the subtopic.
+  SubtitledHtml subtopic_title = 1;
+
+  // The ordered list of sections that make up this study guide.
+  repeated StudyGuideSection sections = 2;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this study guide
+  // that has a corresponding translation. Note that, unlike revision cards, study guides do not
+  // include recorded voiceovers since the web study guide structure no longer supports them.
+  map<string, TranslationMapping> written_translations = 3;
+}
+
+// Corresponds to a study guide that is currently being viewed.
+message EphemeralStudyGuide {
+  // The study guide to view.
+  StudyGuide study_guide = 1;
+
+  // The translation context that should be used for this study guide.
+  WrittenTranslationContext written_translation_context = 2;
+}
+
 // Corresponds to a local file cataloging all classrooms available to load.
 message ClassroomIdList {
   // The list of IDs corresponding to classrooms available on the local filesystem.
@@ -769,8 +795,21 @@ message SubtopicRecord {
   // The thumbnail corresponding to this subtopic.
   LessonThumbnail subtopic_thumbnail = 6;
 
+  // The ordered list of sections in this subtopic's study guide. This is stored in addition to the
+  // existing page contents.
+  repeated StudyGuideSection sections = 8;
+
   // The old title corresponding to the subtopic (as a string).
   reserved 1;
+}
+
+// Corresponds to one section in a study guide.
+message StudyGuideSection {
+  // The heading shown above this section's content.
+  SubtitledUnicode heading = 1;
+
+  // The main content displayed in this section.
+  SubtitledHtml content = 2;
 }
 
 // Top-level proto used to store the aggregate learning duration timestamps in a topic,

@@ -45,7 +45,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1716846301 -0700",
+    shallow_since = "1783966663 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -107,11 +107,12 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+load("@rules_proto//proto:setup.bzl", "rules_proto_setup")
 
 rules_proto_dependencies()
 
-rules_proto_toolchains()
+rules_proto_setup()
 
 # Add support for Dagger
 http_archive(
@@ -258,3 +259,10 @@ pinned_maven_install()
         "jre",
     ]
 ]
+
+# Pinned lesson download pipeline script branch.
+git_repository(
+    name = "oppia_android_asset_pipeline",
+    commit = "b854f864984977ab72bc674b4404326edb49289f",
+    remote = "https://github.com/oppia/oppia-android.git",
+)

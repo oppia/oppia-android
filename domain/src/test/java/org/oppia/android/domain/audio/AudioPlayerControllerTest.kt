@@ -68,7 +68,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -76,6 +75,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -505,6 +505,48 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_preparePlayer_abortPendingLoad_capturesFailure() {
+    setUpMediaReadyApplication()
+    arrangeMediaPlayer()
+
+    audioPlayerController.abortPendingLoad()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
+  fun testController_pendingPlayer_abortPendingLoad_capturesFailure() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+
+    audioPlayerController.abortPendingLoad()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
+  fun testController_preparePlayer_abortPendingLoad_multipleTimes_doesNotThrow() {
+    setUpMediaReadyApplication()
+    arrangeMediaPlayer()
+
+    assertNoExceptionIsThrown {
+      audioPlayerController.abortPendingLoad()
+      audioPlayerController.abortPendingLoad()
+      audioPlayerController.abortPendingLoad()
+    }
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
     val exception = assertThrows<IllegalStateException>() {
@@ -895,7 +937,7 @@ class AudioPlayerControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
     )
   }
 
@@ -907,7 +949,11 @@ class AudioPlayerControllerTest {
   ) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        internalProfileId = 0, classroomId, topicId, storyId, explorationId
+        profileId = profileId.toProfileIdPreservingZero(),
+        classroomId,
+        topicId,
+        storyId,
+        explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())
@@ -915,7 +961,9 @@ class AudioPlayerControllerTest {
 
   private fun loadExploration(explorationId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId, explorationId)
+      explorationDataController.getExplorationById(
+        profileId.toProfileIdPreservingZero(), explorationId
+      )
     ).exploration
   }
 
@@ -961,7 +1009,6 @@ class AudioPlayerControllerTest {
       AlgebraicExpressionInputModule::class,
       ApplicationLifecycleModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       DragDropSortInputModule::class,
       ExplorationProgressModule::class,

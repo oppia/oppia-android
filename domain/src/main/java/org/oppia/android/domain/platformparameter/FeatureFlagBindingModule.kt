@@ -5,19 +5,25 @@ import dagger.Provides
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
+import org.oppia.android.util.platformparameter.LoadImagesFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -100,6 +106,42 @@ class FeatureFlagBindingModule {
   @EnableTopicPracticeTab
   fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
+
+  @Provides
+  @EnableEdgeToEdge
+  fun provideEnableEdgeToEdge(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.EDGE_TO_EDGE)
+
+  @Provides
+  @LoadLessonProtosFromAssets
+  fun provideLoadLessonProtosFromAssets(
+    processState: PlatformParameterProcessState
+  ): PlatformParameterValue<Boolean> {
+    return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_LESSON_PROTOS_FROM_ASSETS)
+  }
+
+  @Provides
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(
+    processState: PlatformParameterProcessState
+  ): PlatformParameterValue<Boolean> {
+    return processState.retrieveFeatureFlag(FeatureFlagId.LOAD_IMAGES_FROM_ASSETS)
+  }
+
+  @Provides
+  @EnableLessonProgressVisualization
+  fun provideEnableLessonProgressVisualization(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.LESSON_PROGRESS_VISUALIZATION)
+
+  @Provides
+  @EnableStudyGuides
+  fun provideEnableStudyGuides(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.STUDY_GUIDES)
+
+  @Provides
+  @EnableWorkedExamples
+  fun provideEnableWorkedExamples(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.WORKED_EXAMPLES)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

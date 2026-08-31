@@ -21,12 +21,16 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -39,7 +43,9 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val questionTrainingController: QuestionTrainingController,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var profileId: LegacyProfileId
   private lateinit var state: State
@@ -49,6 +55,9 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   fun handleOnCreate(profileId: LegacyProfileId) {
     this.profileId = profileId
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
       activity,
       R.layout.question_player_activity
@@ -59,6 +68,13 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
 
     activity.setSupportActionBar(binding.questionPlayerToolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.questionPlayerToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
 
     binding.questionPlayerToolbar.setNavigationOnClickListener {
       activity.onBackPressedDispatcher.onBackPressed()
@@ -101,7 +117,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

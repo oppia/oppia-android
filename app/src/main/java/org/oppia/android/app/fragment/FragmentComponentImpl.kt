@@ -97,6 +97,7 @@ import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManage
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardFragment
+import org.oppia.android.app.topic.studyguide.StudyGuideFragment
 import org.oppia.android.app.view.ViewComponentBuilderInjector
 import org.oppia.android.app.view.ViewComponentBuilderModule
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
@@ -199,6 +200,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(stateFragment: StateFragment)
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)
+  fun inject(studyGuideFragment: StudyGuideFragment)
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)

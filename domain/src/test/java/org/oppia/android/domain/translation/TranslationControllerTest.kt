@@ -20,7 +20,6 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -39,6 +38,7 @@ import org.oppia.android.app.model.OppiaRegion.BRAZIL
 import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
@@ -161,6 +161,33 @@ class TranslationControllerTest {
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(HINDI)
     assertThat(context.regionDefinition.region).isEqualTo(INDIA)
+  }
+
+  /* Tests for getEnglishLocale */
+
+  @Test
+  fun testGetEnglishLocale_hindiSystemLocale_returnsEnglishLanguageContext() {
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+
+    val localeProvider = translationController.getEnglishLocale()
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+  }
+
+  @Test
+  fun testGetEnglishLocale_brazilSystemLocale_returnsEnglishLanguageWithBrazilRegion() {
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
+
+    val localeProvider = translationController.getEnglishLocale()
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
   }
 
   /* Tests for app language functions */
@@ -2023,13 +2050,13 @@ class TranslationControllerTest {
     return monitorFactory.waitForNextSuccessfulResult(localeProvider)
   }
 
-  private fun ensureAppLanguageIsUpdatedToUseSystem(profileId: LegacyProfileId) {
+  private fun ensureAppLanguageIsUpdatedToUseSystem(profileId: ProfileId) {
     val resultProvider =
       translationController.updateAppLanguage(profileId, APP_LANGUAGE_SELECTION_SYSTEM)
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun ensureAppLanguageIsUpdatedTo(profileId: LegacyProfileId, language: OppiaLanguage) {
+  private fun ensureAppLanguageIsUpdatedTo(profileId: ProfileId, language: OppiaLanguage) {
     val resultProvider =
       translationController.updateAppLanguage(profileId, createAppLanguageSelection(language))
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
@@ -2042,7 +2069,7 @@ class TranslationControllerTest {
   }
 
   private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     language: OppiaLanguage
   ) {
     val resultProvider =
@@ -2052,7 +2079,7 @@ class TranslationControllerTest {
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun ensureWrittenTranslationsLanguageIsUpdatedToUseApp(profileId: LegacyProfileId) {
+  private fun ensureWrittenTranslationsLanguageIsUpdatedToUseApp(profileId: ProfileId) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
         profileId, WRITTEN_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE
@@ -2069,7 +2096,7 @@ class TranslationControllerTest {
   }
 
   private fun ensureAudioTranslationsLanguageIsUpdatedTo(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     language: OppiaLanguage
   ) {
     val resultProvider =
@@ -2079,7 +2106,7 @@ class TranslationControllerTest {
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun ensureAudioTranslationsLanguageIsUpdatedToUseApp(profileId: LegacyProfileId) {
+  private fun ensureAudioTranslationsLanguageIsUpdatedToUseApp(profileId: ProfileId) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
         profileId, AUDIO_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE
@@ -2153,16 +2180,28 @@ class TranslationControllerTest {
   }
 
   private companion object {
-    private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
-    private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
+    private val BRAZIL_ENGLISH_LOCALE = Locale.Builder()
+      .setLanguage("en")
+      .setRegion("BR")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val INDIA_HINDI_LOCALE = Locale.Builder()
+      .setLanguage("hi")
+      .setRegion("IN")
+      .build()
+    private val KENYA_KISWAHILI_LOCALE = Locale.Builder()
+      .setLanguage("sw")
+      .setRegion("KE")
+      .build()
 
-    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().apply {
+    private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0
     }.build()
 
-    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().apply {
+    private val PROFILE_ID_1 = ProfileId.newBuilder().apply {
       internalId = 1
     }.build()
 

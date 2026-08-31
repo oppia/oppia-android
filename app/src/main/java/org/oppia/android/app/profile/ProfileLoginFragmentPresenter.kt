@@ -63,13 +63,16 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /**
@@ -99,7 +102,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val appStartupStateController: AppStartupStateController,
   private val resourceHandler: AppLanguageResourceHandler,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
@@ -114,12 +118,23 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
-      getProfileResult(profileManagementController.getProfile(profileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          profileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
 
     getAdminPin()
 
     createComposeView()
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootView(
+        activity,
+        binding.root,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -127,7 +142,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     adminProfileLiveData =
-      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          adminProfileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
   }
 
   private fun createComposeView() {
@@ -226,7 +245,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   private fun loginToProfile(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData()
+    profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
           activity.startActivity(

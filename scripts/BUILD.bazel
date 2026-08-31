@@ -78,6 +78,7 @@ REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
 MAVEN_ASSETS = generate_maven_assets_list_from_text_protos(
     name = "maven_assets",
     maven_dependency_filenames = ["maven_dependencies"],
+    visibility = ["//app/src/main/java/org/oppia/android/app/thirdparty:__pkg__"],
 )
 
 kt_jvm_library(
@@ -161,19 +162,44 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_check_lib"],
 )
 
-kt_jvm_binary(
+java_binary(
     name = "retrieve_license_texts",
-    testonly = True,
     data = MAVEN_ASSETS,
     main_class = "org.oppia.android.scripts.maven.RetrieveLicenseTextsKt",
+    visibility = ["//:oppia_api_visibility"],
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib"],
 )
 
 kt_jvm_binary(
-    name = "license_texts_check",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.license.LicenseTextsCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/license:license_texts_check_lib"],
+    name = "upload_binary_to_play_console",
+    main_class = "org.oppia.android.scripts.release.UploadBinaryToPlayConsoleKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:upload_binary_to_play_console_lib",
+    ],
+)
+
+kt_jvm_binary(
+    name = "upload_changelog_to_play_console",
+    main_class = "org.oppia.android.scripts.release.UploadChangelogToPlayConsoleKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:upload_changelog_to_play_console_lib",
+    ],
+)
+
+kt_jvm_binary(
+    name = "update_rollout_fraction",
+    main_class = "org.oppia.android.scripts.release.UpdateRolloutFractionKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
+    ],
+)
+
+kt_jvm_binary(
+    name = "find_alpha_candidate",
+    main_class = "org.oppia.android.scripts.release.FindAlphaCandidateKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:find_alpha_candidate_lib",
+    ],
 )
 
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
@@ -346,4 +372,21 @@ kt_jvm_binary(
     data = BINARY_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.binary.BinaryFileCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/binary:binary_file_check_lib"],
+)
+
+# Release automation binaries — invoked by GitHub Actions release workflows.
+kt_jvm_binary(
+    name = "generate_changelogs",
+    main_class = "org.oppia.android.scripts.release.GenerateChangelogsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:generate_changelogs_lib",
+    ],
+)
+
+kt_jvm_binary(
+    name = "sign_release_binary",
+    main_class = "org.oppia.android.scripts.release.SignReleaseBinaryKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:sign_release_binary_lib",
+    ],
 )

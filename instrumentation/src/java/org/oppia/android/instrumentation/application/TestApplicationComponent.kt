@@ -48,12 +48,10 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -79,7 +77,7 @@ import javax.inject.Singleton
     TextInputRuleModule::class, DragDropSortInputModule::class,
     InteractionsModule::class, EndToEndTestGcsResourceModule::class,
     GlideImageLoaderModule::class, EndToEndTestImageParsingModule::class,
-    HtmlParserEntityTypeModule::class, CachingModule::class,
+    HtmlParserEntityTypeModule::class,
     QuestionModule::class, DebugLogReportingModule::class,
     AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
@@ -88,7 +86,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+    RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,

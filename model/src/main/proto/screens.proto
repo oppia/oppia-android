@@ -183,8 +183,11 @@ enum ScreenName {
   // Screen name value for the scenario when a user is viewing the admin onboarding screen.
   ADMIN_INTRO_ACTIVITY = 57;
 
+  // Screen name value for the scenario when the study guide activity is visible to the user.
+  STUDY_GUIDE_ACTIVITY = 58;
+
   // Screen name value for the scenario when the create admin PIN screen is visible to the user.
-  CREATE_ADMIN_PIN_ACTIVITY = 58;
+  CREATE_ADMIN_PIN_ACTIVITY = 59;
 }
 
 // Defines the current visible UI screen of the application.

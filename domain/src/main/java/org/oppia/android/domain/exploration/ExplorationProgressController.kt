@@ -24,7 +24,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -48,7 +48,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.EnableLessonProgressVisualization
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -126,7 +128,9 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
-  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+  @EnableLessonProgressVisualization
+  private val enableLessonProgressVisualization: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -135,7 +139,7 @@ class ExplorationProgressController @Inject constructor(
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
-  private lateinit var profileId: LegacyProfileId
+  private lateinit var profileId: ProfileId
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -159,7 +163,7 @@ class ExplorationProgressController @Inject constructor(
    * [submitAnswer].
    */
   internal fun beginExplorationAsync(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -469,7 +473,7 @@ class ExplorationProgressController @Inject constructor(
    *     language
    */
   fun updateWrittenTranslationContentLanguageMidLesson(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
   ): DataProvider<Any> {
     return translationController.updateWrittenTranslationContentLanguage(
@@ -500,7 +504,9 @@ class ExplorationProgressController @Inject constructor(
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
-              val learnerId = profileManagementController.fetchLearnerId(message.profileId)
+              val learnerId = profileManagementController.fetchLearnerId(
+                message.profileId
+              )
               val installationId = loggingIdentifierController.fetchInstallationId()
               val isContinueButtonAnimationSeen =
                 profileManagementController.fetchContinueAnimationSeenStatus(
@@ -511,7 +517,7 @@ class ExplorationProgressController @Inject constructor(
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(),
+                  ExplorationProgress(oppiaLogger),
                   message.isRestart,
                   message.isReplay,
                   // The [message.explorationCheckpoint] is [ExplorationCheckpoint.getDefaultInstance()]
@@ -627,7 +633,7 @@ class ExplorationProgressController @Inject constructor(
 
   private suspend fun ControllerState.beginExplorationImpl(
     beginExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -1056,7 +1062,11 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeCurrentFlashbackEphemeralState(
     stateName: String
   ): EphemeralState {
-    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    // A flashback doesn't move the learner's position in the deck, so the attached progress (when
+    // the indicator is enabled) keeps showing their unchanged pre-flashback count.
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(
+      stateName, retrieveTotalCheckpointCount()
+    )
     return ephemeralState.toBuilder().apply {
       flashbackState = true
     }.build()
@@ -1138,8 +1148,28 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      isContinueButtonAnimationSeen
+      isContinueButtonAnimationSeen,
+      totalCheckpointCount = retrieveTotalCheckpointCount()
     )
+
+  /**
+   * Returns the total checkpoint count for attaching checkpoint progress to outgoing
+   * [EphemeralState]s.
+   *
+   * The total follows the learner's realized path through the deck, then adds the shortest
+   * remaining path from the state they're currently viewing. This keeps branching paths from
+   * showing impossible counts like a completed value greater than the total.
+   */
+  private fun ControllerState.retrieveTotalCheckpointCount(): Int? {
+    if (!enableLessonProgressVisualization.value) return null
+    val completedCheckpointCount =
+      explorationProgress.stateDeck.computeCompletedCheckpointCount()
+    val remainingCheckpointCount =
+      explorationProgress.stateGraph.computeMinimumCheckpointCount(
+        explorationProgress.stateDeck.getCurrentState().name
+      ) ?: return null
+    return completedCheckpointCount + remainingCheckpointCount
+  }
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {
@@ -1167,7 +1197,7 @@ class ExplorationProgressController @Inject constructor(
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.
     if (!explorationProgress.shouldSavePartialProgress) return
-    val profileId: LegacyProfileId = explorationProgress.currentProfileId
+    val profileId: ProfileId = explorationProgress.currentProfileId
     val topicId: String = explorationProgress.currentTopicId
     val storyId: String = explorationProgress.currentStoryId
     val explorationId: String = explorationProgress.currentExplorationId
@@ -1233,7 +1263,7 @@ class ExplorationProgressController @Inject constructor(
    *     unsuccessfully
    */
   private suspend fun ControllerState.processSaveCheckpointResult(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1294,7 +1324,7 @@ class ExplorationProgressController @Inject constructor(
     interactionId == "Continue"
 
   private fun markExplorationAsInProgressSaved(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1310,7 +1340,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun markExplorationAsInProgressNotSaved(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -1355,7 +1385,7 @@ class ExplorationProgressController @Inject constructor(
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
     val commandQueue: SendChannel<ControllerMessage<*>>,
     private val installationId: String?,
-    private val profileId: LegacyProfileId,
+    private val profileId: ProfileId,
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
@@ -1394,7 +1424,7 @@ class ExplorationProgressController @Inject constructor(
     fun initializeEventLogger(exploration: Exploration) {
       explorationAnalyticsLogger = learnerAnalyticsLogger.beginExploration(
         installationId,
-        profileId,
+        profileId.toLegacyProfileId(),
         learnerId,
         exploration,
         explorationProgress.currentClassroomId,
@@ -1507,7 +1537,7 @@ class ExplorationProgressController @Inject constructor(
 
     /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
-      val profileId: LegacyProfileId,
+      val profileId: ProfileId,
       val classroomId: String,
       val topicId: String,
       val storyId: String,
@@ -1633,7 +1663,7 @@ class ExplorationProgressController @Inject constructor(
      * the app (e.g. that an exploration is considered 'in-progress' in such circumstances).
      */
     data class ProcessSavedCheckpointResult(
-      val profileId: LegacyProfileId,
+      val profileId: ProfileId,
       val topicId: String,
       val storyId: String,
       val explorationId: String,

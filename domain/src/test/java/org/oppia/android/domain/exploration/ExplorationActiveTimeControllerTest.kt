@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -52,7 +52,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -95,11 +94,12 @@ class ExplorationActiveTimeControllerTest {
   @Inject
   lateinit var explorationDataController: ExplorationDataController
 
-  private val firstTestProfile = LegacyProfileId.newBuilder().setInternalId(0).build()
-  private val secondTestProfile = LegacyProfileId.newBuilder().setInternalId(1).build()
+  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
   }
 
@@ -493,11 +493,11 @@ class ExplorationActiveTimeControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -521,8 +521,9 @@ class ExplorationActiveTimeControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    applicationLifecycleObserver.onCreateStarted()
+    applicationLifecycleObserver.onCompletedInitialization()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -545,10 +546,6 @@ class ExplorationActiveTimeControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.

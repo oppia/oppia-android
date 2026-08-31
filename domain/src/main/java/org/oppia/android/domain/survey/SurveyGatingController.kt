@@ -11,6 +11,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -70,7 +71,9 @@ class SurveyGatingController @Inject constructor(
   }
 
   private fun retrieveSurveyLastShownDate(profileId: LegacyProfileId) =
-    profileManagementController.retrieveSurveyLastShownTimestamp(profileId)
+    profileManagementController.retrieveSurveyLastShownTimestamp(
+      profileId.toProfileIdPreservingZero()
+    )
 
   private fun hasReachedMinimumTopicLearningThreshold(topicLearningTimeMs: Long): Boolean {
     return topicLearningTimeMs >= minimumLearningTimeForGatingMillis
@@ -81,7 +84,7 @@ class SurveyGatingController @Inject constructor(
     topicId: String
   ): DataProvider<Long> {
     return activeTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-      profileId, topicId
+      profileId.toProfileIdPreservingZero(), topicId
     ).transform(
       GET_TOPIC_LEARNING_TIME_PROVIDER_ID,
       TopicLearningTime::getTopicLearningTimeMs
