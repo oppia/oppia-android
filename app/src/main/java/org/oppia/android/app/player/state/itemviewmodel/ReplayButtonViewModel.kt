@@ -7,4 +7,10 @@ class ReplayButtonViewModel(
   val hasConversationView: Boolean,
   val replayButtonListener: ReplayButtonListener,
   val isSplitView: Boolean
-) : StateItemViewModel(ViewType.REPLAY_NAVIGATION_BUTTON)
+) : StateItemViewModel(ViewType.REPLAY_NAVIGATION_BUTTON) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is ReplayButtonViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView
+  }
+}
