@@ -43,7 +43,7 @@ class AndroidLintRunnerTest {
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
-    private const val MIN_SDK_VERSION = "21"
+    private const val MIN_SDK_VERSION = "23"
     private const val TARGET_SDK_VERSION = "35"
   }
 
@@ -683,12 +683,14 @@ class AndroidLintRunnerTest {
     val output = outputStream.toString()
     assertThat(output).contains("NewApi")
     assertThat(output)
-      .doesNotContain("val network2 = cm.activeNetwork")
-    assertThat(output).contains("Line: 11")
+      .contains("val localeList = LocaleList.getDefault()")
+    assertThat(output)
+      .doesNotContain("val localeList2 = LocaleList.getDefault()")
+    assertThat(output).contains("Line: 10")
     assertThat(output)
       .contains(
-        "Call requires API level 23 (current min is 21): " +
-          "`android.net.ConnectivityManager#getActiveNetwork`"
+        "Call requires API level 24 (current min is 23): " +
+          "`android.os.LocaleList#getDefault`"
       )
     assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
@@ -713,7 +715,7 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("line=\"14\"")
     assertThat(output)
       .contains(
-        "Field requires API level 29 (current min is 21):" +
+        "Field requires API level 29 (current min is 23):" +
           " `android.media.MediaFormat#MIMETYPE_AUDIO_AC4`"
       )
 
@@ -1079,15 +1081,14 @@ class AndroidLintRunnerTest {
 
       import android.annotation.SuppressLint
       import android.content.Context
-      import android.net.ConnectivityManager
       import android.os.Build
+      import android.os.LocaleList
 
       @SuppressLint("MissingPermission")
       fun test(context: Context) {
-          val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-          val network = cm.activeNetwork
-          if (Build.VERSION.SDK_INT >= 23) {
-              val network2 = cm.activeNetwork // OK
+          val localeList = LocaleList.getDefault()
+          if (Build.VERSION.SDK_INT >= 24) {
+              val localeList2 = LocaleList.getDefault() // OK
           }
       }
       """.trimIndent()
@@ -1490,5 +1491,55 @@ class AndroidLintRunnerTest {
     }
 
     return jarFile
+  }
+
+  @Test
+  fun testMain_noArguments_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main()
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_nonExistentRepoRoot_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main("non_existent_directory_12345")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_invalidProtoExtension_throwsSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main(tempFolder.root.absolutePath, "--proto=invalid.txt")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+  }
+
+  @Test
+  fun testMain_validArgs_checkScriptConsistencyMode_throwsSecurityExceptionOnExitZero() {
+    val exception = assertThrows<SecurityException> {
+      main(
+        tempFolder.root.absolutePath,
+        "--mode=check-script-consistency",
+        "--processTimeout=10",
+        "--proto=$pathToProtoBinary",
+        "--checks=HardcodedText",
+        "--group_by_severity",
+        "--timer"
+      )
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    val output = outputStream.toString()
+    assertThat(output).contains("CHECK PASSED: LintCheckCatalog")
+  }
+
+  @Test
+  fun testMain_invalidModeString_printsStacktraceAndExitsWithSecurityException() {
+    val exception = assertThrows<SecurityException> {
+      main(tempFolder.root.absolutePath, "--mode=invalid-mode")
+    }
+    assertThat(exception).hasMessageThat().contains("System.exit()")
   }
 }
