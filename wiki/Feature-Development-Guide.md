@@ -1,8 +1,8 @@
 # Feature Development Guide
 
-This guide is for **Android developers** who need to ship a feature safely: gate it behind a
-feature flag, understand how it moves through the release pipeline, and request that it be enabled
-in production.
+This guide is for **Android developers** who need to ship a feature safely. It covers how to gate
+a feature behind a feature flag, how the feature moves through the release pipeline, and how to
+request that it be enabled in production.
 
 **For the technical mechanics of creating a flag** (constants, Dagger wiring, analytics logging),
 see the [Platform Parameters & Feature Flags](Platform-Parameters-&-Feature-Flags.md) wiki.
@@ -87,10 +87,16 @@ Once your flagged feature lands on `develop`, it moves through a defined lifecyc
 reaches production. The lifecycle is:
 
 ```
-develop (flag off) → alpha build (flag on via alpha textproto, if requested)
+develop (flag off) → alpha build (flag on via alpha textproto)
   → product review → beta build (flag on via beta textproto)
   → tech lead sign-off → production (flag on via GA textproto) → cleanup
 ```
+
+> **Alpha enablement is opt-in.** The alpha textproto is only updated when the developer (or
+> coordinator) explicitly requests it — for example, to gather early feedback or validate the
+> feature before beta. If you do not need alpha testing, your feature stays flagged off in the
+> alpha build and first becomes visible in beta. See [§3](#3-requesting-production-enablement) for
+> how to request enablement at any stage.
 
 ### Flag state across release stages
 
@@ -161,9 +167,12 @@ Only request production enablement when **all** of the following are true:
 
 ### How to request
 
-File a production enablement issue in the product operations tracker, following the requirements
-template at [product-operations-team#46](https://github.com/oppia/product-operations-team/issues/46).
-Then assign or ping the **Tech lead** and the **release coordinator** for the current cycle.
+File a production enablement issue using the
+[new launch request template](https://github.com/oppia/product-operations-team/issues/new?template=1_new_launch.yml)
+in the product operations tracker. See
+[product-operations-team#46](https://github.com/oppia/product-operations-team/issues/46) for a
+complete example. Then assign or ping the **Tech lead** and the **release coordinator** for the
+current cycle.
 
 ### Timeline
 
