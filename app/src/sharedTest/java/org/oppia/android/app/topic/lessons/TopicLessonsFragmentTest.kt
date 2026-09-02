@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.hasContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -461,6 +462,112 @@ class TopicLessonsFragmentTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_lockedChapter_isClickable() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_clickLockedChapter_showsPrerequisiteTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+        )
+      ).check(matches(not(isDisplayed())))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+        )
+      ).check(matches(isDisplayed()))
+        .check(
+          matches(
+            withText(
+              "Chapter 2: Order is important is currently locked. Please complete chapter 1: " +
+                "What is a Ratio? to unlock this chapter."
+            )
+          )
+        )
+      // Locked chapter must not navigate into ExplorationActivity.
+      intended(hasComponent(ExplorationActivity::class.java.name), times(0))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_clickLockedChapterTwice_hidesPrerequisiteTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
