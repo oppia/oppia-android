@@ -18,12 +18,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!--
+      Locked chapters must remain clickable so learners can tap to reveal the
+      prerequisite micro-tooltip. This layout is only bound for
+      NOT_PLAYABLE_MISSING_PREREQUISITES rows.
+    -->
     <LinearLayout
       android:id="@+id/locked_chapter_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/component_color_lessons_tab_activity_lessons_locked_chapter_container_background_color"
-      android:clickable="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
+      android:clickable="true"
+      android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
+      android:focusable="true"
       android:minHeight="48dp"
       android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
       android:orientation="horizontal">
@@ -73,6 +80,27 @@
         android:textColor="@color/component_color_lessons_tab_activity_lessons_locked_chapter_name_text_color"
         android:textSize="14sp" />
     </LinearLayout>
+
+    <!-- Micro-tooltip: shown when the locked chapter row is tapped. -->
+    <TextView
+      android:id="@+id/locked_chapter_prerequisite_tooltip"
+      style="@style/TextViewStart"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
+      android:background="@drawable/spotlight_hint_text_background"
+      android:fontFamily="sans-serif"
+      android:paddingStart="12dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="12dp"
+      android:paddingBottom="8dp"
+      android:text="@{viewModel.computePrerequisiteTooltipText()}"
+      android:textColor="@color/component_color_shared_secondary_5_text_color"
+      android:textSize="14sp"
+      android:visibility="@{viewModel.isPrerequisiteTooltipVisible ? View.VISIBLE : View.GONE}" />
 
     <View
       android:id="@+id/divider"
