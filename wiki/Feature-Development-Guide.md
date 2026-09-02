@@ -92,18 +92,21 @@ develop (flag off) → alpha build (flag on via alpha textproto)
   → tech lead sign-off → production (flag on via GA textproto) → cleanup
 ```
 
-> **Alpha enablement is opt-in.** The alpha textproto is only updated when the developer (or
-> coordinator) explicitly requests it — for example, to gather early feedback or validate the
-> feature before beta. If you do not need alpha testing, your feature stays flagged off in the
-> alpha build and first becomes visible in beta. See [§3](#3-requesting-production-enablement) for
-> how to request enablement at any stage.
+> **Alpha enablement is opt-in.** The alpha textproto is only updated when you explicitly request
+> it — for example, to gather early feedback or validate the feature before product review.
+> If you do not need alpha testing, your feature stays flagged off in the alpha build and first
+> becomes visible in beta.
+>
+> To request alpha enablement, ask the release coordinator to add your flag to
+> [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)
+> for the current release branch.
 
 ### Flag state across release stages
 
 | Stage | Where the flag lives | Flag state | Who controls it |
 |---|---|---|---|
 | **Development** | `develop` branch | `false` (default) | Developer |
-| **Alpha** | `release-X.Y` → alpha build | `true` (enabled via [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)) | Release coordinator |
+| **Alpha** | `release-X.Y` → alpha build | `false` by default; `true` only if alpha testing was requested (enabled via [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)) | Release coordinator |
 | **Beta** | `release-X.Y` → beta build | `true` (enabled via [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto), if alpha passed) | Release coordinator |
 | **Production (GA)** | GA rollout | `true` (after QA + product sign-off) | Tech lead / release coordinator |
 | **Cleanup** | Next release cycle | Flag removed entirely | Developer |
@@ -116,11 +119,12 @@ develop (flag off) → alpha build (flag on via alpha textproto)
 - Verify your tracking issue is up to date and linked from all feature PRs that have merged.
 - Add the feature's CUJs to the Android team's CUJ sheet.
 
-**During alpha:**
+**During alpha (only if alpha testing was requested):**
 - The coordinator enables your flag for the alpha build by setting it to `true` in
   [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto).
 - Participate in alpha testing — verify the feature works end-to-end in a real build.
 - File any regressions as separate issues, linked to the original tracking issue as child/sub-issues.
+- If alpha testing was **not** requested, skip ahead to the beta stage below.
 
 **During beta:**
 - If alpha testing passes and product review approves, the coordinator enables the flag in beta
