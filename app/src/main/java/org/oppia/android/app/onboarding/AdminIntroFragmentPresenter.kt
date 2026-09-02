@@ -45,18 +45,15 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
 import org.oppia.android.app.model.LegacyProfileId
-import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
@@ -274,8 +271,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
       Button(
         onClick = {
-          // TODO(#4938): Refactor to: create admin pin screen when the UI is ready.
-          navigateToProfileChooserActivity()
+          fragment.startActivity(
+            CreateAdminPinActivity.createAdminPinActivityIntent(activity, profileId)
+          )
         },
         colors = ButtonDefaults.buttonColors(
           backgroundColor = colorResource(
@@ -296,23 +294,5 @@ class AdminIntroFragmentPresenter @Inject constructor(
         )
       }
     }
-  }
-
-  private fun navigateToProfileChooserActivity() {
-    val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-    intent.apply {
-      decorateWithUserProfileId(profileId)
-      putProtoExtra(
-        PROFILE_CHOOSER_PARAMS_KEY,
-        ProfileChooserActivityParams.newBuilder()
-          .setParentScreen(ParentScreen.ADMIN_INTRO_SCREEN)
-          .build()
-      )
-    }
-    fragment.startActivity(intent)
-    // Finish this activity as well as all activities immediately below it in the current
-    // task so that the user cannot navigate back to the onboarding flow by pressing the
-    // back button once onboarding is complete.
-    fragment.activity?.finishAffinity()
   }
 }

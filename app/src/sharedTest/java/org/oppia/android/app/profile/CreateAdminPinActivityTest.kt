@@ -1,20 +1,13 @@
-package org.oppia.android.app.onboarding
+package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -35,9 +28,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
-import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -72,186 +64,89 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AdminIntroFragment]. */
-@Suppress("FunctionName")
+/** Tests for [CreateAdminPinActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = AdminIntroFragmentTest.TestApplication::class,
+  application = CreateAdminPinActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class AdminIntroFragmentTest {
+class CreateAdminPinActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val composeRule = createEmptyComposeRule()
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
   }
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
   @Test
-  fun testIntroFragment_onLaunch_allViewsAreCorrectlyDisplayed() {
-    launch(AdminIntroActivity::class.java).use {
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithContentDescription(
-        context.getString(R.string.onboarding_otter_content_description)
-      )
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .assertIsDisplayed()
-    }
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createPinSetupActivityIntent(context).extractCurrentAppScreenName()
+    assertThat(screenName).isEqualTo(ScreenName.CREATE_ADMIN_PIN_ACTIVITY)
   }
 
   @Test
-  @Config(qualifiers = "+land")
-  fun testIntroFragment_landscapeMode_viewsAreCorrectlyDisplayed_stepCountIsNotVisible() {
-    launch(AdminIntroActivity::class.java).use {
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithContentDescription(
-        context.getString(R.string.onboarding_otter_content_description)
-      )
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
-        .assertDoesNotExist()
-    }
-  }
-
-  @Test
-  fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
-    launch(AdminIntroActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-          .performClick()
-
+  fun testActivity_hasCorrectActivityLabel() {
+    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent(context))
+      .use { scenario ->
         testCoroutineDispatchers.runCurrent()
-
-        assertThat(activity.isFinishing).isTrue()
+        scenario?.onActivity { activity ->
+          val title = activity.title
+          assertThat(title).isEqualTo(
+            context.getString(R.string.create_admin_pin_activity_title)
+          )
+        }
       }
-    }
   }
 
-  @Test
-  fun testIntroFragment_continueButtonClicked_launchesCreateAdminPinActivity() {
-    launchAdminIntroActivity().use {
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(CreateAdminPinActivity::class.java.name))
-      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
-    }
-  }
-
-  @Test
-  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
-    val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
-
-    launch(AdminIntroActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      assertThat(event).hasStartProfileOnboardingContextThat {
-        hasProfileIdThat().isEqualTo(testProfileId)
-      }
-    }
-  }
-
-  private fun launchAdminIntroActivity(): ActivityScenario<AdminIntroActivity> {
-    val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
-
-    val scenario = launch<AdminIntroActivity>(
-      AdminIntroActivity.createAdminIntroActivityIntent(
-        context,
-        testProfileId,
-        ProfileType.SUPERVISOR,
-        "Admin"
-      ).apply {
-        decorateWithUserProfileId(testProfileId)
-      }
-    )
-    testCoroutineDispatchers.runCurrent()
-    return scenario
+  private fun createPinSetupActivityIntent(context: Context): Intent {
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    return CreateAdminPinActivity.createAdminPinActivityIntent(context, profileId)
   }
 
   private fun setUpTestApplicationComponent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
@@ -263,6 +158,7 @@ class AdminIntroFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
+      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -272,6 +168,7 @@ class AdminIntroFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -316,22 +213,20 @@ class AdminIntroFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
-    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest)
+    fun inject(createAdminPinActivityTest: CreateAdminPinActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAdminIntroFragmentTest_TestApplicationComponent.builder()
+      DaggerCreateAdminPinActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest) {
-      component.inject(adminIntroFragmentTest)
+    fun inject(createAdminPinActivityTest: CreateAdminPinActivityTest) {
+      component.inject(createAdminPinActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
