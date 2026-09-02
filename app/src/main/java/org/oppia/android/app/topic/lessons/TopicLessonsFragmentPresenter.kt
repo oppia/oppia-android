@@ -286,13 +286,24 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
+    // Locked chapters are handled entirely in ChapterSummaryViewModel (micro-tooltip).
+    // Never attempt to start or replay a lesson that is missing prerequisites.
+    if (chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) {
+      oppiaLogger.d(
+        "TopicLessonsFragment",
+        "Ignoring navigation for locked chapter explorationId=$explorationId"
+      )
+      return
+    }
+
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
         ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
-        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
+        ChapterPlayState.UNRECOGNIZED,
         ChapterPlayState.COMPLETED -> false
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> false
       }
 
     when (chapterPlayState) {
@@ -342,6 +353,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           canHavePartialProgressSaved,
           hadProgress = true
         )
+      }
+      ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
+        // Defensive: locked chapters must not reach playExploration.
       }
       else -> {
         playExploration(
