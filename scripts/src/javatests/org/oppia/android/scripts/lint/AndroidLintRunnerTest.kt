@@ -506,6 +506,257 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testLintOrchestrator_execute_invalidMode_errorMessageListsAllValidModes() {
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+
+    val exception = assertThrows<IllegalArgumentException> {
+      orchestrator.execute("nonexistent")
+    }
+
+    // Verify the error message enumerates every valid mode name.
+    assertThat(exception).hasMessageThat().contains("fast")
+    assertThat(exception).hasMessageThat().contains("full")
+    assertThat(exception).hasMessageThat().contains("list-checks")
+    assertThat(exception).hasMessageThat().contains("check-script-consistency")
+  }
+
+  @Test
+  fun testLintOrchestrator_retrieveChangedSourceFiles_withNoChangedFiles_returnsEmptySet() {
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      if (args.contains("merge-base")) {
+        outputStream.print("abc1234567890abcdef")
+      }
+      // All other git calls return empty output → no changed files.
+      0
+    }
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher
+    )
+
+    val changedFiles = orchestrator.retrieveChangedSourceFiles()
+
+    assertThat(changedFiles).isEmpty()
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_withoutTimer_doesNotPrintExecutionTime() {
+    // check-script-consistency completes without bazel infra; exercises timer=null path.
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher,
+      showTimer = false
+    )
+
+    orchestrator.execute("check-script-consistency")
+
+    val output = outputStream.toString()
+    assertThat(output).doesNotContain("Total execution time:")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withGroupByIssueSeverityTrue_reportsGroupedIssues() {
+    setupProjectWithRtlHardCoded()
+    val analyzerGrouped = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      groupByIssueSeverity = true,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      analyzerGrouped.runAnalysis()
+    }
+
+    val output = outputStream.toString()
+    assertThat(output).contains("RTL_HARDCODED")
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withMultipleExplicitChecks_passesAllChecksToLint() {
+    setupProjectStructure()
+    val analyzerMultiCheck = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      checks = listOf("HardcodedText", "RtlHardcoded", "NewApi")
+    )
+
+    // Clean project — none of these checks fire.
+    analyzerMultiCheck.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withNoAdditionalDisabledChecks_detectsNormallySuppressedIssues() {
+    // Exercises the if (suppressLintIssues.isNotEmpty()) false branch in prepareLintArguments.
+    // With an empty set, --disable is NOT added, so checks that are normally suppressed
+    // (e.g. DuplicateStrings) fire on the test project.
+    setupProjectStructure()
+    val analyzerNoDisabled = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = emptySet()
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      analyzerNoDisabled.runAnalysis()
+    }
+
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withChangedFilesProvided_includesChangedFilesInDescription() {
+    setupProjectStructure()
+    val changedFile = "app/src/main/java/org/oppia/android/app/AppClass.kt"
+    val analyzerWithChangedFiles = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      changedFiles = setOf(changedFile)
+    )
+
+    analyzerWithChangedFiles.runAnalysis()
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent).contains(changedFile)
+  }
+
+  @Test
+  fun testPrepareJdkEnvironment_nonExistentJdkDirectory_throwsIllegalArgumentException() {
+    setupProjectStructure()
+    val nonExistentJdk = File(tempFolder.root, "non_existent_jdk_directory")
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: ${nonExistentJdk.absolutePath}")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
+          0
+        }
+        else -> 0
+      }
+    }
+    val analyzer = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      listChecks = true
+    )
+
+    val exception = assertThrows<IllegalArgumentException> {
+      analyzer.runAnalysis()
+    }
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("JDK home path does not exist or is not a directory")
+  }
+
+  @Test
+  fun testPrepareJdkEnvironment_missingReleaseFile_createsReleaseFileFromModuleLayer() {
+    setupProjectStructure()
+    val fakeJdkHome = tempFolder.newFolder("fake_jdk_without_release")
+    val releaseFile = File(fakeJdkHome, "release")
+    assertThat(releaseFile.exists()).isFalse()
+
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: ${fakeJdkHome.absolutePath}")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
+          0
+        }
+        else -> 0
+      }
+    }
+    val analyzer = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      repoRoot = tempFolder.root,
+      reportUnusedEnum = false,
+      additionalDisabledChecks = LintCheckCatalog.checksAlwaysDisabled,
+      listChecks = true
+    )
+
+    analyzer.runAnalysis()
+
+    assertThat(releaseFile.exists()).isTrue()
+    assertThat(releaseFile.readText()).contains("MODULES=")
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_fastMode_withProjectStructure_succeeds() {
+    // Unlike testLintOrchestrator_execute_fastMode_printsFastModeDescription (which lacks
+    // project infrastructure and catches an expected exception after printing the mode description),
+    // this test sets up a workspace and exemption proto so that fast mode executes end-to-end and
+    // completes successfully without throwing an exception.
+    setupProjectStructure()
+    fakeCommandExecutor.registerHandler("git") { _, args, outputStream, _ ->
+      if (args.contains("merge-base")) {
+        outputStream.print("abc1234567890abcdef")
+      }
+      0
+    }
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary"
+    )
+
+    orchestrator.execute("fast")
+
+    val output = outputStream.toString()
+    assertThat(output).contains("Running linter in 'fast' mode with 0 changed source file(s).")
+  }
+
+  @Test
+  fun testLintOrchestrator_execute_fullMode_withExplicitChecks_succeeds() {
+    setupProjectStructure()
+    val orchestrator = LintOrchestrator(
+      repoRoot = tempFolder.root,
+      commandExecutor = fakeCommandExecutor,
+      scriptBgDispatcher = scriptBgDispatcher,
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      explicitChecks = listOf("HardcodedText")
+    )
+
+    orchestrator.execute("full")
+
+    val output = outputStream.toString()
+    assertThat(output).contains("Running linter in 'full' mode with all repository files.")
+  }
+
+  @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
     setupProjectStructure()
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
