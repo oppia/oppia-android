@@ -81,8 +81,8 @@ jobs:
 
       # FindAlphaCandidate inspects commits newer than the current latest-alpha tag
       # (newest first) and returns the SHA of the first fully-passing commit.
-      # Exits 0 in all non-fatal cases (candidate found, no new commits, or no passing commit);
-      # exits 1 only on a fatal API/config error.
+      # Exits 0 with empty output on NoNewCommits; exits 1 on NoPassingCommit (intentional —
+      # signals to maintainers that CI is blocking the alpha channel) or on a fatal API error.
       # If force_sha is set (manual recovery), candidate detection is skipped entirely.
       - name: Find alpha candidate
         id: candidate
@@ -103,7 +103,7 @@ jobs:
               "develop" \
               "$LATEST_ALPHA_SHA")
             if [[ -z "$CANDIDATE_SHA" ]]; then
-              echo "No new passing candidate found. Nothing to cut this cycle."
+              echo "No new passing candidate found since ${LATEST_ALPHA_SHA:0:7}. Nothing to cut this cycle."
             else
               echo "Alpha candidate: $CANDIDATE_SHA"
             fi

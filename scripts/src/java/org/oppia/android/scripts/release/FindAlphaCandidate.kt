@@ -25,9 +25,9 @@ sealed class AlphaCandidateResult {
  * whose GitHub CI check runs are all passing — the "alpha deployment candidate".
  *
  * Exit codes:
- *   0 – candidate found (SHA printed to stdout), no new commits since latest-alpha, or no passing
- *       commit found among the inspected commits (all three are "nothing to do" outcomes)
- *   1 – fatal error (e.g. API failure); reason printed to stderr
+ *   0 – candidate found (SHA printed to stdout) OR no new commits since latest-alpha (nothing to do)
+ *   1 – no passing candidate found (CI is blocking the alpha channel — surface to maintainers)
+ *       OR fatal error (e.g. API failure); reason printed to stderr
  *
  * Usage:
  *   bazel run //scripts:find_alpha_candidate -- <github_token> [branch]
@@ -73,10 +73,9 @@ fun main(args: Array<String>) {
       is AlphaCandidateResult.NoPassingCommit -> {
         System.err.println(
           "No passing candidate found in the last ${result.commitsChecked} commit(s) on " +
-            "'$branch'. CI may still be running — no new release will be cut this cycle."
+            "'$branch'. CI is blocking the alpha channel — surface this to repository maintainers."
         )
-        // Exit 0 — not a failure. The calling workflow checks for an empty candidate SHA
-        // and skips the tag-push and dispatch steps automatically.
+        System.exit(1)
       }
     }
   } catch (e: IllegalStateException) {
