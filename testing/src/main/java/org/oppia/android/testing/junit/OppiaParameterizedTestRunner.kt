@@ -210,7 +210,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     declaredAnnotations.forEach { annotation ->
       val valueMethod = annotation.annotationClass.java.methods.firstOrNull { method ->
         method.name == "value" &&
-          method.parameterCount == 0 &&
+          method.parameterTypes.isEmpty() &&
           method.returnType.isArray &&
           method.returnType.componentType == Iteration::class.java
       }
