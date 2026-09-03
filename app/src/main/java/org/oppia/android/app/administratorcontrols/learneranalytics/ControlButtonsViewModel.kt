@@ -3,7 +3,7 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.os.Build
+import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +20,6 @@ import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
-import java.util.Base64
 import java.util.zip.GZIPOutputStream
 import javax.inject.Inject
 
@@ -229,11 +228,7 @@ class ControlButtonsViewModel private constructor(
       val compressedMessage = ByteArrayOutputStream().also { byteOutputStream ->
         GZIPOutputStream(byteOutputStream).use(::writeTo)
       }.toByteArray()
-      return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        Base64.getEncoder().encodeToString(compressedMessage)
-      } else {
-        android.util.Base64.encodeToString(compressedMessage, 0)
-      }
+      return Base64.encodeToString(compressedMessage, Base64.NO_WRAP)
     }
 
     private fun String.computeSha1Hash(machineLocale: OppiaLocale.MachineLocale): String {
