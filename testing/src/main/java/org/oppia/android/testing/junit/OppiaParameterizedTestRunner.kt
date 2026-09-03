@@ -217,6 +217,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
       if (valueMethod != null) {
         try {
           val result = valueMethod.invoke(annotation)
+          // The cast is safe: we verified returnType.componentType == Iteration::class.java above.
+          @Suppress("UNCHECKED_CAST")
           val containerIterations = result as? Array<Iteration>
           if (containerIterations != null) {
             iterations.addAll(containerIterations)
