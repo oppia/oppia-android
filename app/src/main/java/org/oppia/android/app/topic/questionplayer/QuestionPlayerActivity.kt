@@ -128,6 +128,14 @@ class QuestionPlayerActivity :
 
   override fun dismiss() = questionPlayerActivityPresenter.dismissHintsAndSolutionDialog()
 
+  override fun pauseHints() {
+    questionPlayerActivityPresenter.pauseHints()
+  }
+
+  override fun resumeHints() {
+    questionPlayerActivityPresenter.resumeHints()
+  }
+
   override fun onQuestionStateLoaded(
     state: State,
     writtenTranslationContext: WrittenTranslationContext

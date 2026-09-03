@@ -2,6 +2,7 @@ package org.oppia.android.domain.hintsandsolution
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
+import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -57,7 +59,8 @@ class HintHandlerProdImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
-  private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val oppiaClock: OppiaClock
 ) : HintHandler {
   private val helpIndexFlow by lazy { MutableStateFlow(HelpIndex.getDefaultInstance()) }
 
@@ -69,6 +72,13 @@ class HintHandlerProdImpl private constructor(
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
+
+  // Pause/resume tracking for hint timer.
+  private var isPaused = false
+  private var currentScheduledJob: Job? = null
+  private var scheduledEndTimeMs: Long = 0L
+  private var pausedRemainingDelayMs: Long = 0L
+  private var pausedHelpIndexToShow: HelpIndex = HelpIndex.getDefaultInstance()
 
   override suspend fun startWatchingForHintsInNewState(state: State) {
     pendingState = state
@@ -160,6 +170,34 @@ class HintHandlerProdImpl private constructor(
     maybeScheduleShowHint()
   }
 
+  override suspend fun pauseHints() {
+    if (!isPaused) {
+      isPaused = true
+      if (currentScheduledJob?.isActive == true) {
+        pausedRemainingDelayMs =
+          (scheduledEndTimeMs - oppiaClock.getCurrentTimeMs()).coerceAtLeast(0L)
+        pausedHelpIndexToShow = getNextHelpIndexToReveal()
+        currentScheduledJob?.cancel()
+        currentScheduledJob = null
+      }
+    }
+  }
+
+  override suspend fun resumeHints() {
+    if (isPaused) {
+      isPaused = false
+      // Reschedule only if there is still an un-revealed hint or solution to show.
+      val indexType = pausedHelpIndexToShow.indexTypeCase
+      if (indexType != HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET &&
+        indexType != HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+      ) {
+        scheduleShowHint(pausedRemainingDelayMs, pausedHelpIndexToShow)
+      }
+      pausedRemainingDelayMs = 0L
+      pausedHelpIndexToShow = HelpIndex.getDefaultInstance()
+    }
+  }
+
   override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
 
   private fun cancelPendingTasks() {
@@ -167,6 +205,8 @@ class HintHandlerProdImpl private constructor(
     // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
     // scheduled without overlapping with past sequence numbers.
     hintSequenceNumber++
+    currentScheduledJob?.cancel()
+    currentScheduledJob = null
   }
 
   private suspend fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
@@ -221,6 +261,9 @@ class HintHandlerProdImpl private constructor(
     latestAvailableHintIndex = -1
     solutionIsAvailable = false
     solutionIsRevealed = false
+    isPaused = false
+    pausedRemainingDelayMs = 0L
+    pausedHelpIndexToShow = HelpIndex.getDefaultInstance()
   }
 
   private fun computeCurrentHelpIndex(): HelpIndex {
@@ -298,7 +341,14 @@ class HintHandlerProdImpl private constructor(
    */
   private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
     val targetSequenceNumber = ++hintSequenceNumber
-    CoroutineScope(backgroundCoroutineDispatcher).launch {
+    if (isPaused) {
+      pausedRemainingDelayMs = delayMs
+      pausedHelpIndexToShow = helpIndexToShow
+      currentScheduledJob = null
+      return
+    }
+    scheduledEndTimeMs = oppiaClock.getCurrentTimeMs() + delayMs
+    currentScheduledJob = CoroutineScope(backgroundCoroutineDispatcher).launch {
       delay(delayMs)
       showHint(targetSequenceNumber, helpIndexToShow)
     }
@@ -341,14 +391,16 @@ class HintHandlerProdImpl private constructor(
     @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
     @DelayShowAdditionalHintsFromWrongAnswerMillis
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
-    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+    private val oppiaClock: OppiaClock
   ) : HintHandler.Factory {
     override fun create(): HintHandler {
       return HintHandlerProdImpl(
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs,
-        backgroundCoroutineDispatcher
+        backgroundCoroutineDispatcher,
+        oppiaClock
       )
     }
   }

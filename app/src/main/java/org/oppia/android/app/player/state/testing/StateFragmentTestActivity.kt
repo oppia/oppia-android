@@ -121,6 +121,14 @@ class StateFragmentTestActivity :
     getHintsAndSolution()?.dismiss()
   }
 
+  override fun pauseHints() {
+    stateFragmentTestActivityPresenter.pauseHints()
+  }
+
+  override fun resumeHints() {
+    stateFragmentTestActivityPresenter.resumeHints()
+  }
+
   override fun routeToHintsAndSolution(id: String, helpIndex: HelpIndex) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =

@@ -289,6 +289,22 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     getHintsAndSolutionDialogFragment()?.dismiss()
   }
 
+  fun pauseHints() {
+    val questionPlayerFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_QUESTION_PLAYER_FRAGMENT
+      ) as? QuestionPlayerFragment
+    questionPlayerFragment?.pauseHints()
+  }
+
+  fun resumeHints() {
+    val questionPlayerFragment =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_QUESTION_PLAYER_FRAGMENT
+      ) as? QuestionPlayerFragment
+    questionPlayerFragment?.resumeHints()
+  }
+
   fun dismissConceptCard() {
     getHintsAndSolutionDialogFragment()?.dismissConceptCard()
   }

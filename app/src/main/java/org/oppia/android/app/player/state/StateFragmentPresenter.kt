@@ -307,6 +307,14 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.submitSolutionIsViewed()
   }
 
+  fun pauseHints() {
+    explorationProgressController.pauseHints()
+  }
+
+  fun resumeHints() {
+    explorationProgressController.resumeHints()
+  }
+
   private fun getAudioFragment(): Fragment? {
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
   }
