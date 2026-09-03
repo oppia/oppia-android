@@ -208,14 +208,22 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     val iterations = mutableListOf<Iteration>()
     getAnnotation(Iteration::class.java)?.let { iterations.add(it) }
     declaredAnnotations.forEach { annotation ->
-      try {
-        val valueMethod = annotation.annotationClass.java.getMethod("value")
-        val result = valueMethod.invoke(annotation)
-        val containerIterations = (result as? Array<*>)?.filterIsInstance<Iteration>()
-        if (containerIterations != null) {
-          iterations.addAll(containerIterations)
+      val valueMethod = annotation.annotationClass.java.methods.firstOrNull { method ->
+        method.name == "value" &&
+          method.parameterCount == 0 &&
+          method.returnType.isArray &&
+          method.returnType.componentType == Iteration::class.java
+      }
+      if (valueMethod != null) {
+        try {
+          val result = valueMethod.invoke(annotation)
+          val containerIterations = result as? Array<Iteration>
+          if (containerIterations != null) {
+            iterations.addAll(containerIterations)
+          }
+        } catch (ignored: IllegalAccessException) {
+        } catch (ignored: java.lang.reflect.InvocationTargetException) {
         }
-      } catch (ignored: Exception) {
       }
     }
     return iterations.distinct()
