@@ -151,9 +151,16 @@ class HintsAndSolutionDialogFragment :
 
   override fun onStart() {
     super.onStart()
-    val dialog = this.dialog ?: return
-    dialog.window?.setWindowAnimations(R.style.FullScreenHintDialogStyle)
-    hintsAndSolutionDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
+    dialog?.let { dialog ->
+      dialog.window?.setWindowAnimations(R.style.FullScreenHintDialogStyle)
+      hintsAndSolutionDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
+    }
+    hintsAndSolutionDialogFragmentPresenter.handleOnStart()
+  }
+
+  override fun onStop() {
+    super.onStop()
+    hintsAndSolutionDialogFragmentPresenter.handleOnStop()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -142,6 +142,21 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     )
   }
 
+  /** Notifies the parent activity that the dialog has started and hint timers should pause. */
+  fun handleOnStart() {
+    (activity as? HintsAndSolutionListener)?.pauseHints()
+  }
+
+  /**
+   * Notifies the parent activity that the dialog has stopped and hint timers should resume,
+   * provided the stop isn't due to a configuration change.
+   */
+  fun handleOnStop() {
+    if (!activity.isChangingConfigurations) {
+      (activity as? HintsAndSolutionListener)?.resumeHints()
+    }
+  }
+
   private enum class ViewType {
     VIEW_TYPE_HINT_ITEM,
     VIEW_TYPE_SOLUTION_ITEM,
