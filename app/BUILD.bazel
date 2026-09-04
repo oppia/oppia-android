@@ -685,7 +685,6 @@ kt_android_library(
         "//third_party:androidx_lifecycle_lifecycle-extensions",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
-        "//third_party:androidx_multidex_multidex",
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:com_caverock_androidsvg",

@@ -1,9 +1,7 @@
 package org.oppia.android.app.application
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
-import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.AppCheckProviderFactory
@@ -28,7 +26,7 @@ abstract class AbstractOppiaApplication(
   createComponentBuilder: () -> ApplicationComponent.Builder,
   private val firebaseAppCheckProviderFactory: AppCheckProviderFactory =
     PlayIntegrityAppCheckProviderFactory.getInstance()
-) : MultiDexApplication(),
+) : Application(),
   ActivityComponentFactory,
   ApplicationInjectorProvider,
   Configuration.Provider {
@@ -44,7 +42,6 @@ abstract class AbstractOppiaApplication(
 
   override fun getApplicationInjector(): ApplicationInjector = component
 
-  @SuppressLint("ObsoleteSdkInt") // Incorrect warning.
   override fun onCreate() {
     super.onCreate()
 
