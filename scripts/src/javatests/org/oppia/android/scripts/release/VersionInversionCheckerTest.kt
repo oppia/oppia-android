@@ -183,7 +183,7 @@ class VersionInversionCheckerTest {
 
   // ---------------------------------------------------------------------------
   // Frozen version codes — ordering constraints must ignore confirmed code
-  // (See FrozenReleaseConfig: alpha={16L})
+  // (See FrozenReleaseConfig: alpha={16L, 201L}, beta={196L})
   // ---------------------------------------------------------------------------
 
   @Test

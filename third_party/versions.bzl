@@ -43,8 +43,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.lifecycle:lifecycle-livedata-core": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-ktx": "2.2.0",
     "androidx.lifecycle:lifecycle-viewmodel-ktx": "2.2.0",
-    "androidx.multidex:multidex": "2.0.1",
-    "androidx.multidex:multidex-instrumentation": "2.0.0",
     "androidx.navigation:navigation-fragment": "2.0.0",
     "androidx.navigation:navigation-fragment-ktx": "2.0.0",
     "androidx.navigation:navigation-ui": "2.0.0",
