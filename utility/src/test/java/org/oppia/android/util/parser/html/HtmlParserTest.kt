@@ -10,6 +10,7 @@ import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.LeadingMarginSpan
+import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.not
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -985,6 +987,68 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withWorkedExampleNamespacedList_preservesBlockSpacing() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "Where should the content be separated?",
+      answerHtml =
+        "<ol xmlns=\"http://www.w3.org/1999/xhtml\"><li>Outer item one:<ul>" +
+          "<li>Inner item one.</li><li>Inner item two.</li></ul></li>" +
+          "<li>Outer item two.</li></ol><p>Following paragraph.</p>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
+      .hasLength(2)
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
+      .hasLength(2)
+    assertThat(htmlResult.toString()).contains("Inner item two.\nOuter item two.")
+    assertThat(htmlResult.toString()).contains("Outer item two.\n\nFollowing paragraph.")
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExampleNamespacedList_doesNotCreateFalseLinks() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "Add the decimals.",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\">" +
+          "<li>Add a decimal point before the tenths place.</li>" +
+          "<li>Now add the place value digits.</li>" +
+          "<li>The answer is 5.682.</li></ul>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.toString()).contains("place.\nNow")
+    assertThat(htmlResult.toString()).contains("digits.\nThe")
+    assertThat(htmlResult.getSpansFromWholeString(URLSpan::class)).isEmpty()
+  }
+
+  @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create(
       gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
@@ -1428,6 +1492,21 @@ class HtmlParserTest {
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
+
+  private fun createWorkedExampleMarkup(questionHtml: String, answerHtml: String): String {
+    return "<$CUSTOM_WORKED_EXAMPLE_TAG " +
+      "question-with-value=\"${questionHtml.encodeAsWorkedExampleAttribute()}\" " +
+      "answer-with-value=\"${answerHtml.encodeAsWorkedExampleAttribute()}\">" +
+      "</$CUSTOM_WORKED_EXAMPLE_TAG>"
+  }
+
+  private fun String.encodeAsWorkedExampleAttribute(): String {
+    return JSONObject.quote(this)
+      .replace("&", "&amp;amp;")
+      .replace("\"", "&amp;quot;")
+      .replace("<", "&amp;lt;")
+      .replace(">", "&amp;gt;")
   }
 
   private fun Spannable.getTextForSpan(span: Any): String =

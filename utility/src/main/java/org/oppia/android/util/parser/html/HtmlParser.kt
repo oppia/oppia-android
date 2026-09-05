@@ -220,20 +220,21 @@ class HtmlParser private constructor(
    * renders ordered lists as bullets rather than as numbers).
    */
   private fun replaceListTags(html: String): String {
-    var adjustedHtml = html
-    if ("<li>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
-        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
-    }
-    if ("<ul>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
-        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
-    }
-    if ("<ol>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
-        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
-    }
-    return adjustedHtml
+    return html
+      .replaceListTag(originalTag = "li", replacementTag = CUSTOM_LIST_LI_TAG)
+      .replaceListTag(originalTag = "ul", replacementTag = CUSTOM_LIST_UL_TAG)
+      .replaceListTag(originalTag = "ol", replacementTag = CUSTOM_LIST_OL_TAG)
+  }
+
+  /**
+   * Replaces opening and closing [originalTag] tags while preserving attributes such as the XHTML
+   * namespace included by Oppia's rich-text editor.
+   */
+  private fun String.replaceListTag(originalTag: String, replacementTag: String): String {
+    return replace(
+      Regex("""<(/?)$originalTag(?=[\s>])""", RegexOption.IGNORE_CASE),
+      "<$1$replacementTag"
+    )
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
