@@ -737,6 +737,7 @@ class AndroidLintRunnerTest {
 
     val output = outputStream.toString()
     assertThat(output).contains("Running linter in 'fast' mode with 0 changed source file(s).")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
   }
 
   @Test
