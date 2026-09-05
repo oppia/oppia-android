@@ -15,7 +15,17 @@ on:
     # Tuesdays at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:30) to avoid
     # Bazel remote cache contention.
     - cron: "30 03 * * 2"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force_sha:
+        description: |
+          Optional: full commit SHA to build instead of running candidate detection.
+          Use this to recover from a failed dispatch (e.g. after an HTTP 403) when the
+          latest-alpha tag already points to the right commit but no binary was produced.
+          Leave blank to run normal automated candidate detection.
+        required: false
+        type: string
+        default: ""
 
 # Only one auto-release run at a time. cancel-in-progress is false so an in-flight run is
 # never interrupted mid-way through tagging or dispatching.
@@ -71,30 +81,39 @@ jobs:
 
       # FindAlphaCandidate inspects commits newer than the current latest-alpha tag
       # (newest first) and returns the SHA of the first fully-passing commit.
-      # Exits 0 with empty output on NoNewCommits; exits 1 on NoPassingCommit.
+      # Exits 0 with empty output on NoNewCommits; exits 1 on NoPassingCommit (intentional —
+      # signals to maintainers that CI is blocking the alpha channel) or on a fatal API error.
+      # If force_sha is set (manual recovery), candidate detection is skipped entirely.
       - name: Find alpha candidate
         id: candidate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Resolve the current latest-alpha tag to a SHA so FindAlphaCandidate only inspects
-          # commits newer than the most recently deployed build. On the very first run (tag doesn't
-          # exist yet), pass "" so all recent commits are inspected.
-          LATEST_ALPHA_SHA=$(git rev-parse refs/tags/latest-alpha 2>/dev/null || echo "")
-          CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
-            "$GITHUB_TOKEN" \
-            "develop" \
-            "$LATEST_ALPHA_SHA")
-          if [[ -z "$CANDIDATE_SHA" ]]; then
-            echo "No new commits since latest-alpha (${LATEST_ALPHA_SHA:0:7}). Nothing to cut."
+          FORCE_SHA="${{ github.event.inputs.force_sha }}"
+          if [[ -n "$FORCE_SHA" ]]; then
+            echo "Manual recovery mode: using force_sha=${FORCE_SHA:0:7} — skipping candidate detection."
+            echo "sha=$FORCE_SHA" >> "$GITHUB_OUTPUT"
           else
-            echo "Alpha candidate: $CANDIDATE_SHA"
+            # Resolve the current latest-alpha tag to a SHA so FindAlphaCandidate only inspects
+            # commits newer than the most recently deployed build. On the very first run (tag doesn't
+            # exist yet), pass "" so all recent commits are inspected.
+            LATEST_ALPHA_SHA=$(git rev-parse refs/tags/latest-alpha 2>/dev/null || echo "")
+            CANDIDATE_SHA=$(bazel run //scripts:find_alpha_candidate -- \
+              "$GITHUB_TOKEN" \
+              "develop" \
+              "$LATEST_ALPHA_SHA")
+            if [[ -z "$CANDIDATE_SHA" ]]; then
+              echo "No new passing candidate found since ${LATEST_ALPHA_SHA:0:7}. Nothing to cut this cycle."
+            else
+              echo "Alpha candidate: $CANDIDATE_SHA"
+            fi
+            echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
           fi
-          echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
 
       # Force-push the well-known `latest-alpha` tag to the candidate commit.
       # build_and_sign.yml checks out from this tag when source_ref=latest-alpha.
-      # Skipped when FindAlphaCandidate returns NoNewCommits (candidate SHA is empty).
+      # Skipped when no candidate SHA is set (no new commits, no passing commit, or force_sha
+      # already points to the current tag).
       - name: Update latest-alpha tag
         if: steps.candidate.outputs.sha != ''
         run: |
@@ -108,7 +127,8 @@ jobs:
       # Dispatch the build+sign workflow for the alpha flavor. The build_and_sign.yml workflow
       # runs under the oppia-android-release-env environment, so a required reviewer must
       # approve before any job steps execute (provides a human gate before deployment).
-      # Skipped when FindAlphaCandidate returns NoNewCommits (candidate SHA is empty).
+      # Skipped when no candidate SHA is set (no new commits, no passing commit, or manual
+      # force_sha mode was not used).
       - name: Dispatch build-and-sign for alpha
         if: steps.candidate.outputs.sha != ''
         env:
