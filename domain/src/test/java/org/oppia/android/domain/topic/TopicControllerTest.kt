@@ -1151,14 +1151,14 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetStudyGuide_fractionsSubtopic2_legacyRecord_hasNoSections() {
-    // A subtopic record that predates study guide support has no sections. It still loads as a
-    // study guide, but with an empty sections list and its subtopic title preserved.
+  fun testGetStudyGuide_fractionsSubtopic2_hasSectionContent() {
     val studyGuideProvider =
       topicController.getStudyGuide(profileId1, FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
 
     val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
-    assertThat(ephemeralStudyGuide.studyGuide.sectionsList).isEmpty()
+    val section = ephemeralStudyGuide.studyGuide.sectionsList.single()
+    assertThat(section.heading.unicodeStr).isEqualTo("Fractions of a group")
+    assertThat(section.content.html).contains("Description of subtopic is here.")
     assertThat(ephemeralStudyGuide.studyGuide.subtopicTitle.html).isEqualTo("Fractions of a group")
   }
 
