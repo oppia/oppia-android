@@ -21,6 +21,18 @@
       }
     }
   },
+  "sections": [
+    {
+      "heading": {
+        "content_id": "section_heading_0",
+        "unicode_str": "Adding Fractions"
+      },
+      "content": {
+        "content_id": "section_content_1",
+        "html": "<p>Description of subtopic is here.</p>"
+      }
+    }
+  ],
   "subtopic_title": "Adding Fractions",
   "next_subtopic_dict": null
 }
