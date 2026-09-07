@@ -5,6 +5,9 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
+private const val GCP_LOCATION = "us-central1"
+private const val VERTEX_MODEL = "gemini-1.5-flash"
+
 /**
  * Script that automatically generates a changelog for the previous app version whenever the minor
  * version is bumped in `version.bzl`, and proposes it as a pull request on `develop`.
@@ -37,8 +40,6 @@ import java.io.File
  * An optional 4th argument overrides the Vertex AI API base URL; this is used in integration
  * tests to route HTTP calls through a local mock server.
  */
-private const val GCP_LOCATION = "us-central1"
-private const val VERTEX_MODEL = "gemini-1.5-flash"
 
 fun main(args: Array<String>) {
   require(args.size in 3..4) {
