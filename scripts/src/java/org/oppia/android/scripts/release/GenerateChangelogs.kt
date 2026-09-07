@@ -26,32 +26,31 @@ import java.io.File
  * ### Usage (called by `generate_changelog.yml` via Bazel)
  * ```
  * bazel run //scripts:generate_changelogs -- \
- *   <workspace_root> <gcp_project> <gcp_location> <vertex_model> <gcp_access_token>
+ *   <workspace_root> <gcp_project> <gcp_access_token>
  * ```
  *
  * ### Arguments (positional)
  *   0. `workspace_root`  — absolute path to the local repository root
  *   1. `gcp_project`     — GCP project ID that has Vertex AI enabled
- *   2. `gcp_location`    — Vertex AI region (e.g. "us-central1")
- *   3. `vertex_model`    — Vertex AI model ID (e.g. "gemini-1.5-flash")
- *   4. `gcp_access_token`— GCP Bearer token for authenticating with Vertex AI
+ *   2. `gcp_access_token`— GCP Bearer token for authenticating with Vertex AI
  *
- * An optional 6th argument overrides the Vertex AI API base URL; this is used in integration
+ * An optional 4th argument overrides the Vertex AI API base URL; this is used in integration
  * tests to route HTTP calls through a local mock server.
  */
+private const val GCP_LOCATION = "us-central1"
+private const val VERTEX_MODEL = "gemini-1.5-flash"
+
 fun main(args: Array<String>) {
-  require(args.size in 5..6) {
-    "Usage: generate_changelogs <workspace_root> <gcp_project> <gcp_location> " +
-      "<vertex_model> <gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
+  require(args.size in 3..4) {
+    "Usage: generate_changelogs <workspace_root> <gcp_project> <gcp_access_token>" +
+      "\nGot ${args.size} argument(s): ${args.toList()}"
   }
 
   val workspaceRoot = args[0]
   val gcpProject = args[1]
-  val gcpLocation = args[2]
-  val vertexModel = args[3]
-  val gcpAccessToken = args[4]
+  val gcpAccessToken = args[2]
 
-  val overrideApiBaseUrl = if (args.size == 6) args[5] else null
+  val overrideApiBaseUrl = if (args.size == 4) args[3] else null
 
   // TARGET_VERSION is set by the workflow when the user triggers workflow_dispatch with a
   // specific version (e.g. "0.17"). When empty or absent, version is derived from version.bzl.
@@ -60,9 +59,9 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val vertexAiClient = if (overrideApiBaseUrl != null) {
-      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken, overrideApiBaseUrl)
+      GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken, overrideApiBaseUrl)
     } else {
-      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken)
+      GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken)
     }
     generateChangelogs(
       workspaceRoot = File(workspaceRoot),

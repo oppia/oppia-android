@@ -87,7 +87,5 @@ jobs:
         run: |
           bazel run //scripts:generate_changelogs -- \
             "$(pwd)" \
-            "${{ vars.GCP_PROJECT }}" \
-            "${{ vars.GCP_LOCATION }}" \
-            "${{ vars.VERTEX_MODEL }}" \
+            "${{ secrets.GCP_PROJECT_ID }}" \
             "$GCP_ACCESS_TOKEN"

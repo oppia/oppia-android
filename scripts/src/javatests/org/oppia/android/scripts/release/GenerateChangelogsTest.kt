@@ -45,18 +45,18 @@ class GenerateChangelogsTest {
   }
 
   @Test
-  fun testMain_fourArguments_throwsWithUsageMessage() {
+  fun testMain_twoArguments_throwsWithUsageMessage() {
     val exception =
-      assertThrows<IllegalArgumentException> { main(arrayOf("a", "b", "c", "d")) }
+      assertThrows<IllegalArgumentException> { main(arrayOf("a", "b")) }
 
     assertThat(exception).hasMessageThat().contains("Usage:")
   }
 
   @Test
-  fun testMain_sevenArguments_throwsWithUsageMessage() {
+  fun testMain_fiveArguments_throwsWithUsageMessage() {
     val exception =
       assertThrows<IllegalArgumentException> {
-        main(arrayOf("a", "b", "c", "d", "e", "f", "g"))
+        main(arrayOf("a", "b", "c", "d", "e"))
       }
 
     assertThat(exception).hasMessageThat().contains("Usage:")
