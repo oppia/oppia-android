@@ -55,7 +55,7 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_draftReleaseOnly_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "draft"))
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "draft"))
     )
 
     val exception = assertThrows<IllegalStateException> {
@@ -94,7 +94,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(300L), status = "inProgress", rolloutFraction = 250
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -129,7 +129,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(98L, 100L, 99L), status = "inProgress", rolloutFraction = 100
+          versionCodes = listOf(298L, 300L, 299L), status = "inProgress", rolloutFraction = 100
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -140,7 +140,7 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
   }
 
   @Test
@@ -169,7 +169,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 500
+          versionCodes = listOf(300L), status = "inProgress", rolloutFraction = 500
         )
       )
     )
@@ -216,7 +216,7 @@ class UpdateRolloutFractionTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "inProgress"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -235,7 +235,7 @@ class UpdateRolloutFractionTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "inProgress"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -255,7 +255,7 @@ class UpdateRolloutFractionTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "inProgress"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -273,7 +273,7 @@ class UpdateRolloutFractionTest {
   fun testUpdateRollout_changelogExceedsMaxLength_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"))
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "inProgress"))
     )
     createSharedChangelog(testVersion, "A".repeat(501))
 
@@ -295,7 +295,7 @@ class UpdateRolloutFractionTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "inProgress"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "inProgress"),
         FROZEN_ALPHA_BASELINE
       )
     )
