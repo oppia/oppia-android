@@ -50,7 +50,7 @@ tracked_topic_info {
     content_version: 19
     chapter_info {
       exploration_id: "OKxYhsWONHZV"
-      exploration_content_version: 1564
+      exploration_content_version: 1570
     }
     chapter_info {
       exploration_id: "BJd7yHIxpqkq"
@@ -584,7 +584,7 @@ tracked_skill_info {
 }
 tracked_skill_info {
   id: "rBOtCQIzDYc9"
-  content_version: 10
+  content_version: 11
 }
 tracked_skill_info {
   id: "MPSxpawZuLFQ"
