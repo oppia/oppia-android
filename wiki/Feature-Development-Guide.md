@@ -106,7 +106,7 @@ develop (flag off) → alpha build (flag on via alpha textproto)
 |---|---|---|---|
 | **Development** | `develop` branch | `false` (default) | Developer |
 | **Alpha** | `release-X.Y` → alpha build | `false` by default; `true` when the feature is ready for stakeholder testing (enabled via [`alpha/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/alpha/feature_flags_overrides.textproto)) | Tech lead (approval) + Release coordinator (implementation) |
-| **Beta** | `release-X.Y` → beta build | `true` (enabled via [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto), if alpha passed) | Release coordinator |
+| **Beta** | `release-X.Y` → beta build | `true` (after alpha testing and ProdOps approval, enabled via [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto)) | Release coordinator |
 | **Production (GA)** | GA rollout | `true` (after QA + product sign-off) | Tech lead / release coordinator |
 | **Cleanup** | Next release cycle | Flag removed entirely | Developer |
 
