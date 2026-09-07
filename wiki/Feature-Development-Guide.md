@@ -127,10 +127,12 @@ develop (flag off) → alpha build (flag on via alpha textproto)
 - File any regressions as separate issues linked to the original tracking issue.
 
 **During beta:**
-- After extensive alpha testing, the coordinator enables the flag in beta by setting it to `true`
-  in [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto).
-- Beta requires **ProdOps approval** before the flag is enabled, because new features typically
-  come with a public announcement.
+- Beta requires **ProdOps approval** before the flag can be enabled, because new features
+  typically come with a public announcement. Request approval by pinging the **tech lead**
+  for the current cycle — they will confirm when ProdOps approval is in place.
+- Once the tech lead confirms approval, the coordinator enables the flag by setting it to
+  `true` in
+  [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto).
 - QA testers verify the feature in the beta build.
 
 **Production:**
