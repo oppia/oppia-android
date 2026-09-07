@@ -59,7 +59,9 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val vertexAiClient = if (overrideApiBaseUrl != null) {
-      GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken, overrideApiBaseUrl)
+      GoogleVertexAiClient(
+        gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken, overrideApiBaseUrl
+      )
     } else {
       GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken)
     }
