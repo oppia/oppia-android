@@ -42,8 +42,9 @@ For the standard step-by-step coordinator guide see the
 3. Commit the file and open a PR to `develop` manually.
 4. Review and edit the AI-generated notes before merging.
 
-> **Note:** If Vertex AI is unavailable, write the release notes manually based on `git log`
-> since the previous version tag.
+> **Note:** If Vertex AI is unavailable, the workflow still opens the changelog PR — it falls
+> back to a raw commit list and inserts an `<!-- LLM generation failed -->` marker. Review the
+> auto-created PR, fill in the user-facing summary manually, and merge it as normal.
 
 ---
 
