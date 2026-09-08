@@ -36,6 +36,11 @@ class StorySummaryViewModel(
     storySummarySelector.selectStorySummary(storySummary)
   }
 
+  /** Hides all locked-chapter micro-tooltips within this story. */
+  fun hideAllTooltips() {
+    chapterSummaryItemList.forEach { it.hidePrerequisiteTooltip() }
+  }
+
   fun setStoryPercentage(storyPercentage: Int) {
     this.storyPercentage.set(storyPercentage)
     storyProgressPercentageText.set(computeStoryProgressPercentageText(storyPercentage))

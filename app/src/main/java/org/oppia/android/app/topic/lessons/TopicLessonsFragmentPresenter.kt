@@ -202,6 +202,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun expandStoryList(position: Int) {
+    topicLessonViewModel.itemList.filterIsInstance<StorySummaryViewModel>().forEach {
+      it.hideAllTooltips()
+    }
     val previousIndex: Int? = currentExpandedChapterListIndex
     currentExpandedChapterListIndex =
       if (currentExpandedChapterListIndex != null &&
