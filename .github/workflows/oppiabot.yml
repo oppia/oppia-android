@@ -13,6 +13,9 @@ on:
 jobs:
   oppiabot:
     runs-on: ubuntu-24.04
+    # Skip CLA and bot checks for automated PRs — oppia-github-app[bot] cannot sign the CLA
+    # and the commit history is always a single clean machine-generated commit.
+    if: ${{ github.event.pull_request.head.ref != 'automated/lesson-versions' }}
     steps:
       - uses: actions/checkout@v6
       - name: CLA Check
