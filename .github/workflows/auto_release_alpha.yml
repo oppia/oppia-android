@@ -150,6 +150,7 @@ jobs:
             --field source_ref="latest-alpha"
           echo "| Step | Result |"
           echo "|---|---|"
+          echo "| Dispatch ref | refs/tags/latest-alpha |"
           echo "| Candidate SHA | [\`${CANDIDATE_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${CANDIDATE_SHA}) |"
           echo "| latest-alpha tag | moved and force-pushed |"
           echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=latest-alpha) |"
