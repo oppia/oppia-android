@@ -108,6 +108,15 @@ jobs:
       # Dispatch the build+sign workflow for the alpha flavor. The build_and_sign.yml workflow
       # runs under the oppia-android-release-env environment, so a required reviewer must
       # approve before any job steps execute (provides a human gate before deployment).
+      #
+      # --ref refs/tags/latest-alpha: dispatches on the candidate tag rather than develop HEAD.
+      #   This associates the Build and Sign check run with the candidate commit, not with the
+      #   current HEAD of develop. Without this, a build failure would mark develop HEAD as
+      #   FAILING and cause FindAlphaCandidate to skip it on every subsequent weekly run.
+      #
+      # --field source_ref=latest-alpha: build_and_sign.yml only accepts 'latest-alpha' or
+      #   'release-X.Y' as source_ref — passing the raw SHA causes input validation to fail.
+      #
       # Skipped when FindAlphaCandidate returns NoNewCommits (candidate SHA is empty).
       - name: Dispatch build-and-sign for alpha
         if: steps.candidate.outputs.sha != ''
@@ -117,12 +126,11 @@ jobs:
           CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
           gh workflow run build_and_sign.yml \
             --repo "${{ github.repository }}" \
-            --ref develop \
+            --ref "refs/tags/latest-alpha" \
             --field flavor=alpha \
-            --field source_ref="$CANDIDATE_SHA"
+            --field source_ref="latest-alpha"
           echo "| Step | Result |"
           echo "|---|---|"
-          echo "| Branch | develop |"
           echo "| Candidate SHA | [\`${CANDIDATE_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${CANDIDATE_SHA}) |"
           echo "| latest-alpha tag | moved and force-pushed |"
-          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=${CANDIDATE_SHA:0:7}) |"
+          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=latest-alpha) |"
