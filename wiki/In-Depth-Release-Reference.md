@@ -2,8 +2,7 @@
 
 This page is the manual fallback reference for every automated step in the Oppia Android
 release pipeline. It covers what to do when an automated workflow fails or needs to be run
-manually outside of its normal trigger. It is linked from the
-[Release Playbook](Release-Playbook.md).
+manually outside of its normal trigger.
 
 For the standard step-by-step coordinator guide see the
 [Release Playbook](Release-Playbook.md). For conceptual background see the
@@ -13,18 +12,18 @@ For the standard step-by-step coordinator guide see the
 
 ## Table of Contents
 
-1. [generate\_changelog.yml fails](#1-generate_changelogymlfails)
-2. [auto\_release\_alpha.yml fails](#2-auto_release_alphaymlfails)
-3. [pull\_latest\_lesson\_versions.yml fails](#3-pull_latest_lesson_versionsymlfails)
-4. [deploy\_updated\_changelog.yml fails](#4-deploy_updated_changelogymlfails)
-5. [build\_and\_sign.yml fails](#5-build_and_signymlfails)
-6. [deploy\_to\_firebase.yml fails](#6-deploy_to_firebaseymlfails)
-7. [deploy\_to\_play\_console.yml fails](#7-deploy_to_play_consoleymlfails)
-8. [update\_rollout.yml fails](#8-update_rolloutymlfails)
+1. [Generate Changelog fails](#1-generate-changelog-fails)
+2. [Auto Release Alpha fails](#2-auto-release-alpha-fails)
+3. [Pull Latest Lesson Versions fails](#3-pull-latest-lesson-versions-fails)
+4. [Deploy Updated Changelog fails](#4-deploy-updated-changelog-fails)
+5. [Build and Sign Release fails](#5-build-and-sign-release-fails)
+6. [Deploy to Firebase fails](#6-deploy-to-firebase-fails)
+7. [Deploy to Play Console fails](#7-deploy-to-play-console-fails)
+8. [Update Rollout fails](#8-update-rollout-fails)
 
 ---
 
-## 1. generate_changelog.yml fails
+## 1. Generate Changelog fails
 
 **Normal trigger:** Push to `develop` that modifies `version.bzl`, or manual dispatch.
 
@@ -48,52 +47,76 @@ For the standard step-by-step coordinator guide see the
 
 ---
 
-## 2. auto_release_alpha.yml fails
+## 2. Auto Release Alpha fails
 
 **Normal trigger:** Weekly cron, Tuesday 03:30 UTC.
 
 **What it does:** Finds the latest passing commit on `develop`, tags it as `latest-alpha`,
-and dispatches `build_and_sign.yml`.
+and dispatches Build and Sign Release.
 
-**Case A — No commits exist within the configured limit:**
+**Case A — No new commits since the latest-alpha tag:**
 
-The workflow exits cleanly (no error). No action needed unless a release is urgent — in that
-case, manually dispatch the workflow or extend the commit search limit via `workflow_dispatch`
-inputs.
+The workflow exits cleanly (no error). No action is needed. If a release is urgent, manually
+trigger the workflow:
+1. Go to **Actions** → **Auto Release Alpha** → **Run workflow**.
+2. Click **Run workflow** (no inputs required).
+
+The script will re-evaluate recent commits against the current `latest-alpha` tag and
+dispatch Build and Sign Release if a newer passing commit is found.
 
 **Case B — Commits exist but none have passing CI:**
 
 The workflow exits with an error. The alpha channel is blocked on CI flakiness.
 1. Investigate the failing CI checks on `develop` and fix the root cause.
-2. Once CI is green, either wait for the next Tuesday cron or manually dispatch
-   `auto_release_alpha.yml` via `workflow_dispatch`.
+2. Once CI is green, either wait for the next Tuesday cron or manually trigger via
+   **Actions** → **Auto Release Alpha** → **Run workflow**.
 
-**Case C — Workflow succeeded but `build_and_sign.yml` was not dispatched:**
+**Case C — Workflow succeeded but Build and Sign Release was not dispatched:**
 
-Manually force-push the `latest-alpha` tag to the desired commit and then trigger
-`build_and_sign.yml`:
+This can happen when `FindAlphaCandidate` finds no commits newer than the existing
+`latest-alpha` tag — i.e., the tag already points to the newest passing commit on `develop`
+so the dispatch step is intentionally skipped. It can also occur if the `gh workflow run`
+API call to dispatch Build and Sign Release fails transiently after the tag was already
+updated.
 
-```bash
-git tag -f latest-alpha <commit-sha>
-git push -f upstream latest-alpha
-```
+To manually trigger a build for a specific commit:
 
-Then trigger `build_and_sign.yml` via workflow_dispatch:
-- `flavor`: `alpha`
-- `source_ref`: `latest-alpha`
+1. Force-push the `latest-alpha` tag to the desired commit:
+   ```bash
+   git tag -f latest-alpha <commit-sha>
+   git push -f upstream latest-alpha
+   ```
+2. Trigger Build and Sign Release via **Actions** → **Build and Sign Release** →
+   **Run workflow**:
+   - **flavor**: `alpha`
+   - **source_ref**: `latest-alpha`
 
 ---
 
-## 3. pull_latest_lesson_versions.yml fails
+## 3. Pull Latest Lesson Versions fails
 
-**Normal trigger:** Weekly cron, Monday 02:30 UTC.
+**Normal trigger:** Weekly cron, Monday 02:00 UTC.
 
 **What it does:** Downloads the latest lesson versions from the Oppia production server and
 opens a PR updating `config/lessons/*.textproto`.
 
-**Manual fallback:**
+**Manual fallback — re-dispatch:**
 
-1. Obtain `prod_server.key` from the repository secret (ask the infrastructure team).
+If the failure was transient (network error, API rate limit), re-trigger the workflow:
+1. Go to **Actions** → **Pull Latest Lesson Versions** → **Run workflow**.
+2. Click **Run workflow**.
+
+Re-dispatch is sufficient for most transient failures. Use the local fallback below only if
+the GitHub Actions environment itself is unavailable or the stored secret is suspected to be
+incorrect.
+
+**Manual fallback — run locally:**
+
+The workflow uses a production API secret (`PROD_SERVER_LESSON_SECRET`) that is not
+distributed for security reasons. **Contact a tech lead** to perform this recovery — they
+have access to the secret and can run the steps below or re-run the workflow directly.
+
+1. Obtain `prod_server.key` from the secure secret store (tech lead only).
 2. Run locally for both flavors:
    ```bash
    bazel run //scripts:download_lesson_list -- \
@@ -117,7 +140,7 @@ opens a PR updating `config/lessons/*.textproto`.
 
 ---
 
-## 4. deploy_updated_changelog.yml fails
+## 4. Deploy Updated Changelog fails
 
 **Normal trigger:** Push to `develop` that modifies `config/changelogs/**.md`, or manual
 dispatch.
@@ -128,7 +151,7 @@ dispatch.
 
 If the automatic trigger failed, re-run manually:
 
-1. Go to Actions → `deploy_updated_changelog.yml` → **Run workflow**.
+1. Go to **Actions** → **Deploy Updated Changelog** → **Run workflow**.
 2. Fill in:
    - `version`: e.g. `0.18`
    - `flavor`: `alpha`, `beta`, or leave blank for the default changelog
@@ -143,14 +166,22 @@ bazel run //scripts:upload_changelog_to_play_console -- \
   <play_console_credentials_json>
 ```
 
+**Manual fallback — edit directly in Play Console:**
+
+Release notes can also be updated directly in the Play Console web UI:
+1. Go to [Play Console](https://play.google.com/console) → Oppia Android → the target track.
+2. Click **Manage release** on the live release → **Edit release**.
+3. Update the **Release notes** field and click **Save**.
+4. Submit the release for review or publish directly as appropriate.
+
 > **Note:** The script will fail if the version is not yet live on Play Console — this is by
 > design to prevent a race with the initial binary upload.
 
 ---
 
-## 5. build_and_sign.yml fails
+## 5. Build and Sign Release fails
 
-**Normal trigger:** Manual dispatch (or dispatched by `auto_release_alpha.yml`).
+**Normal trigger:** Manual dispatch (or dispatched by Auto Release Alpha).
 
 **What it does:** Builds the release AAB with Bazel and signs it via Cloud KMS.
 
@@ -168,15 +199,15 @@ If KMS is unavailable, wait for the outage to resolve before retrying.
 
 ---
 
-## 6. deploy_to_firebase.yml fails
+## 6. Deploy to Firebase fails
 
-**Normal trigger:** Manual dispatch after `build_and_sign.yml` succeeds.
+**Normal trigger:** Manual dispatch after Build and Sign Release succeeds.
 
 **What it does:** Distributes the signed AAB to Firebase App Distribution.
 
 **Manual fallback:**
 
-1. Download the signed AAB from the GCS path shown in the `build_and_sign.yml` job summary:
+1. Download the signed AAB from the GCS path shown in the Build and Sign Release job summary:
    ```bash
    gcloud storage cp gs://oppia-android-<flavor>-releases/.../*.aab .
    ```
@@ -190,7 +221,7 @@ If KMS is unavailable, wait for the outage to resolve before retrying.
 
 ---
 
-## 7. deploy_to_play_console.yml fails
+## 7. Deploy to Play Console fails
 
 **Normal trigger:** Manual dispatch after QA sign-off.
 
@@ -212,9 +243,18 @@ If the script cannot recover, upload the AAB directly:
 2. Click **Create new release** and upload the AAB from GCS.
 3. Set the rollout percentage manually.
 
+**To halt a rollout (freeze the current release):**
+
+1. Go to [Play Console](https://play.google.com/console) → Oppia Android → the target track.
+2. Find the active release and click **Manage rollout**.
+3. Click **Halt rollout** to stop further distribution at the current percentage.
+
+> **Note:** Halting a rollout does not remove the release from devices already updated; it
+> only prevents new devices from receiving it. Resume rollout from the same screen when ready.
+
 ---
 
-## 8. update_rollout.yml fails
+## 8. Update Rollout fails
 
 **Normal trigger:** Manual dispatch to increase staged rollout fraction.
 
@@ -231,7 +271,7 @@ release without re-uploading the binary.
 
 | Symptom | Fix |
 |---|---|
-| Active edit session conflict | The `deploy_updated_changelog.yml` concurrency lock may be held — wait and retry |
+| Active edit session conflict | The Deploy Updated Changelog concurrency lock may be held — wait and retry |
 | Version not found on track | Verify `version` input matches a release currently live on the track |
 
 ---
