@@ -26,3 +26,13 @@ title {
   html: "Mixed Numbers"
   content_id: "title"
 }
+sections {
+  heading {
+    unicode_str: "Mixed Numbers"
+    content_id: "section_heading_0"
+  }
+  content {
+    html: "<p>Description of subtopic is here.</p>"
+    content_id: "section_content_1"
+  }
+}

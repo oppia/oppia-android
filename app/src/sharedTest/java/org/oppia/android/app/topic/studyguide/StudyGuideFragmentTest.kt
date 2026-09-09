@@ -241,6 +241,27 @@ class StudyGuideFragmentTest {
   }
 
   @Test
+  fun testStudyGuide_loadJson_fractionsSubtopic2_sectionContentIsDisplayed() {
+    // Reapply both flags together since resetting one platform parameter clears all overrides.
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(false)
+    TestPlatformParameterModule.forceEnableWorkedExamples(true)
+    runWithLaunchedActivityAndAddedFragment(
+      FRACTIONS_TOPIC_ID,
+      subtopicIndex = FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+      subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.study_guide_section_recycler_view,
+          position = 1,
+          targetViewId = R.id.study_guide_section_content_text
+        )
+      ).check(matches(withText(containsString("Description of subtopic is here."))))
+    }
+  }
+
+  @Test
   fun testStudyGuide_testTopicSubtopic1_secondSectionHeadingIsDisplayed() {
     runWithLaunchedActivityAndAddedFragment(
       TEST_TOPIC_ID_0,
