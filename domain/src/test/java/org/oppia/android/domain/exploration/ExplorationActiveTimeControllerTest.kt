@@ -488,6 +488,84 @@ class ExplorationActiveTimeControllerTest {
     assertThat(secondTestProfileAggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_2)
   }
 
+  @Test
+  fun testFlushLearningTime_noSession_completesSuccessfully() {
+    setUpTestApplicationComponent()
+
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+  }
+
+  @Test
+  fun testFlushLearningTime_stopQueued_savesTimeBeforeCompleting() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+    explorationActiveTimeController.onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+    explorationActiveTimeController.onExplorationEnded()
+
+    val flushProvider = explorationActiveTimeController.flushLearningTime()
+    monitorFactory.waitForNextSuccessfulResult(flushProvider)
+    val learningTime = monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    )
+    assertThat(learningTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
+  }
+
+  @Test
+  fun testFlushLearningTime_activeSessionThenStop_doesNotCountSavedTimeTwice() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+    explorationActiveTimeController.onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_3)
+    explorationActiveTimeController.onExplorationEnded()
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+
+    val learningTime = monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    )
+    assertThat(learningTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1 + SESSION_LENGTH_3)
+  }
+
+  @Test
+  fun testFlushLearningTime_backgroundThenResume_onlyCountsForegroundTime() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+    explorationActiveTimeController.onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+    explorationActiveTimeController.onAppInBackground()
+    // Process the pause before advancing fake time so background time is excluded.
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+    explorationActiveTimeController.onAppInForeground()
+    // Initialize the resumed session before advancing fake time again.
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_3)
+    explorationActiveTimeController.onExplorationEnded()
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+
+    val learningTime = monitorFactory.waitForNextSuccessfulResult(
+      explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
+        firstTestProfile, TEST_TOPIC_ID_0
+      )
+    )
+    assertThat(learningTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1 + SESSION_LENGTH_3)
+  }
+
   private fun startPlayingNewExploration(
     classroomId: String,
     topicId: String,

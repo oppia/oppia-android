@@ -505,9 +505,28 @@ class StateFragmentPresenter @Inject constructor(
       oppiaClock.getCurrentTimeMs()
     ).toLiveData()
 
-    // Only check gating result when the previous operation has completed because gating depends on
-    // result of saving the time spent in the exploration, at the end of the exploration.
-    markStoryCompletedLivedata.observe(fragment, { maybeShowSurveyDialog(profileId, topicId) })
+    // Wait for chapter recording to finish before checking eligibility. Survey gating separately
+    // flushes the current learning time since the exploration is still active on this exit path.
+    markStoryCompletedLivedata.observe(
+      fragment,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>?) {
+          when (result) {
+            null, is AsyncResult.Pending -> Unit
+            is AsyncResult.Failure -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              oppiaLogger.e("StateFragment", "Failed to record completed chapter", result.error)
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+            is AsyncResult.Success -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              maybeShowSurveyDialog(profileId, topicId)
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
