@@ -987,6 +987,63 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withConsecutiveWorkedExamplesEndingInLists_doesNotAccumulateMargins() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val firstExample = createWorkedExampleMarkup(
+      questionHtml = "First question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>First answer</li></ul>"
+    )
+    val secondExample = createWorkedExampleMarkup(
+      questionHtml = "Second question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Second answer</li></ul>"
+    )
+    val thirdExample = createWorkedExampleMarkup(
+      questionHtml = "Third question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Third answer</li></ul>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      firstExample + secondExample + thirdExample,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    val questionRanges =
+      listOf("First question", "Second question", "Third question").map { question ->
+        val questionIndex = htmlResult.toString().indexOf(question)
+        questionIndex until questionIndex + question.length
+      }
+    assertThat(
+      questionRanges.map { range ->
+        htmlResult.getSpans(
+          range.first,
+          range.last + 1,
+          LeadingMarginSpan.Standard::class.java
+        ).size
+      }
+    ).containsExactly(1, 1, 1).inOrder()
+    assertThat(
+      questionRanges.map { range ->
+        htmlResult.getSpans(
+          range.first,
+          range.last + 1,
+          ListItemLeadingMarginSpan::class.java
+        ).size
+      }
+    ).containsExactly(0, 0, 0).inOrder()
+  }
+
+  @Test
   fun testHtmlContent_withWorkedExampleNamespacedList_preservesBlockSpacing() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
