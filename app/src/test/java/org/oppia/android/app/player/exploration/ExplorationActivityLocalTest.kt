@@ -67,6 +67,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
@@ -139,6 +140,9 @@ class ExplorationActivityLocalTest {
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
@@ -466,6 +470,9 @@ class ExplorationActivityLocalTest {
   private fun setUpTestWithNpsEnabled() {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     setUpTestApplicationComponent()
+    // TestApplication does not register Oppia's application lifecycle observer. Explicitly mark
+    // this simulated foreground session so its lesson time is included in survey eligibility.
+    explorationActiveTimeController.onAppInForeground()
   }
 
   private fun markAllSpotlightsSeen() {
