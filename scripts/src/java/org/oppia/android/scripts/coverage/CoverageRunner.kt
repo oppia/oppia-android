@@ -91,10 +91,19 @@ class CoverageRunner(
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
     val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
 
+    val lineBranchOutcomes = coverageDataProps["BRDA"]
+      ?.groupBy(keySelector = { it[0].toInt() }) { it.getOrNull(3).orEmpty() }
+      .orEmpty()
+
     val coveredLines = coverageDataProps["DA"]?.map { (lineNumStr, hitCountStr) ->
+      val lineNumber = lineNumStr.toInt()
+      val hitCount = hitCountStr.toInt()
       CoveredLine.newBuilder().apply {
-        this.lineNumber = lineNumStr.toInt()
-        this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
+        this.lineNumber = lineNumber
+        this.coverage = computeLineCoverageStatus(
+          lineHitCount = hitCount,
+          branchOutcomes = lineBranchOutcomes[lineNumber].orEmpty()
+        )
       }.build()
     }.orEmpty()
 
@@ -118,6 +127,24 @@ class CoverageRunner(
       .setDetails(coverageDetails)
       .build()
   }
+}
+
+internal fun computeLineCoverageStatus(
+  lineHitCount: Int,
+  branchOutcomes: List<String>
+): Coverage {
+  if (lineHitCount <= 0) return Coverage.NONE
+  if (branchOutcomes.isEmpty()) return Coverage.FULL
+
+  val normalizedOutcomes = branchOutcomes.map { outcome ->
+    when (outcome) {
+      "-" -> 0
+      else -> outcome.toIntOrNull() ?: 0
+    }
+  }
+  val hasCoveredBranch = normalizedOutcomes.any { it > 0 }
+  val hasMissedBranch = normalizedOutcomes.any { it <= 0 }
+  return if (hasCoveredBranch && hasMissedBranch) Coverage.PARTIAL else Coverage.FULL
 }
 
 private fun generateFailedCoverageReport(
