@@ -1187,10 +1187,7 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    // HINGLISH is now a supported audio language (it has audio_translation_id), so it correctly
-    // resolves to HINGLISH rather than falling back to ENGLISH.
     assertThat(context.languageDefinition.language).isEqualTo(HINGLISH)
-    // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
