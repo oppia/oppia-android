@@ -6,6 +6,7 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
@@ -120,6 +121,7 @@ import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -128,6 +130,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.xml.sax.helpers.AttributesImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -161,6 +164,7 @@ class HtmlParserTest {
   @Inject lateinit var formatterFactory: OppiaBidiFormatter.Factory
   @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var consoleLogger: ConsoleLogger
   @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Before
@@ -1041,6 +1045,82 @@ class HtmlParserTest {
         ).size
       }
     ).containsExactly(0, 0, 0).inOrder()
+  }
+
+  @Test
+  @Config(sdk = [29])
+  fun testHtmlContent_withWorkedExampleAfterList_doesNotCrash() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "<p xmlns=\"http://www.w3.org/1999/xhtml\">Write 0.15 as a fraction.</p>",
+      answerHtml =
+        "<p xmlns=\"http://www.w3.org/1999/xhtml\">Use these methods.</p>" +
+          "<ol xmlns=\"http://www.w3.org/1999/xhtml\">" +
+          "<li><strong>By place value:</strong><ul><li>The answer is 15/100.</li></ul></li>" +
+          "<li><strong>By multiplication:</strong><ul><li>Multiply by 100.</li></ul></li>" +
+          "<li><strong>By addition:</strong><ul><li>Add the fractions.</li></ul></li></ol>"
+    )
+    val precedingListMarkup =
+      "<ul>\n<li>Read the whole-number part from right to left.</li>\n" +
+        "<li>Read the decimal part from left to right.</li>\n</ul>\n\n"
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      precedingListMarkup + "<p><br>\n&nbsp;</p>" + workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.toString()).contains("Read the decimal part from left to right.")
+    assertThat(htmlResult.toString()).contains("Question:\nWrite 0.15 as a fraction.")
+    assertThat(htmlResult.toString()).contains("The answer is 15/100.")
+  }
+
+  @Test
+  @Config(sdk = [29])
+  fun testWorkedExampleAfterListSpan_endsListSpanAtParagraphBoundary() {
+    val output = SpannableStringBuilder("Previous list item.")
+    val listSpan = ListItemLeadingMarginSpan.UlSpan(
+      parent = null,
+      context = context,
+      indentationLevel = 0,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    output.setSpan(listSpan, 0, output.length, Spannable.SPAN_PARAGRAPH)
+    val openIndex = output.length
+    val attributes = AttributesImpl().apply {
+      addAttribute("", "", "question-with-value", "CDATA", "Question")
+      addAttribute("", "", "answer-with-value", "CDATA", "Answer")
+    }
+    val workedExampleHandler = WorkedExampleTagHandler(
+      consoleLogger,
+      WORKED_EXAMPLE_LABELS,
+      leadingMarginPx = 10,
+      nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+        override fun parseHtml(html: String): Spannable = SpannableStringBuilder(html)
+
+        override fun parseHtmlForContentDescription(html: String) = html
+      }
+    )
+
+    workedExampleHandler.handleTag(
+      attributes = attributes,
+      openIndex = openIndex,
+      closeIndex = openIndex,
+      output = output,
+      imageRetriever = null
+    )
+
+    val listSpanEnd = output.getSpanEnd(listSpan)
+    assertThat(output.toString()).startsWith("Previous list item.\n\nQuestion:")
+    assertThat(listSpanEnd).isEqualTo(openIndex + 1)
+    assertThat(output[listSpanEnd - 1]).isEqualTo('\n')
   }
 
   @Test

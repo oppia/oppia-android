@@ -62,7 +62,7 @@ class WorkedExampleTagHandler(
     // Inserting a worked example at the end of a list-item span causes SpannableStringBuilder to
     // extend that span over the inserted content. This happens when consecutive worked examples
     // have answers that end in lists, and makes every following example accumulate another list
-    // margin. Remember those spans so their original boundary can be restored after replacement.
+    // margin. Remember those spans so their boundary can be restored after replacement.
     val precedingListItemSpans = output
       .getSpans(0, openIndex, ListItemLeadingMarginSpan::class.java)
       .filter { output.getSpanEnd(it) == openIndex }
@@ -103,11 +103,16 @@ class WorkedExampleTagHandler(
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
     output.replace(openIndex, closeIndex, parsedWorkedExample)
+    // If the preceding list ended at the end of the original output, its span could validly end
+    // after a non-newline character. The replacement makes that position internal to the output,
+    // where paragraph spans must instead end just after a newline. Include the first separating
+    // newline when one was inserted, while stopping before the worked example begins.
+    val precedingListEnd = openIndex + minOf(workedExampleStart, 1)
     precedingListItemSpans.forEach { span ->
       output.setSpan(
         span,
         output.getSpanStart(span),
-        openIndex,
+        precedingListEnd,
         output.getSpanFlags(span)
       )
     }
