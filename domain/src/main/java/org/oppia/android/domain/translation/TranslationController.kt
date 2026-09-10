@@ -54,6 +54,8 @@ private const val AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
 private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
 private const val SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID = "supported_audio_languages"
+private const val SUPPORTED_AUDIO_LANGUAGES_LIST_DATA_PROVIDER_ID =
+  "supported_audio_languages_list"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val PROFILE_AUDIO_LANGUAGE_PROVIDER_ID = "profile_audio_language"
@@ -129,6 +131,23 @@ class TranslationController @Inject constructor(
     return dataProviders.createInMemoryDataProvider(RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID) {
       languageConfigRetriever.loadSupportedLanguages().languageDefinitionsList.filter {
         it.hasAppStringId()
+      }.map { it.language }
+    }
+  }
+
+  /**
+   * Returns a data provider for a list of [OppiaLanguage] which can be passed to
+   * [updateAudioTranslationContentLanguage].
+   *
+   * Note that this list may differ from [getSupportedAppLanguages] since some languages support
+   * audio voiceovers but not app strings (e.g. Hinglish).
+   */
+  fun getSupportedAudioLanguages(): DataProvider<List<OppiaLanguage>> {
+    return dataProviders.createInMemoryDataProvider(
+      SUPPORTED_AUDIO_LANGUAGES_LIST_DATA_PROVIDER_ID
+    ) {
+      languageConfigRetriever.loadSupportedLanguages().languageDefinitionsList.filter {
+        it.hasAudioTranslationId()
       }.map { it.language }
     }
   }
@@ -311,14 +330,13 @@ class TranslationController @Inject constructor(
   fun getAudioTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
-    // TODO(#6020): Replace getSupportedAppLanguages with an audio languages specific API.
     val resolvedLanguageProvider =
       getAudioTranslationContentLanguageSelection(profileId).combineWith(
-        getSupportedAppLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
-      ) { audioLanguageSelection, supportedAppLanguages ->
+        getSupportedAudioLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
+      ) { audioLanguageSelection, supportedAudioLanguages ->
         // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
         // In some cases, a language might not be supported but has a fallback configured.
-        if (audioLanguageSelection.selectedLanguage in supportedAppLanguages ||
+        if (audioLanguageSelection.selectedLanguage in supportedAudioLanguages ||
           audioLanguageSelection.selectionTypeCase == SelectionTypeCase.USE_APP_LANGUAGE ||
           audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED
         ) {
