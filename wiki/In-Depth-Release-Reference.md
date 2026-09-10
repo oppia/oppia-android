@@ -1,7 +1,6 @@
-# In-Depth Release Reference
+# Release Workflow Manual Fallbacks
 
-This page is the manual fallback reference for every automated step in the Oppia Android
-release pipeline. It covers what to do when an automated workflow fails or needs to be run
+This page covers what to do when an automated release workflow fails or needs to be run
 manually outside of its normal trigger.
 
 For the standard step-by-step coordinator guide see the
@@ -36,7 +35,7 @@ For the standard step-by-step coordinator guide see the
    bazel run //scripts:generate_changelogs -- \
      $(pwd) \
      <version>          # e.g. 0.18
-     <github_token>     # PAT with repo scope
+     <github_token>     # PAT with repo scope — see https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
    ```
 2. The script writes `config/changelogs/<version>.md` (and flavor variants if applicable).
 3. Commit the file and open a PR to `develop` manually.
@@ -137,7 +136,6 @@ have access to the secret and can run the steps below or re-run the workflow dir
      $(pwd)/scripts/assets/prod_download_config.textproto
    ```
 3. Commit both updated textproto files and open a PR to `develop`.
-4. Delete `prod_server.key` from your local machine after use.
 
 ---
 
@@ -244,14 +242,21 @@ If the script cannot recover, upload the AAB directly:
 2. Click **Create new release** and upload the AAB from GCS.
 3. Set the rollout percentage manually.
 
-**To halt a rollout (freeze the current release):**
+**To preserve a previous release alongside a new one (keep two versions alive):**
+
+When a new release is deployed, Play Console may stop serving the previous binary to existing
+device configurations (e.g. keeping 16-kitkat alive alongside release 17). To retain both:
 
 1. Go to [Play Console](https://play.google.com/console) → Oppia Android → the target track.
-2. Find the active release and click **Manage rollout**.
-3. Click **Halt rollout** to stop further distribution at the current percentage.
+2. Click **Create new release** and upload the new AAB.
+3. Under **APKs and AABs**, click **Add from library** and select the old version code you
+   want to continue serving to existing users.
+4. Both version codes will now be listed in the same release entry — the new one as the
+   primary, the old one as retained. Publish the release.
 
-> **Note:** Halting a rollout does not remove the release from devices already updated; it
-> only prevents new devices from receiving it. Resume rollout from the same screen when ready.
+> **Note:** The automated `deploy_to_play_console.yml` script handles this automatically via
+> the frozen version codes configuration. Manual steps above are only needed if the script
+> cannot run or the old version code was accidentally dropped from the track.
 
 ---
 
