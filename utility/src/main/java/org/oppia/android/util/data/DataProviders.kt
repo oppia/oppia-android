@@ -428,7 +428,9 @@ class DataProviders @Inject constructor(
         if (retrievalGeneration == latestRetrievalGeneration.get()) {
           super.postValue(it)
         }
-        runningJob.set(null)
+        kotlin.coroutines.coroutineContext[Job]?.let { currentJob ->
+          runningJob.compareAndSet(currentJob, null)
+        } ?: runningJob.set(null)
       }
     }
 
