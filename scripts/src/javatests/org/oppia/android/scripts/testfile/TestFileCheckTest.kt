@@ -633,7 +633,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun testCheck_exemptions_testFileNotRequired_prodFileWithMainTest_passes() {
+  fun testCheck_exemptions_testFileNotRequired_prodFileWithMainTest_failsWithError() {
     createAppProdFile("demo", "ProdFile.kt").writeText(
       """
       package org.oppia.android.app.demo
@@ -647,8 +647,7 @@ class TestFileCheckTest {
       """.trimIndent()
     )
 
-    // The exemption should be ignored if the test actually exists (this may become a failure in
-    // future changes to the script).
+    // A test_file_not_required exemption is only valid while the test file is missing.
     val checkPassed = runScript(
       TestFileExemption.newBuilder().apply {
         this.exemptedFilePath = "app/src/main/java/org/oppia/android/app/demo/ProdFile.kt"
@@ -656,7 +655,44 @@ class TestFileCheckTest {
       }.build()
     )
 
-    assertThat(checkPassed).isTrue()
+    assertThat(checkPassed).isFalse()
+    val failureMessage =
+      """
+      ========== Unnecessary test file exemptions: 1 ==========
+      - Test file exemption should be removed for app/src/main/java/org/oppia/android/app/demo/ProdFile.kt: a test file exists.
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testCheck_exemptions_testFileNotRequired_prodFileWithSharedTest_failsWithError() {
+    createAppProdFile("demo", "ProdFile.kt").writeText(
+      """
+      package org.oppia.android.app.demo
+      class ProdFile
+      """.trimIndent()
+    )
+    createAppTestFile("demo", "ProdFileTest.kt", testDir = "sharedTest").writeText(
+      """
+      package org.oppia.android.app.demo
+      class ProdFileTest
+      """.trimIndent()
+    )
+
+    val checkPassed = runScript(
+      TestFileExemption.newBuilder().apply {
+        this.exemptedFilePath = "app/src/main/java/org/oppia/android/app/demo/ProdFile.kt"
+        this.testFileNotRequired = true
+      }.build()
+    )
+
+    assertThat(checkPassed).isFalse()
+    val failureMessage =
+      """
+      ========== Unnecessary test file exemptions: 1 ==========
+      - Test file exemption should be removed for app/src/main/java/org/oppia/android/app/demo/ProdFile.kt: a test file exists.
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
