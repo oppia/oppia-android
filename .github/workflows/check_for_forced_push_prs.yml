@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Detect and close (on change)
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'synchronize' }}
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && !(github.event.pull_request.head.ref == 'automated/lesson-versions' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.action == 'synchronize' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -30,7 +30,7 @@ jobs:
             } else core.info(`Standard push detected. Commit history status: ${status}. No action taken.`);
 
       - name: Detect and close reopened force-pushed PRs
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.action == 'reopened' }}
+        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && !(github.event.pull_request.head.ref == 'automated/lesson-versions' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.action == 'reopened' }}
         uses: actions/github-script@v8
         with:
           script: |
