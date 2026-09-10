@@ -31,12 +31,16 @@ class NumberWithUnitsInputViewModel private constructor(
   private val translationController: TranslationController,
   userAnswerState: UserAnswerState
 ) : StateItemViewModel(ViewType.NUMBER_WITH_UNITS_INPUT_INTERACTION), InteractionAnswerHandler {
+  /** The current text entered by the learner. */
   var answerText: CharSequence = userAnswerState.textInputAnswer
   private var answerErrorCategory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
+  /** The hint text displayed for the input field. */
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
+  /** Whether the input field contains an answer. */
   var isAnswerAvailable = ObservableField<Boolean>(false)
+  /** The error message displayed for the current answer. */
   val errorMessage = ObservableField<String>("")
 
   init {
@@ -76,6 +80,7 @@ class NumberWithUnitsInputViewModel private constructor(
     }
   }
 
+  /** Returns a [TextWatcher] that updates the answer and its validation state. */
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
