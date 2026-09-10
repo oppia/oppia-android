@@ -128,8 +128,8 @@ develop (flag off) → alpha build (flag on via alpha textproto)
 
 **During beta:**
 - Beta requires **ProdOps approval** before the flag can be enabled, because new features
-  typically come with a public announcement. Request approval by pinging the **tech lead**
-  for the current cycle — they will confirm when ProdOps approval is in place.
+  typically come with a public announcement. Request approval by pinging the **tech lead** —
+  they will confirm when ProdOps approval is in place.
 - Once the tech lead confirms approval, the coordinator enables the flag by setting it to
   `true` in
   [`beta/feature_flags_overrides.textproto`](../config/src/java/org/oppia/android/config/platform/featureoverrides/beta/feature_flags_overrides.textproto).
