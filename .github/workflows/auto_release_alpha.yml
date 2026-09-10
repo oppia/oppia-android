@@ -124,11 +124,14 @@ jobs:
           git push --force origin refs/tags/latest-alpha
           echo "Moved latest-alpha → $CANDIDATE_SHA"
 
-      # Dispatch the build+sign workflow for the alpha flavor. The build_and_sign.yml workflow
-      # runs under the oppia-android-release-env environment, so a required reviewer must
-      # approve before any job steps execute (provides a human gate before deployment).
-      # Skipped when no candidate SHA is set (no new commits, no passing commit, or manual
-      # force_sha mode was not used).
+      # Dispatch build_and_sign.yml for the alpha flavor. It requires reviewer approval
+      # (oppia-android-release-env) before running.
+      #
+      # --ref points at the candidate tag, not develop, so a build failure doesn't mark
+      #   develop HEAD as FAILING and get it skipped by future candidate searches.
+      # source_ref must be 'latest-alpha' or 'release-X.Y' — build_and_sign.yml rejects raw SHAs.
+      #
+      # Skipped when no candidate was found.
       - name: Dispatch build-and-sign for alpha
         if: steps.candidate.outputs.sha != ''
         env:
@@ -137,12 +140,12 @@ jobs:
           CANDIDATE_SHA="${{ steps.candidate.outputs.sha }}"
           gh workflow run build_and_sign.yml \
             --repo "${{ github.repository }}" \
-            --ref develop \
+            --ref "refs/tags/latest-alpha" \
             --field flavor=alpha \
-            --field source_ref="$CANDIDATE_SHA"
+            --field source_ref="latest-alpha"
           echo "| Step | Result |"
           echo "|---|---|"
-          echo "| Branch | develop |"
+          echo "| Dispatch ref | refs/tags/latest-alpha |"
           echo "| Candidate SHA | [\`${CANDIDATE_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${CANDIDATE_SHA}) |"
           echo "| latest-alpha tag | moved and force-pushed |"
-          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=${CANDIDATE_SHA:0:7}) |"
+          echo "| build_and_sign.yml | dispatched (flavor=alpha, source_ref=latest-alpha) |"
