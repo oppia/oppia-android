@@ -390,7 +390,7 @@ flowchart TD
     G --> H{"QA pass?"}
     H -- "No" --> I["Fix on develop → cherry-pick\n→ rebuild"]
     I --> E
-    H -- "Yes" --> J["deploy_to_play_console.yml\nrollout_permille=10%"]
+H -- "Yes" --> J["deploy_to_play_console.yml\nrollout_permille=100"]
     J --> K["update_rollout.yml\n25% → 50% → 100%"]
     K --> L["Full rollout complete ✓"]
     J --> M["deploy_updated_changelog.yml\n(auto on changelog edits)"]
