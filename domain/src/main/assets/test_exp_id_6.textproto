@@ -1,0 +1,98 @@
+id: "test_exp_id_6"
+states {
+  key: "NumberWithUnits"
+  value {
+    name: "NumberWithUnits"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "<p>Convert 4.1 m to cm.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "End"
+        feedback {
+          html: "<p>Yay.This is correct</p>"
+          content_id: "feedback_1"
+        }
+        labelled_as_correct: true
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "<p>This is the end&nbsp;</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "NumberWithUnits"
+language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Drag and Drop Test Exploration"
+  content_id: "title"
+}
+description {
+  html: "learn how to arrange the sentence"
+  content_id: "description"
+}
