@@ -46,13 +46,13 @@ jobs:
       # force-push the latest-alpha tag) and Actions:write (to dispatch build_and_sign.yml).
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
           private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
 
       - name: Check out develop
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Always check out develop — this workflow only ever runs on develop since
           # the latest-alpha tag is only meaningful on that branch.
