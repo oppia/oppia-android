@@ -9,7 +9,7 @@ import org.oppia.android.testing.assertThrows
 import java.io.File
 
 /**
- * Tests for [main] and [updateRollout] in the update_rollout_fraction script.
+ * Tests for [main] and [updateRollout] in the update_rollout_permille script.
  *
  * [main] argument-validation tests cover all [require] and [requireNotNull] blocks without a
  * real Play Console connection. [updateRollout] tests exercise the integrated rollout-update
@@ -17,7 +17,7 @@ import java.io.File
  */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-class UpdateRolloutFractionTest {
+class UpdateRolloutPermilleTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private lateinit var fakeClient: FakePlayConsoleClient
@@ -88,7 +88,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
         )
       )
     )
@@ -98,7 +98,7 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(500)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(500)
   }
 
   @Test
@@ -113,7 +113,7 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "production", testVersion, 1000
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(1000)
   }
 
   @Test
@@ -122,7 +122,7 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(98L, 100L, 99L), status = "inProgress", rolloutFraction = 100
+          versionCodes = listOf(98L, 100L, 99L), status = "inProgress", rolloutPermille = 100
         )
       )
     )
@@ -141,7 +141,7 @@ class UpdateRolloutFractionTest {
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(200L), status = "inProgress", rolloutFraction = 500
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 500
         )
       )
     )
@@ -151,16 +151,16 @@ class UpdateRolloutFractionTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, "beta", testVersion, 1000
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(1000)
   }
 
   @Test
-  fun testUpdateRollout_rolloutFractionLessThanCurrent_throwsIllegalStateException() {
+  fun testUpdateRollout_rolloutPermilleLessThanCurrent_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 500
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 500
         )
       )
     )
@@ -177,12 +177,12 @@ class UpdateRolloutFractionTest {
   }
 
   @Test
-  fun testUpdateRollout_rolloutFractionEqualToCurrent_throwsIllegalStateException() {
+  fun testUpdateRollout_rolloutPermilleEqualToCurrent_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(200L), status = "inProgress", rolloutFraction = 500
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 500
         )
       )
     )
@@ -335,7 +335,7 @@ class UpdateRolloutFractionTest {
       main(arrayOf("/ws", "org.oppia.android", "alpha", "0.17", "fifty", "token"))
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction must be an integer")
+    assertThat(exception).hasMessageThat().contains("rollout_permille must be an integer")
   }
 
   @Test
@@ -375,21 +375,21 @@ class UpdateRolloutFractionTest {
   }
 
   @Test
-  fun testMain_rolloutFractionBelowZero_throwsIllegalArgumentException() {
+  fun testMain_rolloutPermilleBelowZero_throwsIllegalArgumentException() {
     val exception = assertThrows<IllegalArgumentException> {
       main(arrayOf("/ws", "org.oppia.android", "alpha", "0.17", "-1", "token"))
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction must be between 0 and 1000")
+    assertThat(exception).hasMessageThat().contains("rollout_permille must be between 0 and 1000")
   }
 
   @Test
-  fun testMain_rolloutFractionAbove1000_throwsIllegalArgumentException() {
+  fun testMain_rolloutPermilleAbove1000_throwsIllegalArgumentException() {
     val exception = assertThrows<IllegalArgumentException> {
       main(arrayOf("/ws", "org.oppia.android", "alpha", "0.17", "1001", "token"))
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction must be between 0 and 1000")
+    assertThat(exception).hasMessageThat().contains("rollout_permille must be between 0 and 1000")
   }
 
   @Test
@@ -412,7 +412,7 @@ class UpdateRolloutFractionTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutFraction = 250),
+        PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutPermille = 250),
         PlayConsoleClient.TrackRelease(listOf(16L), "completed")
       )
     )
@@ -424,13 +424,13 @@ class UpdateRolloutFractionTest {
 
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
-    assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
+    assertThat(fakeClient.trackUpdates[0].rolloutPermille).isEqualTo(500)
     assertThat(fakeClient.trackUpdates[0].preservedReleases).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].preservedReleases[0].versionCodes).containsExactly(16L)
-    // Verify the frozen release is passed through completely unmodified (status, rolloutFraction,
+    // Verify the frozen release is passed through completely unmodified (status, rolloutPermille,
     // and releaseNotes must match the values configured in setTrackReleases above).
     assertThat(fakeClient.trackUpdates[0].preservedReleases[0].status).isEqualTo("completed")
-    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].rolloutFraction).isNull()
+    assertThat(fakeClient.trackUpdates[0].preservedReleases[0].rolloutPermille).isNull()
     assertThat(fakeClient.trackUpdates[0].preservedReleases[0].releaseNotes).isEmpty()
   }
 
@@ -439,7 +439,7 @@ class UpdateRolloutFractionTest {
     // Beta has no frozen builds; the rollout update should not include any preserved version codes.
     fakeClient.setTrackReleases(
       "beta",
-      listOf(PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutFraction = 250))
+      listOf(PlayConsoleClient.TrackRelease(listOf(201L), "inProgress", rolloutPermille = 250))
     )
     createSharedChangelog(
       testVersion, notes = "Release notes."
@@ -452,7 +452,7 @@ class UpdateRolloutFractionTest {
     assertThat(fakeClient.trackUpdates).hasSize(1)
     assertThat(fakeClient.trackUpdates[0].track).isEqualTo("beta")
     assertThat(fakeClient.trackUpdates[0].versionCode).isEqualTo(201L)
-    assertThat(fakeClient.trackUpdates[0].rolloutFraction).isEqualTo(500)
+    assertThat(fakeClient.trackUpdates[0].rolloutPermille).isEqualTo(500)
     assertThat(fakeClient.trackUpdates[0].preservedReleases).isEmpty()
   }
 

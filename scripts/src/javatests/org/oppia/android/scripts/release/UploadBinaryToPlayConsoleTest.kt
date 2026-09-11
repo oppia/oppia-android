@@ -80,18 +80,18 @@ class UploadBinaryToPlayConsoleTest {
       runScript("workspace", "aab.aab", "alpha", "token", "notanumber")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   @Test
-  fun testScript_rolloutFractionAboveThousand_throwsWithMessage() {
+  fun testScript_rolloutPermilleAboveThousand_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1001")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
     assertThat(exception).hasMessageThat().contains("1000")
   }
 
@@ -103,7 +103,7 @@ class UploadBinaryToPlayConsoleTest {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "beta", "token", "-1")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   @Test
@@ -114,7 +114,7 @@ class UploadBinaryToPlayConsoleTest {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "0.5")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   // ---------------------------------------------------------------------------
@@ -218,13 +218,13 @@ class UploadBinaryToPlayConsoleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testScript_rolloutFractionZero_passesValidation() {
+  fun testScript_rolloutPermilleZero_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     enqueueSuccessfulUpload()
 
-    // rollout_fraction = 0 is valid; the full upload flow should complete without errors.
-    runMain(aab.absolutePath, rolloutFraction = 0)
+    // rollout_permille = 0 is valid; the full upload flow should complete without errors.
+    runMain(aab.absolutePath, rolloutPermille = 0)
 
     // Verify that commitEdit (the 10th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
@@ -233,13 +233,13 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testScript_rolloutFractionThousand_passesValidation() {
+  fun testScript_rolloutPermilleThousand_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
     enqueueSuccessfulUpload()
 
-    // rollout_fraction = 1000 (100%) is valid; the full upload flow should complete.
-    runMain(aab.absolutePath, rolloutFraction = 1000)
+    // rollout_permille = 1000 (100%) is valid; the full upload flow should complete.
+    runMain(aab.absolutePath, rolloutPermille = 1000)
 
     // Verify that commitEdit (the 10th and final request) was actually called, confirming the
     // upload was committed and not aborted early.
@@ -408,7 +408,7 @@ class UploadBinaryToPlayConsoleTest {
     createChangelog("0.17", content = "Release notes.")
     enqueueSuccessfulUpload()
 
-    runMain(aab.absolutePath, rolloutFraction = 1000)
+    runMain(aab.absolutePath, rolloutPermille = 1000)
 
     skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
@@ -422,7 +422,7 @@ class UploadBinaryToPlayConsoleTest {
     createChangelog("0.17", content = "Release notes.")
     enqueueSuccessfulUpload()
 
-    runMain(aab.absolutePath, rolloutFraction = 250)
+    runMain(aab.absolutePath, rolloutPermille = 250)
 
     skipRequests(8)
     val setTrackBody = server.takeRequest().body.readUtf8()
@@ -551,7 +551,7 @@ class UploadBinaryToPlayConsoleTest {
       aabPath = aab.absolutePath,
       properties = parseAabFilename(aab.name)!!,
       track = "alpha",
-      rolloutFraction = 10,
+      rolloutPermille = 10,
       frozenVersionCodesPerTrack = mapOf("alpha" to setOf(16L, 21L))
     )
 
@@ -597,7 +597,7 @@ class UploadBinaryToPlayConsoleTest {
   private fun runMain(
     aabPath: String,
     track: String = "alpha",
-    rolloutFraction: Int = 1000
+    rolloutPermille: Int = 1000
   ) {
     main(
       arrayOf(
@@ -605,7 +605,7 @@ class UploadBinaryToPlayConsoleTest {
         aabPath,
         track,
         "test-token",
-        rolloutFraction.toString(),
+        rolloutPermille.toString(),
         server.url("/").toString()
       )
     )

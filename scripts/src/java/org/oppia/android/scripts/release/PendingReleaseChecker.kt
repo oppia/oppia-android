@@ -11,7 +11,7 @@ package org.oppia.android.scripts.release
  * **Blocked cases:**
  * - An `"inProgress"` (staged) release exists → fails. The binary deployment workflow is only for
  *   initial deployments. To change the rollout fraction of a live release, use the
- *   `update_rollout.yml` workflow (which calls `UpdateRolloutFraction`) instead.
+ *   `update_rollout.yml` workflow (which calls `UpdateRolloutPermille`) instead.
  * - A `"draft"` or any other non-terminal release exists → fails unconditionally; a pending draft
  *   means the track is not in a clean state for a new upload.
  */
@@ -34,7 +34,7 @@ class PendingReleaseChecker(private val client: PlayConsoleClient) {
       if (pendingRelease!!.status == "inProgress") {
         "An in-progress release already exists on track '$track' " +
           "(versionCodes=${pendingRelease.versionCodes}, " +
-          "rollout=${(pendingRelease.rolloutFraction ?: 0) / 10.0}%). " +
+          "rollout=${(pendingRelease.rolloutPermille ?: 0) / 10.0}%). " +
           "To change the rollout fraction of a live release, use the update_rollout.yml " +
           "workflow instead of re-deploying."
       } else {

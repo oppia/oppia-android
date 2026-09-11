@@ -15,8 +15,8 @@ import java.io.File
  *
  * Usage (called by update_rollout.yml via Bazel):
  * ```
- * bazel run //scripts:update_rollout_fraction -- \
- *   <workspace_path> <package_name> <track> <version> <rollout_fraction> <gcp_access_token>
+ * bazel run //scripts:update_rollout_permille -- \
+ *   <workspace_path> <package_name> <track> <version> <rollout_permille> <gcp_access_token>
  * ```
  *
  * Arguments (positional):
@@ -24,7 +24,7 @@ import java.io.File
  *   1. package_name     — Play Console app package (e.g. "org.oppia.android")
  *   2. track            — Play Console track: "alpha", "beta", or "production"
  *   3. version          — version in major.minor format (e.g. "0.17")
- *   4. rollout_fraction — new rollout as an integer in [0, 1000] (e.g. 500 = 50%, 1000 = 100%)
+ *   4. rollout_permille — new rollout as an integer in [0, 1000] (e.g. 500 = 50%, 1000 = 100%)
  *   5. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
  *
  * An optional 7th argument overrides the API base URL. This is used in tests to route all
@@ -32,16 +32,16 @@ import java.io.File
  */
 fun main(args: Array<String>) {
   require(args.size in 6..7) {
-    "Usage: update_rollout_fraction <workspace_path> <package_name> <track> <version> " +
-      "<rollout_fraction> <gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
+    "Usage: update_rollout_permille <workspace_path> <package_name> <track> <version> " +
+      "<rollout_permille> <gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
   }
 
   val workspacePath = args[0]
   val packageName = args[1]
   val track = args[2]
   val version = args[3]
-  val rolloutFraction = requireNotNull(args[4].toIntOrNull()) {
-    "rollout_fraction must be an integer in [0, 1000] (e.g. 500 for 50%), got '${args[4]}'."
+  val rolloutPermille = requireNotNull(args[4].toIntOrNull()) {
+    "rollout_permille must be an integer in [0, 1000] (e.g. 500 for 50%), got '${args[4]}'."
   }
   val gcpAccessToken = args[5]
   val apiBaseUrl = args.getOrNull(6) ?: GooglePlayConsoleClient.PRODUCTION_API_BASE_URL
@@ -52,8 +52,8 @@ fun main(args: Array<String>) {
   require(version.matches(Regex("""\d+\.\d+"""))) {
     "version must be in major.minor format (e.g. '0.17'), got '$version'."
   }
-  require(rolloutFraction in 0..1000) {
-    "rollout_fraction must be between 0 and 1000, got $rolloutFraction."
+  require(rolloutPermille in 0..1000) {
+    "rollout_permille must be between 0 and 1000, got $rolloutPermille."
   }
   require(gcpAccessToken.isNotBlank()) { "gcp_access_token must not be blank." }
 
@@ -61,17 +61,17 @@ fun main(args: Array<String>) {
   println("  Package  : $packageName")
   println("  Track    : $track")
   println("  Version  : $version")
-  println("  Rollout  : ${rolloutFraction / 10.0}%")
+  println("  Rollout  : ${rolloutPermille / 10.0}%")
   println()
 
   val client = GooglePlayConsoleClient(gcpAccessToken, apiBaseUrl)
-  updateRollout(client, workspacePath, packageName, track, version, rolloutFraction)
+  updateRollout(client, workspacePath, packageName, track, version, rolloutPermille)
 }
 
 /**
  * Executes the rollout fraction update workflow.
  *
- * Verifies that [track] has a live release, checks that [rolloutFraction] is strictly greater
+ * Verifies that [track] has a live release, checks that [rolloutPermille] is strictly greater
  * than the current rollout (rollout can only go up), reads the current release notes from
  * `config/changelogs/` for [version], and updates the rollout fraction via a new Play Console
  * edit session. The release notes are read from the local file and passed through unchanged so
@@ -82,7 +82,7 @@ fun main(args: Array<String>) {
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
- * @param rolloutFraction the new staged rollout fraction as an integer in [0, 1000]; must be
+ * @param rolloutPermille the new staged rollout fraction as an integer in [0, 1000]; must be
  *     strictly greater than the current live rollout fraction
  */
 fun updateRollout(
@@ -91,7 +91,7 @@ fun updateRollout(
   packageName: String,
   track: String,
   version: String,
-  rolloutFraction: Int
+  rolloutPermille: Int
 ) {
   val liveReleases = client.getTrackReleases(packageName, track)
     .filter { it.status in LIVE_STATUSES }
@@ -104,10 +104,10 @@ fun updateRollout(
     "Track '$track' has live releases but no version codes — this should not happen."
   }
 
-  val currentRolloutFraction = liveReleases.mapNotNull { it.rolloutFraction }.maxOrNull() ?: 0
-  check(rolloutFraction > currentRolloutFraction) {
+  val currentRolloutFraction = liveReleases.mapNotNull { it.rolloutPermille }.maxOrNull() ?: 0
+  check(rolloutPermille > currentRolloutFraction) {
     "Rollout fraction can only increase: current rollout on track '$track' is " +
-      "${currentRolloutFraction / 10.0}%, requested ${rolloutFraction / 10.0}%. " +
+      "${currentRolloutFraction / 10.0}%, requested ${rolloutPermille / 10.0}%. " +
       "Provide a value strictly greater than $currentRolloutFraction."
   }
 
@@ -133,13 +133,13 @@ fun updateRollout(
   println("  Edit session: $editId")
 
   client.setTrackRelease(
-    packageName, editId, track, versionCode, rolloutFraction, releaseNotes,
+    packageName, editId, track, versionCode, rolloutPermille, releaseNotes,
     frozenReleases
   )
   println("  Rollout fraction updated.")
 
   client.commitEdit(packageName, editId)
-  println("  Edit committed. Track '$track' rollout is now ${rolloutFraction / 10.0}%.")
+  println("  Edit committed. Track '$track' rollout is now ${rolloutPermille / 10.0}%.")
 }
 
 /**

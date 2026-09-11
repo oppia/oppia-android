@@ -71,7 +71,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Int,
+    rolloutPermille: Int,
     releaseNotes: Map<String, String>,
     preservedReleases: List<PlayConsoleClient.TrackRelease>
   ) {
@@ -82,7 +82,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
         editId,
         track,
         versionCode,
-        rolloutFraction,
+        rolloutPermille,
         releaseNotes,
         preservedReleases
       )
@@ -140,7 +140,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
    * @property editId the edit session ID
    * @property track the Play Console track
    * @property versionCode the version code assigned to the track
-   * @property rolloutFraction the staged rollout fraction (1.0 = full rollout)
+   * @property rolloutPermille the staged rollout fraction (1.0 = full rollout)
    * @property releaseNotes the release notes map (language code to text)
    * @property preservedReleases the frozen OS-specific releases included alongside [versionCode]
    *     to prevent them being deactivated by the track update
@@ -150,7 +150,7 @@ class FakePlayConsoleClient : PlayConsoleClient {
     val editId: String,
     val track: String,
     val versionCode: Long,
-    val rolloutFraction: Int,
+    val rolloutPermille: Int,
     val releaseNotes: Map<String, String>,
     val preservedReleases: List<PlayConsoleClient.TrackRelease> = emptyList()
   )

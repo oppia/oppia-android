@@ -38,7 +38,7 @@ gate.
 - [ ] **Await QA sign-off** — Notify the alpha tester group and wait for their confirmation that
   the alpha build is stable and ready for Play Store deployment.
 - [ ] **Deploy to Play Console** — After QA sign-off, trigger **Deploy to Play Console**
-  (`deploy_to_play_console.yml`) with `track=alpha` and `rollout_fraction=1000` (100% of the
+  (`deploy_to_play_console.yml`) with `track=alpha` and `rollout_permille=1000` (100% of the
   alpha track). The Firebase and Play Console deployments are sequential: QA on Firebase is
   completed first, then the approved build is pushed to the alpha track:
 
@@ -107,7 +107,7 @@ Follow this checklist for a full beta or production (GA) release.
 ### Deploy
 
 - [ ] Trigger **Deploy to Play Console** (`deploy_to_play_console.yml`) with `track=beta` or
-  `track=production` and `rollout_fraction=100` (10% initial rollout — see §4):
+  `track=production` and `rollout_permille=100` (10% initial rollout — see §4):
 
   ![Deploy to Play Console dispatch dialog](https://github.com/user-attachments/assets/a8c27c48-7fe6-48c1-aea6-3c5393b6db9d)
 
@@ -118,15 +118,16 @@ Follow this checklist for a full beta or production (GA) release.
 After the initial deployment, progressively increase the rollout using `update_rollout.yml`.
 Monitor Firebase Crashlytics between each step; halt and investigate if crash rates spike.
 
-| Day | `rollout_fraction` | Actual rollout | Action |
+| Day | `rollout_permille` | Actual rollout | Action |
 |---|---|---|---|
 | 0 | `100` | 10% | Initial deploy via **Deploy to Play Console** |
 | 1 | `250` | 25% | Trigger **Update Rollout** after monitoring |
 | 3 | `500` | 50% | Trigger **Update Rollout** |
 | 7+ | `1000` | 100% | Trigger **Update Rollout** for full rollout |
 
-> `rollout_fraction` is specified in **permille** (thousandths out of 1000) as required by the
-> Play Console API — `100` means 10%, `1000` means 100%.
+> `rollout_permille` is specified in **permille** (thousandths out of 1000) — this is our
+> implementation choice to avoid floating-point inputs; the Play Console API receives the
+> equivalent decimal fraction internally. `100` means 10%, `1000` means 100%.
 
 **Inputs for `update_rollout.yml`:**
 
@@ -134,7 +135,7 @@ Monitor Firebase Crashlytics between each step; halt and investigate if crash ra
 |---|---|
 | `track` | `beta` or `production` |
 | `version` | e.g. `0.18` |
-| `rollout_fraction` | New fraction from the table above |
+| `rollout_permille` | New permille value from the table above |
 
 ---
 

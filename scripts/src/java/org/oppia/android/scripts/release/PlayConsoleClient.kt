@@ -62,7 +62,7 @@ interface PlayConsoleClient {
    * @param editId the active edit session ID returned by [createEdit]
    * @param track the Play Console track (e.g. "alpha", "beta", "production")
    * @param versionCode the version code of the binary to assign, as returned by [uploadAab]
-   * @param rolloutFraction the rollout fraction as an integer in the range [0, 1000], where
+   * @param rolloutPermille the rollout fraction as an integer in the range [0, 1000], where
    *     1000 means full rollout (status: "completed") and any value below 1000 produces a staged
    *     rollout (status: "inProgress"). For example: 250 = 25%, 334 = 33.4%, 1000 = 100%.
    * @param releaseNotes map of BCP-47 language codes to release notes text (max 500 chars each)
@@ -74,7 +74,7 @@ interface PlayConsoleClient {
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Int,
+    rolloutPermille: Int,
     releaseNotes: Map<String, String>,
     preservedReleases: List<TrackRelease> = emptyList()
   )
@@ -95,7 +95,7 @@ interface PlayConsoleClient {
    * @property versionCodes the version codes included in this release
    * @property status the release lifecycle status (e.g. "completed", "inProgress", "draft",
    *     "halted")
-   * @property rolloutFraction the staged rollout fraction as an integer in [0, 1000], where
+   * @property rolloutPermille the staged rollout fraction as an integer in [0, 1000], where
    *     1000 = 100%. Null for [status] values that do not have a rollout percentage
    *     ("completed", "halted", "draft").
    * @property releaseNotes map of BCP-47 language codes to release notes text, as returned by
@@ -104,7 +104,7 @@ interface PlayConsoleClient {
   data class TrackRelease(
     val versionCodes: List<Long>,
     val status: String,
-    val rolloutFraction: Int? = null,
+    val rolloutPermille: Int? = null,
     val releaseNotes: Map<String, String> = emptyMap()
   )
 }

@@ -124,19 +124,19 @@ class GooglePlayConsoleClient(
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Int,
+    rolloutPermille: Int,
     releaseNotes: Map<String, String>,
     preservedReleases: List<PlayConsoleClient.TrackRelease>
   ) {
-    val fraction = rolloutFraction / 1000.0
-    val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
+    val fraction = rolloutPermille / 1000.0
+    val status = if (rolloutPermille >= 1000) "completed" else "inProgress"
     val newRelease = TrackUpdateRequest.ReleaseEntry(
       versionCodes = listOf(versionCode.toString()),
       status = status,
       releaseNotes = releaseNotes.map { (lang, text) ->
         TrackUpdateRequest.LocalizedText(language = lang, text = text)
       },
-      userFraction = if (rolloutFraction < 1000) fraction else null
+      userFraction = if (rolloutPermille < 1000) fraction else null
     )
     // Only releases whose version codes appear in FROZEN_VERSION_CODES_PER_TRACK for this track
     // are included in the request. This is a defence-in-depth guard: callers already pre-filter
@@ -153,7 +153,7 @@ class GooglePlayConsoleClient(
           releaseNotes = release.releaseNotes.map { (lang, text) ->
             TrackUpdateRequest.LocalizedText(language = lang, text = text)
           },
-          userFraction = release.rolloutFraction?.let { it / 1000.0 }
+          userFraction = release.rolloutPermille?.let { it / 1000.0 }
         )
       }
     val trackUpdate = TrackUpdateRequest(
@@ -193,7 +193,7 @@ class GooglePlayConsoleClient(
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status,
-      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() },
+      rolloutPermille = userFraction?.let { (it * 1000).roundToInt() },
       releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap()
     )
   }
