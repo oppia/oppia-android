@@ -55,7 +55,7 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_draftTrackOnly_doesNotCreateAnyEdits() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "draft"))
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "draft"))
     )
     createSharedChangelog(testVersion, testNotes)
 
@@ -86,7 +86,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -98,7 +98,7 @@ class UploadChangelogToPlayConsoleTest {
 
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("alpha")
-    assertThat(update.versionCode).isEqualTo(100L)
+    assertThat(update.versionCode).isEqualTo(300L)
     assertThat(update.releaseNotes).containsEntry("en-US", testNotes)
     assertThat(fakeClient.committedEdits).hasSize(1)
   }
@@ -156,7 +156,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -175,7 +175,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -194,7 +194,7 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_liveTrackWithNoMatchingChangelogFile_skipsUpload() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
     )
     // No changelog file created for testVersion — only the dir exists.
     File(tempFolder.root, "config/changelogs").mkdirs()
@@ -231,7 +231,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -249,7 +249,7 @@ class UploadChangelogToPlayConsoleTest {
   fun testMaybeUploadUpdatedChangelogs_changelogExceedsMaxLength_throwsIllegalStateException() {
     fakeClient.setTrackReleases(
       "alpha",
-      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"))
+      listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
     )
     createSharedChangelog(testVersion, "A".repeat(501))
 
@@ -271,7 +271,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -290,7 +290,7 @@ class UploadChangelogToPlayConsoleTest {
     assertThat(fakeClient.trackUpdates.map { it.releaseNotes["en-US"] })
       .containsExactly(testNotes, testNotes)
     assertThat(fakeClient.trackUpdates.map { it.versionCode })
-      .containsExactly(100L, 200L)
+      .containsExactly(300L, 200L)
   }
 
   @Test
@@ -298,7 +298,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -326,7 +326,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -362,7 +362,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -372,7 +372,7 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
   }
 
   @Test
@@ -381,7 +381,7 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(98L, 100L, 99L),
+          versionCodes = listOf(298L, 300L, 299L),
           status = "completed"
         ),
         FROZEN_ALPHA_BASELINE
@@ -393,7 +393,7 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
+    assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(300L)
   }
 
   @Test
@@ -422,7 +422,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -441,7 +441,7 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(300L), status = "inProgress", rolloutFraction = 250
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -461,7 +461,7 @@ class UploadChangelogToPlayConsoleTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 1000
+          versionCodes = listOf(300L), status = "inProgress", rolloutFraction = 1000
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -484,7 +484,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )
@@ -503,7 +503,7 @@ class UploadChangelogToPlayConsoleTest {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
-        PlayConsoleClient.TrackRelease(versionCodes = listOf(100L), status = "completed"),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"),
         FROZEN_ALPHA_BASELINE
       )
     )

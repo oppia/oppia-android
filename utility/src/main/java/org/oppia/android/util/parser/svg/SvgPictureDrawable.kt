@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.svg
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -154,10 +153,9 @@ abstract class SvgPictureDrawable(
 
     private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()
 
-    // TODO(#3961): Remove this & instead rely on native SVG rendering for older SDK versions.
-    // See #3938 for context on why these OS versions are being forced to bitmap rendering.
-    @SuppressLint("ObsoleteSdkInt") // Incorrect warning.
+    // TODO(#3961): Remove this & instead rely on native SVG rendering for Marshmallow.
+    // See #3938: API 23 (Marshmallow) miscalculates screenspace with native SVG rendering.
     private fun isUsingAndroidSdkWithSvgRenderingIssues() =
-      Build.VERSION.SDK_INT <= Build.VERSION_CODES.M
+      Build.VERSION.SDK_INT == Build.VERSION_CODES.M
   }
 }

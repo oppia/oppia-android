@@ -1,6 +1,5 @@
 package org.oppia.android.domain.locale
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
@@ -266,7 +265,6 @@ class LocaleController @Inject constructor(
    * generally prefers pulling from the application context since the app overwrites the static
    * singleton Locale for the app.
    */
-  @SuppressLint("ObsoleteSdkInt") // Incorrect warning since the app has a lower min sdk.
   private fun getSystemLocale(): Locale {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       getDefaultLocaleApi24(applicationContext.resources.configuration)
