@@ -61,6 +61,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
+    "com.google.android.gms:play-services-tasks": "18.2.0",
     "com.google.android.material:material": "1.3.0",
     "com.google.android.play:age-signals": "0.0.3",
     "com.google.auto.value:auto-value-annotations": "1.8.1",

@@ -1,0 +1,23 @@
+"""Tests for application startup age signal requests."""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AgeSignalsControllerTest",
+    srcs = ["AgeSignalsControllerTest.kt"],
+    custom_package = "org.oppia.android.app.application.agesignals",
+    test_class = "org.oppia.android.app.application.agesignals.AgeSignalsControllerTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/application/agesignals:age_signals",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_android_gms_play-services-tasks",
+        "//third_party:com_google_android_play_age-signals",
+        "//third_party:com_google_truth_truth",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
