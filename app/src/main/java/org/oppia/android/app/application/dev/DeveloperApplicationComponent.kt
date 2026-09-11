@@ -5,6 +5,7 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.agesignals.AgeSignalsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -73,6 +74,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
+    AgeSignalsModule::class,
     ApplicationModule::class, DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

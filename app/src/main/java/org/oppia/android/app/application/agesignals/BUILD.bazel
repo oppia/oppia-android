@@ -1,0 +1,28 @@
+"""Application startup integration for Google Play Age Signals."""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "age_signals",
+    srcs = ["AgeSignalsController.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:com_google_android_gms_play-services-tasks",
+        "//third_party:com_google_android_play_age-signals",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = ["AgeSignalsModule.kt"],
+    visibility = ["//app/src/main/java/org/oppia/android/app/application:__subpackages__"],
+    deps = [
+        ":age_signals",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:com_google_android_play_age-signals",
+    ],
+)

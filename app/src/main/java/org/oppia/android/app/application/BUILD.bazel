@@ -98,6 +98,7 @@ android_library(
     ],
     exports = [
         ":modules",
+        "//app/src/main/java/org/oppia/android/app/application/agesignals:prod_module",
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
