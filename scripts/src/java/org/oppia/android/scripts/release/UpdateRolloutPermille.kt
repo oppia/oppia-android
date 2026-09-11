@@ -104,11 +104,11 @@ fun updateRollout(
     "Track '$track' has live releases but no version codes — this should not happen."
   }
 
-  val currentRolloutFraction = liveReleases.mapNotNull { it.rolloutPermille }.maxOrNull() ?: 0
-  check(rolloutPermille > currentRolloutFraction) {
-    "Rollout fraction can only increase: current rollout on track '$track' is " +
-      "${currentRolloutFraction / 10.0}%, requested ${rolloutPermille / 10.0}%. " +
-      "Provide a value strictly greater than $currentRolloutFraction."
+  val currentRolloutPermille = liveReleases.mapNotNull { it.rolloutPermille }.maxOrNull() ?: 0
+  check(rolloutPermille > currentRolloutPermille) {
+    "Rollout permille can only increase: current rollout on track '$track' is " +
+      "${currentRolloutPermille / 10.0}%, requested ${rolloutPermille / 10.0}%. " +
+      "Provide a value strictly greater than $currentRolloutPermille."
   }
 
   println("Live release found on '$track': version code $versionCode.")

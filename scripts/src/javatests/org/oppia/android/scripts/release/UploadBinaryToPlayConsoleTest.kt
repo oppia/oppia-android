@@ -80,7 +80,7 @@ class UploadBinaryToPlayConsoleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testScript_nonNumericRolloutFraction_throwsWithMessage() {
+  fun testScript_nonNumericRolloutPermille_throwsWithMessage() {
     val exception = assertThrows<IllegalArgumentException>() {
       runScript("workspace", "aab.aab", "alpha", "token", "notanumber")
     }
@@ -101,7 +101,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testScript_negativeRolloutFraction_throwsWithMessage() {
+  fun testScript_negativeRolloutPermille_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
@@ -112,7 +112,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testScript_decimalRolloutFraction_throwsWithMessage() {
+  fun testScript_decimalRolloutPermille_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {

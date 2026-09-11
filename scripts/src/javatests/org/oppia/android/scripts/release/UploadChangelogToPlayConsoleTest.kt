@@ -418,7 +418,7 @@ class UploadChangelogToPlayConsoleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_completedRelease_usesFullRolloutFraction() {
+  fun testMaybeUploadUpdatedChangelogs_completedRelease_usesFullRolloutPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(

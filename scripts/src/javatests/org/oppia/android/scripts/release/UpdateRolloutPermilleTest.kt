@@ -89,7 +89,7 @@ class UpdateRolloutPermilleTest {
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testUpdateRollout_inProgressRelease_updatesRolloutFraction() {
+  fun testUpdateRollout_inProgressRelease_updatesRolloutPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -109,7 +109,7 @@ class UpdateRolloutPermilleTest {
   }
 
   @Test
-  fun testUpdateRollout_completedRelease_updatesRolloutFraction() {
+  fun testUpdateRollout_completedRelease_updatesRolloutPermille() {
     fakeClient.setTrackReleases(
       "production",
       listOf(PlayConsoleClient.TrackRelease(versionCodes = listOf(300L), status = "completed"))
@@ -144,7 +144,7 @@ class UpdateRolloutPermilleTest {
   }
 
   @Test
-  fun testUpdateRollout_fullRolloutFraction_setsTo1000() {
+  fun testUpdateRollout_fullRolloutPermille_setsTo1000() {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
@@ -354,7 +354,7 @@ class UpdateRolloutPermilleTest {
   }
 
   @Test
-  fun testMain_nonIntegerRolloutFraction_throwsIllegalArgumentException() {
+  fun testMain_nonIntegerRolloutPermille_throwsIllegalArgumentException() {
     val exception = assertThrows<IllegalArgumentException> {
       main(arrayOf("/ws", "org.oppia.android", "alpha", "0.17", "fifty", "token"))
     }
