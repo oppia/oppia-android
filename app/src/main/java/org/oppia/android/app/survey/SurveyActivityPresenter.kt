@@ -9,7 +9,10 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.survey.SurveyFragment.Companion.SURVEY_FRAGMENT_ARGUMENTS_KEY
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -17,7 +20,10 @@ private const val TAG_SURVEY_FRAGMENT = "TAG_SURVEY_FRAGMENT"
 
 /** The Presenter for [SurveyActivity]. */
 @ActivityScope
-class SurveyActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class SurveyActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private lateinit var binding: SurveyActivityBinding
 
   fun handleOnCreate(
@@ -25,6 +31,9 @@ class SurveyActivityPresenter @Inject constructor(private val activity: AppCompa
     topicId: String,
     explorationId: String
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(activity, R.layout.survey_activity)
     binding.apply {
       lifecycleOwner = activity

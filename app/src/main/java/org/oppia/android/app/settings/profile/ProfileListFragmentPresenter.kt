@@ -11,6 +11,10 @@ import org.oppia.android.app.databinding.databinding.ProfileListProfileViewBindi
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [ProfileListFragment]. */
@@ -19,7 +23,8 @@ class ProfileListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileListViewModel: ProfileListViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private var isMultipane = false
@@ -47,6 +52,16 @@ class ProfileListFragmentPresenter @Inject constructor(
 
     binding.profileListRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
+    }
+
+    if (enableEdgeToEdge.value) {
+      binding.profileListToolbar?.let { toolbar ->
+        EdgeToEdgeHelper.applyToAppBarLayout(
+          activity,
+          toolbar,
+          R.color.component_color_shared_activity_status_bar_color
+        )
+      }
     }
     return binding.root
   }

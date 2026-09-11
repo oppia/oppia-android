@@ -16,6 +16,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.studyguide.StudyGuideFragment.Companion.STUDY_GUIDE_FRAGMENT_ARGUMENTS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -26,6 +27,9 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.WorkedExampleLabels
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
@@ -42,7 +46,9 @@ class StudyGuideFragmentPresenter @Inject constructor(
   private val studyGuideViewModelFactory: StudyGuideViewModel.Factory,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  @EnableWorkedExamples
+  private val enableWorkedExamples: PlatformParameterValue<Boolean>
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
@@ -146,8 +152,24 @@ class StudyGuideFragmentPresenter @Inject constructor(
       contentViewModel.contentHtml,
       binding.studyGuideSectionContentText,
       supportsLinks = true,
-      supportsConceptCards = true
+      supportsConceptCards = true,
+      workedExampleLabels = retrieveWorkedExampleLabels()
     )
+  }
+
+  /**
+   * Returns the labels to display with worked examples, or null if the worked examples feature is
+   * disabled (in which case worked examples aren't displayed at all).
+   */
+  private fun retrieveWorkedExampleLabels(): WorkedExampleLabels? {
+    return if (enableWorkedExamples.value) {
+      WorkedExampleLabels(
+        questionLabel =
+          appLanguageResourceHandler.getStringInLocale(R.string.worked_example_question_label),
+        answerLabel =
+          appLanguageResourceHandler.getStringInLocale(R.string.worked_example_answer_label)
+      )
+    } else null
   }
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {

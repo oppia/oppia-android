@@ -118,7 +118,12 @@ class TestOppiaBidiFormatterTest {
   @Test
   fun testChecker_isTextWrapped_wrappedText_fromDifferentFormatters_returnsTrue() {
     val ltrFormatter = formatterFactory.createFormatter(Locale.US)
-    val rtlFormatter = formatterFactory.createFormatter(Locale("ar", "EG"))
+    val rtlFormatter = formatterFactory.createFormatter(
+      Locale.Builder()
+        .setLanguage("ar")
+        .setRegion("EG")
+        .build()
+    )
     val wrapped1 = ltrFormatter.wrapText("test str one")
     val wrapped2 = rtlFormatter.wrapText("test str two")
 

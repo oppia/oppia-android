@@ -11,6 +11,7 @@ import org.oppia.android.app.model.ExplorationFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Fragment that contains displays single exploration. */
@@ -29,7 +30,7 @@ class ExplorationFragment : InjectableFragment() {
       readingTextSize: ReadingTextSize
     ): ExplorationFragment {
       val args = ExplorationFragmentArguments.newBuilder().apply {
-        this.profileId = profileId
+        this.profileId = profileId.toProfileIdPreservingZero()
         this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId

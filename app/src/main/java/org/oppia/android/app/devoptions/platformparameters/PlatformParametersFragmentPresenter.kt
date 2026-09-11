@@ -25,13 +25,16 @@ import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import javax.inject.Inject
 import kotlin.system.exitProcess
+import org.oppia.android.util.platformparameter.PlatformParameterValue as PlatformParameterConfigValue
 
 /** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
@@ -49,7 +52,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterConfigValue<Boolean>
 ) {
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -105,6 +110,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         layoutManager = linearLayoutManager
         adapter = bindingAdapter
       }
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.platformParametersToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     return binding.root

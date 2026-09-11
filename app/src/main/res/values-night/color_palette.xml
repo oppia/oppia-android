@@ -187,9 +187,9 @@
   <color name="color_palette_chapter_in_progress_color">@color/color_def_oppia_pink</color>
   <color name="color_palette_chapter_not_finished_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_chapter_not_started_color">@color/color_def_grey_shade_20</color>
-  <color name="color_palette_lesson_progress_indicator_reached_color">@color/color_def_oppia_green</color>
-  <color name="color_palette_lesson_progress_indicator_upcoming_color">@color/color_def_silver_grey</color>
-  <color name="color_palette_lesson_progress_indicator_node_background_color">@color/color_def_white</color>
+  <color name="color_palette_lesson_progress_indicator_reached_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_lesson_progress_indicator_upcoming_color">@color/color_def_dark_silver</color>
+  <color name="color_palette_lesson_progress_indicator_node_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_revision_card_text_background_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_check_icon_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_story_chapter_start_stroke_color">@color/color_def_oppia_turquoise</color>

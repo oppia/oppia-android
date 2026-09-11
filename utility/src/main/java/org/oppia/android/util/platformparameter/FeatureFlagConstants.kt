@@ -233,3 +233,7 @@ annotation class EnableLessonProgressVisualization
  */
 @Qualifier
 annotation class EnableStudyGuides
+
+/** Qualifier for the feature flag that controls whether to enable worked examples or not. */
+@Qualifier
+annotation class EnableWorkedExamples

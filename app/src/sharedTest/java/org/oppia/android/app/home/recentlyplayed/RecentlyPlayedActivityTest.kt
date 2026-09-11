@@ -43,6 +43,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
@@ -116,7 +117,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -314,7 +314,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -367,7 +367,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -402,7 +402,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -442,7 +442,7 @@ class RecentlyPlayedActivityTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
       }.build()
@@ -500,7 +500,6 @@ class RecentlyPlayedActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageTestModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

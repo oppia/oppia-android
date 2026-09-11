@@ -194,6 +194,14 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "find_alpha_candidate",
+    main_class = "org.oppia.android.scripts.release.FindAlphaCandidateKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:find_alpha_candidate_lib",
+    ],
+)
+
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
     name = "accessibility_label_exemption_assets",
     accessibility_label_exemptions_name = ["accessibility_label_exemptions"],

@@ -52,8 +52,8 @@ platform_parameter_definition {
   id: LOWEST_SUPPORTED_API_LEVEL
   remote_server_name: "lowest_supported_api_level"
   default_value: {
-    # The lowest supported version of the app is currently Lollipop.
-    integer: 21
+    # The lowest supported version of the app is currently Marshmallow.
+    integer: 23
   }
 }
 platform_parameter_definition {

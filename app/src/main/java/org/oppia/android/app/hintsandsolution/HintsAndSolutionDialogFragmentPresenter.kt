@@ -1,5 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +19,13 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
@@ -36,7 +40,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val hintsAndSolutionViewModelFactory: HintsAndSolutionViewModel.Factory
+  private val hintsAndSolutionViewModelFactory: HintsAndSolutionViewModel.Factory,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) : HtmlParser.CustomOppiaTagActionListener {
 
   @Inject
@@ -55,6 +61,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
   private lateinit var explorationId: String
   private lateinit var hintsViewModel: HintsAndSolutionViewModel
+  private lateinit var appBarLayout: View
 
   /**
    * Sets up data binding and toolbar.
@@ -97,6 +104,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     val binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    appBarLayout = binding.hintsAndSolutionAppBarLayout
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.hintsAndSolutionToolbar.setNavigationContentDescription(
       R.string.hints_and_solution_close_icon_description
@@ -117,6 +125,21 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     return binding.root
+  }
+
+  /**
+   * Applies edge-to-edge window insets to the hints and solution [dialog].
+   *
+   * The dialog is shown in its own window, so the insets applied to the host activity don't reach
+   * it and its toolbar would otherwise be drawn underneath the status bar.
+   */
+  fun applyEdgeToEdgeInsets(dialog: Dialog) {
+    if (!enableEdgeToEdge.value) return
+    EdgeToEdgeHelper.applyToDialogTopBar(
+      dialog,
+      appBarLayout,
+      R.color.component_color_shared_hint_dialog_status_bar_color
+    )
   }
 
   private enum class ViewType {

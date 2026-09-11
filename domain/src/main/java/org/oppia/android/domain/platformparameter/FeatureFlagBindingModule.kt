@@ -21,6 +21,7 @@ import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.LoadImagesFromAssets
 import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -136,6 +137,11 @@ class FeatureFlagBindingModule {
   @EnableStudyGuides
   fun provideEnableStudyGuides(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.STUDY_GUIDES)
+
+  @Provides
+  @EnableWorkedExamples
+  fun provideEnableWorkedExamples(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.WORKED_EXAMPLES)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

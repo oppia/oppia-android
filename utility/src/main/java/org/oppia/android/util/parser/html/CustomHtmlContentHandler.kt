@@ -7,6 +7,7 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -26,7 +27,7 @@ class CustomHtmlContentHandler private constructor(
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
   private val contentDescriptionBuilder = StringBuilder()
-  private val tagContentDescriptions = mutableMapOf<Int, String>()
+  private val tagContentDescriptions = mutableListOf<TagContentDescription>()
   private var isInListItem = false
   private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
   // Indicates if a newline should be added before the next text content for block elements.
@@ -79,7 +80,7 @@ class CustomHtmlContentHandler private constructor(
     if (tagName == "a") {
       val href = atts.getValue("href")
       if (href != null) {
-        tagContentDescriptions[contentDescriptionBuilder.length] = "$href "
+        tagContentDescriptions += TagContentDescription(contentDescriptionBuilder.length, "$href ")
       }
     }
     originalContentHandler?.startElement(uri, localName, qName, atts)
@@ -121,8 +122,14 @@ class CustomHtmlContentHandler private constructor(
           check(localCurrentTrackedTag.tag == tag) {
             "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
           }
+          // Note that the content description index is tracked separately from the output index
+          // since custom tag handlers can replace the tag's region of the output, which makes the
+          // two indexes diverge for any tags that follow.
           currentTrackedCustomTags += TrackedCustomTag(
-            localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
+            localCurrentTrackedTag.tag,
+            localCurrentTrackedTag.attributes,
+            output.length,
+            contentDescriptionBuilder.length
           )
           customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
@@ -136,13 +143,14 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
-        val (_, attributes, openTagIndex) = currentTrackedCustomTag
+        val (_, attributes, openTagIndex, contentDescriptionOpenTagIndex) = currentTrackedCustomTag
 
         val handler = customTagHandlers.getValue(tag)
         if (handler is ContentDescriptionProvider) {
           val contentDesc = handler.getContentDescription(attributes)
           if (contentDesc != null) {
-            tagContentDescriptions[openTagIndex] = contentDesc
+            tagContentDescriptions +=
+              TagContentDescription(contentDescriptionOpenTagIndex, contentDesc)
           }
         }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
@@ -162,8 +170,11 @@ class CustomHtmlContentHandler private constructor(
   private data class TrackedCustomTag(
     val tag: String,
     val attributes: Attributes,
-    val openTagIndex: Int
+    val openTagIndex: Int,
+    val contentDescriptionOpenTagIndex: Int
   )
+
+  private data class TagContentDescription(val index: Int, val description: String)
 
   /**
    * Returns the complete content description for the processed HTML, including descriptions
@@ -172,7 +183,9 @@ class CustomHtmlContentHandler private constructor(
   private fun getContentDescription(): String {
     val rawDesc = buildString {
       var lastIndex = 0
-      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
+      // Note that this sort is stable, so tags that start at the same index (such as two adjacent
+      // custom tags with no text between them) are kept in the order they were encountered.
+      tagContentDescriptions.sortedBy { it.index }.forEach { (index, description) ->
         if (index > lastIndex && index <= contentDescriptionBuilder.length) {
           append(
             contentDescriptionBuilder.substring(
@@ -359,6 +372,42 @@ fun Attributes.getJsonStringValue(name: String): String? {
   // the string value.
   return getValue(name)?.replace("&quot;", "")
 }
+
+/**
+ * Returns a string value from this [Attributes] object that was encoded as a JSON string containing
+ * HTML, or null if the value doesn't exist or isn't a well-formed JSON string.
+ *
+ * Unlike [getJsonStringValue], this decodes the value's HTML entities and then fully parses the
+ * resulting JSON string rather than just removing its quotes. That's necessary for attributes whose
+ * values contain nested HTML since that HTML has its own quoted attributes which would otherwise be
+ * corrupted. Values that aren't quoted are returned as-is (after being decoded) to match
+ * [getJsonStringValue]'s tolerance of unquoted values.
+ */
+fun Attributes.getNestedHtmlValue(name: String): String? {
+  val decodedValue = getValue(name)?.decodeHtmlEntities() ?: return null
+  if (!decodedValue.startsWith('"')) return decodedValue
+  return try {
+    val tokener = JSONTokener(decodedValue)
+    // Only accept the value if it's a single JSON string with nothing trailing it, otherwise it's
+    // malformed and can't be safely rendered.
+    (tokener.nextValue() as? String)?.takeIf { tokener.nextClean() == '\u0000' }
+  } catch (e: JSONException) {
+    null
+  }
+}
+
+/**
+ * Returns this string with one level of HTML entity encoding removed.
+ *
+ * Note that '&amp;' must be decoded last so that entities which were themselves encoded (such as
+ * '&amp;amp;quot;') are only decoded by one level.
+ */
+private fun String.decodeHtmlEntities(): String =
+  replace("&lt;", "<")
+    .replace("&gt;", ">")
+    .replace("&quot;", "\"")
+    .replace("&#39;", "'")
+    .replace("&amp;", "&")
 
 /**
  * Returns a [JSONObject] value from this [Attributes] object that was encoded as a string, or null

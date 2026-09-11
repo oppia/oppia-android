@@ -6,20 +6,37 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.AppLanguageActivityBinding
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageActivity]. */
 @ActivityScope
-class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class AppLanguageActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private lateinit var oppiaLanguage: OppiaLanguage
 
   /** Initializes and creates the views for [AppLanguageActivity]. */
   fun handleOnCreate(oppiaLanguage: OppiaLanguage, profileId: Int) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,
     )
     binding.appLanguageToolbar.setNavigationOnClickListener { activity.finish() }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.appLanguageToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     setLanguageSelected(oppiaLanguage)
     if (getAppLanguageFragment() == null) {
       val appLanguageFragment = AppLanguageFragment.newInstance(oppiaLanguage, profileId)

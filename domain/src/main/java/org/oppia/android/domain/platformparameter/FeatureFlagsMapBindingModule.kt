@@ -22,6 +22,7 @@ import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.platformparameter.EnableWorkedExamples
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // TODO(#5835): Remove this module.
@@ -170,5 +171,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.STUDY_GUIDES)
   fun bindStudyGuides(
     @EnableStudyGuides param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.WORKED_EXAMPLES)
+  fun bindWorkedExamples(
+    @EnableWorkedExamples param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }

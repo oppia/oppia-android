@@ -8,15 +8,17 @@ kt_android_library(
     name = "network_interceptors",
     srcs = [
         "JsonPrefixNetworkInterceptor.kt",
+        "NetworkDelayHandler.kt",
+        "NetworkDelayHandlerImpl.kt",
         "NetworkLoggingInterceptor.kt",
         "RemoteAuthNetworkInterceptor.kt",
+        "RetryInterceptor.kt",
     ],
     visibility = [
         "//:oppia_api_visibility",
         "//:oppia_testing_visibility",
     ],
     deps = [
-        ":constants",
         ":network_config_annotations",
         "//:dagger",
         "//model/src/main/proto:arguments_java_proto_lite",
@@ -39,13 +41,6 @@ kt_android_library(
     deps = [
         ":network_config_annotations",
         "//:dagger",
-    ],
-)
-
-kt_android_library(
-    name = "constants",
-    srcs = [
-        "Constants.kt",
     ],
 )
 

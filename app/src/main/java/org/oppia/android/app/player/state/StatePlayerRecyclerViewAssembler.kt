@@ -200,6 +200,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
 
+  /** State identity used to recognize a live pending-to-completed transition for progress. */
+  private var previousLessonProgressStateName: String? = null
+  private var previousLessonProgressStateWasPending: Boolean = false
+  private var previousLessonProgressWasFlashback: Boolean = false
+  private var previousLessonProgressWasAtCheckpoint: Boolean = false
+  private var previousLessonProgressCompletedCheckpointCount: Int = 0
+
+  /**
+   * Checkpoint count for a progress animation that has not yet been displayed.
+   *
+   * Keeping this in the assembler lets the request survive an auto-navigation state update that
+   * replaces the completed card before RecyclerView can bind its progress indicator.
+   */
+  private var pendingLessonProgressAnimationCheckpointCount: Int? = null
+
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation
    * is disabled. This listener no-ops if backward navigation is enabled. This serves to allows the
@@ -250,6 +265,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
+    updatePendingLessonProgressAnimation(ephemeralState)
 
     val hasPreviousState = ephemeralState.hasPreviousState
     previousAnswerViewModels.clear()
@@ -413,6 +429,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
         flashbackViewed
       )
     }
+    previousLessonProgressStateName = ephemeralState.state.name
+    previousLessonProgressStateWasPending =
+      ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE
+    previousLessonProgressWasFlashback = ephemeralState.flashbackState
+    previousLessonProgressWasAtCheckpoint =
+      !ephemeralState.hasPreviousState || ephemeralState.state.isCheckpoint
+    previousLessonProgressCompletedCheckpointCount =
+      ephemeralState.checkpointProgress.completedCheckpointCount
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
@@ -930,8 +954,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     // The indicator is assembled whenever the feature is on and the domain has attached checkpoint
     // progress -- which only happens for explorations that contain checkpoints, never practice
-    // questions or checkpoint-free explorations. It's shown on pending, completed, flashback, and
-    // terminal cards.
+    // questions or checkpoint-free explorations. It's shown on pending, completed, and terminal
+    // cards; the caller skips flashback cards entirely.
     if (!playerFeatureSet.lessonProgressSupport || !ephemeralState.hasCheckpointProgress()) return
 
     val checkpointProgress = ephemeralState.checkpointProgress
@@ -940,11 +964,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-    // 'completedCheckpointCount' is 1-based and includes the checkpoint the learner is on now, so
-    // it maps directly to the number of reached (solid) nodes the view should draw.
+    val isBetweenCheckpoints = when (ephemeralState.stateTypeCase) {
+      // The terminal card represents reaching the final checkpoint.
+      StateTypeCase.TERMINAL_STATE -> false
+      // Once a card has been completed, show movement toward the next checkpoint. This also keeps
+      // previously completed cards at their historical between-checkpoint position.
+      StateTypeCase.COMPLETED_STATE -> true
+      // Non-checkpoint cards occur after the latest filled checkpoint, so keep the connector
+      // halfway forward until the learner reaches the next checkpoint card.
+      StateTypeCase.PENDING_STATE ->
+        ephemeralState.hasPreviousState && !ephemeralState.state.isCheckpoint
+      else -> false
+    }
     val lessonProgressViewModel = LessonProgressViewModel(
       completedCount = checkpointProgress.completedCheckpointCount,
       totalCount = totalCheckpoints,
+      isBetweenCheckpoints = isBetweenCheckpoints,
+      isSplitView = isSplitView.get()!!,
+      progressAnimationRequestConsumer = ::consumeShouldAnimateLessonProgress,
       // The indicator draws no on-screen text, so this string is purely the TalkBack content
       // description. Counts are passed as strings because only %s specifiers are allowed in
       // translatable resources.
@@ -963,6 +1000,55 @@ class StatePlayerRecyclerViewAssembler private constructor(
       targetList.add(targetList.lastIndex, lessonProgressViewModel)
     } else {
       targetList += lessonProgressViewModel
+    }
+  }
+
+  private fun shouldAnimateLessonProgress(ephemeralState: EphemeralState): Boolean {
+    val completedCurrentCheckpoint =
+      previousLessonProgressStateName == ephemeralState.state.name &&
+        (!ephemeralState.hasPreviousState || ephemeralState.state.isCheckpoint) &&
+        ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE
+    val autoNavigatedFromCheckpoint =
+      previousLessonProgressWasAtCheckpoint &&
+        previousLessonProgressStateName != ephemeralState.state.name &&
+        previousLessonProgressCompletedCheckpointCount ==
+        ephemeralState.checkpointProgress.completedCheckpointCount &&
+        ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE
+    // Navigating forward onto a card that fills the next checkpoint circle. Unlike the two cases
+    // above this one follows a completed card, so it isn't gated on the previous state pending.
+    val advancedToNewCheckpoint =
+      previousLessonProgressStateName != null &&
+        previousLessonProgressStateName != ephemeralState.state.name &&
+        ephemeralState.checkpointProgress.completedCheckpointCount >
+        previousLessonProgressCompletedCheckpointCount
+    return !ephemeralState.flashbackState &&
+      !previousLessonProgressWasFlashback &&
+      (
+        advancedToNewCheckpoint ||
+          (
+            previousLessonProgressStateWasPending &&
+              (completedCurrentCheckpoint || autoNavigatedFromCheckpoint)
+            )
+        )
+  }
+
+  private fun updatePendingLessonProgressAnimation(ephemeralState: EphemeralState) {
+    if (!playerFeatureSet.lessonProgressSupport || !ephemeralState.hasCheckpointProgress()) {
+      pendingLessonProgressAnimationCheckpointCount = null
+      return
+    }
+    val completedCheckpointCount = ephemeralState.checkpointProgress.completedCheckpointCount
+    pendingLessonProgressAnimationCheckpointCount = when {
+      shouldAnimateLessonProgress(ephemeralState) -> completedCheckpointCount
+      ephemeralState.flashbackState -> null
+      pendingLessonProgressAnimationCheckpointCount != completedCheckpointCount -> null
+      else -> pendingLessonProgressAnimationCheckpointCount
+    }
+  }
+
+  private fun consumeShouldAnimateLessonProgress(): Boolean {
+    return (pendingLessonProgressAnimationCheckpointCount != null).also {
+      pendingLessonProgressAnimationCheckpointCount = null
     }
   }
 
@@ -2074,15 +2160,34 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  /** Saves the expanded state to a protobuf message. */
+  /** Saves the assembler's configuration-change state to a protobuf message. */
   fun saveState(): StatePlayerRecyclerViewAssemblerState {
     return StatePlayerRecyclerViewAssemblerState.newBuilder()
       .setHasPreviousResponsesExpanded(hasPreviousResponsesExpanded)
+      .setPreviousLessonProgressStateName(previousLessonProgressStateName.orEmpty())
+      .setPreviousLessonProgressStateWasPending(previousLessonProgressStateWasPending)
+      .setPreviousLessonProgressWasFlashback(previousLessonProgressWasFlashback)
+      .setPreviousLessonProgressWasAtCheckpoint(previousLessonProgressWasAtCheckpoint)
+      .setPreviousLessonProgressCompletedCheckpointCount(
+        previousLessonProgressCompletedCheckpointCount
+      )
+      .setPendingLessonProgressAnimationCheckpointCount(
+        pendingLessonProgressAnimationCheckpointCount ?: 0
+      )
       .build()
   }
 
-  /** Restores the expanded state from a protobuf message. */
+  /** Restores the assembler's configuration-change state from a protobuf message. */
   fun restoreState(state: StatePlayerRecyclerViewAssemblerState) {
     hasPreviousResponsesExpanded = state.hasPreviousResponsesExpanded
+    previousLessonProgressStateName =
+      state.previousLessonProgressStateName.takeIf(String::isNotEmpty)
+    previousLessonProgressStateWasPending = state.previousLessonProgressStateWasPending
+    previousLessonProgressWasFlashback = state.previousLessonProgressWasFlashback
+    previousLessonProgressWasAtCheckpoint = state.previousLessonProgressWasAtCheckpoint
+    previousLessonProgressCompletedCheckpointCount =
+      state.previousLessonProgressCompletedCheckpointCount
+    pendingLessonProgressAnimationCheckpointCount =
+      state.pendingLessonProgressAnimationCheckpointCount.takeIf { it > 0 }
   }
 }

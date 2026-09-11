@@ -7,8 +7,11 @@ import org.oppia.android.app.databinding.databinding.ProfileResetPinActivityBind
 import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [ProfileResetPinActivity]. */
@@ -16,10 +19,15 @@ import javax.inject.Inject
 class ProfileResetPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   /** Handles onCreate() method of the [ProfileResetPinActivity]. */
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
@@ -39,6 +47,14 @@ class ProfileResetPinActivityPresenter @Inject constructor(
 
     binding.profileResetPinToolbar.setNavigationOnClickListener {
       (activity as ProfileResetPinActivity).finish()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.profileResetPinToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     binding.apply {

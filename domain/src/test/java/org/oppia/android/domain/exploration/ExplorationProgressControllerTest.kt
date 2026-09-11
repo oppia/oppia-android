@@ -41,10 +41,10 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -115,7 +115,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -162,7 +161,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
-  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -192,7 +191,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         INVALID_CLASSROOM_ID,
         INVALID_TOPIC_ID,
         INVALID_STORY_ID,
@@ -219,7 +218,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_valid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -268,7 +267,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val profileId2 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
@@ -358,7 +357,7 @@ class ExplorationProgressControllerTest {
     // Try playing another exploration without finishing the previous one.
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -2192,7 +2191,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2213,7 +2212,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2236,8 +2235,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3169,7 +3168,7 @@ class ExplorationProgressControllerTest {
     // Verify that the learner's profile-wide content language has changed.
     val contentLangProvider =
       translationController.getWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero()
+        profileId
       )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.SWAHILI)
@@ -3203,8 +3202,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3227,7 +3226,7 @@ class ExplorationProgressControllerTest {
     // Verify that the other learner's profile-wide content language hasn't changed.
     val contentLangProvider =
       translationController.getWrittenTranslationContentLanguage(
-        arabicProfileId.toProfileIdPreservingZero()
+        arabicProfileId
       )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ARABIC)
@@ -3253,7 +3252,7 @@ class ExplorationProgressControllerTest {
     // Verify that the learner's profile-wide content language has changed.
     val contentLangProvider =
       translationController.getWrittenTranslationContentLanguage(
-        profileId.toProfileIdPreservingZero()
+        profileId
       )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ENGLISH)
@@ -3709,11 +3708,11 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3724,11 +3723,11 @@ class ExplorationProgressControllerTest {
     storyId: String,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
+        profileId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3738,11 +3737,11 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3752,18 +3751,18 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
   private fun retrieveExplorationCheckpoint(
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ): ExplorationCheckpoint {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -4164,9 +4163,9 @@ class ExplorationProgressControllerTest {
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId.toProfileIdPreservingZero(),
+      profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -4226,7 +4225,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = LegacyProfileId.getDefaultInstance()
+    val rootProfileId = ProfileId.newBuilder().setInternalId(0).build()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -4237,7 +4236,7 @@ class ExplorationProgressControllerTest {
     )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId.toProfileIdPreservingZero())
+      profileManagementController.loginToProfile(rootProfileId)
     )
   }
 
@@ -4346,7 +4345,13 @@ class ExplorationProgressControllerTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

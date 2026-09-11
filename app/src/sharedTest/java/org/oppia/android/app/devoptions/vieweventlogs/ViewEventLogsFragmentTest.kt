@@ -104,7 +104,6 @@ import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
 import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
 import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
@@ -749,7 +748,6 @@ class ViewEventLogsFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

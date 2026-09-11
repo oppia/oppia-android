@@ -1151,14 +1151,14 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testGetStudyGuide_fractionsSubtopic2_legacyRecord_hasNoSections() {
-    // A subtopic record that predates study guide support has no sections. It still loads as a
-    // study guide, but with an empty sections list and its subtopic title preserved.
+  fun testGetStudyGuide_fractionsSubtopic2_hasSectionContent() {
     val studyGuideProvider =
       topicController.getStudyGuide(profileId1, FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
 
     val ephemeralStudyGuide = monitorFactory.waitForNextSuccessfulResult(studyGuideProvider)
-    assertThat(ephemeralStudyGuide.studyGuide.sectionsList).isEmpty()
+    val section = ephemeralStudyGuide.studyGuide.sectionsList.single()
+    assertThat(section.heading.unicodeStr).isEqualTo("Fractions of a group")
+    assertThat(section.content.html).contains("Description of subtopic is here.")
     assertThat(ephemeralStudyGuide.studyGuide.subtopicTitle.html).isEqualTo("Fractions of a group")
   }
 
@@ -1280,7 +1280,7 @@ class TopicControllerTest {
    */
   private fun markInProgressSavedFractionsStory0Exp1WithoutCompletingPreviousChapters() {
     val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId1,
+      profileId1.toProfileIdPreservingZero(),
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
@@ -1414,7 +1414,13 @@ class TopicControllerTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

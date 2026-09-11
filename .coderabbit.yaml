@@ -3,6 +3,9 @@ language: en-US
 reviews:
   # Provide more detailed, quality-focused feedback.
   profile: assertive
+  # Setting this option to false disables the automatic review status
+  # announcement that is posted when auto reviews are disabled.
+  review_status: false
   auto_review:
     # Note: We'll only turn this on once we are happy with the review
     # results. To generate a review manually, post a comment with the

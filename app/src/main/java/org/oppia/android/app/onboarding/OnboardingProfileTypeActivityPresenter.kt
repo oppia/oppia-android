@@ -7,6 +7,9 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeActivityBinding
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -15,12 +18,17 @@ private const val TAG_PROFILE_TYPE_FRAGMENT = "TAG_PROFILE_TYPE_FRAGMENT"
 /** The Presenter for [OnboardingProfileTypeActivity]. */
 @ActivityScope
 class OnboardingProfileTypeActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: OnboardingProfileTypeActivityBinding
 
   /** Handle creation and binding of the  OnboardingProfileTypeActivity layout. */
   fun handleOnCreate(profileId: LegacyProfileId) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(activity, R.layout.onboarding_profile_type_activity)
     binding.apply {
       lifecycleOwner = activity

@@ -23,14 +23,18 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
 class HelpActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var toolbar: Toolbar
@@ -57,6 +61,10 @@ class HelpActivityPresenter @Inject constructor(
       internalPolicyPage = policiesActivityParams.policyPage
     }
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
+
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.help_activity)
       setUpToolbar()
@@ -68,6 +76,14 @@ class HelpActivityPresenter @Inject constructor(
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)

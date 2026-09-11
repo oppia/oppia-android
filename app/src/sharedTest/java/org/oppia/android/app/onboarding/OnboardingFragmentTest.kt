@@ -112,7 +112,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -1150,7 +1149,6 @@ class OnboardingFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -1221,9 +1219,21 @@ class OnboardingFragmentTest {
   }
 
   private companion object {
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
-    private val CANADA_FRENCH_LOCALE = Locale("fr", "CA")
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val NIGERIA_NAIJA_LOCALE = Locale.Builder()
+      .setLanguage("pcm")
+      .setRegion("NG")
+      .build()
+    private val CANADA_FRENCH_LOCALE = Locale.Builder()
+      .setLanguage("fr")
+      .setRegion("CA")
+      .build()
   }
 }

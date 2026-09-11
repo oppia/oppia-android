@@ -84,7 +84,7 @@ class SurveyGatingController @Inject constructor(
     topicId: String
   ): DataProvider<Long> {
     return activeTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-      profileId, topicId
+      profileId.toProfileIdPreservingZero(), topicId
     ).transform(
       GET_TOPIC_LEARNING_TIME_PROVIDER_ID,
       TopicLearningTime::getTopicLearningTimeMs

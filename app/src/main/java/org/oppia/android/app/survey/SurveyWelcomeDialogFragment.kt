@@ -101,6 +101,12 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
     )
   }
 
+  override fun onStart() {
+    super.onStart()
+    val dialog = this.dialog ?: return
+    surveyWelcomeDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
+  }
+
   private fun getQuestions(questionNumberList: List<Int>): List<SurveyQuestionName> {
     return questionNumberList.map { number -> SurveyQuestionName.forNumber(number) }
   }

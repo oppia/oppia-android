@@ -30,6 +30,8 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.toLegacyProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
@@ -65,7 +67,7 @@ class ExplorationActivity :
     val params = intent.extractParams()
     explorationActivityPresenter.handleOnCreate(
       this,
-      params.profileId,
+      params.profileId.toLegacyProfileId(),
       params.classroomId,
       params.topicId,
       params.storyId,
@@ -102,7 +104,7 @@ class ExplorationActivity :
       isCheckpointingEnabled: Boolean
     ): Intent {
       val params = ExplorationActivityParams.newBuilder().apply {
-        this.profileId = profileId
+        this.profileId = profileId.toProfileIdPreservingZero()
         this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId

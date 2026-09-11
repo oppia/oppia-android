@@ -7,19 +7,26 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileEditActivityParams
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private lateinit var toolbar: Toolbar
 
   /** Handles onCreate function of [ProfileEditActivity]. */
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.profile_edit_activity)
     setUpToolbar()
     val args = activity.intent.getProtoExtra(
@@ -50,6 +57,13 @@ class ProfileEditActivityPresenter @Inject constructor(
   private fun setUpToolbar() {
     toolbar = activity.findViewById<View>(R.id.profile_edit_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
   }
 
   private fun getProfileEditFragment(): ProfileEditFragment? {

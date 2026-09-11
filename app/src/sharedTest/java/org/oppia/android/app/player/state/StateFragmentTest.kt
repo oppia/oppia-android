@@ -2,11 +2,13 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.os.Looper
 import android.text.InputType
 import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +76,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.customview.LessonProgressIndicatorView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
@@ -189,7 +192,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -197,10 +199,12 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -2619,7 +2623,12 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_arabicAppLang_defaultContinueInteraction_buttonShowsTranslatedDefault() {
     setUpTestWithLanguageSwitchingFeatureOff()
-    forceDefaultLocale(Locale("ar", "EG"))
+    forceDefaultLocale(
+      Locale.Builder()
+        .setLanguage("ar")
+        .setRegion("EG")
+        .build()
+    )
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(FRACTIONS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -6062,6 +6071,216 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_lessonProgressOn_initialCard_progressRestsAtFirstCheckpoint() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 0f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_autoNavigatingCheckpoint_animatesOnNextCard() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+
+      // The Continue card is the initial checkpoint. Advancing reaches Fractions, which is not a
+      // checkpoint, so progress stays halfway between the first and second checkpoint circles.
+      playThroughPrototypeState1()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressWasAnimated(
+        scenario,
+        expectedTargetPosition = 0.5f
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_reachCheckpoint_progressAnimatesIntoFilledCircle() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+
+      // Fractions routes to MultipleChoice, the second checkpoint. Reaching that card fills its
+      // circle and ends the connector at the circle rather than passing it, animating the connector
+      // over the half-step it had been resting at instead of jumping into the new circle.
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1f,
+        expectedLastUpdateWasAnimated = true
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_answerNonCheckpoint_progressDoesNotAnimate() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // Display and consume the animation caused by completing the auto-navigating initial
+      // checkpoint. Answering the following non-checkpoint card must not create another one.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      verifyLessonProgressWasAnimated(
+        scenario,
+        expectedTargetPosition = 0.5f
+      )
+      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 0.5f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_wrongCheckpointAnswer_progressDoesNotMove() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Display and consume the animation caused by reaching the second checkpoint before
+      // answering, so that a wrong answer is the only thing that could move the connector.
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      clickSubmitAnswerButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_answerCheckpoint_animatesHalfwayExactlyOnce() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Correctly answering MultipleChoice completes the second checkpoint card. The connector
+      // should animate from that filled circle to the midpoint toward checkpoint three.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1.5f,
+        expectedLastUpdateWasAnimated = true
+      )
+
+      // Rebinding the same RecyclerView item must consume rather than replay the animation.
+      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
+      scenario.onActivity { activity ->
+        activity.findViewById<RecyclerView>(R.id.state_recycler_view)
+          .adapter
+          ?.notifyDataSetChanged()
+      }
+      testCoroutineDispatchers.runCurrent()
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1.5f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_rotateAtCheckpoint_answerAnimatesHalfway() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      rotateToLandscape()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1.5f,
+        expectedLastUpdateWasAnimated = true
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_recreateAfterAnimationStarts_animationDoesNotReplay() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1.5f,
+        expectedLastUpdateWasAnimated = true
+      )
+      shadowOf(Looper.getMainLooper()).idleFor(700, TimeUnit.MILLISECONDS)
+
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 1.5f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_lessonProgressOn_navigateBack_animationDoesNotReplay() {
+    setUpTestWithLessonProgressFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Navigate back from the second checkpoint to the completed non-checkpoint Fractions card.
+      clickPreviousNavigationButton()
+      scrollToViewType(LESSON_PROGRESS_INDICATOR)
+
+      verifyLessonProgressState(
+        scenario,
+        expectedTargetPosition = 0.5f,
+        expectedLastUpdateWasAnimated = false
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_lessonProgressOn_advancePastCheckpoint_progressCountIncrements() {
     setUpTestWithLessonProgressFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -7010,6 +7229,7 @@ class StateFragmentTest {
    */
   private fun verifyIndicatorIsDirectlyAbove(belowViewType: StateItemViewModel.ViewType) {
     val positions = intArrayOf(-1, -1)
+    val topMargins = intArrayOf(-1, -1)
     onView(withId(R.id.state_recycler_view)).perform(
       object : ViewAction {
         override fun getConstraints(): Matcher<View> = isDisplayed()
@@ -7018,10 +7238,21 @@ class StateFragmentTest {
           "find adapter positions of the lesson progress indicator and $belowViewType"
 
         override fun perform(uiController: UiController, view: View) {
-          val adapter = checkNotNull((view as RecyclerView).adapter)
+          val recyclerView = view as RecyclerView
+          val adapter = checkNotNull(recyclerView.adapter)
           val viewTypes = (0 until adapter.itemCount).map(adapter::getItemViewType)
           positions[0] = viewTypes.indexOf(LESSON_PROGRESS_INDICATOR.ordinal)
           positions[1] = viewTypes.indexOf(belowViewType.ordinal)
+          topMargins[0] = (
+            recyclerView.layoutManager
+              ?.findViewByPosition(positions[0])
+              ?.layoutParams as? MarginLayoutParams
+            )?.topMargin ?: -1
+          topMargins[1] = (
+            recyclerView.layoutManager
+              ?.findViewByPosition(positions[1])
+              ?.layoutParams as? MarginLayoutParams
+            )?.topMargin ?: -1
         }
       }
     )
@@ -7029,6 +7260,40 @@ class StateFragmentTest {
     // The indicator must be present and sit immediately above the trailing button.
     assertThat(positions[0]).isAtLeast(0)
     assertThat(positions[1]).isEqualTo(positions[0] + 1)
+    // Equal margins above the indicator and above the button place the indicator's center exactly
+    // midway between the preceding content/feedback/interaction item and the button bar.
+    assertThat(topMargins[0]).isGreaterThan(0)
+    assertThat(topMargins[1]).isEqualTo(topMargins[0])
+  }
+
+  private fun verifyLessonProgressState(
+    scenario: ActivityScenario<StateFragmentTestActivity>,
+    expectedTargetPosition: Float,
+    expectedLastUpdateWasAnimated: Boolean
+  ) {
+    scenario.onActivity { activity ->
+      val indicator =
+        activity.findViewById<LessonProgressIndicatorView>(R.id.lesson_progress_indicator)
+      assertThat(indicator.getTargetProgressPosition())
+        .isWithin(0.001f)
+        .of(expectedTargetPosition)
+      assertThat(indicator.getLastProgressUpdateWasAnimated())
+        .isEqualTo(expectedLastUpdateWasAnimated)
+    }
+  }
+
+  private fun verifyLessonProgressWasAnimated(
+    scenario: ActivityScenario<StateFragmentTestActivity>,
+    expectedTargetPosition: Float
+  ) {
+    scenario.onActivity { activity ->
+      val indicator =
+        activity.findViewById<LessonProgressIndicatorView>(R.id.lesson_progress_indicator)
+      assertThat(indicator.getTargetProgressPosition())
+        .isWithin(0.001f)
+        .of(expectedTargetPosition)
+      assertThat(indicator.getProgressAnimationStartCount()).isAtLeast(1)
+    }
   }
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
@@ -7368,7 +7633,6 @@ class StateFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigFastShowTestModule::class,

@@ -63,6 +63,37 @@ class FakeAnalyticsEventLoggerTest {
   }
 
   @Test
+  fun testFakeEventLogger_logEventTwice_withFailureSet_throwsExceptionForBoth() {
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+
+    assertThrows<Exception> { analyticsEventLogger.logEvent(eventLog1) }
+    val exception2 = assertThrows<Exception> { analyticsEventLogger.logEvent(eventLog2) }
+
+    assertThat(exception2).hasMessageThat().isEqualTo("Forced failure.")
+  }
+
+  @Test
+  fun testFakeEventLogger_logEventTwice_withNewFailureSet_throwsLatestException() {
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure2."))
+
+    val exception = assertThrows<Exception> { analyticsEventLogger.logEvent(eventLog1) }
+
+    assertThat(exception).hasMessageThat().isEqualTo("Forced failure2.")
+  }
+
+  @Test
+  fun testFakeEventLogger_logEventTwice_withFailureSetToNull_doesNotThrowException() {
+    fakeAnalyticsEventLogger.setFailure(Exception("Forced failure."))
+    fakeAnalyticsEventLogger.setFailure(null) // Reset.
+
+    analyticsEventLogger.logEvent(eventLog1)
+
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(event).isEqualTo(eventLog1)
+  }
+
+  @Test
   fun testFakeEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
     analyticsEventLogger.logEvent(eventLog1)
     fakeAnalyticsEventLogger.clearAllEvents()

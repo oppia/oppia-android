@@ -183,7 +183,7 @@ Issue 2 of 3: NEW_API (Category: Correctness)
   Severity: Error (FALSE POSITIVE)
   Line: 15
   Error Line: items.forEach { item ->
-  Message: Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`
+  Message: Call requires API level 24 (current min is 23): `java.lang.Iterable#forEach`
   Workaround: Use safeForEach from IterableExtensions.kt instead of directly calling forEach to avoid known lint false positives on API < 24.
 ```
 
@@ -201,7 +201,7 @@ Issue 1 of 2: NEW_API (Category: Correctness)
   File: /path/to/app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt
   Line: 45
   Error Line: clickableAreas.forEach { clickableArea ->
-  Message: Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`
+  Message: Call requires API level 24 (current min is 23): `java.lang.Iterable#forEach`
   Explanation:
     This check scans through all the Android API calls in the application and warns about any calls that are not available on **all** versions targeted by this application...
 ```
@@ -295,7 +295,7 @@ Issue 2 of 3: NEW_API (Category: Correctness)
   Severity: Error (FALSE POSITIVE)
   Line: 15
   Error Line: items.forEach { item ->
-  Message: Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`
+  Message: Call requires API level 24 (current min is 23): `java.lang.Iterable#forEach`
   Workaround: Use safeForEach from IterableExtensions.kt instead of directly calling forEach to avoid known lint false positives on API < 24.
 ```
 

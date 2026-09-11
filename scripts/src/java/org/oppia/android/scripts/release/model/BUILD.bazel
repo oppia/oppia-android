@@ -1,5 +1,6 @@
 """
-Data models for Google Play Developer API responses used by the release automation scripts.
+Data models for Google Play Developer API and GitHub API responses used by the release automation
+scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
@@ -35,6 +36,20 @@ kt_jvm_library(
 kt_jvm_library(
     name = "track_update_request",
     srcs = ["TrackUpdateRequest.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "commit_list_entry",
+    srcs = ["CommitListEntry.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "check_runs_response",
+    srcs = ["CheckRunsResponse.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )

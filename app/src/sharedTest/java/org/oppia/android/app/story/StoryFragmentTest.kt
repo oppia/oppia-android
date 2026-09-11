@@ -142,7 +142,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -221,7 +220,6 @@ class StoryFragmentTest {
     }
   }
 
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(false)
@@ -243,7 +241,6 @@ class StoryFragmentTest {
     }
   }
 
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(true)
@@ -265,7 +262,6 @@ class StoryFragmentTest {
     }
   }
 
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(false)
@@ -286,7 +282,6 @@ class StoryFragmentTest {
     }
   }
 
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(true)
@@ -906,7 +901,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
     setStoryPartialProgressForFractions()
     runWithLaunchedActivityAndAddedFragment(
@@ -927,7 +922,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_notStartedChapter_checkProgressDrawableIsCorrect() {
     runWithLaunchedActivityAndAddedFragment(
       internalProfileId,
@@ -947,7 +942,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_lockedChapter_checkProgressDrawableIsCorrect() {
     runWithLaunchedActivityAndAddedFragment(
       internalProfileId,
@@ -967,7 +962,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_completedChapter_pawIconIsVisible() {
     runWithLaunchedActivityAndAddedFragment(
       internalProfileId,
@@ -987,7 +982,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_pendingChapter_pawIconIsGone() {
     runWithLaunchedActivityAndAddedFragment(
       internalProfileId,
@@ -1007,7 +1002,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test
   fun testStoryFragment_completedChapter_verticalDashedLineIsVisible() {
     runWithLaunchedActivityAndAddedFragment(
       internalProfileId,
@@ -1027,7 +1022,6 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  // TODO(#4212): Error -> No views in hierarchy found matching
   @Test
   fun testStoryFragment_lastChapter_verticalDashedLineIsGone() {
     runWithLaunchedActivityAndAddedFragment(
@@ -1195,7 +1189,6 @@ class StoryFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,
