@@ -235,7 +235,7 @@ ready. Proceed to §3.6 only after receiving QA sign-off.
      does not exist.
 3. Uploads the AAB to the specified Play Console track at the requested rollout permille.
 
-> **Note:** Start with a low rollout permille (e.g. 10%) and monitor crash rates in Firebase
+> **Note:** Start with a low rollout permille (e.g. 100 for 10%) and monitor crash rates in Firebase
 > Crashlytics before expanding.
 
 **Coordinator action:** Dispatch the workflow with a low initial `rollout_permille` (e.g. `100`
