@@ -46,6 +46,17 @@ class LiTagHandler(
   }
 
   override fun handleOpeningTag(output: Editable, tag: String) {
+
+    if(tag == CUSTOM_LIST_UL_TAG || tag == CUSTOM_LIST_OL_TAG){
+      if(pendingLists.isEmpty()){
+        output.appendNewLine()
+
+        if(output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')){
+          output.append('\n')
+        }
+      }
+    }
+
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
         pendingLists += ListTag.Ul(
@@ -55,12 +66,21 @@ class LiTagHandler(
         )
       }
       CUSTOM_LIST_OL_TAG -> {
-        pendingLists += ListTag.Ol(
-          parentList = latestPendingList, parentMark = latestPendingList?.pendingStartMark
-        )
+        if (pendingLists.isNotEmpty()) {
+          pendingLists += ListTag.Ul(
+            parentList = latestPendingList,
+            parentMark = latestPendingList?.pendingStartMark,
+            indentationLevel = pendingLists.size
+          )
+        } else {
+          pendingLists += ListTag.Ol(
+            parentList = latestPendingList, parentMark = latestPendingList?.pendingStartMark
+          )
+        }
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.openItem(output)
     }
+
   }
 
   override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
@@ -68,6 +88,14 @@ class LiTagHandler(
       CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
         // Actually place the spans only if the root tree has been finished (as the entirety of the
         // tree is needed for analysis).
+        output.appendNewLine()
+
+        if (pendingLists.size == 1) {
+          if (output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')) {
+            output.append("\n")
+          }
+        }
+
         val closingList = pendingLists.pop().also { it.recordList() }
         if (pendingLists.isEmpty()) {
           closingList.finishListTree(
@@ -190,6 +218,10 @@ class LiTagHandler(
         checkNotNull(pendingStartMark) { "Cannot close item that hasn't been started." }
       val endingMark = Mark.EndListItem()
       text.appendNewLine()
+
+//      if(text.isNotEmpty() && text.last() == '\n' &&  (text.length < 2 || text[text.length - 2] !='\n')){
+//        text.append('\n')
+//      }
       text.addMark(endingMark)
       markRangesToReplace += MarkedRange(startingMark, endingMark)
       pendingStartMark = null

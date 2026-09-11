@@ -11,6 +11,7 @@ import android.text.util.Linkify
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
+import androidx.core.text.getSpans
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
@@ -219,21 +220,36 @@ class HtmlParser private constructor(
    * This is needed since Android's built-in list rendering doesn't match Oppia's (in particular, it
    * renders ordered lists as bullets rather than as numbers).
    */
+
+  private fun String.replaceListTag(
+    originalTag: String,
+    replacementTag: String,
+  ): String {
+    return replace(
+      Regex("""<(/?)$originalTag(?=[\s>])""", RegexOption.IGNORE_CASE),
+      "<$1$replacementTag"
+    )
+  }
   private fun replaceListTags(html: String): String {
-    var adjustedHtml = html
-    if ("<li>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
-        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
-    }
-    if ("<ul>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
-        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
-    }
-    if ("<ol>" in adjustedHtml) {
-      adjustedHtml = adjustedHtml.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
-        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
-    }
-    return adjustedHtml
+
+    return html
+      .replaceListTag("li", CUSTOM_LIST_LI_TAG)
+      .replaceListTag("ul", CUSTOM_LIST_UL_TAG)
+      .replaceListTag("ol", CUSTOM_LIST_OL_TAG)
+//    var adjustedHtml = html
+//    if ("<li>" in adjustedHtml) {
+//      adjustedHtml = adjustedHtml.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
+//        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
+//    }
+//    if ("<ul>" in adjustedHtml) {
+//      adjustedHtml = adjustedHtml.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
+//        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
+//    }
+//    if ("<ol>" in adjustedHtml) {
+//      adjustedHtml = adjustedHtml.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
+//        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
+//    }
+//    return adjustedHtml
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
@@ -246,6 +262,11 @@ class HtmlParser private constructor(
     // Find the last non-newline from the end.
     var end = text.length
     while (end > start && text[end - 1] == '\n') { end-- }
+
+
+    val lastParagraphSpanEnd = spannable.getSpans(0, spannable.length, android.text.style.ParagraphStyle::class.java)
+      .maxOfOrNull { spannable.getSpanEnd(it) } ?: 0
+    end = maxOf(end, lastParagraphSpanEnd.coerceAtMost(spannable.length))
 
     // Return only the trimmed span.
     return SpannableStringBuilder(spannable.subSequence(start, end))

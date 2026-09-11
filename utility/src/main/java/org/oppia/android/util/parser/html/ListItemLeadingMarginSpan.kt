@@ -83,7 +83,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       val isFirstCharacter = startCharOfSpan == start
 
       if (isFirstCharacter) {
-        val previousStyle = paint.style
+//        val previousStyle = paint.style
         val bulletDrawRadius = bulletRadius.toFloat()
 
         val indentedX = parentAbsoluteLeadingMargin + spacingBeforeBullet
@@ -96,34 +96,35 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
           maxDrawX - bulletCenterLtrX
         } else bulletCenterLtrX
         val bulletCenterY = (top + bottom) / 2f
-        when (indentationLevel) {
-          0 -> {
-            // A solid circle is used for the outermost bullet.
-            paint.style = Paint.Style.FILL
-            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
-          }
-          1 -> {
-            // An inner open circle is used for second-level bullets.
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 2f
-            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
-          }
-          else -> {
-            // A filled square is used for all subsequent bullets.
-            paint.style = Paint.Style.FILL
-            val rectSize = bulletDiameter.toFloat()
-            canvas.drawRect(
-              RectF().apply {
-                left = bulletCenterX
-                right = left + rectSize
-                this.top = bulletCenterY - bulletDrawRadius
-                this.bottom = this.top + rectSize
-              },
-              paint
-            )
-          }
-        }
-        paint.style = previousStyle // Restore the previously used paint style.
+//        when (indentationLevel) {
+//          0 -> {
+//            // A solid circle is used for the outermost bullet.
+//            paint.style = Paint.Style.FILL
+//            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
+//          }
+//          1 -> {
+//            // An inner open circle is used for second-level bullets.
+//            paint.style = Paint.Style.STROKE
+//            paint.strokeWidth = 2f
+//            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
+//          }
+//          else -> {
+//            // A filled square is used for all subsequent bullets.
+//            paint.style = Paint.Style.FILL
+//            val rectSize = bulletDiameter.toFloat()
+//            canvas.drawRect(
+//              RectF().apply {
+//                left = bulletCenterX
+//                right = left + rectSize
+//                this.top = bulletCenterY - bulletDrawRadius
+//                this.bottom = this.top + rectSize
+//              },
+//              paint
+//            )
+//          }
+//        }
+        paint.style = Paint.Style.FILL // Restore the previously used paint style.
+        canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
       }
     }
 
