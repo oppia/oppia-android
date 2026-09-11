@@ -414,7 +414,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // maybeUploadUpdatedChangelogs() — rollout fraction preservation
+  // maybeUploadUpdatedChangelogs() — rollout permille preservation
   // ---------------------------------------------------------------------------
 
   @Test

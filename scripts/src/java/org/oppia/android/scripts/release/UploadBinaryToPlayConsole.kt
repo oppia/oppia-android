@@ -83,7 +83,7 @@ fun main(args: Array<String>) {
  * @param aabPath absolute path to the signed AAB to upload
  * @param properties parsed properties from the AAB filename
  * @param track the Play Console track ("alpha", "beta", or "production")
- * @param rolloutPermille the rollout fraction as an integer in [0, 1000]
+ * @param rolloutPermille the rollout permille as an integer in [0, 1000]
  */
 fun runUpload(
   client: PlayConsoleClient,

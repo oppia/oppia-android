@@ -308,7 +308,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
    * @property editId the edit session ID
    * @property track the Play Console track
    * @property versionCode the version code assigned to the track
-   * @property rolloutPermille the staged rollout fraction in [0, 1000] (1000 = 100%)
+   * @property rolloutPermille the staged rollout permille in [0, 1000] (1000 = 100%)
    * @property releaseNotes the release notes map (BCP-47 language code to text)
    * @property frozenVersionCodes the frozen OS-specific version codes merged alongside [versionCode]
    *     to prevent them being deactivated by the track update

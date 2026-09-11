@@ -3,11 +3,11 @@ package org.oppia.android.scripts.release
 import java.io.File
 
 /**
- * Script that updates the staged rollout fraction for a live release on a single Play Console
+ * Script that updates the staged rollout permille for a live release on a single Play Console
  * track, without re-uploading the binary.
  *
  * This is the correct way to increase (or decrease) a staged rollout after the initial binary
- * deployment. Re-uploading the AAB to change the rollout fraction is wasteful and can introduce
+ * deployment. Re-uploading the AAB to change the rollout permille is wasteful and can introduce
  * unintended changes; this script performs a rollout-only edit via the Play Developer API.
  *
  * The release notes for [version] are read from `config/changelogs/` (same lookup order as
@@ -69,21 +69,21 @@ fun main(args: Array<String>) {
 }
 
 /**
- * Executes the rollout fraction update workflow.
+ * Executes the rollout permille update workflow.
  *
  * Verifies that [track] has a live release, checks that [rolloutPermille] is strictly greater
  * than the current rollout (rollout can only go up), reads the current release notes from
- * `config/changelogs/` for [version], and updates the rollout fraction via a new Play Console
+ * `config/changelogs/` for [version], and updates the rollout permille via a new Play Console
  * edit session. The release notes are read from the local file and passed through unchanged so
- * they are preserved; only the rollout fraction is updated.
+ * they are preserved; only the rollout permille is updated.
  *
  * @param client the [PlayConsoleClient] used for all Play Console API calls
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
- * @param rolloutPermille the new staged rollout fraction as an integer in [0, 1000]; must be
- *     strictly greater than the current live rollout fraction
+ * @param rolloutPermille the new staged rollout permille as an integer in [0, 1000]; must be
+ *     strictly greater than the current live rollout permille
  */
 fun updateRollout(
   client: PlayConsoleClient,
@@ -97,7 +97,7 @@ fun updateRollout(
     .filter { it.status in LIVE_STATUSES }
 
   check(liveReleases.isNotEmpty()) {
-    "Track '$track' has no live releases — cannot update rollout fraction."
+    "Track '$track' has no live releases — cannot update rollout permille."
   }
 
   val versionCode = checkNotNull(liveReleases.flatMap { it.versionCodes }.maxOrNull()) {
@@ -138,7 +138,7 @@ fun updateRollout(
     packageName, editId, track, versionCode, rolloutPermille, releaseNotes,
     frozenVersionCodes.toList()
   )
-  println("  Rollout fraction updated.")
+  println("  Rollout permille updated.")
 
   client.commitEdit(packageName, editId)
   println("  Edit committed. Track '$track' rollout is now ${rolloutPermille / 10.0}%.")

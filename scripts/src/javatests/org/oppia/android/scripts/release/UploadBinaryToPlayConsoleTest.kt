@@ -76,7 +76,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction validation (integer in [0, 1000])
+  // Rollout permille validation (integer in [0, 1000])
   // ---------------------------------------------------------------------------
 
   @Test
@@ -219,7 +219,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Boundary rollout fractions — valid values complete the full upload flow
+  // Boundary rollout permilles — valid values complete the full upload flow
   // ---------------------------------------------------------------------------
 
   @Test
@@ -373,7 +373,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction forwarding
+  // Rollout permille forwarding
   // ---------------------------------------------------------------------------
 
   @Test

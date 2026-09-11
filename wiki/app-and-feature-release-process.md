@@ -233,9 +233,9 @@ ready. Proceed to §3.6 only after receiving QA sign-off.
    - **No duplicate deploy** — fails if the commit SHA is already live on that track.
    - **Changelog must exist** — fails if `config/changelogs/{version}.md` (or a flavor override)
      does not exist.
-3. Uploads the AAB to the specified Play Console track at the requested rollout fraction.
+3. Uploads the AAB to the specified Play Console track at the requested rollout permille.
 
-> **Note:** Start with a low rollout fraction (e.g. 10%) and monitor crash rates in Firebase
+> **Note:** Start with a low rollout permille (e.g. 10%) and monitor crash rates in Firebase
 > Crashlytics before expanding.
 
 **Coordinator action:** Dispatch the workflow with a low initial `rollout_permille` (e.g. `100`

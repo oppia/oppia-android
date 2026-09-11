@@ -148,7 +148,7 @@ Run through this checklist each week:
 - [ ] Check whether **Pull Latest Lesson Versions** opened a PR on Monday. If so, review
   and merge the lesson-versions PR.
 - [ ] Check for any pending changelog PRs opened by **Generate Changelogs** and merge them.
-- [ ] Review crash rates in Firebase Crashlytics and advance the rollout fraction if stable
+- [ ] Review crash rates in Firebase Crashlytics and advance the rollout permille if stable
   (see §4).
 
 ---

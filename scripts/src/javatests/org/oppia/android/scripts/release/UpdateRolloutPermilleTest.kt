@@ -85,7 +85,7 @@ class UpdateRolloutPermilleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // updateRollout() — rollout fraction update
+  // updateRollout() — rollout permille update
   // ---------------------------------------------------------------------------
 
   @Test

@@ -93,7 +93,7 @@ fun maybeUploadUpdatedChangelogs(
     val versionCode = checkNotNull(releases.flatMap { it.versionCodes }.maxOrNull()) {
       "Track '$track' has live releases but no version codes — this should not happen."
     }
-    // Preserve the existing rollout fraction so this changelog-only update does not alter
+    // Preserve the existing rollout permille so this changelog-only update does not alter
     // the staged rollout percentage. inProgress releases carry a rolloutPermille; completed
     // releases are already at 100% so fall back to 1000.
     val rolloutPermille =
@@ -207,7 +207,7 @@ private fun detectChangelogDiff(localNotes: String, deployedNotes: String): Bool
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param versionCode the version code of the live release to attach the updated notes to
- * @param rolloutPermille the existing staged rollout fraction from the live release (passed
+ * @param rolloutPermille the existing staged rollout permille from the live release (passed
  *     through unchanged so the rollout percentage is preserved)
  * @param newNotes map of BCP-47 language codes to updated release notes text (max 500 chars each);
  *     must contain at least an `"en-US"` entry

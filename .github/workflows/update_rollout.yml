@@ -1,4 +1,4 @@
-# Updates the staged rollout fraction for a live release on a single Play Console track,
+# Updates the staged rollout permille for a live release on a single Play Console track,
 # without re-uploading the binary. This is the correct way to move a release from a staged
 # rollout (e.g. 25%) to a higher percentage (e.g. 50% or 100%) after the initial deployment.
 #
@@ -39,7 +39,7 @@ concurrency:
 
 jobs:
   update_rollout:
-    name: Update rollout fraction on ${{ github.event.inputs.track }}
+    name: Update rollout permille on ${{ github.event.inputs.track }}
     runs-on: ubuntu-24.04
     environment: oppia-android-release-env
     permissions:
@@ -94,7 +94,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Update rollout fraction
+      - name: Update rollout permille
         run: |
           bazel run //scripts:update_rollout_permille -- \
             "$GITHUB_WORKSPACE" \
