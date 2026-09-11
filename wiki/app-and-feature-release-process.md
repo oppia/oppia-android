@@ -259,7 +259,7 @@ percentage for a live release.
 **What it does:**
 
 Calls `UpdateRolloutPermille.kt`, which uses the Play Developer API to update the staged rollout
-fraction for the current live release on the target track — **without re-uploading the binary**.
+permille for the current live release on the target track — **without re-uploading the binary**.
 
 **Typical progression:**
 

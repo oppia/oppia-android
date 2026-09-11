@@ -389,7 +389,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testRunUpload_stagedRollout_recordsStatusAsInProgressWithFraction() {
+  fun testRunUpload_stagedRollout_recordsStatusAsInProgressWithPermille() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 

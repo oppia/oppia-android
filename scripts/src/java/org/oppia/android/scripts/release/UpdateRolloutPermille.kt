@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
   }
   require(gcpAccessToken.isNotBlank()) { "gcp_access_token must not be blank." }
 
-  println("=== Update Rollout Fraction ===")
+  println("=== Update Rollout Permille ===")
   println("  Package  : $packageName")
   println("  Track    : $track")
   println("  Version  : $version")

@@ -104,7 +104,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressBetaTrack_uploadsCorrectNotesAndFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressBetaTrack_uploadsCorrectNotesAndPermille() {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
@@ -436,7 +436,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressWithPartialRollout_preservesExistingFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithPartialRollout_preservesExistingPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -456,7 +456,7 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressWithFullRollout_preservesFullFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithFullRollout_preservesFullPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(

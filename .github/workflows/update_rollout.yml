@@ -6,7 +6,7 @@
 # deploy_updated_changelog.yml to prevent two simultaneous Play Console edit sessions, since
 # the Play Developer API enforces a single active edit per package at a time.
 
-name: Update Rollout Fraction
+name: Update Rollout Permille
 
 on:
   workflow_dispatch:
