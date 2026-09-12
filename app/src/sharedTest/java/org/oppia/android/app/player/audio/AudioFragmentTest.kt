@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -30,6 +31,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -49,6 +52,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -93,6 +97,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -116,8 +121,10 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -158,6 +165,9 @@ class AudioFragmentTest {
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL =
@@ -185,6 +195,15 @@ class AudioFragmentTest {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
       context, profileId
     )
+  }
+
+  private fun updateProfileAudioLanguage(audioLanguage: AudioLanguage) {
+    profileTestHelper.initializeProfiles()
+    val updateProvider = profileManagementController.updateAudioLanguage(
+      profileId.toProfileIdPreservingZero(),
+      audioLanguage
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
 
   @Test
@@ -676,6 +695,73 @@ class AudioFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_unsupportedLanguage_showsLanguageUnavailableNoticeWithCorrectLanguage() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ARABIC_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val arabicLanguageName =
+        Locale.Builder().setLanguage("ar").build().let { it.getDisplayLanguage(it) }
+
+      onView(withId(R.id.language_unavailable_notice)).check(matches(isDisplayed()))
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withText(containsString(arabicLanguageName))))
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(not(withText(containsString("English")))))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_supportedLanguage_doesNotShowLanguageUnavailableNotice() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_unsupportedLanguage_changeToSupportedLanguage_hidesUnavailableNotice() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ARABIC_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.audio_language_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
   }
 
