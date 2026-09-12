@@ -149,7 +149,7 @@ class OptionsFragmentTest {
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.registerIdlingResource()
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 

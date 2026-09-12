@@ -26,6 +26,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
+// TODO(#5817): Remove when v2 onboarding flow has stabilized.
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
 class AdminPinActivityPresenter @Inject constructor(
