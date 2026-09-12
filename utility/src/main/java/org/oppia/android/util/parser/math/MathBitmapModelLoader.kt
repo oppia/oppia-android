@@ -1,7 +1,6 @@
 package org.oppia.android.util.parser.math
 
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
@@ -13,6 +12,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.annotation.VisibleForTesting
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Options

@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.math
 
 import android.app.Application
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -9,7 +10,9 @@ import android.graphics.Path
 import android.graphics.RectF
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Priority
 import com.bumptech.glide.load.Options
+import com.bumptech.glide.load.data.DataFetcher
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
@@ -20,6 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.Mockito.doAnswer
@@ -28,6 +32,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -38,6 +43,8 @@ import org.oppia.android.util.threading.DispatcherInjector
 import org.oppia.android.util.threading.DispatcherInjectorProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.nio.ByteBuffer
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [MathBitmapModelLoader]. */
@@ -51,11 +58,15 @@ class MathBitmapModelLoaderTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private lateinit var application: Application
 
   @Before
   fun setUp() {
     application = ApplicationProvider.getApplicationContext()
+    (application as TestApplication).inject(this)
   }
 
   @Test
@@ -236,6 +247,37 @@ class MathBitmapModelLoaderTest {
 
     assertThat(loadData).isNotNull()
     assertThat(loadData?.sourceKey).isEqualTo(model.toKeySignature())
+  }
+
+  @Test
+  fun testModelLoader_loadData_withFraction_rendersValidBitmap() {
+    val factory = MathBitmapModelLoader.Factory(application)
+    val mockMultiFactory = mock(MultiModelLoaderFactory::class.java)
+    val modelLoader = factory.build(mockMultiFactory)
+    val model = MathModel(
+      rawLatex = "\\frac{1}{7}",
+      lineHeight = 20f,
+      useInlineRendering = true,
+      equationColor = Color.BLACK
+    )
+
+    val loadData = modelLoader.buildLoadData(model, /* width= */ 100, /* height= */ 100, Options())
+    @Suppress("UNCHECKED_CAST")
+    val callback: DataFetcher.DataCallback<ByteBuffer> =
+      mock(DataFetcher.DataCallback::class.java) as DataFetcher.DataCallback<ByteBuffer>
+    val byteBufferCaptor = ArgumentCaptor.forClass(ByteBuffer::class.java)
+
+    loadData?.fetcher?.loadData(Priority.NORMAL, callback)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(callback).onDataReady(byteBufferCaptor.capture())
+    val byteBuffer = byteBufferCaptor.value
+    assertThat(byteBuffer).isNotNull()
+    val bytes = ByteArray(byteBuffer.remaining()).also { byteBuffer.get(it) }
+    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    assertThat(bitmap).isNotNull()
+    assertThat(bitmap.width).isGreaterThan(0)
+    assertThat(bitmap.height).isGreaterThan(0)
   }
 
   @Module
