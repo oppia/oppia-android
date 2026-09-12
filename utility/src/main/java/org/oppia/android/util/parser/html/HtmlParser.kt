@@ -11,7 +11,6 @@ import android.text.util.Linkify
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
-import androidx.core.text.getSpans
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.R

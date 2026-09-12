@@ -51,7 +51,10 @@ class LiTagHandler(
       if (pendingLists.isEmpty()) {
         output.appendNewLine()
 
-        if (output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')) {
+        val isSingleNewline = output.isNotEmpty() &&
+          output.last() == '\n' &&
+          (output.length < 2 || output[output.length - 2] != '\n')
+        if (isSingleNewline) {
           output.append('\n')
         }
       }
@@ -72,7 +75,6 @@ class LiTagHandler(
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.openItem(output)
     }
-
   }
 
   override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
@@ -82,7 +84,10 @@ class LiTagHandler(
         // tree is needed for analysis).
         output.appendNewLine()
 
-        if (output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')) {
+        val isSingleNewline = output.isNotEmpty() &&
+          output.last() == '\n' &&
+          (output.length < 2 || output[output.length - 2] != '\n')
+        if (isSingleNewline) {
           output.append("\n")
         }
 

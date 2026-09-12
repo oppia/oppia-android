@@ -168,7 +168,9 @@ class LiTagHandlerTest {
   @Test
   fun testCustomListElement_nestedListFollowedByOuterListItem_hasCorrectNewlines() {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
-    val htmlString = "<oppia-ol><oppia-li>Item 1<oppia-ol><oppia-li>Nested 1</oppia-li></oppia-ol></oppia-li><oppia-li>Item 2</oppia-li></oppia-ol>"
+    val htmlString =
+      "<oppia-ol><oppia-li>Item 1<oppia-ol><oppia-li>Nested 1</oppia-li>" +
+        "</oppia-ol></oppia-li><oppia-li>Item 2</oppia-li></oppia-ol>"
     val liTaghandler = LiTagHandler(context, displayLocale)
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
