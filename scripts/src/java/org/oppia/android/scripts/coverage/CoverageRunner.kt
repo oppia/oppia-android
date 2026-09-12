@@ -129,7 +129,13 @@ class CoverageRunner(
   }
 }
 
-internal fun computeLineCoverageStatus(
+/**
+ * Classifies a source line from LCOV `DA` hit count and `BRDA` branch outcomes.
+ *
+ * A hit line with no branch records is fully covered. A hit line is partial when at least one
+ * tracked branch executed and at least one did not (`0` or `-`).
+ */
+fun computeLineCoverageStatus(
   lineHitCount: Int,
   branchOutcomes: List<String>
 ): Coverage {
