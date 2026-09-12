@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser.math
 
 import android.app.Application
+import androidx.annotation.VisibleForTesting
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
@@ -141,7 +142,8 @@ class MathBitmapModelLoader private constructor(
         // Estimate the surface necessary for rendering the LaTeX, then compute a tightly-packed
         // bitmap containing rendered pixels. See drawText in BoundsCalculatingSurface and
         // renderAutoSizingBitmap for more details.
-        val surface = BoundsCalculatingSurface()
+        val density = application.resources.displayMetrics.density
+        val surface = BoundsCalculatingSurface(density)
         val totalBounds = surface.also {
           // The x and y are mostly unused by the draw routine.
           span.draw(it, renderableText, x = 0f, y = 0, textPaint)
@@ -149,8 +151,15 @@ class MathBitmapModelLoader private constructor(
         val boundsWidth = totalBounds.width().roundToInt()
         val boundsHeight = totalBounds.height().roundToInt()
         val canvasBitmap =
-          renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
-            staticTextLayout.draw(it)
+          renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) { canvas ->
+            val baseline = staticTextLayout.getLineBaseline(0)
+            canvas.save()
+            if (!span.isError) {
+              canvas.translate(0f, baseline.toFloat())
+            }
+            val mathSurface = MathCanvasSurface(canvas, density)
+            span.draw(mathSurface, renderableText, x = 0f, y = baseline, textPaint)
+            canvas.restore()
           }
 
         val finalWidth =
@@ -186,99 +195,6 @@ class MathBitmapModelLoader private constructor(
 
     // 'Retrieval' is expensive in this case since a rendering operation is needed.
     override fun getDataSource(): DataSource = DataSource.LOCAL
-
-    /**
-     * A [DrawableSurface] which tracks the bounds necessary to draw each constituent part of LaTeX
-     * (rendered by KotliTeX) in order to estimate the bounds necessary to render specific LaTeX.
-     */
-    private class BoundsCalculatingSurface : DrawableSurface {
-      private val initialClipRect =
-        RectF(-Float.MAX_VALUE, -Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-      private var currentClip = initialClipRect
-      private val pastClips = mutableListOf<RectF>()
-      private val currentBounds = RectF()
-
-      /**
-       * Returns the [RectF] encompassing the estimated space required to render the entirety of all
-       * previous render operations called to this surface.
-       *
-       * Note that the returned [RectF] is a copy so changes to it will not change this class's
-       * internal state. Note also that the returned [RectF] is always starting at (0, 0) so its
-       * right and bottom values represent the space's width and height, respectively.
-       */
-      fun computeTotalBounds(): RectF = RectF(currentBounds).apply { offsetTo(0f, 0f) }
-
-      override fun clipRect(rect: RectF) {
-        currentClip = currentClip.intersection(rect)
-      }
-
-      override fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint) {
-        currentBounds.ensureIncludes(x0, y0)
-        currentBounds.ensureIncludes(x1, y1)
-      }
-
-      override fun drawPath(path: Path, paint: Paint) {
-        val pathBounds = RectF().also {
-          if (android.os.Build.VERSION.SDK_INT >= 36) {
-            path.computeBounds(it)
-          } else {
-            @Suppress("DEPRECATION")
-            path.computeBounds(it, true)
-          }
-        }
-        currentBounds.union(pathBounds.intersection(currentClip))
-      }
-
-      override fun drawRect(rect: RectF, paint: Paint) {
-        currentBounds.union(rect.intersection(currentClip))
-      }
-
-      override fun drawText(text: String, x: Float, y: Float, paint: Paint) {
-        /*
-         * Text is particularly difficult to track size for since it's not obvious to actually get
-         * the dimensions and position of the space that the actual rendered pixels will occupy.
-         * https://stackoverflow.com/a/27631737/3689782 provides context both on how text is laid
-         * out, and provides examples of glyphs that can exceed the expected size of a line.
-         *
-         * This problem is exacerbated by KotliTeX manually positioning glyphs both horizontally and
-         * vertically rather than relying on built-in font kerning, tracking, and other rules (for
-         * a high-level reference on these, see: https://proandroiddev.com/5f06722dd611).
-         *
-         * One way to measure text is by using the Paint object (see
-         * https://stackoverflow.com/a/18260682/3689782), but this doesn't account for the extra
-         * vertical or horizontal space needed for a specific glyph.
-         *
-         * The chosen solution is to approximate vertical alignment by appending a tall character
-         * (such as a parenthesis) on a line below the glyph, then to compute the bounds of the
-         * first line and treat this as the size of the glyph. The use of StaticLayout came as a
-         * suggestion from https://stackoverflow.com/a/7643312/3689782 and
-         * https://stackoverflow.com/a/42091739/3689782. While this still is generally an
-         * under-approximation, it's close to the necessary space and pairs well with rendering to a
-         * larger canvas that can be cropped down.
-         */
-        @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
-        val staticLayout =
-          StaticLayout(
-            "$text\n(",
-            paint as TextPaint,
-            /* width= */ 0,
-            Layout.Alignment.ALIGN_NORMAL,
-            /* spacingmult= */ 1f,
-            /* spacingadd= */ 0f,
-            /* includepad= */ true
-          )
-        val textBounds = staticLayout.getLineBounds().apply { offsetTo(x, y) }
-        currentBounds.union(textBounds.intersection(currentClip))
-      }
-
-      override fun restore() {
-        currentClip = pastClips.removeAt(pastClips.lastIndex)
-      }
-
-      override fun save() {
-        pastClips += currentClip
-      }
-    }
 
     private companion object {
       /**
@@ -349,49 +265,199 @@ class MathBitmapModelLoader private constructor(
           Bitmap.createBitmap(/* width= */ 1, /* height= */ 1, ARGB_8888)
         }
       }
+    }
+  }
 
-      private fun RectF.getActualLeft(): Float = min(left, right)
-      private fun RectF.getActualRight(): Float = max(left, right)
-      private fun RectF.getActualTop(): Float = min(top, bottom)
-      private fun RectF.getActualBottom(): Float = max(top, bottom)
+  /**
+   * A [DrawableSurface] which tracks the bounds necessary to draw each constituent part of LaTeX
+   * (rendered by KotliTeX) in order to estimate the bounds necessary to render specific LaTeX.
+   */
+  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+  class BoundsCalculatingSurface(
+    private val density: Float
+  ) : DrawableSurface {
+    private val initialClipRect =
+      RectF(-Float.MAX_VALUE, -Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+    private var currentClip = initialClipRect
+    private val pastClips = mutableListOf<RectF>()
+    private val currentBounds = RectF()
 
-      private fun RectF.intersection(other: RectF): RectF {
-        // https://stackoverflow.com/a/19754915/3689782 provided a simple approach.
-        val intersectedLeft = max(getActualLeft(), other.getActualLeft())
-        val intersectedTop = max(getActualTop(), other.getActualTop())
-        val intersectedRight = min(getActualRight(), other.getActualRight())
-        val intersectedBottom = min(getActualBottom(), other.getActualBottom())
+    /**
+     * Returns the [RectF] encompassing the estimated space required to render the entirety of all
+     * previous render operations called to this surface.
+     *
+     * Note that the returned [RectF] is a copy so changes to it will not change this class's
+     * internal state. Note also that the returned [RectF] is always starting at (0, 0) so its
+     * right and bottom values represent the space's width and height, respectively.
+     */
+    fun computeTotalBounds(): RectF = RectF(currentBounds).apply { offsetTo(0f, 0f) }
 
-        // Make sure that rectangles which don't at least partially overlap result in a degenerate
-        // rectangle rather than a negative one (which would actually represent the union along
-        // whichever axis doesn't overlap).
-        val (actualLeft, actualRight) = if (intersectedRight < intersectedLeft) {
-          0f to 0f
-        } else intersectedLeft to intersectedRight
-        val (actualTop, actualBottom) = if (intersectedBottom < intersectedTop) {
-          0f to 0f
-        } else intersectedTop to intersectedBottom
-        return RectF(actualLeft, actualTop, actualRight, actualBottom)
+    override fun clipRect(rect: RectF) {
+      currentClip = currentClip.intersection(rect)
+    }
+
+    override fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint) {
+      val strokeWidth = max(paint.strokeWidth, MIN_FRACTION_BAR_THICKNESS_DP * density)
+      val halfStroke = strokeWidth / 2f
+      currentBounds.ensureIncludes(x0, y0 - halfStroke)
+      currentBounds.ensureIncludes(x1, y1 + halfStroke)
+    }
+
+    override fun drawPath(path: Path, paint: Paint) {
+      val pathBounds = RectF().also {
+        if (android.os.Build.VERSION.SDK_INT >= 36) {
+          path.computeBounds(it)
+        } else {
+          @Suppress("DEPRECATION")
+          path.computeBounds(it, true)
+        }
       }
+      currentBounds.union(pathBounds.intersection(currentClip))
+    }
 
-      private fun RectF.ensureIncludes(x: Float, y: Float) {
-        // Note the '+1' here is necessary since 'right' and 'bottom' are exclusive bounds in the
-        // rectangle class (in order for the 'width' and 'height' computations to operate
-        // correctly).
-        left = min(left, x)
-        right = max(right, x + 1)
-        top = min(top, y)
-        bottom = max(bottom, y + 1)
-      }
+    override fun drawRect(rect: RectF, paint: Paint) {
+      currentBounds.union(rect.intersection(currentClip))
+    }
 
-      private fun StaticLayout.getLineBounds(line: Int = 0): RectF {
-        return RectF(
-          getLineLeft(line),
-          getLineTop(line).toFloat(),
-          getLineRight(line),
-          getLineBottom(line).toFloat()
+    override fun drawText(text: String, x: Float, y: Float, paint: Paint) {
+      /*
+       * Text is particularly difficult to track size for since it's not obvious to actually get
+       * the dimensions and position of the space that the actual rendered pixels will occupy.
+       * https://stackoverflow.com/a/27631737/3689782 provides context both on how text is laid
+       * out, and provides examples of glyphs that can exceed the expected size of a line.
+       *
+       * This problem is exacerbated by KotliTeX manually positioning glyphs both horizontally and
+       * vertically rather than relying on built-in font kerning, tracking, and other rules (for
+       * a high-level reference on these, see: https://proandroiddev.com/5f06722dd611).
+       *
+       * One way to measure text is by using the Paint object (see
+       * https://stackoverflow.com/a/18260682/3689782), but this doesn't account for the extra
+       * vertical or horizontal space needed for a specific glyph.
+       *
+       * The chosen solution is to approximate vertical alignment by appending a tall character
+       * (such as a parenthesis) on a line below the glyph, then to compute the bounds of the
+       * first line and treat this as the size of the glyph. The use of StaticLayout came as a
+       * suggestion from https://stackoverflow.com/a/7643312/3689782 and
+       * https://stackoverflow.com/a/42091739/3689782. While this still is generally an
+       * under-approximation, it's close to the necessary space and pairs well with rendering to a
+       * larger canvas that can be cropped down.
+       */
+      @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
+      val staticLayout =
+        StaticLayout(
+          "$text\n(",
+          paint as TextPaint,
+          /* width= */ 0,
+          Layout.Alignment.ALIGN_NORMAL,
+          /* spacingmult= */ 1f,
+          /* spacingadd= */ 0f,
+          /* includepad= */ true
         )
-      }
+      val textBounds = staticLayout.getLineBounds().apply { offsetTo(x, y) }
+      currentBounds.union(textBounds.intersection(currentClip))
+    }
+
+    override fun restore() {
+      currentClip = pastClips.removeAt(pastClips.lastIndex)
+    }
+
+    override fun save() {
+      pastClips += currentClip
+    }
+  }
+
+  /**
+   * A [DrawableSurface] that renders LaTeX elements to a [Canvas] with enhanced visibility for
+   * horizontal fraction bars by enforcing anti-aliasing and a density-aware minimum stroke width.
+   */
+  @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+  class MathCanvasSurface(
+    private val canvas: Canvas,
+    private val density: Float
+  ) : DrawableSurface {
+    override fun save() {
+      canvas.save()
+    }
+
+    override fun restore() {
+      canvas.restore()
+    }
+
+    override fun drawText(text: String, x: Float, y: Float, paint: Paint) {
+      canvas.drawText(text, x, y, paint)
+    }
+
+    override fun clipRect(rect: RectF) {
+      canvas.clipRect(rect)
+    }
+
+    override fun drawRect(rect: RectF, paint: Paint) {
+      canvas.drawRect(rect, paint)
+    }
+
+    override fun drawPath(path: Path, paint: Paint) {
+      canvas.drawPath(path, paint)
+    }
+
+    override fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint) {
+      paint.isAntiAlias = true
+      val originalStrokeWidth = paint.strokeWidth
+      val minStrokeWidth = MIN_FRACTION_BAR_THICKNESS_DP * density
+      paint.strokeWidth = max(originalStrokeWidth, minStrokeWidth)
+      canvas.drawLine(x0, y0, x1, y1, paint)
+      paint.strokeWidth = originalStrokeWidth
+    }
+  }
+
+  companion object {
+    /**
+     * The minimum thickness (in DP) for fraction horizontal bars to ensure visibility on all
+     * screen densities.
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    const val MIN_FRACTION_BAR_THICKNESS_DP = 1.5f
+
+    private fun RectF.getActualLeft(): Float = min(left, right)
+    private fun RectF.getActualRight(): Float = max(left, right)
+    private fun RectF.getActualTop(): Float = min(top, bottom)
+    private fun RectF.getActualBottom(): Float = max(top, bottom)
+
+    private fun RectF.intersection(other: RectF): RectF {
+      // https://stackoverflow.com/a/19754915/3689782 provided a simple approach.
+      val intersectedLeft = max(getActualLeft(), other.getActualLeft())
+      val intersectedTop = max(getActualTop(), other.getActualTop())
+      val intersectedRight = min(getActualRight(), other.getActualRight())
+      val intersectedBottom = min(getActualBottom(), other.getActualBottom())
+
+      // Make sure that rectangles which don't at least partially overlap result in a degenerate
+      // rectangle rather than a negative one (which would actually represent the union along
+      // whichever axis doesn't overlap).
+      val (actualLeft, actualRight) = if (intersectedRight < intersectedLeft) {
+        0f to 0f
+      } else intersectedLeft to intersectedRight
+      val (actualTop, actualBottom) = if (intersectedBottom < intersectedTop) {
+        0f to 0f
+      } else intersectedTop to intersectedBottom
+      return RectF(actualLeft, actualTop, actualRight, actualBottom)
+    }
+
+    private fun RectF.ensureIncludes(x: Float, y: Float) {
+      // Note the '+1' here is necessary since 'right' and 'bottom' are exclusive bounds in the
+      // rectangle class (in order for the 'width' and 'height' computations to operate
+      // correctly).
+      left = min(left, x)
+      right = max(right, x + 1)
+      top = min(top, y)
+      bottom = max(bottom, y + 1)
+    }
+
+    private fun StaticLayout.getLineBounds(line: Int = 0): RectF {
+      return RectF(
+        getLineLeft(line),
+        getLineTop(line).toFloat(),
+        getLineRight(line),
+        getLineBottom(line).toFloat()
+      )
     }
   }
 
