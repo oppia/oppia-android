@@ -1,7 +1,7 @@
 # Runs weekly to refresh the pinned lesson version files (config/lessons/*.textproto) by
-# executing download_lesson_list against the live Oppia server, then opens (or force-pushes to)
-# a dedicated PR on the `automated/lesson-versions` branch so the coordinator can
-# review and merge the diff.
+# executing download_lesson_list against the live Oppia server and verifying conversion
+# compatibility via download_lessons, then opens (or force-pushes to) a dedicated PR on
+# the `automated/lesson-versions` branch so the coordinator can review and merge the diff.
 #
 # The workflow runs against latest develop so the textproto diff is always computed relative
 # to the current checked-in state. If the files are already up-to-date the commit step is
@@ -95,9 +95,43 @@ jobs:
             $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
             $(pwd)/scripts/assets/prod_download_config.textproto
 
-      - name: Clean up lesson secret
+      # Verify that updated lesson versions are conversion-compatible before committing.
+      # If conversion fails (-Werror triggers exit code 1), the workflow exits early without opening a PR.
+      - name: Download alpha lessons and verify conversion
+        run: |
+          bazel run //scripts:download_lessons -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            /tmp/verification_assets/alpha \
+            cache_mode=none \
+            /tmp/verification_cache/alpha \
+            $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/alpha_download_config.textproto \
+            false \
+            -Werror
+
+      - name: Download prod lessons and verify conversion
+        run: |
+          bazel run //scripts:download_lessons -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            /tmp/verification_assets/prod \
+            cache_mode=none \
+            /tmp/verification_cache/prod \
+            $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto \
+            false \
+            -Werror
+
+      - name: Clean up lesson secret and verification assets
         if: always()
-        run: rm -f prod_server.key
+        run: |
+          rm -f prod_server.key
+          rm -rf /tmp/verification_assets /tmp/verification_cache
 
       - name: Check for changes
         id: diff
