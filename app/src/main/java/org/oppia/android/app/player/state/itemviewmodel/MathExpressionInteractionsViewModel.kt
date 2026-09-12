@@ -100,6 +100,16 @@ class MathExpressionInteractionsViewModel private constructor(
   /** Specifies the text to show in the answer box when no text is entered. */
   val hintText: CharSequence = deriveHintText(interaction)
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is MathExpressionInteractionsViewModel) return false
+    // viewType is inherited from the base class and distinguishes the 3 sub-types
+    // (NUMERIC_EXPRESSION, ALGEBRAIC_EXPRESSION, MATH_EQUATION) without needing to
+    // access the private interactionType field.
+    return viewType == other.viewType &&
+      hasConversationView == other.hasConversationView &&
+      hintText.toString() == other.hintText.toString()
+  }
+
   private val allowedVariables = retrieveAllowedVariables(interaction)
   private val useFractionsForDivision =
     interaction.customizationArgsMap["useFractionForDivision"]?.boolValue ?: false

@@ -36,6 +36,13 @@ class TextInputViewModel private constructor(
   val hintText: CharSequence = deriveHintText(interaction)
   private var pendingAnswerError: String? = null
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is TextInputViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      hintText.toString() == other.hintText.toString()
+  }
+
   var isAnswerAvailable = ObservableField<Boolean>(false)
   val errorMessage = ObservableField<String>("")
 

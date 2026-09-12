@@ -34,6 +34,12 @@ class NumericInputViewModel private constructor(
   var isAnswerAvailable = ObservableField<Boolean>(false)
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is NumericInputViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView
+  }
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {

@@ -41,6 +41,13 @@ class FractionInteractionViewModel private constructor(
   val hintText: CharSequence = deriveHintText(interaction)
   private val fractionParser = FractionParser()
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is FractionInteractionViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      hintText.toString() == other.hintText.toString()
+  }
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {

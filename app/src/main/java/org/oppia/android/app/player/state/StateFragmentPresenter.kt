@@ -35,6 +35,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
@@ -364,10 +365,17 @@ class StateFragmentPresenter @Inject constructor(
       shouldSplit
     )
 
-    stateViewModel.itemList.clear()
-    stateViewModel.itemList += dataPair.first
-    stateViewModel.rightItemList.clear()
-    stateViewModel.rightItemList += dataPair.second
+    // Only clear and refill if the visible content actually changed. If content is the same,
+    // skipping the update prevents the RecyclerView from destroying the current EditText view
+    // (which would dismiss the soft keyboard — see issue #4839).
+    if (!areItemListsTheSame(stateViewModel.itemList, dataPair.first)) {
+      stateViewModel.itemList.clear()
+      stateViewModel.itemList += dataPair.first
+    }
+    if (!areItemListsTheSame(stateViewModel.rightItemList, dataPair.second)) {
+      stateViewModel.rightItemList.clear()
+      stateViewModel.rightItemList += dataPair.second
+    }
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
@@ -375,6 +383,22 @@ class StateFragmentPresenter @Inject constructor(
         200
       )
     }
+  }
+
+  /**
+   * Returns true if [newList] has identical presentational content to [oldList], meaning a
+   * RecyclerView redraw can be safely skipped.
+   *
+   * Two lists are considered the same when:
+   * - They have the same size.
+   * - Every corresponding pair of items returns `true` from [StateItemViewModel.areContentsTheSame].
+   */
+  private fun areItemListsTheSame(
+    oldList: List<StateItemViewModel>,
+    newList: List<StateItemViewModel>
+  ): Boolean {
+    if (oldList.size != newList.size) return false
+    return oldList.zip(newList).all { (old, new) -> old.areContentsTheSame(new) }
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */

@@ -7,7 +7,7 @@ import org.oppia.android.app.view.models.R
 
 /** [StateItemViewModel] for the header of the section of previously submitted answers. */
 class PreviousResponsesHeaderViewModel(
-  private val previousAnswerCount: Int,
+  val previousAnswerCount: Int,
   val hasConversationView: Boolean,
   var isExpanded: ObservableBoolean,
   private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener,
@@ -22,5 +22,12 @@ class PreviousResponsesHeaderViewModel(
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.previous_responses_header, previousAnswerCount.toString()
     )
+  }
+
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is PreviousResponsesHeaderViewModel) return false
+    return previousAnswerCount == other.previousAnswerCount &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView
   }
 }

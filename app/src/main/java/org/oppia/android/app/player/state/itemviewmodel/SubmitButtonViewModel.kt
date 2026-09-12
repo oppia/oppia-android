@@ -12,4 +12,11 @@ class SubmitButtonViewModel(
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val submitNavigationButtonListener: SubmitNavigationButtonListener,
   val isSplitView: Boolean
-) : StateItemViewModel(ViewType.SUBMIT_ANSWER_BUTTON)
+) : StateItemViewModel(ViewType.SUBMIT_ANSWER_BUTTON) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is SubmitButtonViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      hasPreviousButton == other.hasPreviousButton &&
+      isSplitView == other.isSplitView
+  }
+}
