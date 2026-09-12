@@ -39,6 +39,7 @@ private const val BEGIN_SESSION_TIMER_PROVIDER_ID =
   "begin_session_timer_provider_id"
 private const val STOP_SESSION_TIMER_PROVIDER_ID =
   "stop_session_timer_provider_id"
+private const val FLUSH_LEARNING_TIME_PROVIDER_ID = "flush_learning_time_provider_id"
 private const val PAUSE_SESSION_TIMER_PROVIDER_ID =
   "pause_session_timer_provider_id"
 private const val RESUME_SESSION_TIMER_PROVIDER_ID =
@@ -68,6 +69,9 @@ class ExplorationActiveTimeController @Inject constructor(
   private var explorationStarted: Boolean = false
 
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
+
+  private var mostRecentStopResultFlow =
+    MutableStateFlow<AsyncResult<Any?>>(AsyncResult.Success(null))
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -138,6 +142,7 @@ class ExplorationActiveTimeController @Inject constructor(
     topicId: String
   ): DataProvider<Any?> {
     val sessionId = UUID.randomUUID().toString().also {
+      mostRecentSessionId.value = it
       mostRecentCommandQueue = createControllerCommandActor()
     }
     val beginSessionTimerResultFlow = createAsyncResultStateFlow<Any?>()
@@ -163,7 +168,9 @@ class ExplorationActiveTimeController @Inject constructor(
    * executing, or when the app goes to the background during an active exploration session.
    */
   private fun stopSessionTimerAsync(isExplorationStarted: Boolean): DataProvider<Any?> {
-    val stopTimerResultFlow = createAsyncResultStateFlow<Any?>()
+    val stopTimerResultFlow = createAsyncResultStateFlow<Any?>().also {
+      mostRecentStopResultFlow = it
+    }
     val message = ControllerMessage.StopSessionTimer(
       sessionId = activeSessionId,
       callbackFlow = stopTimerResultFlow,
@@ -180,6 +187,26 @@ class ExplorationActiveTimeController @Inject constructor(
       mostRecentSessionId.value = null
       mostRecentCommandQueue = null
     }
+  }
+
+  /**
+   * Saves current foreground learning time before checking survey eligibility.
+   *
+   * If the exploration has just ended, waits for its queued timer stop and save instead. The
+   * returned provider stays pending until persistence completes, so callers cannot decide using
+   * the previous session's aggregate. An active timer continues from the saved timestamp.
+   */
+  fun flushLearningTime(): DataProvider<Any?> {
+    val resultFlow = if (mostRecentCommandQueue == null) {
+      mostRecentStopResultFlow
+    } else {
+      createAsyncResultStateFlow<Any?>().also { flow ->
+        sendCommandForOperation(ControllerMessage.FlushLearningTime(activeSessionId, flow)) {
+          "Failed to schedule saving current learning time."
+        }
+      }
+    }
+    return resultFlow.convertToSessionProvider(FLUSH_LEARNING_TIME_PROVIDER_ID)
   }
 
   /**
@@ -258,6 +285,11 @@ class ExplorationActiveTimeController @Inject constructor(
                 message.isExplorationStarted
               )
             }
+            is ControllerMessage.FlushLearningTime -> {
+              controllerState.tryOperation(message.callbackFlow) {
+                saveCurrentLearningTime()
+              }
+            }
             is ControllerMessage.StopSessionTimer -> {
               try {
                 controllerState.stopTimerImpl(
@@ -310,14 +342,8 @@ class ExplorationActiveTimeController @Inject constructor(
         "Expected an exploration to have been started."
       }
 
+      saveCurrentLearningTime()
       timerSessionState.isExplorationStarted = isExplorationStarted
-
-      val sessionDuration = (oppiaClock.getCurrentTimeMs() - timerSessionState.sessionStartTime)
-      recordAggregateTopicLearningTime(
-        profileId = timerSessionState.currentProfileId,
-        topicId = timerSessionState.currentTopicId,
-        sessionDuration = sessionDuration
-      )
     }
   }
 
@@ -330,14 +356,24 @@ class ExplorationActiveTimeController @Inject constructor(
         "Expected app to be in the foreground and an exploration to be started."
       }
 
+      saveCurrentLearningTime()
       timerSessionState.isAppInForeground = isAppInForeground
+    }
+  }
 
-      val sessionDuration = (oppiaClock.getCurrentTimeMs() - timerSessionState.sessionStartTime)
-      recordAggregateTopicLearningTime(
+  private suspend fun ControllerState.saveCurrentLearningTime() {
+    if (timerSessionState.isAppInForeground && timerSessionState.isExplorationStarted) {
+      val currentTimeMs = oppiaClock.getCurrentTimeMs()
+      val result = recordAggregateTopicLearningTime(
         profileId = timerSessionState.currentProfileId,
         topicId = timerSessionState.currentTopicId,
-        sessionDuration = sessionDuration
-      )
+        sessionDuration = currentTimeMs - timerSessionState.sessionStartTime
+      ).retrieveData()
+      when (result) {
+        is AsyncResult.Success -> timerSessionState.sessionStartTime = currentTimeMs
+        is AsyncResult.Failure -> throw result.error
+        is AsyncResult.Pending -> error("Expected learning time persistence to have completed.")
+      }
     }
   }
 
@@ -397,6 +433,12 @@ class ExplorationActiveTimeController @Inject constructor(
       val isExplorationStarted: Boolean,
       val profileId: ProfileId,
       val topicId: String,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] for saving learning time while keeping the timer active. */
+    data class FlushLearningTime(
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
