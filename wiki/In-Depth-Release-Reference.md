@@ -24,7 +24,7 @@ For the standard step-by-step coordinator guide see the
 
 ## 1. Generate Changelog fails
 
-**Normal trigger:** Push to `develop` that modifies `version.bzl`, or manual dispatch.
+**Normal trigger:** A push to `develop` that modifies `version.bzl`, or manual dispatch.
 
 **What it does:** Runs `GenerateChangelogs.kt` (Vertex AI) and opens a changelog PR.
 
