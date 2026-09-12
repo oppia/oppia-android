@@ -44,21 +44,21 @@ tracked_topic_info {
 }
 tracked_topic_info {
   id: "sWBXKH4PZcK6"
-  content_version: 53
+  content_version: 55
   story_info {
     id: "Qu6THxP29tOy"
     content_version: 19
     chapter_info {
       exploration_id: "OKxYhsWONHZV"
-      exploration_content_version: 1564
+      exploration_content_version: 1570
     }
     chapter_info {
       exploration_id: "BJd7yHIxpqkq"
-      exploration_content_version: 1110
+      exploration_content_version: 1114
     }
     chapter_info {
       exploration_id: "W0xq3jW5GzDF"
-      exploration_content_version: 876
+      exploration_content_version: 878
     }
     chapter_info {
       exploration_id: "53Ka3mQ6ra5A"
@@ -70,11 +70,11 @@ tracked_topic_info {
     }
     chapter_info {
       exploration_id: "PsfDKdhd6Esz"
-      exploration_content_version: 866
+      exploration_content_version: 867
     }
     chapter_info {
       exploration_id: "9DITEN8BUEHw"
-      exploration_content_version: 1143
+      exploration_content_version: 1144
     }
   }
   subtopic_info {
@@ -444,7 +444,11 @@ tracked_skill_info {
 }
 tracked_skill_info {
   id: "eH2AaPobw8Un"
-  content_version: 15
+  content_version: 16
+}
+tracked_skill_info {
+  id: "eYaW2OPtPE7y"
+  content_version: 1
 }
 tracked_skill_info {
   id: "lN06xKDgfbUi"
@@ -584,7 +588,7 @@ tracked_skill_info {
 }
 tracked_skill_info {
   id: "rBOtCQIzDYc9"
-  content_version: 10
+  content_version: 11
 }
 tracked_skill_info {
   id: "MPSxpawZuLFQ"
