@@ -249,11 +249,6 @@ class HtmlParser private constructor(
     var end = text.length
     while (end > start && text[end - 1] == '\n') { end-- }
 
-
-    val lastParagraphSpanEnd = spannable.getSpans(0, spannable.length, android.text.style.ParagraphStyle::class.java)
-      .maxOfOrNull { spannable.getSpanEnd(it) } ?: 0
-    end = maxOf(end, lastParagraphSpanEnd.coerceAtMost(spannable.length))
-
     // Return only the trimmed span.
     return SpannableStringBuilder(spannable.subSequence(start, end))
   }
