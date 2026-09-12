@@ -148,10 +148,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Notifies the parent activity that the dialog has stopped and hint timers should resume,
-   * provided the stop isn't due to a configuration change.
+   * Notifies the parent activity that the dialog has been dismissed and hint timers should resume,
+   * provided the dismissal isn't due to a configuration change.
    */
-  fun handleOnStop() {
+  fun handleOnDismiss() {
     if (!activity.isChangingConfigurations) {
       (activity as? HintsAndSolutionListener)?.resumeHints()
     }

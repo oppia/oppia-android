@@ -177,8 +177,7 @@ class HintHandlerProdImpl private constructor(
         pausedRemainingDelayMs =
           (scheduledEndTimeMs - oppiaClock.getCurrentTimeMs()).coerceAtLeast(0L)
         pausedHelpIndexToShow = getNextHelpIndexToReveal()
-        currentScheduledJob?.cancel()
-        currentScheduledJob = null
+        cancelPendingTasks()
       }
     }
   }
@@ -363,8 +362,9 @@ class HintHandlerProdImpl private constructor(
   }
 
   private suspend fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
-    // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-    if (targetSequenceNumber == hintSequenceNumber) {
+    // Only finish this timer if no other hints were scheduled, no cancellations occurred, and the
+    // handler is not currently paused.
+    if (!isPaused && targetSequenceNumber == hintSequenceNumber) {
       val previousHelpIndex = computeCurrentHelpIndex()
 
       when (nextHelpIndexToShow.indexTypeCase) {

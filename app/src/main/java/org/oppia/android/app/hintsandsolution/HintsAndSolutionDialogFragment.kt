@@ -1,6 +1,7 @@
 package org.oppia.android.app.hintsandsolution
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -158,9 +159,9 @@ class HintsAndSolutionDialogFragment :
     hintsAndSolutionDialogFragmentPresenter.handleOnStart()
   }
 
-  override fun onStop() {
-    super.onStop()
-    hintsAndSolutionDialogFragmentPresenter.handleOnStop()
+  override fun onDismiss(dialog: DialogInterface) {
+    super.onDismiss(dialog)
+    hintsAndSolutionDialogFragmentPresenter.handleOnDismiss()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
