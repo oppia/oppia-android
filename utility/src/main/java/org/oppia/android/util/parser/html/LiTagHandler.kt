@@ -47,11 +47,11 @@ class LiTagHandler(
 
   override fun handleOpeningTag(output: Editable, tag: String) {
 
-    if(tag == CUSTOM_LIST_UL_TAG || tag == CUSTOM_LIST_OL_TAG){
-      if(pendingLists.isEmpty()){
+    if (tag == CUSTOM_LIST_UL_TAG || tag == CUSTOM_LIST_OL_TAG) {
+      if (pendingLists.isEmpty()) {
         output.appendNewLine()
 
-        if(output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')){
+        if (output.isNotEmpty() && output.last() == '\n' && (output.length < 2 || output[output.length - 2] != '\n')) {
           output.append('\n')
         }
       }
