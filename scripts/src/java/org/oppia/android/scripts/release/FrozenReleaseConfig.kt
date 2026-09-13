@@ -15,14 +15,16 @@ package org.oppia.android.scripts.release
  *
  * Currently frozen:
  * - alpha vc 16 : KitKat (API 16) build, frozen permanently.
- * - alpha vc 201 : Lollipop (API 21) build, frozen permanently.
- * - beta vc 196 : Lollipop (API 21) build, frozen permanently.
+ * - alpha vc 52377 : Lollipop (API 21) build 0.18-rc04-alpha-c495933008. This
+ *   may be overwritten if this PR merges after a newer weekly alpha release.
+ * - beta vc 52376 : Lollipop (API 21) build 0.18-rc04-beta-c495933008, the
+ *   current production beta freeze.
  *
  * When a new API level is deprecated and its final build must be frozen, add its track and version
  * code here. This single file is the source of truth consumed by [UploadBinaryToPlayConsole],
  * [UpdateRolloutFraction], and [UploadChangelogToPlayConsole].
  */
 val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
-  "alpha" to setOf(16L, 201L),
-  "beta" to setOf(196L)
+  "alpha" to setOf(16L, 52377L),
+  "beta" to setOf(52376L)
 )

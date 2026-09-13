@@ -129,6 +129,8 @@ class UpdateRolloutFractionTest {
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
+          // Unsorted live codes above the frozen Lollipop baseline so max() is 300, not a frozen
+          // code. The values themselves are arbitrary; only the ordering (300 is highest) matters.
           versionCodes = listOf(298L, 300L, 299L), status = "inProgress", rolloutFraction = 100
         ),
         FROZEN_ALPHA_BASELINE
