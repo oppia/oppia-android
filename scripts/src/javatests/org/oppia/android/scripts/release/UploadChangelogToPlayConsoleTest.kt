@@ -104,12 +104,12 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressBetaTrack_uploadsCorrectNotesAndFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressBetaTrack_uploadsCorrectNotesAndPermille() {
     fakeClient.setTrackReleases(
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(200L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 250
         ),
         FROZEN_BETA_BASELINE
       )
@@ -123,7 +123,7 @@ class UploadChangelogToPlayConsoleTest {
     val update = fakeClient.trackUpdates.single()
     assertThat(update.track).isEqualTo("beta")
     assertThat(update.versionCode).isEqualTo(200L)
-    assertThat(update.rolloutFraction).isEqualTo(250)
+    assertThat(update.rolloutPermille).isEqualTo(250)
     assertThat(update.releaseNotes).containsEntry("en-US", testNotes)
     assertThat(fakeClient.committedEdits).hasSize(1)
   }
@@ -414,11 +414,11 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // maybeUploadUpdatedChangelogs() — rollout fraction preservation
+  // maybeUploadUpdatedChangelogs() — rollout permille preservation
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_completedRelease_usesFullRolloutFraction() {
+  fun testMaybeUploadUpdatedChangelogs_completedRelease_usesFullRolloutPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
@@ -432,16 +432,16 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(1000)
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressWithPartialRollout_preservesExistingFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithPartialRollout_preservesExistingPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 250
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -452,16 +452,16 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(250)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(250)
   }
 
   @Test
-  fun testMaybeUploadUpdatedChangelogs_inProgressWithFullRollout_preservesFullFraction() {
+  fun testMaybeUploadUpdatedChangelogs_inProgressWithFullRollout_preservesFullPermille() {
     fakeClient.setTrackReleases(
       "alpha",
       listOf(
         PlayConsoleClient.TrackRelease(
-          versionCodes = listOf(100L), status = "inProgress", rolloutFraction = 1000
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 1000
         ),
         FROZEN_ALPHA_BASELINE
       )
@@ -472,7 +472,7 @@ class UploadChangelogToPlayConsoleTest {
       fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion
     )
 
-    assertThat(fakeClient.trackUpdates.single().rolloutFraction).isEqualTo(1000)
+    assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(1000)
   }
 
   // ---------------------------------------------------------------------------

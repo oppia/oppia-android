@@ -141,12 +141,12 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
-    name = "UpdateRolloutFractionTest",
-    srcs = ["UpdateRolloutFractionTest.kt"],
+    name = "UpdateRolloutPermilleTest",
+    srcs = ["UpdateRolloutPermilleTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/release:fake_play_console_client",
         "//scripts/src/java/org/oppia/android/scripts/release:play_console_client",
-        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
+        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_permille_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],

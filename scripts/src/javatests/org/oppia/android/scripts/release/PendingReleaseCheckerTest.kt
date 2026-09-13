@@ -96,7 +96,7 @@ class PendingReleaseCheckerTest {
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          status = "inProgress", versionCodes = listOf(302L), rolloutFraction = 250
+          status = "inProgress", versionCodes = listOf(302L), rolloutPermille = 250
         )
       )
     )
@@ -115,7 +115,7 @@ class PendingReleaseCheckerTest {
       "production",
       listOf(
         PlayConsoleClient.TrackRelease(
-          status = "inProgress", versionCodes = listOf(500L), rolloutFraction = 500
+          status = "inProgress", versionCodes = listOf(500L), rolloutPermille = 500
         )
       )
     )

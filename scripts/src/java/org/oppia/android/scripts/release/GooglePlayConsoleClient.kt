@@ -124,12 +124,12 @@ class GooglePlayConsoleClient(
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Int,
+    rolloutPermille: Int,
     releaseNotes: Map<String, String>,
     frozenVersionCodes: List<Long>
   ) {
-    val fraction = rolloutFraction / 1000.0
-    val status = if (rolloutFraction >= 1000) "completed" else "inProgress"
+    val fraction = rolloutPermille / 1000.0
+    val status = if (rolloutPermille >= 1000) "completed" else "inProgress"
     // Merge the new version code with any frozen version codes into a single release entry.
     // The Play Developer API rejects two separate release entries when one supersedes the other
     // (e.g. a new alpha and the frozen KitKat build), so merging all version codes into a single
@@ -144,7 +144,7 @@ class GooglePlayConsoleClient(
           releaseNotes = releaseNotes.map { (lang, text) ->
             TrackUpdateRequest.LocalizedText(language = lang, text = text)
           },
-          userFraction = if (rolloutFraction < 1000) fraction else null
+          userFraction = if (rolloutPermille < 1000) fraction else null
         )
       )
     )
@@ -181,7 +181,7 @@ class GooglePlayConsoleClient(
     return PlayConsoleClient.TrackRelease(
       versionCodes = versionCodes?.map { it.toLong() } ?: emptyList(),
       status = status,
-      rolloutFraction = userFraction?.let { (it * 1000).roundToInt() },
+      rolloutPermille = userFraction?.let { (it * 1000).roundToInt() },
       releaseNotes = releaseNotes?.associate { it.language to it.text } ?: emptyMap()
     )
   }

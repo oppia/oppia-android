@@ -76,50 +76,50 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction validation (integer in [0, 1000])
+  // Rollout permille validation (integer in [0, 1000])
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testScript_nonNumericRolloutFraction_throwsWithMessage() {
+  fun testScript_nonNumericRolloutPermille_throwsWithMessage() {
     val exception = assertThrows<IllegalArgumentException>() {
       runScript("workspace", "aab.aab", "alpha", "token", "notanumber")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   @Test
-  fun testScript_rolloutFractionAboveThousand_throwsWithMessage() {
+  fun testScript_rolloutPermilleAboveThousand_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "1001")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
     assertThat(exception).hasMessageThat().contains("1000")
   }
 
   @Test
-  fun testScript_negativeRolloutFraction_throwsWithMessage() {
+  fun testScript_negativeRolloutPermille_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-beta-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "beta", "token", "-1")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   @Test
-  fun testScript_decimalRolloutFraction_throwsWithMessage() {
+  fun testScript_decimalRolloutPermille_throwsWithMessage() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
 
     val exception = assertThrows<IllegalArgumentException>() {
       runScript(tempFolder.root.absolutePath, aab.absolutePath, "alpha", "token", "0.5")
     }
 
-    assertThat(exception).hasMessageThat().contains("rollout_fraction")
+    assertThat(exception).hasMessageThat().contains("rollout_permille")
   }
 
   // ---------------------------------------------------------------------------
@@ -219,28 +219,28 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Boundary rollout fractions — valid values complete the full upload flow
+  // Boundary rollout permilles — valid values complete the full upload flow
   // ---------------------------------------------------------------------------
 
   @Test
-  fun testScript_rolloutFractionZero_passesValidation() {
+  fun testScript_rolloutPermilleZero_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    // rollout_fraction = 0 is valid; the full upload flow should complete without errors.
-    runMain(aab.absolutePath, rolloutFraction = 0)
+    // rollout_permille = 0 is valid; the full upload flow should complete without errors.
+    runMain(aab.absolutePath, rolloutPermille = 0)
 
     // Verify commitEdit (the final step) was actually called, confirming the upload was not aborted.
     assertThat(fake.committedEdits).hasSize(1)
   }
 
   @Test
-  fun testScript_rolloutFractionThousand_passesValidation() {
+  fun testScript_rolloutPermilleThousand_passesValidation() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    // rollout_fraction = 1000 (100%) is valid; the full upload flow should complete.
-    runMain(aab.absolutePath, rolloutFraction = 1000)
+    // rollout_permille = 1000 (100%) is valid; the full upload flow should complete.
+    runMain(aab.absolutePath, rolloutPermille = 1000)
 
     assertThat(fake.committedEdits).hasSize(1)
   }
@@ -373,7 +373,7 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   // ---------------------------------------------------------------------------
-  // Rollout fraction forwarding
+  // Rollout permille forwarding
   // ---------------------------------------------------------------------------
 
   @Test
@@ -381,7 +381,7 @@ class UploadBinaryToPlayConsoleTest {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    runMain(aab.absolutePath, rolloutFraction = 1000)
+    runMain(aab.absolutePath, rolloutPermille = 1000)
 
     assertThat(fake.trackUpdateBodies).hasSize(1)
     assertThat(fake.trackUpdateBodies.first()).contains("\"status\":\"completed\"")
@@ -389,11 +389,11 @@ class UploadBinaryToPlayConsoleTest {
   }
 
   @Test
-  fun testRunUpload_stagedRollout_recordsStatusAsInProgressWithFraction() {
+  fun testRunUpload_stagedRollout_recordsStatusAsInProgressWithPermille() {
     val aab = createAab("oppia-android-0.17-rc01-alpha-e740815230.aab")
     createChangelog("0.17", content = "Release notes.")
 
-    runMain(aab.absolutePath, rolloutFraction = 250)
+    runMain(aab.absolutePath, rolloutPermille = 250)
 
     assertThat(fake.trackUpdateBodies).hasSize(1)
     assertThat(fake.trackUpdateBodies.first()).contains("\"status\":\"inProgress\"")
@@ -508,7 +508,7 @@ class UploadBinaryToPlayConsoleTest {
       aabPath = aab.absolutePath,
       properties = parseAabFilename(aab.name)!!,
       track = "alpha",
-      rolloutFraction = 10,
+      rolloutPermille = 10,
       frozenVersionCodesPerTrack = mapOf("alpha" to setOf(16L, 21L))
     )
 
@@ -559,7 +559,7 @@ class UploadBinaryToPlayConsoleTest {
   private fun runMain(
     aabPath: String,
     track: String = "alpha",
-    rolloutFraction: Int = 1000
+    rolloutPermille: Int = 1000
   ) {
     main(
       arrayOf(
@@ -567,7 +567,7 @@ class UploadBinaryToPlayConsoleTest {
         aabPath,
         track,
         "test-token",
-        rolloutFraction.toString(),
+        rolloutPermille.toString(),
         fake.serverUrl
       )
     )

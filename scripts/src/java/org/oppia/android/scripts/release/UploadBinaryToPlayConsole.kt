@@ -19,7 +19,7 @@ import java.io.File
  * Usage (called by deploy_to_play_console.yml via Bazel):
  * ```
  * bazel run //scripts:upload_binary_to_play_console -- \
- *   <workspace_root> <aab_path> <track> <access_token> <rollout_fraction>
+ *   <workspace_root> <aab_path> <track> <access_token> <rollout_permille>
  * ```
  *
  * Arguments (positional):
@@ -27,7 +27,7 @@ import java.io.File
  *   1. aab_path         — absolute path to the signed AAB to upload
  *   2. track            — Play Console track: "alpha", "beta", or "production"
  *   3. access_token     — OAuth2 bearer token (passed from the workflow via gcloud)
- *   4. rollout_fraction — staged rollout as an integer [0, 1000] (e.g. 250 = 25%, 1000 = 100%)
+ *   4. rollout_permille — staged rollout as an integer [0, 1000] (e.g. 250 = 25%, 1000 = 100%)
  *
  * An optional 6th argument overrides the API base URL. This is used in tests to route all
  * Play Console HTTP calls through a local [MockWebServer] instead of the real endpoint.
@@ -35,23 +35,23 @@ import java.io.File
 fun main(args: Array<String>) {
   require(args.size in 5..6) {
     "Usage: upload_binary_to_play_console <workspace_root> <aab_path> <track> " +
-      "<access_token> <rollout_fraction>\nGot ${args.size} argument(s): ${args.toList()}"
+      "<access_token> <rollout_permille>\nGot ${args.size} argument(s): ${args.toList()}"
   }
 
   val workspaceRoot = args[0]
   val aabPath = args[1]
   val track = args[2]
   val accessToken = args[3]
-  val rolloutFraction = requireNotNull(args[4].toIntOrNull()) {
-    "rollout_fraction must be an integer in [0, 1000] (e.g. 250 for 25%), got '${args[4]}'."
+  val rolloutPermille = requireNotNull(args[4].toIntOrNull()) {
+    "rollout_permille must be an integer in [0, 1000] (e.g. 250 for 25%), got '${args[4]}'."
   }
   val apiBaseUrl = args.getOrNull(5) ?: GooglePlayConsoleClient.PRODUCTION_API_BASE_URL
 
   require(track in VALID_TRACKS) {
     "track must be one of $VALID_TRACKS, got '$track'."
   }
-  require(rolloutFraction in 0..1000) {
-    "rollout_fraction must be between 0 and 1000, got $rolloutFraction."
+  require(rolloutPermille in 0..1000) {
+    "rollout_permille must be between 0 and 1000, got $rolloutPermille."
   }
 
   val aabFile = File(aabPath)
@@ -68,11 +68,11 @@ fun main(args: Array<String>) {
   println("  Version : ${properties.versionName} (major.minor: ${properties.majorMinorVersion})")
   println("  Flavor  : ${properties.flavor.id}")
   println("  Track   : $track")
-  println("  Rollout : ${rolloutFraction / 10.0}%")
+  println("  Rollout : ${rolloutPermille / 10.0}%")
   println()
 
   val client = GooglePlayConsoleClient(accessToken, apiBaseUrl)
-  runUpload(client, workspaceRoot, aabPath, properties, track, rolloutFraction)
+  runUpload(client, workspaceRoot, aabPath, properties, track, rolloutPermille)
 }
 
 /**
@@ -83,7 +83,7 @@ fun main(args: Array<String>) {
  * @param aabPath absolute path to the signed AAB to upload
  * @param properties parsed properties from the AAB filename
  * @param track the Play Console track ("alpha", "beta", or "production")
- * @param rolloutFraction the rollout fraction as an integer in [0, 1000]
+ * @param rolloutPermille the rollout permille as an integer in [0, 1000]
  */
 fun runUpload(
   client: PlayConsoleClient,
@@ -91,7 +91,7 @@ fun runUpload(
   aabPath: String,
   properties: AabProperties,
   track: String,
-  rolloutFraction: Int,
+  rolloutPermille: Int,
   frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   println("Running pre-upload precondition checks...")
@@ -146,7 +146,7 @@ fun runUpload(
     editId,
     track,
     uploadedVersionCode,
-    rolloutFraction,
+    rolloutPermille,
     releaseNotes,
     frozenVersionCodes.toList()
   )

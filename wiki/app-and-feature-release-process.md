@@ -222,7 +222,7 @@ ready. Proceed to §3.6 only after receiving QA sign-off.
 |---|---|---|
 | `gcs_aab_path` | Full GCS path from `build_and_sign` | `gs://…/oppia-android-0.18-rc01-alpha-abc1234.aab` |
 | `track` | Play Console track to deploy to | `alpha`, `beta`, `ga` |
-| `rollout_fraction` | Initial staged rollout as integer [0, 1000] where 1000 = 100% (optional, default: `1000`) | `100` for 10% |
+| `rollout_permille` | Initial staged rollout as integer [0, 1000] where 1000 = 100% (optional, default: `1000`) | `100` for 10% |
 
 **What it does:**
 
@@ -233,12 +233,12 @@ ready. Proceed to §3.6 only after receiving QA sign-off.
    - **No duplicate deploy** — fails if the commit SHA is already live on that track.
    - **Changelog must exist** — fails if `config/changelogs/{version}.md` (or a flavor override)
      does not exist.
-3. Uploads the AAB to the specified Play Console track at the requested rollout fraction.
+3. Uploads the AAB to the specified Play Console track at the requested rollout permille.
 
-> **Note:** Start with a low rollout fraction (e.g. 10%) and monitor crash rates in Firebase
+> **Note:** Start with a low rollout permille (e.g. 100 for 10%) and monitor crash rates in Firebase
 > Crashlytics before expanding.
 
-**Coordinator action:** Dispatch the workflow with a low initial `rollout_fraction` (e.g. `100`
+**Coordinator action:** Dispatch the workflow with a low initial `rollout_permille` (e.g. `100`
 for 10%), approve the run, and monitor Crashlytics before proceeding to §3.7.
 
 ---
@@ -254,12 +254,12 @@ percentage for a live release.
 |---|---|---|
 | `track` | Play Console track to update | `alpha`, `beta`, `production` |
 | `version` | Version in `major.minor` format — must match a live release on the track | `0.18` |
-| `rollout_fraction` | New rollout as integer [0, 1000] where 1000 = 100% | `500` for 50% |
+| `rollout_permille` | New rollout as integer [0, 1000] where 1000 = 100% | `500` for 50% |
 
 **What it does:**
 
-Calls `UpdateRolloutFraction.kt`, which uses the Play Developer API to update the staged rollout
-fraction for the current live release on the target track — **without re-uploading the binary**.
+Calls `UpdateRolloutPermille.kt`, which uses the Play Developer API to update the staged rollout
+permille for the current live release on the target track — **without re-uploading the binary**.
 
 **Typical progression:**
 
@@ -271,7 +271,7 @@ A concurrency lock shared with `deploy_updated_changelog.yml` prevents two simul
 Console edit sessions (the Play Developer API enforces a single active edit per package at a time).
 
 **Coordinator action:** Dispatch the workflow after each monitoring window. Repeat until
-`rollout_fraction=1000` (100%).
+`rollout_permille=1000` (100%).
 
 ---
 
@@ -390,7 +390,7 @@ flowchart TD
     G --> H{"QA pass?"}
     H -- "No" --> I["Fix on develop → cherry-pick\n→ rebuild"]
     I --> E
-    H -- "Yes" --> J["deploy_to_play_console.yml\nrollout_fraction=10%"]
+H -- "Yes" --> J["deploy_to_play_console.yml\nrollout_permille=100"]
     J --> K["update_rollout.yml\n25% → 50% → 100%"]
     K --> L["Full rollout complete ✓"]
     J --> M["deploy_updated_changelog.yml\n(auto on changelog edits)"]
@@ -426,8 +426,8 @@ page for the definitive guide on the feature flag progression model.
 | `generate_changelog.yml` | Push to develop (version.bzl) / manual | `version` | Generate AI release notes, open changelog PR |
 | `build_and_sign.yml` | Manual + reviewer approval | `flavor`, `source_ref` | Build AAB, sign via KMS, archive to GCS |
 | `deploy_to_firebase.yml` | Manual | `gcs_aab_path` | Distribute to QA testers via Firebase |
-| `deploy_to_play_console.yml` | Manual | `gcs_aab_path`, `track`, `rollout_fraction` [0-1000] | Upload to Play Console track |
-| `update_rollout.yml` | Manual | `track`, `version`, `rollout_fraction` [0-1000] | Increase staged rollout percentage |
+| `deploy_to_play_console.yml` | Manual | `gcs_aab_path`, `track`, `rollout_permille` [0-1000] | Upload to Play Console track |
+| `update_rollout.yml` | Manual | `track`, `version`, `rollout_permille` [0-1000] | Increase staged rollout percentage |
 | `deploy_updated_changelog.yml` | Push to develop (`changelogs/**`) / manual | `version`, `flavor` | Sync edited release notes to Play Console |
 | `auto_release_alpha.yml` | Weekly cron (Tue 03:30 UTC) / manual | `branch`, `commit_limit` | Automated weekly alpha cut |
 | `pull_latest_lesson_versions.yml` | Weekly cron (Mon 02:30 UTC) / manual | — | Update pinned lesson version textprotos, open PR |
