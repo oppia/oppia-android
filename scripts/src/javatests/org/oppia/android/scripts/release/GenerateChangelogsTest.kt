@@ -45,18 +45,18 @@ class GenerateChangelogsTest {
   }
 
   @Test
-  fun testMain_fourArguments_throwsWithUsageMessage() {
+  fun testMain_twoArguments_throwsWithUsageMessage() {
     val exception =
-      assertThrows<IllegalArgumentException> { main(arrayOf("a", "b", "c", "d")) }
+      assertThrows<IllegalArgumentException> { main(arrayOf("a", "b")) }
 
     assertThat(exception).hasMessageThat().contains("Usage:")
   }
 
   @Test
-  fun testMain_sevenArguments_throwsWithUsageMessage() {
+  fun testMain_fiveArguments_throwsWithUsageMessage() {
     val exception =
       assertThrows<IllegalArgumentException> {
-        main(arrayOf("a", "b", "c", "d", "e", "f", "g"))
+        main(arrayOf("a", "b", "c", "d", "e"))
       }
 
     assertThat(exception).hasMessageThat().contains("Usage:")
@@ -593,7 +593,7 @@ class GenerateChangelogsTest {
   @Test
   fun testGenerateChangelogs_prevBranchAmbiguousArgument_fallsBackToFirstCommit() {
     // Simulates the second git error phrase that indicates a missing branch:
-    // "ambiguous argument" (e.g. git merge-base release-0.16 origin/develop).
+    // "ambiguous argument" (e.g. git merge-base origin/release-0.16 origin/develop).
     writeVersionBzl(major = 0, minor = 18)
     val firstCommit = "firstcommitsha"
     val toSha = "toshasha456"

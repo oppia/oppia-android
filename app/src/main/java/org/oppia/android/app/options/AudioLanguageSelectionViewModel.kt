@@ -54,10 +54,9 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   val selectedLanguage = MutableLiveData<AudioLanguage>()
 
   /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
-  // TODO(#6020): Replace getSupportedAppLanguages with an audio languages specific API.
   val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> =
     Transformations.map(
-      translationController.getSupportedAppLanguages().toLiveData()
+      translationController.getSupportedAudioLanguages().toLiveData()
     ) { supportedLanguagesResult ->
       when (supportedLanguagesResult) {
         is AsyncResult.Failure -> {

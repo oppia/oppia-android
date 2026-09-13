@@ -26,3 +26,13 @@ title {
   html: "Fractions of a group"
   content_id: "title"
 }
+sections {
+  heading {
+    unicode_str: "Fractions of a group"
+    content_id: "section_heading_0"
+  }
+  content {
+    html: "<p>Description of subtopic is here. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5RM9KPfQxobH&amp;quot;\" text-with-value=\"&amp;quot;This concept card demonstrates overall concept card functionality.&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+    content_id: "section_content_1"
+  }
+}
