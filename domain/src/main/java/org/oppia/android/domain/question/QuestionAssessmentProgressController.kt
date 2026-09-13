@@ -51,6 +51,10 @@ private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.submit_solution_revealed_result"
 private const val MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.move_to_next_question_result"
+private const val PAUSE_HINTS_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.pause_hints_result"
+private const val RESUME_HINTS_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.resume_hints_result"
 private const val CURRENT_QUESTION_PROVIDER_ID =
   "QuestionAssessmentProgressController.current_question"
 private const val CALCULATE_SCORES_PROVIDER_ID =
@@ -261,6 +265,30 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
+   * Pauses the hint timer while the hint & solution dialog is open.
+   *
+   * @return a [DataProvider] that indicates success/failure of the pause operation
+   */
+  fun pauseHints(): DataProvider<Any?> {
+    val pauseResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.PauseHints(activeSessionId, pauseResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for pausing hints." }
+    return pauseResultFlow.convertToSessionProvider(PAUSE_HINTS_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Resumes the hint timer after the hint & solution dialog is dismissed.
+   *
+   * @return a [DataProvider] that indicates success/failure of the resume operation
+   */
+  fun resumeHints(): DataProvider<Any?> {
+    val resumeResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.ResumeHints(activeSessionId, resumeResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for resuming hints." }
+    return resumeResultFlow.convertToSessionProvider(RESUME_HINTS_RESULT_PROVIDER_ID)
+  }
+
+  /**
    * Navigates to the next question in the assessment. This method is only valid if the current
    * [EphemeralQuestion] reported by [getCurrentQuestion] is a completed question. Calling code is
    * responsible for ensuring this method is only called when it's possible to navigate forward.
@@ -410,6 +438,10 @@ class QuestionAssessmentProgressController @Inject constructor(
               controllerState.moveToNextQuestion(message.callbackFlow)
             is ControllerMessage.SolutionIsRevealed ->
               controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+            is ControllerMessage.PauseHints ->
+              controllerState.pauseHintsImpl(message.callbackFlow)
+            is ControllerMessage.ResumeHints ->
+              controllerState.resumeHintsImpl(message.callbackFlow)
             is ControllerMessage.CalculateScores -> {
               controllerState.recomputeUserAssessmentPerformanceAndNotify(
                 message.callbackFlow, message.skillIdList
@@ -638,13 +670,38 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
+  private suspend fun ControllerState.pauseHintsImpl(
+    pauseResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(pauseResultFlow, recomputeQuestion = false) {
+      check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+        "Cannot pause hints if an answer submission is pending."
+      }
+      hintHandler.pauseHints()
+    }
+  }
+
+  private suspend fun ControllerState.resumeHintsImpl(
+    resumeResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(resumeResultFlow, recomputeQuestion = false) {
+      check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+        "Cannot resume hints if an answer submission is pending."
+      }
+      hintHandler.resumeHints()
+    }
+  }
+
   private suspend fun <T> ControllerState.tryOperation(
     resultFlow: MutableStateFlow<AsyncResult<T>>,
+    recomputeQuestion: Boolean = true,
     operation: suspend ControllerState.() -> T
   ) {
     try {
       resultFlow.emit(AsyncResult.Success(operation()))
-      recomputeCurrentQuestionAndNotifySync()
+      if (recomputeQuestion) {
+        recomputeCurrentQuestionAndNotifySync()
+      }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       resultFlow.emit(AsyncResult.Failure(e))
@@ -885,6 +942,18 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     /** [ControllerMessage] to move to the next question in the training session. */
     data class MoveToNextQuestion(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] to pause the hint timer while the hint dialog is open. */
+    data class PauseHints(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] to resume the hint timer after the hint dialog is dismissed. */
+    data class ResumeHints(
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()

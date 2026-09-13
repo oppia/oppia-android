@@ -40,6 +40,7 @@ import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -67,6 +68,7 @@ class HintHandlerProdImplTest {
   @Inject lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
   @Inject lateinit var explorationRetriever: ExplorationRetriever
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @field:[Inject BlockingDispatcher] lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
 
   private lateinit var blockingCoroutineScope: CoroutineScope
@@ -115,6 +117,7 @@ class HintHandlerProdImplTest {
   fun setUp() {
     TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     blockingCoroutineScope = CoroutineScope(blockingCoroutineDispatcher)
 
     // Use the direct HintHandler factory to avoid testing the module setup.
@@ -2014,6 +2017,198 @@ class HintHandlerProdImplTest {
     )
   }
 
+  /* Tests for pauseHints and resumeHints */
+
+  @Test
+  fun testPauseHints_stateWithoutHints_doesNotChangeHelpIndex() {
+    val state = expWithNoHintsOrSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    hintHandler.pauseHintsSync()
+
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testPauseHints_stateWithHints_pauseBeforeDelay_waitFullInitialDelay_hintNotAvailable() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    waitFor(seconds = 20)
+    hintHandler.pauseHintsSync()
+
+    // Wait the remaining 40 seconds (60 seconds total since start).
+    waitFor(seconds = 40)
+
+    // The hint should NOT be available because the timer was paused.
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testPauseHints_stateWithHints_paused_waitLongerThanInitialDelay_hintStillNotAvailable() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    waitFor(seconds = 20)
+    hintHandler.pauseHintsSync()
+
+    // Wait 120 seconds while paused.
+    waitFor(seconds = 120)
+
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testPauseHints_stateWithHints_pauseThenResume_hintAvailableAfterRemainingDelay() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    // 20 seconds elapse out of 60s total.
+    waitFor(seconds = 20)
+    hintHandler.pauseHintsSync()
+
+    // 30 seconds elapse while paused (hint must not show).
+    waitFor(seconds = 30)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+
+    // Resume: remaining delay should be 40 seconds.
+    hintHandler.resumeHintsSync()
+
+    // Wait 39 seconds after resume: hint should not be available yet.
+    waitFor(seconds = 39)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+
+    // Wait 1 more second (40s after resume): hint should now be available!
+    waitFor(seconds = 1)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 0
+      }.build()
+    )
+  }
+
+  @Test
+  fun testPauseHints_stateWithHints_pauseTwice_resumesFromFirstPause() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    waitFor(seconds = 20)
+    hintHandler.pauseHintsSync()
+
+    // Pausing again while already paused should be a no-op.
+    waitFor(seconds = 10)
+    hintHandler.pauseHintsSync()
+
+    hintHandler.resumeHintsSync()
+
+    // Remaining delay should still be 40 seconds.
+    waitFor(seconds = 39)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+
+    waitFor(seconds = 1)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 0
+      }.build()
+    )
+  }
+
+  @Test
+  fun testResumeHints_withoutPause_isNoOp() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    waitFor(seconds = 20)
+    // Resuming without a prior pause is a no-op; original 60s timer continues.
+    hintHandler.resumeHintsSync()
+
+    waitFor(seconds = 39)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
+
+    waitFor(seconds = 1)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 0
+      }.build()
+    )
+  }
+
+  @Test
+  fun testPauseHints_multiHintState_revealHintWhilePaused_nextHintTimerPausedUntilResumed() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    // Wait 60s for the first hint to become available.
+    waitFor60Seconds()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 0
+      }.build()
+    )
+
+    // User opens the hint dialog -> pauseHints is called.
+    hintHandler.pauseHintsSync()
+
+    // User reveals hint 0 while inside the dialog.
+    hintHandler.viewHintSync(hintIndex = 0)
+
+    // Next hint delay is normally 30 seconds. Wait 30 seconds while paused.
+    waitFor30Seconds()
+
+    // Hint 1 should NOT be available because hints are paused.
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
+
+    // Wait another 30 seconds while paused: still not available.
+    waitFor30Seconds()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
+
+    // User closes the hint dialog -> resumeHints is called.
+    hintHandler.resumeHintsSync()
+
+    // 30 second delay should now count down.
+    waitFor(seconds = 29)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
+
+    waitFor(seconds = 1)
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 1
+      }.build()
+    )
+  }
+
+  @Test
+  fun testPauseHints_stateWithHints_finishState_resetsPauseState() {
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    waitFor(seconds = 20)
+    hintHandler.pauseHintsSync()
+
+    // Finish state with a new state.
+    hintHandler.finishStateSync(state)
+
+    // The new state should not be paused, so hint should show after 60s.
+    waitFor60Seconds()
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        nextAvailableHintIndex = 0
+      }.build()
+    )
+  }
+
   private fun HintHandler.startWatchingForHintsInNewStateSync(
     state: State
   ) = runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
@@ -2046,6 +2241,14 @@ class HintHandlerProdImplTest {
 
   private fun HintHandler.navigateBackToLatestPendingStateSync() = runSynchronouslyInBackground {
     navigateBackToLatestPendingState()
+  }
+
+  private fun HintHandler.pauseHintsSync() = runSynchronouslyInBackground {
+    pauseHints()
+  }
+
+  private fun HintHandler.resumeHintsSync() = runSynchronouslyInBackground {
+    resumeHints()
   }
 
   private fun HintHandler.monitorHelpIndex() {

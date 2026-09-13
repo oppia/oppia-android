@@ -86,6 +86,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun revealSolution() = getStateFragment()?.revealSolution()
 
+  fun pauseHints() = getStateFragment()?.pauseHints()
+
+  fun resumeHints() = getStateFragment()?.resumeHints()
+
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
       profileId,

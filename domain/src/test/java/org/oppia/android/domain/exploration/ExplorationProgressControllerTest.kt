@@ -908,6 +908,96 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testPauseHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.pauseHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testResumeHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.resumeHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseHints_timerPauses_solutionNotVisibleAfterDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    testCoroutineDispatchers.runCurrent()
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 20 seconds (total 30 seconds since hint reveal): solution must NOT be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
+    testCoroutineDispatchers.runCurrent()
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenResume_solutionVisibleAfterRemainingDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    testCoroutineDispatchers.runCurrent()
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 15 seconds while paused.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+    testCoroutineDispatchers.runCurrent()
+
+    // Resume hints: remaining delay is 20 seconds.
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    // Wait 19 seconds after resume: solution should not be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(19))
+    testCoroutineDispatchers.runCurrent()
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    // Wait 1 more second (20s since resume): solution should now be visible!
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    testCoroutineDispatchers.runCurrent()
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
   fun testHintAndSol_hintsVisible_submitWrongAns_wait10Second_solVisible_checkHelpIndexIsCorrect() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
