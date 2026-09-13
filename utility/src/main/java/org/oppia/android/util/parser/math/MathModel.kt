@@ -30,12 +30,15 @@ data class MathModel(
    *     [MathModel] (this is used to preserve up to 2 digits of the height, but any past that will
    *     be truncated to reduce cache size for highly reusable cached renders)
    * @property useInlineRendering whether the render is formatted to be displayed in-line with text
+   * @property rendererVersion the version of the math renderer used to invalidate cached bitmaps
+   *     when rendering or styling logic changes
    */
   data class MathModelSignature(
     val rawLatex: String,
     val lineHeightHundredX: Int,
     val useInlineRendering: Boolean,
-    val equationColor: Int
+    val equationColor: Int,
+    val rendererVersion: Int = RENDERER_VERSION
   ) : Key {
     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.
 
@@ -46,18 +49,28 @@ data class MathModel(
       val lineHeightBytes = Int.SIZE_BYTES
       val inlineFlagBytes = 1
       val colorBytes = Int.SIZE_BYTES
+      val versionBytes = Int.SIZE_BYTES
 
       messageDigest.update(
-        ByteBuffer.allocate(latexSize + lineHeightBytes + inlineFlagBytes + colorBytes).apply {
+        ByteBuffer.allocate(
+          latexSize + lineHeightBytes + inlineFlagBytes + colorBytes + versionBytes
+        ).apply {
           put(rawLatexBytes)
           putInt(lineHeightHundredX)
           put(if (useInlineRendering) 1 else 0)
           putInt(equationColor)
+          putInt(rendererVersion)
         }.array()
       )
     }
 
     internal companion object {
+      /**
+       * The current version of the math renderer. Increment this version whenever changes are made
+       * to math rendering (such as stroke thickness or styling) to invalidate existing cached bitmaps.
+       */
+      const val RENDERER_VERSION = 1
+
       /** Returns a new [MathModelSignature] for the specified [MathModel] properties. */
       internal fun createSignature(
         rawLatex: String,
@@ -66,7 +79,13 @@ data class MathModel(
         equationColor: Int
       ): MathModelSignature {
         val lineHeightHundredX = (lineHeight * 100f).toInt()
-        return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering, equationColor)
+        return MathModelSignature(
+          rawLatex,
+          lineHeightHundredX,
+          useInlineRendering,
+          equationColor,
+          RENDERER_VERSION
+        )
       }
     }
   }

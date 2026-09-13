@@ -5,6 +5,36 @@ Tests for the components used to render LaTeX math expressions.
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
+    name = "MathBitmapModelLoaderTest",
+    srcs = ["MathBitmapModelLoaderTest.kt"],
+    custom_package = "org.oppia.android.util.parser.math",
+    test_class = "org.oppia.android.util.parser.math.MathBitmapModelLoaderTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/math:math_bitmap_model_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
+    ],
+)
+
+oppia_android_test(
     name = "MathModelTest",
     srcs = ["MathModelTest.kt"],
     custom_package = "org.oppia.android.util.parser.math",
@@ -17,3 +47,4 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
     ],
 )
+
