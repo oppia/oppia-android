@@ -264,7 +264,11 @@ class RunCoverage(
     coverageReports: List<CoverageReport>
   ): CoverageReport {
     fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-      return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
+      return when {
+        coverages.any { it == Coverage.FULL } -> Coverage.FULL
+        coverages.any { it == Coverage.PARTIAL } -> Coverage.PARTIAL
+        else -> Coverage.NONE
+      }
     }
 
     val groupedCoverageReports = coverageReports.groupBy {

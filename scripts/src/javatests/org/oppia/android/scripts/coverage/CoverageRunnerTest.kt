@@ -256,6 +256,37 @@ class CoverageRunnerTest {
     assertThat(results[0]).isEqualTo(expectedResult)
   }
 
+  @Test
+  fun testComputeLineCoverageStatus_lineNotHit_returnsNone() {
+    val coverage = computeLineCoverageStatus(lineHitCount = 0, branchOutcomes = listOf("1", "0"))
+
+    assertThat(coverage).isEqualTo(Coverage.NONE)
+  }
+
+  @Test
+  fun testComputeLineCoverageStatus_lineHitWithoutBranches_returnsFull() {
+    val coverage = computeLineCoverageStatus(lineHitCount = 1, branchOutcomes = emptyList())
+
+    assertThat(coverage).isEqualTo(Coverage.FULL)
+  }
+
+  @Test
+  fun testComputeLineCoverageStatus_lineHitWithPartialBranches_returnsPartial() {
+    val coverage = computeLineCoverageStatus(
+      lineHitCount = 1,
+      branchOutcomes = listOf("1", "0", "-")
+    )
+
+    assertThat(coverage).isEqualTo(Coverage.PARTIAL)
+  }
+
+  @Test
+  fun testComputeLineCoverageStatus_lineHitWithAllCoveredBranches_returnsFull() {
+    val coverage = computeLineCoverageStatus(lineHitCount = 1, branchOutcomes = listOf("1", "2"))
+
+    assertThat(coverage).isEqualTo(Coverage.FULL)
+  }
+
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
