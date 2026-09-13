@@ -29,6 +29,7 @@ class FontScaleConfigurationUtil @Inject constructor() {
     metrics.scaledDensity = scaledDensity
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
+    context.applicationContext?.resources?.displayMetrics?.setTo(metrics)
   }
 
   private fun getReadingTextSizeConfigurationUtil(readingTextSize: ReadingTextSize): Float {

@@ -34,6 +34,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
@@ -44,6 +45,7 @@ import org.oppia.android.app.test.R
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -201,6 +203,19 @@ class TopicActivityTest {
       // Verify that the question activity is started with the correct profile ID.
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
+  @Test
+  fun testTopicActivity_restarts_resetsFontScaleToMedium() {
+    launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
+      scenario.onActivity { activity ->
+        val fontScaleConfigUtil = FontScaleConfigurationUtil()
+        fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+      scenario.recreate()
+      scenario.onActivity { activity ->
+        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.0f)
+      }
     }
   }
 

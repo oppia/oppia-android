@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
@@ -22,7 +24,8 @@ const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
 ) {
   private lateinit var classroomId: String
   private lateinit var topicId: String
@@ -33,6 +36,7 @@ class TopicActivityPresenter @Inject constructor(
     topicId: String,
     storyId: String?
   ) {
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     this.topicId = topicId
     this.classroomId = classroomId
     if (enableEdgeToEdge.value) {
@@ -68,6 +72,9 @@ class TopicActivityPresenter @Inject constructor(
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
+  }
+  fun handleOnRestart() {
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
   }
 
   private fun getTopicFragment(): TopicFragment? {
