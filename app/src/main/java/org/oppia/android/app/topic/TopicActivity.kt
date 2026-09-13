@@ -63,6 +63,10 @@ class TopicActivity :
     topicActivityPresenter.handleOnCreate(profileId, classroomId, topicId, storyId)
   }
 
+  override fun onRestart() {
+    super.onRestart()
+    topicActivityPresenter.handleOnRestart()
+  }
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
