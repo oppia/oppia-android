@@ -160,7 +160,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     editId: String,
     track: String,
     versionCode: Long,
-    rolloutFraction: Int,
+    rolloutPermille: Int,
     releaseNotes: Map<String, String>,
     frozenVersionCodes: List<Long>
   ) {
@@ -171,13 +171,13 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
         editId,
         track,
         versionCode,
-        rolloutFraction,
+        rolloutPermille,
         releaseNotes,
         frozenVersionCodes
       )
     )
     delegate.setTrackRelease(
-      packageName, editId, track, versionCode, rolloutFraction, releaseNotes, frozenVersionCodes
+      packageName, editId, track, versionCode, rolloutPermille, releaseNotes, frozenVersionCodes
     )
   }
 
@@ -294,7 +294,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
       val releases = trackReleasesMap[track] ?: emptyList()
       val releasesJson = releases.joinToString(",", "[", "]") { r ->
         val vcs = r.versionCodes.joinToString(",", "[", "]") { "\"$it\"" }
-        val fractionPart = r.rolloutFraction?.let { ""","userFraction":${it / 1000.0}""" } ?: ""
+        val fractionPart = r.rolloutPermille?.let { ""","userFraction":${it / 1000.0}""" } ?: ""
         """{"versionCodes":$vcs,"status":"${r.status}"$fractionPart}"""
       }
       return MockResponse().setResponseCode(200).setBody("""{"releases":$releasesJson}""")
@@ -308,7 +308,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
    * @property editId the edit session ID
    * @property track the Play Console track
    * @property versionCode the version code assigned to the track
-   * @property rolloutFraction the staged rollout fraction in [0, 1000] (1000 = 100%)
+   * @property rolloutPermille the staged rollout permille in [0, 1000] (1000 = 100%)
    * @property releaseNotes the release notes map (BCP-47 language code to text)
    * @property frozenVersionCodes the frozen OS-specific version codes merged alongside [versionCode]
    *     to prevent them being deactivated by the track update
@@ -318,7 +318,7 @@ class FakePlayConsoleClient : PlayConsoleClient, AutoCloseable {
     val editId: String,
     val track: String,
     val versionCode: Long,
-    val rolloutFraction: Int,
+    val rolloutPermille: Int,
     val releaseNotes: Map<String, String>,
     val frozenVersionCodes: List<Long> = emptyList()
   )
@@ -359,7 +359,7 @@ val FROZEN_BETA_BASELINE: PlayConsoleClient.TrackRelease =
 
 /**
  * Populates alpha and beta with their frozen-code baseline releases so that any subsequent call
- * into [UploadBinaryToPlayConsole], [UpdateRolloutFraction], or [UploadChangelogToPlayConsole]
+ * into [UploadBinaryToPlayConsole], [UpdateRolloutPermille], or [UploadChangelogToPlayConsole]
  * passes the invariant check that requires all frozen version codes to be present on the live track.
  *
  * Tracks that currently have no frozen codes in [FROZEN_VERSION_CODES_PER_TRACK] are silently
