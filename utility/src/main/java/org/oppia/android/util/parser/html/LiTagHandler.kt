@@ -46,6 +46,20 @@ class LiTagHandler(
   }
 
   override fun handleOpeningTag(output: Editable, tag: String) {
+
+    if (tag == CUSTOM_LIST_UL_TAG || tag == CUSTOM_LIST_OL_TAG) {
+      if (pendingLists.isEmpty()) {
+        output.appendNewLine()
+
+        val isSingleNewline = output.isNotEmpty() &&
+          output.last() == '\n' &&
+          (output.length < 2 || output[output.length - 2] != '\n')
+        if (isSingleNewline) {
+          output.append('\n')
+        }
+      }
+    }
+
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
         pendingLists += ListTag.Ul(
@@ -68,6 +82,15 @@ class LiTagHandler(
       CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
         // Actually place the spans only if the root tree has been finished (as the entirety of the
         // tree is needed for analysis).
+        output.appendNewLine()
+
+        val isSingleNewline = output.isNotEmpty() &&
+          output.last() == '\n' &&
+          (output.length < 2 || output[output.length - 2] != '\n')
+        if (isSingleNewline) {
+          output.append("\n")
+        }
+
         val closingList = pendingLists.pop().also { it.recordList() }
         if (pendingLists.isEmpty()) {
           closingList.finishListTree(
@@ -190,6 +213,7 @@ class LiTagHandler(
         checkNotNull(pendingStartMark) { "Cannot close item that hasn't been started." }
       val endingMark = Mark.EndListItem()
       text.appendNewLine()
+
       text.addMark(endingMark)
       markRangesToReplace += MarkedRange(startingMark, endingMark)
       pendingStartMark = null

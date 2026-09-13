@@ -165,6 +165,26 @@ class LiTagHandlerTest {
       .hasLength(4)
   }
 
+  @Test
+  fun testCustomListElement_nestedListFollowedByOuterListItem_hasCorrectNewlines() {
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val htmlString =
+      "<oppia-ol><oppia-li>Item 1<oppia-ol><oppia-li>Nested 1</oppia-li>" +
+        "</oppia-ol></oppia-li><oppia-li>Item 2</oppia-li></oppia-ol>"
+    val liTaghandler = LiTagHandler(context, displayLocale)
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to liTaghandler,
+          CUSTOM_LIST_OL_TAG to liTaghandler
+        )
+      )
+
+    assertThat(parsedHtml.toString()).contains("Nested 1\n\nItem 2")
+  }
+
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
