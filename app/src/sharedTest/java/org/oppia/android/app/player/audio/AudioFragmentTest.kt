@@ -54,6 +54,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -640,6 +644,53 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_playAudio_repeatSetStateWithSameAudio_keepsAudioPlaying() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val state = State.newBuilder()
+          .setContent(SubtitledHtml.newBuilder().setContentId("content"))
+          .putRecordedVoiceovers(
+            "content",
+            VoiceoverMapping.newBuilder()
+              .putVoiceoverMapping(
+                "en",
+                Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build()
+              )
+              .build()
+          ).build()
+        audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
           )
         )
       )
