@@ -1174,7 +1174,7 @@ class HtmlParserTest {
           "<li>The answer is 5.682.</li></ul>"
     )
 
-    val htmlResult = htmlParser.parseOppiaHtml(
+    val htmlResult = htmlParser.parseOppiaHtml(check
       workedExampleMarkup,
       textView,
       workedExampleLabels = WORKED_EXAMPLE_LABELS
