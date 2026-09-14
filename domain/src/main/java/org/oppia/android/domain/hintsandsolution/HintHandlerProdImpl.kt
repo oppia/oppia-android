@@ -73,7 +73,6 @@ class HintHandlerProdImpl private constructor(
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
 
-  // Pause/resume tracking for hint timer.
   private var isPaused = false
   private var currentScheduledJob: Job? = null
   private var scheduledEndTimeMs: Long = 0L

@@ -941,13 +941,11 @@ class ExplorationProgressControllerTest {
 
     // Pause hints 10 seconds into the 30-second delay.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-    testCoroutineDispatchers.runCurrent()
     val pauseResult = explorationProgressController.pauseHints()
     monitorFactory.waitForNextSuccessfulResult(pauseResult)
 
     // Wait 20 seconds (total 30 seconds since hint reveal): solution must NOT be visible yet.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
-    testCoroutineDispatchers.runCurrent()
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
@@ -970,13 +968,11 @@ class ExplorationProgressControllerTest {
 
     // Pause hints 10 seconds into the 30-second delay.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-    testCoroutineDispatchers.runCurrent()
     val pauseResult = explorationProgressController.pauseHints()
     monitorFactory.waitForNextSuccessfulResult(pauseResult)
 
     // Wait 15 seconds while paused.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
-    testCoroutineDispatchers.runCurrent()
 
     // Resume hints: remaining delay is 20 seconds.
     val resumeResult = explorationProgressController.resumeHints()
@@ -984,14 +980,12 @@ class ExplorationProgressControllerTest {
 
     // Wait 19 seconds after resume: solution should not be visible yet.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(19))
-    testCoroutineDispatchers.runCurrent()
     var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(LATEST_REVEALED_HINT_INDEX)
 
     // Wait 1 more second (20s since resume): solution should now be visible!
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
-    testCoroutineDispatchers.runCurrent()
     ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(SHOW_SOLUTION)
