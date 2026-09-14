@@ -204,7 +204,6 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.toString()).contains("Item 1\n\nNormal text following the list.")
   }
 
-
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
