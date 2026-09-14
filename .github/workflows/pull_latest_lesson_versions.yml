@@ -17,9 +17,9 @@ name: Pull Latest Lesson Versions
 on:
   schedule:
     # Every Monday at 02:00 UTC. This workflow updates the pinned lesson version files;
-    # lesson_checks.yml (which verifies them) runs at 02:30 UTC so that this workflow has
+    # lesson_checks.yml (which verifies them) runs at 03:30 UTC so that this workflow has
     # time to complete and push new versions before the verification pass begins. The
-    # 30-minute offset also prevents the two jobs from contending on the Bazel remote cache
+    # 90-minute offset also prevents the two jobs from contending on the Bazel remote cache
     # simultaneously.
     - cron: "00 02 * * 1"
   workflow_dispatch:
@@ -96,7 +96,8 @@ jobs:
             $(pwd)/scripts/assets/prod_download_config.textproto
 
       # Verify that updated lesson versions are conversion-compatible before committing.
-      # If conversion fails (-Werror triggers exit code 1), the workflow exits early without opening a PR.
+      # If conversion fails (-Werror triggers exit code 1), the workflow exits early without
+      # opening a PR.
       - name: Download alpha lessons and verify conversion
         run: |
           bazel run //scripts:download_lessons -- \
