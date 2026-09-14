@@ -213,7 +213,6 @@ class LiTagHandler(
         checkNotNull(pendingStartMark) { "Cannot close item that hasn't been started." }
       val endingMark = Mark.EndListItem()
       text.appendNewLine()
-
       text.addMark(endingMark)
       markRangesToReplace += MarkedRange(startingMark, endingMark)
       pendingStartMark = null

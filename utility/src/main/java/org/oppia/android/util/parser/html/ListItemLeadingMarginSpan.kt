@@ -82,6 +82,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       val isFirstCharacter = startCharOfSpan == start
 
       if (isFirstCharacter) {
+        val previousStyle = paint.style
         val bulletDrawRadius = bulletRadius.toFloat()
 
         val indentedX = parentAbsoluteLeadingMargin + spacingBeforeBullet
@@ -96,6 +97,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
         val bulletCenterY = (top + bottom) / 2f
 
         canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
+        paint.style = previousStyle
       }
     }
 
