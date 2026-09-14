@@ -171,7 +171,8 @@ class MathBitmapModelLoaderTest {
     assertThat(bounds.left).isEqualTo(0f)
     assertThat(bounds.top).isEqualTo(0f)
     assertThat(bounds.width()).isEqualTo(31f)
-    // Height should accommodate the top and bottom vertical extensions (+1 for inclusive right/bottom):
+    // Height should accommodate the top and bottom vertical extensions (+1 for inclusive
+    // right/bottom):
     // y0 - halfStroke to y1 + halfStroke = 0 - 1.5 to 0 + 1.5 = -1.5 to 1.5 -> span = 3.0 + 1 = 4.0
     val expectedHeight = (expectedHalfStroke * 2f) + 1f
     assertThat(bounds.height()).isEqualTo(expectedHeight)

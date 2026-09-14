@@ -151,7 +151,10 @@ class MathBitmapModelLoader private constructor(
         val boundsWidth = totalBounds.width().roundToInt()
         val boundsHeight = totalBounds.height().roundToInt()
         val canvasBitmap =
-          renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) { canvas ->
+          renderToAutoSizingBitmap(
+            estimatedWidth = boundsWidth,
+            estimatedHeight = boundsHeight
+          ) { canvas ->
             val baseline = staticTextLayout.getLineBaseline(0)
             canvas.save()
             if (!span.isError) {

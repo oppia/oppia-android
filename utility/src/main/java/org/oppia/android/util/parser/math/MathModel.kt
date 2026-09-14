@@ -67,7 +67,8 @@ data class MathModel(
     internal companion object {
       /**
        * The current version of the math renderer. Increment this version whenever changes are made
-       * to math rendering (such as stroke thickness or styling) to invalidate existing cached bitmaps.
+       * to math rendering (such as stroke thickness or styling) to invalidate existing cached
+       * bitmaps.
        */
       const val RENDERER_VERSION = 1
 
