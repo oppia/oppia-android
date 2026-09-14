@@ -1151,7 +1151,7 @@ class HtmlParserTest {
       .hasLength(2)
     assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
       .hasLength(2)
-    assertThat(htmlResult.toString()).contains("Inner item two.\nOuter item two.")
+    assertThat(htmlResult.toString()).contains("Inner item two.\n\nOuter item two.")
     assertThat(htmlResult.toString()).contains("Outer item two.\n\nFollowing paragraph.")
   }
 

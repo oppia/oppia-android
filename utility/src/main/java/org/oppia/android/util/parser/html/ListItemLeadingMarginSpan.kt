@@ -82,7 +82,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       val isFirstCharacter = startCharOfSpan == start
 
       if (isFirstCharacter) {
-//        val previousStyle = paint.style
         val bulletDrawRadius = bulletRadius.toFloat()
 
         val indentedX = parentAbsoluteLeadingMargin + spacingBeforeBullet
