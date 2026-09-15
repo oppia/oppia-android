@@ -5,9 +5,10 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 kt_android_library(
     name = "age_signals",
     srcs = ["AgeSignalsController.kt"],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:com_google_android_gms_play-services-tasks",
         "//third_party:com_google_android_play_age-signals",
@@ -16,7 +17,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "prod_module",
+    name = "age_signals_prod_module",
     srcs = ["AgeSignalsModule.kt"],
     visibility = ["//app/src/main/java/org/oppia/android/app/application:__subpackages__"],
     deps = [

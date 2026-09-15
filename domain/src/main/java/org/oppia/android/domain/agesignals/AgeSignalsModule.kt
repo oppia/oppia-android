@@ -1,4 +1,4 @@
-package org.oppia.android.app.application.agesignals
+package org.oppia.android.domain.agesignals
 
 import android.app.Application
 import com.google.android.play.agesignals.AgeSignalsManager
