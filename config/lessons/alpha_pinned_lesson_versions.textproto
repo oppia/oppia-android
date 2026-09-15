@@ -490,23 +490,23 @@ tracked_topic_info {
     content_version: 10
     chapter_info {
       exploration_id: "2mzzFVDLuAj8"
-      exploration_content_version: 988
+      exploration_content_version: 992
     }
     chapter_info {
       exploration_id: "5NWuolNcwH6e"
-      exploration_content_version: 761
+      exploration_content_version: 766
     }
     chapter_info {
       exploration_id: "k2bQ7z5XHNbK"
-      exploration_content_version: 1205
+      exploration_content_version: 1207
     }
     chapter_info {
       exploration_id: "tIoSb3HZFN6e"
-      exploration_content_version: 838
+      exploration_content_version: 840
     }
     chapter_info {
       exploration_id: "nLmUS6lbmvnl"
-      exploration_content_version: 927
+      exploration_content_version: 933
     }
     chapter_info {
       exploration_id: "Vgde5_ZVqrq5"
