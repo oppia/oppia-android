@@ -512,3 +512,11 @@ translation_exemptions {
   exploration_id: "BJd7yHIxpqkq"
   content_id: "solution_110"
 }
+translation_exemptions {
+  exploration_id: "5NWuolNcwH6e"
+  content_id: "solution_145"
+}
+translation_exemptions {
+  exploration_id: "nLmUS6lbmvnl"
+  content_id: "solution_204"
+}
