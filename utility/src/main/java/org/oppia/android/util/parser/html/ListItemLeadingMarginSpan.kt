@@ -96,7 +96,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
           maxDrawX - bulletCenterLtrX
         } else bulletCenterLtrX
         val bulletCenterY = (top + bottom) / 2f
-
         when (indentationLevel) {
           0 -> {
             // A solid circle is used for the outermost bullet.
