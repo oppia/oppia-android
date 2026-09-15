@@ -10,4 +10,4 @@ the app (that potentially contain changes or features that are not yet ready for
 """
 
 MAJOR_VERSION = 0
-MINOR_VERSION = 18
+MINOR_VERSION = 19
