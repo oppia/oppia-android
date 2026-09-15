@@ -401,7 +401,7 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, prod
         proguard_generate_mapping: boolean. Whether to perform a Proguard optimization step &
             generate Proguard mapping corresponding to the obfuscation step.
         production_release: boolean. Whether this is a production-facing release build which will
-            undergo additional renaming and, if configured, signing.
+            undergo additional renaming.
         **kwargs: additional arguments. See android_binary for the exact arguments that are
             available.
     """
