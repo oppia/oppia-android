@@ -15,10 +15,8 @@ package org.oppia.android.scripts.release
  *
  * Currently frozen:
  * - alpha vc 16 : KitKat (API 16) build, frozen permanently.
- * - alpha vc 52377 : Lollipop (API 21) build 0.18-rc04-alpha-c495933008. This
- *   may be overwritten if this PR merges after a newer weekly alpha release.
- * - beta vc 52376 : Lollipop (API 21) build 0.18-rc04-beta-c495933008, the
- *   current production beta freeze.
+ * - alpha vc 52377 : Lollipop (API 21) build 0.18-rc04-alpha-c495933008. Final lollipop release.
+ * - beta vc 52376 : Lollipop (API 21) build 0.18-rc04-beta-c495933008. Final lollipop release.
  *
  * When a new API level is deprecated and its final build must be frozen, add its track and version
  * code here. This single file is the source of truth consumed by [UploadBinaryToPlayConsole],
