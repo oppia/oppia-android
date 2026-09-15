@@ -16,7 +16,6 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.LooperMode
-import javax.inject.Provider
 
 /**
  * Tests for [AgeSignalsController].
@@ -35,7 +34,7 @@ class AgeSignalsControllerTest {
   fun testOnCreateStarted_doesNotCreateManager() {
     var managerRequested = false
     val controller = AgeSignalsController(
-      Provider {
+      {
         managerRequested = true
         mock(AgeSignalsManager::class.java)
       }
@@ -52,7 +51,7 @@ class AgeSignalsControllerTest {
     val completion = TaskCompletionSource<AgeSignalsResult>()
     `when`(manager.checkAgeSignals(any(AgeSignalsRequest::class.java)))
       .thenReturn(completion.task)
-    val controller = AgeSignalsController(Provider { manager })
+    val controller = AgeSignalsController({ manager })
 
     controller.onCompletedInitialization()
 
@@ -67,7 +66,7 @@ class AgeSignalsControllerTest {
     val completion = TaskCompletionSource<AgeSignalsResult>()
     `when`(manager.checkAgeSignals(any(AgeSignalsRequest::class.java)))
       .thenReturn(completion.task)
-    val controller = AgeSignalsController(Provider { manager })
+    val controller = AgeSignalsController({ manager })
     controller.onCompletedInitialization()
 
     completion.setResult(result)
@@ -82,7 +81,7 @@ class AgeSignalsControllerTest {
     val completion = TaskCompletionSource<AgeSignalsResult>()
     `when`(manager.checkAgeSignals(any(AgeSignalsRequest::class.java)))
       .thenReturn(completion.task)
-    val controller = AgeSignalsController(Provider { manager })
+    val controller = AgeSignalsController({ manager })
     controller.onCompletedInitialization()
 
     completion.setException(IllegalStateException("Service unavailable"))
@@ -92,7 +91,7 @@ class AgeSignalsControllerTest {
   @Test
   fun testCompletedInitialization_managerCreationThrows_doesNotThrow() {
     val controller = AgeSignalsController(
-      Provider {
+      {
         throw IllegalStateException("Service unavailable")
       }
     )
@@ -105,7 +104,7 @@ class AgeSignalsControllerTest {
     val manager = mock(AgeSignalsManager::class.java)
     `when`(manager.checkAgeSignals(any(AgeSignalsRequest::class.java)))
       .thenThrow(IllegalStateException("Service unavailable"))
-    val controller = AgeSignalsController(Provider { manager })
+    val controller = AgeSignalsController({ manager })
 
     controller.onCompletedInitialization()
   }
