@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.RectF
 import android.text.Layout
 import android.text.Spanned
 import android.text.TextPaint
@@ -96,8 +97,34 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
         } else bulletCenterLtrX
         val bulletCenterY = (top + bottom) / 2f
 
-        canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
-        paint.style = previousStyle
+        when (indentationLevel) {
+          0 -> {
+            // A solid circle is used for the outermost bullet.
+            paint.style = Paint.Style.FILL
+            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
+          }
+          1 -> {
+            // An inner open circle is used for second-level bullets.
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 2f
+            canvas.drawCircle(bulletCenterX, bulletCenterY, bulletDrawRadius, paint)
+          }
+          else -> {
+            // A filled square is used for all subsequent bullets.
+            paint.style = Paint.Style.FILL
+            val rectSize = bulletDiameter.toFloat()
+            canvas.drawRect(
+              RectF().apply {
+                left = bulletCenterX
+                right = left + rectSize
+                this.top = bulletCenterY - bulletDrawRadius
+                this.bottom = this.top + rectSize
+              },
+              paint
+            )
+          }
+        }
+        paint.style = previousStyle // Restore the previously used paint style.
       }
     }
 
