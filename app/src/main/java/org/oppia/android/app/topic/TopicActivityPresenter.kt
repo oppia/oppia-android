@@ -73,6 +73,7 @@ class TopicActivityPresenter @Inject constructor(
       ).commitNow()
     }
   }
+
   fun handleOnRestart() {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
   }

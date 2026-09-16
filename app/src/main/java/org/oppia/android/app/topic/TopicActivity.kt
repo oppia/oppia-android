@@ -67,6 +67,7 @@ class TopicActivity :
     super.onRestart()
     topicActivityPresenter.handleOnRestart()
   }
+
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
