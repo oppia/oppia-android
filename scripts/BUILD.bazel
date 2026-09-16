@@ -187,10 +187,10 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
-    name = "update_rollout_fraction",
-    main_class = "org.oppia.android.scripts.release.UpdateRolloutFractionKt",
+    name = "update_rollout_permille",
+    main_class = "org.oppia.android.scripts.release.UpdateRolloutPermilleKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_fraction_lib",
+        "//scripts/src/java/org/oppia/android/scripts/release:update_rollout_permille_lib",
     ],
 )
 
