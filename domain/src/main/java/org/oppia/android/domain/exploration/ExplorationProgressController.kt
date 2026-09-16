@@ -78,6 +78,7 @@ private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_next_state_result"
 private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.current_state"
 private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
+private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID =
   "ExplorationProgressController.update_written_translation_content"
 private const val MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID =
@@ -139,7 +140,7 @@ class ExplorationProgressController @Inject constructor(
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
-  private lateinit var profileId: ProfileId
+  private var profileId: ProfileId? = null
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -442,8 +443,10 @@ class ExplorationProgressController @Inject constructor(
    * subscription to this method's returned [DataProvider].
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
+    val currentProfileId = profileId ?: profileManagementController.getCurrentProfileId()
+      ?: ProfileId.newBuilder().setInternalId(DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID).build()
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(currentProfileId)
     val ephemeralStateDataProvider =
       mostRecentEphemeralStateFlow.convertToSessionProvider(CURRENT_STATE_PROVIDER_ID)
     return writtenTranslationContentLocale.combineWith(
@@ -878,7 +881,9 @@ class ExplorationProgressController @Inject constructor(
       }
 
       if (!isContinueButtonAnimationSeen) {
-        profileManagementController.markContinueButtonAnimationSeen(profileId)
+        profileManagementController.markContinueButtonAnimationSeen(
+          explorationProgress.currentProfileId
+        )
       }
       isContinueButtonAnimationSeen = true
     }

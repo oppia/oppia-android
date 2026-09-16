@@ -180,11 +180,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testGetCurrentState_noExploration_throwsException() {
-    // Can't retrieve the current state until the play session is started.
-    assertThrows<UninitializedPropertyAccessException>() {
+  fun testGetCurrentState_noExploration_returnsFailure() {
+    // The provider can be requested before a play session starts, but cannot provide a state yet.
+    val error = monitorFactory.waitForNextFailureResult(
       explorationProgressController.getCurrentState()
-    }
+    )
+
+    assertThat(error).hasMessageThat().contains("Exploration is not yet initialized.")
   }
 
   @Test
