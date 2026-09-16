@@ -152,7 +152,7 @@ class GooglePlayConsoleClientTest {
       editId = "edit-1",
       track = "alpha",
       versionCode = 301L,
-      rolloutFraction = 1000,
+      rolloutPermille = 1000,
       releaseNotes = mapOf("en-US" to "Bug fixes")
     )
   }

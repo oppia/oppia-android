@@ -6,10 +6,12 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.LeadingMarginSpan
+import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.not
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -118,6 +121,7 @@ import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -126,6 +130,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.xml.sax.helpers.AttributesImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -159,6 +164,7 @@ class HtmlParserTest {
   @Inject lateinit var formatterFactory: OppiaBidiFormatter.Factory
   @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var consoleLogger: ConsoleLogger
   @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Before
@@ -985,6 +991,201 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withConsecutiveWorkedExamplesEndingInLists_doesNotAccumulateMargins() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val firstExample = createWorkedExampleMarkup(
+      questionHtml = "First question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>First answer</li></ul>"
+    )
+    val secondExample = createWorkedExampleMarkup(
+      questionHtml = "Second question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Second answer</li></ul>"
+    )
+    val thirdExample = createWorkedExampleMarkup(
+      questionHtml = "Third question",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Third answer</li></ul>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      firstExample + secondExample + thirdExample,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    val questionRanges =
+      listOf("First question", "Second question", "Third question").map { question ->
+        val questionIndex = htmlResult.toString().indexOf(question)
+        questionIndex until questionIndex + question.length
+      }
+    assertThat(
+      questionRanges.map { range ->
+        htmlResult.getSpans(
+          range.first,
+          range.last + 1,
+          LeadingMarginSpan.Standard::class.java
+        ).size
+      }
+    ).containsExactly(1, 1, 1).inOrder()
+    assertThat(
+      questionRanges.map { range ->
+        htmlResult.getSpans(
+          range.first,
+          range.last + 1,
+          ListItemLeadingMarginSpan::class.java
+        ).size
+      }
+    ).containsExactly(0, 0, 0).inOrder()
+  }
+
+  @Test
+  @Config(sdk = [29])
+  fun testHtmlContent_withWorkedExampleAfterList_doesNotCrash() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "<p xmlns=\"http://www.w3.org/1999/xhtml\">Write 0.15 as a fraction.</p>",
+      answerHtml =
+        "<p xmlns=\"http://www.w3.org/1999/xhtml\">Use these methods.</p>" +
+          "<ol xmlns=\"http://www.w3.org/1999/xhtml\">" +
+          "<li><strong>By place value:</strong><ul><li>The answer is 15/100.</li></ul></li>" +
+          "<li><strong>By multiplication:</strong><ul><li>Multiply by 100.</li></ul></li>" +
+          "<li><strong>By addition:</strong><ul><li>Add the fractions.</li></ul></li></ol>"
+    )
+    val precedingListMarkup =
+      "<ul>\n<li>Read the whole-number part from right to left.</li>\n" +
+        "<li>Read the decimal part from left to right.</li>\n</ul>\n\n"
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      precedingListMarkup + "<p><br>\n&nbsp;</p>" + workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.toString()).contains("Read the decimal part from left to right.")
+    assertThat(htmlResult.toString()).contains("Question:\nWrite 0.15 as a fraction.")
+    assertThat(htmlResult.toString()).contains("The answer is 15/100.")
+  }
+
+  @Test
+  @Config(sdk = [29])
+  fun testWorkedExampleAfterListSpan_endsListSpanAtParagraphBoundary() {
+    val output = SpannableStringBuilder("Previous list item.")
+    val listSpan = ListItemLeadingMarginSpan.UlSpan(
+      parent = null,
+      context = context,
+      indentationLevel = 0,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    output.setSpan(listSpan, 0, output.length, Spannable.SPAN_PARAGRAPH)
+    val openIndex = output.length
+    val attributes = AttributesImpl().apply {
+      addAttribute("", "", "question-with-value", "CDATA", "Question")
+      addAttribute("", "", "answer-with-value", "CDATA", "Answer")
+    }
+    val workedExampleHandler = WorkedExampleTagHandler(
+      consoleLogger,
+      WORKED_EXAMPLE_LABELS,
+      leadingMarginPx = 10,
+      nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+        override fun parseHtml(html: String): Spannable = SpannableStringBuilder(html)
+
+        override fun parseHtmlForContentDescription(html: String) = html
+      }
+    )
+
+    workedExampleHandler.handleTag(
+      attributes = attributes,
+      openIndex = openIndex,
+      closeIndex = openIndex,
+      output = output,
+      imageRetriever = null
+    )
+
+    val listSpanEnd = output.getSpanEnd(listSpan)
+    assertThat(output.toString()).startsWith("Previous list item.\n\nQuestion:")
+    assertThat(listSpanEnd).isEqualTo(openIndex + 1)
+    assertThat(output[listSpanEnd - 1]).isEqualTo('\n')
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExampleNamespacedList_preservesBlockSpacing() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "Where should the content be separated?",
+      answerHtml =
+        "<ol xmlns=\"http://www.w3.org/1999/xhtml\"><li>Outer item one:<ul>" +
+          "<li>Inner item one.</li><li>Inner item two.</li></ul></li>" +
+          "<li>Outer item two.</li></ol><p>Following paragraph.</p>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
+      .hasLength(2)
+    assertThat(htmlResult.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
+      .hasLength(2)
+    assertThat(htmlResult.toString()).contains("Inner item two.\nOuter item two.")
+    assertThat(htmlResult.toString()).contains("Outer item two.\n\nFollowing paragraph.")
+  }
+
+  @Test
+  fun testHtmlContent_withWorkedExampleNamespacedList_doesNotCreateFalseLinks() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val textView = TextView(context)
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "Add the decimals.",
+      answerHtml =
+        "<ul xmlns=\"http://www.w3.org/1999/xhtml\">" +
+          "<li>Add a decimal point before the tenths place.</li>" +
+          "<li>Now add the place value digits.</li>" +
+          "<li>The answer is 5.682.</li></ul>"
+    )
+
+    val htmlResult = htmlParser.parseOppiaHtml(
+      workedExampleMarkup,
+      textView,
+      workedExampleLabels = WORKED_EXAMPLE_LABELS
+    )
+
+    assertThat(htmlResult.toString()).contains("place.\nNow")
+    assertThat(htmlResult.toString()).contains("digits.\nThe")
+    assertThat(htmlResult.getSpansFromWholeString(URLSpan::class)).isEmpty()
+  }
+
+  @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create(
       gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
@@ -1428,6 +1629,21 @@ class HtmlParserTest {
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
+  }
+
+  private fun createWorkedExampleMarkup(questionHtml: String, answerHtml: String): String {
+    return "<$CUSTOM_WORKED_EXAMPLE_TAG " +
+      "question-with-value=\"${questionHtml.encodeAsWorkedExampleAttribute()}\" " +
+      "answer-with-value=\"${answerHtml.encodeAsWorkedExampleAttribute()}\">" +
+      "</$CUSTOM_WORKED_EXAMPLE_TAG>"
+  }
+
+  private fun String.encodeAsWorkedExampleAttribute(): String {
+    return JSONObject.quote(this)
+      .replace("&", "&amp;amp;")
+      .replace("\"", "&amp;quot;")
+      .replace("<", "&amp;lt;")
+      .replace(">", "&amp;gt;")
   }
 
   private fun Spannable.getTextForSpan(span: Any): String =

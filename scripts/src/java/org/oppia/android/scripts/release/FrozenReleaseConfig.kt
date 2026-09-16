@@ -18,7 +18,7 @@ package org.oppia.android.scripts.release
  *
  * When a new API level is deprecated and its final build must be frozen, add its track and version
  * code here. This single file is the source of truth consumed by [UploadBinaryToPlayConsole],
- * [UpdateRolloutFraction], and [UploadChangelogToPlayConsole].
+ * [UpdateRolloutPermille], and [UploadChangelogToPlayConsole].
  */
 val FROZEN_VERSION_CODES_PER_TRACK: Map<String, Set<Long>> = mapOf(
   "alpha" to setOf(16L)

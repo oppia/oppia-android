@@ -171,8 +171,8 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "update_rollout_fraction_lib",
-    srcs = ["UpdateRolloutFraction.kt"],
+    name = "update_rollout_permille_lib",
+    srcs = ["UpdateRolloutPermille.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":frozen_release_config",
