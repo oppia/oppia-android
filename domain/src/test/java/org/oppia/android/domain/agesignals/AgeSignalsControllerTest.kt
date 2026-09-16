@@ -161,12 +161,12 @@ class AgeSignalsControllerTest {
   }
 
   @Test
-  fun testCompletedInitialization_supervised_approval_pending_logsOnlyOutcome() {
+  fun testCompletedInitialization_supervisedApprovalPending_logsOnlyOutcome() {
     checkSuccessfulResponse(AgeSignalsVerificationStatus.SUPERVISED_APPROVAL_PENDING)
   }
 
   @Test
-  fun testCompletedInitialization_supervised_approval_denied_logsOnlyOutcome() {
+  fun testCompletedInitialization_supervisedApprovalDenied_logsOnlyOutcome() {
     checkSuccessfulResponse(AgeSignalsVerificationStatus.SUPERVISED_APPROVAL_DENIED)
   }
 
@@ -186,57 +186,57 @@ class AgeSignalsControllerTest {
   }
 
   @Test
-  fun testCompletedInitialization_api_not_available_continuesStartup() {
+  fun testCompletedInitialization_apiNotAvailable_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.API_NOT_AVAILABLE)
   }
 
   @Test
-  fun testCompletedInitialization_play_store_not_found_continuesStartup() {
+  fun testCompletedInitialization_playStoreNotFound_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.PLAY_STORE_NOT_FOUND)
   }
 
   @Test
-  fun testCompletedInitialization_network_error_continuesStartup() {
+  fun testCompletedInitialization_networkError_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.NETWORK_ERROR)
   }
 
   @Test
-  fun testCompletedInitialization_play_services_not_found_continuesStartup() {
+  fun testCompletedInitialization_playServicesNotFound_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.PLAY_SERVICES_NOT_FOUND)
   }
 
   @Test
-  fun testCompletedInitialization_cannot_bind_to_service_continuesStartup() {
+  fun testCompletedInitialization_cannotBindToService_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.CANNOT_BIND_TO_SERVICE)
   }
 
   @Test
-  fun testCompletedInitialization_play_store_version_outdated_continuesStartup() {
+  fun testCompletedInitialization_playStoreVersionOutdated_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.PLAY_STORE_VERSION_OUTDATED)
   }
 
   @Test
-  fun testCompletedInitialization_play_services_version_outdated_continuesStartup() {
+  fun testCompletedInitialization_playServicesVersionOutdated_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.PLAY_SERVICES_VERSION_OUTDATED)
   }
 
   @Test
-  fun testCompletedInitialization_client_transient_error_continuesStartup() {
+  fun testCompletedInitialization_clientTransientError_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.CLIENT_TRANSIENT_ERROR)
   }
 
   @Test
-  fun testCompletedInitialization_app_not_owned_continuesStartup() {
+  fun testCompletedInitialization_appNotOwned_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.APP_NOT_OWNED)
   }
 
   @Test
-  fun testCompletedInitialization_sdk_version_outdated_continuesStartup() {
+  fun testCompletedInitialization_sdkVersionOutdated_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.SDK_VERSION_OUTDATED)
   }
 
   @Test
-  fun testCompletedInitialization_internal_error_continuesStartup() {
+  fun testCompletedInitialization_internalError_continuesStartup() {
     checkFailedResponse(AgeSignalsErrorCode.INTERNAL_ERROR)
   }
 
