@@ -47,4 +47,3 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
     ],
 )
-
