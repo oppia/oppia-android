@@ -76,6 +76,9 @@ runs:
 
     - name: Configure Bazel to use specific sandbox tmpfs
       run: |
+        echo "startup --host_jvm_args=-Xmx2g" >> $HOME/.bazelrc
+        echo "build --local_ram_resources=3072" >> $HOME/.bazelrc
+        echo "build --local_cpu_resources=2" >> $HOME/.bazelrc
         echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
         echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
       shell: bash
