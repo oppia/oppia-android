@@ -177,6 +177,7 @@ import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -1687,6 +1688,54 @@ class ExplorationActivityTest {
             )
           )
         )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_hintsDialog_revealHint_rotate_timerResumesAfterDismiss() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      clickContinueButton()
+      // Submit two incorrect answers to make the first hint available.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the first hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Rotate the activity while the dialog is open.
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Advance time past the 30-second delay for the next help item while still in the dialog.
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(35))
+
+      // Verify the solution is still unavailable inside the recreated dialog.
+      onView(withId(R.id.solution_title)).check(doesNotExist())
+
+      // Dismiss the recreated dialog.
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the next help item is NOT available yet outside the dialog.
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.no_new_hint_available)))
+
+      // Wait 30 seconds outside the dialog (the full remaining delay).
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+
+      // Verify that the next help item is now available.
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.new_hint_available)))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }

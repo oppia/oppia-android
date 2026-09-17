@@ -138,6 +138,49 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
+  fun testPauseHints_beforeSessionStarted_isFailure() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    val result = questionAssessmentProgressController.pauseHints()
+
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testResumeHints_beforeSessionStarted_isFailure() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    val result = questionAssessmentProgressController.resumeHints()
+
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testHints_pauseHints_duringActiveSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val pauseResult = questionAssessmentProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+  }
+
+  @Test
+  fun testHints_pauseThenResumeHints_duringActiveSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val pauseResult = questionAssessmentProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    val resumeResult = questionAssessmentProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+  }
+
+  @Test
   fun testStartTrainingSession_withEmptyQuestionList_fails() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 

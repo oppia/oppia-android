@@ -381,6 +381,39 @@ class HintHandlerDebugImplTest {
     )
   }
 
+  @Test
+  fun testPauseHints_showAllHelpsEnabled_stateWithHints_doesNotChangeHelpIndex() {
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+    val hintHandler = hintHandlerDebugImplFactory.create()
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+
+    hintHandler.pauseHintsSync()
+
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testResumeHints_showAllHelpsEnabled_stateWithHints_doesNotChangeHelpIndex() {
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+    val hintHandler = hintHandlerDebugImplFactory.create()
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewStateSync(state)
+    hintHandler.pauseHintsSync()
+
+    hintHandler.resumeHintsSync()
+
+    assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
   private fun HintHandler.startWatchingForHintsInNewStateSync(
     state: State
   ) = runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
@@ -399,6 +432,14 @@ class HintHandlerDebugImplTest {
 
   private fun HintHandler.navigateBackToLatestPendingStateSync() = runSynchronouslyInBackground {
     navigateBackToLatestPendingState()
+  }
+
+  private fun HintHandler.pauseHintsSync() = runSynchronouslyInBackground {
+    pauseHints()
+  }
+
+  private fun HintHandler.resumeHintsSync() = runSynchronouslyInBackground {
+    resumeHints()
   }
 
   private fun HintHandler.monitorHelpIndex() {

@@ -5,7 +5,9 @@ name: Checks for Oppia Lesson Compatibility
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 02 * * 1"
+    # Every Monday at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:00 UTC)
+    # by 90 minutes to ensure the full two-pass lesson downloads and verification have completed.
+    - cron: "30 03 * * 1"
 
 jobs:
   check_lesson_compatibility:

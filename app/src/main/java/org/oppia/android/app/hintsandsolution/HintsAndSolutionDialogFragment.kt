@@ -1,6 +1,7 @@
 package org.oppia.android.app.hintsandsolution
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -151,9 +152,16 @@ class HintsAndSolutionDialogFragment :
 
   override fun onStart() {
     super.onStart()
-    val dialog = this.dialog ?: return
-    dialog.window?.setWindowAnimations(R.style.FullScreenHintDialogStyle)
-    hintsAndSolutionDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
+    dialog?.let { dialog ->
+      dialog.window?.setWindowAnimations(R.style.FullScreenHintDialogStyle)
+      hintsAndSolutionDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
+    }
+    hintsAndSolutionDialogFragmentPresenter.handleOnStart()
+  }
+
+  override fun onDismiss(dialog: DialogInterface) {
+    super.onDismiss(dialog)
+    hintsAndSolutionDialogFragmentPresenter.handleOnDismiss()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

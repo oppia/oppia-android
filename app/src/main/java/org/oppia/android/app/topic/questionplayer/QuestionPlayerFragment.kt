@@ -106,6 +106,14 @@ class QuestionPlayerFragment :
     questionPlayerFragmentPresenter.revealSolution()
   }
 
+  fun pauseHints() {
+    questionPlayerFragmentPresenter.pauseHints()
+  }
+
+  fun resumeHints() {
+    questionPlayerFragmentPresenter.resumeHints()
+  }
+
   companion object {
 
     /** Arguments key for [QuestionPlayerFragment]. */
