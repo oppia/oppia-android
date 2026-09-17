@@ -1314,6 +1314,9 @@ maven_dependency {
   license {
     license_name: "Play Core Software Development Kit Terms of Service"
     original_link: "https://developer.android.com/guide/playcore/license"
+    direct_link_only {
+      url: "https://developer.android.com/guide/playcore#license"
+    }
   }
 }
 maven_dependency {
