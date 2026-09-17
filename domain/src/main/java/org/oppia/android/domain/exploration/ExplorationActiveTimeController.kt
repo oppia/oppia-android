@@ -356,8 +356,12 @@ class ExplorationActiveTimeController @Inject constructor(
         "Expected app to be in the foreground and an exploration to be started."
       }
 
-      saveCurrentLearningTime()
-      timerSessionState.isAppInForeground = isAppInForeground
+      try {
+        saveCurrentLearningTime()
+      } finally {
+        // A persistence failure must not leave the timer counting time in the background.
+        timerSessionState.isAppInForeground = isAppInForeground
+      }
     }
   }
 

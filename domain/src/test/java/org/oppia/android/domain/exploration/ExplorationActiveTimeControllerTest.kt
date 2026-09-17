@@ -42,6 +42,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -63,6 +64,8 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,6 +96,9 @@ class ExplorationActiveTimeControllerTest {
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
+
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
@@ -564,6 +570,46 @@ class ExplorationActiveTimeControllerTest {
       )
     )
     assertThat(learningTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1 + SESSION_LENGTH_3)
+  }
+
+  @Test
+  fun testPauseTimer_saveFails_backgroundFlushAndStopDoNotSaveTime() {
+    setUpTestApplicationComponent()
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+    explorationActiveTimeController.onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
+    monitorFactory.waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+    testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_3)
+
+    // Replace the cache file with a directory to force the pause's disk write to fail.
+    val context = ApplicationProvider.getApplicationContext<TestApplication>()
+    val profileDirectory =
+      context.getDir(firstTestProfile.internalId.toString(), Context.MODE_PRIVATE)
+    val cacheFile = File(profileDirectory, "topic_learning_time_database.cache")
+    val backupFile = File(profileDirectory, "topic_learning_time_database.cache.backup")
+    assertThat(cacheFile.renameTo(backupFile)).isTrue()
+    try {
+      assertThat(cacheFile.mkdir()).isTrue()
+      fakeExceptionLogger.clearAllExceptions()
+      explorationActiveTimeController.onAppInBackground()
+      testCoroutineDispatchers.runCurrent()
+      assertThat(fakeExceptionLogger.getMostRecentException()).isInstanceOf(IOException::class.java)
+
+      // Both operations must succeed without attempting another write, even after enough background
+      // time has passed to otherwise increase the aggregate.
+      fakeExceptionLogger.clearAllExceptions()
+      testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
+      monitorFactory
+        .waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+      explorationActiveTimeController.onExplorationEnded()
+      monitorFactory
+        .waitForNextSuccessfulResult(explorationActiveTimeController.flushLearningTime())
+      assertThat(fakeExceptionLogger.noExceptionsPresent()).isTrue()
+    } finally {
+      assertThat(cacheFile.delete()).isTrue()
+      assertThat(backupFile.renameTo(cacheFile)).isTrue()
+    }
   }
 
   private fun startPlayingNewExploration(
