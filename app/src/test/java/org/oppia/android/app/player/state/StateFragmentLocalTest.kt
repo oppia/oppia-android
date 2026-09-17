@@ -381,7 +381,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
@@ -412,7 +411,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
