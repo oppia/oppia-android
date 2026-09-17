@@ -58,6 +58,16 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   val isAnswerAvailable = ObservableField<Boolean>(false)
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is ImageRegionSelectionInteractionViewModel) return false
+    // imagePath is a lazy val derived from the proto — stable and immutable.
+    // answerText (clicked region) is mutable user state → skip.
+    return entityId == other.entityId &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      imagePath == other.imagePath
+  }
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
