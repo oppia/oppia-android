@@ -19,7 +19,7 @@ kt_android_library(
 kt_android_library(
     name = "age_signals_prod_module",
     srcs = ["AgeSignalsModule.kt"],
-    visibility = ["//app/src/main/java/org/oppia/android/app/application:__subpackages__"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":age_signals",
         "//:dagger",
