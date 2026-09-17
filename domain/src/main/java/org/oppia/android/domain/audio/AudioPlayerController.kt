@@ -202,11 +202,6 @@ class AudioPlayerController @Inject constructor(
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
-      playProgress.postValue(
-        AsyncResult.Failure(
-          AudioPlayerException("Failed to set data source for media player: ${e.message}")
-        )
-      )
     }
   }
 
