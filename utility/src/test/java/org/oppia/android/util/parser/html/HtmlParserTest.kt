@@ -502,6 +502,22 @@ class HtmlParserTest {
     }
   }
 
+  @Test
+  fun testHtmlParser_namespacedList_doesNotCreateFalseLinks() {
+    val html = "<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Test</li></ul>"
+
+    val parsedHtml = htmlParserFactory.create(
+      gcsResourceName,
+      entityType,
+      entityId,
+      imageCenterAlign = true,
+      customStyle = customOppiaStyle
+    ).parseOppiaHtml(html, htmlContentTextView)
+    // Assert that zero link spans were accidentally generated
+    val linkSpans = parsedHtml.getSpans(0, parsedHtml.length, URLSpan::class.java)
+    assertThat(linkSpans).isEmpty()
+  }
+
   // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(

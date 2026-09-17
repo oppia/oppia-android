@@ -84,11 +84,14 @@ class LiTagHandler(
         // tree is needed for analysis).
         output.appendNewLine()
 
-        val isSingleNewline = output.isNotEmpty() &&
-          output.last() == '\n' &&
-          (output.length < 2 || output[output.length - 2] != '\n')
-        if (isSingleNewline) {
-          output.append("\n")
+        // Only append a second newline if this is the outermost list closing.
+        if (pendingLists.size == 1) {
+          val isSingleNewline = output.isNotEmpty() &&
+            output.last() == '\n' &&
+            (output.length < 2 || output[output.length - 2] != '\n')
+          if (isSingleNewline) {
+            output.append("\n")
+          }
         }
 
         val closingList = pendingLists.pop().also { it.recordList() }
