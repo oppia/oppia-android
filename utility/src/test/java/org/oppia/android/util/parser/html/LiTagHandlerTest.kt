@@ -182,7 +182,7 @@ class LiTagHandlerTest {
         )
       )
 
-    assertThat(parsedHtml.toString()).contains("Nested 1\n\nItem 2")
+    assertThat(parsedHtml.toString()).contains("Nested 1\nItem 2")
   }
 
   @Test
