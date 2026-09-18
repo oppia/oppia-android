@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 private const val GET_TOPIC_LEARNING_TIME_PROVIDER_ID =
   "get_topic_learning_time_provider_id"
+private const val READY_LEARNING_TIME_PROVIDER_ID = "ready_learning_time_provider_id"
 private const val GATING_RESULT_PROVIDER_ID =
   "gating_result_provider_id"
 
@@ -44,7 +45,11 @@ class SurveyGatingController @Inject constructor(
    */
   fun maybeShowSurvey(profileId: LegacyProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
-    val learningTimeProvider = retrieveAggregateLearningTime(profileId, topicId)
+    // Both early exit (timer stop queued) and completion (timer still running) must include
+    // the current session before making a gating decision.
+    val learningTimeProvider = activeTimeController.flushLearningTime().combineWith(
+      retrieveAggregateLearningTime(profileId, topicId), READY_LEARNING_TIME_PROVIDER_ID
+    ) { _, learningTimeMs -> learningTimeMs }
     return lastShownDateProvider.combineWith(
       learningTimeProvider, GATING_RESULT_PROVIDER_ID
     ) { lastShownTimestampMs, learningTimeMs ->
