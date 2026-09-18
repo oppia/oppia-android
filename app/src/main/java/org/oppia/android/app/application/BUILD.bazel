@@ -101,6 +101,7 @@ android_library(
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//domain/src/main/java/org/oppia/android/domain/agesignals:age_signals_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",

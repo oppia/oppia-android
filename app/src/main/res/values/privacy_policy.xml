@@ -17,10 +17,29 @@
       Please note that the Oppia codebase (i.e., our software code, but not
       any Personal Information we have collected from our users) may be
       downloaded and hosted independently by third parties. This Privacy
-      Policy covers only our Site and not third-party sites or services using
+      Policy, except for the Oppia Android age-signals handling described
+      below, covers only our Site and not third-party sites or services using
       the Oppia codebase. If you are using such a third-party site or service,
       we encourage you to review the third party\'s privacy policy for that
       site or service.
+    </p>
+
+    <h2>Age signals in Oppia Android</h2>
+    <p>
+      Oppia Android requests age-related signals from Google Play solely to
+      meet applicable local regulatory requirements. Oppia processes these
+      signals temporarily on your device and then discards them. Oppia does
+      not retain the signals, include them in logs or crash reports, transmit
+      them to Oppia servers, or use them for advertising, marketing, user
+      profiling, or analytics. These signals do not change access to lessons
+      or other app features.
+    </p>
+    <p>
+      Google Play processes age information through its own services under
+      its own terms and privacy policy. The local processing described above
+      refers to how Oppia handles the signals it receives from Google Play.
+      Oppia Android remains usable when Google Play or age signals are
+      unavailable.
     </p>
 
     <h2>What information do we collect and how do we use it?</h2>
@@ -396,6 +415,6 @@
       provide feedback, please send an e-mail to admin@oppia.org.
     </p>
 
-    <em>Last updated: 24 May 2018</em>
+    <em>Last updated: 15 September 2026</em>
 ]]></string>
 </resources>
