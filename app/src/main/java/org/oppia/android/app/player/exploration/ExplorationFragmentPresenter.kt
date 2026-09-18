@@ -143,6 +143,10 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.viewSolution()
   }
 
+  fun pauseHints() = getStateFragment()?.pauseHints()
+
+  fun resumeHints() = getStateFragment()?.resumeHints()
+
   fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 
   private fun getStateFragment(): StateFragment? {

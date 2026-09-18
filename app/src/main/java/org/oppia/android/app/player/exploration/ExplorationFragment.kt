@@ -85,6 +85,14 @@ class ExplorationFragment : InjectableFragment() {
     explorationFragmentPresenter.viewSolution()
   }
 
+  fun pauseHints() {
+    explorationFragmentPresenter.pauseHints()
+  }
+
+  fun resumeHints() {
+    explorationFragmentPresenter.resumeHints()
+  }
+
   fun getExplorationCheckpointState() = explorationFragmentPresenter.getExplorationCheckpointState()
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
