@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -179,6 +180,41 @@ class DataProvidersTest {
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
     assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(456)
+  }
+
+  @Test
+  fun testConvertToLiveData_staleRetrievalCompletesAfterNewRetrieval_staleValueIsNotDelivered() {
+    val firstRetrievalStarted = CompletableDeferred<Unit>()
+    val releaseFirstRetrieval = CompletableDeferred<Unit>()
+    var retrievalCount = 0
+    val simpleDataProvider = object : DataProvider<Int>(application) {
+      override fun getId(): Any = "simple_data_provider"
+
+      override suspend fun retrieveData(): AsyncResult<Int> {
+        return when (++retrievalCount) {
+          1 -> {
+            firstRetrievalStarted.complete(Unit)
+            releaseFirstRetrieval.await()
+            AsyncResult.Success(123)
+          }
+          2 -> AsyncResult.Success(456)
+          else -> AsyncResult.Failure(AssertionError("Invalid test case"))
+        }
+      }
+    }
+    simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    assertThat(firstRetrievalStarted.isCompleted).isTrue()
+
+    // This models a store notification while the initial read still holds an older snapshot.
+    asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
+    testCoroutineDispatchers.runCurrent()
+    releaseFirstRetrieval.complete(Unit)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.allValues.last()).isIntSuccessThat().isEqualTo(456)
+    assertThat(retrievalCount).isEqualTo(2)
   }
 
   @Test
