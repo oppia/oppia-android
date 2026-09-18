@@ -84,6 +84,7 @@ fun main(args: Array<String>) {
  * @param version version in major.minor format (e.g. `"0.17"`)
  * @param rolloutPermille the new staged rollout permille as an integer in [0, 1000]; must be
  *     strictly greater than the current live rollout permille
+ * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
  */
 fun updateRollout(
   client: PlayConsoleClient,
@@ -91,7 +92,8 @@ fun updateRollout(
   packageName: String,
   track: String,
   version: String,
-  rolloutPermille: Int
+  rolloutPermille: Int,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   val liveReleases = client.getTrackReleases(packageName, track)
     .filter { it.status in LIVE_STATUSES }
@@ -100,8 +102,11 @@ fun updateRollout(
     "Track '$track' has no live releases — cannot update rollout permille."
   }
 
-  val versionCode = checkNotNull(liveReleases.flatMap { it.versionCodes }.maxOrNull()) {
-    "Track '$track' has live releases but no version codes — this should not happen."
+  val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+  val versionCode = checkNotNull(
+    liveReleases.flatMap { it.versionCodes }.filterNot { it in frozenVersionCodes }.maxOrNull()
+  ) {
+    "Track '$track' has no version codes outside its frozen builds — cannot update its rollout."
   }
 
   val currentRolloutPermille = liveReleases.mapNotNull { it.rolloutPermille }.maxOrNull() ?: 0
@@ -121,7 +126,6 @@ fun updateRollout(
     )
   }
 
-  val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
   if (frozenVersionCodes.isNotEmpty()) {
     val liveVersionCodes = liveReleases.flatMap { it.versionCodes }.toSet()
     val missingFrozen = frozenVersionCodes - liveVersionCodes

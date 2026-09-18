@@ -92,8 +92,10 @@ jobs:
       - name: Check PR for [RunAllTests]
         id: check_pr
         if: ${{ github.event_name == 'pull_request' }}
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if [[ "${{ github.event.pull_request.title }}" == *"[RunAllTests]"* ]]; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
+          if [[ "$PR_TITLE" == *"[RunAllTests]"* ]]; then echo "run_all=true" >> $GITHUB_OUTPUT; fi
 
       # Search all PR commit messages included in the merge group for any that require running all tests upon merging.
       - name: Check merge group for [RunAllTests]

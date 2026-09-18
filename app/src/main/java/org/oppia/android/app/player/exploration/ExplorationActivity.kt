@@ -190,6 +190,14 @@ class ExplorationActivity :
     getHintsAndSolution()?.dismiss()
   }
 
+  override fun pauseHints() {
+    explorationActivityPresenter.pauseHints()
+  }
+
+  override fun resumeHints() {
+    explorationActivityPresenter.resumeHints()
+  }
+
   override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
     explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
