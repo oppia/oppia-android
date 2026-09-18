@@ -69,12 +69,14 @@ fun main(args: Array<String>) {
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
  */
 fun maybeUploadUpdatedChangelogs(
   client: PlayConsoleClient,
   workspacePath: String,
   packageName: String,
-  version: String
+  version: String,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   val liveTracks = auditLiveTracks(client, packageName)
 
@@ -90,15 +92,17 @@ fun maybeUploadUpdatedChangelogs(
       println("Track '$track': no changelog file found for version $version — skipping.")
       continue
     }
-    val versionCode = checkNotNull(releases.flatMap { it.versionCodes }.maxOrNull()) {
-      "Track '$track' has live releases but no version codes — this should not happen."
+    val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+    val versionCode = checkNotNull(
+      releases.flatMap { it.versionCodes }.filterNot { it in frozenVersionCodes }.maxOrNull()
+    ) {
+      "Track '$track' has no version codes outside its frozen builds — cannot update its changelog."
     }
     // Preserve the existing rollout permille so this changelog-only update does not alter
     // the staged rollout percentage. inProgress releases carry a rolloutPermille; completed
     // releases are already at 100% so fall back to 1000.
     val rolloutPermille =
       releases.firstOrNull { it.status == "inProgress" }?.rolloutPermille ?: 1000
-    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
     if (frozenVersionCodes.isNotEmpty()) {
       val liveVersionCodes = releases.flatMap { it.versionCodes }.toSet()
       val missingFrozen = frozenVersionCodes - liveVersionCodes
