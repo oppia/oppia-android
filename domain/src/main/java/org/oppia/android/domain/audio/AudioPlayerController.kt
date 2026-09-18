@@ -8,7 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -20,6 +22,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import kotlinx.coroutines.sync.withLock as withMutex
 
 /**
  * Controller which provides audio playing capabilities.
@@ -78,7 +81,9 @@ class AudioPlayerController @Inject constructor(
   private var mediaPlayer: MediaPlayer = MediaPlayer()
   private val playProgress = AudioMutableLiveData()
   private var nextUpdateJob: Job? = null
+  private var activeLoadJob: Job? = null
   private val audioLock = ReentrantLock()
+  private val mediaPlayerMutex = Mutex()
 
   private var prepared = false
   private var observerActive = false
@@ -96,17 +101,25 @@ class AudioPlayerController @Inject constructor(
    * This controller cannot already be initialized.
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
+    val playerToRelease: MediaPlayer?
     audioLock.withLock {
-
       mediaPlayerActive = true
-      if (!isReleased) {
-        mediaPlayer.release()
-      }
+      playerToRelease = if (!isReleased) mediaPlayer else null
       mediaPlayer = MediaPlayer()
       isReleased = false
+      prepared = false
+      completed = false
       setMediaPlayerListeners()
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
+    activeLoadJob?.cancel()
+    if (playerToRelease != null) {
+      CoroutineScope(backgroundDispatcher).launch {
+        mediaPlayerMutex.withMutex {
+          playerToRelease.release()
+        }
+      }
+    }
     return playProgress
   }
 
@@ -115,26 +128,58 @@ class AudioPlayerController @Inject constructor(
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
   fun changeDataSource(url: String, contentId: String?, languageCode: String) {
+    val player: MediaPlayer
     audioLock.withLock {
       prepared = false
+      completed = false
       currentContentId = contentId
       currentLanguageCode = languageCode
       stopUpdatingSeekBar()
-      mediaPlayer.reset()
-      prepareDataSource(url)
+      player = mediaPlayer
+    }
+    playProgress.value = AsyncResult.Pending()
+    activeLoadJob?.cancel()
+    activeLoadJob = CoroutineScope(backgroundDispatcher).launch {
+      mediaPlayerMutex.withMutex {
+        if (!isActive) return@launch
+        var shouldProceed = false
+        audioLock.withLock {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+            shouldProceed = true
+          }
+        }
+        if (!shouldProceed) return@launch
+
+        player.reset()
+
+        if (!isActive) return@launch
+        var shouldPrepare = false
+        audioLock.withLock {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+            shouldPrepare = true
+          }
+        }
+        if (shouldPrepare) {
+          prepareDataSource(player, url)
+        }
+      }
     }
   }
 
   private fun setMediaPlayerListeners() {
     mediaPlayer.setOnCompletionListener {
-      completed = true
-      stopUpdatingSeekBar()
+      audioLock.withLock {
+        completed = true
+        stopUpdatingSeekBar()
+      }
       playProgress.value =
         AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
     }
     mediaPlayer.setOnPreparedListener {
-      prepared = true
-      duration = it.duration
+      audioLock.withLock {
+        prepared = true
+        duration = it.duration
+      }
       playProgress.value =
         AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
     }
@@ -150,15 +195,14 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
-  private fun prepareDataSource(url: String) {
+  private fun prepareDataSource(player: MediaPlayer, url: String) {
     try {
-      mediaPlayer.setDataSource(url)
-      mediaPlayer.prepareAsync()
+      player.setDataSource(url)
+      player.prepareAsync()
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
-    playProgress.value = AsyncResult.Pending()
   }
 
   /**
@@ -251,17 +295,28 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer must already be initialized.
    */
   fun releaseMediaPlayer() {
+    val playerToRelease: MediaPlayer?
     audioLock.withLock {
       if (!isReleased) {
         check(mediaPlayerActive) { "Media player has not been previously initialized" }
         mediaPlayerActive = false
         isReleased = true
         prepared = false
-        mediaPlayer.release()
+        playerToRelease = mediaPlayer
         stopUpdatingSeekBar()
+      } else {
+        playerToRelease = null
       }
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.CLOSED, 0, 0))
+    activeLoadJob?.cancel()
+    if (playerToRelease != null) {
+      CoroutineScope(backgroundDispatcher).launch {
+        mediaPlayerMutex.withMutex {
+          playerToRelease.release()
+        }
+      }
+    }
   }
 
   /**
@@ -277,15 +332,29 @@ class AudioPlayerController @Inject constructor(
 
   /** Aborts any in-flight load and moves playback to a failure state. */
   fun abortPendingLoad() {
+    val player: MediaPlayer
     audioLock.withLock {
       prepared = false
       completed = false
-      nextUpdateJob?.cancel()
-      nextUpdateJob = null
-      mediaPlayer.reset()
+      stopUpdatingSeekBar()
+      player = mediaPlayer
     }
     playProgress.value =
       AsyncResult.Failure(AudioPlayerException("Audio load aborted before preparation"))
+    activeLoadJob?.cancel()
+    CoroutineScope(backgroundDispatcher).launch {
+      mediaPlayerMutex.withMutex {
+        var shouldReset = false
+        audioLock.withLock {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+            shouldReset = true
+          }
+        }
+        if (shouldReset) {
+          player.reset()
+        }
+      }
+    }
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
