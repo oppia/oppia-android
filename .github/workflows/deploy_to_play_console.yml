@@ -23,8 +23,8 @@ on:
           - alpha
           - beta
           - production
-      rollout_fraction:
-        description: "Rollout fraction as an integer between 0 and 1000 (e.g. 100 for 10%, 1000 for full rollout)."
+      rollout_permille:
+        description: "Rollout permille as an integer between 0 and 1000 (e.g. 100 for 10%, 1000 for full rollout)."
         required: false
         type: string
         default: "1000"
@@ -50,7 +50,7 @@ jobs:
       - name: Validate inputs and extract flavor
         run: |
           GCS_PATH="${{ github.event.inputs.gcs_aab_path }}"
-          ROLLOUT="${{ github.event.inputs.rollout_fraction }}"
+          ROLLOUT="${{ github.event.inputs.rollout_permille }}"
 
           if [[ ! "$GCS_PATH" =~ ^gs://oppia-android-(alpha|beta|ga)-releases/.+\.aab$ ]]; then
             echo "::error::Invalid gcs_aab_path: '$GCS_PATH'"
@@ -59,7 +59,7 @@ jobs:
           fi
 
           if ! [[ "$ROLLOUT" =~ ^[0-9]+$ ]] || [[ "$ROLLOUT" -lt 0 ]] || [[ "$ROLLOUT" -gt 1000 ]]; then
-            echo "::error::Invalid rollout_fraction: '$ROLLOUT'. Must be an integer between 0 and 1000 (e.g. 100 for 10%)."
+            echo "::error::Invalid rollout_permille: '$ROLLOUT'. Must be an integer between 0 and 1000 (e.g. 100 for 10%)."
             exit 1
           fi
 
@@ -124,4 +124,4 @@ jobs:
             "$AAB_LOCAL_PATH" \
             "${{ github.event.inputs.track }}" \
             "$ACCESS_TOKEN" \
-            "${{ github.event.inputs.rollout_fraction }}"
+            "${{ github.event.inputs.rollout_permille }}"

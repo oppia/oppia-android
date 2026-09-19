@@ -77,6 +77,24 @@ interface HintHandler {
   suspend fun navigateBackToLatestPendingState()
 
   /**
+   * Pauses the hint timer while the hint & solution dialog is open. Any scheduled hint coroutine
+   * will be cancelled and the remaining delay recorded so it can be resumed later.
+   *
+   * This is a no-op if no timer is currently scheduled (e.g. the state has no hints, or the timer
+   * has already fired).
+   */
+  suspend fun pauseHints()
+
+  /**
+   * Resumes the hint timer after the hint & solution dialog is dismissed, scheduling a new hint
+   * task with the remaining time that was left when [pauseHints] was called.
+   *
+   * This is a no-op if [pauseHints] has not previously been called or if no timer was active at
+   * the time [pauseHints] was called.
+   */
+  suspend fun resumeHints()
+
+  /**
    * Returns a [StateFlow] of the [HelpIndex] corresponding to the current pending state which can
    * be used to actively monitor the index state, if desired.
    */
