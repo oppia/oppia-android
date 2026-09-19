@@ -220,6 +220,7 @@
     <activity android:name=".app.testing.HomeFragmentTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
+    <activity android:name=".app.testing.NumberWithUnitsInputInteractionViewTestActivity" />
     <activity android:name=".app.testing.RatioInputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.MathExpressionInteractionsViewTestActivity" />
