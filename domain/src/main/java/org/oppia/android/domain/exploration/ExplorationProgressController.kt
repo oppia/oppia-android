@@ -471,7 +471,7 @@ class ExplorationProgressController @Inject constructor(
    * subscription to this method's returned [DataProvider].
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
-    val currentProfileId = profileId ?: profileManagementController.getCurrentProfileId()
+    val currentProfileId = profileManagementController.getCurrentProfileId() ?: profileId
       ?: ProfileId.newBuilder().setInternalId(DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID).build()
     val writtenTranslationContentLocale =
       translationController.getWrittenTranslationContentLocale(currentProfileId)
