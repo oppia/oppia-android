@@ -3,6 +3,7 @@ package org.oppia.android.app.topic
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -205,6 +206,7 @@ class TopicActivityTest {
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
     }
   }
+
   @Test
   fun testTopicActivity_restarts_resetsFontScaleToMedium() {
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
@@ -213,6 +215,27 @@ class TopicActivityTest {
         fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       scenario.recreate()
+      scenario.onActivity { activity ->
+        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.0f)
+      }
+    }
+  }
+
+  @Test
+  fun testTopicActivity_backgroundedAndRestarted_resetsFontScaleToMedium() {
+    launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
+      scenario.onActivity { activity ->
+        val fontScaleConfigUtil = FontScaleConfigurationUtil()
+        fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      }
+
+      // Move the activity to STOPPED and back to RESUMED. Unlike scenario.recreate()
+      // (which destroys and rebuilds the activity, calling onCreate()), this triggers
+      // onPause() -> onStop() -> onRestart() -> onStart() -> onResume() on the SAME
+      // activity instance, directly exercising handleOnRestart().
+      scenario.moveToState(Lifecycle.State.CREATED)
+      scenario.moveToState(Lifecycle.State.RESUMED)
+
       scenario.onActivity { activity ->
         assertThat(activity.resources.configuration.fontScale).isEqualTo(1.0f)
       }
