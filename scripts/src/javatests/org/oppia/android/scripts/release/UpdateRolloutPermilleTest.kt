@@ -23,6 +23,10 @@ class UpdateRolloutPermilleTest {
 
   private lateinit var fakeClient: FakePlayConsoleClient
 
+  /**
+   * Frozen codes are intentionally higher than the tests' active release codes. This verifies
+   * that rollout updates select the active code rather than the highest frozen code.
+   */
   private val testFrozenVersionCodesPerTrack = mapOf(
     "alpha" to setOf(1000L),
     "beta" to setOf(2000L)
@@ -97,6 +101,29 @@ class UpdateRolloutPermilleTest {
   }
 
   @Test
+  fun testUpdateRollout_onlyFrozenVersionCodes_doesNotCreateEdit() {
+    fakeClient.setTrackReleases("alpha", listOf(testAlphaFrozenBaseline))
+    createSharedChangelog(testVersion, "Notes.")
+
+    val exception = assertThrows<IllegalStateException> {
+      updateRollout(
+        fakeClient,
+        tempFolder.root.absolutePath,
+        testPackageName,
+        "alpha",
+        testVersion,
+        500,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("no version codes outside its frozen builds")
+    assertThat(fakeClient.createdEdits).isEmpty()
+    assertThat(fakeClient.trackUpdates).isEmpty()
+    assertThat(fakeClient.committedEdits).isEmpty()
+  }
+
+  @Test
   fun testUpdateRollout_inProgressRelease_updatesRolloutPermille() {
     fakeClient.setTrackReleases(
       "alpha",
@@ -152,6 +179,60 @@ class UpdateRolloutPermilleTest {
     )
 
     assertThat(fakeClient.trackUpdates.single().versionCode).isEqualTo(100L)
+  }
+
+  @Test
+  fun testUpdateRollout_multipleLiveReleases_comparesSelectedReleasePermille() {
+    // The rollout update targets v200, whose current rollout is 250 permille. The requested
+    // 500 permille is valid for it even though the earlier v100 release is already at 750.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 750
+        ),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 250
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, "Notes.")
+
+    updateRollout(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.versionCode).isEqualTo(200L)
+    assertThat(update.rolloutPermille).isEqualTo(500)
+  }
+
+  @Test
+  fun testUpdateRollout_requestedPermilleBelowSelectedRelease_throwsIllegalStateException() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+        ),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 750
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      updateRollout(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, "alpha", testVersion, 500,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("can only increase")
+    assertThat(fakeClient.createdEdits).isEmpty()
   }
 
   @Test

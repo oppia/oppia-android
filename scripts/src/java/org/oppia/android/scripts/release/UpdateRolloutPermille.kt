@@ -27,6 +27,12 @@ import java.io.File
  *   4. rollout_permille — new rollout as an integer in [0, 1000] (e.g. 500 = 50%, 1000 = 100%)
  *   5. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
  *
+ * Example:
+ * ```
+ * bazel run //scripts:update_rollout_permille -- \
+ *   "$(pwd)" org.oppia.android alpha 0.18 500 "$(gcloud auth print-access-token)"
+ * ```
+ *
  * An optional 7th argument overrides the API base URL. This is used in tests to route all
  * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
  */
@@ -103,13 +109,13 @@ fun updateRollout(
   }
 
   val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
-  val versionCode = checkNotNull(
-    liveReleases.flatMap { it.versionCodes }.filterNot { it in frozenVersionCodes }.maxOrNull()
+  val (selectedRelease, versionCode) = checkNotNull(
+    findHighestNonFrozenVersionCode(liveReleases, frozenVersionCodes)
   ) {
     "Track '$track' has no version codes outside its frozen builds — cannot update its rollout."
   }
 
-  val currentRolloutPermille = liveReleases.mapNotNull { it.rolloutPermille }.maxOrNull() ?: 0
+  val currentRolloutPermille = selectedRelease.rolloutPermille ?: 0
   check(rolloutPermille > currentRolloutPermille) {
     "Rollout permille can only increase: current rollout on track '$track' is " +
       "${currentRolloutPermille / 10.0}%, requested ${rolloutPermille / 10.0}%. " +
