@@ -650,7 +650,6 @@ class AudioFragmentTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testAudioFragment_playAudio_repeatSetStateWithSameAudio_keepsAudioPlaying() {
     addMediaInfo()
@@ -692,6 +691,78 @@ class AudioFragmentTest {
               R.string.audio_pause_description
             )
           )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioPrepared_loadMainContentAudioWithAutoPlay_startsPlayback() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
+        )
+      )
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = true,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioFailed_loadAudioAgain_retriesLoading() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val shadowPlayer = checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer()))
+        invokeErrorListener(shadowPlayer, /* what = */ 0, /* extra = */ 0)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = false,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
         )
       )
     }
@@ -886,6 +957,15 @@ class AudioFragmentTest {
   /** Calls ShadowMediaPlayer.invokePreparedListener() using reflection. */
   private fun invokePreparedListener(shadowMediaPlayer: Any) {
     shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
+  }
+
+  /** Calls ShadowMediaPlayer.invokeErrorListener() using reflection. */
+  private fun invokeErrorListener(shadowMediaPlayer: Any, what: Int, extra: Int) {
+    shadowMediaPlayer.javaClass.getMethod(
+      "invokeErrorListener",
+      Int::class.java,
+      Int::class.java
+    ).invoke(shadowMediaPlayer, what, extra)
   }
 
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */

@@ -93,6 +93,8 @@ class AudioPlayerController @Inject constructor(
   private var completed = false
   private var currentContentId: String? = null
   private var currentLanguageCode: String? = null
+  private var currentLoadId = 0L
+  private var activeLoadId = 0L
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -109,6 +111,8 @@ class AudioPlayerController @Inject constructor(
       isReleased = false
       prepared = false
       completed = false
+      activeLoadId = 0L
+      currentLoadId++
       setMediaPlayerListeners()
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
@@ -129,6 +133,7 @@ class AudioPlayerController @Inject constructor(
    */
   fun changeDataSource(url: String, contentId: String?, languageCode: String) {
     val player: MediaPlayer
+    val loadId: Long
     audioLock.withLock {
       prepared = false
       completed = false
@@ -136,6 +141,9 @@ class AudioPlayerController @Inject constructor(
       currentLanguageCode = languageCode
       stopUpdatingSeekBar()
       player = mediaPlayer
+      currentLoadId++
+      activeLoadId = currentLoadId
+      loadId = currentLoadId
     }
     playProgress.value = AsyncResult.Pending()
     activeLoadJob?.cancel()
@@ -144,7 +152,9 @@ class AudioPlayerController @Inject constructor(
         if (!isActive) return@launch
         var shouldProceed = false
         audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
+            currentLoadId == loadId
+          ) {
             shouldProceed = true
           }
         }
@@ -155,7 +165,9 @@ class AudioPlayerController @Inject constructor(
         if (!isActive) return@launch
         var shouldPrepare = false
         audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
+            currentLoadId == loadId
+          ) {
             shouldPrepare = true
           }
         }
@@ -167,31 +179,55 @@ class AudioPlayerController @Inject constructor(
   }
 
   private fun setMediaPlayerListeners() {
-    mediaPlayer.setOnCompletionListener {
+    mediaPlayer.setOnCompletionListener { player ->
+      var isCurrent = false
       audioLock.withLock {
-        completed = true
-        stopUpdatingSeekBar()
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          completed = true
+          stopUpdatingSeekBar()
+          isCurrent = true
+        }
       }
-      playProgress.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+      if (isCurrent) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+      }
     }
-    mediaPlayer.setOnPreparedListener {
+    mediaPlayer.setOnPreparedListener { player ->
+      var isCurrentLoad = false
       audioLock.withLock {
-        prepared = true
-        duration = it.duration
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
+          currentLoadId == activeLoadId && activeLoadId != 0L
+        ) {
+          prepared = true
+          duration = player.duration
+          isCurrentLoad = true
+        }
       }
-      playProgress.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      if (isCurrentLoad) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      }
     }
-    mediaPlayer.setOnErrorListener { _, what, extra ->
-      playProgress.value =
-        AsyncResult.Failure(
-          AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
-        )
-      releaseMediaPlayer()
-      initializeMediaPlayer()
-      // Indicates that error was handled and to not invoke completion listener.
-      return@setOnErrorListener true
+    mediaPlayer.setOnErrorListener { player, what, extra ->
+      var isCurrent = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          isCurrent = true
+        }
+      }
+      if (isCurrent) {
+        playProgress.value =
+          AsyncResult.Failure(
+            AudioPlayerException(
+              "Audio Player put in error state with what: $what and extra: $extra"
+            )
+          )
+        releaseMediaPlayer()
+        initializeMediaPlayer()
+        return@setOnErrorListener true
+      }
+      return@setOnErrorListener false
     }
   }
 
@@ -302,6 +338,8 @@ class AudioPlayerController @Inject constructor(
         mediaPlayerActive = false
         isReleased = true
         prepared = false
+        activeLoadId = 0L
+        currentLoadId++
         playerToRelease = mediaPlayer
         stopUpdatingSeekBar()
       } else {
@@ -333,20 +371,26 @@ class AudioPlayerController @Inject constructor(
   /** Aborts any in-flight load and moves playback to a failure state. */
   fun abortPendingLoad() {
     val player: MediaPlayer
+    val abortLoadId: Long
     audioLock.withLock {
       prepared = false
       completed = false
       stopUpdatingSeekBar()
       player = mediaPlayer
+      currentLoadId++
+      activeLoadId = 0L
+      abortLoadId = currentLoadId
     }
     playProgress.value =
       AsyncResult.Failure(AudioPlayerException("Audio load aborted before preparation"))
     activeLoadJob?.cancel()
-    CoroutineScope(backgroundDispatcher).launch {
+    activeLoadJob = CoroutineScope(backgroundDispatcher).launch {
       mediaPlayerMutex.withMutex {
         var shouldReset = false
         audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
+            currentLoadId == abortLoadId
+          ) {
             shouldReset = true
           }
         }
