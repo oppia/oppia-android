@@ -28,6 +28,12 @@ import java.io.File
  *       `config/changelogs/<version>[_<track>].md`
  *   3. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
  *
+ * Example:
+ * ```
+ * bazel run //scripts:upload_changelog_to_play_console -- \
+ *   "$(pwd)" org.oppia.android 0.18 "$(gcloud auth print-access-token)"
+ * ```
+ *
  * An optional 5th argument overrides the API base URL. This is used in tests to route all
  * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
  */
@@ -93,16 +99,14 @@ fun maybeUploadUpdatedChangelogs(
       continue
     }
     val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
-    val versionCode = checkNotNull(
-      releases.flatMap { it.versionCodes }.filterNot { it in frozenVersionCodes }.maxOrNull()
+    val (selectedRelease, versionCode) = checkNotNull(
+      findHighestNonFrozenVersionCode(releases, frozenVersionCodes)
     ) {
       "Track '$track' has no version codes outside its frozen builds — cannot update its changelog."
     }
-    // Preserve the existing rollout permille so this changelog-only update does not alter
-    // the staged rollout percentage. inProgress releases carry a rolloutPermille; completed
-    // releases are already at 100% so fall back to 1000.
-    val rolloutPermille =
-      releases.firstOrNull { it.status == "inProgress" }?.rolloutPermille ?: 1000
+    // Preserve the rollout of the release containing the selected version code. Completed
+    // releases are already at 100%, so fall back to 1000 when they have no rollout permille.
+    val rolloutPermille = selectedRelease.rolloutPermille ?: 1000
     if (frozenVersionCodes.isNotEmpty()) {
       val liveVersionCodes = releases.flatMap { it.versionCodes }.toSet()
       val missingFrozen = frozenVersionCodes - liveVersionCodes

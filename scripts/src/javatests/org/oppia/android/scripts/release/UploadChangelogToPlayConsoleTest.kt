@@ -24,6 +24,10 @@ class UploadChangelogToPlayConsoleTest {
 
   private lateinit var fakeClient: FakePlayConsoleClient
 
+  /**
+   * Frozen codes are intentionally higher than the tests' active release codes. This verifies
+   * that changelog updates select the active code rather than the highest frozen code.
+   */
   private val testFrozenVersionCodesPerTrack = mapOf(
     "alpha" to setOf(1000L),
     "beta" to setOf(2000L)
@@ -429,6 +433,24 @@ class UploadChangelogToPlayConsoleTest {
   }
 
   @Test
+  fun testMaybeUploadUpdatedChangelogs_onlyFrozenVersionCodes_doesNotCreateEdit() {
+    fakeClient.setTrackReleases("alpha", listOf(testAlphaFrozenBaseline))
+    createSharedChangelog(testVersion, "Notes.")
+
+    val exception = assertThrows<IllegalStateException> {
+      maybeUploadUpdatedChangelogs(
+        fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+        frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("no version codes outside its frozen builds")
+    assertThat(fakeClient.createdEdits).isEmpty()
+    assertThat(fakeClient.trackUpdates).isEmpty()
+    assertThat(fakeClient.committedEdits).isEmpty()
+  }
+
+  @Test
   fun testMaybeUploadUpdatedChangelogs_completedRelease_usesFullRolloutPermille() {
     fakeClient.setTrackReleases(
       "alpha",
@@ -466,6 +488,59 @@ class UploadChangelogToPlayConsoleTest {
     )
 
     assertThat(fakeClient.trackUpdates.single().rolloutPermille).isEqualTo(250)
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_multipleLiveReleases_usesSelectedReleasePermille() {
+    // The changelog update targets version code200 and must keep its 750 permille rollout,
+    // even though the earlier v100 release has a different rollout and frozen vc 1000 is
+    // numerically higher.
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+        ),
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(200L), status = "inProgress", rolloutPermille = 750
+        ),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, "Notes.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.versionCode).isEqualTo(200L)
+    assertThat(update.rolloutPermille).isEqualTo(750)
+  }
+
+  @Test
+  fun testMaybeUploadUpdatedChangelogs_selectedCompletedRelease_usesFullPermille() {
+    fakeClient.setTrackReleases(
+      "alpha",
+      listOf(
+        PlayConsoleClient.TrackRelease(
+          versionCodes = listOf(100L), status = "inProgress", rolloutPermille = 250
+        ),
+        PlayConsoleClient.TrackRelease(versionCodes = listOf(200L), status = "completed"),
+        testAlphaFrozenBaseline
+      )
+    )
+    createSharedChangelog(testVersion, "Notes.")
+
+    maybeUploadUpdatedChangelogs(
+      fakeClient, tempFolder.root.absolutePath, testPackageName, testVersion,
+      frozenVersionCodesPerTrack = testFrozenVersionCodesPerTrack
+    )
+
+    val update = fakeClient.trackUpdates.single()
+    assertThat(update.versionCode).isEqualTo(200L)
+    assertThat(update.rolloutPermille).isEqualTo(1000)
   }
 
   @Test
