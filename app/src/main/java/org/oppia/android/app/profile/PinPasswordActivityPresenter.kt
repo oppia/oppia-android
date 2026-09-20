@@ -245,13 +245,11 @@ class PinPasswordActivityPresenter @Inject constructor(
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     val confirmationWord = "RESET"
 
-    // Create a text input field programmatically
     val input = android.widget.EditText(activity).apply {
       inputType = android.text.InputType.TYPE_CLASS_TEXT
       hint = "Type '$confirmationWord' to confirm"
     }
 
-    // Wrap it in a layout to give it margins
     val container = android.widget.FrameLayout(activity)
     val params = android.widget.FrameLayout.LayoutParams(
       android.view.ViewGroup.LayoutParams.MATCH_PARENT,
@@ -263,7 +261,11 @@ class PinPasswordActivityPresenter @Inject constructor(
     input.layoutParams = params
     container.addView(input)
 
-    val alertDialogBuilder = androidx.appcompat.app.AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+    val alertDialogBuilder =
+      androidx.appcompat.app.AlertDialog.Builder(
+        activity,
+        R.style.OppiaAlertDialogTheme
+      )
       .setTitle(
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.admin_confirm_app_wipe_title, appName
@@ -274,7 +276,7 @@ class PinPasswordActivityPresenter @Inject constructor(
           R.string.admin_confirm_app_wipe_message, appName
         )
       )
-      .setView(container) // Attach the input field to the dialog
+      .setView(container)
       .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
@@ -283,27 +285,23 @@ class PinPasswordActivityPresenter @Inject constructor(
         profileManagementController.deleteAllProfiles().toLiveData().observe(
           activity,
           androidx.lifecycle.Observer {
-            // Regardless of the result of the operation, always restart the app.
             confirmedDeletion = true
             activity.finishAffinity()
           }
         )
       }
 
-
     alertDialog = alertDialogBuilder.create()
 
-    // Disable the positive button on startup and listen for text changes
     alertDialog.setOnShowListener { dialogInterface ->
       val dialog = dialogInterface as androidx.appcompat.app.AlertDialog
       val positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-      positiveButton.isEnabled = false // Disabled by default
+      positiveButton.isEnabled = false
 
       input.addTextChangedListener(object : android.text.TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: android.text.Editable?) {
-          // Enable button if text matches "RESET"
           positiveButton.isEnabled = s?.toString().equals(confirmationWord, ignoreCase = true)
         }
       })
@@ -311,7 +309,6 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     alertDialog.show()
   }
-
 
   fun handleOnDestroy() {
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
