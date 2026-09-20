@@ -89,6 +89,12 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      - uses: actions/cache@v5
+        id: coverage_context_cache
+        with:
+          path: changed_files.log
+          key: ${{ runner.os }}-coverage-changed-files-${{ github.sha }}
+
       - name: Check PR for [RunAllTests]
         id: check_pr
         if: ${{ github.event_name == 'pull_request' }}
@@ -117,8 +123,13 @@ jobs:
         # comma-separated list of test targets for the matrix. Note that the extra fetch is to
         # enusre that the base commit is fully fetched locally so that it can be diffed against.
         run: |
-          git fetch origin $base_commit_hash --depth=1
-          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
+          if [[ -f "./changed_files.log" ]]; then
+            echo "Reusing precomputed changed_files.log from unit tests."
+          else
+            echo "Precomputed changed_files.log not found; computing changed files."
+            git fetch origin $base_commit_hash --depth=1
+            bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_files
+          fi
           FILE_BUCKET_LIST=$(cat ./changed_files.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Changed files (note that this might be all files if configured to run all or on the develop branch): $FILE_BUCKET_LIST"
           echo "::set-output name=matrix::{\"changed-files-bucket-base64-encoded-shard\":[$FILE_BUCKET_LIST]}"
@@ -277,6 +288,8 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download Coverage Report Artifacts
+        id: download_reports
+        continue-on-error: true
         uses: actions/download-artifact@v8
         with:
           path: coverage-report-artifact
@@ -284,10 +297,19 @@ jobs:
           merge-multiple: true
 
       - name: Filter Coverage Reports
+        id: filter_reports
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
-          echo "${PB_FILES_LIST[@]}" > pb_files.txt
+          if [[ ${#PB_FILES_LIST[@]} -eq 0 ]] || [[ -z "${PB_FILES_LIST[0]}" ]]; then
+            echo "No coverage report files found. This may indicate all coverage shards failed or produced no output."
+            echo "has_reports=false" >> $GITHUB_OUTPUT
+            touch pb_files.txt
+          else
+            echo "${PB_FILES_LIST[@]}" > pb_files.txt
+            echo "Found ${#PB_FILES_LIST[@]} coverage report file(s)."
+            echo "has_reports=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -307,12 +329,13 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Generate Markdown Coverage Report
+        if: ${{ steps.filter_reports.outputs.has_reports == 'true' }}
         run: |
           bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v7
-        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
+        if: ${{ !cancelled() && steps.filter_reports.outputs.has_reports == 'true' }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
           path: coverage_reports/CoverageReport.md

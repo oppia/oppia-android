@@ -79,6 +79,34 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      - name: Pre-build affected-test scripts
+        run: |
+          # Attempt to build scripts up to 3 times in case there are network flakes during dependency downloads.
+          i=0
+          # Disable exit-on-first-failure.
+          set +e
+          while [ $i -ne 3 ]; do
+            i=$(( $i+1 ))
+            echo "Attempt $i/3 to build affected-test script targets"
+            bazel build --keep_going \
+              //scripts:compute_affected_tests \
+              //scripts:retrieve_affected_tests \
+              //scripts:compute_changed_files
+            last_error_code=$?
+            if [ $last_error_code -eq 0 ]; then
+              break
+            fi
+            # Wait briefly before retrying in case of transient network issues.
+            if [ $i -ne 3 ]; then
+              echo "Build failed on attempt $i, retrying in 3 seconds..."
+              sleep 3
+            fi
+          done
+          # Reenable exit-on-first-failure.
+          set -e
+          # Exit only if the most recent exit was a failure (by using a subshell).
+          (exit $last_error_code)
+
       - name: Check PR for [RunAllTests]
         id: check_pr
         if: ${{ github.event_name == 'pull_request' }}
@@ -109,6 +137,7 @@ jobs:
         run: |
           git fetch origin $base_commit_hash --depth=1
           bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log $base_commit_hash compute_all_tests=$compute_all_targets
+          bazel run //scripts:compute_changed_files -- $(pwd) $(pwd)/changed_files.log $base_commit_hash compute_all_files=$compute_all_targets
           TEST_BUCKET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if configured to run all or on the develop branch): $TEST_BUCKET_LIST"
           echo "::set-output name=matrix::{\"affected-tests-bucket-base64-encoded-shard\":[$TEST_BUCKET_LIST]}"
@@ -118,6 +147,19 @@ jobs:
             echo "::set-output name=can_skip_tests::true"
             echo "No tests are detected as affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
           fi
+
+      - uses: actions/cache@v5
+        id: coverage_context_cache
+        with:
+          path: changed_files.log
+          key: ${{ runner.os }}-coverage-changed-files-${{ github.sha }}
+
+      - name: Upload changed files log for code coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: shared-coverage-changed-files
+          path: changed_files.log
 
   bazel_run_test:
     name: Run Bazel Test
