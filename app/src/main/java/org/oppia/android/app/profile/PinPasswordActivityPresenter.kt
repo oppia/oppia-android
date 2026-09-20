@@ -266,30 +266,30 @@ class PinPasswordActivityPresenter @Inject constructor(
         activity,
         R.style.OppiaAlertDialogTheme
       )
-      .setTitle(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_title, appName
+        .setTitle(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_title, appName
+          )
         )
-      )
-      .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_message, appName
+        .setMessage(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_message, appName
+          )
         )
-      )
-      .setView(container)
-      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(
-          activity,
-          androidx.lifecycle.Observer {
-            confirmedDeletion = true
-            activity.finishAffinity()
-          }
-        )
-      }
+        .setView(container)
+        .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+          pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+          dialog.dismiss()
+        }
+        .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
+          profileManagementController.deleteAllProfiles().toLiveData().observe(
+            activity,
+            androidx.lifecycle.Observer {
+              confirmedDeletion = true
+              activity.finishAffinity()
+            }
+          )
+        }
 
     alertDialog = alertDialogBuilder.create()
 
