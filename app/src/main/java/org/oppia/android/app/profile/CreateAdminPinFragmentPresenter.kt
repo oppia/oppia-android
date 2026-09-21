@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -243,7 +244,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
         label = { Text(text = label) },
         modifier = Modifier
           .fillMaxWidth()
-          .padding(bottom = if (error.isEmpty()) 16.dp else 4.dp)
+          .padding(bottom = 4.dp)
           .then(
             if (focusRequester != null) Modifier.focusRequester(focusRequester)
             else Modifier
@@ -278,13 +279,15 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
           focusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color)
         )
       )
-      if (error.isNotEmpty()) {
-        Text(
-          text = error,
-          color = colorResource(R.color.component_color_shared_error_color),
-          fontSize = 12.sp,
-          modifier = Modifier.padding(bottom = 12.dp, start = 16.dp)
-        )
+      Box(modifier = Modifier.height(28.dp)) {
+        if (error.isNotEmpty()) {
+          Text(
+            text = error,
+            color = colorResource(R.color.component_color_shared_error_color),
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 16.dp)
+          )
+        }
       }
     }
   }
@@ -359,21 +362,19 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   }
 
   private fun onPinChanged(newValue: String) {
-    if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-      uiState = uiState.toBuilder()
-        .setPin(newValue)
-        .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
-        .build()
-    }
+    val pin = newValue.filter(Char::isDigit).take(ADMIN_PIN_LENGTH)
+    uiState = uiState.toBuilder()
+      .setPin(pin)
+      .setShowError(if (pin.isNotEmpty()) false else uiState.showError)
+      .build()
   }
 
   private fun onConfirmPinChanged(newValue: String) {
-    if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
-      uiState = uiState.toBuilder()
-        .setConfirmPin(newValue)
-        .setShowError(if (newValue.isNotEmpty()) false else uiState.showError)
-        .build()
-    }
+    val confirmPin = newValue.filter(Char::isDigit).take(ADMIN_PIN_LENGTH)
+    uiState = uiState.toBuilder()
+      .setConfirmPin(confirmPin)
+      .setShowError(if (confirmPin.isNotEmpty()) false else uiState.showError)
+      .build()
   }
 
   private fun onBackClicked() {

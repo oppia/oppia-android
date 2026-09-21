@@ -3,15 +3,18 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.semantics.SemanticsProperties.EditableText
+import androidx.compose.ui.test.SemanticsMatcher.Companion.expectValue
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertValueEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.text.AnnotatedString
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -188,19 +191,9 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withEmptyPin_showsBlankPinError_continueButtonIsDisabled() {
+  fun testFragment_withEmptyPin_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_blank_error))
-        .assertIsDisplayed()
 
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
@@ -209,23 +202,13 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withFilledPinAndEmptyConfirmPin_showsMismatchError() {
+  fun testFragment_withFilledPinAndEmptyConfirmPin_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
         .performTextInput("12345")
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
-        .assertIsDisplayed()
 
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
@@ -279,7 +262,7 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_inputShortPin_inputSameShortConfirmPin_showsErrorForPin_continueIsDisabled() {
+  fun testFragment_inputMatchingShortPins_doesNotShowMismatchError_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -298,10 +281,10 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123")
 
-      // Verify that the mismatch error is shown for the confirm PIN field.
+      // Matching short PINs do not produce a mismatch error.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
-        .assertIsDisplayed()
+        .assertDoesNotExist()
 
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
@@ -375,7 +358,6 @@ class CreateAdminPinFragmentTest {
       val enterPinNode = context.getString(R.string.create_admin_pin_activity_enter_pin_label)
       composeRule
         .onNodeWithText(enterPinNode)
-        .performClick()
         .performTextInput("12")
 
       composeRule
@@ -388,10 +370,7 @@ class CreateAdminPinFragmentTest {
 
       // Continue typing more digits.
       composeRule.onNodeWithText(enterPinNode)
-        .performClick()
         .performTextInput("345")
-
-      composeRule.waitForIdle()
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
@@ -402,8 +381,6 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("12345")
 
-      composeRule.waitForIdle()
-
       // Enter matching confirm PIN; continue should be enabled now.
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
@@ -413,6 +390,7 @@ class CreateAdminPinFragmentTest {
 
   @Test
   fun testFragment_imeActionDone_withMatchingValidPins_navigatesToProfileChooser() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -428,15 +406,16 @@ class CreateAdminPinFragmentTest {
 
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .performClick()
         .performImeAction()
 
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
   fun testFragment_clickContinue_withMatchingValidPins_navigatesToProfileChooser() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -454,6 +433,7 @@ class CreateAdminPinFragmentTest {
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .performClick()
 
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -483,10 +463,10 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("abc12def")
 
-      // Should only accept the digits.
+      // The password field masks the two accepted digits in Compose semantics.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
-        .assertValueEquals("12")
+        .assert(expectValue(EditableText, AnnotatedString("••")))
     }
   }
 
@@ -501,10 +481,10 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("abc12def")
 
-      // Should only accept the digits.
+      // The password field masks the two accepted digits in Compose semantics.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .assertValueEquals("12")
+        .assert(expectValue(EditableText, AnnotatedString("••")))
     }
   }
 
@@ -521,10 +501,10 @@ class CreateAdminPinFragmentTest {
 
       testCoroutineDispatchers.runCurrent()
 
-      // Should only accept the first 5 digits.
+      // The password field masks the five accepted digits in Compose semantics.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
-        .assertValueEquals("12345")
+        .assert(expectValue(EditableText, AnnotatedString("•••••")))
     }
   }
 
@@ -539,10 +519,10 @@ class CreateAdminPinFragmentTest {
         .performClick()
         .performTextInput("123456789")
 
-      // Should only accept the first 5 digits.
+      // The password field masks the five accepted digits in Compose semantics.
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .assertValueEquals("12345")
+        .assert(expectValue(EditableText, AnnotatedString("•••••")))
     }
   }
 
