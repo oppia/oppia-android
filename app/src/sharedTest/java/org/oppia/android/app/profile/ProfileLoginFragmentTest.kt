@@ -610,6 +610,10 @@ class ProfileLoginFragmentTest {
         .assertIsDisplayed()
 
       composeRule
+        .onNodeWithText("Type 'RESET' to confirm")
+        .performTextInput("RESET")
+
+      composeRule
         .onNodeWithText(
           context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
         )

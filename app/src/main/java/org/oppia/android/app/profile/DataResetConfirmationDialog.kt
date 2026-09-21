@@ -63,7 +63,7 @@ fun DataResetConfirmationDialog(
     confirmButton = {
       TextButton(
         onClick = { deleteAppData() },
-        enabled = inputText.equals(confirmationWord, ignoreCase = true)
+        enabled = inputText == confirmationWord
       ) {
         Text(
           stringResource(

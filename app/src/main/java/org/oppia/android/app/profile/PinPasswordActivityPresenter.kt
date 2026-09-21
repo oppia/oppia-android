@@ -302,7 +302,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: android.text.Editable?) {
-          positiveButton.isEnabled = s?.toString().equals(confirmationWord, ignoreCase = true)
+          positiveButton.isEnabled = s?.toString() == confirmationWord
         }
       })
     }
