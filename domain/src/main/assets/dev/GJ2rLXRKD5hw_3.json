@@ -21,6 +21,18 @@
       }
     }
   },
+  "sections": [
+    {
+      "heading": {
+        "content_id": "section_heading_0",
+        "unicode_str": "Mixed Numbers"
+      },
+      "content": {
+        "content_id": "section_content_1",
+        "html": "<p>Description of subtopic is here.</p>"
+      }
+    }
+  ],
   "subtopic_title": "Mixed Numbers",
   "next_subtopic_dict": null
 }

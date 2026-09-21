@@ -1,4 +1,4 @@
-# Updates the staged rollout fraction for a live release on a single Play Console track,
+# Updates the staged rollout permille for a live release on a single Play Console track,
 # without re-uploading the binary. This is the correct way to move a release from a staged
 # rollout (e.g. 25%) to a higher percentage (e.g. 50% or 100%) after the initial deployment.
 #
@@ -6,7 +6,7 @@
 # deploy_updated_changelog.yml to prevent two simultaneous Play Console edit sessions, since
 # the Play Developer API enforces a single active edit per package at a time.
 
-name: Update Rollout Fraction
+name: Update Rollout Permille
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ on:
           Version in major.minor format (e.g. '0.17'). Must match a live release on the track.
         required: true
         type: string
-      rollout_fraction:
+      rollout_permille:
         description: >
           New rollout as an integer [0, 1000] where 1000 = 100% (full rollout).
           Example: 250 = 25%, 500 = 50%, 1000 = full rollout.
@@ -39,7 +39,7 @@ concurrency:
 
 jobs:
   update_rollout:
-    name: Update rollout fraction on ${{ github.event.inputs.track }}
+    name: Update rollout permille on ${{ github.event.inputs.track }}
     runs-on: ubuntu-24.04
     environment: oppia-android-release-env
     permissions:
@@ -52,7 +52,7 @@ jobs:
       - name: Validate inputs
         run: |
           VERSION="${{ github.event.inputs.version }}"
-          ROLLOUT="${{ github.event.inputs.rollout_fraction }}"
+          ROLLOUT="${{ github.event.inputs.rollout_permille }}"
 
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Invalid version '$VERSION'. Must be in major.minor format (e.g. '0.17')."
@@ -60,7 +60,7 @@ jobs:
           fi
 
           if [[ ! "$ROLLOUT" =~ ^[0-9]+$ ]] || (( ROLLOUT < 0 || ROLLOUT > 1000 )); then
-            echo "::error::Invalid rollout_fraction '$ROLLOUT'. Must be an integer in [0, 1000]."
+            echo "::error::Invalid rollout_permille '$ROLLOUT'. Must be an integer in [0, 1000]."
             exit 1
           fi
 
@@ -94,9 +94,9 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Update rollout fraction
+      - name: Update rollout permille
         run: |
-          bazel run //scripts:update_rollout_fraction -- \
+          bazel run //scripts:update_rollout_permille -- \
             "$GITHUB_WORKSPACE" \
             "org.oppia.android" \
             "${{ github.event.inputs.track }}" \

@@ -78,12 +78,17 @@ private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_next_state_result"
 private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.current_state"
 private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
+private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID =
   "ExplorationProgressController.update_written_translation_content"
 private const val MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_flashback_state_result"
 private const val MOVE_BACK_TO_LATEST_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_back_to_latest_state_result"
+private const val PAUSE_HINTS_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.pause_hints_result"
+private const val RESUME_HINTS_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.resume_hints_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
@@ -139,7 +144,7 @@ class ExplorationProgressController @Inject constructor(
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
-  private lateinit var profileId: ProfileId
+  private var profileId: ProfileId? = null
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -409,6 +414,30 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
+   * Pauses the hint timer while the hint & solution dialog is open.
+   *
+   * @return a [DataProvider] that indicates success/failure of the pause operation
+   */
+  fun pauseHints(): DataProvider<Any?> {
+    val pauseResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.PauseHints(activeSessionId, pauseResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for pausing hints." }
+    return pauseResultFlow.convertToSessionProvider(PAUSE_HINTS_RESULT_PROVIDER_ID)
+  }
+
+  /**
+   * Resumes the hint timer after the hint & solution dialog is dismissed.
+   *
+   * @return a [DataProvider] that indicates success/failure of the resume operation
+   */
+  fun resumeHints(): DataProvider<Any?> {
+    val resumeResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.ResumeHints(activeSessionId, resumeResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for resuming hints." }
+    return resumeResultFlow.convertToSessionProvider(RESUME_HINTS_RESULT_PROVIDER_ID)
+  }
+
+  /**
    * Returns a [DataProvider] monitoring the current [EphemeralState] the learner is currently
    * viewing.
    *
@@ -442,8 +471,10 @@ class ExplorationProgressController @Inject constructor(
    * subscription to this method's returned [DataProvider].
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
+    val currentProfileId = profileId ?: profileManagementController.getCurrentProfileId()
+      ?: ProfileId.newBuilder().setInternalId(DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID).build()
     val writtenTranslationContentLocale =
-      translationController.getWrittenTranslationContentLocale(profileId)
+      translationController.getWrittenTranslationContentLocale(currentProfileId)
     val ephemeralStateDataProvider =
       mostRecentEphemeralStateFlow.convertToSessionProvider(CURRENT_STATE_PROVIDER_ID)
     return writtenTranslationContentLocale.combineWith(
@@ -584,6 +615,10 @@ class ExplorationProgressController @Inject constructor(
               controllerState.moveToNextStateImpl(message.callbackFlow)
             is ControllerMessage.LogUpdatedHelpIndex ->
               controllerState.maybeLogUpdatedHelpIndex(message.helpIndex, activeSessionId)
+            is ControllerMessage.PauseHints ->
+              controllerState.pauseHintsImpl(message.callbackFlow)
+            is ControllerMessage.ResumeHints ->
+              controllerState.resumeHintsImpl(message.callbackFlow)
             is ControllerMessage.ProcessSavedCheckpointResult -> {
               controllerState.processSaveCheckpointResult(
                 message.profileId,
@@ -878,7 +913,9 @@ class ExplorationProgressController @Inject constructor(
       }
 
       if (!isContinueButtonAnimationSeen) {
-        profileManagementController.markContinueButtonAnimationSeen(profileId)
+        profileManagementController.markContinueButtonAnimationSeen(
+          explorationProgress.currentProfileId
+        )
       }
       isContinueButtonAnimationSeen = true
     }
@@ -977,6 +1014,34 @@ class ExplorationProgressController @Inject constructor(
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
       checkForChangedHintState(helpIndex)
+    }
+  }
+
+  private suspend fun ControllerState.pauseHintsImpl(
+    pauseResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(pauseResultFlow, recomputeState = false) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot pause hints if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot pause hints while the exploration is being loaded."
+      }
+      hintHandler.pauseHints()
+    }
+  }
+
+  private suspend fun ControllerState.resumeHintsImpl(
+    resumeResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(resumeResultFlow, recomputeState = false) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot resume hints if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot resume hints while the exploration is being loaded."
+      }
+      hintHandler.resumeHints()
     }
   }
 
@@ -1604,6 +1669,18 @@ class ExplorationProgressController @Inject constructor(
 
     /** [ControllerMessage] to move to the latest state in the exploration. */
     data class MoveBackToLatest(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] to pause the hint timer while the hint dialog is open. */
+    data class PauseHints(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
+
+    /** [ControllerMessage] to resume the hint timer after the hint dialog is dismissed. */
+    data class ResumeHints(
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()

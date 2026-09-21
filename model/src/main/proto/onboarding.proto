@@ -33,6 +33,10 @@ message AppStartupState {
     // they are using an OS version that is no longer supported. The user should be shown a prompt
     // to update their OS.
     OS_IS_DEPRECATED = 5;
+
+    // Indicates that automatic expiration is enabled and the manifest expiry date has been reached.
+    // The user should be shown an automatic-expiry notice and prevented from continuing.
+    APP_IS_EXPIRED = 6;
   }
 
   // Describes different notices that may be shown to the user on startup depending on whether

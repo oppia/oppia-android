@@ -94,7 +94,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -180,11 +179,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testGetCurrentState_noExploration_throwsException() {
-    // Can't retrieve the current state until the play session is started.
-    assertThrows<UninitializedPropertyAccessException>() {
+  fun testGetCurrentState_noExploration_returnsFailure() {
+    // The provider can be requested before a play session starts, but cannot provide a state yet.
+    val error = monitorFactory.waitForNextFailureResult(
       explorationProgressController.getCurrentState()
-    }
+    )
+
+    assertThat(error).hasMessageThat().contains("Exploration is not yet initialized.")
   }
 
   @Test
@@ -903,6 +904,90 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.isHintRevealed(0)).isTrue()
     assertThat(ephemeralState.isSolutionRevealed()).isFalse()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testPauseHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.pauseHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testResumeHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.resumeHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseHints_timerPauses_solutionNotVisibleAfterDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 20 seconds (total 30 seconds since hint reveal): solution must NOT be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenResume_solutionVisibleAfterRemainingDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 15 seconds while paused.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+
+    // Resume hints: remaining delay is 20 seconds.
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    // Wait 19 seconds after resume: solution should not be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(19))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    // Wait 1 more second (20s since resume): solution should now be visible!
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(SHOW_SOLUTION)
   }
