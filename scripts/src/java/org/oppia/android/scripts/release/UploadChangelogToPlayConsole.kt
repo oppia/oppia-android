@@ -28,6 +28,12 @@ import java.io.File
  *       `config/changelogs/<version>[_<track>].md`
  *   3. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
  *
+ * Example:
+ * ```
+ * bazel run //scripts:upload_changelog_to_play_console -- \
+ *   "$(pwd)" org.oppia.android 0.18 "$(gcloud auth print-access-token)"
+ * ```
+ *
  * An optional 5th argument overrides the API base URL. This is used in tests to route all
  * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
  */
@@ -69,12 +75,14 @@ fun main(args: Array<String>) {
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
  */
 fun maybeUploadUpdatedChangelogs(
   client: PlayConsoleClient,
   workspacePath: String,
   packageName: String,
-  version: String
+  version: String,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   val liveTracks = auditLiveTracks(client, packageName)
 
@@ -90,15 +98,15 @@ fun maybeUploadUpdatedChangelogs(
       println("Track '$track': no changelog file found for version $version — skipping.")
       continue
     }
-    val versionCode = checkNotNull(releases.flatMap { it.versionCodes }.maxOrNull()) {
-      "Track '$track' has live releases but no version codes — this should not happen."
+    val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+    val (selectedRelease, versionCode) = checkNotNull(
+      findHighestNonFrozenVersionCode(releases, frozenVersionCodes)
+    ) {
+      "Track '$track' has no version codes outside its frozen builds — cannot update its changelog."
     }
-    // Preserve the existing rollout permille so this changelog-only update does not alter
-    // the staged rollout percentage. inProgress releases carry a rolloutPermille; completed
-    // releases are already at 100% so fall back to 1000.
-    val rolloutPermille =
-      releases.firstOrNull { it.status == "inProgress" }?.rolloutPermille ?: 1000
-    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
+    // Preserve the rollout of the release containing the selected version code. Completed
+    // releases are already at 100%, so fall back to 1000 when they have no rollout permille.
+    val rolloutPermille = selectedRelease.rolloutPermille ?: 1000
     if (frozenVersionCodes.isNotEmpty()) {
       val liveVersionCodes = releases.flatMap { it.versionCodes }.toSet()
       val missingFrozen = frozenVersionCodes - liveVersionCodes
