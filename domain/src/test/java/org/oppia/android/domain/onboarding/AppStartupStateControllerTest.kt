@@ -20,6 +20,7 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.NO_NOTI
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_BETA_NOTICE
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
+import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_EXPIRED
 import org.oppia.android.app.model.AppStartupState.StartupMode.OPTIONAL_UPDATE_AVAILABLE
 import org.oppia.android.app.model.AppStartupState.StartupMode.OS_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
@@ -200,7 +201,7 @@ class AppStartupStateControllerTest {
     val appStartupState = appStartupStateController.getAppStartupState()
 
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
-    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
   }
 
   @Test
@@ -211,7 +212,7 @@ class AppStartupStateControllerTest {
     val appStartupState = appStartupStateController.getAppStartupState()
 
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
-    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
   }
 
   @Test
@@ -258,7 +259,7 @@ class AppStartupStateControllerTest {
     val appStartupState = appStartupStateController.getAppStartupState()
 
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
-    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
   }
 
   @Test
@@ -302,7 +303,7 @@ class AppStartupStateControllerTest {
 
     // Despite the user completing the onboarding flow, the app is still deprecated.
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
-    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
   }
 
   /* Tests to verify that beta & no notices are shown at the expected times. */
@@ -807,6 +808,84 @@ class AppStartupStateControllerTest {
   }
 
   @Test
+  fun testController_deprecationEnabled_initialLaunch_expired_returnsAppExpired() {
+    TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
+    setUpTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
+  }
+
+  @Test
+  fun testController_deprecationEnabled_onboarded_expired_returnsAppExpired() {
+    setUpTestApplicationWithAppAndOSDeprecationEnabled()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
+  }
+
+  @Test
+  fun testController_deprecationEnabled_onboarded_notExpired_returnsUserOnboarded() {
+    setUpTestApplicationWithAppAndOSDeprecationEnabled()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
+  }
+
+  @Test
+  fun testController_deprecationEnabled_onboarded_expirationDisabled_returnsUserOnboarded() {
+    setUpTestApplicationWithAppAndOSDeprecationEnabled()
+    setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
+  }
+
+  @Test
+  fun testController_deprecationEnabled_expired_priorResponses_returnsAppExpired() {
+    setParameterOverride(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
+    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
+    setUpTestApplicationWithAppAndOSDeprecationEnabled(
+      previousResponses = listOf(appDeprecationResponse, osDeprecationResponse)
+    )
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
+  }
+
+  @Test
+  fun testController_deprecationEnabled_expired_osDeprecated_returnsAppExpired() {
+    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
+    setUpTestApplicationWithAppAndOSDeprecationEnabled()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val mode = monitorFactory.waitForNextSuccessfulResult(
+      appStartupStateController.getAppStartupState()
+    )
+
+    assertThat(mode.startupMode).isEqualTo(APP_IS_EXPIRED)
+  }
+
+  @Test
   fun testController_appAndOsDeprecationEnabled_initialLaunch_startupModeIsUserNotOnboarded() {
     TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
     executeInPreviousAppInstance { testComponent ->
@@ -929,7 +1008,7 @@ class AppStartupStateControllerTest {
       }
     }
 
-    setUpTestApplicationComponent()
+    setUpDefaultTestApplicationComponent()
   }
 
   /**

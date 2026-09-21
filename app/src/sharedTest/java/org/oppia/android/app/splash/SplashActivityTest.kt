@@ -240,6 +240,52 @@ class SplashActivityTest {
   }
 
   @Test
+  fun testOpenApp_initial_deprecationEnabled_appExpired_showsAutomaticExpiryDialog() {
+    TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    launchSplashActivityFully { scenario ->
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testOpenApp_onboardedBeta_deprecationEnabled_expired_showsAutomaticExpiryDialog() {
+    simulateAppAlreadyOnboarded()
+    TestModule.buildFlavor = BuildFlavor.BETA
+    TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    launchSplashActivityFully { scenario ->
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
   fun testOpenApp_initial_expirationEnabled_afterExpDate_clickOnCloseDialog_endsActivity() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
