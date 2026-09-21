@@ -95,10 +95,10 @@
       android:paddingTop="@dimen/locked_chapter_prerequisite_tooltip_padding_top"
       android:paddingEnd="@dimen/locked_chapter_prerequisite_tooltip_padding_end"
       android:paddingBottom="@dimen/locked_chapter_prerequisite_tooltip_padding_bottom"
-      android:text="@{viewModel.computePrerequisiteTooltipText()}"
+      android:text="@{viewModel.computeChapterPlayStateIconContentDescription()}"
       android:textColor="@color/component_color_shared_secondary_5_text_color"
       android:textSize="@dimen/locked_chapter_prerequisite_tooltip_text_size"
-      android:visibility="@{viewModel.isPrerequisiteTooltipVisible ? View.VISIBLE : View.GONE}" />
+      android:visibility="@{viewModel.prerequisiteTooltipVisible ? View.VISIBLE : View.GONE}" />
 
     <View
       android:id="@+id/divider"

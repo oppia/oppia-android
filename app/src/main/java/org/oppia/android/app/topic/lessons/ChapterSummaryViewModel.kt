@@ -26,7 +26,7 @@ class ChapterSummaryViewModel(
    * Only meaningful when [chapterPlayState] is
    * [ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES]. Toggled by [onClick].
    */
-  val isPrerequisiteTooltipVisible = ObservableBoolean(false)
+  val prerequisiteTooltipVisible = ObservableBoolean(false)
 
   /** True when this chapter cannot be played until a prior chapter is completed. */
   val isLocked: Boolean
@@ -40,22 +40,22 @@ class ChapterSummaryViewModel(
    */
   fun onClick(explorationId: String) {
     if (isLocked) {
-      val willShow = !isPrerequisiteTooltipVisible.get()
+      val willShow = !prerequisiteTooltipVisible.get()
       if (willShow) {
         lockedChapterTooltipCoordinator?.onLockedChapterTooltipRequested(this)
       }
-      isPrerequisiteTooltipVisible.set(willShow)
+      prerequisiteTooltipVisible.set(willShow)
       return
     }
     // Hide any leftover tooltip state before navigating away.
-    isPrerequisiteTooltipVisible.set(false)
+    prerequisiteTooltipVisible.set(false)
     chapterSummarySelector.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 
   /** Hides the locked-chapter micro-tooltip if it is showing. */
   fun hidePrerequisiteTooltip() {
-    if (isPrerequisiteTooltipVisible.get()) {
-      isPrerequisiteTooltipVisible.set(false)
+    if (prerequisiteTooltipVisible.get()) {
+      prerequisiteTooltipVisible.set(false)
     }
   }
 
