@@ -249,7 +249,12 @@ class PinPasswordActivityPresenter @Inject constructor(
       inputType = android.text.InputType.TYPE_CLASS_TEXT
       isSingleLine = true
       filters = arrayOf(android.text.InputFilter.LengthFilter(5))
-      hint = resourceHandler.getStringInLocaleWithoutWrapping(R.string.admin_confirm_app_wipe_input_hint, confirmationWord)
+      hint =
+      resourceHandler.
+        getStringInLocaleWithoutWrapping(
+          R.string.admin_confirm_app_wipe_input_hint,
+          confirmationWord
+        )
     }
 
     val container = android.widget.FrameLayout(activity)

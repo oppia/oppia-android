@@ -633,7 +633,6 @@ class ProfileLoginFragmentTest {
       inputNode.performTextReplacement("RESET")
       positiveButtonNode.assertIsEnabled()
 
-
       composeRule
         .onNodeWithText(
           context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
