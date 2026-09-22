@@ -744,4 +744,19 @@
   <string name="admin_intro_activity_header">As the admin of the app, you can</string>
   <string name="admin_intro_activity_settings_text">Manage profile settings for all learners on this device</string>
   <string name="admin_intro_activity_learners_text">Add new learners to this device (up to 10)</string>
+
+  <string name="number_with_units_error_invalid_token">Please do not use invalid characters.</string>
+  <string name="number_with_units_error_invalid_unit">Please enter a valid unit.</string>
+  <string name="number_with_units_error_empty_input">Please enter a number with units.</string>
+  <string name="number_with_units_error_number_expected">Please enter a number before the unit.</string>
+  <string name="number_with_units_error_unit_expected">Please enter a unit after the number.</string>
+  <string name="number_with_units_error_unbalanced_parentheses">Please make sure all parentheses are closed.</string>
+  <string name="number_with_units_error_missing_denominator">Please enter a denominator for the fraction.</string>
+  <string name="number_with_units_error_missing_exponent">Please enter an exponent for the unit.</string>
+  <string name="number_with_units_error_unit_expected_after_si_prefix">Please enter a unit after the SI prefix.</string>
+  <string name="number_with_units_error_number_expected_after_currency">Please enter a number after the currency symbol.</string>
+  <string name="number_with_units_error_unit_expected_after_division">Please enter a unit after the division symbol.</string>
+  <string name="number_with_units_error_duplicate_currency">Please do not use multiple currency units.</string>
+  <string name="number_with_units_error_trailing_tokens">Please remove any extra characters at the end.</string>
+  <string name="number_with_units_error_generic">Please enter a valid number with units.</string>
 </resources>
