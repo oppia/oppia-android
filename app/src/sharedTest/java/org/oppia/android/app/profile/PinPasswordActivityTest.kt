@@ -1515,17 +1515,22 @@ class PinPasswordActivityTest {
       .inRoot(isDialog())
       .perform(click())
 
-    val positiveButton =
-      onView(withText(context.getString
-      (R.string.admin_confirm_app_wipe_positive_button_text
-        )))
-      .inRoot(isDialog())
-    val inputField =
-      onView(withHint(context.getString
-      (R.string.admin_confirm_app_wipe_input_hint,
-        "RESET"
-        )))
-      .inRoot(isDialog())
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
 
     positiveButton.check(matches(not(isEnabled())))
 

@@ -250,8 +250,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       isSingleLine = true
       filters = arrayOf(android.text.InputFilter.LengthFilter(5))
       hint =
-      resourceHandler.
-        getStringInLocaleWithoutWrapping(
+        resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.admin_confirm_app_wipe_input_hint,
           confirmationWord
         )

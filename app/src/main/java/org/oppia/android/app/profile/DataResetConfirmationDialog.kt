@@ -43,9 +43,11 @@ fun DataResetConfirmationDialog(
           value = inputText,
           onValueChange = { inputText = it },
           label = {
-          Text(stringResource
-          (R.string.admin_confirm_app_wipe_input_hint,
-            confirmationWord)
+            Text(
+              stringResource(
+                R.string.admin_confirm_app_wipe_input_hint,
+                confirmationWord
+              )
             )
           },
           singleLine = true,
