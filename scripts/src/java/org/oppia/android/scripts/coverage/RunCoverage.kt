@@ -289,7 +289,12 @@ class RunCoverage(
     }
 
     val totalLinesFound = aggregatedCoveredLines.size
-    val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
+    // PARTIAL lines were executed (hit) but have incomplete branch coverage; keep counting them
+    // toward line hits so percentages stay aligned with LCOV LH and only the report styling
+    // distinguishes partial vs full.
+    val totalLinesHit = aggregatedCoveredLines.count {
+      it.coverage == Coverage.FULL || it.coverage == Coverage.PARTIAL
+    }
 
     val coverageDetails = CoverageDetails.newBuilder()
       .addAllBazelTestTargets(allBazelTestTargets)
