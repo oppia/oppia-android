@@ -2323,7 +2323,7 @@ class RunCoverageTest {
       <td class="uncovered-line">    fun sumNumbers(a: Int, b: Int): Any {</td>
     </tr><tr>
       <td class="line-number-row">   6</td>
-      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+      <td class="partially-covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
       <td class="line-number-row">   7</td>
       <td class="covered-line">          "Both numbers are zero"</td>
@@ -2548,7 +2548,7 @@ class RunCoverageTest {
       <td class="uncovered-line">    fun ${getExpectedFuncName(filePath)}(a: Int, b: Int): Any {</td>
     </tr><tr>
       <td class="line-number-row">   6</td>
-      <td class="covered-line">      return if (a == 0 && b == 0) {</td>
+      <td class="partially-covered-line">      return if (a == 0 && b == 0) {</td>
     </tr><tr>
       <td class="line-number-row">   7</td>
       <td class="covered-line">          "Both numbers are zero"</td>
