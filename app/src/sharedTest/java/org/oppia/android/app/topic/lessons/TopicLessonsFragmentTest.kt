@@ -92,6 +92,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -114,6 +115,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -574,22 +576,21 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickTwoDifferentLockedChapters_showsOnlyLatestTooltip() {
+  fun testLessonsPlayFragment_loadTestTopic_clickTwoDifferentLockedChapters_showsOnlyLatestTooltip() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0
       )
     ).use {
       clickLessonTab()
-      // Second ratios story has two locked chapters when prior story is incomplete.
-      scrollToPosition(position = 2)
-      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
+      // First Story has three chapters; chapters 2 and 3 start locked.
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       testCoroutineDispatchers.runCurrent()
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 0,
+          position = 1,
           targetViewId = R.id.locked_chapter_container
         )
       ).perform(click())
@@ -597,14 +598,14 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 0,
+          position = 1,
           targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(isDisplayed()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 1,
+          position = 2,
           targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(not(isDisplayed())))
@@ -612,7 +613,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 1,
+          position = 2,
           targetViewId = R.id.locked_chapter_container
         )
       ).perform(click())
@@ -620,22 +621,22 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 0,
+          position = 1,
           targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(not(isDisplayed())))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
-          position = 1,
+          position = 2,
           targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(isDisplayed()))
         .check(
           matches(
             withText(
-              "Chapter 2: Writing Ratios in Simplest Form is currently locked. Please complete " +
-                "chapter 1: Equivalent Ratios to unlock this chapter."
+              "Chapter 3: Math Expressions is currently locked. Please complete chapter 2: " +
+                "Image Region Selection Exploration to unlock this chapter."
             )
           )
         )
