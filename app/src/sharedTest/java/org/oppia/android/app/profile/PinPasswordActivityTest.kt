@@ -7,6 +7,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -18,10 +19,12 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
+import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputEditText
@@ -1511,6 +1514,26 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
+
+    val positiveButton = onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
+      .inRoot(isDialog())
+    val inputField = onView(withHint(context.getString(R.string.admin_confirm_app_wipe_input_hint, "RESET")))
+      .inRoot(isDialog())
+
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("RES"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("reset"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("WRONG"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+
     onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
       .inRoot(isDialog())
       .perform(click())

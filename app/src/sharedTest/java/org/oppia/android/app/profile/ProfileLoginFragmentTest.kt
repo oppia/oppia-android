@@ -6,6 +6,9 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -609,9 +612,27 @@ class ProfileLoginFragmentTest {
       )
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText("Type 'RESET' to confirm")
-        .performTextInput("RESET")
+      val positiveButtonNode = composeRule.onNodeWithText(
+        context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
+      )
+      val inputNode = composeRule.onNodeWithText(
+        context.getString(R.string.admin_confirm_app_wipe_input_hint, "RESET")
+      )
+
+      positiveButtonNode.assertIsNotEnabled()
+
+      inputNode.performTextReplacement("RES")
+      positiveButtonNode.assertIsNotEnabled()
+
+      inputNode.performTextReplacement("reset")
+      positiveButtonNode.assertIsNotEnabled()
+
+      inputNode.performTextReplacement("WRONG")
+      positiveButtonNode.assertIsNotEnabled()
+
+      inputNode.performTextReplacement("RESET")
+      positiveButtonNode.assertIsEnabled()
+
 
       composeRule
         .onNodeWithText(

@@ -42,7 +42,7 @@ fun DataResetConfirmationDialog(
         OutlinedTextField(
           value = inputText,
           onValueChange = { inputText = it },
-          label = { Text("Type '$confirmationWord' to confirm") },
+          label = { Text(stringResource(R.string.admin_confirm_app_wipe_input_hint, confirmationWord)) },
           singleLine = true,
           modifier = Modifier.fillMaxWidth()
         )

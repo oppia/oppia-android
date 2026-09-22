@@ -247,7 +247,9 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     val input = android.widget.EditText(activity).apply {
       inputType = android.text.InputType.TYPE_CLASS_TEXT
-      hint = "Type '$confirmationWord' to confirm"
+      isSingleLine = true
+      filters = arrayOf(android.text.InputFilter.LengthFilter(5))
+      hint = resourceHandler.getStringInLocaleWithoutWrapping(R.string.admin_confirm_app_wipe_input_hint, confirmationWord)
     }
 
     val container = android.widget.FrameLayout(activity)
@@ -292,6 +294,8 @@ class PinPasswordActivityPresenter @Inject constructor(
         }
 
     alertDialog = alertDialogBuilder.create()
+
+    alertDialog.setCanceledOnTouchOutside(false)
 
     alertDialog.setOnShowListener { dialogInterface ->
       val dialog = dialogInterface as androidx.appcompat.app.AlertDialog
