@@ -1609,9 +1609,26 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
-    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
-      .inRoot(isDialog())
-      .perform(click())
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+    positiveButton.perform(click())
     testCoroutineDispatchers.runCurrent()
     // After deletion, verify the app startup state reflects that no profiles exist.
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -1643,9 +1660,26 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
-    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
-      .inRoot(isDialog())
-      .perform(click())
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+    positiveButton.perform(click())
     testCoroutineDispatchers.runCurrent()
     // Verify that the locale is preserved (English) after the reset.
     scenario.onActivity { activity ->
