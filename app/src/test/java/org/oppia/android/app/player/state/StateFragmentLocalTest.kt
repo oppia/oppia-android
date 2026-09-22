@@ -52,7 +52,6 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -382,8 +381,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
-  @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
@@ -414,8 +411,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
-  @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {

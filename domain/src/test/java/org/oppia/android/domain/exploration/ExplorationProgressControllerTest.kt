@@ -94,7 +94,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -180,11 +179,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testGetCurrentState_noExploration_throwsException() {
-    // Can't retrieve the current state until the play session is started.
-    assertThrows<UninitializedPropertyAccessException>() {
+  fun testGetCurrentState_noExploration_returnsFailure() {
+    // The provider can be requested before a play session starts, but cannot provide a state yet.
+    val error = monitorFactory.waitForNextFailureResult(
       explorationProgressController.getCurrentState()
-    }
+    )
+
+    assertThat(error).hasMessageThat().contains("Exploration is not yet initialized.")
   }
 
   @Test
