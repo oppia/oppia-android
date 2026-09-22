@@ -80,7 +80,7 @@
 
     <!-- Micro-tooltip: shown when the locked chapter row is tapped. -->
     <TextView
-      android:id="@+id/locked_chapter_prerequisite_tooltip"
+      android:id="@+id/lessons_locked_chapter_view_prerequisite_tooltip_text_view"
       style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

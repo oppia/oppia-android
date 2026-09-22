@@ -79,12 +79,6 @@ class ChapterSummaryViewModel(
     }
   }
 
-  /**
-   * Returns the learner-facing prerequisite message shown in the locked-chapter
-   * micro-tooltip.
-   */
-  fun computePrerequisiteTooltipText(): String = computeLockedPrerequisiteMessage()
-
   fun computePlayChapterIndexText(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.topic_play_chapter_index, (index + 1).toString()

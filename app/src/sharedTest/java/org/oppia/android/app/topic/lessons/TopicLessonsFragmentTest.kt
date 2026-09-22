@@ -500,7 +500,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(not(isDisplayed())))
       onView(
@@ -515,7 +515,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(isDisplayed()))
         .check(
@@ -552,7 +552,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(isDisplayed()))
       onView(
@@ -567,9 +567,78 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_clickTwoDifferentLockedChapters_showsOnlyLatestTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      // Second ratios story has two locked chapters when prior story is incomplete.
+      scrollToPosition(position = 2)
+      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+        .check(
+          matches(
+            withText(
+              "Chapter 2: Writing Ratios in Simplest Form is currently locked. Please complete " +
+                "chapter 1: Equivalent Ratios to unlock this chapter."
+            )
+          )
+        )
     }
   }
 
@@ -594,7 +663,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(isDisplayed()))
 
@@ -611,7 +680,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.chapter_recycler_view,
           position = 1,
-          targetViewId = R.id.locked_chapter_prerequisite_tooltip
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
         )
       ).check(matches(not(isDisplayed())))
     }
