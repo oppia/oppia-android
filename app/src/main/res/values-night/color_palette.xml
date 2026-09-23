@@ -117,7 +117,7 @@
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_topic_activity_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_view_all_text_color">@color/color_def_oppia_turquoise</color>
-  <color name="color_palette_layout_below_greeting_text_color">@color/color_def_dark_turquoise</color>
+  <color name="color_palette_layout_below_greeting_text_color">@color/color_def_bright_green</color>
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_oppia_turquoise</color>
@@ -140,7 +140,7 @@
   <color name="color_palette_profile_status_bar_color">@color/color_def_black</color>
   <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
   <color name="color_palette_shared_radio_button_unchecked_color">@color/color_def_stroke_silver</color>
-  <color name="color_palette_shared_radio_button_checked_color">@color/color_def_radio_green</color>
+  <color name="color_palette_shared_radio_button_checked_color">@color/color_def_bright_cyan</color>
   <color name="color_palette_shared_submitted_radio_button_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_shared_dialogs_radio_button_unchecked_color">@color/color_def_white</color>
   <color name="color_palette_shared_dialogs_radio_button_checked_color">@color/color_def_oppia_turquoise</color>
