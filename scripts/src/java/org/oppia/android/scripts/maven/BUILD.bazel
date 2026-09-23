@@ -17,7 +17,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "retrieve_license_texts_lib",
-    testonly = True,
     srcs = ["RetrieveLicenseTexts.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

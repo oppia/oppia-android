@@ -14,12 +14,16 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [OptionsActivity]. */
 @ActivityScope
 class OptionsActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
@@ -33,6 +37,9 @@ class OptionsActivityPresenter @Inject constructor(
     selectedFragment: String,
     profileId: Int
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.option_activity)
       setUpToolbar()
@@ -44,6 +51,13 @@ class OptionsActivityPresenter @Inject constructor(
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
+    }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)

@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.Multibinds
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,7 +53,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -71,7 +69,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -205,12 +202,6 @@ class DateTimeUtilTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
-  @Module
-  interface AnalyticsStartupListenerTestModule {
-    @Multibinds
-    fun provideAnalyticsListenerSet(): Set<AnalyticsStartupListener>
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -219,12 +210,10 @@ class DateTimeUtilTest {
       ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
       AlgebraicExpressionInputModule::class,
-      AnalyticsStartupListenerTestModule::class,
       ApplicationLifecycleModule::class,
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,

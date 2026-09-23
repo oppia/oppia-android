@@ -2,16 +2,27 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsProperties.EditableText
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsMatcher.Companion.expectValue
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertValueEquals
+import androidx.compose.ui.test.hasAnySibling
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.text.AnnotatedString
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -69,7 +80,6 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -84,12 +94,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -115,7 +123,6 @@ class CreateAdminPinFragmentTest {
   @get:Rule val composeRule = createEmptyComposeRule()
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -141,20 +148,16 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_message))
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .assertIsDisplayed()
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_step_count_five))
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+      composeRule.onNode(backButtonMatcher())
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsDisplayed()
     }
   }
@@ -171,59 +174,40 @@ class CreateAdminPinFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.create_admin_pin_activity_message))
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .assertIsDisplayed()
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_step_count_five))
         .assertDoesNotExist()
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+      composeRule.onNode(backButtonMatcher())
         .assertIsDisplayed()
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsDisplayed()
     }
   }
 
   @Test
-  fun testFragment_clickContinue_withEmptyPin_showsBlankPinError() {
+  fun testFragment_withEmptyPin_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_blank_error))
-        .assertIsDisplayed()
+      composeRule.onNode(continueButtonMatcher())
+        .assertIsNotEnabled()
     }
   }
 
   @Test
-  fun testFragment_clickContinue_withFilledPinAndEmptyConfirmPin_showsMismatchError() {
+  fun testFragment_withFilledPinAndEmptyConfirmPin_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
-        .assertIsDisplayed()
+      composeRule.onNode(continueButtonMatcher())
+        .assertIsNotEnabled()
     }
   }
 
@@ -232,20 +216,18 @@ class CreateAdminPinFragmentTest {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
+        .performClick()
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
+        .performClick()
         .performTextInput("54321")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
+      composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
   }
@@ -255,49 +237,40 @@ class CreateAdminPinFragmentTest {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
+        .performClick()
         .performTextInput("123")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
+      composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
   }
 
   @Test
-  fun testFragment_inputShortPin_inputSameShortConfirmPin_showsErrorForPin_continueIsDisabled() {
+  fun testFragment_inputMatchingShortPins_doesNotShowMismatchError_continueButtonIsDisabled() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("123")
-
-      testCoroutineDispatchers.runCurrent()
 
       // Verify that the length error is shown for the PIN field.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
+      composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("123")
 
-      // Verify that the length error is shown for the confirm PIN field.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
-        .assertIsDisplayed()
+      // Matching short PINs do not produce a mismatch error.
+      composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
+        .assertDoesNotExist()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
   }
@@ -307,26 +280,21 @@ class CreateAdminPinFragmentTest {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("123")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
+      composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("456")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
+      composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
   }
@@ -336,107 +304,97 @@ class CreateAdminPinFragmentTest {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
       // Enter a too-short confirm PIN.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("12")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_mismatch_error))
+      composeRule.waitForIdle()
+
+      composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
     }
   }
 
   @Test
-  fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinue() {
+  fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinueButton() {
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       // Start with a short PIN to trigger length error.
-      val enterPinNode = context.getString(R.string.create_admin_pin_activity_enter_pin_label)
-      composeRule.onNodeWithText(enterPinNode).performTextInput("12")
+      composeRule.onNode(enterPinFieldMatcher())
+        .performTextInput("12")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
+      composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsNotEnabled()
 
-      composeRule.onNodeWithText(enterPinNode)
-        .performClick()
+      // Continue typing more digits.
+      composeRule.onNode(enterPinFieldMatcher())
         .performTextInput("345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_length_error))
+      composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertDoesNotExist()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
       // Enter matching confirm PIN; continue should be enabled now.
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .assertIsEnabled()
     }
   }
 
   @Test
   fun testFragment_imeActionDone_withMatchingValidPins_navigatesToProfileChooser() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .performClick()
+      composeRule.onNode(confirmPinFieldMatcher())
         .performImeAction()
 
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
   fun testFragment_clickContinue_withMatchingValidPins_navigatesToProfileChooser() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch(CreateAdminPinActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("12345")
 
-      composeRule
-        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+      composeRule.onNode(continueButtonMatcher())
         .performClick()
 
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -447,7 +405,7 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
-        composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
+        composeRule.onNode(backButtonMatcher())
           .performClick()
 
         assertThat(activity.isFinishing).isTrue()
@@ -461,15 +419,13 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       // Try to input non-digit characters.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("abc12def")
 
-      // Should only accept the digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
-        .assertValueEquals("12")
+      // The password field masks the two accepted digits in Compose semantics.
+      composeRule.onNode(enterPinFieldMatcher())
+        .assert(expectValue(EditableText, AnnotatedString("••")))
     }
   }
 
@@ -479,15 +435,13 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       // Try to input non-digit characters.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("abc12def")
 
-      // Should only accept the digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .assertValueEquals("12")
+      // The password field masks the two accepted digits in Compose semantics.
+      composeRule.onNode(confirmPinFieldMatcher())
+        .assert(expectValue(EditableText, AnnotatedString("••")))
     }
   }
 
@@ -497,17 +451,15 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       // Try to input more than 5 digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
+      composeRule.onNode(enterPinFieldMatcher())
         .performClick()
         .performTextInput("123456789")
 
       testCoroutineDispatchers.runCurrent()
 
-      // Should only accept the first 5 digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_enter_pin_label))
-        .assertValueEquals("12345")
+      // The password field masks the five accepted digits in Compose semantics.
+      composeRule.onNode(enterPinFieldMatcher())
+        .assert(expectValue(EditableText, AnnotatedString("•••••")))
     }
   }
 
@@ -517,16 +469,46 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       // Try to input more than 5 digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
+      composeRule.onNode(confirmPinFieldMatcher())
         .performClick()
         .performTextInput("123456789")
 
-      // Should only accept the first 5 digits.
-      composeRule
-        .onNodeWithText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label))
-        .assertValueEquals("12345")
+      // The password field masks the five accepted digits in Compose semantics.
+      composeRule.onNode(confirmPinFieldMatcher())
+        .assert(expectValue(EditableText, AnnotatedString("•••••")))
     }
+  }
+
+  private fun enterPinFieldMatcher(): SemanticsMatcher {
+    return hasText(context.getString(R.string.create_admin_pin_activity_enter_pin_label)) and
+      hasSetTextAction()
+  }
+
+  private fun confirmPinFieldMatcher(): SemanticsMatcher {
+    return hasText(context.getString(R.string.create_admin_pin_activity_confirm_pin_label)) and
+      hasSetTextAction()
+  }
+
+  private fun backButtonMatcher(): SemanticsMatcher {
+    return buttonMatcher(R.string.onboarding_navigation_back)
+  }
+
+  private fun continueButtonMatcher(): SemanticsMatcher {
+    return buttonMatcher(R.string.onboarding_navigation_continue)
+  }
+
+  private fun buttonMatcher(@StringRes textStringId: Int): SemanticsMatcher {
+    return hasText(context.getString(textStringId)) and
+      hasClickAction() and
+      expectValue(SemanticsProperties.Role, Role.Button)
+  }
+
+  private fun enterPinErrorMatcher(@StringRes errorStringId: Int): SemanticsMatcher {
+    return hasText(context.getString(errorStringId)) and hasAnySibling(enterPinFieldMatcher())
+  }
+
+  private fun confirmPinErrorMatcher(@StringRes errorStringId: Int): SemanticsMatcher {
+    return hasText(context.getString(errorStringId)) and hasAnySibling(confirmPinFieldMatcher())
   }
 
   private fun setUpTestApplicationComponent() {
@@ -545,7 +527,6 @@ class CreateAdminPinFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -555,7 +536,6 @@ class CreateAdminPinFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

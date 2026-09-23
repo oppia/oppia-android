@@ -30,16 +30,18 @@ const val MAX_LICENSE_LENGTH = 16383
  * on which Oppia Android depends.
  *
  * Usage:
- *   bazel run //scripts:retrieve_license_texts -- <path_to_directory_values>
- *     <path_to_maven_dependenices.pb>
+ *   bazel run //scripts:retrieve_license_texts -- <path_to_output_file>
+ *     <path_to_maven_dependencies.pb>
  *
  * Arguments:
- * - path_to_directory_values: directory path to the values folder of the Oppia Android repository.
- * - path_to_maven_dependenices.pb: relative path to the maven_dependencies.pb
-
+ * - path_to_output_file: the absolute or relative path to the generated XML resource file (e.g.,
+ *     'third_party_dependencies.xml').
+ * - path_to_maven_dependencies.pb: relative path to the maven_dependencies.pb
+ *
  * Example:
- *   bazel run //scripts:retrieve_license_texts -- $(pwd)/app/src/main/res/values
- *   scripts/assets/maven_dependencies.pb
+ *   bazel run //scripts:retrieve_license_texts -- \\
+ *     $(pwd)/app/src/main/res/values/third_party_dependencies.xml \\
+ *     scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
   RetrieveLicenseTexts(MavenArtifactPropertyFetcherImpl()).main(args)
@@ -58,18 +60,17 @@ class RetrieveLicenseTexts(
     if (args.size < 2) {
       println(
         """
-        Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
+        Usage: bazel run //scripts:retrieve_license_texts -- <path_to_output_file>
         <path_to_pb_file>
         """.trimIndent()
       )
       throw Exception("Too few arguments passed.")
     }
 
-    val pathToValuesDirectory = args[0]
+    val pathToOutputFile = args[0]
     val pathToMavenDependenciesPb = args[1]
-    val valuesDirectory = File(pathToValuesDirectory)
-    check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
-    val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
+    val thirdPartyDependenciesXml = File(pathToOutputFile)
+    thirdPartyDependenciesXml.parentFile?.mkdirs()
 
     val mavenDependencyList = retrieveMavenDependencyList(pathToMavenDependenciesPb)
     if (mavenDependencyList.isEmpty()) {

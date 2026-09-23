@@ -64,3 +64,22 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
     ],
 )
+
+oppia_android_test(
+    name = "ProfileIdMigrationUtilTest",
+    srcs = ["ProfileIdMigrationUtilTest.kt"],
+    custom_package = "org.oppia.android.util.profile",
+    test_class = "org.oppia.android.util.profile.ProfileIdMigrationUtilTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:profile_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/profile:profile_id_migration_util",
+    ],
+)

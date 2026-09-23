@@ -13,7 +13,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -26,6 +26,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.profile.toLegacyProfileId
 import javax.inject.Inject
 
 /** The presenter for [ResumeLessonFragment]. */
@@ -46,14 +47,16 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
   private lateinit var binding: ResumeLessonFragmentBinding
-  private lateinit var profileId: LegacyProfileId
+  private lateinit var profileId: ProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
 
   private val chapterSummaryResultLiveData: LiveData<AsyncResult<EphemeralChapterSummary>> by lazy {
-    topicController.retrieveChapter(profileId, topicId, storyId, explorationId).toLiveData()
+    topicController.retrieveChapter(
+      profileId.toLegacyProfileId(), topicId, storyId, explorationId
+    ).toLiveData()
   }
 
   private val chapterSummaryLiveData: LiveData<EphemeralChapterSummary> by lazy {
@@ -69,7 +72,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -188,7 +191,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -198,11 +201,16 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, checkpoint
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -213,7 +221,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            profileId,
+            profileId.toLegacyProfileId(),
             classroomId,
             topicId,
             storyId,

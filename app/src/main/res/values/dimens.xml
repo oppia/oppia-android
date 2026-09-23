@@ -710,6 +710,9 @@
   <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
+  <!-- StudyGuideFragment -->
+  <dimen name="study_guide_fragment_padding_bottom">160dp</dimen>
+
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>

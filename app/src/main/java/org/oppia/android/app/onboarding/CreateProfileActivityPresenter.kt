@@ -6,7 +6,10 @@ import org.oppia.android.app.model.CreateProfileFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -17,11 +20,17 @@ private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
 class CreateProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   /** Handle creation and binding of the CreateProfileActivity layout. */
   fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, avatarColor: Int = 0) {
     activity.setContentView(R.layout.create_profile_activity)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
+
     if (getCreateProfileFragment() == null) {
       val createProfileFragment = CreateProfileFragment().apply {
         arguments = Bundle().also {

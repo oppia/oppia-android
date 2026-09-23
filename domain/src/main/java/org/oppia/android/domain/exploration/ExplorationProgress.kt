@@ -4,8 +4,9 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -17,8 +18,8 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
  * thread-safe, so owning classes should ensure synchronized access. This class can exist across multiple exploration
  * instances, but calling code is responsible for ensuring it is properly reset.
  */
-internal class ExplorationProgress {
-  internal lateinit var currentProfileId: LegacyProfileId
+internal class ExplorationProgress(private val oppiaLogger: OppiaLogger) {
+  internal lateinit var currentProfileId: ProfileId
   internal lateinit var currentClassroomId: String
   internal lateinit var currentTopicId: String
   internal lateinit var currentStoryId: String
@@ -31,7 +32,11 @@ internal class ExplorationProgress {
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
-    StateGraph(currentExploration.statesMap)
+    StateGraph(
+      currentExploration.statesMap,
+      ::isTopStateTerminal,
+      oppiaLogger
+    )
   }
   internal val stateDeck: StateDeck by lazy {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)

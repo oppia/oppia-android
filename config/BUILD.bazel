@@ -1,0 +1,171 @@
+"""
+This package and its subpackages contain a variety of configurations.
+
+These configurations can significantly impact app builds and behaviors of the app, including:
+- Various automations to simplify building production releases (including automatically downloading
+  production lessons and app configurations).
+- Proguard rules for optimized build flavors.
+- Built-in feature flag and platform parameter overrides.
+- Which languages the app supports for custom in-app language selection.
+"""
+
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
+load(
+    "//tools:download_assets.bzl",
+    "update_pinned_lesson_versions",
+)
+
+exports_files(
+    glob(["proguard/*.pro"]),
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+exports_files(
+    glob(["lessons/*.textproto"]),
+    visibility = ["//domain:domain_visibility"],
+)
+
+# Build-time boolean flag for whether Firebase Analytics and Crashlytics should be enabled.
+bool_flag(
+    name = "enable_firebase_analytics",
+    build_setting_default = False,
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+# Build-time boolean flag for whether third-party license texts should be downloaded and included.
+bool_flag(
+    name = "download_license_texts",
+    build_setting_default = False,
+)
+
+# Build-time boolean flag for whether the app's production Firebase configuration file should be
+# downloaded and used.
+bool_flag(
+    name = "download_firebase_config",
+    build_setting_default = False,
+)
+
+# Build setting to allow passing an arbitrary host path for the signing keystore file.
+string_flag(
+    name = "keystore_file",
+    build_setting_default = "",
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+# Build setting to allow passing an arbitrary host path for the signing keystore password file.
+string_flag(
+    name = "keystore_password_file",
+    build_setting_default = "",
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+# Build-time string flag that should contain the signing keystore's key alias.
+string_flag(
+    name = "key_alias",
+    build_setting_default = "",
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+# Build-time string flag that should contain the app's Firebase project ID (when
+# download_firebase_config is also set to true).
+string_flag(
+    name = "firebase_project_id",
+    build_setting_default = "oppia-android",
+    visibility = ["//app:app_visibility"],
+)
+
+# Build-time string flag that should contain the app's Firebase app ID (when
+# download_firebase_config is also set to true).
+string_flag(
+    name = "firebase_app_id",
+    build_setting_default = "",
+    visibility = ["//app:app_visibility"],
+)
+
+# Build-time string that should specify the path to a file containing the Oppia API key in order to
+# enable downloading production lessons to be included as part of building the app binary.
+string_flag(
+    name = "web_api_key_file",
+    build_setting_default = "",
+    visibility = ["//domain:domain_visibility"],
+)
+
+# Build-time string flag to specify which assets should be included part of the app binary build.
+# 'dev' corresponds to the assets that are included within the project itself, 'alpha' corresponds
+# to lesson assets which include 'prod' (user-facing lessons) plus lessons not yet ready for broad
+# release.
+string_flag(
+    name = "assets_type",
+    build_setting_default = "dev",
+    values = [
+        "dev",
+        "alpha",
+        "prod",
+    ],
+)
+
+config_setting(
+    name = "firebase_analytics_enabled",
+    flag_values = {
+        ":enable_firebase_analytics": "True",
+    },
+    visibility = ["//:oppia_binary_visibility"],
+)
+
+config_setting(
+    name = "download_license_texts_enabled",
+    flag_values = {
+        ":download_license_texts": "True",
+    },
+    visibility = ["//app:app_visibility"],
+)
+
+config_setting(
+    name = "download_firebase_config_enabled",
+    flag_values = {
+        ":download_firebase_config": "True",
+    },
+    visibility = ["//app:app_visibility"],
+)
+
+config_setting(
+    name = "assets_type_alpha",
+    flag_values = {
+        ":assets_type": "alpha",
+    },
+)
+
+config_setting(
+    name = "assets_type_prod",
+    flag_values = {
+        ":assets_type": "prod",
+    },
+)
+
+# Defines a 'bazel run' target to regenerate the pinned lesson versions for both production and
+# alpha builds. This does require some specific parameters to be included in order to ensure the
+# pipeline is properly authenticated. Example CLI run:
+#
+#   bazel run //config:update_pinned_lesson_versions \\
+#     --//config:web_api_key_file=/absolute/path/to/api.key \\
+#     --//config:assets_type=alpha
+#
+# This example will potentially update //config/lessons/alpha_pinned_lesson_versions.textproto if
+# any of the lessons had a compatible update that should be downloaded. Using
+# --//config:assets_type=prod would potentially update the production pinned lesson versions
+# textproto file, instead.
+update_pinned_lesson_versions(
+    name = "update_pinned_lesson_versions",
+    download_config = select({
+        "//config:assets_type_alpha": "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+        "//config:assets_type_prod": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+        "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+    }),
+    pinned_versions = select({
+        "//config:assets_type_alpha": "//config:lessons/alpha_pinned_lesson_versions.textproto",
+        "//config:assets_type_prod": "//config:lessons/prod_pinned_lesson_versions.textproto",
+        "//conditions:default": "//config:lessons/prod_pinned_lesson_versions.textproto",
+    }),
+    tags = ["manual"],
+    testonly = True,
+)

@@ -41,10 +41,10 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionAnswerState
-import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -94,7 +94,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -106,7 +105,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -162,10 +160,11 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var explorationActiveTimeController: ExplorationActiveTimeController
 
-  private val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
@@ -180,18 +179,20 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testGetCurrentState_noExploration_throwsException() {
-    // Can't retrieve the current state until the play session is started.
-    assertThrows<UninitializedPropertyAccessException>() {
+  fun testGetCurrentState_noExploration_returnsFailure() {
+    // The provider can be requested before a play session starts, but cannot provide a state yet.
+    val error = monitorFactory.waitForNextFailureResult(
       explorationProgressController.getCurrentState()
-    }
+    )
+
+    assertThat(error).hasMessageThat().contains("Exploration is not yet initialized.")
   }
 
   @Test
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         INVALID_CLASSROOM_ID,
         INVALID_TOPIC_ID,
         INVALID_STORY_ID,
@@ -218,7 +219,7 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_valid_returnsSuccess() {
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -267,7 +268,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val profileId2 = LegacyProfileId.newBuilder().setInternalId(1).build()
+    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
@@ -357,7 +358,7 @@ class ExplorationProgressControllerTest {
     // Try playing another exploration without finishing the previous one.
     val resultDataProvider =
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -518,6 +519,19 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
       .isEqualTo(2)
     assertThat(ephemeralState.completedState.getAnswer(1).feedback.html).contains("Correct!")
+  }
+
+  @Test
+  fun testGetCurrentState_lessonProgressDisabled_checkpointExploration_hasNoCheckpointProgress() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // With the feature disabled the indicator is never populated, even for an exploration that does
+    // have checkpoint states.
+    assertThat(ephemeralState.hasCheckpointProgress()).isFalse()
   }
 
   @Test
@@ -890,6 +904,90 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.isHintRevealed(0)).isTrue()
     assertThat(ephemeralState.isSolutionRevealed()).isFalse()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testPauseHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.pauseHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testResumeHints_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.resumeHints()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseHints_timerPauses_solutionNotVisibleAfterDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 20 seconds (total 30 seconds since hint reveal): solution must NOT be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(20))
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenResume_solutionVisibleAfterRemainingDelay() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Pause hints 10 seconds into the 30-second delay.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    // Wait 15 seconds while paused.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+
+    // Resume hints: remaining delay is 20 seconds.
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    // Wait 19 seconds after resume: solution should not be visible yet.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(19))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    // Wait 1 more second (20s since resume): solution should now be visible!
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(SHOW_SOLUTION)
   }
@@ -2178,7 +2276,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2199,7 +2297,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0,
@@ -2222,8 +2320,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3153,7 +3251,10 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLangProvider =
+      translationController.getWrittenTranslationContentLanguage(
+        profileId
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.SWAHILI)
   }
@@ -3186,8 +3287,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testUpdateLanguageMidLesson_englishToSwahili_diffProfile_doesNotChangeOtherProfilesLang() {
-    val englishProfileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
-    val arabicProfileId = LegacyProfileId.newBuilder().apply { internalId = 2 }.build()
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
     updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
     startPlayingNewExploration(
@@ -3209,7 +3310,9 @@ class ExplorationProgressControllerTest {
 
     // Verify that the other learner's profile-wide content language hasn't changed.
     val contentLangProvider =
-      translationController.getWrittenTranslationContentLanguage(arabicProfileId)
+      translationController.getWrittenTranslationContentLanguage(
+        arabicProfileId
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ARABIC)
   }
@@ -3232,7 +3335,10 @@ class ExplorationProgressControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProv)
 
     // Verify that the learner's profile-wide content language has changed.
-    val contentLangProvider = translationController.getWrittenTranslationContentLanguage(profileId)
+    val contentLangProvider =
+      translationController.getWrittenTranslationContentLanguage(
+        profileId
+      )
     val contentLanguage = monitorFactory.waitForNextSuccessfulResult(contentLangProvider)
     assertThat(contentLanguage).isEqualTo(OppiaLanguage.ENGLISH)
   }
@@ -3687,11 +3793,11 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3702,11 +3808,11 @@ class ExplorationProgressControllerTest {
     storyId: String,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.resumeExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
+        profileId, classroomId, topicId, storyId, explorationId, explorationCheckpoint
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3716,11 +3822,11 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -3730,18 +3836,18 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId, classroomId, topicId, storyId, explorationId
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
   private fun retrieveExplorationCheckpoint(
     explorationId: String,
-    profileId: LegacyProfileId = this.profileId
+    profileId: ProfileId = this.profileId
   ): ExplorationCheckpoint {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -4142,7 +4248,7 @@ class ExplorationProgressControllerTest {
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
@@ -4204,7 +4310,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
-    val rootProfileId = LegacyProfileId.getDefaultInstance()
+    val rootProfileId = ProfileId.newBuilder().setInternalId(0).build()
     val addProfileProvider = profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -4256,10 +4362,6 @@ class ExplorationProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -4328,7 +4430,13 @@ class ExplorationProgressControllerTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

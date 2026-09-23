@@ -1,0 +1,205 @@
+package org.oppia.android.scripts.release
+
+import java.io.File
+
+/**
+ * Script that updates the staged rollout permille for a live release on a single Play Console
+ * track, without re-uploading the binary.
+ *
+ * This is the correct way to increase (or decrease) a staged rollout after the initial binary
+ * deployment. Re-uploading the AAB to change the rollout permille is wasteful and can introduce
+ * unintended changes; this script performs a rollout-only edit via the Play Developer API.
+ *
+ * The release notes for [version] are read from `config/changelogs/` (same lookup order as
+ * `UploadChangelogToPlayConsole`) and passed through unchanged so the notes are preserved.
+ *
+ * Usage (called by update_rollout.yml via Bazel):
+ * ```
+ * bazel run //scripts:update_rollout_permille -- \
+ *   <workspace_path> <package_name> <track> <version> <rollout_permille> <gcp_access_token>
+ * ```
+ *
+ * Arguments (positional):
+ *   0. workspace_path   — absolute path to the repository root
+ *   1. package_name     — Play Console app package (e.g. "org.oppia.android")
+ *   2. track            — Play Console track: "alpha", "beta", or "production"
+ *   3. version          — version in major.minor format (e.g. "0.17")
+ *   4. rollout_permille — new rollout as an integer in [0, 1000] (e.g. 500 = 50%, 1000 = 100%)
+ *   5. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
+ *
+ * Example:
+ * ```
+ * bazel run //scripts:update_rollout_permille -- \
+ *   "$(pwd)" org.oppia.android alpha 0.18 500 "$(gcloud auth print-access-token)"
+ * ```
+ *
+ * An optional 7th argument overrides the API base URL. This is used in tests to route all
+ * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
+ */
+fun main(args: Array<String>) {
+  require(args.size in 6..7) {
+    "Usage: update_rollout_permille <workspace_path> <package_name> <track> <version> " +
+      "<rollout_permille> <gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
+  }
+
+  val workspacePath = args[0]
+  val packageName = args[1]
+  val track = args[2]
+  val version = args[3]
+  val rolloutPermille = requireNotNull(args[4].toIntOrNull()) {
+    "rollout_permille must be an integer in [0, 1000] (e.g. 500 for 50%), got '${args[4]}'."
+  }
+  val gcpAccessToken = args[5]
+  val apiBaseUrl = args.getOrNull(6) ?: GooglePlayConsoleClient.PRODUCTION_API_BASE_URL
+
+  require(workspacePath.isNotBlank()) { "workspace_path must not be blank." }
+  require(packageName.isNotBlank()) { "package_name must not be blank." }
+  require(track in VALID_TRACKS) { "track must be one of $VALID_TRACKS, got '$track'." }
+  require(version.matches(Regex("""\d+\.\d+"""))) {
+    "version must be in major.minor format (e.g. '0.17'), got '$version'."
+  }
+  require(rolloutPermille in 0..1000) {
+    "rollout_permille must be between 0 and 1000, got $rolloutPermille."
+  }
+  require(gcpAccessToken.isNotBlank()) { "gcp_access_token must not be blank." }
+
+  println("=== Update Rollout Permille ===")
+  println("  Package  : $packageName")
+  println("  Track    : $track")
+  println("  Version  : $version")
+  println("  Rollout  : ${rolloutPermille / 10.0}%")
+  println()
+
+  val client = GooglePlayConsoleClient(gcpAccessToken, apiBaseUrl)
+  updateRollout(client, workspacePath, packageName, track, version, rolloutPermille)
+}
+
+/**
+ * Executes the rollout permille update workflow.
+ *
+ * Verifies that [track] has a live release, checks that [rolloutPermille] is strictly greater
+ * than the current rollout (rollout can only go up), reads the current release notes from
+ * `config/changelogs/` for [version], and updates the rollout permille via a new Play Console
+ * edit session. The release notes are read from the local file and passed through unchanged so
+ * they are preserved; only the rollout permille is updated.
+ *
+ * @param client the [PlayConsoleClient] used for all Play Console API calls
+ * @param workspacePath absolute path to the repository root (for changelog lookups)
+ * @param packageName the application package name (e.g. `"org.oppia.android"`)
+ * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
+ * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param rolloutPermille the new staged rollout permille as an integer in [0, 1000]; must be
+ *     strictly greater than the current live rollout permille
+ * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
+ */
+fun updateRollout(
+  client: PlayConsoleClient,
+  workspacePath: String,
+  packageName: String,
+  track: String,
+  version: String,
+  rolloutPermille: Int,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
+) {
+  val liveReleases = client.getTrackReleases(packageName, track)
+    .filter { it.status in LIVE_STATUSES }
+
+  check(liveReleases.isNotEmpty()) {
+    "Track '$track' has no live releases — cannot update rollout permille."
+  }
+
+  val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+  val (selectedRelease, versionCode) = checkNotNull(
+    findHighestNonFrozenVersionCode(liveReleases, frozenVersionCodes)
+  ) {
+    "Track '$track' has no version codes outside its frozen builds — cannot update its rollout."
+  }
+
+  val currentRolloutPermille = selectedRelease.rolloutPermille ?: 0
+  check(rolloutPermille > currentRolloutPermille) {
+    "Rollout permille can only increase: current rollout on track '$track' is " +
+      "${currentRolloutPermille / 10.0}%, requested ${rolloutPermille / 10.0}%. " +
+      "Provide a value strictly greater than $currentRolloutPermille."
+  }
+
+  println("Live release found on '$track': version code $versionCode.")
+
+  val releaseNotes = resolveReleaseNotes(workspacePath, version, track)
+  if (releaseNotes.isEmpty()) {
+    println(
+      "Warning: no changelog file found for version $version on track '$track' — " +
+        "release notes will be cleared by this update."
+    )
+  }
+
+  if (frozenVersionCodes.isNotEmpty()) {
+    val liveVersionCodes = liveReleases.flatMap { it.versionCodes }.toSet()
+    val missingFrozen = frozenVersionCodes - liveVersionCodes
+    check(missingFrozen.isEmpty()) {
+      "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+        "are missing from the live track. This indicates a major release state inconsistency."
+    }
+  }
+
+  val editId = client.createEdit(packageName)
+  println("  Edit session: $editId")
+
+  client.setTrackRelease(
+    packageName, editId, track, versionCode, rolloutPermille, releaseNotes,
+    frozenVersionCodes.toList()
+  )
+  println("  Rollout permille updated.")
+
+  client.commitEdit(packageName, editId)
+  println("  Edit committed. Track '$track' rollout is now ${rolloutPermille / 10.0}%.")
+}
+
+/**
+ * Resolves the release notes for [track] at [version] from the local changelog directory.
+ *
+ * Lookup order:
+ * 1. `config/changelogs/<version>_<track>.md` (track-specific override)
+ * 2. `config/changelogs/<version>.md` (shared fallback)
+ *
+ * Returns an empty map if neither file exists or the file is empty.
+ *
+ * @param workspacePath absolute path to the repository root
+ * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param track Play Console track name (e.g. `"alpha"`, `"beta"`, `"production"`)
+ * @return map with `"en-US"` key to notes text, or empty map if no file found
+ * @throws IllegalStateException if the resolved file exceeds [MAX_RELEASE_NOTES_LENGTH] characters
+ */
+private fun resolveReleaseNotes(
+  workspacePath: String,
+  version: String,
+  track: String
+): Map<String, String> {
+  val changelogsDir = File(workspacePath, CHANGELOGS_DIR)
+  val trackSpecificFile = File(changelogsDir, "${version}_$track.md")
+  val sharedFile = File(changelogsDir, "$version.md")
+
+  val changelogFile = when {
+    trackSpecificFile.exists() -> trackSpecificFile
+    sharedFile.exists() -> sharedFile
+    else -> return emptyMap()
+  }
+
+  val notes = changelogFile.readText().trim()
+  check(notes.length <= MAX_RELEASE_NOTES_LENGTH) {
+    "Changelog '${changelogFile.name}' exceeds the $MAX_RELEASE_NOTES_LENGTH character " +
+      "limit (${notes.length} chars). Trim it before deploying."
+  }
+  return if (notes.isEmpty()) emptyMap() else mapOf("en-US" to notes)
+}
+
+/** Valid Play Console tracks for rollout updates. */
+private val VALID_TRACKS = setOf("alpha", "beta", "production")
+
+/** Release statuses that indicate a build is live and eligible for a rollout update. */
+private val LIVE_STATUSES = setOf("completed", "inProgress")
+
+/** Maximum length of release notes accepted by the Play Developer API. */
+private const val MAX_RELEASE_NOTES_LENGTH = 500
+
+/** Relative path within the workspace root where changelog files are stored. */
+private const val CHANGELOGS_DIR = "config/changelogs"

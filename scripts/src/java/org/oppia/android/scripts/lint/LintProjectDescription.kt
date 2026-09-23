@@ -213,7 +213,8 @@ class CacheManager {
 class LintProjectDescription(
   private val repoRoot: File,
   private val workingDirectory: File,
-  commandExecutor: CommandExecutor
+  commandExecutor: CommandExecutor,
+  private val changedFiles: Set<String>? = null
 ) {
 
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
@@ -261,7 +262,8 @@ class LintProjectDescription(
       repoRoot, bazelClient, extractedAarsDirectory,
       modelsDirectory, partialResultsDirectory,
       cacheManager,
-      logger
+      logger,
+      changedFiles
     )
     val initialLayerConfigs = layerConfigBuilder.buildAllLayerConfigurations()
     val layerConfigs = layerConfigBuilder.buildModelDirectory(initialLayerConfigs)
@@ -368,6 +370,7 @@ private class LayerConfigurationBuilder(
   private val partialResultsDirectory: File,
   cacheManager: CacheManager,
   private val logger: LintLogger,
+  private val changedFiles: Set<String>?
 ) {
 
   companion object {
@@ -399,7 +402,7 @@ private class LayerConfigurationBuilder(
 
   /** Builds configuration for a single code layer. */
   private fun buildLayerConfiguration(layer: LayerName, isLibrary: Boolean): LayerConfig {
-    val sourceCollector = SourceFileCollector(repoRoot, layer)
+    val sourceCollector = SourceFileCollector(repoRoot, layer, changedFiles)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
       .partition { path ->
         path.contains("/test/") ||
@@ -471,7 +474,8 @@ private class LayerConfigurationBuilder(
 /** Helper class for collecting source files and resources for a layer. */
 private class SourceFileCollector(
   private val repoRoot: File,
-  layer: LayerName
+  layer: LayerName,
+  private val changedFiles: Set<String>?
 ) {
   companion object {
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
@@ -487,8 +491,23 @@ private class SourceFileCollector(
   private val layerName = layer.layerName
   private val sourceDir = File(repoRoot, "$layerName/${SdkConstants.FD_SOURCES}")
 
-  /** Collects the source files for the layer. */
-  fun collectSourceFiles(): List<String> = collectFilesFromDirectory(sourceDir)
+  /**
+   * Collects the source files for the layer.
+   *
+   * When [changedFiles] is null, all source files are collected (full mode).
+   * When [changedFiles] is an empty set, no source files are collected (--no-java-sources mode).
+   * When [changedFiles] has entries, only files whose repo-relative paths match are collected
+   * (incremental mode).
+   */
+  fun collectSourceFiles(): List<String> {
+    return when {
+      changedFiles == null -> collectFilesFromDirectory(sourceDir)
+      changedFiles.isEmpty() -> emptyList()
+      else -> collectFilesFromDirectory(sourceDir).filter { absolutePath ->
+        File(absolutePath).relativeTo(repoRoot).path in changedFiles
+      }
+    }
+  }
 
   /** Collects the resource directories for the layer. */
   fun collectResourceDirectories(): List<String> = buildList {

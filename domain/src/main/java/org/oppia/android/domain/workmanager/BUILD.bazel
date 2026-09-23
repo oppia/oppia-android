@@ -1,0 +1,75 @@
+"""
+Package for supporting Dagger bindings for work manager worker factories.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "oppia_worker",
+    srcs = ["OppiaWorker.kt"],
+    visibility = ["//:oppia_api_visibility"],
+    deps = ["//third_party:androidx_work_work-runtime"],
+)
+
+kt_android_library(
+    name = "startup_worker_schedule_readiness_listener",
+    srcs = ["StartupWorkerScheduleReadinessListener.kt"],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":work_manager_scheduler"],
+)
+
+kt_android_library(
+    name = "startup_worker_schedule_readiness_monitor",
+    srcs = ["StartupWorkerScheduleReadinessMonitor.kt"],
+    deps = [
+        ":startup_worker_schedule_readiness_listener",
+        ":work_manager_scheduler",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+    ],
+)
+
+kt_android_library(
+    name = "bootstrap_oppia_worker",
+    srcs = ["BootstrapOppiaWorker.kt"],
+    visibility = [
+        "//domain:domain_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/workmanager/testing:__pkg__",
+    ],
+    deps = [
+        ":oppia_worker",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:controller",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:platform_parameter_controller_injector",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:platform_parameter_controller_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:com_google_guava_guava",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
+    ],
+)
+
+kt_android_library(
+    name = "work_manager_configuration_module",
+    srcs = ["WorkManagerConfigurationModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":bootstrap_oppia_worker",
+        ":oppia_worker",
+        ":startup_worker_schedule_readiness_monitor",
+        "//:dagger",
+    ],
+)
+
+kt_android_library(
+    name = "work_manager_scheduler",
+    srcs = ["WorkManagerScheduler.kt"],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":bootstrap_oppia_worker",
+        ":oppia_worker",
+        "//third_party:androidx_work_work-runtime",
+    ],
+)

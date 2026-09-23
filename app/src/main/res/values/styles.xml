@@ -672,7 +672,9 @@
 
   <!-- Survey On-boarding Dialog -->
   <style name="SurveyOnboardingDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
-    <item name="android:windowNoTitle">false</item>
+    <!-- These dialogs are full-screen, so they have no title bar to show. Leaving one in place
+         puts an empty strip above the content that the status bar then draws over. -->
+    <item name="android:windowNoTitle">true</item>
     <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>

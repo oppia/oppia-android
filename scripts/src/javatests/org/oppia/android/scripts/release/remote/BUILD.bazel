@@ -1,0 +1,18 @@
+"""
+Tests for the PlayConsoleService Retrofit interface.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "PlayConsoleServiceTest",
+    srcs = ["PlayConsoleServiceTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release/remote:play_console_service",
+        "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)

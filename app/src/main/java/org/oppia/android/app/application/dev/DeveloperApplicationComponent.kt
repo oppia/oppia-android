@@ -46,15 +46,14 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.debug.DebugWorkerDebugModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -79,7 +78,7 @@ import javax.inject.Singleton
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
     NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
     InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
-    ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class,
+    ImageParsingModule::class, HtmlParserEntityTypeModule::class,
     QuestionModule::class, DebugLogReportingModule::class, AccessibilityProdModule::class,
     ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class,
@@ -87,7 +86,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
-    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+    RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterSingletonModule::class, PlatformParameterDebugModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
@@ -101,7 +100,7 @@ import javax.inject.Singleton
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     DeveloperBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-    AuthenticationModule::class
+    AuthenticationModule::class, DebugWorkerDebugModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

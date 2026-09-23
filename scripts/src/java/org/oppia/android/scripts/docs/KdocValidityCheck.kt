@@ -70,7 +70,8 @@ fun main(vararg args: String) {
     "AfterClass",
     "Inject",
     "Provides",
-    "Binds"
+    "Binds",
+    "Multibinds"
   )
 
   // A list of all the files to be exempted for this check.

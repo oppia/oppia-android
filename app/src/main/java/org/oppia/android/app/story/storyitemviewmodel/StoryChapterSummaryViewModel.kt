@@ -15,6 +15,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
@@ -63,9 +64,7 @@ class StoryChapterSummaryViewModel(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          LegacyProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
+          profileId.toProfileIdPreservingZero(),
           explorationId
         ).toLiveData()
 

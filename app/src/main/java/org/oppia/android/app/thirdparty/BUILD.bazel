@@ -1,0 +1,21 @@
+"""
+This package contains resources corresponding to third-party dependencies and their license texts.
+"""
+
+load("//tools:retrieve_license_texts.bzl", "retrieve_license_texts")
+
+android_library(
+    name = "resources",
+    manifest = "AndroidManifest.xml",
+    resource_files = select({
+        "//config:download_license_texts_enabled": [":_production_third_party_dependencies_xml"],
+        "//conditions:default": ["dev/res/values/third_party_dependencies.xml"],
+    }),
+    visibility = ["//app:app_visibility"],
+)
+
+# Download the full license texts for incorporation if enabled in the build command line.
+retrieve_license_texts(
+    name = "_production_third_party_dependencies_xml",
+    output_file = "res/values/third_party_dependencies.xml",
+)

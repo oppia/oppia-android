@@ -55,6 +55,9 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -84,7 +87,8 @@ class StateFragmentPresenter @Inject constructor(
   private val stateViewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val surveyGatingController: SurveyGatingController
+  private val surveyGatingController: SurveyGatingController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -266,6 +270,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addRedirectionSupport()
+      .addLessonProgressIndicatorSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
@@ -300,6 +305,14 @@ class StateFragmentPresenter @Inject constructor(
 
   fun viewSolution() {
     explorationProgressController.submitSolutionIsViewed()
+  }
+
+  fun pauseHints() {
+    explorationProgressController.pauseHints()
+  }
+
+  fun resumeHints() {
+    explorationProgressController.resumeHints()
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -493,16 +506,35 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun markExplorationCompleted() {
     val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
     ).toLiveData()
 
-    // Only check gating result when the previous operation has completed because gating depends on
-    // result of saving the time spent in the exploration, at the end of the exploration.
-    markStoryCompletedLivedata.observe(fragment, { maybeShowSurveyDialog(profileId, topicId) })
+    // Wait for chapter recording to finish before checking eligibility. Survey gating separately
+    // flushes the current learning time since the exploration is still active on this exit path.
+    markStoryCompletedLivedata.observe(
+      fragment,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>?) {
+          when (result) {
+            null, is AsyncResult.Pending -> Unit
+            is AsyncResult.Failure -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              oppiaLogger.e("StateFragment", "Failed to record completed chapter", result.error)
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+            is AsyncResult.Success -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              maybeShowSurveyDialog(profileId, topicId)
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {

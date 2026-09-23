@@ -59,14 +59,15 @@ import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
@@ -94,25 +95,17 @@ class LearnerAnalyticsLoggerTest {
     private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
-  @Inject
-  lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+  @Inject lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
-  @Parameter
-  lateinit var iid: String
-  @Parameter
-  lateinit var lid: String
-  @Parameter
-  lateinit var eid: String
-  @Parameter
-  lateinit var elid: String
+  @Parameter lateinit var iid: String
+  @Parameter lateinit var lid: String
+  @Parameter lateinit var eid: String
+  @Parameter lateinit var elid: String
 
   private val learnerIdParameter: String? get() = lid.takeIf { it != "null" }
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
@@ -235,7 +228,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_noOngoingSession_logsEventWithIds() {
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(
+      TEST_INSTALL_ID, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -251,7 +246,9 @@ class LearnerAnalyticsLoggerTest {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
     testCoroutineDispatchers.runCurrent()
 
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(
+      TEST_INSTALL_ID, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -264,7 +261,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutInstallationId_logsEventWithoutInstallationId() {
-    learnerAnalyticsLogger.logAppInBackground(installationId = null, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInBackground(
+      installationId = null, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
@@ -275,7 +274,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutLearnerId_logsEventWithoutLearnerId() {
-    learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, profileId, learnerId = null)
+    learnerAnalyticsLogger.logAppInBackground(
+      TEST_INSTALL_ID, profileId, learnerId = null, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
@@ -286,7 +287,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInBackground_withoutIds_logsEventWithoutIds() {
-    learnerAnalyticsLogger.logAppInBackground(installationId = null, profileId, learnerId = null)
+    learnerAnalyticsLogger.logAppInBackground(
+      installationId = null, profileId, learnerId = null, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -295,7 +298,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_noOngoingSession_logsEventWithIds() {
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(
+      TEST_INSTALL_ID, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -311,7 +316,9 @@ class LearnerAnalyticsLoggerTest {
     learnerAnalyticsLogger.beginExploration(loadExploration(TEST_EXPLORATION_ID_5))
     testCoroutineDispatchers.runCurrent()
 
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(
+      TEST_INSTALL_ID, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -324,7 +331,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutInstallationId_logsEventWithoutInstallationId() {
-    learnerAnalyticsLogger.logAppInForeground(installationId = null, profileId, TEST_LEARNER_ID)
+    learnerAnalyticsLogger.logAppInForeground(
+      installationId = null, profileId, TEST_LEARNER_ID, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
@@ -335,7 +344,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutLearnerId_logsEventWithoutLearnerId() {
-    learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, profileId, learnerId = null)
+    learnerAnalyticsLogger.logAppInForeground(
+      TEST_INSTALL_ID, profileId, learnerId = null, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
@@ -346,7 +357,9 @@ class LearnerAnalyticsLoggerTest {
 
   @Test
   fun testLogAppInForeground_withoutIds_logsEventWithoutIds() {
-    learnerAnalyticsLogger.logAppInForeground(installationId = null, profileId, learnerId = null)
+    learnerAnalyticsLogger.logAppInForeground(
+      installationId = null, profileId, learnerId = null, fakeOppiaClock.getCurrentTimeMs()
+    )
     testCoroutineDispatchers.runCurrent()
 
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -654,6 +667,35 @@ class LearnerAnalyticsLoggerTest {
       hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
       hasVersionThat().isEqualTo(5)
       hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasIsReplayThat().isFalse()
+      hasLearnerDetailsThat {
+        hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+        hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testExpLogger_logStartExploration_forReplayedExploration_logsEventWithIsReplay() {
+    val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration5, isReplay = true)
+    expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    expLogger.logStartExploration()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasStartExplorationContextThat {
+      hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+      hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+      hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+      hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+      hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+      hasVersionThat().isEqualTo(5)
+      hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+      hasIsReplayThat().isTrue()
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
         hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
@@ -2283,7 +2325,7 @@ class LearnerAnalyticsLoggerTest {
 
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId, expId)
+      explorationDataController.getExplorationById(profileId.toProfileIdPreservingZero(), expId)
     ).exploration
   }
 
@@ -2296,9 +2338,10 @@ class LearnerAnalyticsLoggerTest {
     learnerId: String? = TEST_LEARNER_ID,
     classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
-    storyId: String = TEST_STORY_ID
+    storyId: String = TEST_STORY_ID,
+    isReplay: Boolean = false
   ) = beginExploration(
-    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId
+    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId, isReplay
   )
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
@@ -2327,7 +2370,6 @@ class LearnerAnalyticsLoggerTest {
     modules = [
       AlgebraicExpressionInputModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       DragDropSortInputModule::class,
       ExplorationProgressModule::class,

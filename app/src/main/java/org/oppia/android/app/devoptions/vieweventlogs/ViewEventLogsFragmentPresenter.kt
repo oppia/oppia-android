@@ -10,6 +10,10 @@ import org.oppia.android.app.databinding.databinding.ViewEventLogsEventLogItemVi
 import org.oppia.android.app.databinding.databinding.ViewEventLogsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [ViewEventLogsFragment]. */
@@ -18,7 +22,8 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewEventLogsViewModel: ViewEventLogsViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private lateinit var binding: ViewEventLogsFragmentBinding
@@ -50,6 +55,14 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
     binding.viewEventLogsRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.viewEventLogsToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     return binding.root

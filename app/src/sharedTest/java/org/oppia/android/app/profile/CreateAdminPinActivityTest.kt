@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -74,13 +75,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -99,17 +98,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CreateAdminPinActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val composeRule = createEmptyComposeRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -124,22 +117,25 @@ class CreateAdminPinActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createPinSetupActivityIntent().extractCurrentAppScreenName()
+    val screenName = createPinSetupActivityIntent(context).extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.CREATE_ADMIN_PIN_ACTIVITY)
   }
 
   @Test
   fun testActivity_hasCorrectActivityLabel() {
-    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent())
+    ActivityScenario.launch<CreateAdminPinActivity>(createPinSetupActivityIntent(context))
       .use { scenario ->
+        testCoroutineDispatchers.runCurrent()
         scenario?.onActivity { activity ->
           val title = activity.title
-          assertThat(title).isEqualTo(context.getString(R.string.create_admin_pin_activity_title))
+          assertThat(title).isEqualTo(
+            context.getString(R.string.create_admin_pin_activity_title)
+          )
         }
       }
   }
 
-  private fun createPinSetupActivityIntent(): Intent {
+  private fun createPinSetupActivityIntent(context: Context): Intent {
     val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
     return CreateAdminPinActivity.createAdminPinActivityIntent(context, profileId)
   }
@@ -160,7 +156,6 @@ class CreateAdminPinActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -170,7 +165,6 @@ class CreateAdminPinActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

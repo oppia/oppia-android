@@ -66,6 +66,53 @@ class FakePerformanceMetricsEventLoggerTest {
   }
 
   @Test
+  fun testFakeMetricsEventLogger_logMetric_withFailureSet_throwsException() {
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
+
+    val exception = assertThrows<Exception> {
+      performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
+    }
+
+    assertThat(exception).hasMessageThat().isEqualTo("Forced failure.")
+  }
+
+  @Test
+  fun testFakeMetricsEventLogger_logMetricTwice_withFailureSet_throwsExceptionForBoth() {
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
+
+    assertThrows<Exception> { performanceMetricsEventLogger.logPerformanceMetric(metricLog1) }
+    val exception2 = assertThrows<Exception> {
+      performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
+    }
+
+    assertThat(exception2).hasMessageThat().isEqualTo("Forced failure.")
+  }
+
+  @Test
+  fun testFakeMetricsEventLogger_logMetric_withNewFailureSet_throwsLatestException() {
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure2."))
+
+    val exception = assertThrows<Exception> {
+      performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
+    }
+
+    assertThat(exception).hasMessageThat().isEqualTo("Forced failure2.")
+  }
+
+  @Test
+  fun testFakeMetricsEventLogger_logMetric_withFailureSetToNull_doesNotThrowException() {
+    fakePerformanceMetricsEventLogger.setFailure(Exception("Forced failure."))
+    fakePerformanceMetricsEventLogger.setFailure(null) // Reset.
+
+    performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
+
+    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(event).isEqualTo(metricLog1)
+    assertThat(event.priority).isEqualTo(HIGH_PRIORITY)
+  }
+
+  @Test
   fun testFakeMetricsEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()

@@ -7,6 +7,9 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -20,11 +23,18 @@ private const val TAG_PROFILE_LOGIN_FRAGMENT = "TAG_PROFILE_LOGIN_FRAGMENT"
 
 /** The presenter for [ProfileLoginActivity]. */
 @ActivityScope
-class ProfileLoginActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class ProfileLoginActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   private val fragmentManager = activity.supportFragmentManager
 
   /** Creates the view for [ProfileLoginActivity]. */
   fun handleOnCreate(profileId: LegacyProfileId) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.profile_login_activity)
 
     if (getProfileLoginFragment() == null) {

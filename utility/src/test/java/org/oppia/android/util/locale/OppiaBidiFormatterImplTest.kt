@@ -156,8 +156,17 @@ class OppiaBidiFormatterImplTest {
   }
 
   private companion object {
-    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val INDIA_HINDI_LOCALE = Locale.Builder()
+      .setLanguage("hi")
+      .setRegion("IN")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
   }
 }

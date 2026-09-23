@@ -3,7 +3,7 @@ package org.oppia.android.domain.exploration
 import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.translation.TranslationController
@@ -36,7 +36,7 @@ class ExplorationDataController @Inject constructor(
 ) {
   /** Returns an [EphemeralExploration] given an ID. */
   fun getExplorationById(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     id: String
   ): DataProvider<EphemeralExploration> {
     val translationLocaleProvider =
@@ -67,35 +67,35 @@ class ExplorationDataController @Inject constructor(
    * and it will save the user's progress. See [resumeExploration], [restartExploration], and
    * [replayExploration] for other situations.
    *
-   * @param internalProfileId the ID corresponding to the profile for which exploration is to be
-   *     played
+   * @param profileId the ID corresponding to the profile for which exploration is to be played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played
    * @param explorationId the ID of the exploration which has to be played
    * @return a [DataProvider] to observe whether initiating the play request succeeded
    */
   fun startPlayingNewExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
   /**
    * Resumes the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId] by restoring the provided
+   * the user corresponding to [profileId] by restoring the provided
    * [explorationCheckpoint], and returns a [DataProvider] tracking whether the start succeeded.
    *
    * This method behaves the same as [startPlayingNewExploration] except it resumes a previous
@@ -106,7 +106,7 @@ class ExplorationDataController @Inject constructor(
    * used).
    */
   fun resumeExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -114,20 +114,21 @@ class ExplorationDataController @Inject constructor(
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress = true,
       explorationCheckpoint,
-      isRestart = false
+      isRestart = false,
+      isReplay = false
     )
   }
 
   /**
    * Restarts the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the user corresponding to [profileId], and returns a [DataProvider] tracking whether
    * the start succeeded.
    *
    * This method behaves the same as [resumeExploration] except any prior progress the user might
@@ -137,27 +138,28 @@ class ExplorationDataController @Inject constructor(
    * lesson (otherwise [resumeExploration] should be used to resume the lesson).
    */
   fun restartExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress = true, // Implied since only checkpoints can be restarted.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = true
+      isRestart = true,
+      isReplay = false
     )
   }
 
   /**
    * Replays the specified exploration indicated by [topicId], [storyId], and [explorationId] for
-   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the user corresponding to [profileId], and returns a [DataProvider] tracking whether
    * the start succeeded.
    *
    * This method behaves the same as [startPlayingNewExploration] except no progress is tracked
@@ -170,21 +172,22 @@ class ExplorationDataController @Inject constructor(
    * instead, depending on the specific situation.
    */
   fun replayExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
-      internalProfileId,
+      profileId,
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
-      isRestart = false
+      isRestart = false,
+      isReplay = true
     )
   }
 
@@ -201,7 +204,7 @@ class ExplorationDataController @Inject constructor(
    * [stopPlayingExploration] may be optionally called to clean up the session--see the
    * documentation for that method for details.
    *
-   * @param internalProfileId the ID corresponding to the profile for which exploration has to be
+   * @param profileId the ID corresponding to the profile for which exploration has to be
    *     played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played
@@ -212,28 +215,31 @@ class ExplorationDataController @Inject constructor(
    * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
    *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
    *     instance.
+   * @param isReplay whether the user is replaying this lesson after having previously completed it
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
   private fun startPlayingExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    isRestart: Boolean,
+    isReplay: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      LegacyProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      profileId,
       classroomId,
       topicId,
       storyId,
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint,
-      isRestart
+      isRestart,
+      isReplay
     )
   }
 
@@ -260,7 +266,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @return a [DataProvider] that indicates the success or failure of the retrieve operation
    */
-  fun getOldestExplorationDetailsDataProvider(profileId: LegacyProfileId) =
+  fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =
     explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(profileId)
 
   /**
@@ -271,7 +277,7 @@ class ExplorationDataController @Inject constructor(
    *     has to be retrieved
    * @param explorationId the ID of the exploration whose checkpoint has to be deleted
    */
-  fun deleteExplorationProgressById(profileId: LegacyProfileId, explorationId: String) {
+  fun deleteExplorationProgressById(profileId: ProfileId, explorationId: String) {
     explorationCheckpointController.deleteSavedExplorationCheckpoint(
       profileId,
       explorationId

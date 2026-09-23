@@ -20,20 +20,26 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
+import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Snapshotter that gracefully and sequentially logs CPU usage across foreground and background
  * moves of the application.
  */
-class CpuPerformanceSnapshotter(
-  private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+@Singleton
+class CpuPerformanceSnapshotter @Inject constructor(
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger,
+  private val oppiaClock: OppiaClock,
   private val performanceMetricsAssessor: PerformanceMetricsAssessor,
-  private val foregroundCpuLoggingTimePeriodMillis: Long,
-  private val backgroundCpuLoggingTimePeriodMillis: Long,
-  private val initialIconificationCutOffTimePeriodMillis: Long
+  @ForegroundCpuLoggingTimePeriodMillis private val foregroundCpuLoggingTimePeriodMillis: Long,
+  @BackgroundCpuLoggingTimePeriodMillis private val backgroundCpuLoggingTimePeriodMillis: Long,
+  @InitialIconificationCutOffTimePeriodMillis private val initialIconCutOffTimePeriodMillis: Long
 ) {
 
   private var currentIconification = UNINITIALIZED
@@ -52,7 +58,7 @@ class CpuPerformanceSnapshotter(
     }
     isSnapshotterInitialized = true
     CoroutineScope(backgroundCoroutineDispatcher).launch {
-      delay(initialIconificationCutOffTimePeriodMillis)
+      delay(initialIconCutOffTimePeriodMillis)
       if (currentIconification == UNINITIALIZED) {
         sendSwitchIconificationCommand(APP_IN_BACKGROUND)
       }
@@ -117,7 +123,8 @@ class CpuPerformanceSnapshotter(
           is CommandMessage.LogSnapshotDiff -> {
             performanceMetricsLogger.logCpuUsage(
               message.screenName,
-              message.relativeCpuUsage
+              message.relativeCpuUsage,
+              oppiaClock.getCurrentTimeMs()
             )
           }
         }
@@ -227,6 +234,6 @@ class CpuPerformanceSnapshotter(
   private fun AppIconification.getDelay(): Long = when (this) {
     APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriodMillis
     APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriodMillis
-    UNINITIALIZED -> initialIconificationCutOffTimePeriodMillis
+    UNINITIALIZED -> initialIconCutOffTimePeriodMillis
   }
 }

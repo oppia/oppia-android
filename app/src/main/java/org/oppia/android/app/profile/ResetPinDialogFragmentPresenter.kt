@@ -17,6 +17,7 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ResetPinDialogFragment]. */
@@ -92,7 +93,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         if (input.length == 3) {
           val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(profileId).build()
           profileManagementController
-            .updatePin(legacyProfileId, input).toLiveData()
+            .updatePin(legacyProfileId.toProfileIdPreservingZero(), input).toLiveData()
             .observe(
               fragment,
               Observer {

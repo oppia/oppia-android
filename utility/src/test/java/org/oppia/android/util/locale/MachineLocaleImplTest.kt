@@ -85,7 +85,12 @@ class MachineLocaleImplTest {
 
   @Test
   fun testToMachineLowerCase_turkishLocale_localeSensitiveChar_returnsSameConversion() {
-    Locale.setDefault(Locale("tr", "tr"))
+    Locale.setDefault(
+      Locale.Builder()
+        .setLanguage("tr")
+        .setRegion("TR")
+        .build()
+    )
 
     val formatted = machineLocale.run { "TITLE".toMachineLowerCase() }
 

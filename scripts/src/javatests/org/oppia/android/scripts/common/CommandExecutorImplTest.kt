@@ -150,4 +150,18 @@ class CommandExecutorImplTest {
     assertThat(result.exitCode).isNotEqualTo(0)
     assertThat(newFolder.exists()).isTrue()
   }
+
+  @Test
+  fun testExecute_cat_inputLines_succeedsAndEchoesInput() {
+    val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+
+    val result = commandExecutor.executeCommand(
+      tempFolder.root,
+      "cat",
+      inputLines = sequenceOf("line 1", "line 2", "line 3")
+    )
+
+    assertThat(result.exitCode).isEqualTo(0)
+    assertThat(result.output).containsExactly("line 1", "line 2", "line 3").inOrder()
+  }
 }

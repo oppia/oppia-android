@@ -36,6 +36,7 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -1001,7 +1002,7 @@ class StoryProgressTestHelper @Inject constructor(
   ) {
     primeClockForRecordingProgress()
     val resultProvider = storyProgressController.recordCompletedChapter(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,
@@ -1019,7 +1020,7 @@ class StoryProgressTestHelper @Inject constructor(
   ) {
     primeClockForRecordingProgress()
     val resultProvider = storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,
@@ -1037,7 +1038,7 @@ class StoryProgressTestHelper @Inject constructor(
   ) {
     primeClockForRecordingProgress()
     val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,

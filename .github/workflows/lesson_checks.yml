@@ -5,7 +5,9 @@ name: Checks for Oppia Lesson Compatibility
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 02 * * 1"
+    # Every Monday at 03:30 UTC. Offset from pull_latest_lesson_versions (Monday 02:00 UTC)
+    # by 90 minutes to ensure the full two-pass lesson downloads and verification have completed.
+    - cron: "30 03 * * 1"
 
 jobs:
   check_lesson_compatibility:
@@ -13,9 +15,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
-          version: 6.5.0
+          bazelisk-cache: true
 
       - name: Check out introduce-asset-download-script branch
         uses: actions/checkout@v6
@@ -42,7 +44,8 @@ jobs:
             https://storage.googleapis.com \
             oppiaserver-resources \
             $(pwd)/prod_server.key \
-            $(pwd)/release_assets/pinned_versions.textproto
+            $(pwd)/release_assets/pinned_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto
 
       - name: Download lessons and verify conversion
         run: |
@@ -55,5 +58,6 @@ jobs:
             cache_mode=none \
             $(pwd)/release_assets/cache \
             $(pwd)/release_assets/pinned_versions.textproto \
+            $(pwd)/scripts/assets/prod_download_config.textproto \
             false \
             -Werror

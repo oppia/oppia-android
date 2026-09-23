@@ -5,14 +5,17 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.app.topic.RouteToStudyGuideListener
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import javax.inject.Inject
 
 /** Test Activity used for testing [TopicRevisionFragment]. */
 class TopicRevisionTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  RouteToStudyGuideListener {
 
   @Inject
   lateinit var topicRevisionTestActivityPresenter: TopicRevisionTestActivityPresenter
@@ -35,6 +38,23 @@ class TopicRevisionTestActivity :
         profileId,
         topicId,
         subtopicId,
+        subtopicListSize
+      )
+    )
+  }
+
+  override fun routeToStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ) {
+    startActivity(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        this,
+        profileId,
+        topicId,
+        subtopicIndex,
         subtopicListSize
       )
     )

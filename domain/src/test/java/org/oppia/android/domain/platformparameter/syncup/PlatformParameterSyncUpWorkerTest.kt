@@ -5,19 +5,14 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.testing.SynchronousExecutor
-import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import dagger.Provides
-import org.junit.Before
+import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -27,10 +22,15 @@ import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestO
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker.Companion.WORKER_NAME
+import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker.Operation.REFRESH_PLATFORM_PARAMETERS
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.domain.workmanager.testing.OppiaWorkManagerTestDriver
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -39,13 +39,14 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.DispatcherInjector
+import org.oppia.android.util.threading.DispatcherInjectorProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -56,80 +57,50 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = PlatformParameterSyncUpWorkerTest.TestApplication::class,
-  manifest = Config.NONE
-)
+@Config(application = PlatformParameterSyncUpWorkerTest.TestApplication::class)
 class PlatformParameterSyncUpWorkerTest {
-  @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var configuration: Configuration
+  @Inject lateinit var testDriver: OppiaWorkManagerTestDriver
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var serviceOrchestrator: PlatformParameterServiceTestOrchestrator
+  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  @Before
-  fun setup() {
-    setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-  }
-
-  // TODO(#5835): Fix and finish the tests for this suite.
+  // TODO(#5835): Finish the tests for this suite.
 
   @Test
-  fun testSyncUpWorker_databaseIsEmpty_failsToLoadParameters() {
-    serviceOrchestrator.setNextResponseAsSuccess()
+  fun testWorker_scheduleRefreshPlatformParameters_succeeds() {
+    setUpTestApplicationComponent()
+    initializeDependencies()
+    serviceOrchestrator.setNextResponseAsServerError()
 
-    val workManager = WorkManager.getInstance(context)
+    val monitor = testDriver.runOneOffWork(WORKER_NAME, REFRESH_PLATFORM_PARAMETERS)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    // Verify that running the job succeeds even though it doesn't actually have an effect yet. Note
+    // that this is specifically verifiable because the orchestrator setup above should trigger a
+    // failure in the job if it actually made an attempt to call through to the server for syncing.
+    assertThat(monitor.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+  }
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
-
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    // Note that this fails because the test isn't yet set up correctly.
-    val workInfo = workManager.getWorkInfoById(request.id)
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+  private fun initializeDependencies() {
+    testDriver.initializeWorkManager(configuration)
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  interface TestModule {
+    @Binds
+    fun bindContext(application: Application): Context
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -145,17 +116,22 @@ class PlatformParameterSyncUpWorkerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class
+      TestModule::class,
+      LoggerModule::class,
+      PlatformParameterSingletonModule::class,
+      WorkManagerConfigurationModule::class,
+      PlatformParameterSyncUpWorkerModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector, DispatcherInjector, PlatformParameterControllerInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -166,8 +142,12 @@ class PlatformParameterSyncUpWorkerTest {
     fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: PlatformParameterSyncUpWorkerTest.TestApplicationComponent by lazy {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    DispatcherInjectorProvider,
+    PlatformParameterControllerInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
       DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
@@ -177,10 +157,8 @@ class PlatformParameterSyncUpWorkerTest {
       component.inject(platformParameterSyncUpWorkerTest)
     }
 
-    public override fun attachBaseContext(base: Context?) {
-      super.attachBaseContext(base)
-    }
-
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    override fun getDataProvidersInjector() = component
+    override fun getPlatformParameterControllerInjector() = component
+    override fun getDispatcherInjector(): DispatcherInjector = component
   }
 }

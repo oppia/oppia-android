@@ -8,7 +8,8 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
@@ -20,10 +21,11 @@ class ExplorationRetrieverImpl @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
   private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) : ExplorationRetriever {
   override suspend fun loadExploration(explorationId: String): Exploration {
-    return if (loadLessonProtosFromAssets) {
+    return if (loadLessonProtosFromAssets.value) {
       assetRepository.loadProtoFromLocalAssets(explorationId, Exploration.getDefaultInstance())
     } else {
       val explorationObject =

@@ -1,0 +1,12 @@
+feature_flag_definition {
+  id: LOAD_LESSON_PROTOS_FROM_ASSETS
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: LOAD_IMAGES_FROM_ASSETS
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: APP_AND_OS_DEPRECATION
+  default_is_enabled: true
+}

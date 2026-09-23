@@ -70,7 +70,9 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
+    val profileDataProvider = profileManagementController.getProfile(
+      retrieveArguments().profileId
+    )
     profileDataProvider.toLiveData().observe(
       fragment
     ) { result ->
@@ -140,6 +142,10 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun viewSolution() {
     getStateFragment()?.viewSolution()
   }
+
+  fun pauseHints() = getStateFragment()?.pauseHints()
+
+  fun resumeHints() = getStateFragment()?.resumeHints()
 
   fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 

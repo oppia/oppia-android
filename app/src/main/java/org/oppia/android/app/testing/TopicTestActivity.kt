@@ -11,10 +11,12 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.app.topic.RouteToStudyGuideListener
 import org.oppia.android.app.topic.TopicActivityPresenter
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
@@ -25,7 +27,8 @@ class TopicTestActivity :
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToExplorationListener,
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  RouteToStudyGuideListener {
 
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -99,6 +102,19 @@ class TopicTestActivity :
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this, profileId, topicId, subtopicId, subtopicListSize
+      )
+    )
+  }
+
+  override fun routeToStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ) {
+    startActivity(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        this, profileId, topicId, subtopicIndex, subtopicListSize
       )
     )
   }

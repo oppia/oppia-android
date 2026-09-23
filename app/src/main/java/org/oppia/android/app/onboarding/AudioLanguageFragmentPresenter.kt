@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.app.classroom.ClassroomListActivity
@@ -25,6 +26,7 @@ import org.oppia.android.app.options.AudioLanguageSelectionViewModel
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
@@ -32,8 +34,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
@@ -45,7 +49,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val translationController: TranslationController,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
   private lateinit var selectedLanguage: OppiaLanguage
@@ -139,6 +144,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationContinue.setOnClickListener { logInToProfile(profileId) }
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -173,7 +185,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   ) {
     val audioLanguageSelection =
       AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
+    translationController.updateAudioTranslationContentLanguage(
+      profileId.toProfileIdPreservingZero(), audioLanguageSelection
+    )
       .toLiveData().observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
@@ -214,7 +228,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun logInToProfile(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(
+    profileManagementController.loginToProfile(
+      profileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(
       fragment,
       { result ->
         if (result is AsyncResult.Success) {

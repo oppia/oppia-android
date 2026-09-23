@@ -358,6 +358,28 @@ class RunCoverageTest {
   }
 
   @Test
+  fun testRunCoverage_withTestFileInputWithoutSource_throwsException() {
+    val testFilePath = "coverage/test/java/com/example/AddNumsTest.kt"
+
+    testBazelWorkspace.initEmptyWorkspace()
+    File(tempFolder.root, testFilePath).apply {
+      parentFile?.mkdirs()
+      writeText(getAddNumsTestContent())
+    }
+
+    val exception = assertThrows<IllegalStateException>() {
+      main(
+        tempFolder.root.absolutePath,
+        testFilePath,
+        "--format=Proto"
+      )
+    }
+
+    assertThat(exception).hasMessageThat()
+      .isEqualTo("No source file found for test path: $testFilePath")
+  }
+
+  @Test
   fun testRunCoverage_withIncorrectPackageStructure_generatesFailureReport() {
     val filePathList = listOf(
       "coverage/example/AddNums.kt",

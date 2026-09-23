@@ -214,6 +214,10 @@
   <color name="component_color_lessons_tab_activity_chapter_in_progress_progress_color">@color/color_palette_chapter_in_progress_color</color>
   <color name="component_color_lessons_tab_activity_chapter_not_finished_progress_color">@color/color_palette_chapter_not_finished_color</color>
   <color name="component_color_lessons_tab_activity_chapter_not_started_progress_color">@color/color_palette_chapter_not_started_color</color>
+  <!-- Lesson Progress Indicator -->
+  <color name="component_color_lesson_progress_indicator_reached_color">@color/color_palette_lesson_progress_indicator_reached_color</color>
+  <color name="component_color_lesson_progress_indicator_upcoming_color">@color/color_palette_lesson_progress_indicator_upcoming_color</color>
+  <color name="component_color_lesson_progress_indicator_node_background_color">@color/color_palette_lesson_progress_indicator_node_background_color</color>
   <!-- Onboarding Activity -->
   <color name="component_color_onboarding_activity_sub_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>

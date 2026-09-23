@@ -14,6 +14,7 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileEditActivity]. */
@@ -38,7 +39,7 @@ class ProfileEditViewModel @Inject constructor(
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
+      profileManagementController.getProfile(profileId.toProfileIdPreservingZero()).toLiveData(),
       ::processGetProfileResult
     )
   }

@@ -62,6 +62,16 @@ class TestGitRepositoryTest {
   }
 
   @Test
+  fun testInit_newDirectory_setsBranchToDevelop() {
+    val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
+
+    testGitRepository.init()
+
+    val branch = executeGitCommand("branch", "--show-current").getOnlyOutputLine()
+    assertThat(branch).isEqualTo("develop")
+  }
+
+  @Test
   fun testSetUser_noGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
@@ -95,6 +105,18 @@ class TestGitRepositoryTest {
   }
 
   @Test
+  fun testInitializeHistoricalCommits_emptyRepository_importsSpecifiedNumberOfCommits() {
+    val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+
+    testGitRepository.initializeHistoricalCommits(5)
+
+    val logCountOutput = executeGitCommand("rev-list", "--count", "HEAD").getOnlyOutputLine()
+    assertThat(logCountOutput).isEqualTo("5")
+  }
+
+  @Test
   fun testCheckOutNewBranch_notGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
@@ -110,7 +132,7 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
 
-    testGitRepository.checkoutNewBranch("develop")
+    testGitRepository.checkoutNewBranch("feature-branch")
 
     val output = commandExecutorInterceptor.getLastCommandResult().getOutputAsJoinedString()
     assertThat(output).contains("Switched to a new branch")
@@ -120,7 +142,6 @@ class TestGitRepositoryTest {
   fun testStageFileForCommit_nonexistentFile_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     val error = assertThrows<AssertionError>() {
       testGitRepository.stageFileForCommit(File(tempFolder.root, "fake_file"))
@@ -133,7 +154,6 @@ class TestGitRepositoryTest {
   fun testStageFileForCommit_newFile_stagesFileForAdding() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     testGitRepository.stageFileForCommit(tempFolder.newFile("example_file"))
 
@@ -146,7 +166,6 @@ class TestGitRepositoryTest {
   fun testStageFilesForCommit_emptyList_doesNothing() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     testGitRepository.stageFilesForCommit(listOf())
 
@@ -158,7 +177,6 @@ class TestGitRepositoryTest {
   fun testStageFilesForCommit_oneNewFile_stagesFile() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     testGitRepository.stageFilesForCommit(listOf(tempFolder.newFile("example_file")))
 
@@ -171,7 +189,6 @@ class TestGitRepositoryTest {
   fun testStageFilesForCommit_multipleFiles_stagesFilesForAdding() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     testGitRepository.stageFilesForCommit(
       listOf(
@@ -192,7 +209,6 @@ class TestGitRepositoryTest {
   fun testStageFilesForCommit_multipleFiles_oneDoesNotExist_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     val error = assertThrows<AssertionError>() {
       testGitRepository.stageFilesForCommit(
@@ -211,7 +227,6 @@ class TestGitRepositoryTest {
   fun testRemoveFileForCommit_nonexistentFile_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     val error = assertThrows<AssertionError>() {
       testGitRepository.removeFileForCommit(File(tempFolder.root, "nonexistent_file"))
@@ -224,7 +239,6 @@ class TestGitRepositoryTest {
   fun testRemoveFileForCommit_untrackedFile_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
     val error = assertThrows<AssertionError>() {
@@ -239,7 +253,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file"))
     testGitRepository.commit("Commit new file.")
 
@@ -254,7 +267,6 @@ class TestGitRepositoryTest {
   fun testMoveFileForCommit_oldFileDoesNotExist_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
 
     val error = assertThrows<AssertionError>() {
       testGitRepository.moveFileForCommit(
@@ -269,7 +281,6 @@ class TestGitRepositoryTest {
   fun testMoveFileForCommit_oldFileIsUntracked_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
     val error = assertThrows<AssertionError>() {
@@ -286,7 +297,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file"))
     testGitRepository.commit("Commit new file.")
 
@@ -307,7 +317,6 @@ class TestGitRepositoryTest {
   fun testCommit_noUser_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("file_to_be_committed"))
 
     val error = assertThrows<AssertionError> { testGitRepository.commit("Commit new file.") }
@@ -319,7 +328,6 @@ class TestGitRepositoryTest {
   fun testCommit_doNotAllowEmptyCommit_nothingStaged_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
 
     val error = assertThrows<AssertionError>() {
@@ -333,7 +341,6 @@ class TestGitRepositoryTest {
   fun testCommit_allowEmptyCommit_nothingStaged_createsEmptyCommitWithMessage() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
 
     testGitRepository.commit("Attempting empty commit.", allowEmpty = true)
@@ -346,7 +353,6 @@ class TestGitRepositoryTest {
   fun testCommit_filesStaged_createsCommitWithMessage() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
     testGitRepository.stageFileForCommit(tempFolder.newFile("file_to_commit"))
 
@@ -403,7 +409,6 @@ class TestGitRepositoryTest {
   fun testStatus_afterStageFileForAdd_statusIncludesStagedFile() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("staged_file"))
 
     val status = testGitRepository.status()
@@ -417,7 +422,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file"))
     testGitRepository.commit("Commit new file.")
     testGitRepository.removeFileForCommit(File(tempFolder.root, "committed_file"))
@@ -433,7 +437,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file"))
     testGitRepository.commit("Commit new file.")
     testGitRepository.moveFileForCommit(
@@ -453,7 +456,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(generateFileWithRandomContent("file_to_remove"))
     testGitRepository.stageFileForCommit(generateFileWithRandomContent("committed_file"))
     testGitRepository.commit("Commit new files.")
@@ -476,7 +478,6 @@ class TestGitRepositoryTest {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file1"))
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file2"))
     testGitRepository.commit("Commit new files.")
@@ -510,14 +511,16 @@ class TestGitRepositoryTest {
       workingDir: File,
       command: String,
       vararg arguments: String,
-      includeErrorOutput: Boolean
+      includeErrorOutput: Boolean,
+      inputLines: Sequence<String>
     ): CommandResult {
       val result =
         realCommandExecutor.executeCommand(
           workingDir,
           command,
           *arguments,
-          includeErrorOutput = includeErrorOutput
+          includeErrorOutput = includeErrorOutput,
+          inputLines = inputLines
         )
       commandResults += result
       return result

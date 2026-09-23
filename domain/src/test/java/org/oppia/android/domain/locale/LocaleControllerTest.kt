@@ -937,10 +937,22 @@ class LocaleControllerTest {
   }
 
   private companion object {
-    private val MONACO_FRENCH_LOCALE = Locale("fr", "MC")
-    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
-    private val INDIA_ENGLISH_LOCALE = Locale("en", "IN")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
+    private val MONACO_FRENCH_LOCALE = Locale.Builder()
+      .setLanguage("fr")
+      .setRegion("MC")
+      .build()
+    private val INDIA_HINDI_LOCALE = Locale.Builder()
+      .setLanguage("hi")
+      .setRegion("IN")
+      .build()
+    private val INDIA_ENGLISH_LOCALE = Locale.Builder()
+      .setLanguage("en")
+      .setRegion("IN")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
 
     private fun LocaleList.toList(): List<Locale> = (0 until size()).map { this[it] }
     private fun LocaleList.hasLanguage(languageCode: String): Boolean =
