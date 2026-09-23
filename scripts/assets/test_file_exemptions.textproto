@@ -2041,8 +2041,16 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivityPresenter.kt"
-test_file_not_required: true
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragment.kt"
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragmentPresenter.kt"
@@ -4960,4 +4968,3 @@ test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/CloudSigner.kt"
   test_file_not_required: true
 }
-
