@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -111,7 +112,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
         MaterialTheme {
-          CreateAdminPinScreen(
+          CreateAdminPinRoute(
             uiState = uiState,
             onPinChange = ::onPinChanged,
             onConfirmPinChange = ::onConfirmPinChanged,
@@ -125,7 +126,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
   @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  private fun CreateAdminPinScreen(
+  private fun CreateAdminPinRoute(
     uiState: CreateAdminPinUiState,
     onPinChange: (String) -> Unit,
     onConfirmPinChange: (String) -> Unit,
@@ -135,6 +136,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberScrollState()
     val orientation = LocalConfiguration.current.orientation
     val stepCountIsVisible = orientation == Configuration.ORIENTATION_PORTRAIT
 
@@ -143,10 +145,35 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
       keyboardController?.show()
     }
 
+    CreateAdminPinScreen(
+      uiState = uiState,
+      onPinChange = onPinChange,
+      onConfirmPinChange = onConfirmPinChange,
+      onBackClick = onBackClick,
+      onSubmit = onSubmit,
+      focusManager = focusManager,
+      focusRequester = focusRequester,
+      scrollState = scrollState,
+      stepCountIsVisible = stepCountIsVisible
+    )
+  }
+
+  @Composable
+  private fun CreateAdminPinScreen(
+    uiState: CreateAdminPinUiState,
+    onPinChange: (String) -> Unit,
+    onConfirmPinChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onSubmit: () -> Unit,
+    focusManager: FocusManager,
+    focusRequester: FocusRequester,
+    scrollState: ScrollState,
+    stepCountIsVisible: Boolean
+  ) {
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState())
+        .verticalScroll(scrollState)
         .padding(horizontal = 16.dp, vertical = 24.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -363,6 +390,8 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
   private fun onPinChanged(newValue: String) {
     val pin = newValue.filter(Char::isDigit).take(ADMIN_PIN_LENGTH)
+    if (pin == uiState.pin) return
+
     uiState = uiState.toBuilder()
       .setPin(pin)
       .setShowError(if (pin.isNotEmpty()) false else uiState.showError)
@@ -371,6 +400,8 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
   private fun onConfirmPinChanged(newValue: String) {
     val confirmPin = newValue.filter(Char::isDigit).take(ADMIN_PIN_LENGTH)
+    if (confirmPin == uiState.confirmPin) return
+
     uiState = uiState.toBuilder()
       .setConfirmPin(confirmPin)
       .setShowError(if (confirmPin.isNotEmpty()) false else uiState.showError)
