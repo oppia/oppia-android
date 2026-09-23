@@ -992,6 +992,50 @@ class AudioPlayerControllerTest {
     }
   }
 
+  @Test
+  fun testController_secondAudioRequested_firstAudioPreparedCallback_doesNotUpdateState() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    val firstAudioPreparedListener = shadowMediaPlayer.onPreparedListener
+    assertThat(firstAudioPreparedListener).isNotNull()
+
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
+
+    firstAudioPreparedListener.onPrepared(audioPlayerController.getTestMediaPlayer())
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isPending()
+
+    testCoroutineDispatchers.runCurrent()
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
+  }
+
+  @Test
+  fun testController_prepareDataSource_throwsIoException_capturesFailureState() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+
+    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isFailure()
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(IOException::class.java)
+    assertThat(exception).hasMessageThat().contains("Invalid URL")
+  }
+
   private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())

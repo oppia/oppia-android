@@ -15,7 +15,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
@@ -35,7 +35,7 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher
 ) {
 
   inner class AudioMutableLiveData :
@@ -76,7 +76,10 @@ class AudioPlayerController @Inject constructor(
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
 
   /** General audio player exception used in on error listener. */
-  class AudioPlayerException(message: String) : Exception(message)
+  class AudioPlayerException(
+    message: String,
+    cause: Throwable? = null
+  ) : Exception(message, cause)
 
   private var mediaPlayer: MediaPlayer = MediaPlayer()
   private val playProgress = AudioMutableLiveData()
@@ -118,7 +121,7 @@ class AudioPlayerController @Inject constructor(
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
     activeLoadJob?.cancel()
     if (playerToRelease != null) {
-      CoroutineScope(backgroundDispatcher).launch {
+      CoroutineScope(blockingDispatcher).launch {
         mediaPlayerMutex.withMutex {
           playerToRelease.release()
         }
@@ -147,7 +150,7 @@ class AudioPlayerController @Inject constructor(
     }
     playProgress.value = AsyncResult.Pending()
     activeLoadJob?.cancel()
-    activeLoadJob = CoroutineScope(backgroundDispatcher).launch {
+    activeLoadJob = CoroutineScope(blockingDispatcher).launch {
       mediaPlayerMutex.withMutex {
         if (!isActive) return@launch
         var shouldProceed = false
@@ -172,7 +175,7 @@ class AudioPlayerController @Inject constructor(
           }
         }
         if (shouldPrepare) {
-          prepareDataSource(player, url)
+          prepareDataSource(player, url, loadId)
         }
       }
     }
@@ -182,7 +185,7 @@ class AudioPlayerController @Inject constructor(
     mediaPlayer.setOnCompletionListener { player ->
       var isCurrent = false
       audioLock.withLock {
-        if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer && activeLoadId != 0L) {
           completed = true
           stopUpdatingSeekBar()
           isCurrent = true
@@ -197,7 +200,7 @@ class AudioPlayerController @Inject constructor(
       var isCurrentLoad = false
       audioLock.withLock {
         if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
-          currentLoadId == activeLoadId && activeLoadId != 0L
+          activeLoadId != 0L
         ) {
           prepared = true
           duration = player.duration
@@ -214,6 +217,8 @@ class AudioPlayerController @Inject constructor(
       audioLock.withLock {
         if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
           isCurrent = true
+          activeLoadId = 0L
+          prepared = false
         }
       }
       if (isCurrent) {
@@ -231,13 +236,40 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
-  private fun prepareDataSource(player: MediaPlayer, url: String) {
+  private fun prepareDataSource(player: MediaPlayer, url: String, loadId: Long) {
+    player.setOnPreparedListener { p ->
+      var isCurrentLoad = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && p == mediaPlayer &&
+          loadId == activeLoadId && activeLoadId != 0L
+        ) {
+          prepared = true
+          duration = p.duration
+          isCurrentLoad = true
+        }
+      }
+      if (isCurrentLoad) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      }
+    }
     try {
       player.setDataSource(url)
       player.prepareAsync()
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
+      audioLock.withLock {
+        if (loadId == activeLoadId) {
+          activeLoadId = 0L
+          prepared = false
+        }
+      }
+      playProgress.postValue(
+        AsyncResult.Failure(
+          AudioPlayerException("Failed to set data source for media player", e)
+        )
+      )
     }
   }
 
@@ -295,7 +327,7 @@ class AudioPlayerController @Inject constructor(
   private fun scheduleNextSeekBarUpdate() {
     audioLock.withLock {
       if (observerActive && prepared) {
-        nextUpdateJob = CoroutineScope(backgroundDispatcher).launch {
+        nextUpdateJob = CoroutineScope(blockingDispatcher).launch {
           updateSeekBar()
           delay(SEEKBAR_UPDATE_FREQUENCY)
           scheduleNextSeekBarUpdate()
@@ -349,7 +381,7 @@ class AudioPlayerController @Inject constructor(
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.CLOSED, 0, 0))
     activeLoadJob?.cancel()
     if (playerToRelease != null) {
-      CoroutineScope(backgroundDispatcher).launch {
+      CoroutineScope(blockingDispatcher).launch {
         mediaPlayerMutex.withMutex {
           playerToRelease.release()
         }
@@ -384,7 +416,7 @@ class AudioPlayerController @Inject constructor(
     playProgress.value =
       AsyncResult.Failure(AudioPlayerException("Audio load aborted before preparation"))
     activeLoadJob?.cancel()
-    activeLoadJob = CoroutineScope(backgroundDispatcher).launch {
+    activeLoadJob = CoroutineScope(blockingDispatcher).launch {
       mediaPlayerMutex.withMutex {
         var shouldReset = false
         audioLock.withLock {
