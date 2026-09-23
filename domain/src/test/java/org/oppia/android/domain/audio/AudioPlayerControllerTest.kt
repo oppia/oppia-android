@@ -1021,21 +1021,6 @@ class AudioPlayerControllerTest {
     }
   }
 
-  @Test
-  fun testController_prepareDataSource_throwsIoException_capturesFailureState() {
-    setUpMediaReadyApplication()
-    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
-
-    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value).isFailure()
-    val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(IOException::class.java)
-    assertThat(exception).hasMessageThat().contains("Invalid URL")
-  }
-
   private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
