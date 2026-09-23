@@ -4,7 +4,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/component_color_onboarding_profile_type_background_color">
 
     <TextView
       android:id="@+id/profile_type_title"
@@ -25,7 +26,7 @@
       android:id="@+id/onboarding_profile_type_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@{@color/component_color_onboarding_profile_type_background_color}"
+      app:customBackgroundColor="@{@color/component_color_onboarding_profile_type_curved_background_color}"
       app:layout_constraintTop_toBottomOf="@id/profile_type_center_guide" />
 
     <com.google.android.material.card.MaterialCardView
@@ -130,7 +131,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/tablet_shared_margin_large"
-      android:background="@drawable/onboarding_back_button_white_background"
+      android:background="@drawable/onboarding_profile_type_back_button_background"
       android:text="@string/onboarding_navigation_back"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent" />

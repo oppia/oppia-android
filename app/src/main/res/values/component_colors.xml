@@ -321,14 +321,22 @@
   <color name="component_color_onboarding_shared_green_color">@color/color_palette_onboarding_primary_color</color>
   <color name="component_color_onboarding_shared_black_color">@color/color_palette_onboarding_black_color</color>
   <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
+  <color name="component_color_onboarding_dropdown_text_color">@color/color_palette_onboarding_dropdown_text_color</color>
+  <color name="component_color_onboarding_shared_secondary_button_text_color">@color/color_palette_onboarding_shared_secondary_button_text_color</color>
   <color name="component_color_onboarding_profile_type_background_color">@color/color_palette_onboarding_profile_type_background_color</color>
+  <color name="component_color_onboarding_profile_type_curved_background_color">@color/color_palette_onboarding_profile_type_curved_background_color</color>
+  <color name="component_color_onboarding_profile_type_header_text_color">@color/color_palette_onboarding_profile_type_header_text_color</color>
+  <color name="component_color_onboarding_profile_type_label_background_color">@color/color_palette_onboarding_profile_type_label_background_color</color>
+  <color name="component_color_onboarding_profile_type_label_text_color">@color/color_palette_onboarding_profile_type_label_text_color</color>
   <color name="component_color_onboarding_learner_profile_type_background_color">@color/color_palette_learner_profile_type_background_color</color>
-  <color name="component_color_onboarding_supervisor_profile_type_background_color">@color/color_palette_supervisor_profile_type_background_color</color><!-- Classroom List Activity -->
+  <color name="component_color_onboarding_supervisor_profile_type_background_color">@color/color_palette_supervisor_profile_type_background_color</color>
   <color name="component_color_onboarding_profile_edit_icon_color">@color/color_palette_onboarding_edit_icon_color</color>
   <color name="component_color_onboarding_intro_background_color">@color/color_palette_onboarding_learner_intro_background_color</color>
+  <color name="component_color_onboarding_intro_curved_background_color">@color/color_palette_onboarding_learner_intro_curved_background_color</color>
   <color name="component_color_onboarding_learner_intro_header_color">@color/color_palette_onboarding_learner_intro_header_color</color>
   <color name="component_color_onboarding_learner_intro_list_color">@color/color_palette_onboarding_learner_intro_list_color</color>
   <color name="component_color_onboarding_learner_intro_check_color">@color/color_palette_onboarding_learner_intro_check_color</color>
+  <color name="component_color_onboarding_learner_intro_step_count_color">@color/color_palette_onboarding_learner_intro_step_count_color</color>
 
   <color name="component_color_edittext_stroke_color">@color/color_palette_edittext_stroke_color</color>
 
