@@ -888,10 +888,7 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/RouteToThirdPartyDependencyListListener.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/FAQListActivity.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/FAQListActivityPresenter.kt"
   test_file_not_required: true
@@ -1200,10 +1197,7 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/DownloadsTabFragmentPresenter.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/MyDownloadsActivity.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/MyDownloadsActivityPresenter.kt"
   test_file_not_required: true
@@ -2064,10 +2058,7 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserActivity.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserActivityPresenter.kt"
   test_file_not_required: true
@@ -2264,10 +2255,7 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditDialogInterface.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditFragment.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditFragmentPresenter.kt"
   test_file_not_required: true
@@ -3520,14 +3508,8 @@ test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction/ContinueModule.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXAtPositionYClassifierProvider.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXBeforeElementYClassifierProvider.kt"
-  test_file_not_required: true
-}
+
+
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingClassifierProvider.kt"
   source_file_is_incompatible_with_code_coverage: true
@@ -3968,10 +3950,7 @@ test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulerModule.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogReportWorkerModule.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/survey/SurveyEventsLogger.kt"
   source_file_is_incompatible_with_code_coverage: true
@@ -4048,10 +4027,7 @@ test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerModule.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/profile/ProfileManagementController.kt"
   source_file_is_incompatible_with_code_coverage: true
@@ -4260,10 +4236,7 @@ test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/GitHubCiClient.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/GoogleGitHubCiClient.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/release/model/CheckRunsResponse.kt"
   test_file_not_required: true
@@ -4552,10 +4525,7 @@ test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/testing/FakeAssetRepository.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/AsyncDataSubscriptionManager.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/DataProvider.kt"
   test_file_not_required: true
@@ -4680,10 +4650,7 @@ test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirestoreInstanceWrapperImpl.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/LogReportingModule.kt"
-  test_file_not_required: true
-}
+
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessor.kt"
   test_file_not_required: true
@@ -4692,14 +4659,8 @@ test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsEventLogger.kt"
   test_file_not_required: true
 }
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/FloatExtensions.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/FractionExtensions.kt"
-  test_file_not_required: true
-}
+
+
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionExtensions.kt"
   override_min_coverage_percent_required: 42
