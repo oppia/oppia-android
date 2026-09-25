@@ -128,6 +128,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -769,6 +770,43 @@ class AudioFragmentTest {
   }
 
   @Test
+  fun testAudioFragment_loadAudio_failedFirstAttempt_retryRequest_succeedsAndPlays() {
+    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+    addException(dataSource, IOException("Network error"))
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      resetShadowMediaPlayerStaticState()
+      val mediaInfo = createMediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
+      addMediaInfo(dataSource, mediaInfo)
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadFeedbackAudio(contentId = "content", allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
+  @Test
   fun testFragment_initialLoad_audioControlsAreDisplayed() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
@@ -1001,6 +1039,22 @@ class AudioFragmentTest {
     return checkNotNull(toDataSourceMethod.invoke(/* obj = */ null, context, uri)) {
       "Failed to create DataSource for URI: $uri."
     }
+  }
+
+  /** Calls ShadowMediaPlayer.addException() using reflection. */
+  private fun addException(dataSource: Any, exception: IOException) {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
+    val addExceptionMethod =
+      shadowMediaPlayerClass.getMethod("addException", dataSourceClass, IOException::class.java)
+    addExceptionMethod.invoke(/* obj = */ null, dataSource, exception)
+  }
+
+  /** Calls ShadowMediaPlayer.resetStaticState() using reflection. */
+  private fun resetShadowMediaPlayerStaticState() {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val resetMethod = shadowMediaPlayerClass.getMethod("resetStaticState")
+    resetMethod.invoke(/* obj = */ null)
   }
 
   private fun isOnRobolectric(): Boolean {

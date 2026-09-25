@@ -182,10 +182,15 @@ class AudioViewModel @Inject constructor(
 
     if (languageCodeForDataSource != null) {
       val targetUri = voiceOverToUri(voiceoverMap[languageCodeForDataSource])
-      if (targetUri == currentLoadedAudioUri && reloadingMainContent != true) {
+      val currentStatus = (playProgressResultLiveData.value as? AsyncResult.Success)?.value?.type
+      val isAlreadyLoaded = currentStatus in listOf(
+        PlayStatus.PREPARED,
+        PlayStatus.PLAYING,
+        PlayStatus.PAUSED,
+        PlayStatus.COMPLETED
+      )
+      if (targetUri == currentLoadedAudioUri && reloadingMainContent != true && isAlreadyLoaded) {
         if (autoPlay == true) {
-          val currentStatus =
-            (playProgressResultLiveData.value as? AsyncResult.Success)?.value?.type
           when (currentStatus) {
             PlayStatus.PREPARED,
             PlayStatus.PAUSED,

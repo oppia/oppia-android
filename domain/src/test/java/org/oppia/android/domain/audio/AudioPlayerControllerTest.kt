@@ -595,6 +595,31 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_failedFirstAttempt_followedBySuccessfulRequest_prepares() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    // First attempt fails with IOException in setDataSource.
+    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isPending()
+
+    // Second attempt with valid URL succeeds.
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
+  }
+
+  @Test
   fun testPlay_prepared_reloadingMainContent_autoPlaying_studyOn_doesNotLogPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     arrangeMediaPlayer(contentId = "test_content_id")

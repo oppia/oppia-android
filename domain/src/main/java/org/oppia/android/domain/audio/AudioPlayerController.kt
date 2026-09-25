@@ -6,11 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -22,7 +22,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import kotlinx.coroutines.sync.withLock as withMutex
 
 /**
  * Controller which provides audio playing capabilities.
@@ -84,9 +83,7 @@ class AudioPlayerController @Inject constructor(
   private var mediaPlayer: MediaPlayer = MediaPlayer()
   private val playProgress = AudioMutableLiveData()
   private var nextUpdateJob: Job? = null
-  private var activeLoadJob: Job? = null
   private val audioLock = ReentrantLock()
-  private val mediaPlayerMutex = Mutex()
 
   private var prepared = false
   private var observerActive = false
@@ -106,10 +103,11 @@ class AudioPlayerController @Inject constructor(
    * This controller cannot already be initialized.
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
-    val playerToRelease: MediaPlayer?
     audioLock.withLock {
       mediaPlayerActive = true
-      playerToRelease = if (!isReleased) mediaPlayer else null
+      if (!isReleased) {
+        mediaPlayer.release()
+      }
       mediaPlayer = MediaPlayer()
       isReleased = false
       prepared = false
@@ -119,14 +117,6 @@ class AudioPlayerController @Inject constructor(
       setMediaPlayerListeners()
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
-    activeLoadJob?.cancel()
-    if (playerToRelease != null) {
-      CoroutineScope(blockingDispatcher).launch {
-        mediaPlayerMutex.withMutex {
-          playerToRelease.release()
-        }
-      }
-    }
     return playProgress
   }
 
@@ -135,7 +125,6 @@ class AudioPlayerController @Inject constructor(
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
   fun changeDataSource(url: String, contentId: String?, languageCode: String) {
-    val player: MediaPlayer
     val loadId: Long
     audioLock.withLock {
       prepared = false
@@ -143,42 +132,13 @@ class AudioPlayerController @Inject constructor(
       currentContentId = contentId
       currentLanguageCode = languageCode
       stopUpdatingSeekBar()
-      player = mediaPlayer
       currentLoadId++
       activeLoadId = currentLoadId
       loadId = currentLoadId
+      mediaPlayer.reset()
+      prepareDataSource(mediaPlayer, url, loadId)
     }
     playProgress.value = AsyncResult.Pending()
-    activeLoadJob?.cancel()
-    activeLoadJob = CoroutineScope(blockingDispatcher).launch {
-      mediaPlayerMutex.withMutex {
-        if (!isActive) return@launch
-        var shouldProceed = false
-        audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
-            currentLoadId == loadId
-          ) {
-            shouldProceed = true
-          }
-        }
-        if (!shouldProceed) return@launch
-
-        player.reset()
-
-        if (!isActive) return@launch
-        var shouldPrepare = false
-        audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
-            currentLoadId == loadId
-          ) {
-            shouldPrepare = true
-          }
-        }
-        if (shouldPrepare) {
-          prepareDataSource(player, url, loadId)
-        }
-      }
-    }
   }
 
   private fun setMediaPlayerListeners() {
@@ -317,7 +277,9 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
       if (observerActive && prepared) {
         nextUpdateJob = CoroutineScope(blockingDispatcher).launch {
-          updateSeekBar()
+          withContext(Dispatchers.Main) {
+            updateSeekBar()
+          }
           delay(SEEKBAR_UPDATE_FREQUENCY)
           scheduleNextSeekBarUpdate()
         }
@@ -327,14 +289,13 @@ class AudioPlayerController @Inject constructor(
 
   private fun updateSeekBar() {
     audioLock.withLock {
-      if (mediaPlayer.isPlaying) {
+      if (prepared && mediaPlayer.isPlaying) {
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
-        playProgress.postValue(
+        playProgress.value =
           AsyncResult.Success(
             PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
-        )
       }
     }
   }
@@ -352,7 +313,6 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer must already be initialized.
    */
   fun releaseMediaPlayer() {
-    val playerToRelease: MediaPlayer?
     audioLock.withLock {
       if (!isReleased) {
         check(mediaPlayerActive) { "Media player has not been previously initialized" }
@@ -361,21 +321,11 @@ class AudioPlayerController @Inject constructor(
         prepared = false
         activeLoadId = 0L
         currentLoadId++
-        playerToRelease = mediaPlayer
         stopUpdatingSeekBar()
-      } else {
-        playerToRelease = null
+        mediaPlayer.release()
       }
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.CLOSED, 0, 0))
-    activeLoadJob?.cancel()
-    if (playerToRelease != null) {
-      CoroutineScope(blockingDispatcher).launch {
-        mediaPlayerMutex.withMutex {
-          playerToRelease.release()
-        }
-      }
-    }
   }
 
   /**
@@ -391,35 +341,16 @@ class AudioPlayerController @Inject constructor(
 
   /** Aborts any in-flight load and moves playback to a failure state. */
   fun abortPendingLoad() {
-    val player: MediaPlayer
-    val abortLoadId: Long
     audioLock.withLock {
       prepared = false
       completed = false
       stopUpdatingSeekBar()
-      player = mediaPlayer
       currentLoadId++
       activeLoadId = 0L
-      abortLoadId = currentLoadId
+      mediaPlayer.reset()
     }
     playProgress.value =
       AsyncResult.Failure(AudioPlayerException("Audio load aborted before preparation"))
-    activeLoadJob?.cancel()
-    activeLoadJob = CoroutineScope(blockingDispatcher).launch {
-      mediaPlayerMutex.withMutex {
-        var shouldReset = false
-        audioLock.withLock {
-          if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
-            currentLoadId == abortLoadId
-          ) {
-            shouldReset = true
-          }
-        }
-        if (shouldReset) {
-          player.reset()
-        }
-      }
-    }
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
