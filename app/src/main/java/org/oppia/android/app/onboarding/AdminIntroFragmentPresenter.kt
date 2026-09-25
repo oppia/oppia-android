@@ -130,7 +130,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
         .background(backgroundColor)
     ) {
       WavyBackgroundView(
-        backgroundColorResId = R.color.component_color_onboarding_shared_white_color
+        backgroundColorResId = R.color.component_color_onboarding_intro_curved_background_color
       )
 
       Box(
