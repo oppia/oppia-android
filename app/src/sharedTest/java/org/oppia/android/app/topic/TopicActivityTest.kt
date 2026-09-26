@@ -210,14 +210,15 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_recreated_resetsFontScaleToMedium() {
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
-      scenario.onActivity { activity ->
+      scenario.onActivity { originalActivity ->
         val fontScaleConfigUtil = FontScaleConfigurationUtil()
-        fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
-        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.4f)
+        fontScaleConfigUtil.adjustFontScale(originalActivity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+        assertThat(originalActivity.resources.configuration.fontScale).isEqualTo(1.4f)
       }
       scenario.recreate()
-      scenario.onActivity { activity ->
-        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.0f)
+      scenario.onActivity { recreatedActivity ->
+        assertThat(recreatedActivity).isNotSameInstanceAs(originalActivity)
+        assertThat(recreatedActivity.resources.configuration.fontScale).isEqualTo(1.0f)
       }
     }
   }
