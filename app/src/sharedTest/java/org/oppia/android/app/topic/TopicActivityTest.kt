@@ -224,7 +224,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_backgroundedAndRestarted_resetsFontScaleToMedium() {
+  fun testTopicActivity_stoppedAndResumed_resetsFontScaleToMedium() {
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use { scenario ->
       scenario.onActivity { activity ->
         val fontScaleConfigUtil = FontScaleConfigurationUtil()
