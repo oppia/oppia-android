@@ -7,4 +7,13 @@ class FeedbackViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   val supportsConceptCards: Boolean
-) : StateItemViewModel(ViewType.FEEDBACK)
+) : StateItemViewModel(ViewType.FEEDBACK) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is FeedbackViewModel) return false
+    return htmlContent.toString() == other.htmlContent.toString() &&
+      gcsEntityId == other.gcsEntityId &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      supportsConceptCards == other.supportsConceptCards
+  }
+}

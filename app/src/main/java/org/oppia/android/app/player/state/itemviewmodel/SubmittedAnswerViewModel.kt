@@ -27,6 +27,20 @@ class SubmittedAnswerViewModel(
   val consoleLogger: ConsoleLogger,
   val isFlashback: Boolean
 ) : StateItemViewModel(ViewType.SUBMITTED_ANSWER) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is SubmittedAnswerViewModel) return false
+    // submittedUserAnswer is a proto — generated equals() does field-by-field comparison.
+    // supportsConceptCards affects whether concept card links render (added per review correction).
+    // All ObservableFields (isCorrectAnswer, submittedAnswer, etc.) are skipped — data binding
+    // propagates their changes without needing a full RecyclerView redraw.
+    return gcsEntityId == other.gcsEntityId &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      supportsConceptCards == other.supportsConceptCards &&
+      isFlashback == other.isFlashback &&
+      submittedUserAnswer == other.submittedUserAnswer
+  }
+
   val isCorrectAnswer = ObservableField(DEFAULT_IS_CORRECT_ANSWER)
   val submittedAnswer: ObservableField<CharSequence> = ObservableField(DEFAULT_SUBMITTED_ANSWER)
   val isExtraInteractionAnswerCorrect = ObservableField(DEFAULT_IS_CORRECT_ANSWER)

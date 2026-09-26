@@ -17,4 +17,13 @@ class ContinueNavigationButtonViewModel(
   val isSplitView: Boolean,
   val shouldAnimateContinueButton: Boolean,
   val continueButtonAnimationTimestampMs: Long
-) : StateItemViewModel(ViewType.CONTINUE_NAVIGATION_BUTTON)
+) : StateItemViewModel(ViewType.CONTINUE_NAVIGATION_BUTTON) {
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is ContinueNavigationButtonViewModel) return false
+    return hasPreviousButton == other.hasPreviousButton &&
+      hasConversationView == other.hasConversationView &&
+      isSplitView == other.isSplitView &&
+      shouldAnimateContinueButton == other.shouldAnimateContinueButton &&
+      continueButtonAnimationTimestampMs == other.continueButtonAnimationTimestampMs
+  }
+}

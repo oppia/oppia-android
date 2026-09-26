@@ -14,4 +14,13 @@ class LessonProgressViewModel(
    * replay the same transition.
    */
   fun consumeShouldAnimateProgress(): Boolean = progressAnimationRequestConsumer()
+
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is LessonProgressViewModel) return false
+    return completedCount == other.completedCount &&
+      totalCount == other.totalCount &&
+      isBetweenCheckpoints == other.isBetweenCheckpoints &&
+      isSplitView == other.isSplitView &&
+      contentDescription == other.contentDescription
+  }
 }

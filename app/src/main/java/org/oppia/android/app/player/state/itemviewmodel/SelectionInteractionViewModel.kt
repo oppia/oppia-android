@@ -104,6 +104,21 @@ class SelectionInteractionViewModel private constructor(
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   val errorMessage = ObservableField<String>("")
+
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is SelectionInteractionViewModel) return false
+    if (entityId != other.entityId) return false
+    if (hasConversationView != other.hasConversationView) return false
+    if (isSplitView != other.isSplitView) return false
+    // Compare choice structure by contentId Strings (from the proto), not by selected state.
+    // choiceItems is an ObservableList of child ViewModels that carry mutable isAnswerSelected —
+    // we deliberately only extract the stable contentId from each item.
+    if (choiceItems.size != other.choiceItems.size) return false
+    return choiceItems.zip(other.choiceItems).all { (a, b) ->
+      a.htmlContent.contentId == b.htmlContent.contentId
+    }
+  }
+
   val selectedItemText =
     ObservableField(
       resourceHandler.getStringInLocale(

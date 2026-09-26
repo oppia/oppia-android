@@ -46,6 +46,16 @@ class ContinueInteractionViewModel private constructor(
    */
   val buttonText: CharSequence = deriveButtonText(interaction)
 
+  override fun areContentsTheSame(other: StateItemViewModel): Boolean {
+    if (other !is ContinueInteractionViewModel) return false
+    return hasConversationView == other.hasConversationView &&
+      hasPreviousButton == other.hasPreviousButton &&
+      isSplitView == other.isSplitView &&
+      shouldAnimateContinueButton == other.shouldAnimateContinueButton &&
+      continueButtonAnimationTimestampMs == other.continueButtonAnimationTimestampMs &&
+      buttonText.toString() == other.buttonText.toString()
+  }
+
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun isAutoNavigating(): Boolean = true
