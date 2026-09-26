@@ -6,14 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
@@ -32,7 +34,7 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher
 ) {
 
   inner class AudioMutableLiveData :
@@ -73,7 +75,10 @@ class AudioPlayerController @Inject constructor(
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
 
   /** General audio player exception used in on error listener. */
-  class AudioPlayerException(message: String) : Exception(message)
+  class AudioPlayerException(
+    message: String,
+    cause: Throwable? = null
+  ) : Exception(message, cause)
 
   private var mediaPlayer: MediaPlayer = MediaPlayer()
   private val playProgress = AudioMutableLiveData()
@@ -88,6 +93,8 @@ class AudioPlayerController @Inject constructor(
   private var completed = false
   private var currentContentId: String? = null
   private var currentLanguageCode: String? = null
+  private var currentLoadId = 0L
+  private var activeLoadId = 0L
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -97,13 +104,16 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
-
       mediaPlayerActive = true
       if (!isReleased) {
         mediaPlayer.release()
       }
       mediaPlayer = MediaPlayer()
       isReleased = false
+      prepared = false
+      completed = false
+      activeLoadId = 0L
+      currentLoadId++
       setMediaPlayerListeners()
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.PREPARING, 0, 0))
@@ -115,50 +125,101 @@ class AudioPlayerController @Inject constructor(
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
   fun changeDataSource(url: String, contentId: String?, languageCode: String) {
+    val loadId: Long
     audioLock.withLock {
       prepared = false
+      completed = false
       currentContentId = contentId
       currentLanguageCode = languageCode
       stopUpdatingSeekBar()
+      currentLoadId++
+      activeLoadId = currentLoadId
+      loadId = currentLoadId
       mediaPlayer.reset()
-      prepareDataSource(url)
+      prepareDataSource(mediaPlayer, url, loadId)
     }
+    playProgress.value = AsyncResult.Pending()
   }
 
   private fun setMediaPlayerListeners() {
-    mediaPlayer.setOnCompletionListener {
-      completed = true
-      stopUpdatingSeekBar()
-      playProgress.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+    mediaPlayer.setOnCompletionListener { player ->
+      var isCurrent = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer && activeLoadId != 0L) {
+          completed = true
+          stopUpdatingSeekBar()
+          isCurrent = true
+        }
+      }
+      if (isCurrent) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
+      }
     }
-    mediaPlayer.setOnPreparedListener {
-      prepared = true
-      duration = it.duration
-      playProgress.value =
-        AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+    mediaPlayer.setOnPreparedListener { player ->
+      var isCurrentLoad = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer &&
+          activeLoadId != 0L
+        ) {
+          prepared = true
+          duration = player.duration
+          isCurrentLoad = true
+        }
+      }
+      if (isCurrentLoad) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      }
     }
-    mediaPlayer.setOnErrorListener { _, what, extra ->
-      playProgress.value =
-        AsyncResult.Failure(
-          AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
-        )
-      releaseMediaPlayer()
-      initializeMediaPlayer()
-      // Indicates that error was handled and to not invoke completion listener.
-      return@setOnErrorListener true
+    mediaPlayer.setOnErrorListener { player, what, extra ->
+      var isCurrent = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && player == mediaPlayer) {
+          isCurrent = true
+          activeLoadId = 0L
+          prepared = false
+        }
+      }
+      if (isCurrent) {
+        playProgress.value =
+          AsyncResult.Failure(
+            AudioPlayerException(
+              "Audio Player put in error state with what: $what and extra: $extra"
+            )
+          )
+        releaseMediaPlayer()
+        initializeMediaPlayer()
+        return@setOnErrorListener true
+      }
+      return@setOnErrorListener false
     }
   }
 
-  private fun prepareDataSource(url: String) {
+  private fun prepareDataSource(player: MediaPlayer, url: String, loadId: Long) {
+    player.setOnPreparedListener { p ->
+      var isCurrentLoad = false
+      audioLock.withLock {
+        if (!isReleased && mediaPlayerActive && p == mediaPlayer &&
+          loadId == activeLoadId && activeLoadId != 0L
+        ) {
+          prepared = true
+          duration = p.duration
+          isCurrentLoad = true
+        }
+      }
+      if (isCurrentLoad) {
+        playProgress.value =
+          AsyncResult.Success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+      }
+    }
     try {
-      mediaPlayer.setDataSource(url)
-      mediaPlayer.prepareAsync()
+      player.setDataSource(url)
+      player.prepareAsync()
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
-    playProgress.value = AsyncResult.Pending()
   }
 
   /**
@@ -215,8 +276,10 @@ class AudioPlayerController @Inject constructor(
   private fun scheduleNextSeekBarUpdate() {
     audioLock.withLock {
       if (observerActive && prepared) {
-        nextUpdateJob = CoroutineScope(backgroundDispatcher).launch {
-          updateSeekBar()
+        nextUpdateJob = CoroutineScope(blockingDispatcher).launch {
+          withContext(Dispatchers.Main) {
+            updateSeekBar()
+          }
           delay(SEEKBAR_UPDATE_FREQUENCY)
           scheduleNextSeekBarUpdate()
         }
@@ -226,14 +289,13 @@ class AudioPlayerController @Inject constructor(
 
   private fun updateSeekBar() {
     audioLock.withLock {
-      if (mediaPlayer.isPlaying) {
+      if (prepared && mediaPlayer.isPlaying) {
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
-        playProgress.postValue(
+        playProgress.value =
           AsyncResult.Success(
             PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
-        )
       }
     }
   }
@@ -257,8 +319,10 @@ class AudioPlayerController @Inject constructor(
         mediaPlayerActive = false
         isReleased = true
         prepared = false
-        mediaPlayer.release()
+        activeLoadId = 0L
+        currentLoadId++
         stopUpdatingSeekBar()
+        mediaPlayer.release()
       }
     }
     playProgress.value = AsyncResult.Success(PlayProgress(PlayStatus.CLOSED, 0, 0))
@@ -280,8 +344,9 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
       prepared = false
       completed = false
-      nextUpdateJob?.cancel()
-      nextUpdateJob = null
+      stopUpdatingSeekBar()
+      currentLoadId++
+      activeLoadId = 0L
       mediaPlayer.reset()
     }
     playProgress.value =
