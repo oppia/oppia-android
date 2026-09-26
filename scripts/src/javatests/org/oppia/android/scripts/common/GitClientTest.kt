@@ -317,6 +317,27 @@ class GitClientTest {
     assertThat(featureCount).isEqualTo(3)
   }
 
+  @Test
+  fun testIsShallowRepository_forFullRepository_returnsFalse() {
+    initializeRepoWithDevelopBranch()
+
+    val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
+
+    assertThat(gitClient.isShallowRepository).isFalse()
+  }
+
+  @Test
+  fun testIsShallowRepository_forShallowClone_returnsTrue() {
+    initializeRepoWithDevelopBranch()
+    commitNewFile("develop_file")
+    val cloneDirectory = tempFolder.newFolder("shallow_clone")
+    testGitRepository.cloneShallow(cloneDirectory, depth = 1)
+
+    val gitClient = GitClient(cloneDirectory, "develop", commandExecutor)
+
+    assertThat(gitClient.isShallowRepository).isTrue()
+  }
+
   private fun initializeRepoWithDevelopBranch() {
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
