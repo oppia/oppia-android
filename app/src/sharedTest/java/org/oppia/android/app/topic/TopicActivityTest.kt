@@ -213,6 +213,7 @@ class TopicActivityTest {
       scenario.onActivity { activity ->
         val fontScaleConfigUtil = FontScaleConfigurationUtil()
         fontScaleConfigUtil.adjustFontScale(activity, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+        assertThat(activity.resources.configuration.fontScale).isEqualTo(1.4f)
       }
       scenario.recreate()
       scenario.onActivity { activity ->
