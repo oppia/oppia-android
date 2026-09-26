@@ -293,7 +293,6 @@ jobs:
 
       - name: Download Coverage Report Artifacts
         id: download_reports
-        continue-on-error: true
         uses: actions/download-artifact@v8
         with:
           path: coverage-report-artifact
@@ -306,14 +305,11 @@ jobs:
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
           if [[ ${#PB_FILES_LIST[@]} -eq 0 ]] || [[ -z "${PB_FILES_LIST[0]}" ]]; then
-            echo "No coverage report files found. This may indicate all coverage shards failed or produced no output."
-            echo "has_reports=false" >> $GITHUB_OUTPUT
-            touch pb_files.txt
-          else
-            echo "${PB_FILES_LIST[@]}" > pb_files.txt
-            echo "Found ${#PB_FILES_LIST[@]} coverage report file(s)."
-            echo "has_reports=true" >> $GITHUB_OUTPUT
+            echo "ERROR: No coverage report files found. This may indicate all coverage shards failed or produced no output."
+            exit 1
           fi
+          echo "${PB_FILES_LIST[@]}" > pb_files.txt
+          echo "Found ${#PB_FILES_LIST[@]} coverage report file(s)."
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -333,13 +329,12 @@ jobs:
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Generate Markdown Coverage Report
-        if: ${{ steps.filter_reports.outputs.has_reports == 'true' }}
         run: |
           bazel run //scripts:coverage_reporter -- $(pwd) pb_files.txt
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v7
-        if: ${{ !cancelled() && steps.filter_reports.outputs.has_reports == 'true' }} # IMPORTANT: Upload reports regardless of success or failure status
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
           path: coverage_reports/CoverageReport.md
