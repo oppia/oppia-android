@@ -243,32 +243,78 @@ class PinPasswordActivityPresenter @Inject constructor(
 
   private fun showConfirmAppResetDialog() {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_title, appName
+    val confirmationWord = "RESET"
+
+    val input = android.widget.EditText(activity).apply {
+      inputType = android.text.InputType.TYPE_CLASS_TEXT
+      isSingleLine = true
+      filters = arrayOf(android.text.InputFilter.LengthFilter(5))
+      hint =
+        resourceHandler.getStringInLocaleWithoutWrapping(
+          R.string.admin_confirm_app_wipe_input_hint,
+          confirmationWord
         )
+    }
+
+    val container = android.widget.FrameLayout(activity)
+    val params = android.widget.FrameLayout.LayoutParams(
+      android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+      android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+    ).apply {
+      val margin = activity.resources.getDimensionPixelSize(R.dimen.activity_horizontal_margin)
+      setMargins(margin, 0, margin, 0)
+    }
+    input.layoutParams = params
+    container.addView(input)
+
+    val alertDialogBuilder =
+      androidx.appcompat.app.AlertDialog.Builder(
+        activity,
+        R.style.OppiaAlertDialogTheme
       )
-      .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_message, appName
+        .setTitle(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_title, appName
+          )
         )
-      )
-      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(
-          activity,
-          Observer {
-            // Regardless of the result of the operation, always restart the app.
-            confirmedDeletion = true
-            activity.finishAffinity()
-          }
+        .setMessage(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_message, appName
+          )
         )
-      }.create()
+        .setView(container)
+        .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+          pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+          dialog.dismiss()
+        }
+        .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
+          profileManagementController.deleteAllProfiles().toLiveData().observe(
+            activity,
+            androidx.lifecycle.Observer {
+              confirmedDeletion = true
+              activity.finishAffinity()
+            }
+          )
+        }
+
+    alertDialog = alertDialogBuilder.create()
+
     alertDialog.setCanceledOnTouchOutside(false)
+
+    alertDialog.setOnShowListener { dialogInterface ->
+      val dialog = dialogInterface as androidx.appcompat.app.AlertDialog
+      val positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+      positiveButton.isEnabled = false
+
+      input.addTextChangedListener(object : android.text.TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: android.text.Editable?) {
+          positiveButton.isEnabled = s?.toString() == confirmationWord
+        }
+      })
+    }
+
     alertDialog.show()
   }
 
