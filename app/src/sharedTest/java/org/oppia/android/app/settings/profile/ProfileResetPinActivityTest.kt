@@ -76,6 +76,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -126,6 +127,7 @@ class ProfileResetPinActivityTest {
 
     val currentScreenName = intent.extractCurrentAppScreenName()
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RESET_PIN_ACTIVITY)
+    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(internalProfileId)
   }
 
   @Test

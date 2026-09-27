@@ -96,6 +96,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -840,7 +841,8 @@ class ProfileResetPinFragmentTest {
             ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
             ProfileResetPinFragmentArguments.getDefaultInstance()
           )
-        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinProfileId =
+          arguments.extractCurrentUserProfileId().internalId
         val receivedProfileResetPinIsAdmin = args.isAdmin
 
         assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
@@ -864,7 +866,8 @@ class ProfileResetPinFragmentTest {
             ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
             ProfileResetPinFragmentArguments.getDefaultInstance()
           )
-        val receivedProfileResetPinProfileId = args.internalProfileId
+        val receivedProfileResetPinProfileId =
+          arguments.extractCurrentUserProfileId().internalId
         val receivedProfileResetPinIsAdmin = args.isAdmin
 
         assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
