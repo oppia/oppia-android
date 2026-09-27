@@ -1,0 +1,73 @@
+package org.oppia.android.data.backends.gae
+
+import okhttp3.Interceptor
+import okhttp3.Response
+import java.io.IOException
+import java.net.HttpURLConnection
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/** Interceptor on top of Retrofit to retry requests when transient HTTP errors occur. */
+@Singleton
+class RetryInterceptor @Inject constructor(
+  private val networkDelayHandler: NetworkDelayHandler
+) : Interceptor {
+
+  override fun intercept(chain: Interceptor.Chain): Response {
+    val request = chain.request()
+    var lastException: IOException? = null
+
+    for (tryCount in 0..MAX_RETRIES) {
+      try {
+        val response = chain.proceed(request)
+        val isLastAttempt = tryCount == MAX_RETRIES
+        // Return the response if it succeeded, if we can't retry this error code, or if we've
+        // exhausted all retry attempts.
+        if (response.isSuccessful || !shouldRetry(response.code) || isLastAttempt) {
+          return response
+        }
+        // Close the response body before retrying to avoid resource leaks.
+        response.close()
+      } catch (e: IOException) {
+        lastException = e
+        // If this was the last attempt, rethrow so the caller knows the request failed.
+        if (tryCount == MAX_RETRIES) throw e
+      }
+      delayBeforeRetry(tryCount)
+    }
+
+    // This point is theoretically unreachable since the for-loop always exits via return or throw.
+    // The compiler requires a return/throw here because it can't statically verify that.
+    throw lastException ?: IOException("Request failed after retries")
+  }
+
+  private fun delayBeforeRetry(tryCount: Int) {
+    try {
+      networkDelayHandler.delay(RETRY_DELAYS_MILLIS[tryCount])
+    } catch (e: InterruptedException) {
+      Thread.currentThread().interrupt()
+      throw IOException("Retry interrupted", e)
+    }
+  }
+
+  private fun shouldRetry(statusCode: Int): Boolean {
+    return statusCode == HttpURLConnection.HTTP_CLIENT_TIMEOUT ||
+      statusCode == HttpURLConnection.HTTP_BAD_GATEWAY ||
+      statusCode == HttpURLConnection.HTTP_UNAVAILABLE ||
+      statusCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT
+  }
+
+  companion object {
+    private const val RETRY_DELAY_1_MILLIS = 2000L
+    private const val RETRY_DELAY_2_MILLIS = 4000L
+    private const val RETRY_DELAY_3_MILLIS = 10000L
+
+    private val RETRY_DELAYS_MILLIS = listOf(
+      RETRY_DELAY_1_MILLIS,
+      RETRY_DELAY_2_MILLIS,
+      RETRY_DELAY_3_MILLIS
+    )
+
+    private val MAX_RETRIES = RETRY_DELAYS_MILLIS.size
+  }
+}

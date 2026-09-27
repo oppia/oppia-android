@@ -64,6 +64,7 @@ class ContinueButtonView @JvmOverloads constructor(
 
     // Make sure state can't leak across rebinding boundaries (since this view may be reused).
     cancelOngoingTimer()
+    clearAnimation()
   }
 
   /** Sets whether the view should animate to catch a user's attention. */
@@ -87,7 +88,10 @@ class ContinueButtonView @JvmOverloads constructor(
       continueButtonAnimationTimestampMsLateinit != null
     ) {
       when {
-        !shouldAnimateContinueButton -> clearAnimation()
+        !shouldAnimateContinueButton -> {
+          cancelOngoingTimer()
+          clearAnimation()
+        }
         hasAnimationTimerFinished -> startAnimating()
         else -> {
           val timeLeftToAnimate = continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
@@ -100,11 +104,13 @@ class ContinueButtonView @JvmOverloads constructor(
   private fun startAnimatingWithDelay(delayMs: Long) {
     cancelOngoingTimer()
     val sequenceNumber = currentAnimationReuseCount
-    lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment) {
-      // Only play the animation if it's still valid to do so (since the view may have been recycled
-      // for a new context that may not want the animation to play).
-      if (sequenceNumber == currentAnimationReuseCount) {
-        startAnimating()
+    animationStartTimer = lifecycleSafeTimerFactory.createTimer(delayMs).also { timer ->
+      timer.observe(fragment) {
+        // Only play the animation if it's still valid to do so (since the view may have been
+        // recycled for a new context that may not want the animation to play).
+        if (sequenceNumber == currentAnimationReuseCount && shouldAnimateContinueButton) {
+          startAnimating()
+        }
       }
     }
   }
@@ -118,12 +124,11 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   private fun startAnimating() {
+    cancelOngoingTimer()
+    if (!shouldAnimateContinueButton || !isAttachedToWindow) return
     val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
     startAnimation(animation)
     // Repeat the animation after a fixed interval.
-    lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
-      .observe(fragment) {
-        startAnimating()
-      }
+    startAnimatingWithDelay(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
   }
 }

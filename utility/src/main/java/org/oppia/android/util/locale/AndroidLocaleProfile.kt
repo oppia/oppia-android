@@ -56,7 +56,10 @@ sealed class AndroidLocaleProfile {
       }
     }
 
-    override fun computeAndroidLocale(): Locale = Locale(languageCode, regionCode)
+    override fun computeAndroidLocale(): Locale = Locale.Builder()
+      .setLanguage(languageCode)
+      .setRegion(regionCode)
+      .build()
   }
 
   /**
@@ -73,7 +76,10 @@ sealed class AndroidLocaleProfile {
     override fun matches(otherProfile: AndroidLocaleProfile): Boolean =
       otherProfile is RegionOnlyProfile && regionCode == otherProfile.regionCode
 
-    override fun computeAndroidLocale(): Locale = Locale(/* language = */ "", regionCode)
+    override fun computeAndroidLocale(): Locale = Locale.Builder()
+      .setLanguage("")
+      .setRegion(regionCode)
+      .build()
   }
 
   /**
@@ -95,7 +101,9 @@ sealed class AndroidLocaleProfile {
       }
     }
 
-    override fun computeAndroidLocale(): Locale = Locale(languageCode)
+    override fun computeAndroidLocale(): Locale = Locale.Builder()
+      .setLanguage(languageCode)
+      .build()
   }
 
   /**
@@ -119,7 +127,9 @@ sealed class AndroidLocaleProfile {
       }
     }
 
-    override fun computeAndroidLocale(): Locale = Locale(languageCode)
+    override fun computeAndroidLocale(): Locale = Locale.Builder()
+      .setLanguage(languageCode)
+      .build()
   }
 
   /**

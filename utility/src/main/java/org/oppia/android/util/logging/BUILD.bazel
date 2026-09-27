@@ -115,6 +115,7 @@ kt_android_library(
     srcs = [
         "EventTypeToHumanReadableNameConverter.kt",
     ],
+    visibility = ["//utility:utility_testing_visibility"],
     deps = [
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
@@ -134,30 +135,6 @@ kt_android_library(
         ":sync_status_manager_impl",
         "//:dagger",
         "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "log_uploader",
-    srcs = [
-        "LogUploader.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-    ],
-)
-
-kt_android_library(
-    name = "metric_log_scheduler",
-    srcs = [
-        "MetricLogScheduler.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 

@@ -93,6 +93,7 @@ abstract class SvgPictureDrawable(
 
   override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
 
+  @Suppress("WrongConstant") // PixelFormat.TRANSLUCENT is valid for SVGs requiring alpha blending.
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
   /**

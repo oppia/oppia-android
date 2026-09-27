@@ -28,6 +28,12 @@ import java.io.File
  *       `config/changelogs/<version>[_<track>].md`
  *   3. gcp_access_token — OAuth2 bearer token; obtain via `gcloud auth print-access-token`
  *
+ * Example:
+ * ```
+ * bazel run //scripts:upload_changelog_to_play_console -- \
+ *   "$(pwd)" org.oppia.android 0.18 "$(gcloud auth print-access-token)"
+ * ```
+ *
  * An optional 5th argument overrides the API base URL. This is used in tests to route all
  * Play Console HTTP calls through a local MockWebServer instead of the real endpoint.
  */
@@ -69,12 +75,14 @@ fun main(args: Array<String>) {
  * @param workspacePath absolute path to the repository root (for changelog lookups)
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param version version in major.minor format (e.g. `"0.17"`)
+ * @param frozenVersionCodesPerTrack frozen codes to preserve; defaults to the release config
  */
 fun maybeUploadUpdatedChangelogs(
   client: PlayConsoleClient,
   workspacePath: String,
   packageName: String,
-  version: String
+  version: String,
+  frozenVersionCodesPerTrack: Map<String, Set<Long>> = FROZEN_VERSION_CODES_PER_TRACK
 ) {
   val liveTracks = auditLiveTracks(client, packageName)
 
@@ -90,20 +98,22 @@ fun maybeUploadUpdatedChangelogs(
       println("Track '$track': no changelog file found for version $version — skipping.")
       continue
     }
-    val versionCode = checkNotNull(releases.flatMap { it.versionCodes }.maxOrNull()) {
-      "Track '$track' has live releases but no version codes — this should not happen."
+    val frozenVersionCodes = frozenVersionCodesPerTrack[track] ?: emptySet()
+    val (selectedRelease, versionCode) = checkNotNull(
+      findHighestNonFrozenVersionCode(releases, frozenVersionCodes)
+    ) {
+      "Track '$track' has no version codes outside its frozen builds — cannot update its changelog."
     }
-    // Preserve the existing rollout fraction so this changelog-only update does not alter
-    // the staged rollout percentage. inProgress releases carry a rolloutFraction; completed
-    // releases are already at 100% so fall back to 1000.
-    val rolloutFraction =
-      releases.firstOrNull { it.status == "inProgress" }?.rolloutFraction ?: 1000
-    // The already-fetched releases are filtered to find frozen OS-specific builds and passed
-    // through completely unmodified (preserving versionCodes, status, userFraction, and
-    // releaseNotes) so the Play Console API does not treat them as changed.
-    val frozenVersionCodes = FROZEN_VERSION_CODES_PER_TRACK[track] ?: emptySet()
-    val frozenReleases = releases.filter { release ->
-      release.versionCodes.any { it in frozenVersionCodes }
+    // Preserve the rollout of the release containing the selected version code. Completed
+    // releases are already at 100%, so fall back to 1000 when they have no rollout permille.
+    val rolloutPermille = selectedRelease.rolloutPermille ?: 1000
+    if (frozenVersionCodes.isNotEmpty()) {
+      val liveVersionCodes = releases.flatMap { it.versionCodes }.toSet()
+      val missingFrozen = frozenVersionCodes - liveVersionCodes
+      check(missingFrozen.isEmpty()) {
+        "Invariant disruption: frozen version code(s) $missingFrozen expected on track '$track' " +
+          "are missing from the live track. This indicates a major release state inconsistency."
+      }
     }
     // Skip if the live notes already match the local file — avoids wasted API calls and
     // prevents spurious review re-triggers on tracks where nothing has changed.
@@ -114,7 +124,7 @@ fun maybeUploadUpdatedChangelogs(
       ?: ""
     if (!detectChangelogDiff(notes["en-US"] ?: "", deployedNotes)) continue
     uploadChangelogToTrack(
-      client, packageName, track, versionCode, rolloutFraction, notes, frozenReleases
+      client, packageName, track, versionCode, rolloutPermille, notes, frozenVersionCodes.toList()
     )
     updatedCount++
   }
@@ -195,31 +205,31 @@ private fun detectChangelogDiff(localNotes: String, deployedNotes: String): Bool
  *
  * Creates a new edit, updates the release notes for [versionCode] on [track], and commits the
  * edit. This is a *changelog-only* update -- the binary itself is not changed. The caller must
- * pass the existing [rolloutFraction] from the live release to avoid inadvertently altering the
+ * pass the existing [rolloutPermille] from the live release to avoid inadvertently altering the
  * staged rollout percentage.
  *
- * Any [frozenReleases] are passed through completely unmodified alongside the updated release so
- * the Play Console API does not deactivate them during the track update.
+ * Any [frozenVersionCodes] are merged into the new release's versionCodes list so that the
+ * Play Console API does not deactivate them during the track update.
  *
  * @param client the [PlayConsoleClient] used for all API calls
  * @param packageName the application package name (e.g. `"org.oppia.android"`)
  * @param track the Play Console track to update (e.g. `"alpha"`, `"beta"`, `"production"`)
  * @param versionCode the version code of the live release to attach the updated notes to
- * @param rolloutFraction the existing staged rollout fraction from the live release (passed
+ * @param rolloutPermille the existing staged rollout permille from the live release (passed
  *     through unchanged so the rollout percentage is preserved)
  * @param newNotes map of BCP-47 language codes to updated release notes text (max 500 chars each);
  *     must contain at least an `"en-US"` entry
- * @param frozenReleases OS-specific frozen releases to preserve on the track, passed through
- *     unmodified (preserving their versionCodes, status, userFraction, and releaseNotes)
+ * @param frozenVersionCodes frozen OS-specific version codes to merge into the new release entry
+ *     alongside [versionCode] to prevent them being deactivated by the track update
  */
 private fun uploadChangelogToTrack(
   client: PlayConsoleClient,
   packageName: String,
   track: String,
   versionCode: Long,
-  rolloutFraction: Int,
+  rolloutPermille: Int,
   newNotes: Map<String, String>,
-  frozenReleases: List<PlayConsoleClient.TrackRelease> = emptyList()
+  frozenVersionCodes: List<Long> = emptyList()
 ) {
   require(newNotes.containsKey("en-US")) {
     "newNotes must contain an 'en-US' entry. Got keys: ${newNotes.keys}"
@@ -235,7 +245,7 @@ private fun uploadChangelogToTrack(
   println("  Edit session: $editId")
 
   client.setTrackRelease(
-    packageName, editId, track, versionCode, rolloutFraction, newNotes, frozenReleases
+    packageName, editId, track, versionCode, rolloutPermille, newNotes, frozenVersionCodes
   )
   println("  Track release notes updated.")
 

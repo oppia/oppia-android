@@ -45,7 +45,20 @@ class StudyGuideTestHelper @Inject constructor() {
         "<oppia-noninteractive-skillreview " +
         "skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" " +
         "text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\">" +
-        "</oppia-noninteractive-skillreview>.</p>"
+        "</oppia-noninteractive-skillreview>.</p><p>Worked examples:</p>" +
+        "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;" +
+        "&amp;lt;strong&amp;gt;What is one half as a fraction?&amp;lt;/strong&amp;gt;" +
+        "&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;One half is 1/2." +
+        "&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>" +
+        "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;This answer should be ignored.&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample><oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;This question should be ignored.&amp;quot;\" " +
+        "answer-with-value=\"&amp;quot;&amp;quot;\"></oppia-noninteractive-workedexample>" +
+        "<oppia-noninteractive-workedexample " +
+        "question-with-value=\"&amp;quot;Malformed question\" " +
+        "answer-with-value=\"&amp;quot;This answer should be ignored.&amp;quot;\">" +
+        "</oppia-noninteractive-workedexample>"
     )
   )
 

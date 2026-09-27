@@ -76,7 +76,7 @@ feature_flag_definition {
 feature_flag_definition {
   id: EDGE_TO_EDGE
   remote_server_name: "android_enable_edge_to_edge"
-  default_is_enabled: false
+  default_is_enabled: true
 }
 feature_flag_definition {
   id: LOAD_LESSON_PROTOS_FROM_ASSETS
@@ -96,5 +96,10 @@ feature_flag_definition {
 feature_flag_definition {
   id: STUDY_GUIDES
   remote_server_name: "android_enable_study_guides"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: WORKED_EXAMPLES
+  remote_server_name: "android_enable_worked_examples"
   default_is_enabled: false
 }

@@ -28,7 +28,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */
@@ -72,7 +71,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
     val profileDataProvider = profileManagementController.getProfile(
-      retrieveArguments().profileId.toProfileIdPreservingZero()
+      retrieveArguments().profileId
     )
     profileDataProvider.toLiveData().observe(
       fragment
@@ -143,6 +142,10 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun viewSolution() {
     getStateFragment()?.viewSolution()
   }
+
+  fun pauseHints() = getStateFragment()?.pauseHints()
+
+  fun resumeHints() = getStateFragment()?.resumeHints()
 
   fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 

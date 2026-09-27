@@ -138,6 +138,49 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
+  fun testPauseHints_beforeSessionStarted_isFailure() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    val result = questionAssessmentProgressController.pauseHints()
+
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testResumeHints_beforeSessionStarted_isFailure() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    val result = questionAssessmentProgressController.resumeHints()
+
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testHints_pauseHints_duringActiveSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val pauseResult = questionAssessmentProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+  }
+
+  @Test
+  fun testHints_pauseThenResumeHints_duringActiveSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    val pauseResult = questionAssessmentProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    val resumeResult = questionAssessmentProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+  }
+
+  @Test
   fun testStartTrainingSession_withEmptyQuestionList_fails() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
@@ -1719,7 +1762,13 @@ class QuestionAssessmentProgressControllerTest {
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
     private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
 
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
   }
 }

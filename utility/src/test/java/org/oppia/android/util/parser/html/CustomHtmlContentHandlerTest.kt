@@ -265,6 +265,52 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
+  fun testAttributeHelpers_getNestedHtmlValue_nestedHtml_returnsDecodedHtmlWithAttributes() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(
+      name = "attrib",
+      value = "&quot;&lt;nested-tag text-with-value=\\&quot;&amp;quot;Nested content" +
+        "&amp;quot;\\&quot;&gt;&lt;/nested-tag&gt;&quot;"
+    )
+
+    val value = attributes.getNestedHtmlValue("attrib")
+
+    assertThat(value).isEqualTo(
+      "<nested-tag text-with-value=\"&quot;Nested content&quot;\"></nested-tag>"
+    )
+  }
+
+  @Test
+  fun testAttributeHelpers_getNestedHtmlValue_malformedQuotedJson_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;unterminated")
+
+    val value = attributes.getNestedHtmlValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getNestedHtmlValue_quotedJsonWithTrailingContent_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;value&quot;trailing content")
+
+    val value = attributes.getNestedHtmlValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getNestedHtmlValue_unquotedValue_returnsDecodedValue() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&lt;strong&gt;value&lt;/strong&gt;")
+
+    val value = attributes.getNestedHtmlValue("attrib")
+
+    assertThat(value).isEqualTo("<strong>value</strong>")
+  }
+
+  @Test
   fun testAttributeHelpers_getJsonObjectValue_valueMissing_returnsNull() {
     val attributes = AttributesImpl()
 
@@ -327,6 +373,40 @@ class CustomHtmlContentHandlerTest {
     )
 
     assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
+  }
+
+  @Test
+  fun testGetContentDescription_withAdjacentEmptyTags_preservesAllDescriptions() {
+    val firstHandler = FakeContentDescriptionTagHandler("First ")
+    val secondHandler = FakeContentDescriptionTagHandler("Second ")
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<first-tag></first-tag><second-tag></second-tag>",
+      customTagHandlers = mapOf(
+        "first-tag" to firstHandler,
+        "second-tag" to secondHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("First Second")
+  }
+
+  @Test
+  fun testGetContentDescription_afterTagThatReplacesOutput_keepsSurroundingTextAndDescription() {
+    // The replacing handler makes the output longer than the text that the content description is
+    // built from, so a tag that follows it starts at a different index in each of the two. The
+    // description therefore has to be positioned using the content description's own index.
+    val replacingHandler = FakeOutputReplacingTagHandler("REPLACED ")
+    val descriptionHandler = FakeContentDescriptionTagHandler("Desc ")
+
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<replacing-tag></replacing-tag>Middle <desc-tag></desc-tag>End",
+      customTagHandlers = mapOf(
+        "replacing-tag" to replacingHandler,
+        "desc-tag" to descriptionHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Middle Desc End")
   }
 
   @Test
@@ -510,6 +590,20 @@ class CustomHtmlContentHandlerTest {
       return contentDesc
     }
   }
+  /** A handler that replaces its tag's region of the output, the way real handlers do. */
+  private class FakeOutputReplacingTagHandler(
+    private val replacement: String
+  ) : CustomTagHandler {
+    override fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+      output.replace(openIndex, closeIndex, replacement)
+    }
+  }
+
   private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1

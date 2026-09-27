@@ -254,6 +254,21 @@ class KdocValidityCheckTest {
   }
 
   @Test
+  fun testKdoc_functionWithMultibindsAnnotation_withoutKdoc_checkShouldPass() {
+    val testContent =
+      """
+      @Multibinds
+      fun provideContext(application: Application): Context
+      """.trimIndent()
+    val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
+    tempFile.writeText(testContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
   fun testKdoc_testFile_withoutKdoc_checkShouldPass() {
     val testContent =
       """

@@ -177,6 +177,10 @@ class StateFragment :
     stateFragmentPresenter.viewSolution()
   }
 
+  fun pauseHints() = stateFragmentPresenter.pauseHints()
+
+  fun resumeHints() = stateFragmentPresenter.resumeHints()
+
   /**
    * Delegates the removal of all [ConceptCardFragment] instances
    * to the [StateFragmentPresenter].

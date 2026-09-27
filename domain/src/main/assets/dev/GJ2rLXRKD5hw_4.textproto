@@ -27,3 +27,13 @@ title {
   html: "Adding Fractions"
   content_id: "title"
 }
+sections {
+  heading {
+    unicode_str: "Adding Fractions"
+    content_id: "section_heading_0"
+  }
+  content {
+    html: "<p>Description of subtopic is here.</p>"
+    content_id: "section_content_1"
+  }
+}

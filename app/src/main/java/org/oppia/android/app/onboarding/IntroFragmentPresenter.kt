@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.app.model.AudioLanguage
@@ -13,7 +14,10 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
@@ -24,6 +28,7 @@ class IntroFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>,
 ) {
   private lateinit var binding: LearnerIntroFragmentBinding
 
@@ -71,6 +76,13 @@ class IntroFragmentPresenter @Inject constructor(
       fragment.startActivity(intent)
     }
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 

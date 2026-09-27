@@ -31,6 +31,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.enumfilter.filterByEnumCondition
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -201,6 +202,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun expandStoryList(position: Int) {
+    topicLessonViewModel.itemList.filterIsInstance<StorySummaryViewModel>().forEach {
+      it.hideAllTooltips()
+    }
     val previousIndex: Int? = currentExpandedChapterListIndex
     currentExpandedChapterListIndex =
       if (currentExpandedChapterListIndex != null &&
@@ -285,20 +289,31 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
+    // Locked chapters are handled entirely in ChapterSummaryViewModel (micro-tooltip).
+    // Never attempt to start or replay a lesson that is missing prerequisites.
+    if (chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) {
+      oppiaLogger.d(
+        "TopicLessonsFragment",
+        "Ignoring navigation for locked chapter explorationId=$explorationId"
+      )
+      return
+    }
+
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
         ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
-        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
+        ChapterPlayState.UNRECOGNIZED,
         ChapterPlayState.COMPLETED -> false
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> false
       }
 
     when (chapterPlayState) {
       ChapterPlayState.IN_PROGRESS_SAVED -> {
         val explorationCheckpointLiveData =
           explorationCheckpointController.retrieveExplorationCheckpoint(
-            profileId, explorationId
+            profileId.toProfileIdPreservingZero(), explorationId
           ).toLiveData()
         explorationCheckpointLiveData.observe(
           fragment,
@@ -342,6 +357,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           hadProgress = true
         )
       }
+      ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
+        // Defensive: locked chapters must not reach playExploration.
+      }
       else -> {
         playExploration(
           profileId,
@@ -369,21 +387,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          profileId.internalId, classroomId, topicId, storyId, explorationId
+          profileId.toProfileIdPreservingZero(), classroomId, topicId, storyId, explorationId
         )
       }
     }

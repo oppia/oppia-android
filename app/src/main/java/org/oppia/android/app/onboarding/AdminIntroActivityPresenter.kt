@@ -7,7 +7,10 @@ import org.oppia.android.app.model.AdminIntroFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -19,7 +22,9 @@ private const val TAG_ADMIN_INTRO_FRAGMENT = "TAG_ADMIN_INTRO_FRAGMENT"
 /** The presenter for [AdminIntroActivity]. */
 @ActivityScope
 class AdminIntroActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   /** Creates the view for [AdminIntroActivity]. */
@@ -28,6 +33,9 @@ class AdminIntroActivityPresenter @Inject constructor(
     profileType: ProfileType,
     profileNickname: String
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.admin_intro_activity)
 
     if (getAdminIntroFragment() == null) {

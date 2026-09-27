@@ -138,7 +138,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onStart() {
     super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+    val dialog = this.dialog ?: return
+    dialog.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+    conceptCardFragmentPresenter.applyEdgeToEdgeInsets(dialog)
   }
 
   private fun getSkillId(): String? {

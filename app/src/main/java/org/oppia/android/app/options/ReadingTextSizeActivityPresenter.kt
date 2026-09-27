@@ -5,18 +5,33 @@ import androidx.appcompat.widget.Toolbar
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [ReadingTextSizeActivity]. */
 @ActivityScope
 class ReadingTextSizeActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var fontSize: ReadingTextSize
 
   fun handleOnCreate(preferredTextSize: ReadingTextSize) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.reading_text_size_activity)
-    setToolbar()
+    val toolbar = setToolbar()
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        toolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     fontSize = preferredTextSize
     if (getReadingTextSizeFragment() == null) {
       val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(preferredTextSize)
@@ -25,11 +40,12 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
     }
   }
 
-  private fun setToolbar() {
+  private fun setToolbar(): Toolbar {
     val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar)
     readingTextSizeToolbar.setNavigationOnClickListener {
       activity.onBackPressedDispatcher.onBackPressed()
     }
+    return readingTextSizeToolbar
   }
 
   fun setSelectedReadingTextSize(fontSize: ReadingTextSize) {

@@ -33,6 +33,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -633,13 +634,91 @@ class SurveyGatingControllerTest {
     assertThat(result).isTrue()
   }
 
+  @Test
+  fun testGating_activeSessionAtMinimumTime_noPreviousTime_returnsTrue() {
+    startActiveSessionAtMinimumTime(PROFILE_ID_1)
+
+    val results = monitorFactory.waitForAllNextResults {
+      surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
+    }
+
+    assertThat(results.last()).isEqualTo(AsyncResult.Success(true))
+    assertThat(results).doesNotContain(AsyncResult.Success(false))
+  }
+
+  @Test
+  fun testGating_stopJustQueued_atMinimumTime_doesNotEmitFalseBeforeSave() {
+    startActiveSessionAtMinimumTime(PROFILE_ID_1)
+    explorationActiveTimeController.onExplorationEnded()
+    // Do not drain the timer stop or persistence work before requesting eligibility.
+
+    val results = monitorFactory.waitForAllNextResults {
+      surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
+    }
+
+    assertThat(results.last()).isEqualTo(AsyncResult.Success(true))
+    assertThat(results).doesNotContain(AsyncResult.Success(false))
+  }
+
+  @Test
+  fun testGating_firstProfileShownSurvey_secondProfileActiveSameTopic_isIndependentlyEligible() {
+    startActiveSessionAtMinimumTime(PROFILE_ID_0)
+    assertThat(
+      monitorFactory.waitForNextSuccessfulResult(
+        surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+      )
+    ).isTrue()
+    // Showing the welcome dialog records this timestamp, including when the survey is submitted.
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateSurveyLastShownTimestamp(
+        PROFILE_ID_0.toProfileIdPreservingZero()
+      )
+    )
+    explorationActiveTimeController.onExplorationEnded()
+    testCoroutineDispatchers.runCurrent()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.loginToProfile(PROFILE_ID_1.toProfileIdPreservingZero())
+    )
+    startActiveSessionAtMinimumTime(PROFILE_ID_1)
+
+    val secondProfileResult = monitorFactory.waitForNextSuccessfulResult(
+      surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
+    )
+    val firstProfileResult = monitorFactory.waitForNextSuccessfulResult(
+      surveyGatingController.maybeShowSurvey(PROFILE_ID_0, TEST_TOPIC_ID_0)
+    )
+
+    assertThat(secondProfileResult).isTrue()
+    assertThat(firstProfileResult).isFalse()
+    assertThat(
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveSurveyLastShownTimestamp(
+          PROFILE_ID_1.toProfileIdPreservingZero()
+        )
+      )
+    ).isEqualTo(0L)
+  }
+
+  private fun startActiveSessionAtMinimumTime(profileId: LegacyProfileId) {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
+    explorationActiveTimeController.onAppInForeground()
+    explorationActiveTimeController.onExplorationStarted(
+      profileId.toProfileIdPreservingZero(), TEST_TOPIC_ID_0
+    )
+    testCoroutineDispatchers.runCurrent()
+    oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS + SESSION_LENGTH_MINIMUM)
+  }
+
   private fun startAndEndExplorationSession(
     sessionLengthMs: Long,
     profileId: LegacyProfileId,
     topicId: String
   ) {
     explorationActiveTimeController.onAppInForeground()
-    explorationActiveTimeController.onExplorationStarted(profileId, topicId)
+    explorationActiveTimeController.onExplorationStarted(
+      profileId.toProfileIdPreservingZero(), topicId
+    )
     testCoroutineDispatchers.advanceTimeBy(sessionLengthMs)
     explorationActiveTimeController.onExplorationEnded()
   }

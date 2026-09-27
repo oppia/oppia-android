@@ -41,6 +41,11 @@ class HintHandlerDebugImpl private constructor() : HintHandler {
 
   override suspend fun navigateBackToLatestPendingState() {}
 
+  // The debug impl always reveals everything immediately; pause/resume are no-ops.
+  override suspend fun pauseHints() {}
+
+  override suspend fun resumeHints() {}
+
   override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
 
   private fun recomputeHelpIndex(pendingState: State) {

@@ -34,7 +34,6 @@
           android:layout_height="wrap_content"
           android:layout_gravity="start"
           android:background="@color/component_color_shared_fragment_container_background_color"
-          android:fitsSystemWindows="true"
           android:overScrollMode="never"
           android:scrollbars="none"
           app:elevation="0dp"

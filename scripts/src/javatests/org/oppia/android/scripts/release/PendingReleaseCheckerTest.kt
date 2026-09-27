@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.release
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.testing.assertThrows
@@ -16,6 +17,11 @@ class PendingReleaseCheckerTest {
   fun setUp() {
     fakeClient = FakePlayConsoleClient()
     check = PendingReleaseChecker(fakeClient)
+  }
+
+  @After
+  fun tearDown() {
+    fakeClient.close()
   }
 
   // ---------------------------------------------------------------------------
@@ -90,7 +96,7 @@ class PendingReleaseCheckerTest {
       "beta",
       listOf(
         PlayConsoleClient.TrackRelease(
-          status = "inProgress", versionCodes = listOf(302L), rolloutFraction = 250
+          status = "inProgress", versionCodes = listOf(302L), rolloutPermille = 250
         )
       )
     )
@@ -109,7 +115,7 @@ class PendingReleaseCheckerTest {
       "production",
       listOf(
         PlayConsoleClient.TrackRelease(
-          status = "inProgress", versionCodes = listOf(500L), rolloutFraction = 500
+          status = "inProgress", versionCodes = listOf(500L), rolloutPermille = 500
         )
       )
     )

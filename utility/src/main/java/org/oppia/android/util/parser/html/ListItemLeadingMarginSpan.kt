@@ -25,12 +25,26 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
   /** The parent list of this span, or null if it doesn't have one (that is, it's a root list). */
   protected abstract val parent: ListItemLeadingMarginSpan?
 
-  private val absoluteLeadingMargin: Int
+  /**
+   * The margin that's already applied to the content enclosing this span's root list, in pixels.
+   *
+   * Android sums the margins of every [LeadingMarginSpan] that applies to a line, so a list that's
+   * within indented content (such as a worked example) has its text indented by that content's
+   * margin in addition to its own. This span needs to know about that margin since it positions its
+   * own bullet or number itself, and would otherwise draw it against the start of the line.
+   */
+  protected abstract val enclosingLeadingMargin: Int
+
+  /**
+   * The distance between the start of the line and the text of this span's item, in pixels. This
+   * accounts for the margins of both this span's parents and its enclosing content.
+   */
+  val absoluteLeadingMargin: Int
     get() = parentAbsoluteLeadingMargin + getLeadingMargin(/* first= */ true)
 
   /** The leading margin of all parents of this span, up to the start of the text area. */
   protected val parentAbsoluteLeadingMargin: Int
-    get() = parent?.absoluteLeadingMargin ?: 0
+    get() = parent?.absoluteLeadingMargin ?: enclosingLeadingMargin
 
   /** A subclass of [LeadingMarginSpan] that shows nested list span for <ul> tags. */
   class UlSpan(
@@ -38,6 +52,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     context: Context,
     private val indentationLevel: Int,
     private val displayLocale: OppiaLocale.DisplayLocale,
+    override val enclosingLeadingMargin: Int = 0
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
@@ -123,7 +138,8 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     private val numberedItemPrefix: String,
     private val longestNumberedItemPrefix: String,
     private val displayLocale: OppiaLocale.DisplayLocale,
-    private val textView: TextView
+    private val textView: TextView,
+    override val enclosingLeadingMargin: Int = 0
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)

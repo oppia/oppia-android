@@ -1178,7 +1178,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLocale_updateLanguageToHinglish_returnsEnglishLocale() {
+  fun testGetAudioLocale_updateLanguageToHinglish_returnsHinglishLocale() {
     forceDefaultLocale(Locale.ROOT)
     ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
 
@@ -1187,6 +1187,22 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
+    assertThat(context.languageDefinition.language).isEqualTo(HINGLISH)
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+  }
+
+  @Test
+  fun testGetAudioLocale_updateLanguageToPortuguese_returnsEnglishLocale() {
+    forceDefaultLocale(Locale.ROOT)
+    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, PORTUGUESE)
+
+    val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
+    // PORTUGUESE does not have an audio_translation_id, so it is unsupported for audio translations.
+    // Therefore, it should fall back to ENGLISH.
     assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
     // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
@@ -2036,6 +2052,20 @@ class TranslationControllerTest {
       .containsExactly(ARABIC, ENGLISH, HINDI, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN)
   }
 
+  @Test
+  fun testGetSupportedAudioLanguages_returnsAudioLanguageDefinitions() {
+    val languageListProvider = translationController.getSupportedAudioLanguages()
+    val languageListData = monitorFactory.waitForNextSuccessfulResult(languageListProvider)
+
+    // Audio languages include HINGLISH which has an audio_translation_id but no app_string_id,
+    // so it correctly appears here but not in getSupportedAppLanguages(). This is a change
+    // detector test to ensure the audio language selection system provides exactly the list of
+    // intended languages.
+    assertThat(languageListData).containsExactly(
+      ARABIC, ENGLISH, HINDI, HINGLISH, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN
+    )
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -2180,10 +2210,22 @@ class TranslationControllerTest {
   }
 
   private companion object {
-    private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
-    private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
+    private val BRAZIL_ENGLISH_LOCALE = Locale.Builder()
+      .setLanguage("en")
+      .setRegion("BR")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val INDIA_HINDI_LOCALE = Locale.Builder()
+      .setLanguage("hi")
+      .setRegion("IN")
+      .build()
+    private val KENYA_KISWAHILI_LOCALE = Locale.Builder()
+      .setLanguage("sw")
+      .setRegion("KE")
+      .build()
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0

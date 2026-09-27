@@ -9,7 +9,7 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
-import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
@@ -22,6 +22,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.profile.toLegacyProfileId
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -68,7 +69,7 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   private val cacheStoreMap =
-    mutableMapOf<LegacyProfileId, PersistentCacheStore<ExplorationCheckpointDatabase>>()
+    mutableMapOf<ProfileId, PersistentCacheStore<ExplorationCheckpointDatabase>>()
 
   /**
    * Records an exploration checkpoint for the specified profile.
@@ -82,7 +83,7 @@ class ExplorationCheckpointController @Inject constructor(
    *     completion of deferred.
    */
   internal fun recordExplorationCheckpointAsync(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
   ): Deferred<CheckpointState> {
@@ -129,7 +130,7 @@ class ExplorationCheckpointController @Inject constructor(
    * Returns a [DataProvider] for the [Deferred] returned from [recordExplorationCheckpointAsync].
    */
   fun recordExplorationCheckpoint(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
@@ -147,7 +148,7 @@ class ExplorationCheckpointController @Inject constructor(
 
   /** Returns the saved checkpoint for a specified explorationId and profileId. */
   fun retrieveExplorationCheckpoint(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     explorationId: String
   ): DataProvider<ExplorationCheckpoint> {
     return retrieveCacheStore(profileId)
@@ -193,7 +194,7 @@ class ExplorationCheckpointController @Inject constructor(
    *      and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
   fun retrieveOldestSavedExplorationCheckpointDetails(
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ): DataProvider<ExplorationCheckpointDetails> {
     return retrieveCacheStore(profileId)
       .transform(
@@ -214,7 +215,7 @@ class ExplorationCheckpointController @Inject constructor(
 
   /** Deletes the saved checkpoint for a specified explorationId and profileId. */
   fun deleteSavedExplorationCheckpoint(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     explorationId: String
   ): DataProvider<Any?> {
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
@@ -252,7 +253,7 @@ class ExplorationCheckpointController @Inject constructor(
   private suspend fun getDeferredResult(
     deferred: Deferred<ExplorationCheckpointActionStatus>,
     explorationId: String?,
-    profileId: LegacyProfileId?,
+    profileId: ProfileId?,
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND ->
@@ -267,7 +268,7 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   private fun retrieveCacheStore(
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ): PersistentCacheStore<ExplorationCheckpointDatabase> {
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
@@ -276,7 +277,7 @@ class ExplorationCheckpointController @Inject constructor(
         cacheStoreFactory.createPerProfile(
           CACHE_NAME,
           ExplorationCheckpointDatabase.getDefaultInstance(),
-          profileId
+          profileId.toLegacyProfileId()
         )
       cacheStoreMap[profileId] = cacheStore
       cacheStore

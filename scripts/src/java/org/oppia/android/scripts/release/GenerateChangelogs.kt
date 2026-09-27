@@ -5,6 +5,9 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
+private const val GCP_LOCATION = "us-central1"
+private const val VERTEX_MODEL = "gemini-1.5-flash"
+
 /**
  * Script that automatically generates a changelog for the previous app version whenever the minor
  * version is bumped in `version.bzl`, and proposes it as a pull request on `develop`.
@@ -26,32 +29,29 @@ import java.io.File
  * ### Usage (called by `generate_changelog.yml` via Bazel)
  * ```
  * bazel run //scripts:generate_changelogs -- \
- *   <workspace_root> <gcp_project> <gcp_location> <vertex_model> <gcp_access_token>
+ *   <workspace_root> <gcp_project> <gcp_access_token>
  * ```
  *
  * ### Arguments (positional)
  *   0. `workspace_root`  — absolute path to the local repository root
  *   1. `gcp_project`     — GCP project ID that has Vertex AI enabled
- *   2. `gcp_location`    — Vertex AI region (e.g. "us-central1")
- *   3. `vertex_model`    — Vertex AI model ID (e.g. "gemini-1.5-flash")
- *   4. `gcp_access_token`— GCP Bearer token for authenticating with Vertex AI
+ *   2. `gcp_access_token`— GCP Bearer token for authenticating with Vertex AI
  *
- * An optional 6th argument overrides the Vertex AI API base URL; this is used in integration
+ * An optional 4th argument overrides the Vertex AI API base URL; this is used in integration
  * tests to route HTTP calls through a local mock server.
  */
+
 fun main(args: Array<String>) {
-  require(args.size in 5..6) {
-    "Usage: generate_changelogs <workspace_root> <gcp_project> <gcp_location> " +
-      "<vertex_model> <gcp_access_token>\nGot ${args.size} argument(s): ${args.toList()}"
+  require(args.size in 3..4) {
+    "Usage: generate_changelogs <workspace_root> <gcp_project> <gcp_access_token>" +
+      "\nGot ${args.size} argument(s): ${args.toList()}"
   }
 
   val workspaceRoot = args[0]
   val gcpProject = args[1]
-  val gcpLocation = args[2]
-  val vertexModel = args[3]
-  val gcpAccessToken = args[4]
+  val gcpAccessToken = args[2]
 
-  val overrideApiBaseUrl = if (args.size == 6) args[5] else null
+  val overrideApiBaseUrl = if (args.size == 4) args[3] else null
 
   // TARGET_VERSION is set by the workflow when the user triggers workflow_dispatch with a
   // specific version (e.g. "0.17"). When empty or absent, version is derived from version.bzl.
@@ -60,9 +60,11 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val vertexAiClient = if (overrideApiBaseUrl != null) {
-      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken, overrideApiBaseUrl)
+      GoogleVertexAiClient(
+        gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken, overrideApiBaseUrl
+      )
     } else {
-      GoogleVertexAiClient(gcpProject, gcpLocation, vertexModel, gcpAccessToken)
+      GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken)
     }
     generateChangelogs(
       workspaceRoot = File(workspaceRoot),
@@ -218,12 +220,17 @@ fun parseVersionBzl(workspaceRoot: File): Pair<Int, Int> {
 /**
  * Computes the `fromSha..toSha` range for the changelog commit collection.
  *
- * The **toSha** is the merge-base of [releaseBranch] and `develop` — the point where the current
- * release branched off (i.e. all commits up to and including the version bump commit).
+ * The **toSha** is the merge-base of `origin/`[releaseBranch] and `origin/develop` — the point
+ * where the current release branched off (i.e. all commits up to and including the version bump
+ * commit).
  *
- * The **fromSha** is the merge-base of [prevReleaseBranch] and `develop` — the point where the
- * *previous* release branched off. If the previous release branch doesn't exist (first release),
- * falls back to the very first commit on `develop`.
+ * The **fromSha** is the merge-base of `origin/`[prevReleaseBranch] and `origin/develop` — the
+ * point where the *previous* release branched off. If the previous release branch doesn't exist on
+ * the remote, falls back to the very first commit on `develop`.
+ *
+ * Both release branch refs are referenced as remote tracking refs (`origin/release-X.Y`) rather
+ * than local branch names. `actions/checkout` with `fetch-depth: 0` fetches all remote tracking
+ * refs, so no explicit `git fetch` step is required in the workflow.
  *
  * @param prevMinor the previous minor version number, used to detect the first-release edge case
  * @return a (fromSha, toSha) pair of full commit SHAs
@@ -235,13 +242,18 @@ fun findCommitRange(
   prevReleaseBranch: String,
   prevMinor: Int
 ): Pair<String, String> {
-  val toSha = gitMergeBase(workspaceRoot, commandExecutor, releaseBranch, "$REMOTE/$DEVELOP_BRANCH")
+  val toSha =
+    gitMergeBase(
+      workspaceRoot, commandExecutor, "$REMOTE/$releaseBranch", "$REMOTE/$DEVELOP_BRANCH"
+    )
   val fromSha = if (prevMinor <= 0) {
     // First-ever release: include all commits from the beginning of develop.
     gitFirstCommit(workspaceRoot, commandExecutor)
   } else {
     try {
-      gitMergeBase(workspaceRoot, commandExecutor, prevReleaseBranch, "$REMOTE/$DEVELOP_BRANCH")
+      gitMergeBase(
+        workspaceRoot, commandExecutor, "$REMOTE/$prevReleaseBranch", "$REMOTE/$DEVELOP_BRANCH"
+      )
     } catch (e: IllegalStateException) {
       // Re-throw if this isn't a "branch not found" failure — don't mask unrelated errors.
       if ("unknown revision" !in (e.message ?: "") &&
@@ -532,8 +544,7 @@ fun createOrUpdateChangelogPr(
     "--base", "develop",
     "--head", branchName,
     "--title", prTitle,
-    "--body", prBody,
-    "--label", "automated-changelog"
+    "--body", prBody
   )
   if (result.exitCode == 0) {
     val prUrl = result.output.lastOrNull { it.startsWith("https://") } ?: "(URL not found)"

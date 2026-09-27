@@ -63,11 +63,13 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -100,7 +102,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val appStartupStateController: AppStartupStateController,
   private val resourceHandler: AppLanguageResourceHandler,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
@@ -125,6 +128,13 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
     createComposeView()
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootView(
+        activity,
+        binding.root,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 

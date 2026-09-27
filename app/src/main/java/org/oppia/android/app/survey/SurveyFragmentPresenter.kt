@@ -28,11 +28,15 @@ import org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.survey.SurveyProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [SurveyFragment]. */
@@ -44,7 +48,8 @@ class SurveyFragmentPresenter @Inject constructor(
   private val surveyViewModel: SurveyViewModel,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val analyticsController: AnalyticsController
+  private val analyticsController: AnalyticsController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralSurveyQuestion>> by lazy {
     surveyProgressController.getCurrentQuestion().toLiveData()
@@ -86,6 +91,13 @@ class SurveyFragmentPresenter @Inject constructor(
     surveyToolbar.setNavigationOnClickListener {
       val dialogFragment = ExitSurveyConfirmationDialogFragment.newInstance(profileId)
       dialogFragment.showNow(fragment.childFragmentManager, TAG_EXIT_SURVEY_CONFIRMATION_DIALOG)
+    }
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        surveyToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     binding.surveyAnswersRecyclerView.apply {

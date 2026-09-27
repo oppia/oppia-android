@@ -104,17 +104,17 @@
         "section_content_3": {
           "pt": {
             "data_format": "html",
-            "translation": {"translation" : "<p>Esta seção revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cartão de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "translation": {"translation" : "<p>Esta seção revisa uma habilidade relacionada: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 cartão de conceito&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Exemplos resolvidos:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Qual é a representação de um meio como fração?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Um meio é 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
             "needs_update": false
           },
           "ar": {
             "data_format": "html",
-            "translation": {"translation" : "<p>يراجع هذا القسم مهارة ذات صلة: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;بطاقة مفهوم test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "translation": {"translation" : "<p>يراجع هذا القسم مهارة ذات صلة: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;بطاقة مفهوم test_skill_id_0&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>أمثلة محلولة:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;ما هو النصف في صورة كسر؟&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;النصف هو 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
             "needs_update": false
           },
           "sw": {
             "data_format": "html",
-            "translation": {"translation" : "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"},
+            "translation": {"translation" : "<p>Sehemu hii inapitia ujuzi unaohusiana: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 kadi ya dhana&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Mifano iliyofanyiwa kazi:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Nusu moja ni nini kama sehemu?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Nusu moja ni 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"},
             "needs_update": false
           }
         }
@@ -139,7 +139,7 @@
       },
       "content": {
         "content_id": "section_content_3",
-        "html": "<p>This section reviews a related skill: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+        "html": "<p>This section reviews a related skill: <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Worked examples:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;What is one half as a fraction?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;One half is 1/2.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;quot;\" answer-with-value=\"&amp;quot;This answer should be ignored.&amp;quot;\"></oppia-noninteractive-workedexample><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;This question should be ignored.&amp;quot;\" answer-with-value=\"&amp;quot;&amp;quot;\"></oppia-noninteractive-workedexample><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;Malformed question\" answer-with-value=\"&amp;quot;This answer should be ignored.&amp;quot;\"></oppia-noninteractive-workedexample>"
       }
     }
   ],

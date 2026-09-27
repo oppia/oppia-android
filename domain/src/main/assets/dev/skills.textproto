@@ -170,7 +170,7 @@ concept_cards {
   skill_id: "test_skill_id_1"
   skill_description: "Another important skill"
   explanation {
-    html: "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p>"
+    html: "Explanation with <b>rich text</b>.<p>Click on this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p>Worked examples:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;What is two plus two?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Two plus two is 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
     content_id: "explanation"
   }
   worked_example {
@@ -193,19 +193,19 @@ concept_cards {
       translation_mapping {
         key: "pt"
         value {
-          html: "Explica\303\247\303\243o com <b> rico texto </b>."
+          html: "Explica\303\247\303\243o com <b> rico texto </b>.<p>Exemplos resolvidos:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Qual \303\251 o resultado de dois mais dois?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Dois mais dois \303\251 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
         }
       }
       translation_mapping {
         key: "ar"
         value {
-          html: "Explanation \331\205\330\271 <b> Rich Text </b>."
+          html: "Explanation \331\205\330\271 <b> Rich Text </b>.<p>\330\243\331\205\330\253\331\204\330\251 \331\205\330\255\331\204\331\210\331\204\330\251:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;\331\205\330\247 \330\255\330\247\330\265\331\204 \330\254\331\205\330\271 \330\247\330\253\331\206\331\212\331\206 \331\210\330\247\330\253\331\206\331\212\331\206\330\237&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;\330\247\330\253\331\206\330\247\331\206 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\330\247\331\206 \331\212\330\263\330\247\331\210\331\212 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
         }
       }
       translation_mapping {
         key: "sw"
         value {
-          html: "Maelezo na <b> maandishi tajiri </b>."
+          html: "Maelezo na <b> maandishi tajiri </b>.<p>Mifano iliyofanyiwa kazi:</p><oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Mbili jumlisha mbili ni ngapi?&amp;lt;/strong&amp;gt;&amp;quot;\" answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Mbili jumlisha mbili ni 4.&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
         }
       }
     }
