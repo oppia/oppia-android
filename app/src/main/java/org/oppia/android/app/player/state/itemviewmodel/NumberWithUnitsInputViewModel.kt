@@ -18,6 +18,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.math.NumberWithUnitsParser
+import org.oppia.android.domain.util.toNumberWithUnits
 import javax.inject.Inject
 
 /** [StateItemViewModel] for the number with units input interaction. */
@@ -66,18 +68,22 @@ class NumberWithUnitsInputViewModel private constructor(
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     answerErrorCategory = category
-    return when (category) {
+    val parsedAnswer = NumberWithUnitsParser.parseNumberWithUnits(answerText.toString())
+    pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME -> null
       AnswerErrorCategory.SUBMIT_TIME -> {
-        TextParsingUiError.createForText(
-          answerText.toString()
-        ).createForText(resourceHandler)
+        if (parsedAnswer is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Failure) {
+          org.oppia.android.app.parser.NumberWithUnitsParsingUiError
+            .createFromParsingError(parsedAnswer.error)
+            .getErrorMessageFromStringRes(resourceHandler)
+        } else {
+          null
+        }
       }
       else -> null
-    }.also {
-      pendingAnswerError = it
-      errorMessage.set(it)
     }
+    errorMessage.set(pendingAnswerError)
+    return pendingAnswerError
   }
 
   /** Returns a [TextWatcher] that updates the answer and its validation state. */
@@ -103,9 +109,14 @@ class NumberWithUnitsInputViewModel private constructor(
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      answer = InteractionObject.newBuilder().apply {
-        normalizedString = answerTextString
-      }.build()
+      val parsedAnswer = NumberWithUnitsParser.parseNumberWithUnits(answerTextString)
+      if (parsedAnswer is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Success) {
+        answer = InteractionObject.newBuilder()
+          .setNumberWithUnits(parsedAnswer.result.toNumberWithUnits())
+          .build()
+      }
+      // If parsing fails, we don't populate the answer field.
+      // The submit time error check will catch this and prevent submission.
       plainAnswer = answerTextString
       writtenTranslationContext = this@NumberWithUnitsInputViewModel.writtenTranslationContext
     }

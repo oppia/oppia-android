@@ -158,9 +158,10 @@ class NumberWithUnitsInputInteractionViewTestActivityTest {
       val pendingAnswer = activity.numberWithUnitsInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+        InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
       )
-      assertThat(pendingAnswer.answer.normalizedString).isEqualTo("42 km")
+      assertThat(pendingAnswer.answer.numberWithUnits.real).isEqualTo(42.0)
+      assertThat(pendingAnswer.answer.numberWithUnits.unitList.single().unit).isEqualTo("km")
     }
   }
 
