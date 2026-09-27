@@ -240,6 +240,19 @@ class SplashActivityTest {
   }
 
   @Test
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_showsPlayStoreUpdateButton() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    launchSplashActivityFully {
+      onView(withText(R.string.forced_app_update_dialog_update_button_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testOpenApp_initial_deprecationEnabled_appExpired_showsAutomaticExpiryDialog() {
     TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
     initializeTestApplication()
