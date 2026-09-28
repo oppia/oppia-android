@@ -26,7 +26,6 @@ import org.oppia.android.util.math.NumberWithUnitsParsingError.TrailingTokensErr
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterDivisionError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError
-import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedError
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
