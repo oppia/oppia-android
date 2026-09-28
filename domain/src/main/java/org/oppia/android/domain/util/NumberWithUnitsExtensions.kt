@@ -1,20 +1,16 @@
 package org.oppia.android.domain.util
 
-import org.oppia.android.app.model.NumberUnit
-import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.NormalizedNumberWithUnits
+import org.oppia.android.app.model.NormalizedUnit
+import org.oppia.android.app.model.NormalizedUnit.BaseDimension
+import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberUnitExpression
+import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.util.math.NumberWithUnitsParser
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.oppia.android.util.math.toDouble
 import kotlin.math.pow
-
-import org.oppia.android.app.model.NormalizedUnit
-import org.oppia.android.app.model.NormalizedUnit.BaseDimension
-import org.oppia.android.app.model.NumberWithUnitsExpression
-import org.oppia.android.app.model.PrefixValueExpression
-import org.oppia.android.app.model.ValueSuffixExpression
-import org.oppia.android.app.model.PrefixValueSuffixExpression
 
 /**
  * Aggregates the units in a [NumberWithUnits] by summing the exponents of any duplicate units.
@@ -57,16 +53,23 @@ fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
     }
     convertedValue *= conversion.value.pow(unit.exponent)
     conversion.unitList.forEach { normalizedUnit ->
-      dimensions[normalizedUnit.dimension] = (dimensions[normalizedUnit.dimension] ?: 0) + normalizedUnit.exponent * unit.exponent
+      dimensions[normalizedUnit.dimension] =
+        (dimensions[normalizedUnit.dimension] ?: 0) + normalizedUnit.exponent * unit.exponent
     }
   }
   return NormalizedNumberWithUnits.newBuilder().apply {
     value = convertedValue
     addAllUnit(
       // Sort by enum ordinal for deterministic ordering.
-      dimensions.filterValues { it != 0 }.toSortedMap(compareBy { it.ordinal }).map { (dimension, exponent) ->
-        NormalizedUnit.newBuilder().setDimension(dimension).setExponent(exponent).build()
-      }
+      dimensions.filterValues { it != 0 }
+        .toSortedMap(compareBy { it.ordinal })
+        .map { (dimension, exponent) ->
+          NormalizedUnit
+            .newBuilder()
+            .setDimension(dimension)
+            .setExponent(exponent)
+            .build()
+        }
     )
   }.build()
 }
@@ -179,7 +182,10 @@ fun NumberUnitExpression.toUnitString(): String {
 }
 
 
-private fun createConversion(factor: Double, vararg dimensions: Pair<BaseDimension, Int>): NormalizedNumberWithUnits {
+private fun createConversion(
+  factor: Double,
+  vararg dimensions: Pair<BaseDimension, Int>
+): NormalizedNumberWithUnits {
   return NormalizedNumberWithUnits.newBuilder()
     .setValue(factor)
     .addAllUnit(
@@ -206,7 +212,10 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
     NumberUnitExpression.Unit.CUBIC_METER -> createConversion(1.0, BaseDimension.VOLUME to 3)
     NumberUnitExpression.Unit.LITER -> createConversion(0.001, BaseDimension.VOLUME to 3)
     NumberUnitExpression.Unit.CUBIC_CENTIMETER -> createConversion(1e-6, BaseDimension.VOLUME to 3)
-    NumberUnitExpression.Unit.CUBIC_INCH -> createConversion(0.000016387, BaseDimension.VOLUME to 3)
+    NumberUnitExpression.Unit.CUBIC_INCH -> createConversion(
+      0.000016387,
+      BaseDimension.VOLUME to 3
+    )
     NumberUnitExpression.Unit.CUBIC_FOOT -> createConversion(0.0283168, BaseDimension.VOLUME to 3)
     NumberUnitExpression.Unit.CUBIC_YARD -> createConversion(0.764555, BaseDimension.VOLUME to 3)
     NumberUnitExpression.Unit.KELVIN -> createConversion(1.0, BaseDimension.TEMPERATURE to 1)
@@ -218,14 +227,49 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
     NumberUnitExpression.Unit.HOUR -> createConversion(3600.0, BaseDimension.TIME to 1)
     NumberUnitExpression.Unit.HERTZ -> createConversion(1.0, BaseDimension.TIME to -1)
     NumberUnitExpression.Unit.MOLE -> createConversion(1.0, BaseDimension.AMOUNT to 1)
-    NumberUnitExpression.Unit.CANDELA -> createConversion(1.0, BaseDimension.LUMINOUS_INTENSITY to 1)
-    NumberUnitExpression.Unit.NEWTON -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to 1, BaseDimension.TIME to -2)
-    NumberUnitExpression.Unit.JOULE -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to 2, BaseDimension.TIME to -2)
-    NumberUnitExpression.Unit.WATT -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to 2, BaseDimension.TIME to -3)
-    NumberUnitExpression.Unit.PASCAL -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to -1, BaseDimension.TIME to -2)
+    NumberUnitExpression.Unit.CANDELA -> createConversion(
+      1.0,
+      BaseDimension.LUMINOUS_INTENSITY to 1
+    )
+    NumberUnitExpression.Unit.NEWTON -> createConversion(
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to 1,
+      BaseDimension.TIME to -2
+      )
+    NumberUnitExpression.Unit.JOULE -> createConversion(
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to 2,
+      BaseDimension.TIME to -2
+    )
+    NumberUnitExpression.Unit.WATT -> createConversion(
+      1000.0, 
+      BaseDimension.MASS to 1, 
+      BaseDimension.LENGTH to 2, 
+      BaseDimension.TIME to -3
+    )
+    NumberUnitExpression.Unit.PASCAL -> createConversion(
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to -1,
+      BaseDimension.TIME to -2
+    )
     NumberUnitExpression.Unit.AMPERE -> createConversion(1.0, BaseDimension.CURRENT to 1)
-    NumberUnitExpression.Unit.VOLT -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to 2, BaseDimension.TIME to -3, BaseDimension.CURRENT to -1)
-    NumberUnitExpression.Unit.OHM -> createConversion(1000.0, BaseDimension.MASS to 1, BaseDimension.LENGTH to 2, BaseDimension.TIME to -3, BaseDimension.CURRENT to -2)
+    NumberUnitExpression.Unit.VOLT -> createConversion(
+      1000.0, 
+      BaseDimension.MASS to 1, 
+      BaseDimension.LENGTH to 2, 
+      BaseDimension.TIME to -3, 
+      BaseDimension.CURRENT to -1
+    )
+    NumberUnitExpression.Unit.OHM -> createConversion(
+      1000.0, 
+      BaseDimension.MASS to 1, 
+      BaseDimension.LENGTH to 2, 
+      BaseDimension.TIME to -3, 
+      BaseDimension.CURRENT to -2
+    )
     NumberUnitExpression.Unit.DOLLAR -> createConversion(100.0, BaseDimension.CURRENCY_DOLLAR to 1)
     NumberUnitExpression.Unit.CENT -> createConversion(0.01, BaseDimension.CURRENCY_DOLLAR to 1)
     NumberUnitExpression.Unit.RUPEE -> createConversion(1.0, BaseDimension.CURRENCY_RUPEE to 1)
@@ -244,5 +288,8 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
     NumberUnitExpression.SiPrefix.GIGA -> 1e9
     else -> 1.0
   }
-  return if (prefixFactor == 1.0) base else base.toBuilder().setValue(base.value * prefixFactor).build()
+  return if (prefixFactor == 1.0)
+    base
+  else
+    base.toBuilder().setValue(base.value * prefixFactor).build()
 }

@@ -180,22 +180,4 @@ class NumberWithUnitsInputViewModel private constructor(
       )
     }
   }
-
-  private enum class TextParsingUiError(@StringRes private var error: Int?) {
-    /** Corresponds to non empty input. */
-    VALID(error = null),
-
-    /** Corresponds to empty input. */
-    EMPTY_INPUT(error = R.string.text_error_empty_input);
-
-    /** Returns the string corresponding to this error's string resources, or null if there is none. */
-    fun createForText(resourceHandler: AppLanguageResourceHandler): String? =
-      error?.let(resourceHandler::getStringInLocale)
-
-    companion object {
-      /** Returns the [TextParsingUiError] corresponding to the input. */
-      fun createForText(text: String): TextParsingUiError =
-        if (text.isEmpty()) EMPTY_INPUT else VALID
-    }
-  }
 }
