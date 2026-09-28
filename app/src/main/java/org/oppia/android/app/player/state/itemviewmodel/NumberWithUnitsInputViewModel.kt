@@ -17,8 +17,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.math.NumberWithUnitsParser
 import org.oppia.android.domain.util.toNumberWithUnits
+import org.oppia.android.util.math.NumberWithUnitsParser
 import javax.inject.Inject
 
 /** [StateItemViewModel] for the number with units input interaction. */
