@@ -58,10 +58,17 @@ enum class NumberWithUnitsParsingUiError(@StringRes private var error: Int?) {
   /** Corresponds to [NumberWithUnitsParsingError.GenericError]. */
   GENERIC_ERROR(error = R.string.number_with_units_error_generic);
 
+  /**
+   * Returns the string corresponding to this error's string resources, or null if there is none.
+   */
   fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
     error?.let(resourceHandler::getStringInLocale)
 
   companion object {
+    /**
+     * Returns the [NumberWithUnitsParsingUiError] corresponding to the specified
+     * [NumberWithUnitsParsingError].
+     */
     fun createFromParsingError(
       parsingError: NumberWithUnitsParsingError
     ): NumberWithUnitsParsingUiError {
