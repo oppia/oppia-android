@@ -86,7 +86,7 @@ fun NumberWithUnitsExpression.toNumberWithUnits(): NumberWithUnits {
     NumberWithUnitsExpression.NumberTypeCase.FRACTION -> builder.fraction = fraction
     else -> {}
   }
-  
+
   val unitsList = mutableListOf<NumberUnitExpression>()
   when (expressionFormatCase) {
     NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION -> {
@@ -101,14 +101,16 @@ fun NumberWithUnitsExpression.toNumberWithUnits(): NumberWithUnits {
     }
     else -> {}
   }
-  
+
   unitsList.forEach { expr ->
-    builder.addUnit(NumberUnit.newBuilder().apply {
-      unit = expr.toUnitString()
-      exponent = expr.exponent
-    })
+    builder.addUnit(
+      NumberUnit.newBuilder().apply {
+        unit = expr.toUnitString()
+        exponent = expr.exponent
+      }
+    )
   }
-  
+
   return builder.build()
 }
 
@@ -181,7 +183,6 @@ fun NumberUnitExpression.toUnitString(): String {
   return prefixStr + baseUnitStr
 }
 
-
 private fun createConversion(
   factor: Double,
   vararg dimensions: Pair<BaseDimension, Int>
@@ -236,7 +237,7 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
       BaseDimension.MASS to 1,
       BaseDimension.LENGTH to 1,
       BaseDimension.TIME to -2
-      )
+    )
     NumberUnitExpression.Unit.JOULE -> createConversion(
       1000.0,
       BaseDimension.MASS to 1,
@@ -244,9 +245,9 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
       BaseDimension.TIME to -2
     )
     NumberUnitExpression.Unit.WATT -> createConversion(
-      1000.0, 
-      BaseDimension.MASS to 1, 
-      BaseDimension.LENGTH to 2, 
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to 2,
       BaseDimension.TIME to -3
     )
     NumberUnitExpression.Unit.PASCAL -> createConversion(
@@ -257,17 +258,17 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
     )
     NumberUnitExpression.Unit.AMPERE -> createConversion(1.0, BaseDimension.CURRENT to 1)
     NumberUnitExpression.Unit.VOLT -> createConversion(
-      1000.0, 
-      BaseDimension.MASS to 1, 
-      BaseDimension.LENGTH to 2, 
-      BaseDimension.TIME to -3, 
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to 2,
+      BaseDimension.TIME to -3,
       BaseDimension.CURRENT to -1
     )
     NumberUnitExpression.Unit.OHM -> createConversion(
-      1000.0, 
-      BaseDimension.MASS to 1, 
-      BaseDimension.LENGTH to 2, 
-      BaseDimension.TIME to -3, 
+      1000.0,
+      BaseDimension.MASS to 1,
+      BaseDimension.LENGTH to 2,
+      BaseDimension.TIME to -3,
       BaseDimension.CURRENT to -2
     )
     NumberUnitExpression.Unit.DOLLAR -> createConversion(100.0, BaseDimension.CURRENCY_DOLLAR to 1)

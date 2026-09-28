@@ -37,12 +37,12 @@ enum class NumberWithUnitsParsingUiError(@StringRes private var error: Int?) {
   /** Corresponds to [NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError]. */
   UNIT_EXPECTED_AFTER_SI_PREFIX(
     error = R.string.number_with_units_error_unit_expected_after_si_prefix
-    ),
+  ),
 
   /** Corresponds to [NumberWithUnitsParsingError.NumberExpectedAfterCurrencyPrefixError]. */
   NUMBER_EXPECTED_AFTER_CURRENCY_PREFIX(
     error = R.string.number_with_units_error_number_expected_after_currency
-    ),
+  ),
 
   /** Corresponds to [NumberWithUnitsParsingError.UnitExpectedAfterDivisionError]. */
   UNIT_EXPECTED_AFTER_DIVISION(
