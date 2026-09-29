@@ -80,6 +80,14 @@ class TestFileCheck(
       classesWithFailures.filterIsInstance<TestableProdClass.DerivedFromTestFile>()
         .filterNot { it.isExempted(absoluteExemptedTestFilePaths) }
         .sortedBy { it.testFile }
+    // Exemptions that mark a prod file as not requiring a test are only valid while its test file
+    // is absent: once the test exists, the exemption is stale and should be removed.
+    val unnecessaryProdExemptions =
+      testableProdClasses
+        .filterIsInstance<TestableProdClass.DerivedFromProdFile>()
+        .filter { it.isExempted(absoluteExemptedProdFilePaths) }
+        .filter { it.possibleTestFiles.any(File::exists) }
+        .sortedBy { it.prodFile }
 
     if (classesMissingTests.isNotEmpty()) {
       println("========== Classes missing test files: ${classesMissingTests.size} ==========")
@@ -117,6 +125,20 @@ class TestFileCheck(
       println()
     }
 
+    if (unnecessaryProdExemptions.isNotEmpty()) {
+      println(
+        "========== Unnecessary test file exemptions: " +
+          "${unnecessaryProdExemptions.size} =========="
+      )
+      unnecessaryProdExemptions.forEach { testableClass ->
+        println(
+          "- Test file exemption should be removed for " +
+            "${testableClass.prodFile.toRelativeString(repoRoot)}: a test file exists."
+        )
+      }
+      println()
+    }
+
     // Validate that all exemptions exist.
     val allExemptedAbsoluteFilePaths =
       loadTestFileExemptionsProto(testFileExemptionProtoPath)
@@ -141,6 +163,7 @@ class TestFileCheck(
 
     return classesMissingTests.isEmpty() &&
       testsMissingProdClasses.isEmpty() &&
+      unnecessaryProdExemptions.isEmpty() &&
       missingExemptedFiles.isEmpty()
   }
 }

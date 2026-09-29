@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -30,8 +31,10 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawableCompat
 import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
 import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setTint
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ChapterPlayState
@@ -106,8 +109,6 @@ import javax.inject.Singleton
 )
 class ImageViewBindingAdaptersTest {
 
-  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
-
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
@@ -123,6 +124,58 @@ class ImageViewBindingAdaptersTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Test
+  fun testSetImageDrawableCompat_withDrawableResource_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setImageDrawableCompat(imageView, R.drawable.ic_default_avatar)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.ic_default_avatar))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetImageDrawableCompat_withDrawable_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_default_avatar)
+        setImageDrawableCompat(imageView, drawable)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.ic_default_avatar))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetImageDrawableCompat_withNullDrawable_clearsDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setImageDrawableCompat(imageView, R.drawable.ic_default_avatar)
+        setImageDrawableCompat(imageView, null)
+        assertThat(imageView.drawable).isNull()
+      }
+    }
+  }
+
+  @Test
+  fun testSetTint_appliesColorFilter() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val color = 0xFF0000
+        setTint(imageView, color)
+        val expected = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+        assertThat(imageView.colorFilter).isEqualTo(expected)
+      }
+    }
   }
 
   @Test
@@ -173,6 +226,74 @@ class ImageViewBindingAdaptersTest {
         onView(withId(R.id.image_view_for_data_binding)).check(
           matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
         )
+      }
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_inProgressSavedState_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.IN_PROGRESS_SAVED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_inProgressNotSavedState_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.IN_PROGRESS_NOT_SAVED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_unspecifiedState_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_unrecognizedState_hasCorrectDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        setPlayStateDrawable(imageView, ChapterPlayState.UNRECOGNIZED)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testSetProfileImage_uriAvatar_setsPlaceholderWithoutColorFilter() {
+    runWithLaunchedActivity {
+      onActivity {
+        val imageView: ImageView = getImageView(it)
+        val avatar =
+          ProfileAvatar.newBuilder().setAvatarImageUri("content://profile/avatar.png").build()
+        setProfileImage(imageView, avatar)
+        onView(withId(R.id.image_view_for_data_binding)).check(
+          matches(withDrawable(R.drawable.ic_default_avatar))
+        )
+        assertThat(imageView.colorFilter).isNull()
       }
     }
   }
