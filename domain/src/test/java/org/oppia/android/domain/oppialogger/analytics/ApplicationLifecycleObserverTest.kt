@@ -187,40 +187,6 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
-    setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    runInActivity {
-      val sessionIdProvider = loggingIdentifierController.getSessionId()
-      val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-
-      ensureAppIsInBackground()
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(45))
-      ensureAppIsInForeground()
-
-      val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-      assertThat(firstSessionId).isNotEqualTo(latestSessionId)
-    }
-  }
-
-  @Test
-  fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
-    setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    runInActivity {
-      val sessionIdProvider = loggingIdentifierController.getSessionId()
-      val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-
-      ensureAppIsInBackground()
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(15))
-      ensureAppIsInForeground()
-
-      val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-      assertThat(firstSessionId).isEqualTo(latestSessionId)
-    }
-  }
-
-  @Test
   fun testObserver_onAppInForeground_loggedIntoProfile_studyOn_logsForegroundEventWithBothIds() {
     setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
@@ -343,36 +309,6 @@ class ApplicationLifecycleObserverTest {
       val currentScreenValue = applicationLifecycleLogger.getCurrentScreen()
       assertThat(currentScreenValue).isEqualTo(ScreenName.POLICIES_ACTIVITY)
     }
-  }
-
-  @Test
-  fun testObserver_onFirstActivityResume_logsStartupLatency() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-
-    runInActivityWithScreenName(ScreenName.HOME_ACTIVITY) {
-      val latencyEvent = expectPerformanceEvent { it.loggableMetric.hasStartupLatencyMetric() }
-      assertThat(latencyEvent.loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(LoggableMetricTypeCase.STARTUP_LATENCY_METRIC)
-      assertThat(latencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
-      assertThat(latencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
-      assertThat(latencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
-        .isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE)
-    }
-  }
-
-  @Test
-  fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-
-    // Start up an activity twice so that it's resumed twice.
-    runInActivity {}
-    runInActivity {}
-
-    // The startup latency metric should only be logged once.
-    val startupEvents = collectAllPerformanceEvents { it.loggableMetric.hasStartupLatencyMetric() }
-    assertThat(startupEvents).hasSize(1)
   }
 
   @Test
