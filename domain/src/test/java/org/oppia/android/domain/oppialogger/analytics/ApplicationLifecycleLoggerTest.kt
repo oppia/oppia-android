@@ -11,6 +11,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.After
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -126,6 +127,12 @@ class ApplicationLifecycleLoggerTest {
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
 
+  @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
+  var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
+  @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
+  var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
   @field:[Inject EnableDownloadsSupport]
   lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
 
@@ -175,17 +182,14 @@ class ApplicationLifecycleLoggerTest {
   }
 
   @Test
-  fun testRecordAppOpened_performanceMetricsDisabled_doesNotInitializeCpuSnapshotter() {
+  fun testRecordAppOpened_performanceMetricsDisabled_doesNotLogCpuUsage() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
     setUpTestApplicationComponent()
 
     applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
     testCoroutineDispatchers.runCurrent()
 
-    val cpuEvents =
-      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-        fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-      ).filter { it.loggableMetric.hasCpuUsageMetric() }
+    val cpuEvents = getLoggedCpuUsageEvents()
     assertThat(cpuEvents).isEmpty()
   }
 
@@ -242,6 +246,36 @@ class ApplicationLifecycleLoggerTest {
     assertThat(eventLog.context.hasAppInForegroundContext()).isTrue()
   }
 
+  @Test
+  fun testRecordAppInForeground_performanceMetricsEnabled_logsCpuUsage() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    // The CPU snapshotter is initialized when the app is opened.
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
+
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    // The snapshotter handles iconification changes through a command queue, so let it process
+    // the change before advancing time to the point where CPU usage is logged.
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+
+    val cpuEvents = getLoggedCpuUsageEvents()
+    assertThat(cpuEvents).isNotEmpty()
+    assertThat(cpuEvents.last().currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+  }
+
+  @Test
+  fun testRecordAppInForeground_performanceMetricsDisabled_doesNotLogCpuUsage() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
+    setUpTestApplicationComponent()
+
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+
+    assertThat(getLoggedCpuUsageEvents()).isEmpty()
+  }
+
   // ---------------------------------------------------------------------------------------
   // recordAppInBackground
   // ---------------------------------------------------------------------------------------
@@ -272,8 +306,64 @@ class ApplicationLifecycleLoggerTest {
 
     val eventLog = expectAnalyticsEvent { it.context.hasAppInForegroundTime() }
     assertThat(eventLog.context.hasAppInForegroundTime()).isTrue()
+    // The foreground time is in milliseconds (ApplicationLifecycleObserverTest compares it against
+    // a millisecond value).
     assertThat(eventLog.context.appInForegroundTime.foregroundTime.toLong())
-      .isGreaterThan(0L)
+      .isEqualTo(TimeUnit.SECONDS.toMillis(10))
+  }
+
+  @Test
+  fun testRecordAppInBackground_performanceMetricsEnabled_logsCpuUsage() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+    // The CPU snapshotter is initialized when the app is opened.
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_TWO)
+    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
+
+    assertThat(getLoggedCpuUsageEvents()).isNotEmpty()
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // Invalid lifecycle sequences
+  // ---------------------------------------------------------------------------------------
+
+  @Test
+  fun testRecordAppInBackground_withoutForeground_throwsException() {
+    setUpTestApplicationComponent()
+
+    val exception = assertThrows(IllegalStateException::class.java) {
+      applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    }
+
+    assertThat(exception).hasMessageThat().contains("already thought to be in the background")
+  }
+
+  @Test
+  fun testRecordAppInForeground_whenAlreadyInForeground_throwsException() {
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val exception = assertThrows(IllegalStateException::class.java) {
+      applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_TWO)
+    }
+
+    assertThat(exception).hasMessageThat().contains("already thought to be in the foreground")
+  }
+
+  @Test
+  fun testRecordAppInBackground_whenAlreadyInBackground_throwsException() {
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_TWO)
+
+    val exception = assertThrows(IllegalStateException::class.java) {
+      applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_TWO + 1)
+    }
+
+    assertThat(exception).hasMessageThat().contains("already thought to be in the background")
   }
 
   // ---------------------------------------------------------------------------------------
@@ -374,6 +464,11 @@ class ApplicationLifecycleLoggerTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
+
+  private fun getLoggedCpuUsageEvents() =
+    fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter { it.loggableMetric.hasCpuUsageMetric() }
 
   private fun expectAnalyticsEvent(predicate: (EventLog) -> Boolean): EventLog {
     val eventCount = fakeAnalyticsEventLogger.getEventListCount()

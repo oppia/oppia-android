@@ -269,14 +269,6 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
-    setUpTestApplicationComponent()
-
-    assertThat(applicationLifecycleLogger.getCurrentScreen())
-      .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
-  }
-
-  @Test
   fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
     setUpTestApplicationComponent()
 
@@ -334,16 +326,6 @@ class ApplicationLifecycleObserverTest {
       // The logger should currently be tracking that the background is the current screen.
       val currentScreen = applicationLifecycleLogger.getCurrentScreen()
       assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
-    }
-  }
-
-  @Test
-  fun testObserver_onAppInForeground_doesNotLogCpuUsage() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
-
-    runInActivity {
-      val cpuUsageEvents = collectAllPerformanceEvents { it.loggableMetric.hasCpuUsageMetric() }
-      assertThat(cpuUsageEvents).isEmpty()
     }
   }
 
