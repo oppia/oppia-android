@@ -36,6 +36,11 @@ class StorySummaryViewModel(
     storySummarySelector.selectStorySummary(storySummary)
   }
 
+  /** Hides all locked-chapter micro-tooltips within this story. */
+  fun hideAllTooltips() {
+    chapterSummaryItemList.forEach { it.hidePrerequisiteTooltip() }
+  }
+
   fun setStoryPercentage(storyPercentage: Int) {
     this.storyPercentage.set(storyPercentage)
     storyProgressPercentageText.set(computeStoryProgressPercentageText(storyPercentage))
@@ -69,26 +74,42 @@ class StorySummaryViewModel(
   }
 
   private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
-    return ephemeralStorySummary.chaptersList.mapIndexed { index, ephemeralChapterSummary ->
-      ChapterSummaryViewModel(
-        chapterPlayState = ephemeralChapterSummary.chapterSummary.chapterPlayState,
-        explorationId = ephemeralChapterSummary.chapterSummary.explorationId,
-        chapterTitle = translationController.extractString(
-          ephemeralChapterSummary.chapterSummary.title,
-          ephemeralChapterSummary.writtenTranslationContext
-        ),
-        previousChapterTitle = if (index > 0) {
-          translationController.extractString(
-            ephemeralStorySummary.chaptersList[index - 1].chapterSummary.title,
-            ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext
-          )
-        } else null,
-        storyId = storySummary.storyId,
-        index = index,
-        chapterSummarySelector = chapterSummarySelector,
-        resourceHandler = resourceHandler,
-        storyIndex = storyIndex
+    val chapterViewModels = mutableListOf<ChapterSummaryViewModel>()
+    val tooltipCoordinator =
+      object : ChapterSummaryViewModel.LockedChapterTooltipCoordinator {
+        override fun onLockedChapterTooltipRequested(source: ChapterSummaryViewModel) {
+          chapterViewModels.forEach { sibling ->
+            if (sibling !== source) {
+              sibling.hidePrerequisiteTooltip()
+            }
+          }
+        }
+      }
+
+    ephemeralStorySummary.chaptersList.forEachIndexed { index, ephemeralChapterSummary ->
+      chapterViewModels.add(
+        ChapterSummaryViewModel(
+          chapterPlayState = ephemeralChapterSummary.chapterSummary.chapterPlayState,
+          explorationId = ephemeralChapterSummary.chapterSummary.explorationId,
+          chapterTitle = translationController.extractString(
+            ephemeralChapterSummary.chapterSummary.title,
+            ephemeralChapterSummary.writtenTranslationContext
+          ),
+          previousChapterTitle = if (index > 0) {
+            translationController.extractString(
+              ephemeralStorySummary.chaptersList[index - 1].chapterSummary.title,
+              ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext
+            )
+          } else null,
+          storyId = storySummary.storyId,
+          index = index,
+          chapterSummarySelector = chapterSummarySelector,
+          resourceHandler = resourceHandler,
+          storyIndex = storyIndex,
+          lockedChapterTooltipCoordinator = tooltipCoordinator
+        )
       )
     }
+    return chapterViewModels
   }
 }
