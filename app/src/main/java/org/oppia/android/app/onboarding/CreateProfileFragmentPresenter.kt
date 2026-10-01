@@ -99,7 +99,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
       if (!checkNicknameAndUpdateError(nickname)) {
-        updateProfileDetails(nickname)
+        updateProfileDetails(nickname, profileType)
       }
     }
 
@@ -163,7 +163,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun updateProfileDetails(profileName: String) {
+  private fun updateProfileDetails(profileName: String, profileType: ProfileType) {
     profileManagementController.updateNewProfileDetails(
       profileId = profileId.toProfileIdPreservingZero(),
       profileType = profileType,
@@ -183,7 +183,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
             .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
             .build()
 
-          val learnerIntroIntent = IntroActivity.createIntroActivity(activity, params, profileId)
+          val learnerIntroIntent =
+            IntroActivity.createIntroActivity(activity, params, profileId)
 
           val adminIntroIntent = AdminIntroActivity.createAdminIntroActivityIntent(
             activity,
