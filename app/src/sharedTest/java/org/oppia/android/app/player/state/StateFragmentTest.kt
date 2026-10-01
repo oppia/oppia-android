@@ -2066,19 +2066,16 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
-      // Submit first incorrect answer.
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-
-      // Click in the fraction text input field to start entering another answer.
+      // Click in the fraction text input field to start entering an answer.
       scrollToViewType(FRACTION_INPUT_INTERACTION)
       onView(withId(R.id.fraction_input_interaction_view)).perform(click(), replaceText("1/2"))
 
       // Verify that the input field has focus (soft keyboard is shown).
       onView(withId(R.id.fraction_input_interaction_view)).check(matches(hasFocus()))
 
-      // Advance coroutine dispatchers to trigger the hint availability timer.
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.MILLISECONDS.toMillis(1))
+      // Advance coroutine dispatchers by 60 seconds (the initial hint idle period) to trigger the
+      // hint.
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
       // Verify that the hint is triggered. Effective visibility is checked because the hint
       // container sits behind the open keyboard and does not satisfy isDisplayed().
