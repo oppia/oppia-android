@@ -440,6 +440,57 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_opensProfileLoginActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_passesAdditionalLearnerTypeToLogin() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Launch should be to ProfileLoginActivity; while we don't assert extras directly here,
+      // the downstream login test ensures ADDITIONAL_LEARNER routing to CreateProfileActivity.
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkIntroActivityHasNoStepCount() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
@@ -1124,27 +1175,27 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfileButton_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfilePrompt_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfilePrompt_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_prompt)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 

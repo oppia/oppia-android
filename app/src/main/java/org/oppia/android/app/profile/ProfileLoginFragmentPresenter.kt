@@ -70,6 +70,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -109,6 +110,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
   private lateinit var adminProfileLiveData: LiveData<Profile>
+  private var loginFlow: ProfileLoginActivity.Companion.LoginFlow =
+    ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+  private var newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
 
   /** Creates and returns the view for the [ProfileLoginFragment]. */
   fun handleCreateView(
@@ -116,6 +120,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     profileId: LegacyProfileId
   ): View? {
+    // Determine how this screen was opened to route appropriately on successful login.
+    loginFlow = ProfileLoginActivity.extractLoginFlowFromIntent(activity.intent)
+    newProfileType = extractNewProfileTypeFromIntent(activity.intent)
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
@@ -137,6 +144,14 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       )
     }
     return binding.root
+  }
+
+  private fun extractNewProfileTypeFromIntent(intent: android.content.Intent): ProfileType {
+    val params = intent.getProtoExtra(
+      ProfileLoginActivity.LOGIN_PARAMS_EXTRA,
+      org.oppia.android.app.model.ProfileLoginActivityParams.getDefaultInstance()
+    )
+    return params.newProfileType
   }
 
   private fun getAdminPin() {
@@ -249,14 +264,41 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
-          activity.startActivity(
-            if (enableMultipleClassrooms.value) {
-              ClassroomListActivity.createClassroomListActivity(activity, profileId)
-            } else {
-              HomeActivity.createHomeActivity(activity, profileId)
+          when (loginFlow) {
+            ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER -> {
+              val profile = profileLiveData.value
+              // For add-new flow, require a supervisor login to proceed to creating a profile.
+              if (profile?.profileType == ProfileType.SUPERVISOR) {
+                val intent = org.oppia.android.app.onboarding.CreateProfileActivity
+                  .createProfileActivityIntent(
+                    activity,
+                    profile.id,
+                    newProfileType
+                  )
+                activity.startActivity(intent)
+              } else {
+                // Non-supervisors shouldn't be in this flow; default to home/classroom.
+                activity.startActivity(
+                  if (enableMultipleClassrooms.value) {
+                    ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                  } else {
+                    HomeActivity.createHomeActivity(activity, profileId)
+                  }
+                )
+                activity.finish()
+              }
             }
-          )
-          activity.finish()
+            ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE -> {
+              activity.startActivity(
+                if (enableMultipleClassrooms.value) {
+                  ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                } else {
+                  HomeActivity.createHomeActivity(activity, profileId)
+                }
+              )
+              activity.finish()
+            }
+          }
         }
       }
   }

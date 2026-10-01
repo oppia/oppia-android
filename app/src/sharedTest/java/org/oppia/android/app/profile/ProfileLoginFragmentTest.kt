@@ -31,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,6 +51,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -300,6 +301,85 @@ class ProfileLoginFragmentTest {
         .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
         .performClick()
         .performTextInput("123")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_adminLogin_withAddNewLearnerFlow_routesToCreateProfileActivity() {
+    setUpTestApplicationComponentWithFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+
+    val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
+      context,
+      adminProfileId,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+    launch<ProfileLoginActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(CreateProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_adminLogin_classroomsDisabled_openExistingProfileFlow_routesToHomeActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponentWithoutFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+
+    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+      context,
+      adminProfileId,
+      ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+    )
+    launch<ProfileLoginActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_adminLogin_classroomsEnabled_openExistingProfileFlow_opensClassroomActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponentWithoutFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+
+    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+      context,
+      adminProfileId,
+      ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+    )
+    launch<ProfileLoginActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
 
       testCoroutineDispatchers.runCurrent()
 
@@ -914,7 +994,7 @@ class ProfileLoginFragmentTest {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileLoginFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
     fun inject(profileLoginFragmentTest: ProfileLoginFragmentTest) {

@@ -1,5 +1,7 @@
 package org.oppia.android.app.onboarding
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -12,15 +14,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.databinding.databinding.CreateProfileFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
@@ -52,6 +59,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var selectedImage: String
   private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
+  private var avatarColor: Int = 0
   private var selectedImageUri: Uri? = null
 
   /** Launcher for picking an image from device gallery. */
@@ -62,7 +70,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: LegacyProfileId,
-    profileType: ProfileType
+    profileType: ProfileType,
+    avatarColor: Int = 0
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
@@ -71,6 +80,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     )
     this.profileId = profileId
     this.profileType = profileType
+    this.avatarColor = avatarColor
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -79,9 +89,25 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView = binding.createProfileUserImageView
 
+    if (profileType == ProfileType.ADDITIONAL_LEARNER) {
+      createProfileViewModel.showPinUi.set(true)
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_new_learner_header
+        )
+      )
+      binding.onboardingStepsCount?.visibility = View.GONE
+    } else {
+      createProfileViewModel.screenHeader.set(
+        appLanguageResourceHandler.getStringInLocale(
+          R.string.create_profile_activity_header
+        )
+      )
+    }
+
     uploadImageView.apply {
       setColorFilter(
-        ResourcesCompat.getColor(
+        if (avatarColor != 0) avatarColor else ResourcesCompat.getColor(
           activity.resources,
           R.color.component_color_avatar_background_25_color,
           null
@@ -98,8 +124,69 @@ class CreateProfileFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-      if (!checkNicknameAndUpdateError(nickname)) {
-        updateProfileDetails(nickname, profileType)
+      if (checkNicknameAndUpdateError(nickname)) return@setOnClickListener
+
+      when (profileType) {
+        ProfileType.SUPERVISOR, ProfileType.SOLE_LEARNER -> {
+          // First-profile flow: update the existing admin/sole learner profile details.
+          updateProfileDetails(nickname, profileType)
+        }
+
+        ProfileType.ADDITIONAL_LEARNER -> {
+          // Supervisor adding a new learner profile: create a new profile entry.
+          val pin = if (createProfileViewModel.showPinFields.get() == true) {
+            createProfileViewModel.inputPin.get().orEmpty()
+          } else ""
+          val confirmPin = if (createProfileViewModel.showPinFields.get() == true) {
+            createProfileViewModel.inputConfirmPin.get().orEmpty()
+          } else ""
+
+          var pinError = false
+          if (pin.isBlank() && confirmPin.isBlank()) {
+            createProfileViewModel.pinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length
+              )
+            )
+            pinError = true
+          }
+
+          if (createProfileViewModel.showPinFields.get() == false) {
+            createProfileViewModel.inputPin.set(null)
+            createProfileViewModel.inputConfirmPin.set(null)
+            createProfileViewModel.pinErrorMsg.set(null)
+            pinError = false
+          }
+
+          if (pin.isNotEmpty() && pin.length < 3) {
+            createProfileViewModel.pinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length
+              )
+            )
+            pinError = true
+          }
+          if (pin != confirmPin) {
+            createProfileViewModel.confirmPinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_confirm_wrong
+              )
+            )
+            pinError = true
+          }
+          if (pinError) return@setOnClickListener
+
+          createLearnerProfile(profileName = nickname, pin = pin)
+        }
+
+        else -> {
+          createProfileViewModel.hasErrorMessage.set(true)
+          createProfileViewModel.errorMessage.set(
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_error_missing_profile_type
+            )
+          )
+        }
       }
     }
 
@@ -108,6 +195,22 @@ class CreateProfileFragmentPresenter @Inject constructor(
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         createProfileViewModel.hasErrorMessage.set(false)
+      }
+    })
+
+    binding.createProfilePinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.pinErrorMsg.set(null)
+      }
+    })
+
+    binding.createProfileConfirmPinEditText?.addTextChangedListener(object : TextWatcher {
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        createProfileViewModel.confirmPinErrorMsg.set(null)
       }
     })
 
@@ -168,7 +271,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       profileId = profileId.toProfileIdPreservingZero(),
       profileType = profileType,
       avatarImagePath = selectedImageUri,
-      colorRgb = selectUniqueRandomColor(),
+      colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
@@ -237,9 +340,101 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun createLearnerProfile(profileName: String, pin: String) {
+    profileManagementController
+      .addProfile(
+        name = profileName,
+        pin = pin,
+        avatarImagePath = selectedImageUri,
+        allowDownloadAccess = true,
+        colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
+        isAdmin = false
+      ).toLiveData()
+      .observe(activity) { handleAddProfileResult(it, profileName) }
+  }
+
+  private fun handleAddProfileResult(result: AsyncResult<Any?>, profileName: String) {
+    when (result) {
+      is AsyncResult.Success -> {
+        fragment.requireContext().showDialog(profileName) {
+          fragment.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        }
+      }
+
+      is AsyncResult.Failure -> {
+        createProfileViewModel.hasErrorMessage.set(true)
+
+        val errorMessage = when (result.error) {
+          is ProfileManagementController.ProfileNameOnlyLettersException ->
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_error_name_only_letters
+            )
+
+          is ProfileManagementController.UnknownProfileTypeException ->
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_error_missing_profile_type
+            )
+
+          is ProfileManagementController.ProfileNameNotUniqueException ->
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_error_name_not_unique
+            )
+
+          else -> {
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_default_error_message
+            )
+          }
+        }
+
+        createProfileViewModel.errorMessage.set(errorMessage)
+
+        oppiaLogger.e(
+          "CreateProfileFragment",
+          "Failed to create profile.",
+          result.error
+        )
+      }
+
+      is AsyncResult.Pending -> {} // Wait for an actual result.
+    }
+  }
+
+  private fun Context.showDialog(
+    learnerNickname: String,
+    onDismiss: () -> Unit
+  ) {
+    val dialog = Dialog(this)
+
+    val composeView = ComposeView(this).apply {
+      ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
+      ViewTreeViewModelStoreOwner.set(this, fragment)
+      ViewTreeSavedStateRegistryOwner.set(this, fragment)
+
+      setContent {
+        HandOverNoticeDialog(
+          appLanguageResourceHandler = appLanguageResourceHandler,
+          learnerNickname = learnerNickname,
+          onDismiss = {
+            dialog.dismiss()
+            onDismiss()
+          }
+        )
+      }
+    }
+
+    dialog.setContentView(composeView)
+    dialog.setCancelable(true)
+    dialog.show()
+  }
+
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return ContextCompat.getColor(fragment.requireContext(), COLORS_LIST.random())
+    val usedColors = createProfileViewModel.usedColors.value ?: emptyList()
+    return COLORS_LIST
+      .map { ContextCompat.getColor(fragment.requireContext(), it) }
+      .minus(usedColors)
+      .random()
   }
 
   private companion object {

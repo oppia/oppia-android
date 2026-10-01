@@ -12,6 +12,9 @@ import android.os.Build
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -141,14 +144,16 @@ class CreateProfileFragmentTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule
+  val composeRule = createEmptyComposeRule()
   @Inject
   lateinit var context: Context
   @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Before
   fun setUp() {
@@ -716,6 +721,239 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_onLaunch_pinCheckboxIsVisibleAndPinUiIsHidden() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_pin_check_box)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_pin_info)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_pin_constraint_layout))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_checkPinCheckbox_showsPinAndConfirmFields() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+
+      onView(withId(R.id.create_profile_pin_constraint_layout))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_shortPin_showsPinLengthError() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      // Provide a valid nickname to bypass nickname validation.
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("1"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_mismatchedConfirmPin_showsConfirmError() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(appendText("111"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_validPinAndConfirmPin_noErrorShownOnContinue() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_length))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_validNameAndPins_continueButtonClicked_showsSuccessDialog() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithText(
+        context.getString(R.string.create_profile_activity_success_dialog_title, "John")
+      )
+        .assertIsDisplayed()
+
+      composeRule.onNodeWithText(
+        context.getString(R.string.create_profile_activity_success_dialog_message, "John")
+      )
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_validName_pinCheckboxChecked_pinNotEntered_showsErrorOnContinue() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddLearner_validName_pinCheckboxCheckedThenUnchecked_doesNotShowErrorOnContinue() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      // Check the checkbox.
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Uncheck the checkbox.
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithText(
+        context.getString(R.string.create_profile_activity_success_dialog_title, "John")
+      )
+        .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_validName_pinCheckboxChecked_pinClearsErrorsOnTextChange() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_length)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_validName_pinCheckboxChecked_confirmPinClearsErrorsOnTextChange() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(appendText("234"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(appendText("12"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong))
+        .check(matches(not(isDisplayed())))
     }
   }
 
