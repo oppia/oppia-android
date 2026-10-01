@@ -253,6 +253,7 @@
   <color name="color_palette_onboarding_learner_intro_list_color">@color/color_def_white</color>
   <color name="color_palette_onboarding_learner_intro_check_color">@color/color_def_accessible_green</color>
   <color name="color_palette_onboarding_learner_intro_step_count_color">@color/color_def_white</color>
+  <color name="color_palette_onboarding_admin_intro_step_count_color">@color/color_def_white</color>
   <color name="color_palette_onboarding_shared_secondary_button_text_color">@color/color_def_white</color>
 
   <color name="color_palette_text_error_color">@color/color_def_oppia_reddish_brown</color>

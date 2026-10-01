@@ -116,7 +116,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
   @Composable
   private fun AdminInformationScreen() {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
-    val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+    val stepCountColor = colorResource(
+      R.color.component_color_onboarding_admin_intro_step_count_color
+    )
     val orientation = LocalConfiguration.current.orientation
     val stepCountIsVisible by remember {
       derivedStateOf {
@@ -171,7 +173,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
             text = resourceHandler.getStringInLocaleWithWrapping(
               R.string.onboarding_step_count_four
             ),
-            color = tealColor,
+            color = stepCountColor,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 16.dp)
           )
@@ -267,7 +269,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
       ) {
         Text(
           text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
-          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          color = colorResource(
+            R.color.component_color_onboarding_shared_secondary_button_text_color
+          ),
           fontWeight = FontWeight.Bold
         )
       }

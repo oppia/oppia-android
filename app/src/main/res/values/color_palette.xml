@@ -296,6 +296,7 @@
   <color name="color_palette_onboarding_learner_intro_list_color">@color/color_def_black</color>
   <color name="color_palette_onboarding_learner_intro_check_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_learner_intro_step_count_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_admin_intro_step_count_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_shared_secondary_button_text_color">@color/color_def_oppia_green</color>
 
   <color name="color_palette_edittext_stroke_color">@color/color_def_accessible_light_grey_2</color>
