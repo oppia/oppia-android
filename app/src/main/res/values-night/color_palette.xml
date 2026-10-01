@@ -272,6 +272,11 @@
   <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
   <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
   <!-- PROFILE LOGIN -->
-  <color name="color_palette_profile_login_background_color">@color/color_def_highlight_blue_darker</color>
+  <color name="color_palette_profile_login_background_color">@color/color_def_black</color>
   <color name="color_palette_profile_login_primary_text_color">@color/color_def_white</color>
+  <color name="color_palette_profile_login_button_text_color">@color/color_def_white</color>
+  <color name="color_palette_profile_login_focused_outline_color">@color/color_def_accessible_green</color>
+  <color name="color_palette_profile_login_unfocused_state_color">@color/color_def_black</color>
+  <color name="color_palette_profile_login_cursor_color">@color/color_def_black</color>
+  <color name="color_palette_profile_login_pin_decoration_color">@color/color_def_black</color>
 </resources>

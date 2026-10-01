@@ -365,7 +365,10 @@
   <!-- Profile Login Activity -->
   <color name="component_color_profile_login_background_color">@color/color_palette_profile_login_background_color</color>
   <color name="component_color_profile_login_primary_text_color">@color/color_palette_profile_login_primary_text_color</color>
-  <color name="component_color_profile_login_shared_primary_color">@color/color_palette_primary_color</color>
+  <color name="component_color_profile_login_button_text_color">@color/color_palette_profile_login_button_text_color</color>
+  <color name="component_color_profile_login_focused_outline_color">@color/color_palette_profile_login_focused_outline_color</color>
   <color name="component_color_profile_login_unfocused_outline_color">@color/color_palette_profile_login_unfocused_state_color</color>
+  <color name="component_color_profile_login_cursor_color">@color/color_palette_profile_login_cursor_color</color>
+  <color name="component_color_profile_login_pin_decoration_color">@color/color_palette_profile_login_pin_decoration_color</color>
   <color name="component_color_profile_login_shared_white_color">@color/color_palette_white_text_color</color>
 </resources>
