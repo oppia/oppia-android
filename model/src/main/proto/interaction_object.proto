@@ -47,6 +47,34 @@ message NumberWithUnits {
   repeated NumberUnit unit = 3;
 }
 
+// Represents a fundamental physical dimension and its exponent for normalization.
+message NormalizedUnit {
+  enum BaseDimension {
+    BASE_DIMENSION_UNSPECIFIED = 0;
+    LENGTH = 1;
+    AREA = 2;
+    VOLUME = 3;
+    MASS = 4;
+    TIME = 5;
+    TEMPERATURE = 6;
+    CURRENT = 7;
+    AMOUNT = 8;
+    LUMINOUS_INTENSITY = 9;
+    ANGLE = 10;
+    FREQUENCY = 11;
+    CURRENCY_RUPEE = 12;
+    CURRENCY_DOLLAR = 13;
+  }
+  BaseDimension dimension = 1;
+  int32 exponent = 2;
+}
+
+// Canonical representation of a number with units used for equivalence matching.
+message NormalizedNumberWithUnits {
+  double value = 1;
+  repeated NormalizedUnit unit = 2;
+}
+
 // Structure for a unit
 message NumberUnit {
   string unit = 1;

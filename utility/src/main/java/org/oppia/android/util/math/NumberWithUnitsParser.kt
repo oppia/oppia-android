@@ -93,15 +93,12 @@ class NumberWithUnitsParser private constructor(
   /**
    * Grammar:
    * ```
-   * suffix_formatted_value = number , compound_unit ;
+   * suffix_formatted_value = number , [ compound_unit ] ;
    * ```
    */
   private fun parseSuffixFormattedValue(): NumberWithUnitsParsingResult<NumberWithUnitsExpression> {
     return parseNumber().flatMap { expressionBuilder ->
-      // compound_unit is required
-      if (!isAtSuffixUnit()) {
-        NumberWithUnitsParsingError.UnitExpectedError.toFailure()
-      } else {
+      if (isAtSuffixUnit()) {
         parseCompoundUnit().map { suffixUnits ->
           expressionBuilder.apply {
             valueSuffixExpression = ValueSuffixExpression.newBuilder().apply {
@@ -109,6 +106,8 @@ class NumberWithUnitsParser private constructor(
             }.build()
           }.build()
         }
+      } else {
+        NumberWithUnitsParsingResult.Success(expressionBuilder.build())
       }
     }
   }
@@ -631,6 +630,21 @@ class NumberWithUnitsParser private constructor(
       val normalized = rawExpression.normalizeWhitespace()
       val tokens = NumberWithUnitsTokenizer.tokenize(normalized).toPeekableIterator()
       return NumberWithUnitsParser(normalized, tokens).parseNumberWithUnits()
+    }
+
+    /** Parses a single unit using the same aliases and SI-prefix rules as expressions. */
+    fun parseUnit(rawUnit: String): NumberWithUnitsParsingResult<NumberUnitExpression> {
+      return parseNumberWithUnits("1 $rawUnit").flatMap { expression ->
+        when (expression.expressionFormatCase) {
+          NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION -> {
+            val units = expression.valueSuffixExpression.suffixUnitsList
+            if (units.size == 1) {
+              NumberWithUnitsParsingResult.Success(units.single())
+            } else NumberWithUnitsParsingError.InvalidUnitError(rawUnit).toFailure()
+          }
+          else -> NumberWithUnitsParsingError.InvalidUnitError(rawUnit).toFailure()
+        }
+      }
     }
 
     /** Creates a failed parse result with [this] error. */
