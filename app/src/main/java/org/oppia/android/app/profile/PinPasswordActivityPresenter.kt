@@ -254,6 +254,7 @@ class PinPasswordActivityPresenter @Inject constructor(
           R.string.admin_confirm_app_wipe_input_hint,
           confirmationWord
         )
+      setTypeface(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.NORMAL)
     }
 
     val container = android.widget.FrameLayout(activity)
@@ -262,7 +263,8 @@ class PinPasswordActivityPresenter @Inject constructor(
       android.view.ViewGroup.LayoutParams.WRAP_CONTENT
     ).apply {
       val margin = activity.resources.getDimensionPixelSize(R.dimen.activity_horizontal_margin)
-      setMargins(margin, 0, margin, 0)
+      val topMargin = activity.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)
+      setMargins(margin, topMargin, margin, 0)
     }
     input.layoutParams = params
     container.addView(input)
