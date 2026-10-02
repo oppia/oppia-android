@@ -112,6 +112,9 @@ class StateFragmentPresenter @Inject constructor(
 
   private var explorationCheckpointState: CheckpointState = CheckpointState.CHECKPOINT_UNSAVED
 
+  /** The [EphemeralState] from the most recent call to [processEphemeralState]. */
+  private var lastRenderedEphemeralState: EphemeralState? = null
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -365,6 +368,18 @@ class StateFragmentPresenter @Inject constructor(
 
     showOrHideAudioByState(ephemeralState.state)
     showOrHideFlashbackToolbar(ephemeralState)
+
+    if (isHintOnlyUpdate(lastRenderedEphemeralState, ephemeralState)) {
+      // Only the HelpIndex changed — notify the hint UI without rebuilding the RecyclerView,
+      // so the soft keyboard is not dismissed during active text input.
+      onHintAvailable(
+        ephemeralState.pendingState.helpIndex,
+        isCurrentStatePendingState = true
+      )
+      lastRenderedEphemeralState = ephemeralState
+      return
+    }
+    lastRenderedEphemeralState = ephemeralState
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -655,6 +670,32 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /**
+   * Returns true if the only difference between [priorEphemeralState] and
+   * [updatedEphemeralState] is the [HelpIndex] inside [EphemeralState.pendingState]. This is
+   * used to avoid triggering a full RecyclerView rebuild (and consequent soft-keyboard
+   * dismissal) when a hint becomes available.
+   */
+  private fun isHintOnlyUpdate(
+    priorEphemeralState: EphemeralState?,
+    updatedEphemeralState: EphemeralState
+  ): Boolean {
+    if (priorEphemeralState == null) return false
+    if (!priorEphemeralState.hasPendingState()) return false
+    if (!updatedEphemeralState.hasPendingState()) return false
+    val priorWithoutHint = priorEphemeralState.toBuilder()
+      .setPendingState(
+        priorEphemeralState.pendingState.toBuilder().clearHelpIndex().build()
+      )
+      .build()
+    val updatedWithoutHint = updatedEphemeralState.toBuilder()
+      .setPendingState(
+        updatedEphemeralState.pendingState.toBuilder().clearHelpIndex().build()
+      )
+      .build()
+    return priorWithoutHint == updatedWithoutHint
   }
 
   /**

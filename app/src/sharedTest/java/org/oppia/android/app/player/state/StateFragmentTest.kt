@@ -33,6 +33,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -2050,6 +2051,39 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_forHintsAndSolution_activeTextInput_hintTriggered_keyboardRemainsVisible() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Click in the fraction text input field to start entering an answer.
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      onView(withId(R.id.fraction_input_interaction_view)).perform(click(), replaceText("1/2"))
+
+      // Verify that the input field has focus (soft keyboard is shown).
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(hasFocus()))
+
+      // Advance coroutine dispatchers by 60 seconds (the initial hint idle period) to trigger the
+      // hint.
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+
+      // Verify that the hint is triggered. Effective visibility is checked because the hint
+      // container sits behind the open keyboard and does not satisfy isDisplayed().
+      onView(withId(R.id.hints_and_solution_fragment_container))
+        .check(matches(withEffectiveVisibility(VISIBLE)))
+
+      // Verify that the input field still has focus (soft keyboard remains visible).
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(hasFocus()))
     }
   }
 
