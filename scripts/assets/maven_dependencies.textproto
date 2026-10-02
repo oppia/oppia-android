@@ -703,17 +703,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.multidex:multidex:2.0.1"
-  artifact_version: "2.0.1"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
   artifact_name: "androidx.print:print:1.0.0"
   artifact_version: "1.0.0"
   license {
