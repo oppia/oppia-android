@@ -324,6 +324,7 @@
   <string name="admin_forgot_pin_reset_app_data_button_text">Reset %s Data</string>
   <string name="admin_confirm_app_wipe_title">Confirm %s Data Reset</string>
   <string name="admin_confirm_app_wipe_message">Are you sure that you want to delete all %s profiles on this device? This operation cannot be undone.</string>
+  <string name="admin_confirm_app_wipe_input_hint">Type \'%1$s\' to confirm</string>
   <string name="admin_confirm_app_wipe_positive_button_text">Yes</string>
   <string name="admin_confirm_app_wipe_negative_button_text">No</string>
   <string name="show_hide_password_icon">Show/Hide password icon</string>
