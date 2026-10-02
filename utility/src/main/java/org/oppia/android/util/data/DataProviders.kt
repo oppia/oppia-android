@@ -15,6 +15,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
@@ -359,6 +360,11 @@ class DataProviders @Inject constructor(
     private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
     private val isActive = AtomicBoolean(false)
     private val runningJob = AtomicReference<Job?>(null)
+    // A provider notification can start a new retrieval while an earlier retrieval is still
+    // running. AsyncResult timestamps cannot identify which retrieval produced a result because
+    // transforms and combinations create new AsyncResults. Keep the retrieval generation instead
+    // so a completion from an older snapshot cannot overwrite a newer one.
+    private val latestRetrievalGeneration = AtomicLong(0L)
     private var cache: AsyncResult<T>? = null // only accessed on the main thread
 
     override fun onActive() {
@@ -407,6 +413,7 @@ class DataProviders @Inject constructor(
     }
 
     private suspend fun handleDataProviderUpdate() {
+      val retrievalGeneration = latestRetrievalGeneration.incrementAndGet()
       // This doesn't guarantee that retrieveData() is only called when the live data is active
       // (e.g. it can become inactive right after the value is posted & before it's dispatched), but
       // it does guarantee that it won't be called when the live data is currently inactive. This
@@ -415,8 +422,15 @@ class DataProviders @Inject constructor(
       // the override of setValue() above for the adjusted semantics this class requires to ensure
       // its own cache remains up-to-date.
       retrieveFromDataProvider()?.let {
-        super.postValue(it)
-        runningJob.set(null)
+        // Do not enqueue a value from an earlier request after a newer request has started. This
+        // is necessary even though setValue() compares AsyncResult timestamps: a delayed
+        // transformation may construct a stale result with a newer timestamp.
+        if (retrievalGeneration == latestRetrievalGeneration.get()) {
+          super.postValue(it)
+        }
+        kotlin.coroutines.coroutineContext[Job]?.let { currentJob ->
+          runningJob.compareAndSet(currentJob, null)
+        } ?: runningJob.set(null)
       }
     }
 
