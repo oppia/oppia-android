@@ -1177,8 +1177,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.android.gms:play-services-basement:18.0.0"
-  artifact_version: "18.0.0"
+  artifact_name: "com.google.android.gms:play-services-basement:18.9.0"
+  artifact_version: "18.9.0"
   license {
     license_name: "Android Software Development Kit License"
     original_link: "https://developer.android.com/studio/terms.html"
@@ -1276,8 +1276,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.android.gms:play-services-tasks:18.0.1"
-  artifact_version: "18.0.1"
+  artifact_name: "com.google.android.gms:play-services-tasks:18.2.0"
+  artifact_version: "18.2.0"
   license {
     license_name: "Android Software Development Kit License"
     original_link: "https://developer.android.com/studio/terms.html"
@@ -1295,6 +1295,25 @@ maven_dependency {
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
+  }
+}
+maven_dependency {
+  artifact_name: "com.google.android.play:age-signals:0.0.3"
+  artifact_version: "0.0.3"
+  license {
+    license_name: "Android Software Development Kit License"
+    original_link: "https://developer.android.com/studio/terms.html"
+    direct_link_only {
+      url: "https://developer.android.com/studio/terms.html"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.google.android.play:core-common:2.0.4"
+  artifact_version: "2.0.4"
+  license {
+    license_name: "Play Core Software Development Kit Terms of Service"
+    original_link: "https://developer.android.com/guide/playcore/license"
   }
 }
 maven_dependency {
