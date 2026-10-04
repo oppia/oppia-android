@@ -39,8 +39,10 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
     if (answer.numberTypeCase != input.numberTypeCase) {
       return false
     }
-    // Units must match, but in different orders is fine.
-    if (answer.unitList.toSet() != input.unitList.toSet()) {
+    // Units must match, but in different orders is fine. But duplicates must be preserved.
+    val sortedAnswerUnits = answer.unitList.sortedBy { it.unit }
+    val sortedInputUnits = input.unitList.sortedBy { it.unit }
+    if (sortedAnswerUnits != sortedInputUnits) {
       return false
     }
     // Otherwise, verify the value itself matches.
