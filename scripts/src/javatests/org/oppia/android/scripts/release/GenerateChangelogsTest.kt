@@ -324,6 +324,36 @@ class GenerateChangelogsTest {
   }
 
   @Test
+  fun testBuildChangelogContent_llmFailed_markerSaysToReplaceTheWholeFile() {
+    val content = buildChangelogContent(
+      summary = LLM_FALLBACK_MARKER,
+      prEntries = listOf(PrEntry(6200, "Add deploy workflow")),
+      issueNumbers = listOf(6100),
+      llmFailed = true
+    )
+
+    assertThat(content).contains(
+      "Delete everything in this file, including this comment, and replace it with a 2-3 " +
+        "sentence user-facing summary of the release."
+    )
+  }
+
+  @Test
+  fun testResolveVertexModel_unset_returnsDefaultModel() {
+    assertThat(resolveVertexModel(null)).isEqualTo(DEFAULT_VERTEX_MODEL)
+  }
+
+  @Test
+  fun testResolveVertexModel_blank_returnsDefaultModel() {
+    assertThat(resolveVertexModel("  ")).isEqualTo(DEFAULT_VERTEX_MODEL)
+  }
+
+  @Test
+  fun testResolveVertexModel_set_returnsConfiguredModel() {
+    assertThat(resolveVertexModel(" gemini-2.5-pro ")).isEqualTo("gemini-2.5-pro")
+  }
+
+  @Test
   fun testBuildChangelogContent_llmFailed_withPrEntries_containsPrList() {
     val content = buildChangelogContent(
       summary = LLM_FALLBACK_MARKER,
@@ -434,7 +464,7 @@ class GenerateChangelogsTest {
     )
 
     assertThat(body).contains("LLM generation failed")
-    assertThat(body).contains(LLM_FALLBACK_MARKER)
+    assertThat(body).contains("replace the whole file with a 2-3 sentence user-facing summary")
   }
 
   @Test

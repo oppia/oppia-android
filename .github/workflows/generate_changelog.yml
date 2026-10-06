@@ -43,9 +43,20 @@ jobs:
       pull-requests: write
 
     steps:
+      # GITHUB_TOKEN is not allowed to create pull requests in this repository, so the push and
+      # the PR use the Oppia GitHub App, as in pull_latest_lesson_versions.yml. This also lets the
+      # PR trigger CI.
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.OPPIA_GITHUB_APP_ID }}
+          private-key: ${{ secrets.OPPIA_GITHUB_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.generate_token.outputs.token }}
 
       - name: Configure git identity
         run: |
@@ -55,7 +66,7 @@ jobs:
       - name: Configure git remote credentials
         run: |
           git remote set-url origin \
-            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/${{ github.repository }}
 
       - name: Authenticate to GCP via Workload Identity Federation
         uses: google-github-actions/auth@v2
@@ -82,8 +93,11 @@ jobs:
 
       - name: Generate changelog and open PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           TARGET_VERSION: ${{ inputs.target_version }}
+          # Set as a repository variable so the model can be changed without a PR; the script
+          # falls back to its default model when this is empty.
+          VERTEX_MODEL: ${{ vars.CHANGELOG_VERTEX_MODEL }}
         run: |
           bazel run //scripts:generate_changelogs -- \
             "$(pwd)" \

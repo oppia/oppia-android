@@ -6,7 +6,12 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 
 private const val GCP_LOCATION = "us-central1"
-private const val VERTEX_MODEL = "gemini-1.5-flash"
+/**
+ * Vertex AI model used when the `VERTEX_MODEL` environment variable is unset or blank. Models are
+ * retired regularly, so the workflow passes the model in through that variable rather than relying
+ * on this default.
+ */
+const val DEFAULT_VERTEX_MODEL = "gemini-2.5-flash"
 
 /**
  * Script that automatically generates a changelog for the previous app version whenever the minor
@@ -21,7 +26,8 @@ private const val VERTEX_MODEL = "gemini-1.5-flash"
  * 5. Invokes Vertex AI (Gemini) with the above material to produce a 2–3 sentence user-facing
  *    summary of the release changes.
  * 6. If the Vertex AI call fails, falls back to a raw commit-list changelog marked with
- *    `<!-- LLM generation failed -->` so a human can fill in the summary later.
+ *    [LLM_FALLBACK_MARKER], which tells the reviewer to replace the whole file with a 2-3 sentence
+ *    summary.
  * 7. Writes `config/changelogs/<major>.<minor>.md` and creates (or updates) a PR targeting
  *    `develop` on the **upstream** repository branch `automated/changelog-<major>.<minor>`.
  *    The PR description links all reference material so reviewers can adjust the LLM context.
@@ -39,6 +45,8 @@ private const val VERTEX_MODEL = "gemini-1.5-flash"
  *
  * An optional 4th argument overrides the Vertex AI API base URL; this is used in integration
  * tests to route HTTP calls through a local mock server.
+ *
+ * The `VERTEX_MODEL` environment variable selects the Vertex AI model (see [resolveVertexModel]).
  */
 
 fun main(args: Array<String>) {
@@ -56,15 +64,16 @@ fun main(args: Array<String>) {
   // TARGET_VERSION is set by the workflow when the user triggers workflow_dispatch with a
   // specific version (e.g. "0.17"). When empty or absent, version is derived from version.bzl.
   val changelogVersionOverride = System.getenv("TARGET_VERSION")?.takeIf { it.isNotBlank() }
+  val vertexModel = resolveVertexModel(System.getenv("VERTEX_MODEL"))
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val vertexAiClient = if (overrideApiBaseUrl != null) {
       GoogleVertexAiClient(
-        gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken, overrideApiBaseUrl
+        gcpProject, GCP_LOCATION, vertexModel, gcpAccessToken, overrideApiBaseUrl
       )
     } else {
-      GoogleVertexAiClient(gcpProject, GCP_LOCATION, VERTEX_MODEL, gcpAccessToken)
+      GoogleVertexAiClient(gcpProject, GCP_LOCATION, vertexModel, gcpAccessToken)
     }
     generateChangelogs(
       workspaceRoot = File(workspaceRoot),
@@ -388,6 +397,13 @@ fun buildPrompt(version: String, prListText: String, issueListText: String): Str
 }
 
 /**
+ * Returns the Vertex AI model to use: [configuredModel] (the `VERTEX_MODEL` environment variable)
+ * when it is set, or [DEFAULT_VERTEX_MODEL] otherwise.
+ */
+fun resolveVertexModel(configuredModel: String?): String =
+  configuredModel?.trim()?.takeIf { it.isNotEmpty() } ?: DEFAULT_VERTEX_MODEL
+
+/**
  * Calls [vertexAiClient] with [prompt] and returns the summary plus a failure flag.
  *
  * If the call throws any exception, the failure is logged and a fallback raw-list marker is
@@ -425,9 +441,6 @@ fun buildChangelogContent(
   val sb = StringBuilder()
   if (llmFailed) {
     sb.appendLine(LLM_FALLBACK_MARKER)
-    sb.appendLine(
-      "<!-- Replace the marker above with a 2-3 sentence user-facing summary before release -->"
-    )
     sb.appendLine()
     if (prEntries.isNotEmpty()) {
       sb.appendLine("### Changes in this release")
@@ -463,7 +476,7 @@ fun buildPrBody(
   if (llmFailed) {
     sb.appendLine(
       "> ⚠️ **LLM generation failed.** The changelog contains a raw commit list. " +
-        "Please replace the `$LLM_FALLBACK_MARKER` placeholder with a user-facing summary."
+        "Please replace the whole file with a 2-3 sentence user-facing summary before merging."
     )
     sb.appendLine()
   }
@@ -588,7 +601,10 @@ private const val GIT_AUTHOR_EMAIL = "actions@github.com"
 private const val GIT_AUTHOR_NAME = "github-actions[bot]"
 
 /** Marker inserted into changelogs when LLM generation fails. */
-const val LLM_FALLBACK_MARKER = "<!-- LLM generation failed -->"
+const val LLM_FALLBACK_MARKER =
+  "<!-- LLM generation failed. Delete everything in this file, including this comment, and " +
+    "replace it with a 2-3 sentence user-facing summary of the release. The lists below are " +
+    "reference material only. -->"
 
 /** Matches `MAJOR_VERSION = <n>` in version.bzl. */
 private val MAJOR_VERSION_REGEX = Regex("""MAJOR_VERSION\s*=\s*(\d+)""")
