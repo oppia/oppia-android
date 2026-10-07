@@ -9,21 +9,28 @@
       type="org.oppia.android.app.settings.profile.ProfileRenameViewModel" />
   </data>
 
-  <androidx.core.widget.NestedScrollView
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <FrameLayout
+    <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:fillViewport="true"
+      android:overScrollMode="never"
+      android:scrollbars="none">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/component_color_shared_content_container_background_color"
-        android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingBottom="@dimen/profile_rename_activity_constraint_layout">
 
         <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/profile_rename_input"
@@ -65,12 +72,11 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_rename_input" />
       </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
-
-  </androidx.core.widget.NestedScrollView>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
+  </FrameLayout>
 </layout>
