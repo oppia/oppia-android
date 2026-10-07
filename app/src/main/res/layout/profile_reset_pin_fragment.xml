@@ -18,10 +18,11 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:clipToPadding="false"
+      android:fillViewport="true"
       android:overScrollMode="never"
       android:paddingBottom="@dimen/profile_reset_pin_activity_scroll_view_padding_bottom"
       android:scrollbars="none">
@@ -34,9 +35,10 @@
 
         <TextView
           android:id="@+id/profile_reset_pin_main"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="36dp"
+          android:gravity="center"
           android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
           android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
           android:text="@string/profile_reset_pin_main"
@@ -109,7 +111,7 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
       </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <View
       android:layout_width="match_parent"
