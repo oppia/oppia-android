@@ -11,7 +11,7 @@
       type="org.oppia.android.app.settings.profile.ProfileEditViewModel" />
   </data>
 
-  <androidx.core.widget.NestedScrollView
+  <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/component_color_shared_screen_tertiary_background_color"
@@ -42,8 +42,8 @@
         android:translationZ="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:profileImageSource="@{viewModel.profile.avatar}"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+        app:profileImageSource="@{viewModel.profile.avatar}" />
 
       <TextView
         android:id="@+id/profile_edit_name"
@@ -59,7 +59,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profile_edit_image"
         app:layout_constraintTop_toTopOf="@id/profile_edit_image"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed" />
 
       <TextView
@@ -67,12 +66,13 @@
         style="@style/Subtitle2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/component_color_shared_secondary_1_text_color"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/profile_edit_name"
         app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
+        app:layout_constraintVertical_chainStyle="packed"
         app:profileCreatedTime="@{viewModel.profile.dateCreatedTimestampMs}" />
 
       <Button
@@ -93,7 +93,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_created" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 
       <Button
         android:id="@+id/profile_reset_button"
@@ -261,7 +261,6 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
         android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
@@ -276,9 +275,7 @@
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_edit_allow_download_container"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-  </androidx.core.widget.NestedScrollView>
+  </ScrollView>
 </layout>
