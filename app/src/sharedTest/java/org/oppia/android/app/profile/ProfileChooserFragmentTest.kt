@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -443,7 +444,7 @@ class ProfileChooserFragmentTest {
   fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1360,7 +1361,11 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
-      onView(withText(R.string.profile_selection_maximum_profiles_reached_message))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(context.getString(R.string.profile_selection_maximum_profiles_reached_message))
+      )
+        .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
