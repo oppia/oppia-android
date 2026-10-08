@@ -270,11 +270,14 @@ message AudioLanguageActivityParams {
     // Indicates that the originating screen isn't actually known.
     PARENT_SCREEN_UNSPECIFIED = 0;
 
-    // Corresponds to the introduction screen in the onboarding flow.
+    // Corresponds to the introduction screen for the sole learner in the onboarding flow.
     LEARNER_INTRO_SCREEN = 1;
 
     // Corresponds to the options screen.
     OPTIONS_SCREEN = 2;
+
+    // Corresponds to the introduction screen for a newly added additional learner profile.
+    ADDITIONAL_LEARNER_INTRO_SCREEN = 3;
   }
 }
 
