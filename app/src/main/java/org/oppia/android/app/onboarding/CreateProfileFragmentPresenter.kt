@@ -57,7 +57,6 @@ class CreateProfileFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
-  private lateinit var selectedImage: String
   private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
   @ColorInt private var avatarColor: Int? = null
@@ -238,16 +237,13 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   /** Receive the result of image upload and load it into the image view. */
   fun handleOnActivityResult(intent: Intent?) {
-    intent?.let {
-      binding.createProfilePicturePrompt.visibility = View.GONE
-      selectedImageUri = intent.data
-      selectedImage =
-        checkNotNull(intent.data.toString()) { "Could not find the selected image." }
-      imageLoader.loadBitmap(
-        selectedImage,
-        ImageViewTarget(uploadImageView)
-      )
-    }
+    val imageUri = checkNotNull(intent?.data) { "Could not find the selected image." }
+    selectedImageUri = imageUri
+    binding.createProfilePicturePrompt.visibility = View.GONE
+    imageLoader.loadBitmap(
+      imageUri.toString(),
+      ImageViewTarget(uploadImageView)
+    )
   }
 
   private fun addViewOnClickListeners(
@@ -352,7 +348,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
         colorRgb = avatarColor ?: selectUniqueRandomColor(),
         isAdmin = false
       ).toLiveData()
-      .observe(activity) { handleAddProfileResult(it, profileName) }
+      .observe(fragment) { handleAddProfileResult(it, profileName) }
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileName: String) {
