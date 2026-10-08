@@ -343,6 +343,11 @@
   <color name="component_color_onboarding_create_profile_header_text_color">@color/color_palette_onboarding_create_profile_header_text_color</color>
   <color name="component_color_onboarding_create_profile_info_color">@color/color_palette_onboarding_create_profile_info_color</color>
   <color name="component_color_onboarding_create_profile_back_button_text_color">@color/color_palette_onboarding_create_profile_back_button_text_color</color>
+  <color name="component_color_onboarding_hand_over_dialog_background_color">@color/color_palette_onboarding_hand_over_dialog_background_color</color>
+  <color name="component_color_onboarding_hand_over_dialog_title_color">@color/color_palette_onboarding_hand_over_dialog_title_color</color>
+  <color name="component_color_onboarding_hand_over_dialog_content_color">@color/color_palette_onboarding_hand_over_dialog_content_color</color>
+  <color name="component_color_onboarding_hand_over_dialog_button_background_color">@color/color_palette_onboarding_hand_over_dialog_button_background_color</color>
+  <color name="component_color_onboarding_hand_over_dialog_button_text_color">@color/color_palette_onboarding_hand_over_dialog_button_text_color</color>
   <color name="component_color_onboarding_intro_background_color">@color/color_palette_onboarding_intro_background_color</color>
   <color name="component_color_onboarding_intro_curved_background_color">@color/color_palette_onboarding_learner_intro_curved_background_color</color>
   <color name="component_color_onboarding_learner_intro_header_color">@color/color_palette_onboarding_learner_intro_header_color</color>

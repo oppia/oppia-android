@@ -300,6 +300,11 @@
   <color name="color_palette_onboarding_create_profile_header_text_color">@color/color_def_black</color>
   <color name="color_palette_onboarding_create_profile_info_color">@color/color_def_oppia_green</color>
   <color name="color_palette_onboarding_create_profile_back_button_text_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_hand_over_dialog_background_color">@color/color_def_white</color>
+  <color name="color_palette_onboarding_hand_over_dialog_title_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_hand_over_dialog_content_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_onboarding_hand_over_dialog_button_background_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_hand_over_dialog_button_text_color">@color/color_def_white</color>
   <color name="color_palette_onboarding_black_color">@color/color_def_black</color>
   <color name="color_palette_onboarding_intro_background_color">@color/color_def_sky_blue</color>
   <color name="color_palette_onboarding_learner_intro_curved_background_color">@color/color_def_white</color>

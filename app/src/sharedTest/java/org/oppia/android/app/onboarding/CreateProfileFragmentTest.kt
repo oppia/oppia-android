@@ -14,7 +14,9 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -65,6 +67,7 @@ import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -928,6 +931,38 @@ class CreateProfileFragmentTest {
       assertThat(storedProfile.hasPin).isTrue()
       assertThat(storedProfile.pin).isEqualTo("123")
       assertThat(storedProfile.avatar.avatarColorRgb).isEqualTo(testAvatarColor)
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_successDialog_okClicked_opensProfileChooserActivity() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithText(
+        context.getString(R.string.create_profile_activity_ok_button_text)
+      ).performClick()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_successDialog_closeClicked_opensProfileChooserActivity() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithContentDescription(
+        context.getString(R.string.create_profile_activity_close_button_description)
+      ).performClick()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 

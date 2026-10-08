@@ -1,7 +1,5 @@
 package org.oppia.android.app.onboarding
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -16,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -355,7 +354,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileName: String) {
     when (result) {
       is AsyncResult.Success -> {
-        fragment.requireContext().showDialog(profileName) {
+        showDialog(profileName) {
           fragment.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         }
       }
@@ -399,32 +398,29 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun Context.showDialog(
+  private fun showDialog(
     learnerNickname: String,
     onDismiss: () -> Unit
   ) {
-    val dialog = Dialog(this)
-
-    val composeView = ComposeView(this).apply {
+    val dialogHost = binding.root as ViewGroup
+    val composeView = ComposeView(fragment.requireContext()).apply {
       ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
       ViewTreeViewModelStoreOwner.set(this, fragment)
       ViewTreeSavedStateRegistryOwner.set(this, fragment)
-
-      setContent {
-        HandOverNoticeDialog(
-          appLanguageResourceHandler = appLanguageResourceHandler,
-          learnerNickname = learnerNickname,
-          onDismiss = {
-            dialog.dismiss()
-            onDismiss()
-          }
-        )
-      }
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
-    dialog.setContentView(composeView)
-    dialog.setCancelable(true)
-    dialog.show()
+    composeView.setContent {
+      HandOverNoticeDialog(
+        appLanguageResourceHandler = appLanguageResourceHandler,
+        learnerNickname = learnerNickname,
+        onDismiss = {
+          dialogHost.removeView(composeView)
+          onDismiss()
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
