@@ -133,7 +133,7 @@ jobs:
         id: coverage_context_cache
         with:
           path: changed_files.log
-          key: ${{ runner.os }}-coverage-changed-files-v1-${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'develop' }}-${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
+          key: ${{ runner.os }}-coverage-changed-files-v1-${{ github.sha }}-${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'develop' }}-${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
 
       - name: Compute test matrix
         id: compute-test-matrix
@@ -159,16 +159,10 @@ jobs:
           if [[ ! -z "$TEST_BUCKET_LIST" ]]; then
             echo "::set-output name=can_skip_tests::false"
           else
-            echo "::set-output name=can_skip_tests::true"
+            echo "::set-ou
+            tput name=can_skip_tests::true"
             echo "No tests are detected as affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
           fi
-
-      - name: Upload changed files log for code coverage
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: shared-coverage-changed-files
-          path: changed_files.log
 
   bazel_run_test:
     name: Run Bazel Test

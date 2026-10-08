@@ -115,7 +115,7 @@ jobs:
         id: coverage_context_cache
         with:
           path: changed_files.log
-          key: ${{ runner.os }}-coverage-changed-files-v1-${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'develop' }}-${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
+          key: ${{ runner.os }}-coverage-changed-files-v1-${{ github.sha }}-${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'develop' }}-${{ steps.check_pr.outputs.run_all == 'true' || steps.check_mg.outputs.run_all == 'true' }}
 
       - name: Compute file matrix
         id: compute-file-matrix
@@ -282,17 +282,16 @@ jobs:
   evaluate_code_coverage_reports:
     name: Evaluate Code Coverage Reports
     runs-on: ubuntu-24.04
-    needs: [ check_unit_tests_completed, code_coverage_run  ]
+    needs: [ check_unit_tests_completed, compute_changed_files, code_coverage_run ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ !cancelled() && needs.check_unit_tests_completed.result == 'success'}}
+    if: ${{ !cancelled() && needs.check_unit_tests_completed.result == 'success' && needs.compute_changed_files.outputs.can_skip_files != 'true' }}
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v6
 
       - name: Download Coverage Report Artifacts
-        id: download_reports
         uses: actions/download-artifact@v8
         with:
           path: coverage-report-artifact
@@ -300,7 +299,6 @@ jobs:
           merge-multiple: true
 
       - name: Filter Coverage Reports
-        id: filter_reports
         run: |
           # Find all coverage_report.pb files in the current directory and subdirectories
           PB_FILES_LIST=($(find . -name "coverage_report.pb" -type f -print0 | xargs -0 -n 1 echo))
