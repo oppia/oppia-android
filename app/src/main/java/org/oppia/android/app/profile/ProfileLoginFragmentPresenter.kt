@@ -61,6 +61,7 @@ import org.oppia.android.app.databinding.databinding.ProfileLoginFragmentBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileLoginActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -76,7 +77,6 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileLoginActivityParams
 
 /**
  * Test tag for the pin input field's container.
@@ -276,6 +276,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                     avatarColor
                   )
                 activity.startActivity(intent)
+                // Remove the authentication screen from the back stack. This ensures that
+                // navigating back from profile creation returns to the profile chooser.
+                activity.finish()
               } else {
                 // Non-supervisors shouldn't be in this flow; default to home/classroom.
                 activity.startActivity(
@@ -458,7 +461,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     ) {
       Text(
         text = resourceHandler.getStringInLocaleWithWrapping
-          (R.string.profile_login_activity_forgot_pin_text),
+        (R.string.profile_login_activity_forgot_pin_text),
         style = TextStyle(
           fontSize = 16.sp,
           color = colorResource(id = R.color.component_color_profile_login_button_text_color)

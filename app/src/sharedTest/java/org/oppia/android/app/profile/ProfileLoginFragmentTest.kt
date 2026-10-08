@@ -334,6 +334,33 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
+  fun testFragment_adminLogin_withAddNewLearnerFlow_finishesProfileLoginActivity() {
+    setUpTestApplicationComponentWithFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
+      context,
+      adminProfileId,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+
+    launch<ProfileLoginActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      var isFinishing = false
+      scenario.onActivity { activity -> isFinishing = activity.isFinishing }
+      assertThat(isFinishing).isTrue()
+    }
+  }
+
+  @Test
   fun testFragment_adminLogin_classroomsDisabled_openExistingProfileFlow_routesToHomeActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
@@ -992,9 +1019,9 @@ class ProfileLoginFragmentTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileLoginFragmentTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
+      DaggerProfileLoginFragmentTest_TestApplicationComponent.builder().apply {
+        setApplication(this@TestApplication)
+      }.build()
     }
 
     fun inject(profileLoginFragmentTest: ProfileLoginFragmentTest) {
