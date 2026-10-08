@@ -204,6 +204,11 @@
   <string name="flashback_viewed_feedback_text">You don see example, make we try am again</string>
   <string name="flashback_feedback_prompt">Your answer no Dey correct. Make we check an example</string>
   <string name="submitted_answer_label_text">(Answer wey you submit)</string>
+  <string name="submitted_answer_label_text_content_description">Answer wey you submit</string>
+  <string name="selected_option_icon_content_description">Answer wey you pick</string>
+  <string name="unselected_option_icon_content_description">Answer wey you no pick</string>
+  <string name="flashback_submitted_answer_label_text">Na the correct answer be dis</string>
+  <string name="flashback_submitted_answer_label_text_content_description">Na the correct answer be dis</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -256,7 +261,7 @@
   <string name="admin_auth_submit">Submit</string>
   <string name="admin_auth_close">Close</string>
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. Dis wan go give you di ability to authorize manage profiles for di device.</string>
-  <string name="admin_pin_pin_description">You fit use PIN wey you don set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_pin_description" fuzzy="true">You fit use PIN wey you don set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN suppose be 5 digits long.</string>
@@ -395,8 +400,8 @@
   <string name="log_out_dialog_cancel_button">Cancel</string>
   <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">You dey sure sey you wan log out of your profile?</string>
-  <string name="app_version_name">App Version %s</string>
-  <string name="app_last_update_date">Di last update install on %s. Use di version nomba for up to send feedback about bugs.</string>
+  <string name="app_version_name" fuzzy="true">App Version %s</string>
+  <string name="app_last_update_date" fuzzy="true">Di last update install on %s. Use di version nomba for up to send feedback about bugs.</string>
   <string name="app_version_activity_title">App Version</string>
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Preferred Audio Language</string>
@@ -659,4 +664,19 @@
   <string name="flashback_confirmation_dialog_not_now_text">No be now</string>
   <string name="flashback_confirmation_dialog_title_text">You need sometin? No wahala.</string>
   <string name="flashback_confirmation_dialog_message_text">Go look how dem solve the previous question</string>
+  <string name="profile_login_activity_title">Login</string>
+  <string name="profile_login_activity_enter_pin_prompt">Abeg put your pin inside</string>
+  <string name="profile_login_activity_greeting_text">We don see you again, welcome %s!</string>
+  <string name="profile_login_activity_pin_error">The pin wey you enter no de correct</string>
+  <string name="profile_login_activity_forgot_pin_text">I no remember my pin</string>
+  <string name="profile_login_forgot_pin_dialog_title">You don forget your PIN?</string>
+  <string name="profile_login_forgot_pin_dialog_message">If you wan reset your PIN, you must clear all di data wey you save for %s.\n\nRemember say as you do am, all your profile and everi level wey you reach go wipe comot, and you no fit bring am back. Also, di app go close once e finish, so you go need open am again.</string>
+  <string name="profile_login_forgot_pin_dialog_reset_button">Clear di Data for %s</string>
+  <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel am</string>
+  <string name="profile_login_reset_pin_success_dialog_close">Close am</string>
+  <string name="profile_login_reset_pin_success_dialog_message">Your PIN don change finish!</string>
+  <string name="admin_intro_activity_title">Di start</string>
+  <string name="admin_intro_activity_header">Because na you be di admin for di app, you fit</string>
+  <string name="admin_intro_activity_settings_text">Handle di settings for all di profile wey dey for dis device.</string>
+  <string name="admin_intro_activity_learners_text">Put new student dem for dis device (no pass ten)</string>
 </resources>
