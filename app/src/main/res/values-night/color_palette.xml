@@ -247,6 +247,16 @@
   <color name="color_palette_onboarding_profile_type_label_background_color">@color/color_def_oppia_dark_grey</color>
   <color name="color_palette_onboarding_profile_type_label_text_color">@color/color_def_white</color>
   <color name="color_palette_onboarding_edit_icon_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_onboarding_create_profile_background_color">@color/color_def_white</color>
+  <color name="color_palette_onboarding_create_profile_checkbox_checked_color">@color/color_def_dark_green</color>
+  <color name="color_palette_onboarding_create_profile_checkbox_unchecked_color">@color/color_def_dark_green</color>
+  <color name="color_palette_onboarding_create_profile_focused_stroke_color">@color/color_def_dark_green</color>
+  <color name="color_palette_onboarding_create_profile_input_background_color">@color/color_def_white</color>
+  <color name="color_palette_onboarding_create_profile_input_stroke_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_onboarding_create_profile_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_onboarding_create_profile_header_text_color">@color/color_def_black</color>
+  <color name="color_palette_onboarding_create_profile_info_color">@color/color_def_dark_green</color>
+  <color name="color_palette_onboarding_create_profile_back_button_text_color">@color/color_def_dark_green</color>
   <color name="color_palette_onboarding_black_color">@color/color_def_black</color>
   <color name="color_palette_onboarding_intro_background_color">@color/color_def_charcoal_black</color>
   <color name="color_palette_onboarding_learner_intro_curved_background_color">@color/color_def_black</color>
