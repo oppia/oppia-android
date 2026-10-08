@@ -13,6 +13,7 @@ import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.domain.agesignals.AgeSignalsModule
 import org.oppia.android.domain.auth.AuthenticationModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -71,6 +72,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
+    AgeSignalsModule::class,
     ApplicationModule::class, DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
