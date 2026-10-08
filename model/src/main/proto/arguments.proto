@@ -974,8 +974,8 @@ message CreateProfileActivityParams {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
 
-  // The RGB color of the profile avatar.
-  int32 avatar_color = 2;
+  // The color of the profile avatar. If absent, a color will be selected during profile creation.
+  optional int32 avatar_color = 2;
 }
 
 // Arguments required when creating a new CreateProfileFragment.
@@ -983,8 +983,8 @@ message CreateProfileFragmentArguments {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
 
-  // The RGB color of the profile avatar.
-  int32 avatar_color = 2;
+  // The color of the profile avatar. If absent, a color will be selected during profile creation.
+  optional int32 avatar_color = 2;
 }
 
 // The bundle of properties that are saved on configuration change in OnboardingFragment.
@@ -1091,8 +1091,8 @@ message ProfileLoginActivityParams {
   // The ProfileType of new the profile to be created by the admin.
   ProfileType new_profile_type = 1;
 
-  // The RGB color of the profile avatar.
-  int32 avatar_color = 2;
+  // The color of the profile avatar. If absent, a color will be selected during profile creation.
+  optional int32 avatar_color = 2;
 }
 
 // Params required when creating a new PinSetupActivity.

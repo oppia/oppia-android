@@ -55,7 +55,7 @@ class CreateProfileFragment : InjectableFragment() {
       profileId,
       fragmentArguments.profileType,
       selectProfilePictureLauncher,
-      fragmentArguments.avatarColor
+      fragmentArguments.avatarColor.takeIf { fragmentArguments.hasAvatarColor() }
     )
   }
 }

@@ -3,6 +3,7 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.LegacyProfileId
@@ -59,12 +60,16 @@ class ProfileLoginActivity :
       }
     }
 
-    /** Convenience intent for launching login as part of the add-profile flow. */
+    /**
+     * Returns an intent for launching login as part of the add-profile flow.
+     *
+     * If [avatarColor] is `null`, the profile creation screen will select an available color.
+     */
     fun createProfileLoginForAddProfileIntent(
       context: Context,
       profileId: LegacyProfileId,
       newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER,
-      avatarColor: Int = 0
+      @ColorInt avatarColor: Int? = null
     ): Intent = createProfileLoginActivityIntent(
       context,
       profileId,
@@ -72,10 +77,10 @@ class ProfileLoginActivity :
     ).apply {
       putProtoExtra(
         LOGIN_PARAMS_EXTRA,
-        ProfileLoginActivityParams.newBuilder()
-          .setNewProfileType(newProfileType)
-          .setAvatarColor(avatarColor)
-          .build()
+        ProfileLoginActivityParams.newBuilder().apply {
+          this.newProfileType = newProfileType
+          avatarColor?.let { this.avatarColor = it }
+        }.build()
       )
     }
 

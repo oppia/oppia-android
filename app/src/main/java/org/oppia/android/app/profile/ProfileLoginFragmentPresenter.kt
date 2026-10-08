@@ -76,6 +76,7 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileLoginActivityParams
 
 /**
  * Test tag for the pin input field's container.
@@ -113,6 +114,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private var loginFlow: ProfileLoginActivity.Companion.LoginFlow =
     ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
   private var newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
+  private var avatarColor: Int? = null
 
   /** Creates and returns the view for the [ProfileLoginFragment]. */
   fun handleCreateView(
@@ -122,7 +124,12 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   ): View? {
     // Determine how this screen was opened to route appropriately on successful login.
     loginFlow = ProfileLoginActivity.extractLoginFlowFromIntent(activity.intent)
-    newProfileType = extractNewProfileTypeFromIntent(activity.intent)
+    val addProfileParams = activity.intent.getProtoExtra(
+      ProfileLoginActivity.LOGIN_PARAMS_EXTRA,
+      ProfileLoginActivityParams.getDefaultInstance()
+    )
+    newProfileType = addProfileParams.newProfileType
+    avatarColor = addProfileParams.avatarColor.takeIf { addProfileParams.hasAvatarColor() }
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
@@ -144,14 +151,6 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       )
     }
     return binding.root
-  }
-
-  private fun extractNewProfileTypeFromIntent(intent: android.content.Intent): ProfileType {
-    val params = intent.getProtoExtra(
-      ProfileLoginActivity.LOGIN_PARAMS_EXTRA,
-      org.oppia.android.app.model.ProfileLoginActivityParams.getDefaultInstance()
-    )
-    return params.newProfileType
   }
 
   private fun getAdminPin() {
@@ -273,7 +272,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                   .createProfileActivityIntent(
                     activity,
                     profile.id,
-                    newProfileType
+                    newProfileType,
+                    avatarColor
                   )
                 activity.startActivity(intent)
               } else {
@@ -288,6 +288,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                 activity.finish()
               }
             }
+
             ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE -> {
               activity.startActivity(
                 if (enableMultipleClassrooms.value) {
@@ -457,7 +458,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     ) {
       Text(
         text = resourceHandler.getStringInLocaleWithWrapping
-        (R.string.profile_login_activity_forgot_pin_text),
+          (R.string.profile_login_activity_forgot_pin_text),
         style = TextStyle(
           fontSize = 16.sp,
           color = colorResource(id = R.color.component_color_profile_login_button_text_color)

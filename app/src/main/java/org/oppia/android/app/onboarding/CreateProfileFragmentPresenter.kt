@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +60,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private lateinit var selectedImage: String
   private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
-  private var avatarColor: Int = 0
+  @ColorInt private var avatarColor: Int? = null
   private var selectedImageUri: Uri? = null
 
   /** Initialize layout bindings. */
@@ -69,7 +70,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     profileId: LegacyProfileId,
     profileType: ProfileType,
     activityResultLauncher: ActivityResultLauncher<Intent>,
-    avatarColor: Int = 0
+    @ColorInt avatarColor: Int? = null
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
@@ -105,7 +106,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView.apply {
       setColorFilter(
-        if (avatarColor != 0) avatarColor else ResourcesCompat.getColor(
+        avatarColor ?: ResourcesCompat.getColor(
           activity.resources,
           R.color.component_color_avatar_background_25_color,
           null
@@ -272,7 +273,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       profileId = profileId.toProfileIdPreservingZero(),
       profileType = profileType,
       avatarImagePath = selectedImageUri,
-      colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
+      colorRgb = avatarColor ?: selectUniqueRandomColor(),
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
@@ -348,7 +349,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
         pin = pin,
         avatarImagePath = selectedImageUri,
         allowDownloadAccess = true,
-        colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
+        colorRgb = avatarColor ?: selectUniqueRandomColor(),
         isAdmin = false
       ).toLiveData()
       .observe(activity) { handleAddProfileResult(it, profileName) }

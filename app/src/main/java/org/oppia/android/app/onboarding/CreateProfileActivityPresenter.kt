@@ -1,6 +1,7 @@
 package org.oppia.android.app.onboarding
 
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.CreateProfileFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
@@ -25,7 +26,11 @@ class CreateProfileActivityPresenter @Inject constructor(
   private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, avatarColor: Int = 0) {
+  fun handleOnCreate(
+    profileId: LegacyProfileId,
+    profileType: ProfileType,
+    @ColorInt avatarColor: Int? = null
+  ) {
     activity.setContentView(R.layout.create_profile_activity)
     if (enableEdgeToEdge.value) {
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
@@ -37,10 +42,10 @@ class CreateProfileActivityPresenter @Inject constructor(
           it.decorateWithUserProfileId(profileId)
           it.putProto(
             CREATE_PROFILE_ARGUMENTS_KEY,
-            CreateProfileFragmentArguments.newBuilder()
-              .setProfileType(profileType)
-              .setAvatarColor(avatarColor)
-              .build()
+            CreateProfileFragmentArguments.newBuilder().apply {
+              this.profileType = profileType
+              avatarColor?.let { this.avatarColor = it }
+            }.build()
           )
         }
       }
