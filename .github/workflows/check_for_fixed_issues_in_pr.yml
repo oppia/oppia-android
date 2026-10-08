@@ -16,9 +16,35 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
+      - name: Check exemptions
+        id: exemptions
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { head } = context.payload.pull_request;
+            const repository = `${context.repo.owner}/${context.repo.repo}`;
+
+            const exemptions = [
+              { branch: 'translatewiki-prs', repository: '*' },
+              { branch: 'automated/lesson-versions', repository: '*' },
+              { branchPrefix: 'automated/changelog-', repository },
+            ];
+
+            const exempt = exemptions.some(rule =>
+              (rule.branch === head.ref ||
+                (rule.branchPrefix !== undefined && head.ref.startsWith(rule.branchPrefix))) &&
+              (rule.repository === '*' ||
+                rule.repository === head.repo?.full_name)
+            );
+
+            core.setOutput('should_check', String(!exempt));
+            core.info(exempt
+              ? `Skipping exempt branch: ${head.ref}`
+              : `Checking branch: ${head.ref}`);
+
       - name: Scan PR for issues being addressed
         id: step-1
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.pull_request.head.ref != 'automated/lesson-versions' && !(startsWith(github.event.pull_request.head.ref, 'automated/changelog-') && github.event.pull_request.head.repo.full_name == github.repository) }}
+        if: ${{ steps.exemptions.outputs.should_check == 'true' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -37,7 +63,7 @@ jobs:
 
       - name: Find issue assignment(s)
         id: step-2
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && github.event.pull_request.head.ref != 'automated/lesson-versions' && !(startsWith(github.event.pull_request.head.ref, 'automated/changelog-') && github.event.pull_request.head.repo.full_name == github.repository) && steps.step-1.outputs.failure_message == '' }}
+        if: ${{ steps.exemptions.outputs.should_check == 'true' && steps.step-1.outputs.failure_message == '' }}
         uses: actions/github-script@v8
         env:
           ISSUE_NUMBERS_LIST_JSON: ${{ steps.step-1.outputs.issue_numbers_list_json }}

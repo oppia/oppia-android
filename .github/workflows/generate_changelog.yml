@@ -43,9 +43,6 @@ jobs:
       pull-requests: write
 
     steps:
-      # GITHUB_TOKEN is not allowed to create pull requests in this repository, so the push and
-      # the PR use the Oppia GitHub App, as in pull_latest_lesson_versions.yml. This also lets the
-      # PR trigger CI.
       - name: Generate GitHub App token
         id: generate_token
         uses: actions/create-github-app-token@v1
@@ -95,8 +92,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           TARGET_VERSION: ${{ inputs.target_version }}
-          # Set as a repository variable so the model can be changed without a PR; the script
-          # falls back to its default model when this is empty.
           VERTEX_MODEL: ${{ vars.CHANGELOG_VERTEX_MODEL }}
         run: |
           bazel run //scripts:generate_changelogs -- \

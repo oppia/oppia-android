@@ -476,7 +476,7 @@ fun buildPrBody(
   if (llmFailed) {
     sb.appendLine(
       "> ⚠️ **LLM generation failed.** The changelog contains a raw commit list. " +
-        "Please replace the whole file with a 2-3 sentence user-facing summary before merging."
+        "Follow the note at the top of the file before merging."
     )
     sb.appendLine()
   }

@@ -464,7 +464,8 @@ class GenerateChangelogsTest {
     )
 
     assertThat(body).contains("LLM generation failed")
-    assertThat(body).contains("replace the whole file with a 2-3 sentence user-facing summary")
+    assertThat(body).contains("Follow the note at the top of the file before merging.")
+    assertThat(body).doesNotContain("2-3 sentence")
   }
 
   @Test
