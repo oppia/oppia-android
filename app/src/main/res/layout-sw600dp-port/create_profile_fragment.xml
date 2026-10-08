@@ -175,7 +175,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/add_profile_activity_pin_edit_text"
+          android:id="@+id/create_profile_pin_edit_text"
           style="@style/TextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
       app:layout_constraintTop_toBottomOf="@id/create_profile_pin">
 
         <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/create_profile_activity_confirm_pin_edit_text"
+          android:id="@+id/create_profile_confirm_pin_edit_text"
           style="@style/TextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

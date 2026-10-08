@@ -21,6 +21,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -60,6 +62,7 @@ import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -96,12 +99,14 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -140,6 +145,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CreateProfileFragmentTest {
+  private val testAvatarColor = 0x123456
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule
@@ -154,6 +161,10 @@ class CreateProfileFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -228,7 +239,7 @@ class CreateProfileFragmentTest {
 
   @Test
   fun testLearnerOnboarding_continueClicked_filledNickname_launchesLearnerIntroScreen() {
-    launchNewLearnerProfileActivity().use {
+    launchNewLearnerProfileActivity(avatarColor = testAvatarColor).use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           appendText("John"),
@@ -252,12 +263,21 @@ class CreateProfileFragmentTest {
           hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
+
+      val storedProfile = retrieveProfiles().single()
+      assertThat(storedProfile.name).isEqualTo("John")
+      assertThat(storedProfile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
+      assertThat(storedProfile.isAdmin).isTrue()
+      assertThat(storedProfile.avatar.avatarColorRgb).isEqualTo(testAvatarColor)
     }
   }
 
   @Test
   fun testFragment_supervisor_clickContinueButton_filledNickname_launchesAdminIntroScreen() {
-    launchNewLearnerProfileActivity(profileType = ProfileType.SUPERVISOR).use {
+    launchNewLearnerProfileActivity(
+      profileType = ProfileType.SUPERVISOR,
+      avatarColor = testAvatarColor
+    ).use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           appendText("John"),
@@ -275,6 +295,12 @@ class CreateProfileFragmentTest {
           hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
+
+      val storedProfile = retrieveProfiles().single()
+      assertThat(storedProfile.name).isEqualTo("John")
+      assertThat(storedProfile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+      assertThat(storedProfile.isAdmin).isTrue()
+      assertThat(storedProfile.avatar.avatarColorRgb).isEqualTo(testAvatarColor)
     }
   }
 
@@ -544,24 +570,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_tapToAddPictureClicked_loadsTheImageFromGallery() {
-    val expectedIntent: Matcher<Intent> = hasAction(Intent.ACTION_PICK)
-
-    val activityResult = createGalleryPickActivityResultStub()
-    intending(expectedIntent).respondWith(activityResult)
-
-    launchNewLearnerProfileActivity().use {
-      onView(withText(R.string.create_profile_activity_profile_picture_prompt))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val loadedImageUri = activityResult.resultData.data.toString()
-      assertThat(loadedImageUri).contains("launcher_icon")
-    }
-  }
-
-  @Test
-  fun testFragment_uploadProfilePicture_displaysImageInTarget() {
+  fun testFragment_selectProfilePicture_loadsSelectedImageIntoTarget() {
     val expectedIntent: Matcher<Intent> = hasAction(Intent.ACTION_PICK)
 
     val activityResult = createGalleryPickActivityResultStub()
@@ -574,6 +583,41 @@ class CreateProfileFragmentTest {
       val expectedImage = activityResult.resultData.data.toString()
       val loadedImages = testGlideImageLoader.getLoadedBitmaps()
       assertThat(loadedImages.first()).isEqualTo(expectedImage)
+    }
+  }
+
+  @Test
+  fun testLearnerFlow_selectPictureAndContinue_storesImageAvatar() {
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(hasAction(Intent.ACTION_PICK)).respondWith(activityResult)
+
+    launchNewLearnerProfileActivity().use {
+      onView(withText(R.string.create_profile_activity_profile_picture_prompt)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      val storedProfile = retrieveProfiles().single()
+      assertThat(storedProfile.avatar.avatarImageUri).isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testFragment_imageResultWithoutUri_throwsException() {
+    launchNewLearnerProfileActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        val fragment = activity.supportFragmentManager.fragments.single()
+          as CreateProfileFragment
+
+        val exception = assertThrows<IllegalStateException> {
+          fragment.createProfileFragmentPresenter.handleOnActivityResult(Intent())
+        }
+
+        assertThat(exception).hasMessageThat().isEqualTo("Could not find the selected image.")
+      }
     }
   }
 
@@ -593,6 +637,20 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  fun testFragment_unspecifiedProfileType_showsMissingProfileTypeError() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.PROFILE_TYPE_UNSPECIFIED).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_missing_profile_type))
+        .check(matches(isDisplayed()))
+      assertThat(retrieveProfiles().single().name).isEmpty()
     }
   }
 
@@ -744,9 +802,9 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_constraint_layout))
         .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.create_profile_pin_edit_text)).check(matches(isDisplayed()))
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
         .check(matches(isDisplayed()))
     }
   }
@@ -762,14 +820,15 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("1"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+      onView(withText(R.string.add_profile_error_pin_length))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
   }
 
@@ -783,18 +842,19 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
         .perform(appendText("111"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
   }
 
@@ -808,11 +868,11 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
@@ -820,16 +880,19 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.add_profile_error_pin_length))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+        .check(doesNotExist())
 
       onView(withText(R.string.add_profile_error_pin_confirm_wrong))
-        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+        .check(doesNotExist())
     }
   }
 
   @Test
   fun testAddLearnerFlow_validNameAndPins_continueButtonClicked_showsSuccessDialog() {
-    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+    launchNewLearnerProfileActivity(
+      profileType = ProfileType.ADDITIONAL_LEARNER,
+      avatarColor = testAvatarColor
+    ).use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(appendText("John"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
@@ -837,11 +900,11 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
@@ -857,6 +920,14 @@ class CreateProfileFragmentTest {
         context.getString(R.string.create_profile_activity_success_dialog_message, "John")
       )
         .assertIsDisplayed()
+
+      val storedProfile = retrieveProfiles().single { it.name == "John" }
+      assertThat(storedProfile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
+      assertThat(storedProfile.isAdmin).isFalse()
+      assertThat(storedProfile.allowDownloadAccess).isTrue()
+      assertThat(storedProfile.hasPin).isTrue()
+      assertThat(storedProfile.pin).isEqualTo("123")
+      assertThat(storedProfile.avatar.avatarColorRgb).isEqualTo(testAvatarColor)
     }
   }
 
@@ -873,7 +944,32 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+      onView(withText(R.string.add_profile_error_pin_length))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testAddLearnerFlow_existingNickname_showsNameNotUniqueError() {
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.addProfile(
+        name = "John",
+        pin = "",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = testAvatarColor,
+        isAdmin = false
+      )
+    )
+
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.add_profile_error_name_not_unique)).check(matches(isDisplayed()))
+      assertThat(retrieveProfiles().count { it.name == "John" }).isEqualTo(1)
     }
   }
 
@@ -899,6 +995,12 @@ class CreateProfileFragmentTest {
         context.getString(R.string.create_profile_activity_success_dialog_title, "John")
       )
         .assertIsDisplayed()
+
+      val storedProfile = retrieveProfiles().single { it.name == "John" }
+      assertThat(storedProfile.hasPin).isFalse()
+      assertThat(storedProfile.pin).isEmpty()
+      assertThat(storedProfile.avatar.avatarTypeCase)
+        .isEqualTo(ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB)
     }
   }
 
@@ -915,13 +1017,14 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+      onView(withText(R.string.add_profile_error_pin_length))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_length)).check(matches(not(isDisplayed())))
+      onView(withText(R.string.add_profile_error_pin_length)).check(doesNotExist())
     }
   }
 
@@ -935,25 +1038,26 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_pin_check_box)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.add_profile_activity_pin_edit_text))
+      onView(withId(R.id.create_profile_pin_edit_text))
         .perform(appendText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
         .perform(appendText("234"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
-      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
-        .perform(appendText("12"), closeSoftKeyboard())
+      onView(withId(R.id.create_profile_confirm_pin_edit_text))
+        .perform(replaceText("123"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.add_profile_error_pin_confirm_wrong))
-        .check(matches(not(isDisplayed())))
+        .check(doesNotExist())
     }
   }
 
@@ -970,22 +1074,35 @@ class CreateProfileFragmentTest {
     return Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent)
   }
 
-  private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
+  private fun launchNewLearnerProfileActivity(
+    profileType: ProfileType = ProfileType.SOLE_LEARNER,
+    avatarColor: Int? = null
+  ):
     ActivityScenario<CreateProfileActivity> {
       val testProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
       val intent =
-        CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
+        CreateProfileActivity.createProfileActivityIntent(
+          context,
+          testProfileId,
+          profileType,
+          avatarColor
+        )
       intent.decorateWithUserProfileId(testProfileId)
       intent.putProtoExtra(
         CREATE_PROFILE_PARAMS_KEY,
-        CreateProfileActivityParams.newBuilder()
-          .setProfileType(profileType)
-          .build()
+        CreateProfileActivityParams.newBuilder().apply {
+          this.profileType = profileType
+          avatarColor?.let { this.avatarColor = it }
+        }.build()
       )
       val scenario = launch<CreateProfileActivity>(intent)
       testCoroutineDispatchers.runCurrent()
       return scenario
     }
+
+  private fun retrieveProfiles() = monitorFactory.waitForNextSuccessfulResult(
+    profileManagementController.getProfiles()
+  )
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

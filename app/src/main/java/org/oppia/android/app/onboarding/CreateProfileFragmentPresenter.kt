@@ -196,7 +196,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    binding.createProfilePinEditText?.addTextChangedListener(object : TextWatcher {
+    binding.createProfilePinEditText.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -204,7 +204,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    binding.createProfileConfirmPinEditText?.addTextChangedListener(object : TextWatcher {
+    binding.createProfileConfirmPinEditText.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -346,7 +346,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
         avatarImagePath = selectedImageUri,
         allowDownloadAccess = true,
         colorRgb = avatarColor ?: selectUniqueRandomColor(),
-        isAdmin = false
+        isAdmin = false,
+        profileType = profileType
       ).toLiveData()
       .observe(fragment) { handleAddProfileResult(it, profileName) }
   }
