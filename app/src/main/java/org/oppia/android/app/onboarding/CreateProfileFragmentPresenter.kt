@@ -62,15 +62,13 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private var avatarColor: Int = 0
   private var selectedImageUri: Uri? = null
 
-  /** Launcher for picking an image from device gallery. */
-  lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-
   /** Initialize layout bindings. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: LegacyProfileId,
     profileType: ProfileType,
+    activityResultLauncher: ActivityResultLauncher<Intent>,
     avatarColor: Int = 0
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
@@ -214,7 +212,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    addViewOnClickListeners(binding)
+    addViewOnClickListeners(binding, activityResultLauncher)
 
     if (enableEdgeToEdge.value) {
       EdgeToEdgeHelper.applyToRootConstraintLayout(
@@ -251,7 +249,10 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun addViewOnClickListeners(binding: CreateProfileFragmentBinding) {
+  private fun addViewOnClickListeners(
+    binding: CreateProfileFragmentBinding,
+    activityResultLauncher: ActivityResultLauncher<Intent>
+  ) {
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }

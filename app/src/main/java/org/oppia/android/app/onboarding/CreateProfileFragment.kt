@@ -1,10 +1,12 @@
 package org.oppia.android.app.onboarding
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.CreateProfileFragmentArguments
@@ -19,6 +21,14 @@ const val CREATE_PROFILE_ARGUMENTS_KEY = "CreateProfileFragment.arguments"
 class CreateProfileFragment : InjectableFragment() {
   @Inject
   lateinit var createProfileFragmentPresenter: CreateProfileFragmentPresenter
+
+  private val selectProfilePictureLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+  ) { result ->
+    if (result.resultCode == Activity.RESULT_OK) {
+      createProfileFragmentPresenter.handleOnActivityResult(result.data)
+    }
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -44,6 +54,7 @@ class CreateProfileFragment : InjectableFragment() {
       container,
       profileId,
       fragmentArguments.profileType,
+      selectProfilePictureLauncher,
       fragmentArguments.avatarColor
     )
   }
