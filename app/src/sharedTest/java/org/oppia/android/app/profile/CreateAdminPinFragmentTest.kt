@@ -217,11 +217,9 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("54321")
 
       composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
@@ -238,7 +236,6 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("123")
 
       composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
@@ -255,7 +252,6 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("123")
 
       // Verify that the length error is shown for the PIN field.
@@ -263,7 +259,6 @@ class CreateAdminPinFragmentTest {
         .assertIsDisplayed()
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("123")
 
       // Matching short PINs do not produce a mismatch error.
@@ -281,14 +276,12 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("123")
 
       composeRule.onNode(enterPinErrorMatcher(R.string.create_admin_pin_activity_length_error))
         .assertIsDisplayed()
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("456")
 
       composeRule.onNode(confirmPinErrorMatcher(R.string.create_admin_pin_activity_mismatch_error))
@@ -305,12 +298,10 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       // Enter a too-short confirm PIN.
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("12")
 
       composeRule.waitForIdle()
@@ -346,7 +337,6 @@ class CreateAdminPinFragmentTest {
         .assertDoesNotExist()
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       // Enter matching confirm PIN; continue should be enabled now.
@@ -362,11 +352,9 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       composeRule.onNode(confirmPinFieldMatcher())
@@ -384,11 +372,9 @@ class CreateAdminPinFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("12345")
 
       composeRule.onNode(continueButtonMatcher())
@@ -420,7 +406,6 @@ class CreateAdminPinFragmentTest {
 
       // Try to input non-digit characters.
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("abc12def")
 
       // The password field masks the two accepted digits in Compose semantics.
@@ -436,7 +421,6 @@ class CreateAdminPinFragmentTest {
 
       // Try to input non-digit characters.
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("abc12def")
 
       // The password field masks the two accepted digits in Compose semantics.
@@ -452,7 +436,6 @@ class CreateAdminPinFragmentTest {
 
       // Try to input more than 5 digits.
       composeRule.onNode(enterPinFieldMatcher())
-        .performClick()
         .performTextInput("123456789")
 
       testCoroutineDispatchers.runCurrent()
@@ -470,7 +453,6 @@ class CreateAdminPinFragmentTest {
 
       // Try to input more than 5 digits.
       composeRule.onNode(confirmPinFieldMatcher())
-        .performClick()
         .performTextInput("123456789")
 
       // The password field masks the five accepted digits in Compose semantics.
