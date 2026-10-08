@@ -245,6 +245,8 @@
   <string name="profile_selection_profile_icon_description">User\'s profile picture</string>
   <string name="profile_selection_add_icon_description">Add another profile</string>
   <string name="profile_selection_add_profile_text">Add a learner profile</string>
+  <string name="profile_selection_maximum_profiles_reached_message">Maximum profiles reached. To add a new learner, an admin can remove an inactive profile under Admin Controls.</string>
+  <string name="profile_selection_maximum_profiles_reached_close">Close</string>
   <string name="profile_selection_admin_label">Administrator</string>
   <string name="profile_selection_scroll_left_content_description">Scroll left</string>
   <string name="profile_selection_scroll_right_content_description">Scroll right</string>

@@ -1278,7 +1278,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkAddProfileButtonIsNotVisible() {
+  fun testFragment_enableOnboardingV2_add10Profiles_checkAddProfileButtonIsVisible() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1345,8 +1345,23 @@ class ProfileChooserFragmentTest {
         targetView = R.id.profile_name_text,
         stringToMatch = "I"
       )
-      onView(withId(R.id.add_profile_button)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.add_profile_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.add_profile_button)).check(matches(withAlpha(0.38f)))
+      onView(withId(R.id.add_profile_prompt)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_add10Profiles_clickAddProfile_showsMaximumPrompt() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_button)).perform(click())
+      onView(withText(R.string.profile_selection_maximum_profiles_reached_message))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -1707,6 +1722,16 @@ class ProfileChooserFragmentTest {
         targetViewId = targetView
       )
     ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun withAlpha(expectedAlpha: Float): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("view with alpha $expectedAlpha")
+      }
+
+      override fun matchesSafely(view: View): Boolean = view.alpha == expectedAlpha
+    }
   }
 
   private fun createProfileChooserActivityIntent(): Intent {
