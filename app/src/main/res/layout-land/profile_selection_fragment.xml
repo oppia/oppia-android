@@ -113,7 +113,7 @@
       android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
       android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
       android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
-      app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
+      app:backgroundTint="@color/component_color_profile_selection_add_profile_button_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintBottom_toTopOf="@id/add_profile_prompt"
       app:layout_constraintEnd_toEndOf="parent"
