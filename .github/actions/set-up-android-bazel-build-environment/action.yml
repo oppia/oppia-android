@@ -36,7 +36,7 @@ runs:
 
     - name: Download cmdline tools
       run: |
-        wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+        wget --tries=3 --retry-connrefused --retry-on-http-error=500,502,503,504 --waitretry=5 --timeout=60 https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
         cp ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
         cd $HOME/android-sdk
         unzip commandlinetools-linux-7302050_latest.zip
