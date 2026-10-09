@@ -313,6 +313,7 @@ class ProfileManagementController @Inject constructor(
    * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
    * @param allowDownloadAccess Indicates whether the new profile can download content.
    * @param colorRgb Indicates the color RGB integer used for the avatar background.
+   * @param profileType indicates the role assigned to the newly created profile
    * @return a [DataProvider] that indicates the success/failure of this add operation.
    */
   fun addProfile(
@@ -322,7 +323,8 @@ class ProfileManagementController @Inject constructor(
     allowDownloadAccess: Boolean,
     colorRgb: Int,
     isAdmin: Boolean,
-    allowInLessonQuickLanguageSwitching: Boolean = false
+    allowInLessonQuickLanguageSwitching: Boolean = false,
+    profileType: ProfileType = ProfileType.PROFILE_TYPE_UNSPECIFIED
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
@@ -346,11 +348,13 @@ class ProfileManagementController @Inject constructor(
       val newProfile = Profile.newBuilder().apply {
         this.name = name
         this.pin = pin
+        this.hasPin = pin.isNotEmpty()
         this.allowDownloadAccess = allowDownloadAccess
         this.allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
         this.id = LegacyProfileId.newBuilder().setInternalId(nextProfileId).build()
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
+        this.profileType = profileType
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
         numberOfLogins = 0
 
