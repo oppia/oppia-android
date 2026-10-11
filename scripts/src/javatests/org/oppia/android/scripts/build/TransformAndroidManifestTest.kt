@@ -632,6 +632,60 @@ class TransformAndroidManifestTest {
   }
 
   @Test
+  fun testUtility_shallowRepository_throwsException() {
+    initializeGitRepositoryWithHistory()
+    val shallowRepository = tempFolder.newFolder("shallow_repository")
+    testGitRepository.cloneShallow(shallowRepository, depth = 1)
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        shallowRepository.absolutePath,
+        tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+          writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+        }.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("shallow clone")
+    assertThat(exception).hasMessageThat().contains("git fetch --unshallow")
+  }
+
+  @Test
+  fun testUtility_incompleteCommitHistory_throwsExceptionWithoutAssumingCause() {
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+    testGitRepository.initializeHistoricalCommits(commitCount = 10)
+    testGitRepository.createRemoteBranchRef("origin/develop")
+
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        tempFolder.root.absolutePath,
+        tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+          writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+        }.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains("Computed version code")
+    assertThat(exception).hasMessageThat().contains("zero or negative")
+    assertThat(exception).hasMessageThat().doesNotContain("shallow clone")
+  }
+
+  @Test
   fun testUtility_enableAnalyticsFalse_analyticsDisabledInManifest() {
     initializeGitRepositoryWithHistory()
     runScript(

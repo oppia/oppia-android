@@ -751,8 +751,8 @@ message ProfileListFragmentArguments {
 
 // Represents the parameters needed to create ProfileResetPinActivity.
 message ProfileResetPinActivityParams {
-  // ID of the current profile.
-  int32 internal_profile_id = 1;
+  // Earlier used for the ID of the current profile.
+  reserved 1;
 
   // Indicates whether current user is admin or not.
   bool is_admin = 2;
@@ -760,8 +760,8 @@ message ProfileResetPinActivityParams {
 
 // Arguments required when creating a ProfileResetPinFragment.
 message ProfileResetPinFragmentArguments {
-  // ID of the current profile.
-  int32 internal_profile_id = 1;
+  // Earlier used for the ID of the current profile.
+  reserved 1;
 
   // Indicates whether current user is admin or not.
   bool is_admin = 2;
