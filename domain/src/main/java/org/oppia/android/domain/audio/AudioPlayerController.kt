@@ -6,11 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -277,9 +275,7 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
       if (observerActive && prepared) {
         nextUpdateJob = CoroutineScope(blockingDispatcher).launch {
-          withContext(Dispatchers.Main) {
-            updateSeekBar()
-          }
+          updateSeekBar()
           delay(SEEKBAR_UPDATE_FREQUENCY)
           scheduleNextSeekBarUpdate()
         }
@@ -292,10 +288,11 @@ class AudioPlayerController @Inject constructor(
       if (prepared && mediaPlayer.isPlaying) {
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
-        playProgress.value =
+        playProgress.postValue(
           AsyncResult.Success(
             PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
+        )
       }
     }
   }

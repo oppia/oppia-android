@@ -40,6 +40,8 @@ class AudioViewModel @Inject constructor(
   private var reloadingMainContent: Boolean? = null
   private var hasFeedback: Boolean? = null
   private var currentLoadedAudioUri: String? = null
+  private var currentLoadedHasFeedback: Boolean? = null
+  private var currentLoadedContentId: String? = null
 
   private var fallbackLanguageCode: String = defaultLanguage
   var languages = listOf<String>()
@@ -182,32 +184,43 @@ class AudioViewModel @Inject constructor(
 
     if (languageCodeForDataSource != null) {
       val targetUri = voiceOverToUri(voiceoverMap[languageCodeForDataSource])
-      val currentStatus = (playProgressResultLiveData.value as? AsyncResult.Success)?.value?.type
+      val currentResult = playProgressResultLiveData.value
+      val currentStatus = (currentResult as? AsyncResult.Success)?.value?.type
       val isAlreadyLoaded = currentStatus in listOf(
         PlayStatus.PREPARED,
         PlayStatus.PLAYING,
         PlayStatus.PAUSED,
         PlayStatus.COMPLETED
       )
-      if (targetUri == currentLoadedAudioUri && reloadingMainContent != true && isAlreadyLoaded) {
-        if (autoPlay == true) {
-          when (currentStatus) {
-            PlayStatus.PREPARED,
-            PlayStatus.PAUSED,
-            PlayStatus.COMPLETED -> {
-              audioPlayerController.play(
-                isPlayingFromAutoPlay = true,
-                reloadingMainContent = false
-              )
-              autoPlay = false
+      val isLoading = currentResult is AsyncResult.Pending || currentStatus == PlayStatus.PREPARING
+      val isSameAudioRequested = targetUri == currentLoadedAudioUri &&
+        hasFeedback == currentLoadedHasFeedback &&
+        currentContentId == currentLoadedContentId
+      if (isSameAudioRequested && reloadingMainContent != true) {
+        if (isAlreadyLoaded) {
+          if (autoPlay == true) {
+            when (currentStatus) {
+              PlayStatus.PREPARED,
+              PlayStatus.PAUSED,
+              PlayStatus.COMPLETED -> {
+                audioPlayerController.play(
+                  isPlayingFromAutoPlay = true,
+                  reloadingMainContent = false
+                )
+                autoPlay = false
+              }
+              PlayStatus.PLAYING -> autoPlay = false
+              else -> {}
             }
-            PlayStatus.PLAYING -> autoPlay = false
-            else -> {}
           }
+          return
+        } else if (isLoading) {
+          return
         }
-        return
       }
       currentLoadedAudioUri = targetUri
+      currentLoadedHasFeedback = hasFeedback
+      currentLoadedContentId = currentContentId
       audioPlayerController.changeDataSource(
         targetUri,
         currentContentId,
@@ -243,6 +256,8 @@ class AudioViewModel @Inject constructor(
     voiceoverMap = mapOf()
     languages = listOf()
     currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
   }
 
   /** Plays or pauses AudioController depending on passed in state. */
@@ -271,11 +286,15 @@ class AudioViewModel @Inject constructor(
 
   fun handleRelease() {
     currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
     audioPlayerController.releaseMediaPlayer()
   }
 
   fun abortPendingLoad() {
     currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
     audioPlayerController.abortPendingLoad()
   }
 
@@ -322,6 +341,8 @@ class AudioViewModel @Inject constructor(
       is AsyncResult.Pending -> UiAudioPlayStatus.LOADING
       is AsyncResult.Failure -> {
         currentLoadedAudioUri = null
+        currentLoadedHasFeedback = null
+        currentLoadedContentId = null
         UiAudioPlayStatus.FAILED
       }
       is AsyncResult.Success -> when (playProgressResult.value.type) {
