@@ -16,17 +16,20 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 
 @Composable
-fun AdministratorControlsDialog(onDismiss: () -> Unit) {
+fun AdministratorControlsDialog(
+  appLanguageResourceHandler: AppLanguageResourceHandler,
+  onDismiss: () -> Unit
+) {
   Dialog(onDismissRequest = onDismiss) {
     Card(
       shape = RoundedCornerShape(16.dp),
@@ -45,7 +48,9 @@ fun AdministratorControlsDialog(onDismiss: () -> Unit) {
         ) {
           Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Close",
+            contentDescription = appLanguageResourceHandler.getStringInLocale(
+              R.string.administrator_controls_welcome_dialog_close_button_description
+            ),
             tint = colorResource(R.color.component_color_shared_black_background_color)
           )
         }
@@ -57,7 +62,9 @@ fun AdministratorControlsDialog(onDismiss: () -> Unit) {
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = "Welcome to the Administrator Controls Page!",
+            text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+              R.string.administrator_controls_welcome_dialog_title
+            ),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.component_color_onboarding_shared_green_color),
@@ -66,8 +73,9 @@ fun AdministratorControlsDialog(onDismiss: () -> Unit) {
           )
 
           Text(
-            text = "On this page, you can add new learners, or change the profile settings for " +
-              "all learners.",
+            text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
+              R.string.administrator_controls_welcome_dialog_message
+            ),
             fontSize = 18.sp,
             color = colorResource(R.color.component_color_shared_primary_text_color),
             textAlign = TextAlign.Center,
@@ -85,7 +93,13 @@ fun AdministratorControlsDialog(onDismiss: () -> Unit) {
               )
             ),
           ) {
-            Text("OK, LET'S GO", fontWeight = FontWeight.Bold, color = Color.White)
+            Text(
+              text = appLanguageResourceHandler.getStringInLocale(
+                R.string.administrator_controls_welcome_dialog_confirm_button_text
+              ),
+              fontWeight = FontWeight.Bold,
+              color = colorResource(R.color.component_color_onboarding_shared_white_color)
+            )
           }
         }
       }

@@ -1,12 +1,12 @@
 package org.oppia.android.app.administratorcontrols
 
-import android.app.Dialog
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.doOnAttach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
@@ -29,7 +29,12 @@ import org.oppia.android.app.databinding.databinding.AdministratorControlsProfil
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -38,11 +43,14 @@ import javax.inject.Inject
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val profileManagementController: ProfileManagementController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var profileId: LegacyProfileId
+  private var isIntroductionDialogShowing = false
 
   @Inject
   lateinit var administratorControlsViewModel: AdministratorControlsViewModel
@@ -76,8 +84,9 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       this.lifecycleOwner = fragment
     }
 
-    // TODO(4938): Only show this dialog on the first visit.
-    fragment.requireContext().showDialog()
+    binding.root.doOnAttach {
+      observeAdministratorControlsIntroductionStatus()
+    }
 
     return binding.root
   }
@@ -197,24 +206,42 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun Context.showDialog() {
-    val dialog = Dialog(this)
+  private fun observeAdministratorControlsIntroductionStatus() {
+    val internalProfileId = profileId.toProfileIdPreservingZero()
+    profileManagementController.getProfile(internalProfileId).toLiveData().observe(
+      fragment.viewLifecycleOwner
+    ) { profileResult ->
+      if (
+        profileResult is AsyncResult.Success &&
+        !profileResult.value.hasSeenAdministratorControlsIntroduction &&
+        !isIntroductionDialogShowing
+      ) {
+        isIntroductionDialogShowing = true
+        profileManagementController.markAdministratorControlsIntroductionSeen(internalProfileId)
+        showIntroductionDialog()
+      }
+    }
+  }
 
-    val composeView = ComposeView(this).apply {
+  private fun showIntroductionDialog() {
+    val dialogHost = binding.root as ViewGroup
+    val composeView = ComposeView(fragment.requireContext()).apply {
       ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
       ViewTreeViewModelStoreOwner.set(this, fragment)
       ViewTreeSavedStateRegistryOwner.set(this, fragment)
-
-      setContent {
-        AdministratorControlsDialog(
-          onDismiss = { dialog.dismiss() }
-        )
-      }
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
-    dialog.setContentView(composeView)
-    dialog.setCancelable(true)
-    dialog.show()
+    composeView.setContent {
+      AdministratorControlsDialog(
+        appLanguageResourceHandler = appLanguageResourceHandler,
+        onDismiss = {
+          isIntroductionDialogShowing = false
+          dialogHost.removeView(composeView)
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
   }
 
   private enum class ViewType {

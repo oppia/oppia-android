@@ -419,6 +419,10 @@
   <string name="administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
+  <string name="administrator_controls_welcome_dialog_title">Welcome to the Administrator Controls Page!</string>
+  <string name="administrator_controls_welcome_dialog_message">On this page, you can add new learners, or change the profile settings for all learners.</string>
+  <string name="administrator_controls_welcome_dialog_close_button_description">Close</string>
+  <string name="administrator_controls_welcome_dialog_confirm_button_text">OK, LET\'S GO</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
   <string name="log_out_dialog_okay_button" tools:ignore="ButtonCase,Typos">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>

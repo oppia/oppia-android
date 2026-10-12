@@ -7,6 +7,11 @@ import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.core.app.ActivityScenario.launch
@@ -46,6 +51,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AdministratorControlsFragmentArguments
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
@@ -87,6 +93,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -111,6 +118,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -130,6 +138,9 @@ class AdministratorControlsFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  @get:Rule
+  val composeRule = createEmptyComposeRule()
+
   private val internalProfileId = 0
 
   @Inject
@@ -137,6 +148,9 @@ class AdministratorControlsFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   @Inject
   lateinit var context: Context
@@ -157,10 +171,56 @@ class AdministratorControlsFragmentTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationComponent(
+    hasSeenAdministratorControlsIntroduction: Boolean = true
+  ) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     profileTestHelper.initializeProfiles()
+    if (hasSeenAdministratorControlsIntroduction) {
+      profileManagementController.markAdministratorControlsIntroductionSeen(
+        LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+          .toProfileIdPreservingZero()
+      )
+      testCoroutineDispatchers.runCurrent()
+    }
     testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_revisited_welcomeDialogShownOnlyOnFirstVisit() {
+    setUpTestApplicationComponent(hasSeenAdministratorControlsIntroduction = false)
+    val intent = createAdministratorControlsFragmentTestActivityIntent(
+      profileId = internalProfileId
+    )
+
+    launch<AdministratorControlsFragmentTestActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+      composeRule.waitForIdle()
+
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.administrator_controls_welcome_dialog_title)
+        )
+        .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.administrator_controls_welcome_dialog_confirm_button_text)
+        )
+        .performClick()
+
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launch<AdministratorControlsFragmentTestActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+      composeRule.waitForIdle()
+
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.administrator_controls_welcome_dialog_title)
+        )
+        .assertDoesNotExist()
+    }
   }
 
   @Test
