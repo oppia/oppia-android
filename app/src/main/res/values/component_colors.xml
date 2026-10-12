@@ -324,6 +324,7 @@
   <color name="component_color_onboarding_shared_text_color">@color/color_palette_onboarding_primary_text_color</color>
   <color name="component_color_onboarding_dropdown_text_color">@color/color_palette_onboarding_dropdown_text_color</color>
   <color name="component_color_onboarding_shared_secondary_button_text_color">@color/color_palette_onboarding_shared_secondary_button_text_color</color>
+  <color name="component_color_onboarding_audio_language_back_button_text_color">@color/color_palette_onboarding_primary_color</color>
   <color name="component_color_onboarding_profile_type_background_color">@color/color_palette_onboarding_profile_type_background_color</color>
   <color name="component_color_onboarding_profile_type_curved_background_color">@color/color_palette_onboarding_profile_type_curved_background_color</color>
   <color name="component_color_onboarding_profile_type_header_text_color">@color/color_palette_onboarding_profile_type_header_text_color</color>
