@@ -2051,7 +2051,7 @@ class ProfileManagementControllerTest {
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
     assertThat(error).hasMessageThat().contains(
-      "Profile ID 6 is not associated with an existing profile"
+      "Profile ID 6 does not match an existing Profile"
     )
     val profiles = monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.getProfiles()

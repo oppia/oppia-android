@@ -91,16 +91,24 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private fun observeAdministratorControlsIntroductionStatusWhenAttached() {
     val rootView = binding.root
     if (rootView.isAttachedToWindow) {
-      observeAdministratorControlsIntroductionStatus()
+      observeAdministratorControlsIntroductionStatusAfterAttach(rootView)
     } else {
       rootView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(view: View) {
           view.removeOnAttachStateChangeListener(this)
-          observeAdministratorControlsIntroductionStatus()
+          observeAdministratorControlsIntroductionStatusAfterAttach(view)
         }
 
         override fun onViewDetachedFromWindow(view: View) = Unit
       })
+    }
+  }
+
+  private fun observeAdministratorControlsIntroductionStatusAfterAttach(view: View) {
+    view.post {
+      if (view.isAttachedToWindow) {
+        observeAdministratorControlsIntroductionStatus()
+      }
     }
   }
 
@@ -237,7 +245,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   }
 
   private fun showIntroductionDialog() {
-    val dialogHost = binding.root as ViewGroup
+    val dialogHost = activity.findViewById<ViewGroup>(android.R.id.content)
     val composeView = ComposeView(fragment.requireContext()).apply {
       ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
       ViewTreeViewModelStoreOwner.set(this, fragment)
