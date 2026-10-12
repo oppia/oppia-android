@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.view.doOnAttach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
@@ -84,14 +83,28 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       this.lifecycleOwner = fragment
     }
 
-    binding.root.doOnAttach {
-      observeAdministratorControlsIntroductionStatus()
-    }
+    observeAdministratorControlsIntroductionStatusWhenAttached()
 
     return binding.root
   }
 
-  /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
+  private fun observeAdministratorControlsIntroductionStatusWhenAttached() {
+    val rootView = binding.root
+    if (rootView.isAttachedToWindow) {
+      observeAdministratorControlsIntroductionStatus()
+    } else {
+      rootView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(view: View) {
+          view.removeOnAttachStateChangeListener(this)
+          observeAdministratorControlsIntroductionStatus()
+        }
+
+        override fun onViewDetachedFromWindow(view: View) = Unit
+      })
+    }
+  }
+
+  /** Returns the recyclerview adapter for the controls panel in administrator controls fragment. */
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
       return multiTypeBuilderFactory
