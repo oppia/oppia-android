@@ -31,6 +31,8 @@
   <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="concept_card_two_button_text">Concept Card 2</string>
   <string name="revision_card_toolbar_title">Study Guide</string>
+  <string name="worked_example_question_label">Question:</string>
+  <string name="worked_example_answer_label">Answer:</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="unsaved_exploration_dialog_leave_button">Leave</string>
@@ -68,6 +70,7 @@
   <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="lesson_progress_indicator_content_description">Completed %1$s lesson checkpoints out of %2$s.</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="image_error_empty_input">Select an image to continue.</string>
@@ -242,6 +245,8 @@
   <string name="profile_selection_profile_icon_description">User\'s profile picture</string>
   <string name="profile_selection_add_icon_description">Add another profile</string>
   <string name="profile_selection_add_profile_text">Add a learner profile</string>
+  <string name="profile_selection_maximum_profiles_reached_message">Maximum profiles reached. To add a new learner, an admin can remove an inactive profile under Admin Controls.</string>
+  <string name="profile_selection_maximum_profiles_reached_close">Close</string>
   <string name="profile_selection_admin_label">Administrator</string>
   <string name="profile_selection_scroll_left_content_description">Scroll left</string>
   <string name="profile_selection_scroll_right_content_description">Scroll right</string>
@@ -551,6 +556,7 @@
   <string name="stories_for_you">Stories For You</string>
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="revision_card_activity_title">Skill revision page</string>
+  <string name="study_guide_activity_title">Study guide page</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
@@ -694,7 +700,7 @@
   <string name="create_profile_activity_nickname_error">Click in the box above to type a nickname.</string>
   <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
   <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
-  <string name="create_profile_activity_pin_info">If you choose to create a PIN, the learner will have to enter it to access their account.</string>
+  <string name="create_profile_activity_pin_info">If you choose to create a PIN, the learner will have to type it to access their account.</string>
   <string name="create_profile_activity_pin_checkbox_label">Create a 3-Digit PIN for the learner (Optional)</string>
   <string name="create_profile_activity_success_dialog_title">You have successfully created a profile for %s!</string>
   <string name="create_profile_activity_success_dialog_message">Give this device to %s for them to begin learning, or continue creating profiles for more learners.</string>
@@ -750,13 +756,13 @@
   <string name="admin_intro_activity_settings_text">Manage profile settings for all learners on this device</string>
   <string name="admin_intro_activity_learners_text">Add new learners to this device (up to 10)</string>
 
-  <!-- Pin Setup Activity -->
-  <string name="pin_setup_activity_title">Create Admin PIN</string>
-  <string name="pin_setup_activity_header">Set up a unique PIN to protect the admin controls</string>
-  <string name="pin_setup_activity_message">Administrators are able to control content downloads and manage all profiles on this device</string>
-  <string name="pin_setup_activity_enter_pin_label">Enter a 5-Digit PIN</string>
-  <string name="pin_setup_activity_confirm_pin_label">Confirm the 5-Digit PIN</string>
-  <string name="pin_setup_activity_blank_error">Type a 5-Digit PIN</string>
-  <string name="pin_setup_activity_length_error">Your PIN should be 5 digits long</string>
-  <string name="pin_setup_activity_mismatch_error">Please make sure that both PINs match</string>
+  <!-- Create Admin PIN Activity -->
+  <string name="create_admin_pin_activity_title">Create Admin PIN</string>
+  <string name="create_admin_pin_activity_header">Set up a unique PIN to protect the admin controls</string>
+  <string name="create_admin_pin_activity_message">Administrators are able to control content downloads and manage all profiles on this device</string>
+  <string name="create_admin_pin_activity_enter_pin_label">Enter a 5-Digit PIN</string>
+  <string name="create_admin_pin_activity_confirm_pin_label">Confirm the 5-Digit PIN</string>
+  <string name="create_admin_pin_activity_blank_error">Type a 5-Digit PIN</string>
+  <string name="create_admin_pin_activity_length_error">Your PIN should be 5 digits long</string>
+  <string name="create_admin_pin_activity_mismatch_error">Please make sure that both PINs match</string>
 </resources>

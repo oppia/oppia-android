@@ -95,12 +95,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -236,6 +234,23 @@ class IntroFragmentTest {
   }
 
   @Test
+  fun testFragment_additionalLearner_continueButtonClicked_launchesAudioWithoutStepCount() {
+    launchOnboardingLearnerIntroActivity(PROFILE_CHOOSER_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        this.audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        this.parentScreen =
+          AudioLanguageActivityParams.ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
+      }.build()
+
+      intended(hasProtoExtra("AudioLanguageActivity.params", expectedParams))
+    }
+  }
+
+  @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesAudioLanguageScreen() {
     launchOnboardingLearnerIntroActivity().use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
@@ -289,7 +304,6 @@ class IntroFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -299,7 +313,6 @@ class IntroFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

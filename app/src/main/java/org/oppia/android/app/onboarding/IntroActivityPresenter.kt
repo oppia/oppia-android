@@ -7,6 +7,9 @@ import org.oppia.android.app.databinding.databinding.IntroActivityBinding
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_INTRO_FRAGMENT"
@@ -14,7 +17,9 @@ private const val TAG_LEARNER_INTRO_FRAGMENT = "TAG_INTRO_FRAGMENT"
 /** The Presenter for [IntroActivity]. */
 @ActivityScope
 class IntroActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: IntroActivityBinding
 
@@ -24,6 +29,9 @@ class IntroActivityPresenter @Inject constructor(
     profileId: LegacyProfileId,
     parentScreen: IntroActivityParams.ParentScreen
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
     binding.lifecycleOwner = activity
 

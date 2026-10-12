@@ -25,7 +25,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_WALL_CLOCK_TIME
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
@@ -290,7 +289,6 @@ class FakeOppiaClockTest {
   @Singleton
   @Component(
     modules = [
-      CachingTestModule::class,
       FakeOppiaClockModule::class,
       ImageParsingModule::class,
       LogStorageModule::class,

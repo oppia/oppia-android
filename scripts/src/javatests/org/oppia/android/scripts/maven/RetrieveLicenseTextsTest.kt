@@ -93,7 +93,7 @@ class RetrieveLicenseTextsTest {
     val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
-          "${tempFolder.root}/values",
+          "${tempFolder.root}/values/third_party_dependencies.xml",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
         )
       )
@@ -112,7 +112,7 @@ class RetrieveLicenseTextsTest {
     val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
-          "${tempFolder.root}/values",
+          "${tempFolder.root}/values/third_party_dependencies.xml",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
         )
       )
@@ -142,7 +142,7 @@ class RetrieveLicenseTextsTest {
     val exception = assertThrows<Exception>() {
       RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
         arrayOf(
-          "${tempFolder.root}/values",
+          "${tempFolder.root}/values/third_party_dependencies.xml",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
         )
       )
@@ -185,7 +185,7 @@ class RetrieveLicenseTextsTest {
 
     RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
       arrayOf(
-        "${tempFolder.root}/values",
+        "${tempFolder.root}/values/third_party_dependencies.xml",
         "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
       )
     )
@@ -239,7 +239,7 @@ class RetrieveLicenseTextsTest {
 
     RetrieveLicenseTexts(mockArtifactPropertyFetcher).main(
       arrayOf(
-        "${tempFolder.root}/values",
+        xmlFile.absolutePath,
         "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
       )
     )

@@ -2,7 +2,6 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -97,20 +96,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
 
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
     return singleTypeBuilderFactory.create<ComingSoonTopicsViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideComingSoonTopicViewInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            attachToParent = false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.provideComingSoonTopicsViewViewModel(
-            view,
-            viewModel
-          )
-        }
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = bindingInterface::provideComingSoonTopicViewInflatedView,
+        setViewModel = bindingInterface::provideComingSoonTopicsViewViewModel
       ).build()
   }
 }

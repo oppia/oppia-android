@@ -59,6 +59,7 @@ interface ImageLoader {
     rawLatex: String,
     lineHeight: Float,
     useInlineRendering: Boolean,
+    equationColor: Int,
     target: ImageTarget<Bitmap>
   )
 }

@@ -28,7 +28,7 @@
       android:id="@+id/create_profile_background"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:customBackgroundColor="@{@color/component_color_onboarding_shared_white_color}"
+      app:customBackgroundColor="@{@color/component_color_onboarding_create_profile_background_color}"
       app:layout_constraintTop_toTopOf="@id/create_profile_picture_guide" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -85,7 +85,7 @@
       android:layout_marginTop="@dimen/tablet_shared_margin_xl"
       android:fontFamily="sans-serif-medium"
       android:text="@string/create_profile_activity_header"
-      android:textColor="@color/component_color_onboarding_shared_black_color"
+      android:textColor="@color/component_color_onboarding_create_profile_header_text_color"
       android:textSize="@dimen/onboarding_shared_text_size_large"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +132,8 @@
       android:id="@+id/create_profile_pin_check_box"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:buttonTint="@color/component_color_shared_checkbox_selector"
+      android:buttonTint="@color/component_color_onboarding_create_profile_checkbox_selector"
+      android:textColor="@color/component_color_onboarding_create_profile_text_color"
       android:text="@string/add_profile_create_a_3_digit_pin"
       android:checked="@={viewModel.showPinFields}"
       app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
@@ -143,7 +144,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:drawableStart="@drawable/ic_info_icon"
-      android:drawableTint="@color/component_color_onboarding_shared_green_color"
+      android:drawableTint="@color/component_color_onboarding_create_profile_info_color"
+      android:textColor="@color/component_color_onboarding_create_profile_info_color"
       android:text="@string/add_profile_pin_info"
       android:visibility="@{viewModel.showPinFields ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
@@ -161,7 +163,7 @@
 
       <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/create_profile_pin"
-        style="@style/TextInputLayout"
+        style="@style/CreateProfilePinTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -174,8 +176,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/add_profile_activity_pin_edit_text"
-          style="@style/TextInputEditText"
+          android:id="@+id/create_profile_pin_edit_text"
+          style="@style/CreateProfilePinTextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:imeOptions="actionNext"
@@ -186,7 +188,7 @@
 
       <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/create_profile_confirm_pin"
-        style="@style/TextInputLayout"
+        style="@style/CreateProfilePinTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
@@ -199,8 +201,8 @@
         app:layout_constraintTop_toBottomOf="@id/create_profile_pin">
 
         <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/create_profile_activity_confirm_pin_edit_text"
-          style="@style/TextInputEditText"
+          android:id="@+id/create_profile_confirm_pin_edit_text"
+          style="@style/CreateProfilePinTextInputEditText"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:imeOptions="actionDone"
@@ -219,6 +221,7 @@
       android:layout_marginBottom="@dimen/tablet_shared_margin_xl"
       android:padding="@dimen/onboarding_shared_padding_medium"
       android:text="@string/onboarding_navigation_back"
+      android:textColor="@color/component_color_onboarding_create_profile_back_button_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
 

@@ -6,7 +6,9 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -29,14 +31,16 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.statusbar.StatusBarColor
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -78,7 +82,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val resourceHandler: AppLanguageResourceHandler,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
 
@@ -93,14 +98,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_shared_profile_status_bar_color, activity, false
-    )
-
-    if (parentScreen == ParentScreen.CREATE_PIN_SCREEN) {
+    if (parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
-      profileManagementController.markProfileOnboardingEnded(adminProfileId)
+      profileManagementController.markProfileOnboardingEnded(
+        adminProfileId.toProfileIdPreservingZero()
+      )
     }
 
     binding =
@@ -122,6 +125,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.addProfileButton.setOnClickListener { addProfileButtonClickListener() }
     binding.addProfilePrompt.setOnClickListener { addProfileButtonClickListener() }
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_profile_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -260,9 +270,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun addProfileButtonClickListener() {
-    if (chooserViewModel.adminPin.isEmpty()) {
+    if (chooserViewModel.canAddProfile.get() != true) {
+      showMaximumProfilesReachedDialog()
+    } else if (chooserViewModel.adminPin.isEmpty()) {
       activity.startActivity(
-        PinSetupActivity.createPinSetupActivityIntent(
+        CreateAdminPinActivity.createAdminPinActivityIntent(
           activity,
           chooserViewModel.adminProfileId
         )
@@ -279,6 +291,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showMaximumProfilesReachedDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setMessage(R.string.profile_selection_maximum_profiles_reached_message)
+      .setPositiveButton(R.string.profile_selection_maximum_profiles_reached_close) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .create()
+      .show()
+  }
+
   private fun logProfileChooserEvent() {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenProfileChooserContext(),
@@ -289,7 +311,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id)
+      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
     }
   }
 
@@ -328,7 +350,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun launchHomeScreen(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
+    profileManagementController.loginToProfile(
+      profileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
           activity.startActivity(

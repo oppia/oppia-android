@@ -15,6 +15,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/profile:profile_id_migration_util",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

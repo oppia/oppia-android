@@ -31,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -95,7 +94,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -106,12 +105,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -141,7 +138,6 @@ class ProfileLoginFragmentTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var appStartupStateController: AppStartupStateController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
 
@@ -316,14 +312,14 @@ class ProfileLoginFragmentTest {
   fun testFragment_adminLogin_withAddNewLearnerFlow_routesToCreateProfileActivity() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
       context,
       adminProfileId,
       ProfileType.ADDITIONAL_LEARNER
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -338,19 +334,46 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
+  fun testFragment_adminLogin_withAddNewLearnerFlow_finishesProfileLoginActivity() {
+    setUpTestApplicationComponentWithFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
+      context,
+      adminProfileId,
+      ProfileType.ADDITIONAL_LEARNER
+    )
+
+    launch<ProfileLoginActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      var isFinishing = false
+      scenario.onActivity { activity -> isFinishing = activity.isFinishing }
+      assertThat(isFinishing).isTrue()
+    }
+  }
+
+  @Test
   fun testFragment_adminLogin_classroomsDisabled_openExistingProfileFlow_routesToHomeActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
       context,
       adminProfileId,
       ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -370,14 +393,14 @@ class ProfileLoginFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
       context,
       adminProfileId,
       ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
     )
-    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
+    launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
@@ -770,7 +793,7 @@ class ProfileLoginFragmentTest {
       onView(withId(R.id.admin_settings_input_pin_edit_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-        .perform(editTextInputAction.appendText("1111"), closeSoftKeyboard())
+        .perform(appendText("1111"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -802,7 +825,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -833,7 +856,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -842,7 +865,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.reset_pin_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+      .perform(appendText("111"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -875,7 +898,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.admin_settings_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      .perform(appendText("12345"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -884,7 +907,7 @@ class ProfileLoginFragmentTest {
     onView(withId(R.id.reset_pin_input_pin_edit_text))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+      .perform(appendText("111"), closeSoftKeyboard())
 
     onView(withText(context.getString(R.string.admin_settings_submit)))
       .inRoot(isDialog())
@@ -934,7 +957,6 @@ class ProfileLoginFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -944,7 +966,6 @@ class ProfileLoginFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -998,9 +1019,9 @@ class ProfileLoginFragmentTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileLoginFragmentTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
+      DaggerProfileLoginFragmentTest_TestApplicationComponent.builder().apply {
+        setApplication(this@TestApplication)
+      }.build()
     }
 
     fun inject(profileLoginFragmentTest: ProfileLoginFragmentTest) {

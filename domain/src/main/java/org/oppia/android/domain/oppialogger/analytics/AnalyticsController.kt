@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaEventLogs
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
@@ -36,6 +37,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
@@ -157,13 +159,16 @@ class AnalyticsController @Inject constructor(
       this.context = context
       profileId?.let { this.profileId = it }
       resolveProfileOperation(
-        profileId, translationController::getAppLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAppLanguageSelection
       )?.let { this.appLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getWrittenTranslationContentLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getWrittenTranslationContentLanguageSelection
       )?.let { this.writtenTranslationLanguageSelection = it }
       resolveProfileOperation(
-        profileId, translationController::getAudioTranslationContentLanguageSelection
+        profileId?.toProfileIdPreservingZero(),
+        translationController::getAudioTranslationContentLanguageSelection
       )?.let { this.audioTranslationLanguageSelection = it }
     }.build()
   }
@@ -402,8 +407,8 @@ class AnalyticsController @Inject constructor(
 
   private companion object {
     private suspend fun <T> resolveProfileOperation(
-      profileId: LegacyProfileId?,
-      createProvider: (LegacyProfileId) -> DataProvider<T>
+      profileId: ProfileId?,
+      createProvider: (ProfileId) -> DataProvider<T>
     ): T? = profileId?.let { (createProvider(it).retrieveData() as? AsyncResult.Success<T>)?.value }
   }
 }

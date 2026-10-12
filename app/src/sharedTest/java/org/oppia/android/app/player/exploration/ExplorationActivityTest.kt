@@ -71,6 +71,7 @@ import org.oppia.android.app.model.HelpActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -143,7 +144,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
@@ -160,13 +161,11 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
@@ -174,9 +173,11 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -198,7 +199,6 @@ class ExplorationActivityTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
@@ -216,6 +216,7 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    setUpShadowMediaPlayerProvider()
   }
 
   @After
@@ -943,7 +944,7 @@ class ExplorationActivityTest {
 
       scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION)
       onView(withId(R.id.text_input_interaction_view)).perform(
-        editTextInputAction.appendText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_answer_button)).perform(click())
@@ -1539,7 +1540,7 @@ class ExplorationActivityTest {
       shouldSavePartialProgress = false
     ) {
       explorationDataController.replayExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -1569,7 +1570,7 @@ class ExplorationActivityTest {
       shouldSavePartialProgress = false
     ) {
       explorationDataController.replayExploration(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -1687,6 +1688,54 @@ class ExplorationActivityTest {
             )
           )
         )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_hintsDialog_revealHint_rotate_timerResumesAfterDismiss() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      clickContinueButton()
+      // Submit two incorrect answers to make the first hint available.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the first hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Rotate the activity while the dialog is open.
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Advance time past the 30-second delay for the next help item while still in the dialog.
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(35))
+
+      // Verify the solution is still unavailable inside the recreated dialog.
+      onView(withId(R.id.solution_title)).check(doesNotExist())
+
+      // Dismiss the recreated dialog.
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the next help item is NOT available yet outside the dialog.
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.no_new_hint_available)))
+
+      // Wait 30 seconds outside the dialog (the full remaining delay).
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+
+      // Verify that the next help item is now available.
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.new_hint_available)))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -2239,7 +2288,7 @@ class ExplorationActivityTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      editTextInputAction.appendText(text),
+      appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -2308,7 +2357,8 @@ class ExplorationActivityTest {
       classroomId, topicId, storyId, explorationId, shouldSavePartialProgress
     ) {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId, classroomId, topicId, storyId, explorationId
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        classroomId, topicId, storyId, explorationId
       )
       testCoroutineDispatchers.runCurrent()
       testBlock()
@@ -2416,6 +2466,26 @@ class ExplorationActivityTest {
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
 
+  private fun setUpShadowMediaPlayerProvider() {
+    if (!isOnRobolectric()) return
+    val classLoader = ExplorationActivityTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val mediaInfoProviderClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfoProvider")
+    val mediaInfoClass =
+      classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoConstructor = mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+    val provider = java.lang.reflect.Proxy.newProxyInstance(
+      classLoader,
+      arrayOf(mediaInfoProviderClass)
+    ) { _, _, _ ->
+      mediaInfoConstructor.newInstance(/* duration= */ 10_000, /* preparationDelay= */ 0)
+    }
+    val setMediaInfoProvider =
+      shadowMediaPlayerClass.getDeclaredMethod("setMediaInfoProvider", mediaInfoProviderClass)
+    setMediaInfoProvider.invoke(/* obj= */ null, provider)
+  }
+
   private fun isOnRobolectric(): Boolean {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
@@ -2441,7 +2511,7 @@ class ExplorationActivityTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -2458,7 +2528,7 @@ class ExplorationActivityTest {
   private fun submitFractionAnswer(answerText: String) {
     scrollToViewType(FRACTION_INPUT_INTERACTION)
     onView(withId(R.id.fraction_input_interaction_view)).perform(
-      editTextInputAction.appendText(answerText)
+      appendText(answerText)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -2575,7 +2645,6 @@ class ExplorationActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -2585,7 +2654,6 @@ class ExplorationActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageTestModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

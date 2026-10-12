@@ -33,6 +33,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -70,7 +71,7 @@ class HomeViewModel(
   val isProgressBarVisible = ObservableField(true)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
   }
 
   private val promotedActivityListSummaryDataProvider: DataProvider<PromotedActivityList> by lazy {

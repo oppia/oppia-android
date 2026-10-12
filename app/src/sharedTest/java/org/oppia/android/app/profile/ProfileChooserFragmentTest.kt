@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -111,12 +112,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -442,18 +441,18 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testOnboardingV2_adminWithoutPin_clickAdd_opensPinSetupActivity() {
+  fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_chooser_add)))
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(PinSetupActivity::class.java.name))
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
     }
   }
 
@@ -465,7 +464,8 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileLoginActivity::class.java.name))
@@ -481,7 +481,8 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
 
       // Launch should be to ProfileLoginActivity; while we don't assert extras directly here,
@@ -1175,27 +1176,27 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfileButton_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfilePrompt_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfilePrompt_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_prompt)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -1278,7 +1279,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkAddProfileButtonIsNotVisible() {
+  fun testFragment_enableOnboardingV2_add10Profiles_checkAddProfileButtonIsVisible() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1345,8 +1346,27 @@ class ProfileChooserFragmentTest {
         targetView = R.id.profile_name_text,
         stringToMatch = "I"
       )
-      onView(withId(R.id.add_profile_button)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.add_profile_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.add_profile_button)).check(matches(withAlpha(0.38f)))
+      onView(withId(R.id.add_profile_prompt)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_add10Profiles_clickAddProfile_showsMaximumPrompt() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(context.getString(R.string.profile_selection_maximum_profiles_reached_message))
+      )
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -1536,6 +1556,137 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @Test
+  fun testProfileChooser_afterDataReset_showsAdminProfile() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow, deleteAllProfiles() does not update the in-memory cache
+      // (the app is expected to be forcibly closed after deletion), so the admin profile
+      // is still shown in the recycler view.
+      onView(withId(R.id.profile_recycler_view))
+        .check(matches(isDisplayed()))
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooser_enableOnboardingV2_afterDataReset_showsEmptyProfileList() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v2 onboarding flow, the profile list is empty after data reset.
+      onView(withId(R.id.profiles_list))
+        .check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.profiles_list,
+          position = 0,
+          targetViewId = R.id.profile_name_text
+        )
+      ).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_selectingAdminProfile_doesNotCrash() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow, the admin profile is still displayed due to in-memory
+      // cache. Verify that the admin profile is present and clickable without crashing.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_afterDataReset_classroomsEnabled_selectingAdminProfile_doesNotCrash() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    testCoroutineDispatchers.runCurrent()
+
+    // Perform data reset by deleting all profiles.
+    profileManagementController.deleteAllProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // In v1 onboarding flow with classrooms enabled, the admin profile is still
+      // displayed due to in-memory cache. Verify it is clickable and navigates
+      // to ClassroomListActivity.
+      scrollToPosition(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = 0
+      )
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin",
+        recyclerViewId = R.id.profile_recycler_view
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)
@@ -1578,6 +1729,16 @@ class ProfileChooserFragmentTest {
     ).check(matches(withText(stringToMatch)))
   }
 
+  private fun withAlpha(expectedAlpha: Float): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("view with alpha $expectedAlpha")
+      }
+
+      override fun matchesSafely(view: View): Boolean = view.alpha == expectedAlpha
+    }
+  }
+
   private fun createProfileChooserActivityIntent(): Intent {
     return ProfileChooserActivity
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
@@ -1604,7 +1765,6 @@ class ProfileChooserFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -1614,7 +1774,6 @@ class ProfileChooserFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -1685,6 +1844,9 @@ class ProfileChooserFragmentTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
   }
 }

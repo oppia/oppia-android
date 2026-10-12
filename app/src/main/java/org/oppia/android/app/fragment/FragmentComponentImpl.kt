@@ -64,7 +64,7 @@ import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
-import org.oppia.android.app.profile.PinSetupFragment
+import org.oppia.android.app.profile.CreateAdminPinFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ProfileLoginFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
@@ -97,6 +97,7 @@ import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManage
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardFragment
+import org.oppia.android.app.topic.studyguide.StudyGuideFragment
 import org.oppia.android.app.view.ViewComponentBuilderInjector
 import org.oppia.android.app.view.ViewComponentBuilderModule
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
@@ -199,6 +200,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(stateFragment: StateFragment)
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)
+  fun inject(studyGuideFragment: StudyGuideFragment)
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
@@ -221,5 +223,5 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(introFragment: IntroFragment)
   fun inject(profileLoginFragment: ProfileLoginFragment)
   fun inject(adminIntroFragment: AdminIntroFragment)
-  fun inject(pinSetupFragment: PinSetupFragment)
+  fun inject(createAdminPinFragment: CreateAdminPinFragment)
 }

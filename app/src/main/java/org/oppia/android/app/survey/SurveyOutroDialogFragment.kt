@@ -49,6 +49,8 @@ class SurveyOutroDialogFragment : InjectableDialogFragment() {
 
   override fun onStart() {
     super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.SurveyOnboardingDialogStyle)
+    val dialog = this.dialog ?: return
+    dialog.window?.setWindowAnimations(R.style.SurveyOnboardingDialogStyle)
+    surveyOutroDialogFragmentPresenter.applyEdgeToEdgeInsets(dialog)
   }
 }

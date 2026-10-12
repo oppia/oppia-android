@@ -48,7 +48,6 @@ def oppia_android_test(
         custom_package,
         test_class,
         deps,
-        enable_data_binding = False,
         assets = None,
         assets_dir = None,
         **kwargs):
@@ -64,7 +63,6 @@ def oppia_android_test(
       custom_package: str. The layers's package. Example: 'org.oppia.utility'.
       test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
-      enable_data_binding: boolean. Indicates whether the test enables data-binding.
       deps: list of str. The list of dependencies needed to run the tests.
       assets: list of str. A list of assets needed to run the tests.
       assets_dir: str. The path to the assets directory.
@@ -80,7 +78,6 @@ def oppia_android_test(
         manifest = test_manifest,
         assets = assets,
         assets_dir = assets_dir,
-        enable_data_binding = enable_data_binding,
     )
     native.android_local_test(
         name = name,

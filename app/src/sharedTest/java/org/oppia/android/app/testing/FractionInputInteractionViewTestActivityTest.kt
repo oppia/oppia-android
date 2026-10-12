@@ -71,7 +71,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.EditTextInputAction.appendText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -81,12 +81,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -113,9 +111,6 @@ class FractionInputInteractionViewTestActivityTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
@@ -153,7 +148,7 @@ class FractionInputInteractionViewTestActivityTest {
       FractionInputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(editTextInputAction.appendText("-9"))
+      .perform(appendText("-9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -172,7 +167,7 @@ class FractionInputInteractionViewTestActivityTest {
       FractionInputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(editTextInputAction.appendText("9"))
+      .perform(appendText("9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -192,7 +187,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "9/10"
         )
       )
@@ -216,7 +211,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "-9/10"
         )
       )
@@ -240,7 +235,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "5 9/10"
         )
       )
@@ -265,7 +260,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "-55 59/9"
         )
       )
@@ -289,7 +284,7 @@ class FractionInputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "9/5"
         )
       )
@@ -306,7 +301,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "55-"
         )
       )
@@ -327,7 +322,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "--55"
         )
       )
@@ -348,7 +343,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "5/5/"
         )
       )
@@ -369,7 +364,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "/5"
         )
       )
@@ -390,7 +385,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "5 5/"
         )
       )
@@ -404,7 +399,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "5 5/"
         )
       )
@@ -428,7 +423,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "3 1/2"
         )
       )
@@ -445,7 +440,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "1/0"
         )
       )
@@ -459,7 +454,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        editTextInputAction.appendText(
+        appendText(
           "1/0"
         )
       )
@@ -483,7 +478,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-          editTextInputAction.appendText(
+          appendText(
             "."
           )
         )
@@ -505,7 +500,7 @@ class FractionInputInteractionViewTestActivityTest {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-          editTextInputAction.appendText(
+          appendText(
             "12345678"
           )
         )
@@ -560,7 +555,6 @@ class FractionInputInteractionViewTestActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -570,7 +564,6 @@ class FractionInputInteractionViewTestActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

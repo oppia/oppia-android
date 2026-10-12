@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android.domain">
-  <uses-sdk android:minSdkVersion="21"
+  <uses-sdk android:minSdkVersion="23"
     android:targetSdkVersion="30" />
 
   <application>

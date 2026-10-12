@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.core.view.isVisible
@@ -193,16 +192,10 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     itemsInSamePositionAllowed: Boolean
   ): BindableAdapter<DragDropInteractionContentViewModel> {
     return singleTypeBuilderFactory.create<DragDropInteractionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          viewBindingShim.provideDragDropSortInteractionInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          viewBindingShim.setDragDropInteractionItemsBinding(view)
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = viewBindingShim::provideDragDropSortInteractionInflatedView,
+        setViewModel = { binding, viewModel ->
+          viewBindingShim.setDragDropInteractionItemsBinding(binding)
           viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
             createNestedAdapter()
           adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
@@ -220,16 +213,10 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   private fun createNestedAdapter(): BindableAdapter<String> {
     return singleTypeBuilderFactory.create<String>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          viewBindingShim.provideDragDropSingleItemInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          viewBindingShim.setDragDropSingleItemBinding(view)
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = viewBindingShim::provideDragDropSingleItemInflatedView,
+        setViewModel = { binding, viewModel ->
+          viewBindingShim.setDragDropSingleItemBinding(binding)
           viewBindingShim.setDragDropSingleItemBindingHtmlContent(
             htmlParserFactory,
             resourceBucketName,

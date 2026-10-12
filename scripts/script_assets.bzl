@@ -65,7 +65,8 @@ def generate_test_file_assets_list_from_text_protos(
 
 def generate_maven_assets_list_from_text_protos(
         name,
-        maven_dependency_filenames):
+        maven_dependency_filenames,
+        visibility):
     """
     Converts a single list of text proto assets to binary.
 
@@ -73,6 +74,7 @@ def generate_maven_assets_list_from_text_protos(
         name: str. The name of this generation instance. This will be a prefix for derived targets.
         maven_dependency_filenames: The list of maven_dependencies text proto file names under the
             assets directory that should be converted.
+        visibility: list of str. The Bazel access visibility of the generated proto assets.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -86,6 +88,7 @@ def generate_maven_assets_list_from_text_protos(
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
+        visibility = visibility,
     )
 
 def generate_accessibility_label_assets_list_from_text_protos(
@@ -180,6 +183,30 @@ def generate_android_lint_assets_list_from_text_protos(
         proto_dep_name = "android_lint_checks",
         proto_type_name = "AndroidLintExemptions",
         name_prefix = "android_lint_exemptions",
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    )
+
+def generate_binary_file_assets_list_from_text_protos(
+        name,
+        binary_file_exemptions_name):
+    """
+    Converts a single list of text proto assets to binary.
+
+    Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
+        binary_file_exemptions_name: list of str. The list of binary file exemptions file name.
+
+    Returns:
+        list of str. The list of new proto binary asset files that were generated.
+    """
+    return generate_proto_binary_assets(
+        name = name,
+        names = binary_file_exemptions_name,
+        proto_dep_name = "script_exemptions",
+        proto_type_name = "BinaryFileExemptions",
+        name_prefix = "binary_file_exemptions",
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",

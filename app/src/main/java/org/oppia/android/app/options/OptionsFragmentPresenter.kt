@@ -23,6 +23,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -199,7 +200,9 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param textSize new textSize to be set as current
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
-    val sizeUpdateResult = profileManagementController.updateReadingTextSize(profileId, textSize)
+    val sizeUpdateResult = profileManagementController.updateReadingTextSize(
+      profileId.toProfileIdPreservingZero(), textSize
+    )
     sizeUpdateResult.toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Failure -> {
@@ -225,7 +228,9 @@ class OptionsFragmentPresenter @Inject constructor(
       selectedLanguageValue = oppiaLanguage.number
     }.build()
 
-    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+    translationController.updateAppLanguage(
+      profileId.toProfileIdPreservingZero(), selection
+    ).toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> appLanguage = oppiaLanguage
         is AsyncResult.Failure ->
@@ -245,7 +250,9 @@ class OptionsFragmentPresenter @Inject constructor(
    */
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     val updateLanguageResult =
-      profileManagementController.updateAudioLanguage(profileId, audioLanguage)
+      profileManagementController.updateAudioLanguage(
+        profileId.toProfileIdPreservingZero(), audioLanguage
+      )
     updateLanguageResult.toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> this.audioLanguage = audioLanguage

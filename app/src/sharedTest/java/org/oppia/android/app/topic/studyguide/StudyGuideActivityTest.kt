@@ -1,0 +1,441 @@
+package org.oppia.android.app.topic.studyguide
+
+import android.app.Application
+import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import dagger.Component
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+
+private const val SUBTOPIC_LIST_SIZE = 4
+
+/** Tests for [StudyGuideActivity]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+  application = StudyGuideActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class StudyGuideActivityTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  private val profileId = LegacyProfileId.newBuilder().apply { internalId = 1 }.build()
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = StudyGuideActivity.createStudyGuideActivityIntent(
+      context,
+      profileId,
+      TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.STUDY_GUIDE_ACTIVITY)
+  }
+
+  @Test
+  fun testStudyGuideActivity_hasCorrectActivityLabel() {
+    launchStudyGuideActivity(
+      topicId = TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
+
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.study_guide_activity_title))
+    }
+  }
+
+  @Test
+  fun testStudyGuideActivity_toolbarTitle_testTopicSubtopic1_isDisplayedCorrectly() {
+    launchStudyGuideActivity(
+      topicId = TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.study_guide_toolbar_title))
+        .check(matches(withText("Test subtopic")))
+    }
+  }
+
+  @Test
+  fun testStudyGuideActivity_configurationChange_toolbarTitle_isDisplayedCorrectly() {
+    launchStudyGuideActivity(
+      topicId = TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.study_guide_toolbar_title))
+        .check(matches(withText("Test subtopic")))
+    }
+  }
+
+  @Test
+  fun testStudyGuideActivity_toolbarTitle_readerOff_marquee_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(false)
+    launchStudyGuideActivity(
+      topicId = TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val studyGuideToolbarTitle: TextView =
+          activity.findViewById(R.id.study_guide_toolbar_title)
+        ViewCompat.setLayoutDirection(studyGuideToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        onView(withId(R.id.study_guide_toolbar_title)).perform(click())
+        assertThat(studyGuideToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(studyGuideToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(studyGuideToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testStudyGuideActivity_toolbarTitle_readerOn_marquee_isDisplayedCorrectly() {
+    fakeAccessibilityService.setScreenReaderEnabled(true)
+    launchStudyGuideActivity(
+      topicId = TEST_TOPIC_ID_0,
+      subtopicIndex = 1,
+      subtopicListSize = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val studyGuideToolbarTitle: TextView =
+          activity.findViewById(R.id.study_guide_toolbar_title)
+        ViewCompat.setLayoutDirection(studyGuideToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        onView(withId(R.id.study_guide_toolbar_title)).perform(click())
+        assertThat(studyGuideToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(studyGuideToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(studyGuideToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_finishesActivity() {
+    launchStudyGuideActivity(
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicIndex = 1,
+      subtopicListSize = SUBTOPIC_LIST_SIZE
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_requestReturnToTopic_logsCloseRevisionCardEvent() {
+    launchStudyGuideActivity(
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicIndex = 1,
+      subtopicListSize = SUBTOPIC_LIST_SIZE
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.onReturnToTopicRequested()
+        testCoroutineDispatchers.runCurrent()
+
+        // Study guides reuse the revision card close event since they are its successor screen.
+        val latestEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
+        assertThat(latestEvent).hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+          hasSubtopicIndexThat().isEqualTo(1)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_clickNavigationBack_finishesActivity() {
+    launchStudyGuideActivity(
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicIndex = 1,
+      subtopicListSize = SUBTOPIC_LIST_SIZE
+    ).use { scenario ->
+      onView(withContentDescription("Navigate up")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_pressBack_finishesActivity() {
+    launchStudyGuideActivity(
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicIndex = 1,
+      subtopicListSize = SUBTOPIC_LIST_SIZE
+    ).use { scenario ->
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun launchStudyGuideActivity(
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ): ActivityScenario<StudyGuideActivity> {
+    val scenario = ActivityScenario.launch<StudyGuideActivity>(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        context,
+        profileId,
+        topicId,
+        subtopicIndex,
+        subtopicListSize
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
+
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  @Singleton
+  @Component(
+    modules = [
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent {
+    @Component.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
+
+    fun inject(studyGuideActivityTest: StudyGuideActivityTest)
+  }
+
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStudyGuideActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+    }
+
+    fun inject(studyGuideActivityTest: StudyGuideActivityTest) {
+      component.inject(studyGuideActivityTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
+  }
+}

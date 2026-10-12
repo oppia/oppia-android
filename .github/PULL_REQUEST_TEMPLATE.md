@@ -8,13 +8,19 @@
 
 ## Essential Checklist
 <!-- Please tick the relevant boxes by putting an "x" in them. -->
-- [ ] The PR title and explanation each start with "Fix #bugnum: " (If this PR fixes part of an issue, prefix the title with "Fix part of #bugnum: ...".)
+- [ ] The PR title starts with "Fix #bugnum: " (If this PR fixes part of an issue, prefix the title with "Fix part of #bugnum: ...".)
+- [ ] The explanation section above starts with "Fixes #bugnum: " (If this PR fixes part of an issue, use instead: "Fixes part of #bugnum: ...".)
 - [ ] Any changes to [scripts/assets](https://github.com/oppia/oppia-android/tree/develop/scripts/assets) files have their rationale included in the PR explanation.
 - [ ] The PR follows the [style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide).
 - [ ] The PR does not contain any unnecessary code changes from Android Studio ([reference](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#undo-unnecessary-changes)).
 - [ ] The PR is made from a branch that's **not** called "develop" and is up-to-date with "develop".
 - [ ] The PR is **assigned** to the appropriate reviewers ([reference](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#clarification-regarding-assignees-and-reviewers-section)).
 
+## Disclosure of LLM Usage
+<!-- Please answer the following two questions. -->
+- **Did you use AI/LLMs when working on this PR?** Type `Yes` or `No`.
+- **If yes, describe the extent AI was used:** e.g. brainstorming, debugging, writing code, writing tests, reviewing code, etc. See https://github.com/oppia/oppia-android/pull/6062 for an example.
+  
 ## For UI-specific PRs only
 <!-- Delete these section if this PR does not include UI-related changes. -->
 If your PR includes UI-related changes, then:

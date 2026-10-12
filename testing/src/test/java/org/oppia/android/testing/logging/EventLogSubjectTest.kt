@@ -4523,6 +4523,17 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testExplorationContextSubject_hasIsReplayThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setIsReplay(true)
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasIsReplayThat()
+      .isTrue()
+  }
+
+  @Test
   fun testExplorationContextSubject_hasStateNameThat_passes() {
     val context = ExplorationContext.newBuilder()
       .setStateName("Introduction")
@@ -4534,7 +4545,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testExplorationContextSubject_hasLearnerDetailsThat__executesBlockWithCorrectSubject() {
+  fun testExplorationContextSubject_hasLearnerDetailsThat_executesBlockWithCorrectSubject() {
     val learnerDetails = LearnerDetailsContext.newBuilder()
       .setLearnerId("learner_001")
       .build()
