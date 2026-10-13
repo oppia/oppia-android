@@ -247,6 +247,12 @@
   <string name="profile_selection_add_profile_text">Add a learner profile</string>
   <string name="profile_selection_maximum_profiles_reached_message">Maximum profiles reached. To add a new learner, an admin can remove an inactive profile under Admin Controls.</string>
   <string name="profile_selection_maximum_profiles_reached_close">Close</string>
+  <string name="profile_selection_become_administrator_notice_title">Become the admin</string>
+  <string name="profile_selection_become_administrator_notice_message">To add another learner, you have to become the administrator of the app.</string>
+  <string name="profile_selection_become_administrator_notice_description">Being an administrator means that you will be able to:</string>
+  <string name="profile_selection_become_administrator_notice_manage_profiles">Manage profile settings for all learners on this device</string>
+  <string name="profile_selection_become_administrator_notice_add_learners">Add new learners to this device (up to 10)</string>
+  <string name="profile_selection_become_administrator_notice_continue">I UNDERSTAND, CONTINUE</string>
   <string name="profile_selection_admin_label">Administrator</string>
   <string name="profile_selection_scroll_left_content_description">Scroll left</string>
   <string name="profile_selection_scroll_right_content_description">Scroll right</string>

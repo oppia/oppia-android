@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.widget.NestedScrollView
@@ -206,6 +207,11 @@ class AdministratorControlsFragmentTest {
           context.getString(R.string.administrator_controls_welcome_dialog_confirm_button_text)
         )
         .performClick()
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.administrator_controls_welcome_dialog_title)
+        )
+        .assertDoesNotExist()
 
       testCoroutineDispatchers.runCurrent()
     }
@@ -214,6 +220,31 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       composeRule.waitForIdle()
 
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.administrator_controls_welcome_dialog_title)
+        )
+        .assertDoesNotExist()
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_welcomeDialogCloseButtonClicked_dialogDismissed() {
+    setUpTestApplicationComponent(hasSeenAdministratorControlsIntroduction = false)
+
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(profileId = internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      composeRule.waitForIdle()
+
+      composeRule
+        .onNodeWithContentDescription(
+          context.getString(
+            R.string.administrator_controls_welcome_dialog_close_button_description
+          )
+        )
+        .performClick()
       composeRule
         .onNodeWithText(
           context.getString(R.string.administrator_controls_welcome_dialog_title)

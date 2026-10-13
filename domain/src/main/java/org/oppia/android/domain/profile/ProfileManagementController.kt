@@ -91,6 +91,8 @@ private const val UPDATE_START_ONBOARDING_FLOW_PROVIDER_ID =
 private const val UPDATE_END_ONBOARDING_FLOW_PROVIDER_ID = "update_end_onboarding_flow_provider_id"
 private const val UPDATE_ADMINISTRATOR_CONTROLS_INTRODUCTION_PROVIDER_ID =
   "update_administrator_controls_introduction_provider_id"
+private const val UPDATE_BECOME_ADMINISTRATOR_NOTICE_PROVIDER_ID =
+  "update_become_administrator_notice_provider_id"
 private const val PROFILE_ONBOARDING_MODE_PROVIDER_ID = "profile_onboarding_mode_data_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
@@ -488,6 +490,31 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_ADMINISTRATOR_CONTROLS_INTRODUCTION_PROVIDER_ID
+    ) {
+      getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /** Marks that the specified profile has seen the notice about becoming an administrator. */
+  fun markBecomeAdministratorNoticeSeen(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val updatedProfile = profile.toBuilder()
+        .setHasSeenBecomeAdministratorNotice(true)
+        .build()
+      val updatedDatabase = it.toBuilder()
+        .putProfiles(profileId.internalId, updatedProfile)
+        .build()
+      Pair(updatedDatabase, ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_BECOME_ADMINISTRATOR_NOTICE_PROVIDER_ID
     ) {
       getDeferredResult(profileId, null, deferred)
     }

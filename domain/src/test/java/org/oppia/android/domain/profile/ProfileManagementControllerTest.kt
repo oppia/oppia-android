@@ -2073,6 +2073,40 @@ class ProfileManagementControllerTest {
     assertThat(profiles).isEmpty()
   }
 
+  @Test
+  fun testBecomeAdministratorNotice_newProfile_hasNotSeenNotice() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isFalse()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_markSeen_updatesStoredProfile() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isTrue()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_missingProfile_updateFails() {
+    setUpTestApplicationComponent()
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains(
+      "Profile ID 6 does not match an existing Profile"
+    )
+  }
+
   private fun addTestProfiles() {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)

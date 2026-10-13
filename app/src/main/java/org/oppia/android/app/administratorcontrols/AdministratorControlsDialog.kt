@@ -34,7 +34,10 @@ fun AdministratorControlsDialog(
     Card(
       shape = RoundedCornerShape(16.dp),
       elevation = 8.dp,
-      modifier = Modifier.padding(12.dp)
+      modifier = Modifier.padding(12.dp),
+      backgroundColor = colorResource(
+        R.color.component_color_onboarding_hand_over_dialog_background_color
+      )
     ) {
       Box(
         modifier = Modifier
@@ -51,7 +54,9 @@ fun AdministratorControlsDialog(
             contentDescription = appLanguageResourceHandler.getStringInLocale(
               R.string.administrator_controls_welcome_dialog_close_button_description
             ),
-            tint = colorResource(R.color.component_color_shared_black_background_color)
+            tint = colorResource(
+              R.color.component_color_onboarding_hand_over_dialog_button_background_color
+            )
           )
         }
 
@@ -67,9 +72,13 @@ fun AdministratorControlsDialog(
             ),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.component_color_onboarding_shared_green_color),
+            color = colorResource(
+              R.color.component_color_onboarding_hand_over_dialog_title_color
+            ),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier
+              .padding(horizontal = 48.dp)
+              .padding(bottom = 12.dp)
           )
 
           Text(
@@ -77,7 +86,9 @@ fun AdministratorControlsDialog(
               R.string.administrator_controls_welcome_dialog_message
             ),
             fontSize = 18.sp,
-            color = colorResource(R.color.component_color_shared_primary_text_color),
+            color = colorResource(
+              R.color.component_color_onboarding_hand_over_dialog_content_color
+            ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
           )
@@ -89,7 +100,7 @@ fun AdministratorControlsDialog(
               .padding(top = 24.dp),
             colors = ButtonDefaults.buttonColors(
               backgroundColor = colorResource(
-                R.color.component_color_onboarding_shared_green_color
+                R.color.component_color_onboarding_hand_over_dialog_button_background_color
               )
             ),
           ) {
@@ -98,7 +109,9 @@ fun AdministratorControlsDialog(
                 R.string.administrator_controls_welcome_dialog_confirm_button_text
               ),
               fontWeight = FontWeight.Bold,
-              color = colorResource(R.color.component_color_onboarding_shared_white_color)
+              color = colorResource(
+                R.color.component_color_onboarding_hand_over_dialog_button_text_color
+              )
             )
           }
         }

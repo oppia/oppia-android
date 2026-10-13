@@ -258,6 +258,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         appLanguageResourceHandler = appLanguageResourceHandler,
         onDismiss = {
           isIntroductionDialogShowing = false
+          composeView.disposeComposition()
           dialogHost.removeView(composeView)
         }
       )

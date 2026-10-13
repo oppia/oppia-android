@@ -102,6 +102,10 @@ message Profile {
 
   // Indicates that this profile has seen the introduction to Administrator Controls.
   bool has_seen_administrator_controls_introduction = 23;
+
+  // Indicates that this profile has seen the notice about becoming an administrator before adding
+  // another learner profile.
+  bool has_seen_become_administrator_notice = 24;
 }
 
 // Represents the type of user using the app.

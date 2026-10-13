@@ -78,6 +78,7 @@ class ProfileChooserViewModel @Inject constructor(
     val adminProfileViewModel = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
 
     sortedProfileList.remove(adminProfileViewModel)
+    adminProfile = adminProfileViewModel.profile
     adminPin = adminProfileViewModel.profile.pin
     adminProfileId = adminProfileViewModel.profile.id
     sortedProfileList.add(0, adminProfileViewModel)
@@ -92,6 +93,9 @@ class ProfileChooserViewModel @Inject constructor(
 
   /** The [LegacyProfileId] of the admin profile. */
   lateinit var adminProfileId: LegacyProfileId
+
+  /** The administrator profile displayed first in the chooser. */
+  lateinit var adminProfile: Profile
 
   /** List of RGB colors that have already been assigned to a profile. */
   val usedColors = mutableListOf<Int>()
@@ -126,6 +130,7 @@ class ProfileChooserViewModel @Inject constructor(
     val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
 
     sortedProfileList.remove(adminProfile)
+    this.adminProfile = adminProfile.profile
     adminPin = adminProfile.profile.pin
     adminProfileId = adminProfile.profile.id
     sortedProfileList.add(0, adminProfile)
