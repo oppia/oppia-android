@@ -927,6 +927,60 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testSubmitHintIsRevealed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitHintIsViewed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitHintIsViewed(hintIndex = 0)
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitSolutionIsRevealed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitSolutionIsRevealed()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testSubmitSolutionIsViewed_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.submitSolutionIsViewed()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testMoveToFlashback_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.moveToFlashback("Introduction")
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
+  fun testMoveBackToLatest_beforePlaying_isFailure() {
+    val resultDataProvider = explorationProgressController.moveBackToLatest()
+
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
+  }
+
+  @Test
   fun testHintsAndSolution_pauseHints_timerPauses_solutionNotVisibleAfterDelay() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startPlayingNewExploration(
