@@ -1,0 +1,22 @@
+"""
+Tests for custom app views.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "LessonProgressIndicatorViewTest",
+    srcs = ["LessonProgressIndicatorViewTest.kt"],
+    custom_package = "org.oppia.android.app.test",
+    test_class = "org.oppia.android.app.customview.LessonProgressIndicatorViewTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        "//app",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)

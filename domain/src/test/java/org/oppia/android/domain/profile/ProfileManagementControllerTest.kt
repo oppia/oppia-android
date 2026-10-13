@@ -28,6 +28,7 @@ import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
@@ -100,13 +101,13 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val ADMIN_PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_0 = LegacyProfileId.newBuilder().setInternalId(0).build()
-    private val PROFILE_ID_1 = LegacyProfileId.newBuilder().setInternalId(1).build()
-    private val PROFILE_ID_2 = LegacyProfileId.newBuilder().setInternalId(2).build()
-    private val PROFILE_ID_3 = LegacyProfileId.newBuilder().setInternalId(3).build()
-    private val PROFILE_ID_4 = LegacyProfileId.newBuilder().setInternalId(4).build()
-    private val PROFILE_ID_6 = LegacyProfileId.newBuilder().setInternalId(6).build()
+    private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
+    private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
+    private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
+    private val PROFILE_ID_3 = ProfileId.newBuilder().setInternalId(3).build()
+    private val PROFILE_ID_4 = ProfileId.newBuilder().setInternalId(4).build()
+    private val PROFILE_ID_6 = ProfileId.newBuilder().setInternalId(6).build()
 
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
@@ -198,6 +199,7 @@ class ProfileManagementControllerTest {
     val profile = profileDatabase.profilesMap[0]!!
     assertThat(profile.name).isEqualTo("James")
     assertThat(profile.pin).isEqualTo("123")
+    assertThat(profile.hasPin).isTrue()
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
@@ -219,6 +221,7 @@ class ProfileManagementControllerTest {
     val profile = profileDatabase.profilesMap[0]!!
     assertThat(profile.name).isEqualTo("James")
     assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.hasPin).isFalse()
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
@@ -408,7 +411,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -424,7 +427,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    val profileId = LegacyProfileId.newBuilder().setInternalId(2).build()
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
     val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
@@ -707,6 +710,20 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.pin).isEqualTo("321")
+    assertThat(profile.hasPin).isTrue()
+  }
+
+  @Test
+  fun testUpdatePin_profileWithPin_updatePinToEmpty_checkPinAndHasPinAreCleared() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James", pin = "12345")
+
+    val updateProvider = profileManagementController.updatePin(PROFILE_ID_0, "")
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.pin).isEmpty()
+    assertThat(profile.hasPin).isFalse()
   }
 
   @Test
@@ -2000,7 +2017,7 @@ class ProfileManagementControllerTest {
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasStartProfileOnboardingContextThat {
-      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+      hasProfileIdThat().isEqualTo(LegacyProfileId.newBuilder().setInternalId(0).build())
     }
   }
 
@@ -2012,8 +2029,82 @@ class ProfileManagementControllerTest {
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasEndProfileOnboardingContextThat {
-      hasProfileIdThat().isEqualTo(PROFILE_ID_0)
+      hasProfileIdThat().isEqualTo(LegacyProfileId.newBuilder().setInternalId(0).build())
     }
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_newProfile_hasNotSeenIntroduction() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+
+    assertThat(profile.hasSeenAdministratorControlsIntroduction).isFalse()
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_markSeen_updatesStoredProfile() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val updateProvider =
+      profileManagementController.markAdministratorControlsIntroductionSeen(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.hasSeenAdministratorControlsIntroduction).isTrue()
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_missingProfile_updateFails() {
+    setUpTestApplicationComponent()
+
+    val updateProvider =
+      profileManagementController.markAdministratorControlsIntroductionSeen(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains(
+      "Profile ID 6 does not match an existing Profile"
+    )
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_newProfile_hasNotSeenNotice() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isFalse()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_markSeen_updatesStoredProfile() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isTrue()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_missingProfile_updateFails() {
+    setUpTestApplicationComponent()
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains(
+      "Profile ID 6 does not match an existing Profile"
+    )
   }
 
   private fun addTestProfiles() {
@@ -2040,7 +2131,7 @@ class ProfileManagementControllerTest {
     )
   }
 
-  private fun retrieveProfile(profileId: LegacyProfileId) =
+  private fun retrieveProfile(profileId: ProfileId) =
     monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
 
   private fun retrieveCurrentSessionId() =
@@ -2127,8 +2218,8 @@ class ProfileManagementControllerTest {
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
-    block: suspend (profileId: LegacyProfileId) -> T,
-    profileId: LegacyProfileId
+    block: suspend (profileId: ProfileId) -> T,
+    profileId: ProfileId
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {

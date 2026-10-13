@@ -46,11 +46,15 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
-import org.oppia.android.app.profile.PinSetupActivity
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Argument key for [ProfileChooserActivity] intent parameters. */
@@ -61,7 +65,8 @@ class AdminIntroFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var profileType: ProfileType
   private lateinit var profileId: LegacyProfileId
@@ -84,8 +89,15 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
     createComposeView()
 
-    profileManagementController.markProfileOnboardingStarted(profileId)
+    profileManagementController.markProfileOnboardingStarted(profileId.toProfileIdPreservingZero())
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootView(
+        activity,
+        binding.root,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -101,7 +113,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
   @Composable
   private fun AdminInformationScreen() {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
-    val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+    val stepCountColor = colorResource(
+      R.color.component_color_onboarding_admin_intro_step_count_color
+    )
     val orientation = LocalConfiguration.current.orientation
     val stepCountIsVisible by remember {
       derivedStateOf {
@@ -115,7 +129,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
         .background(backgroundColor)
     ) {
       WavyBackgroundView(
-        backgroundColorResId = R.color.component_color_onboarding_shared_white_color
+        backgroundColorResId = R.color.component_color_onboarding_intro_curved_background_color
       )
 
       Box(
@@ -156,7 +170,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
             text = resourceHandler.getStringInLocaleWithWrapping(
               R.string.onboarding_step_count_four
             ),
-            color = tealColor,
+            color = stepCountColor,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 16.dp)
           )
@@ -252,7 +266,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
       ) {
         Text(
           text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
-          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          color = colorResource(
+            R.color.component_color_onboarding_shared_secondary_button_text_color
+          ),
           fontWeight = FontWeight.Bold
         )
       }
@@ -260,7 +276,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
       Button(
         onClick = {
           fragment.startActivity(
-            PinSetupActivity.createPinSetupActivityIntent(activity, profileId)
+            CreateAdminPinActivity.createAdminPinActivityIntent(activity, profileId)
           )
         },
         colors = ButtonDefaults.buttonColors(

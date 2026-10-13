@@ -37,6 +37,7 @@ import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
@@ -52,10 +53,12 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -159,7 +162,9 @@ class SplashActivityPresenter @Inject constructor(
     @EnableOnboardingFlowV2
     private val enableOnboardingFlowV2Provider: PlatformParameterValue<Boolean>,
     @EnableMultipleClassrooms
-    private val enableMultipleClassroomsProvider: PlatformParameterValue<Boolean>
+    private val enableMultipleClassroomsProvider: PlatformParameterValue<Boolean>,
+    @EnableEdgeToEdge
+    private val enableEdgeToEdge: PlatformParameterValue<Boolean>
   ) {
     private lateinit var startupMode: StartupMode
 
@@ -243,6 +248,13 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     fun subscribeToOnboardingFlow() {
+      if (enableEdgeToEdge.value) {
+        EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+        EdgeToEdgeHelper.applyToRootConstraintLayout(
+          activity,
+          R.color.component_color_shared_activity_status_bar_color
+        )
+      }
       val liveData = computeInitStateDataProvider().toLiveData()
       liveData.observe(
         activity,
@@ -286,8 +298,10 @@ class SplashActivityPresenter @Inject constructor(
       // Second, prepare to route the user to the correct destination.
       startupMode = initState.appStartupState.startupMode
 
-      // Third, show any dismissible notices (if the app isn't deprecated).
-      if (startupMode != StartupMode.APP_IS_DEPRECATED) {
+      // Third, show any dismissible notices (if the app isn't deprecated or expired).
+      if (startupMode != StartupMode.APP_IS_DEPRECATED &&
+        startupMode != StartupMode.APP_IS_EXPIRED
+      ) {
         when (initState.appStartupState.buildFlavorNoticeMode) {
           BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
           BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
@@ -319,7 +333,12 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun processStartupMode() {
-      if (enableAppAndOsDeprecationProvider.value) {
+      if (startupMode == StartupMode.APP_IS_EXPIRED) {
+        showDialog(
+          AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
+          AutomaticAppDeprecationNoticeDialogFragment::newInstance
+        )
+      } else if (enableAppAndOsDeprecationProvider.value) {
         processAppAndOsDeprecationEnabledStartUpMode()
       } else {
         processLegacyStartupMode()
@@ -347,7 +366,7 @@ class SplashActivityPresenter @Inject constructor(
             OsDeprecationNoticeDialogFragment::newInstance
           )
         }
-        StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
+        StartupMode.USER_NOT_YET_ONBOARDED -> handleUserNotYetOnboarded()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
           // defaulted), assume the user needs to be onboarded.
@@ -360,13 +379,7 @@ class SplashActivityPresenter @Inject constructor(
     private fun processLegacyStartupMode() {
       when (startupMode) {
         StartupMode.USER_IS_ONBOARDED -> handleUserOnboarded()
-        StartupMode.APP_IS_DEPRECATED -> {
-          showDialog(
-            AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG,
-            AutomaticAppDeprecationNoticeDialogFragment::newInstance
-          )
-        }
-        StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
+        StartupMode.USER_NOT_YET_ONBOARDED -> handleUserNotYetOnboarded()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
           // defaulted), assume the user needs to be onboarded.
@@ -381,6 +394,14 @@ class SplashActivityPresenter @Inject constructor(
       } else {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
+      }
+    }
+
+    private fun handleUserNotYetOnboarded() {
+      if (enableOnboardingFlowV2Provider.value) {
+        fetchProfile()
+      } else {
+        launchOnboardingActivity()
       }
     }
 
@@ -511,7 +532,7 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun logInToProfile(profileId: LegacyProfileId) {
-      profileManagementController.loginToProfile(profileId)
+      profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero())
         .toLiveData()
         .observe(activity) { result ->
           if (result is AsyncResult.Success && !activity.isFinishing) {

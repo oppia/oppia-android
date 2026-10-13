@@ -1,71 +1,54 @@
 package org.oppia.android.domain.platformparameter.syncup
 
-import android.content.Context
-import androidx.work.ListenableWorker
-import androidx.work.WorkerParameters
-import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.domain.workmanager.OppiaWorker
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-/** Worker class that fetches and caches the latest platform parameters from the remote service. */
+/** Worker to fetch and cache the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
-  context: Context,
-  params: WorkerParameters,
   private val platformParameterController: PlatformParameterController,
   private val oppiaLogger: OppiaLogger,
-  private val exceptionsController: ExceptionsController,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-) : ListenableWorker(context, params) {
-
+  private val exceptionsController: ExceptionsController
+) : OppiaWorker<PlatformParameterSyncUpWorker.Operation> {
   companion object {
-    /** A Tag for the logs that are associated with PlatformParameterSyncUpWorker. */
-    const val TAG = "PlatformParameterWorker.tag"
-
-    /** Value of worker-type associated with this PlatformParameterSyncUpWorker. */
-    const val PLATFORM_PARAMETER_WORKER = "platform_parameter_worker"
-
-    /** Key for passing the worker-type as a parameter to PlatformParameterSyncUpWorker. */
-    const val WORKER_TYPE_KEY = "worker_type_key"
+    /** The unique name used to schedule this worker. */
+    const val WORKER_NAME = "PlatformParameterSyncUpWorker"
   }
 
-  override fun startWork(): ListenableFuture<Result> {
-    val backgroundScope = CoroutineScope(backgroundDispatcher)
-    // TODO(#4463): Add withTimeout() to avoid potential hanging.
-    return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
-        PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
-        else -> Result.failure()
-      }
-    }.asListenableFuture()
+  /** The operation types supported by [PlatformParameterSyncUpWorker]. */
+  enum class Operation(override val persistentName: String) : OppiaWorker.TaskType {
+    /**
+     * Instructs the worker to refresh platform parameters by downloading the latest values from
+     * Oppia web.
+     */
+    REFRESH_PLATFORM_PARAMETERS("refresh_platform_parameters")
   }
 
-  /** Extracts platform parameters from the remote service and stores them in the cache store. */
-  private suspend fun refreshPlatformParameters(): Result {
-    // This is valid to do per the contract of the returned DataProvider (there will only ever be
-    // one result from the provider).
-    val result = platformParameterController.downloadRemoteParameters().retrieveData()
-    return when (result) {
-      is AsyncResult.Pending -> {
-        oppiaLogger.e(TAG, "Unexpected pending state when downloading remote parameters.")
-        Result.failure()
+  override suspend fun doWork(taskType: Operation): OppiaWorker.Result {
+    return when (taskType) {
+      Operation.REFRESH_PLATFORM_PARAMETERS -> {
+        // This is valid to do per the contract of the returned DataProvider (there will only ever
+        // be one result from the provider).
+        when (val result = platformParameterController.downloadRemoteParameters().retrieveData()) {
+          is AsyncResult.Pending -> {
+            oppiaLogger.e(
+              WORKER_NAME, "Unexpected pending state when downloading remote parameters."
+            )
+            OppiaWorker.Result.FAILURE
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(WORKER_NAME, "Failed to fetch platform parameters", result.error)
+            exceptionsController.logNonFatalException(
+              IllegalStateException("Failed to fetch platform parameters", result.error)
+            )
+            OppiaWorker.Result.FAILURE
+          }
+          is AsyncResult.Success -> OppiaWorker.Result.SUCCESS
+        }
       }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(TAG, "Failed to fetch platform parameters", result.error)
-        exceptionsController.logNonFatalException(
-          IllegalStateException("Failed to fetch platform parameters", result.error)
-        )
-        Result.failure()
-      }
-      is AsyncResult.Success -> Result.Success()
     }
   }
 
@@ -73,18 +56,15 @@ class PlatformParameterSyncUpWorker private constructor(
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
     private val oppiaLogger: OppiaLogger,
-    private val exceptionsController: ExceptionsController,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) {
-    /** Returns new instances of [PlatformParameterSyncUpWorker]. */
-    fun create(context: Context, params: WorkerParameters): ListenableWorker {
+    private val exceptionsController: ExceptionsController
+  ) : OppiaWorker.Factory<Operation> {
+    override val supportedTaskTypes: List<Operation> = Operation.values().toList()
+
+    override fun createWorker(): OppiaWorker<Operation> {
       return PlatformParameterSyncUpWorker(
-        context,
-        params,
         platformParameterController,
         oppiaLogger,
-        exceptionsController,
-        backgroundDispatcher
+        exceptionsController
       )
     }
   }

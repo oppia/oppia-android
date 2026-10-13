@@ -13,11 +13,15 @@ import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTI
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */
@@ -28,6 +32,8 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val authViewModel: AdminAuthViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: AdminAuthActivityBinding
   private val args by lazy {
@@ -39,6 +45,9 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(
       activity,
       R.layout.admin_auth_activity
@@ -46,6 +55,15 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.adminAuthToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
+
     val adminPin = checkNotNull(args?.adminPin) {
       "Expected AdminAuthActivity.admin_auth_admin_pin to be in intent extras."
     }
@@ -89,7 +107,9 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+            profileManagementController.loginToProfile(
+              profileId.toProfileIdPreservingZero()
+            ).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
@@ -101,7 +121,9 @@ class AdminAuthActivityPresenter @Inject constructor(
             }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+            profileManagementController.loginToProfile(
+              profileId.toProfileIdPreservingZero()
+            ).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(
                   AddProfileActivity.createAddProfileActivityIntent(

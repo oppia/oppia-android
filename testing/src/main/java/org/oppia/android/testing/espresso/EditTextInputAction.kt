@@ -6,11 +6,9 @@ import android.widget.EditText
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import org.hamcrest.Matcher
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import javax.inject.Inject
+import org.oppia.android.testing.threading.TestCoroutineDispatchersInjector
 
 /**
  * Action for inputting text into an EditText in a test infrastructure-specific way.
@@ -19,11 +17,7 @@ import javax.inject.Inject
  * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
  * for specifics.
  */
-class EditTextInputAction @Inject constructor(
-  val testCoroutineDispatchers: TestCoroutineDispatchers
-) {
-  // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve
-  // the TestCoroutineDispatchers so that the outer class doesn't need to be injected.
+object EditTextInputAction {
   /**
    * Returns a [ViewAction] that appends the specified string into the view targeted by the
    * [ViewAction].
@@ -45,7 +39,6 @@ class EditTextInputAction @Inject constructor(
   )
 
   private fun updateText(text: String, baseAction: ViewAction, isAppend: Boolean): ViewAction {
-
     return object : ViewAction {
       override fun getDescription(): String = baseAction.description
 
@@ -60,7 +53,7 @@ class EditTextInputAction @Inject constructor(
           } else {
             editText?.setText(text)
           }
-          testCoroutineDispatchers.runCurrent()
+          TestCoroutineDispatchersInjector.getDispatcher().runCurrent()
         } else {
           baseAction.perform(uiController, view)
         }

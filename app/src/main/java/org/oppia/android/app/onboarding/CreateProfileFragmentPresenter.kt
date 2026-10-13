@@ -1,7 +1,5 @@
 package org.oppia.android.app.onboarding
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -13,8 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -29,12 +30,16 @@ import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** Presenter for [CreateProfileFragment]. */
@@ -46,18 +51,15 @@ class CreateProfileFragmentPresenter @Inject constructor(
   private val createProfileViewModel: CreateProfileViewModel,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: CreateProfileFragmentBinding
   private lateinit var uploadImageView: ImageView
-  private lateinit var selectedImage: String
   private lateinit var profileId: LegacyProfileId
   private lateinit var profileType: ProfileType
-  private var avatarColor: Int = 0
+  @ColorInt private var avatarColor: Int? = null
   private var selectedImageUri: Uri? = null
-
-  /** Launcher for picking an image from device gallery. */
-  lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
   /** Initialize layout bindings. */
   fun handleCreateView(
@@ -65,7 +67,8 @@ class CreateProfileFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     profileId: LegacyProfileId,
     profileType: ProfileType,
-    avatarColor: Int = 0
+    activityResultLauncher: ActivityResultLauncher<Intent>,
+    @ColorInt avatarColor: Int? = null
   ): View {
     binding = CreateProfileFragmentBinding.inflate(
       inflater,
@@ -101,7 +104,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView.apply {
       setColorFilter(
-        if (avatarColor != 0) avatarColor else ResourcesCompat.getColor(
+        avatarColor ?: ResourcesCompat.getColor(
           activity.resources,
           R.color.component_color_avatar_background_25_color,
           null
@@ -192,7 +195,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    binding.createProfilePinEditText?.addTextChangedListener(object : TextWatcher {
+    binding.createProfilePinEditText.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -200,7 +203,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    binding.createProfileConfirmPinEditText?.addTextChangedListener(object : TextWatcher {
+    binding.createProfileConfirmPinEditText.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -208,8 +211,15 @@ class CreateProfileFragmentPresenter @Inject constructor(
       }
     })
 
-    addViewOnClickListeners(binding)
+    addViewOnClickListeners(binding, activityResultLauncher)
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -226,19 +236,19 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   /** Receive the result of image upload and load it into the image view. */
   fun handleOnActivityResult(intent: Intent?) {
-    intent?.let {
-      binding.createProfilePicturePrompt.visibility = View.GONE
-      selectedImageUri = intent.data
-      selectedImage =
-        checkNotNull(intent.data.toString()) { "Could not find the selected image." }
-      imageLoader.loadBitmap(
-        selectedImage,
-        ImageViewTarget(uploadImageView)
-      )
-    }
+    val imageUri = checkNotNull(intent?.data) { "Could not find the selected image." }
+    selectedImageUri = imageUri
+    binding.createProfilePicturePrompt.visibility = View.GONE
+    imageLoader.loadBitmap(
+      imageUri.toString(),
+      ImageViewTarget(uploadImageView)
+    )
   }
 
-  private fun addViewOnClickListeners(binding: CreateProfileFragmentBinding) {
+  private fun addViewOnClickListeners(
+    binding: CreateProfileFragmentBinding,
+    activityResultLauncher: ActivityResultLauncher<Intent>
+  ) {
     val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
     binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
@@ -255,10 +265,10 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   private fun updateProfileDetails(profileName: String, profileType: ProfileType) {
     profileManagementController.updateNewProfileDetails(
-      profileId = profileId,
+      profileId = profileId.toProfileIdPreservingZero(),
       profileType = profileType,
       avatarImagePath = selectedImageUri,
-      colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
+      colorRgb = avatarColor ?: selectUniqueRandomColor(),
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
@@ -334,17 +344,22 @@ class CreateProfileFragmentPresenter @Inject constructor(
         pin = pin,
         avatarImagePath = selectedImageUri,
         allowDownloadAccess = true,
-        colorRgb = if (avatarColor != 0) avatarColor else selectUniqueRandomColor(),
-        isAdmin = false
+        colorRgb = avatarColor ?: selectUniqueRandomColor(),
+        isAdmin = false,
+        profileType = profileType
       ).toLiveData()
-      .observe(activity) { handleAddProfileResult(it, profileName) }
+      .observe(fragment) { handleAddProfileResult(it, profileName) }
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileName: String) {
     when (result) {
       is AsyncResult.Success -> {
-        fragment.requireContext().showDialog(profileName) {
-          fragment.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+        showDialog(profileName) {
+          val profileChooserIntent =
+            ProfileChooserActivity.createProfileChooserActivity(activity).apply {
+              addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+          fragment.startActivity(profileChooserIntent)
         }
       }
 
@@ -387,32 +402,30 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun Context.showDialog(
+  private fun showDialog(
     learnerNickname: String,
     onDismiss: () -> Unit
   ) {
-    val dialog = Dialog(this)
-
-    val composeView = ComposeView(this).apply {
+    val dialogHost = binding.root as ViewGroup
+    val composeView = ComposeView(fragment.requireContext()).apply {
       ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
       ViewTreeViewModelStoreOwner.set(this, fragment)
       ViewTreeSavedStateRegistryOwner.set(this, fragment)
-
-      setContent {
-        HandOverNoticeDialog(
-          appLanguageResourceHandler = appLanguageResourceHandler,
-          learnerNickname = learnerNickname,
-          onDismiss = {
-            dialog.dismiss()
-            onDismiss()
-          }
-        )
-      }
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
-    dialog.setContentView(composeView)
-    dialog.setCancelable(true)
-    dialog.show()
+    composeView.setContent {
+      HandOverNoticeDialog(
+        appLanguageResourceHandler = appLanguageResourceHandler,
+        learnerNickname = learnerNickname,
+        onDismiss = {
+          composeView.disposeComposition()
+          dialogHost.removeView(composeView)
+          onDismiss()
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */

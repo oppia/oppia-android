@@ -1,12 +1,16 @@
 package org.oppia.android.app.onboarding
 
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.CreateProfileFragmentArguments
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -17,21 +21,31 @@ private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
 class CreateProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: LegacyProfileId, profileType: ProfileType, avatarColor: Int = 0) {
+  fun handleOnCreate(
+    profileId: LegacyProfileId,
+    profileType: ProfileType,
+    @ColorInt avatarColor: Int? = null
+  ) {
     activity.setContentView(R.layout.create_profile_activity)
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
+
     if (getCreateProfileFragment() == null) {
       val createProfileFragment = CreateProfileFragment().apply {
         arguments = Bundle().also {
           it.decorateWithUserProfileId(profileId)
           it.putProto(
             CREATE_PROFILE_ARGUMENTS_KEY,
-            CreateProfileFragmentArguments.newBuilder()
-              .setProfileType(profileType)
-              .setAvatarColor(avatarColor)
-              .build()
+            CreateProfileFragmentArguments.newBuilder().apply {
+              this.profileType = profileType
+              avatarColor?.let { this.avatarColor = it }
+            }.build()
           )
         }
       }

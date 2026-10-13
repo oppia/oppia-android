@@ -1,5 +1,6 @@
 package org.oppia.android.app.survey
 
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,13 @@ import org.oppia.android.app.databinding.databinding.SurveyOutroDialogFragmentBi
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val TAG_SURVEY_OUTRO_DIALOG = "SURVEY_OUTRO_DIALOG"
@@ -24,8 +28,12 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val resourceHandler: AppLanguageResourceHandler,
   private val surveyController: SurveyController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
+  private lateinit var rootView: View
+
   /** Sets up data binding. */
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -33,6 +41,7 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
   ): View {
     val binding =
       SurveyOutroDialogFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    rootView = binding.root
 
     binding.lifecycleOwner = fragment
 
@@ -46,6 +55,21 @@ class SurveyOutroDialogFragmentPresenter @Inject constructor(
     }
 
     return binding.root
+  }
+
+  /**
+   * Applies edge-to-edge window insets to the survey outro [dialog].
+   *
+   * The dialog is shown in its own window, so the insets applied to the host activity don't reach
+   * it and its content would otherwise be drawn underneath the status bar.
+   */
+  fun applyEdgeToEdgeInsets(dialog: Dialog) {
+    if (!enableEdgeToEdge.value) return
+    EdgeToEdgeHelper.applyToDialogRootView(
+      dialog,
+      rootView,
+      R.color.component_color_shared_dialogs_secondary_color
+    )
   }
 
   private fun closeSurveyDialogAndActivity() {

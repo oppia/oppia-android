@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
@@ -220,7 +221,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
+      userAnswerState: UserAnswerState,
+      wrongAnswerList: List<AnswerAndResponse>
     ): StateItemViewModel {
       return ImageRegionSelectionInteractionViewModel(
         entityId,

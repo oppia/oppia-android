@@ -6,13 +6,20 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileItemBinding
@@ -25,6 +32,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
@@ -32,14 +40,16 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.statusbar.StatusBarColor
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -81,9 +91,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val resourceHandler: AppLanguageResourceHandler,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
+  private var isBecomeAdministratorNoticeShowing = false
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -96,14 +108,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_shared_profile_status_bar_color, activity, false
-    )
-
-    if (parentScreen == ParentScreen.CREATE_PIN_SCREEN) {
+    if (parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
-      profileManagementController.markProfileOnboardingEnded(adminProfileId)
+      profileManagementController.markProfileOnboardingEnded(
+        adminProfileId.toProfileIdPreservingZero()
+      )
     }
 
     binding =
@@ -153,6 +163,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.addProfileButton.setOnClickListener { addProfileButtonClickListener() }
     binding.addProfilePrompt.setOnClickListener { addProfileButtonClickListener() }
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootConstraintLayout(
+        activity,
+        binding.root as ConstraintLayout,
+        R.color.component_color_shared_profile_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -303,13 +320,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun addProfileButtonClickListener() {
-    if (chooserViewModel.adminPin.isEmpty()) {
-      activity.startActivity(
-        PinSetupActivity.createPinSetupActivityIntent(
-          activity,
-          chooserViewModel.adminProfileId
-        )
-      )
+    if (chooserViewModel.canAddProfile.get() != true) {
+      showMaximumProfilesReachedDialog()
+    } else if (chooserViewModel.adminPin.isEmpty()) {
+      handleAdminWithoutPin()
+    } else if (
+      chooserViewModel.adminProfile.profileType == ProfileType.SUPERVISOR &&
+      chooserViewModel.adminProfile.hasSeenBecomeAdministratorNotice
+    ) {
+      launchCreateProfile()
     } else {
       activity.startActivity(
         ProfileLoginActivity.createProfileLoginForAddProfileIntent(
@@ -320,6 +339,84 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun handleAdminWithoutPin() {
+    val adminProfile = chooserViewModel.adminProfile
+    if (
+      adminProfile.profileType == ProfileType.SOLE_LEARNER &&
+      !adminProfile.hasSeenBecomeAdministratorNotice
+    ) {
+      showBecomeAdministratorNotice()
+    } else {
+      launchCreateAdminPin()
+    }
+  }
+
+  private fun showBecomeAdministratorNotice() {
+    if (isBecomeAdministratorNoticeShowing) return
+    isBecomeAdministratorNoticeShowing = true
+    profileManagementController.markBecomeAdministratorNoticeSeen(
+      chooserViewModel.adminProfileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment.viewLifecycleOwner) { result ->
+      when (result) {
+        is AsyncResult.Success -> showPersistedBecomeAdministratorNotice()
+        is AsyncResult.Failure -> isBecomeAdministratorNoticeShowing = false
+        is AsyncResult.Pending -> Unit
+      }
+    }
+  }
+
+  private fun showPersistedBecomeAdministratorNotice() {
+    val dialogHost = activity.findViewById<ViewGroup>(android.R.id.content)
+    val composeView = ComposeView(fragment.requireContext()).apply {
+      ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
+      ViewTreeViewModelStoreOwner.set(this, fragment)
+      ViewTreeSavedStateRegistryOwner.set(this, fragment)
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+    composeView.setContent {
+      BecomeAdministratorNoticeDialog(
+        appLanguageResourceHandler = resourceHandler,
+        onContinue = {
+          isBecomeAdministratorNoticeShowing = false
+          composeView.disposeComposition()
+          dialogHost.removeView(composeView)
+          launchCreateAdminPin()
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
+  }
+
+  private fun launchCreateAdminPin() {
+    activity.startActivity(
+      CreateAdminPinActivity.createAdminPinActivityIntent(
+        activity,
+        chooserViewModel.adminProfileId
+      )
+    )
+  }
+
+  private fun launchCreateProfile() {
+    activity.startActivity(
+      CreateProfileActivity.createProfileActivityIntent(
+        activity,
+        chooserViewModel.adminProfileId,
+        ProfileType.ADDITIONAL_LEARNER,
+        selectUniqueRandomColor()
+      )
+    )
+  }
+
+  private fun showMaximumProfilesReachedDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setMessage(R.string.profile_selection_maximum_profiles_reached_message)
+      .setPositiveButton(R.string.profile_selection_maximum_profiles_reached_close) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .create()
+      .show()
   }
 
   private fun getSpotlightManager(): SpotlightManager? {
@@ -338,7 +435,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id)
+      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
     }
   }
 
@@ -377,7 +474,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun launchHomeScreen(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
+    profileManagementController.loginToProfile(
+      profileId.toProfileIdPreservingZero()
+    ).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
           activity.startActivity(

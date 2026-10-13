@@ -1,0 +1,91 @@
+# Triggered when a version-bump PR merges to develop (path filter: version.bzl).
+# Runs GenerateChangelogs, which reads the new version, collects PRs between the
+# two most recent release branches, calls Vertex AI for a summary, and opens a PR
+# with the generated config/changelogs/<version>.md file.
+# Can also be triggered manually via workflow_dispatch.
+
+name: Generate Changelog
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'version.bzl'
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: >-
+          Version to generate changelog for (e.g. "0.17"). If empty, the version
+          is read from version.bzl at HEAD. Use this to regenerate a changelog
+          for an older release without modifying version.bzl.
+        required: false
+        default: ''
+
+# Only one changelog generation may run at a time; cancel-in-progress: false so that
+# a rapid double-push to version.bzl does not leave an inconsistent changelog branch.
+concurrency:
+  group: generate-changelog
+  cancel-in-progress: false
+
+jobs:
+  generate_changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-24.04
+    # oppia-android-automation-env (not release-env) because this workflow opens a PR
+    # for human review and never deploys directly. GCP_CHANGELOG_SERVICE_ACCOUNT is
+    # a dedicated, minimally-scoped SA separate from GCP_RELEASE_SERVICE_ACCOUNT so
+    # that a compromised changelog workflow cannot reach signing/Play Store resources.
+    environment: oppia-android-automation-env
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Configure git remote credentials
+        run: |
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_CHANGELOG_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get and mask GCP access token
+        run: |
+          ACCESS_TOKEN="$(gcloud auth print-access-token)"
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+
+      - name: Set up Android + Bazel build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Generate changelog and open PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_VERSION: ${{ inputs.target_version }}
+        run: |
+          bazel run //scripts:generate_changelogs -- \
+            "$(pwd)" \
+            "${{ secrets.GCP_PROJECT_ID }}" \
+            "$GCP_ACCESS_TOKEN"

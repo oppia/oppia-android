@@ -36,6 +36,8 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -95,7 +97,7 @@ class SurveyProgressControllerTest {
     val surveyDataProvider =
       surveyController.startSurveySession(questions, profileId = profileId)
 
-    monitorFactory.waitForNextSuccessfulResult(surveyDataProvider)
+    waitForSuccessfulResult(surveyDataProvider)
   }
 
   @Test
@@ -164,7 +166,7 @@ class SurveyProgressControllerTest {
     val result = surveyProgressController.submitAnswer(createUserTypeAnswer(UserTypeAnswer.PARENT))
 
     // Verify that the answer submission was successful.
-    monitorFactory.waitForNextSuccessfulResult(result)
+    waitForSuccessfulResult(result)
   }
 
   @Test
@@ -177,7 +179,7 @@ class SurveyProgressControllerTest {
       surveyProgressController.submitAnswer(
         createMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
       )
-    monitorFactory.waitForNextSuccessfulResult(result)
+    waitForSuccessfulResult(result)
   }
 
   @Test
@@ -189,7 +191,7 @@ class SurveyProgressControllerTest {
 
     val result =
       surveyProgressController.submitAnswer(createNpsAnswer(9))
-    monitorFactory.waitForNextSuccessfulResult(result)
+    waitForSuccessfulResult(result)
   }
 
   @Test
@@ -208,7 +210,7 @@ class SurveyProgressControllerTest {
         )
       )
 
-    monitorFactory.waitForNextSuccessfulResult(result)
+    waitForSuccessfulResult(result)
   }
 
   @Test
@@ -323,7 +325,7 @@ class SurveyProgressControllerTest {
       surveyProgressController.submitAnswer(createMarketFitAnswer(MarketFitAnswer.NOT_DISAPPOINTED))
 
     // New answer is submitted successfully
-    monitorFactory.waitForNextSuccessfulResult(submitAnswerProvider)
+    waitForSuccessfulResult(submitAnswerProvider)
   }
 
   @Test
@@ -342,7 +344,7 @@ class SurveyProgressControllerTest {
     startSuccessfulSurveySession()
     waitForGetCurrentQuestionSuccessfulLoad()
     val stopProvider = surveyController.stopSurveySession(surveyCompleted = false)
-    monitorFactory.waitForNextSuccessfulResult(stopProvider)
+    waitForSuccessfulResult(stopProvider)
   }
 
   @Test
@@ -431,34 +433,49 @@ class SurveyProgressControllerTest {
 
   private fun stopSurveySession(surveyCompleted: Boolean) {
     val stopProvider = surveyController.stopSurveySession(surveyCompleted)
-    monitorFactory.waitForNextSuccessfulResult(stopProvider)
+    waitForSuccessfulResult(stopProvider)
   }
 
   private fun startSuccessfulSurveySession() {
-    monitorFactory.waitForNextSuccessfulResult(
+    waitForSuccessfulResult(
       surveyController.startSurveySession(questions, profileId = profileId)
     )
   }
 
   private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralSurveyQuestion {
-    return monitorFactory.waitForNextSuccessfulResult(
+    return waitForSuccessfulResult(
       surveyProgressController.getCurrentQuestion()
     )
   }
 
   private fun moveToPreviousQuestion(): EphemeralSurveyQuestion {
-    // This operation might fail for some tests.
-    monitorFactory.ensureDataProviderExecutes(
-      surveyProgressController.moveToPreviousQuestion()
-    )
+    waitForSuccessfulResult(surveyProgressController.moveToPreviousQuestion())
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
   private fun submitAnswer(answer: SurveySelectedAnswer): EphemeralSurveyQuestion {
-    monitorFactory.waitForNextSuccessfulResult(
+    waitForSuccessfulResult(
       surveyProgressController.submitAnswer(answer)
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
+  }
+
+  /** Awaits the terminal success, ignoring the provider's expected initial Pending emission. */
+  private fun <T> waitForSuccessfulResult(dataProvider: DataProvider<T>): T {
+    val deadlineNanos = System.nanoTime() + SUCCESS_RESULT_TIMEOUT_NANOS
+    var latestResult: AsyncResult<T> = AsyncResult.Pending()
+    while (System.nanoTime() < deadlineNanos) {
+      latestResult = monitorFactory.waitForAllNextResults { dataProvider }.lastOrNull()
+        ?: continue
+      when (latestResult) {
+        is AsyncResult.Success -> return latestResult.value
+        is AsyncResult.Failure -> throw AssertionError(
+          "Expected a successful result", latestResult.error
+        )
+        is AsyncResult.Pending -> Unit
+      }
+    }
+    error("Timed out waiting for a terminal successful result; latest result: $latestResult")
   }
 
   private fun submitUserTypeAnswer(answer: UserTypeAnswer): EphemeralSurveyQuestion {
@@ -606,6 +623,7 @@ class SurveyProgressControllerTest {
   }
 
   companion object {
+    private const val SUCCESS_RESULT_TIMEOUT_NANOS = 5_000_000_000L
     private const val TEXT_ANSWER = "Some text answer"
     private val questions = listOf(
       SurveyQuestionName.USER_TYPE,

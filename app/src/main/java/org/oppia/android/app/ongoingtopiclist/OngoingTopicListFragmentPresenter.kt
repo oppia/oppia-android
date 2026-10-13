@@ -10,6 +10,9 @@ import org.oppia.android.app.databinding.databinding.OngoingTopicItemBinding
 import org.oppia.android.app.databinding.databinding.OngoingTopicListFragmentBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [OngoingTopicListFragment]. */
@@ -17,7 +20,8 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val ongoingTopicListViewModel: OngoingTopicListViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private lateinit var binding: OngoingTopicListFragmentBinding
@@ -50,6 +54,14 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = ongoingTopicListViewModel
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.ongoingTopicListToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
     return binding.root
   }

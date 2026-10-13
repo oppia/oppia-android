@@ -14,11 +14,12 @@ import java.security.MessageDigest
 data class MathModel(
   val rawLatex: String,
   val lineHeight: Float,
-  val useInlineRendering: Boolean
+  val useInlineRendering: Boolean,
+  val equationColor: Int
 ) {
   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */
   fun toKeySignature(): MathModelSignature =
-    MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering)
+    MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering, equationColor)
 
   /**
    * Glide [Key] that provides caching support by allowing individual renderable math scenarios to
@@ -33,17 +34,25 @@ data class MathModel(
   data class MathModelSignature(
     val rawLatex: String,
     val lineHeightHundredX: Int,
-    val useInlineRendering: Boolean
+    val useInlineRendering: Boolean,
+    val equationColor: Int
   ) : Key {
     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       val rawLatexBytes = rawLatex.encodeToByteArray()
+
+      val latexSize = rawLatexBytes.size
+      val lineHeightBytes = Int.SIZE_BYTES
+      val inlineFlagBytes = 1
+      val colorBytes = Int.SIZE_BYTES
+
       messageDigest.update(
-        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1).apply {
+        ByteBuffer.allocate(latexSize + lineHeightBytes + inlineFlagBytes + colorBytes).apply {
           put(rawLatexBytes)
           putInt(lineHeightHundredX)
           put(if (useInlineRendering) 1 else 0)
+          putInt(equationColor)
         }.array()
       )
     }
@@ -53,10 +62,11 @@ data class MathModel(
       internal fun createSignature(
         rawLatex: String,
         lineHeight: Float,
-        useInlineRendering: Boolean
+        useInlineRendering: Boolean,
+        equationColor: Int
       ): MathModelSignature {
         val lineHeightHundredX = (lineHeight * 100f).toInt()
-        return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering)
+        return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering, equationColor)
       }
     }
   }

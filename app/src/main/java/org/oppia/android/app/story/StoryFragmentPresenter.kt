@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -33,6 +32,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
@@ -42,6 +42,9 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
@@ -55,7 +58,8 @@ class StoryFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -110,6 +114,14 @@ class StoryFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = storyViewModel
     }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        binding.storyToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -161,40 +173,32 @@ class StoryFragmentPresenter @Inject constructor(
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
-      .registerViewBinder(
+      .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_CHAPTER,
-        inflateView = { parent ->
-          StoryChapterViewBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<StoryChapterViewBinding>(view)!!
-          val storyItemViewModel = viewModel as StoryChapterSummaryViewModel
-          binding.viewModel = storyItemViewModel
+        inflateDataBinding = StoryChapterViewBinding::inflate,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
               entityType,
-              storyItemViewModel.storyId,
+              viewModel.storyId,
               imageCenterAlign = true,
               displayLocale = resourceHandler.getDisplayLocale()
-            ).parseOppiaHtml(storyItemViewModel.description, binding.chapterSummary)
-          if (storyItemViewModel.chapterSummary.chapterPlayState
+            ).parseOppiaHtml(viewModel.description, binding.chapterSummary)
+          if (viewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
-              storyItemViewModel.index.toString(),
-              storyItemViewModel.missingPrerequisiteChapterTitle
+              viewModel.index.toString(),
+              viewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
             if (!accessibilityService.isScreenReaderEnabled()) {
               val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                  smoothScrollToPosition(storyItemViewModel.index - 1)
+                  smoothScrollToPosition(viewModel.index - 1)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -218,7 +222,8 @@ class StoryFragmentPresenter @Inject constructor(
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
-        }
+        },
+        transformViewModel = { it as StoryChapterSummaryViewModel }
       )
       .build()
   }
@@ -280,7 +285,7 @@ class StoryFragmentPresenter @Inject constructor(
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId,
+        profileId.toProfileIdPreservingZero(),
         classroomId,
         topicId,
         storyId,
@@ -288,7 +293,7 @@ class StoryFragmentPresenter @Inject constructor(
       )
     } else {
       explorationDataController.replayExploration(
-        profileId.internalId,
+        profileId.toProfileIdPreservingZero(),
         classroomId,
         topicId,
         storyId,
