@@ -1,0 +1,8 @@
+duplicate_dependency_version_exemption {
+  exempted_dependency_name: "guava_android"
+  reason: "maven_install resolves com.google.guava:guava transitively, but override_targets in WORKSPACE redirects it to //third_party:com_google_guava_guava, so the Maven-resolved version never reaches the classpath."
+}
+duplicate_dependency_version_exemption {
+  exempted_dependency_name: "guava_jre"
+  reason: "maven_install resolves com.google.guava:guava transitively, but override_targets in WORKSPACE redirects it to //third_party:com_google_guava_guava, so the Maven-resolved version never reaches the classpath."
+}

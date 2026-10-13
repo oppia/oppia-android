@@ -142,14 +142,17 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "1.8.0",
     },
     "dagger": {
+        "maven_coordinate": "com.google.dagger:dagger",
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",
     },
     "guava_android": {
+        "maven_coordinate": "com.google.guava:guava",
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
     },
     "guava_jre": {
+        "maven_coordinate": "com.google.guava:guava",
         "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
         "version": "31.0.1",
     },
@@ -161,6 +164,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "3.11.0",
     },
     "robolectric": {
+        "maven_coordinate": "org.robolectric:robolectric",
         "sha": "50ad3e99f9793e19d96218ec9f5d46c039ce28e9e2e0e55be2916b5bfd0554b0",
         "version": "4.7",
     },

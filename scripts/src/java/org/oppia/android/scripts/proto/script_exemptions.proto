@@ -125,3 +125,13 @@ message BinaryFileExemptions {
     string exempted_file_path = 1;
   }
 }
+
+message DuplicateDependencyVersionExemptions {
+  repeated DuplicateDependencyVersionExemption duplicate_dependency_version_exemption = 1;
+
+  message DuplicateDependencyVersionExemption {
+    string exempted_dependency_name = 1;
+
+    string reason = 2;
+  }
+}
