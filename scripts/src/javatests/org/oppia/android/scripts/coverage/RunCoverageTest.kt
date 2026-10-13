@@ -2207,11 +2207,14 @@ class RunCoverageTest {
         .source-code-col {
           width: 96%;
         }
-        .covered-line, .not-covered-line, .uncovered-line {
+        .covered-line, .partially-covered-line, .not-covered-line, .uncovered-line {
           white-space: pre-wrap;
         }
         .covered-line {
           background-color: #c8e6c9; /* Light green */
+        }
+        .partially-covered-line {
+          background-color: #fff9c4; /* Light yellow */
         }
         .not-covered-line {
           background-color: #ffcdd2; /* Light red */
@@ -2263,6 +2266,10 @@ class RunCoverageTest {
           margin-left: 4px;
           background-color: #ffcdd2; /* Light red */
         }
+        .legend .partially-covered {
+          margin-left: 4px;
+          background-color: #fff9c4; /* Light yellow */
+        }
         @media screen and (max-width: 768px) {
           body {
             padding: 10px;
@@ -2281,6 +2288,8 @@ class RunCoverageTest {
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
+            <div class="legend-item partially-covered"></div>
+            <span>Partial</span>
             <div class="legend-item not-covered"></div>
             <span>Uncovered</span>
           </div>
@@ -2423,11 +2432,14 @@ class RunCoverageTest {
         .source-code-col {
           width: 96%;
         }
-        .covered-line, .not-covered-line, .uncovered-line {
+        .covered-line, .partially-covered-line, .not-covered-line, .uncovered-line {
           white-space: pre-wrap;
         }
         .covered-line {
           background-color: #c8e6c9; /* Light green */
+        }
+        .partially-covered-line {
+          background-color: #fff9c4; /* Light yellow */
         }
         .not-covered-line {
           background-color: #ffcdd2; /* Light red */
@@ -2479,6 +2491,10 @@ class RunCoverageTest {
           margin-left: 4px;
           background-color: #ffcdd2; /* Light red */
         }
+        .legend .partially-covered {
+          margin-left: 4px;
+          background-color: #fff9c4; /* Light yellow */
+        }
         @media screen and (max-width: 768px) {
           body {
             padding: 10px;
@@ -2497,6 +2513,8 @@ class RunCoverageTest {
           <div class="legend">
             <div class="legend-item covered"></div>
             <span>Covered</span>
+            <div class="legend-item partially-covered"></div>
+            <span>Partial</span>
             <div class="legend-item not-covered"></div>
             <span>Uncovered</span>
           </div>
