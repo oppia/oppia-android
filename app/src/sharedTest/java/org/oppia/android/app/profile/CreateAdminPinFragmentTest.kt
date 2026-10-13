@@ -27,6 +27,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.VerificationModes.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -47,6 +48,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -80,10 +84,12 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -103,6 +109,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -123,6 +130,8 @@ class CreateAdminPinFragmentTest {
   @get:Rule val composeRule = createEmptyComposeRule()
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -366,9 +375,13 @@ class CreateAdminPinFragmentTest {
   }
 
   @Test
-  fun testFragment_clickContinue_withMatchingValidPins_navigatesToProfileChooser() {
+  fun testSoleLearner_clickContinueWithValidPins_updatesTypeAndNavigatesToCreateProfile() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    launch(CreateAdminPinActivity::class.java).use {
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+    )
+    launch(CreateAdminPinActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       composeRule.onNode(enterPinFieldMatcher())
@@ -381,7 +394,67 @@ class CreateAdminPinFragmentTest {
         .performClick()
 
       testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(CreateProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name), times(0))
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+      val profile = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
+      )
+      assertThat(profile.pin).isEqualTo("12345")
+      assertThat(profile.hasPin).isTrue()
+      assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+    }
+  }
+
+  @Test
+  fun testSupervisor_clickContinueWithValidPins_keepsTypeAndNavigatesToChooser() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    )
+    launch(CreateAdminPinActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNode(enterPinFieldMatcher()).performTextInput("12345")
+      composeRule.onNode(confirmPinFieldMatcher()).performTextInput("12345")
+      composeRule.onNode(continueButtonMatcher()).performClick()
+
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
+      val profile = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
+      )
+      assertThat(profile.pin).isEqualTo("12345")
+      assertThat(profile.hasPin).isTrue()
+      assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
+    }
+  }
+
+  @Test
+  fun testAdditionalLearner_clickContinueWithValidPins_doesNotUpdateOrNavigate() {
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(profileId, ProfileType.ADDITIONAL_LEARNER)
+    )
+    launch(CreateAdminPinActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNode(enterPinFieldMatcher()).performTextInput("12345")
+      composeRule.onNode(confirmPinFieldMatcher()).performTextInput("12345")
+      composeRule.onNode(continueButtonMatcher()).performClick()
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name), times(0))
+      val profile = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfile(profileId.toProfileIdPreservingZero())
+      )
+      assertThat(profile.pin).isEmpty()
+      assertThat(profile.hasPin).isFalse()
+      assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
     }
   }
 

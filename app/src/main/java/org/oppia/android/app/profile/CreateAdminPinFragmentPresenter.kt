@@ -58,9 +58,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CreateAdminPinUiState
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -464,6 +469,39 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
         "Expected profileId to be included in the arguments for CreateAdminPinFragment."
       }
 
+    val profileLiveData = profileManagementController.getProfile(profileId).toLiveData()
+    profileLiveData.observe(
+      fragment,
+      object : Observer<AsyncResult<Profile>> {
+        override fun onChanged(result: AsyncResult<Profile>) {
+          if (result is AsyncResult.Success) {
+            profileLiveData.removeObserver(this)
+            when (result.value.profileType) {
+              ProfileType.SOLE_LEARNER -> updateSoleLearnerPin(profileId, pin)
+              ProfileType.SUPERVISOR, ProfileType.PROFILE_TYPE_UNSPECIFIED ->
+                updatePinAndNavigateToProfileChooser(profileId, pin)
+              else -> Unit
+            }
+          }
+        }
+      }
+    )
+  }
+
+  private fun updateSoleLearnerPin(profileId: ProfileId, pin: String) {
+    profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
+      if (it is AsyncResult.Success) {
+        profileManagementController.updateProfileType(profileId, ProfileType.SUPERVISOR)
+          .toLiveData().observe(fragment) { updateResult ->
+            if (updateResult is AsyncResult.Success) {
+              navigateToCreateProfile(profileId)
+            }
+          }
+      }
+    }
+  }
+
+  private fun updatePinAndNavigateToProfileChooser(profileId: ProfileId, pin: String) {
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity).also { intent ->
@@ -479,6 +517,17 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
         fragment.activity?.finishAffinity()
       }
     }
+  }
+
+  private fun navigateToCreateProfile(profileId: ProfileId) {
+    activity.startActivity(
+      CreateProfileActivity.createProfileActivityIntent(
+        activity,
+        profileId.toLegacyProfileId(),
+        ProfileType.ADDITIONAL_LEARNER
+      )
+    )
+    activity.finish()
   }
 
   companion object {

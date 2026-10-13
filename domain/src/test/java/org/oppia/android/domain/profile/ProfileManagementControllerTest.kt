@@ -710,6 +710,20 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.pin).isEqualTo("321")
+    assertThat(profile.hasPin).isTrue()
+  }
+
+  @Test
+  fun testUpdatePin_profileWithPin_updatePinToEmpty_checkPinAndHasPinAreCleared() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James", pin = "12345")
+
+    val updateProvider = profileManagementController.updatePin(PROFILE_ID_0, "")
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.pin).isEmpty()
+    assertThat(profile.hasPin).isFalse()
   }
 
   @Test

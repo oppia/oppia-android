@@ -656,7 +656,10 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setPin(newPin).build()
+      val updatedProfile = profile.toBuilder()
+        .setPin(newPin)
+        .setHasPin(newPin.isNotEmpty())
+        .build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
