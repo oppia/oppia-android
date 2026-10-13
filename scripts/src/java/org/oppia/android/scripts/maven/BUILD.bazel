@@ -26,3 +26,15 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
     ],
 )
+
+kt_jvm_library(
+    name = "duplicate_dependency_version_check_lib",
+    testonly = True,
+    srcs = ["DuplicateDependencyVersionCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/maven/model",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto",
+        "//third_party:moshi",
+    ],
+)

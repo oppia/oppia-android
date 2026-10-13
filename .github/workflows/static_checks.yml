@@ -229,6 +229,13 @@ jobs:
         run: |
           bazel run //scripts:binary_file_check -- $(pwd) scripts/assets/binary_file_exemptions.pb
 
+      - name: Duplicate Dependency Version Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if: ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:duplicate_dependency_version_check -- $(pwd) scripts/assets/duplicate_dependency_version_exemptions.pb
+
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
