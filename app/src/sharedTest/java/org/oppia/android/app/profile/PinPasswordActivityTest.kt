@@ -9,6 +9,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -18,8 +19,10 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -1511,6 +1514,38 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
+
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
+
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("RES"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("reset"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("WRONG"))
+    positiveButton.check(matches(not(isEnabled())))
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+
     onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
       .inRoot(isDialog())
       .perform(click())
@@ -1574,9 +1609,26 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
-    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
-      .inRoot(isDialog())
-      .perform(click())
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+    positiveButton.perform(click())
     testCoroutineDispatchers.runCurrent()
     // After deletion, verify the app startup state reflects that no profiles exist.
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -1608,9 +1660,26 @@ class PinPasswordActivityTest {
     onView(withText(containsString("Reset")))
       .inRoot(isDialog())
       .perform(click())
-    onView(withText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text)))
-      .inRoot(isDialog())
-      .perform(click())
+    val positiveButton = onView(
+      withText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_positive_button_text
+        )
+      )
+    ).inRoot(isDialog())
+
+    val inputField = onView(
+      withHint(
+        context.getString(
+          R.string.admin_confirm_app_wipe_input_hint,
+          "RESET"
+        )
+      )
+    ).inRoot(isDialog())
+
+    inputField.perform(replaceText("RESET"))
+    positiveButton.check(matches(isEnabled()))
+    positiveButton.perform(click())
     testCoroutineDispatchers.runCurrent()
     // Verify that the locale is preserved (English) after the reset.
     scenario.onActivity { activity ->
