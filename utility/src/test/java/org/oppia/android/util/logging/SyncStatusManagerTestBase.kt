@@ -1,6 +1,6 @@
 package org.oppia.android.util.logging
 
-import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -305,19 +305,17 @@ abstract class SyncStatusManagerTestBase {
     }.waitForSuccessfulResult()
   }
 
-  @Suppress("DEPRECATION") // Robolectric Shadow API requires interacting with deprecated fields.
   protected fun disconnectNetwork() {
-    networkConnectionTestUtil.setNetworkInfo(
-      status = ConnectivityManager.TYPE_MOBILE,
-      networkState = android.net.NetworkInfo.State.DISCONNECTED
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
+      hasInternetCapability = false
     )
   }
 
-  @Suppress("DEPRECATION") // Robolectric Shadow API requires interacting with deprecated fields.
   protected fun connectNetwork() {
-    networkConnectionTestUtil.setNetworkInfo(
-      status = ConnectivityManager.TYPE_MOBILE,
-      networkState = android.net.NetworkInfo.State.CONNECTED
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
+      hasInternetCapability = true
     )
   }
 

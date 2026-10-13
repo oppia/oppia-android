@@ -5,7 +5,9 @@ package org.oppia.android.util.networking
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.NetworkInfo
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -61,6 +63,38 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeWifiCapability_noForcedConnection_returnsWifi() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_WIFI,
+      hasInternetCapability = true
+    )
+    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(LOCAL)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeWifiCapability_forceCellular_returnsCellular() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_WIFI,
+      hasInternetCapability = true
+    )
+    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(CELLULAR)
+    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeCellularCapability_noForcedConnection_returnsCellular() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
+      hasInternetCapability = true
+    )
+    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeWifi_noForcedConnection_returnsWifi() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
@@ -90,6 +124,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_inactiveWifi_noForcedConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
@@ -119,6 +154,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeCellular_noForcedConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
