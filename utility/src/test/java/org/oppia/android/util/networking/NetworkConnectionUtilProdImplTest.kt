@@ -5,7 +5,9 @@ package org.oppia.android.util.networking
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.NetworkInfo
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -61,6 +63,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
@@ -70,6 +73,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_inactiveWifiConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
@@ -79,6 +83,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
@@ -88,6 +93,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_inactiveEthernetConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
@@ -97,6 +103,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
@@ -106,6 +113,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_inactiveCellularConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
@@ -115,6 +123,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
@@ -124,6 +133,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_inactiveWimaxConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
@@ -133,6 +143,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = NO_CONNECTION,
@@ -142,11 +153,64 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
+  @Config(sdk = [Build.VERSION_CODES.P])
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_BLUETOOTH,
       networkState = NetworkInfo.State.CONNECTED
     )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeWifiCapability_returnsLocal() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_WIFI
+    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeEthernetCapability_returnsLocal() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_ETHERNET
+    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeCellularCapability_returnsCellular() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR
+    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeWifiAwareCapability_returnsCellular() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_WIFI_AWARE
+    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_activeBluetoothCapability_returnsNone() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_BLUETOOTH
+    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testGetCurrentConnectionStatus_noActiveNetwork_returnsNone() {
+    networkConnectionTestUtil.setNoActiveNetwork()
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
