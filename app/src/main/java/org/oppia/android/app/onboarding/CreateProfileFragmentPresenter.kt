@@ -355,7 +355,11 @@ class CreateProfileFragmentPresenter @Inject constructor(
     when (result) {
       is AsyncResult.Success -> {
         showDialog(profileName) {
-          fragment.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+          val profileChooserIntent =
+            ProfileChooserActivity.createProfileChooserActivity(activity).apply {
+              addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+          fragment.startActivity(profileChooserIntent)
         }
       }
 
@@ -415,6 +419,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
         appLanguageResourceHandler = appLanguageResourceHandler,
         learnerNickname = learnerNickname,
         onDismiss = {
+          composeView.disposeComposition()
           dialogHost.removeView(composeView)
           onDismiss()
         }
