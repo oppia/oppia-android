@@ -306,16 +306,12 @@ abstract class SyncStatusManagerTestBase {
   }
 
   protected fun disconnectNetwork() {
-    networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
-      hasInternetCapability = false
-    )
+    networkConnectionTestUtil.setNoActiveNetwork()
   }
 
   protected fun connectNetwork() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR
     )
   }
 

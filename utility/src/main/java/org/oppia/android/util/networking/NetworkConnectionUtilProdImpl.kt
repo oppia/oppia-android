@@ -30,14 +30,13 @@ class NetworkConnectionUtilProdImpl @Inject constructor(
   private fun ConnectivityManager.retrieveConnectionStatusAboveApi28(): ConnectionStatus {
     val network = activeNetwork ?: return NONE
     val capabilities = getNetworkCapabilities(network) ?: return NONE
-    val isConnected = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     val isLocal = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
       capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
     val isCellular = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
       capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE)
     return when {
-      isConnected && isLocal -> LOCAL
-      isConnected && isCellular -> CELLULAR
+      isLocal -> LOCAL
+      isCellular -> CELLULAR
       else -> NONE
     }
   }

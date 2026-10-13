@@ -166,28 +166,16 @@ class NetworkConnectionUtilProdImplTest {
   @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_activeWifiCapability_returnsLocal() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_WIFI,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_WIFI
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
 
   @Test
   @Config(sdk = [Build.VERSION_CODES.Q])
-  fun testGetCurrentConnectionStatus_inactiveWifiCapability_returnsNone() {
-    networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_WIFI,
-      hasInternetCapability = false
-    )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_activeEthernetCapability_returnsLocal() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_ETHERNET,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_ETHERNET
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
@@ -196,28 +184,16 @@ class NetworkConnectionUtilProdImplTest {
   @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_activeCellularCapability_returnsCellular() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
 
   @Test
   @Config(sdk = [Build.VERSION_CODES.Q])
-  fun testGetCurrentConnectionStatus_inactiveCellularCapability_returnsNone() {
-    networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_CELLULAR,
-      hasInternetCapability = false
-    )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_activeWifiAwareCapability_returnsCellular() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_WIFI_AWARE,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_WIFI_AWARE
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
@@ -226,8 +202,7 @@ class NetworkConnectionUtilProdImplTest {
   @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_activeBluetoothCapability_returnsNone() {
     networkConnectionTestUtil.setNetworkCapabilities(
-      transportType = NetworkCapabilities.TRANSPORT_BLUETOOTH,
-      hasInternetCapability = true
+      transportType = NetworkCapabilities.TRANSPORT_BLUETOOTH
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -235,6 +210,7 @@ class NetworkConnectionUtilProdImplTest {
   @Test
   @Config(sdk = [Build.VERSION_CODES.Q])
   fun testGetCurrentConnectionStatus_noActiveNetwork_returnsNone() {
+    networkConnectionTestUtil.setNoActiveNetwork()
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
