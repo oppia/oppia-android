@@ -32,11 +32,11 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   private val DOUBLE_VALUE_TEST =
     InteractionObjectTestBuilder.createReal(value = 2.6).real
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_2 =
-    InteractionObjectTestBuilder.createNumberUnit(unit = "a", exponent = 2)
+    InteractionObjectTestBuilder.createNumberUnit(unit = "m", exponent = 2)
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_1 =
-    InteractionObjectTestBuilder.createNumberUnit(unit = "b", exponent = 1)
+    InteractionObjectTestBuilder.createNumberUnit(unit = "s", exponent = 1)
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_3 =
-    InteractionObjectTestBuilder.createNumberUnit(unit = "c", exponent = 3)
+    InteractionObjectTestBuilder.createNumberUnit(unit = "kg", exponent = 3)
   private val ANSWER_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
