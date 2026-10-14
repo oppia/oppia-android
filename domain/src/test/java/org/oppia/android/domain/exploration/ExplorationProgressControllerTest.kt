@@ -1047,6 +1047,101 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testHintsAndSolution_pauseThenSubmitWrongAnswer_timerRemainsPausedUntilResume() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    submitWrongAnswerForPrototypeState2()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(49))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(ephemeralState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenRevealHint_timerRemainsPausedUntilResume() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    var ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    val resumeResult = explorationProgressController.resumeHints()
+    monitorFactory.waitForNextSuccessfulResult(resumeResult)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(29))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(LATEST_REVEALED_HINT_INDEX)
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(1))
+    ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testHintsAndSolution_pauseThenMoveToNextState_newStateHintTimerIsNotPaused() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val pauseResult = explorationProgressController.pauseHints()
+    monitorFactory.waitForNextSuccessfulResult(pauseResult)
+
+    playThroughPrototypeState1AndMoveToNextState()
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+    testCoroutineDispatchers.runCurrent()
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.state.name).isEqualTo("Fractions")
+    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(ephemeralState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
+  }
+
+  @Test
   fun testHintAndSol_hintsVisible_submitWrongAns_wait10Second_solVisible_checkHelpIndexIsCorrect() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
