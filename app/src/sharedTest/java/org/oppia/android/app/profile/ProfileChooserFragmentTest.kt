@@ -62,6 +62,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -106,6 +107,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -153,6 +155,7 @@ class ProfileChooserFragmentTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var spotlightStateController: SpotlightStateController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -236,6 +239,90 @@ class ProfileChooserFragmentTest {
         stringToMatch = context.getString(R.string.profile_chooser_add),
         recyclerViewId = R.id.profile_recycler_view
       )
+    }
+  }
+
+  @Test
+  fun testProfileChooser_adminControlsSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB,
+      Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_controls))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_adminControlsSpotlightSeen_doesNotShowHint() {
+    setUpProfileChooserSpotlightTest()
+    markAllProfileChooserSpotlightsSeen()
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_controls)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_addLearnerSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM,
+      Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_add_learner))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_addLearnerSpotlightSeen_doesNotShowHint() {
+    setUpProfileChooserSpotlightTest()
+    markAllProfileChooserSpotlightsSeen()
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_add_learner)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testProfileChooser_adminProfileSpotlightNotSeen_showsHint() {
+    setUpProfileChooserSpotlightTest()
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM,
+      Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+    )
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_profile))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileChooser_adminProfileSpotlightSeen_doesNotShowHint() {
+    setUpProfileChooserSpotlightTest()
+    markAllProfileChooserSpotlightsSeen()
+
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.profile_chooser_spotlight_admin_profile)).check(doesNotExist())
     }
   }
 
@@ -1851,6 +1938,32 @@ class ProfileChooserFragmentTest {
       }
 
       override fun matchesSafely(view: View): Boolean = view.alpha == expectedAlpha
+    }
+  }
+
+  private fun setUpProfileChooserSpotlightTest() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
+    )
+  }
+
+  private fun markAllProfileChooserSpotlightsSeen() {
+    markProfileChooserSpotlightsSeen(
+      Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM,
+      Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB,
+      Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+    )
+  }
+
+  private fun markProfileChooserSpotlightsSeen(vararg features: Spotlight.FeatureCase) {
+    features.forEach { feature ->
+      monitorFactory.waitForNextSuccessfulResult(
+        spotlightStateController.markSpotlightViewed(testProfileId, feature)
+      )
     }
   }
 
