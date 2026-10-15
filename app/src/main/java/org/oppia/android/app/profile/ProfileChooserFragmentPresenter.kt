@@ -96,6 +96,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
   private var isBecomeAdministratorNoticeShowing = false
+  private var hasRequestedAdminProfileSpotlight = false
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -125,32 +126,17 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
     logProfileChooserEvent()
 
-    // Request admin controls spotlight (use icon as the single anchor) when laid out.
-    binding.profileSelectionSettingIcon.let { iconView ->
-      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
-        SpotlightTarget(
-          anchor = iconView,
-          hint = resourceHandler.getStringInLocale(
-            R.string.profile_chooser_spotlight_admin_controls
-          ),
-          feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
-        )
+    requestSpotlight(
+      anchor = binding.profileSelectionSettingIcon,
+      hintId = R.string.profile_chooser_spotlight_admin_controls,
+      feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+    )
+    if (binding.addProfileButton.visibility == View.VISIBLE) {
+      requestSpotlight(
+        anchor = binding.addProfileButton,
+        hintId = R.string.profile_chooser_spotlight_add_learner,
+        feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
       )
-    }
-
-    // Request add-learner FAB spotlight when laid out and visible.
-    binding.addProfileButton.let { fab ->
-      if (fab.visibility == View.VISIBLE) {
-        getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
-          SpotlightTarget(
-            anchor = fab,
-            hint = resourceHandler.getStringInLocale(
-              R.string.profile_chooser_spotlight_add_learner
-            ),
-            feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
-          )
-        )
-      }
     }
 
     binding.apply {
@@ -305,15 +291,32 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     viewModel: ProfileItemViewModel
   ) {
     binding.viewModel = viewModel
-    // Spotlight the admin profile item (first item) using delayed-layout request (avoids View.post).
-    if (viewModel.profile.profileType == ProfileType.SUPERVISOR) {
+    if (
+      viewModel.profile.profileType == ProfileType.SUPERVISOR &&
+      !hasRequestedAdminProfileSpotlight
+    ) {
+      hasRequestedAdminProfileSpotlight = true
+      requestSpotlight(
+        anchor = binding.root,
+        hintId = R.string.profile_chooser_spotlight_admin_profile,
+        feature = Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+      )
+    }
+  }
+
+  private fun requestSpotlight(
+    anchor: View,
+    hintId: Int,
+    feature: Spotlight.FeatureCase
+  ) {
+    // This fragment is attached immediately before the spotlight host. Post the lookup so that
+    // requests made during view creation are delivered after the host has been attached.
+    anchor.post {
       getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
         SpotlightTarget(
-          anchor = binding.root,
-          hint = resourceHandler.getStringInLocale(
-            R.string.profile_chooser_spotlight_admin_profile
-          ),
-          feature = Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+          anchor = anchor,
+          hint = resourceHandler.getStringInLocale(hintId),
+          feature = feature
         )
       )
     }

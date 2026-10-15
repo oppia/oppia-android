@@ -50,6 +50,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
     }
     activity.setContentView(R.layout.profile_chooser_activity)
+
     if (getProfileChooserFragment() == null) {
       val profileChooserFragment = ProfileChooserFragment()
 
@@ -72,7 +73,6 @@ class ProfileChooserActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-    // Ensure spotlight fragment is attached similar to HomeActivity.
     if (getSpotlightFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_spotlight_fragment_placeholder,

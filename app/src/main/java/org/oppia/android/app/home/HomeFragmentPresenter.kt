@@ -71,6 +71,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
+  private var hasRequestedAllTopicsSpotlight = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -207,14 +208,14 @@ class HomeFragmentPresenter @Inject constructor(
         inflateDataBinding = AllTopicsBinding::inflate,
         setViewModel = { binding, viewModel ->
           binding.viewModel = viewModel
-          // Request spotlight against the All Topics header for all users.
-          binding.allTopicsTextView.let { headerView ->
+          if (!hasRequestedAllTopicsSpotlight) {
+            hasRequestedAllTopicsSpotlight = true
             val manager = activity.supportFragmentManager.findFragmentByTag(
               SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
             ) as? SpotlightManager
             manager?.requestSpotlightViewWithDelayedLayout(
               SpotlightTarget(
-                anchor = headerView,
+                anchor = binding.allTopicsTextView,
                 hint = resourceHandler.getStringInLocale(
                   R.string.home_all_topics_spotlight_hint
                 ),
