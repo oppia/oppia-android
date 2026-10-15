@@ -2370,6 +2370,24 @@ class EventLogSubject private constructor(
      */
     fun hasInternalProfileIdThat(): StringSubject = assertThat(actual.profileId)
 
+    /**
+     * Returns a [LearnerDetailsContextSubject] to test
+     * [EventLog.SurveyResponseContext.getLearnerDetails].
+     *
+     * This method never fails since the underlying property defaults to empty proto if it's not
+     * defined in the context.
+     */
+    fun hasLearnerDetailsThat(): LearnerDetailsContextSubject =
+      LearnerDetailsContextSubject.assertThat(actual.learnerDetails)
+
+    /**
+     * Executes [block] in the context returned by [hasLearnerDetailsThat], similar to
+     * [hasOpenExplorationActivityContextThat].
+     */
+    fun hasLearnerDetailsThat(block: LearnerDetailsContextSubject.() -> Unit) {
+      hasLearnerDetailsThat().block()
+    }
+
     companion object {
       /**
        * Returns a new [SurveyResponseContextSubject] to verify aspects of the specified

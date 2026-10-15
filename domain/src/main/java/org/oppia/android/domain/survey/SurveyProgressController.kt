@@ -11,8 +11,10 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.EphemeralSurveyQuestion
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarketFitAnswer
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SelectedAnswerDatabase
 import org.oppia.android.app.model.SurveyQuestion
 import org.oppia.android.app.model.SurveyQuestionName
@@ -20,8 +22,10 @@ import org.oppia.android.app.model.SurveySelectedAnswer
 import org.oppia.android.app.model.SurveySelectedAnswer.AnswerCase
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -72,7 +76,9 @@ class SurveyProgressController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val surveyLogger: SurveyEventsLogger
+  private val surveyLogger: SurveyEventsLogger,
+  private val profileManagementController: ProfileManagementController,
+  private val loggingIdentifierController: LoggingIdentifierController
 ) {
   // TODO(#606): Replace this with a profile scope.
   private lateinit var profileId: LegacyProfileId
@@ -389,7 +395,12 @@ class SurveyProgressController @Inject constructor(
         saveSelectedAnswer(currentQuestionId.toString(), selectedAnswer)
         moveToNextQuestion()
       } else {
-        surveyLogger.logOptionalResponse(surveyId, profileId, selectedAnswer.freeFormAnswer)
+        surveyLogger.logOptionalResponse(
+          surveyId,
+          profileId,
+          fetchLearnerDetails(),
+          selectedAnswer.freeFormAnswer
+        )
       }
     }
   }
@@ -472,12 +483,23 @@ class SurveyProgressController @Inject constructor(
     convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
   }
 
+  private suspend fun fetchLearnerDetails(): LearnerDetailsContext {
+    val learnerId = profileManagementController.fetchLearnerId(
+      ProfileId.newBuilder().apply { internalId = profileId.internalId }.build()
+    )
+    return LearnerDetailsContext.newBuilder().apply {
+      learnerId?.let { this.learnerId = it }
+      loggingIdentifierController.fetchInstallationId()?.let { installId = it }
+    }.build()
+  }
+
   private suspend fun ControllerState.finishSurveyAndLog() {
     when {
       progress.questionDeck.hasAnsweredAllMandatoryQuestions() -> {
         surveyLogger.logMandatoryResponses(
           surveyId,
           profileId,
+          fetchLearnerDetails(),
           getStoredResponseToUserType(),
           getStoredResponseToMarketFitAnswer(),
           getStoredResponseToNpsScore()
@@ -491,6 +513,7 @@ class SurveyProgressController @Inject constructor(
         surveyLogger.logAbandonSurvey(
           surveyId,
           profileId,
+          fetchLearnerDetails(),
           currentQuestionName
         )
       }
