@@ -67,10 +67,16 @@ class IntroFragmentPresenter @Inject constructor(
       )
 
     binding.onboardingNavigationContinue.setOnClickListener {
+      val audioLanguageParentScreen =
+        if (parentScreen == IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN) {
+          AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
+        } else {
+          AudioLanguageActivityParams.ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
+        }
       val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
         fragment.requireContext(),
         AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
-        AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
+        audioLanguageParentScreen
       )
       intent.decorateWithUserProfileId(profileId)
       fragment.startActivity(intent)
