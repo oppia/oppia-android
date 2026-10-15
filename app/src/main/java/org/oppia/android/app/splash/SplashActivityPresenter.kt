@@ -366,7 +366,7 @@ class SplashActivityPresenter @Inject constructor(
             OsDeprecationNoticeDialogFragment::newInstance
           )
         }
-        StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
+        StartupMode.USER_NOT_YET_ONBOARDED -> handleUserNotYetOnboarded()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
           // defaulted), assume the user needs to be onboarded.
@@ -379,7 +379,7 @@ class SplashActivityPresenter @Inject constructor(
     private fun processLegacyStartupMode() {
       when (startupMode) {
         StartupMode.USER_IS_ONBOARDED -> handleUserOnboarded()
-        StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
+        StartupMode.USER_NOT_YET_ONBOARDED -> handleUserNotYetOnboarded()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
           // defaulted), assume the user needs to be onboarded.
@@ -394,6 +394,14 @@ class SplashActivityPresenter @Inject constructor(
       } else {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
+      }
+    }
+
+    private fun handleUserNotYetOnboarded() {
+      if (enableOnboardingFlowV2Provider.value) {
+        fetchProfile()
+      } else {
+        launchOnboardingActivity()
       }
     }
 
