@@ -465,6 +465,8 @@ message EventLog {
 
     // The ID of the Oppia profile currently logged in, responding to the survey.
     string profile_id = 2;
+
+    LearnerDetailsContext learner_details = 3;
   }
 
   // Structure for the app onboarding context.
