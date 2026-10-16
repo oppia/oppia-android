@@ -527,7 +527,7 @@ class StateRetriever @Inject constructor() {
         createMultipleChoiceInputCustomizationArgsMap(customizationArgsJson)
       }
       "NumericInput" -> {
-        mutableMapOf()
+        createNumericInputCustomizationArgsMap(customizationArgsJson)
       }
       "TextInput" -> {
         createTextInputCustomizationArgsMap(customizationArgsJson)
@@ -650,6 +650,17 @@ class StateRetriever @Inject constructor() {
       parseSubtitledHtmlListForCustomizationArgs(
         customizationArgsJson.getJSONObject("choices").getJSONArray("value")
       )
+    return customizationArgsMap
+  }
+
+  private fun createNumericInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    customizationArgsJson.optJSONObject("allowExponentialNotation")?.let {
+      customizationArgsMap["allowExponentialNotation"] =
+        parseBooleanSchemaObject(it.optBoolean("value", false))
+    }
     return customizationArgsMap
   }
 
