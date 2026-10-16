@@ -31,8 +31,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-      app:profileImageSource="@{viewModel.profile.avatar}" />
+      app:profileImageSource="@{viewModel.profile.avatar}"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape" />
 
     <ImageView
       android:layout_width="48dp"
@@ -41,8 +41,8 @@
       android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
-      android:paddingEnd="0dp"
       android:paddingTop="8dp"
+      android:paddingEnd="0dp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
       app:srcCompat="@drawable/rounded_white_background_with_shadow" />
@@ -52,23 +52,24 @@
       style="@style/TextViewCenter"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginStart="28dp"
       android:layout_marginTop="12dp"
+      android:layout_marginEnd="28dp"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="20sp"
-      app:layout_constraintEnd_toEndOf="@+id/completed_stories_container"
-      app:layout_constraintStart_toStartOf="@+id/ongoing_topics_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 
     <com.google.android.material.card.MaterialCardView
       android:id="@+id/ongoing_topics_container"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
+      android:layout_marginStart="20dp"
       android:layout_marginTop="32dp"
-      android:layout_marginEnd="24dp"
-      android:layout_weight="1"
+      android:layout_marginEnd="8dp"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
@@ -87,8 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="vertical">
 
         <TextView
           android:id="@+id/ongoing_topics_count"
@@ -96,7 +96,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
-          android:minWidth="60dp"
           android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="24sp" />
@@ -104,10 +103,11 @@
         <TextView
           android:id="@+id/ongoing_topics_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:breakStrategy="simple"
           android:fontFamily="sans-serif"
-          android:minWidth="60dp"
+          android:hyphenationFrequency="none"
           android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
@@ -118,8 +118,8 @@
       android:id="@+id/completed_stories_container"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="28dp"
-      android:layout_weight="1"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="20dp"
       android:clickable="@{viewModel.completedStoryCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
@@ -137,9 +137,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <TextView
           android:id="@+id/completed_stories_count"
@@ -154,10 +153,11 @@
         <TextView
           android:id="@+id/completed_stories_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:breakStrategy="simple"
           android:fontFamily="sans-serif"
-          android:minWidth="60dp"
+          android:hyphenationFrequency="none"
           android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
           android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
@@ -197,8 +197,8 @@
       android:textColor="@color/component_color_profile_progress_activity_view_all_text_color"
       android:textSize="14sp"
       android:visibility="@{viewModel.viewAllButtonVisibility}"
+      app:layout_constraintBottom_toBottomOf="@+id/recently_played_stories_text_view"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/completed_stories_container"
       app:layout_constraintTop_toTopOf="@+id/recently_played_stories_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
