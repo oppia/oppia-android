@@ -10,7 +10,9 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -788,6 +790,61 @@ class TransformAndroidManifestTest {
     val expectedDateString = expectedExpirationDate.format(formatter)
     assertThat(transformedManifest).containsMatch(
       "<meta-data android:name=\"expiration_date\" android:value=\"$expectedDateString\""
+    )
+  }
+  @Test
+  fun testUtility_printAabName_outputsExpectedFilename() {
+    initializeGitRepositoryWithHistory()
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val outputStream = ByteArrayOutputStream()
+    val originalOut = System.out
+    val printStream = PrintStream(outputStream)
+
+    try {
+      System.setOut(printStream)
+      runScript(
+        "--print-aab-name",
+        tempFolder.root.absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION
+      )
+    } finally {
+      System.setOut(originalOut)
+      printStream.close()
+    }
+
+    assertThat(outputStream.toString().trim()).isEqualTo(
+      "oppia-android-1.03-rc01-beta-${latestCommit.take(10)}.aab"
+    )
+  }
+
+  @Test
+  fun testUtility_printAabName_onReleaseBranch_outputsCorrectRcNumber() {
+    initializeGitRepositoryWithHistory()
+    testGitRepository.checkoutNewBranch("release-v1.0")
+    testGitRepository.commit(message = "Release CP 1", allowEmpty = true)
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val outputStream = ByteArrayOutputStream()
+    val originalOut = System.out
+    val printStream = PrintStream(outputStream)
+
+    try {
+      System.setOut(printStream)
+      runScript(
+        "--print-aab-name",
+        tempFolder.root.absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION
+      )
+    } finally {
+      System.setOut(originalOut)
+      printStream.close()
+    }
+
+    assertThat(outputStream.toString().trim()).isEqualTo(
+      "oppia-android-1.03-rc02-beta-${latestCommit.take(10)}.aab"
     )
   }
 
