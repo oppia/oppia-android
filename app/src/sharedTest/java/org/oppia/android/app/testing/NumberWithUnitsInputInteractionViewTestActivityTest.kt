@@ -166,6 +166,158 @@ class NumberWithUnitsInputInteractionViewTestActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
+  fun testNumberWithUnitsInput_supportedUnits_haveCorrectPendingAnswers() {
+    val supportedUnits = listOf(
+      "m" to "m", "in" to "in", "ft" to "ft", "yd" to "yd",
+      "g" to "g", "gr" to "gr", "oz" to "oz", "m2" to "m2",
+      "sqin" to "sqin", "sqft" to "sqft", "sqyd" to "sqyd", "m3" to "m3",
+      "L" to "L", "cc" to "cc", "cuin" to "cuin", "cuft" to "cuft",
+      "cuyd" to "cuyd", "K" to "K", "degC" to "degC", "rad" to "rad",
+      "deg" to "deg", "s" to "s", "min" to "min", "h" to "h",
+      "Hz" to "Hz", "mol" to "mol", "cd" to "cd", "N" to "N",
+      "J" to "J", "W" to "W", "Pa" to "Pa", "A" to "A", "V" to "V",
+      "ohm" to "ohm", "$1" to "$", "1 ¢" to "¢", "1 rupee" to "Rs",
+      "1 paisa" to "paisa"
+    )
+    val activityScenario = ActivityScenario.launch(
+      NumberWithUnitsInputInteractionViewTestActivity::class.java
+    )
+
+    supportedUnits.forEach { (input, expectedUnit) ->
+      onView(withId(R.id.test_number_with_units_input_interaction_view))
+        .perform(
+          editTextInputAction.replaceText(
+            if (input.first().isDigit() || input == "$1") input else "1 $input"
+          )
+        )
+      activityScenario.onActivity { activity ->
+        val pendingAnswer = activity.numberWithUnitsInputViewModel.getPendingAnswer()
+        assertThat(pendingAnswer.answer.objectTypeCase).named(input).isEqualTo(
+          InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
+        )
+        assertThat(pendingAnswer.answer.numberWithUnits.unitList.map { it.unit })
+          .named(input).containsExactly(expectedUnit)
+      }
+    }
+    activityScenario.close()
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumberWithUnitsInput_supportedNumberForms_haveCorrectPendingAnswers() {
+    val activityScenario = ActivityScenario.launch(
+      NumberWithUnitsInputInteractionViewTestActivity::class.java
+    )
+    val inputView = withId(R.id.test_number_with_units_input_interaction_view)
+
+    onView(inputView).perform(editTextInputAction.replaceText("-3.5 kg"))
+    activityScenario.onActivity { activity ->
+      val answer = activity.numberWithUnitsInputViewModel.getPendingAnswer().answer.numberWithUnits
+      assertThat(answer.real).isEqualTo(-3.5)
+      assertThat(answer.unitList.single().unit).isEqualTo("kg")
+      assertThat(answer.unitList.single().exponent).isEqualTo(1)
+    }
+
+    onView(inputView).perform(editTextInputAction.replaceText("1/2 m^2"))
+    activityScenario.onActivity { activity ->
+      val answer = activity.numberWithUnitsInputViewModel.getPendingAnswer().answer.numberWithUnits
+      assertThat(answer.hasFraction()).isTrue()
+      assertThat(answer.fraction.numerator).isEqualTo(1)
+      assertThat(answer.fraction.denominator).isEqualTo(2)
+      assertThat(answer.unitList.single().unit).isEqualTo("m")
+      assertThat(answer.unitList.single().exponent).isEqualTo(2)
+    }
+
+    onView(inputView).perform(editTextInputAction.replaceText("5 kg m/(s^2)"))
+    activityScenario.onActivity { activity ->
+      val units = activity.numberWithUnitsInputViewModel.getPendingAnswer().answer.numberWithUnits
+        .unitList
+      assertThat(units.map { it.unit }).containsExactly("kg", "m", "s").inOrder()
+      assertThat(units.map { it.exponent }).containsExactly(1, 1, -2).inOrder()
+    }
+
+    onView(inputView).perform(editTextInputAction.replaceText("$100 Nm"))
+    activityScenario.onActivity { activity ->
+      val answer = activity.numberWithUnitsInputViewModel.getPendingAnswer().answer.numberWithUnits
+      assertThat(answer.real).isEqualTo(100.0)
+      assertThat(answer.unitList.map { it.unit }).containsExactly("$", "N", "m").inOrder()
+    }
+    activityScenario.close()
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumberWithUnitsInput_siPrefixes_haveCorrectPendingAnswers() {
+    val prefixedUnits = listOf(
+      "dam", "hm", "km", "Mm", "Gm", "Tm", "Pm", "Em", "Zm", "Ym",
+      "dm", "cm", "mm", "um", "nm", "pm", "fm", "am", "zm", "ym"
+    )
+    val activityScenario = ActivityScenario.launch(
+      NumberWithUnitsInputInteractionViewTestActivity::class.java
+    )
+
+    prefixedUnits.forEach { unit ->
+      onView(withId(R.id.test_number_with_units_input_interaction_view))
+        .perform(editTextInputAction.replaceText("1 $unit"))
+      activityScenario.onActivity { activity ->
+        val answer = activity.numberWithUnitsInputViewModel.getPendingAnswer().answer
+        assertThat(answer.objectTypeCase).named(unit).isEqualTo(
+          InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
+        )
+        assertThat(answer.numberWithUnits.unitList.single().unit).named(unit).isEqualTo(unit)
+      }
+    }
+    activityScenario.close()
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumberWithUnitsInput_invalidExpressions_showExpectedErrors() {
+    val invalidInputs = listOf(
+      "" to R.string.number_with_units_error_empty_input,
+      "xyz" to R.string.number_with_units_error_number_expected,
+      "5 xyz" to R.string.number_with_units_error_invalid_unit,
+      "5 m/" to R.string.number_with_units_error_unit_expected_after_division,
+      "1/ m" to R.string.number_with_units_error_missing_denominator,
+      "5 m^" to R.string.number_with_units_error_missing_exponent,
+      "5 m/(s" to R.string.number_with_units_error_unbalanced_parentheses,
+      "5 kilo" to R.string.number_with_units_error_unit_expected_after_si_prefix,
+      "$ kg" to R.string.number_with_units_error_number_expected_after_currency,
+      "$5 dollars" to R.string.number_with_units_error_duplicate_currency,
+      "5 m @" to R.string.number_with_units_error_invalid_token,
+      "5 m 6" to R.string.number_with_units_error_trailing_tokens
+    )
+
+    invalidInputs.forEach { (input, expectedError) ->
+      ActivityScenario.launch(NumberWithUnitsInputInteractionViewTestActivity::class.java).use {
+        onView(withId(R.id.test_number_with_units_input_interaction_view))
+          .perform(editTextInputAction.replaceText(input))
+        scrollToSubmitButton()
+        onView(withId(R.id.submit_button)).perform(click())
+        onView(withId(R.id.number_with_units_input_error))
+          .check(matches(withText(expectedError)))
+      }
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumberWithUnitsInput_invalidExpression_hasNoStructuredAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      NumberWithUnitsInputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_number_with_units_input_interaction_view))
+      .perform(editTextInputAction.replaceText("5 unknown"))
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.numberWithUnitsInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.hasAnswer()).isFalse()
+      assertThat(pendingAnswer.plainAnswer).isEqualTo("5 unknown")
+    }
+    activityScenario.close()
+  }
+
+  @Test
   fun testNumberWithUnitsInput_withValue_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       NumberWithUnitsInputInteractionViewTestActivity::class.java
