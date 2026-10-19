@@ -15,6 +15,7 @@ def _generate_assets_list_from_text_protos(
         story_file_names,
         skills_file_names,
         exploration_file_names,
+        question_list_file_names,
         asset_dir):
     """
     Converts multiple lists of text proto assets to binary.
@@ -28,6 +29,7 @@ def _generate_assets_list_from_text_protos(
         story_file_names: list of str. The list of story file names.
         skills_file_names: list of str. The list of skills/concept card list file names.
         exploration_file_names: list of str. The list of exploration file names.
+        question_list_file_names: list of str. The list of question list file names.
         asset_dir: str. The directory where the textproto files are located.
 
     Returns:
@@ -96,6 +98,15 @@ def _generate_assets_list_from_text_protos(
         asset_dir = asset_dir,
         proto_dep_bazel_target_prefix = "//model/src/main/proto",
         proto_package = "model",
+    ) + generate_proto_binary_assets(
+        name = name,
+        names = question_list_file_names,
+        proto_dep_name = "question",
+        proto_type_name = "QuestionList",
+        name_prefix = "question_list",
+        asset_dir = asset_dir,
+        proto_dep_bazel_target_prefix = "//model/src/main/proto",
+        proto_package = "model",
     )
 
 def local_assets_library(
@@ -108,6 +119,7 @@ def local_assets_library(
         story_file_names = [],
         skills_file_names = [],
         exploration_file_names = [],
+        question_list_file_names = [],
         json_assets = [],
         **kwargs):
     """
@@ -125,6 +137,7 @@ def local_assets_library(
         story_file_names: list of str. The list of story file names.
         skills_file_names: list of str. The list of skills/concept card list file names.
         exploration_file_names: list of str. The list of exploration file names.
+        question_list_file_names: list of str. The list of question list file names.
         json_assets: list of label. The list of physical JSON asset files to package.
         **kwargs: additional parameters to pass to android_library.
     """
@@ -153,6 +166,7 @@ def local_assets_library(
         story_file_names = story_file_names,
         skills_file_names = skills_file_names,
         exploration_file_names = exploration_file_names,
+        question_list_file_names = question_list_file_names,
         asset_dir = assets_dir,
     )
 
