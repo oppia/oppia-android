@@ -792,8 +792,50 @@ class TransformAndroidManifestTest {
       "<meta-data android:name=\"expiration_date\" android:value=\"$expectedDateString\""
     )
   }
+
   @Test
-  fun testUtility_printAabName_outputsExpectedFilename() {
+  fun testMain_printAabName_wrongArgumentCount_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript("--print-aab-name", "/repo")
+    }
+
+    assertThat(exception).hasMessageThat().contains(
+      "Usage: --print-aab-name"
+    )
+  }
+
+  @Test
+  fun testMain_printAabName_invalidMajorVersion_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        "--print-aab-name",
+        "/repo",
+        BUILD_FLAVOR,
+        "invalid_major",
+        MINOR_VERSION
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testMain_printAabName_invalidMinorVersion_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        "--print-aab-name",
+        "/repo",
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        "invalid_minor"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testMain_printAabName_outputsExpectedFilename() {
     initializeGitRepositoryWithHistory()
     val latestCommit = getMostRecentCommitOnCurrentBranch()
     val outputStream = ByteArrayOutputStream()
@@ -820,7 +862,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_printAabName_onReleaseBranch_outputsCorrectRcNumber() {
+  fun testMain_printAabNameOnReleaseBranch_outputsCorrectRcNumber() {
     initializeGitRepositoryWithHistory()
     testGitRepository.checkoutNewBranch("release-v1.0")
     testGitRepository.commit(message = "Release CP 1", allowEmpty = true)

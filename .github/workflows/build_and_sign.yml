@@ -127,9 +127,6 @@ jobs:
               echo "::error::Failed to calculate the expected AAB filename."
               exit 1
             }
-
-          echo "$BAZEL_OUTPUT"
-
           AAB_NAME=$(printf '%s\n' "$BAZEL_OUTPUT" |
             grep -E '^oppia-android-[0-9]+\.[0-9]+-rc[0-9]+-(alpha|beta|ga)-[[:xdigit:]]{10}\.aab$' |
             tail -n 1) || true
@@ -145,24 +142,15 @@ jobs:
             sed -E 's/^oppia-android-[0-9]+\.[0-9]+-rc([0-9]+)-.*/\1')
 
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
-
           echo "Checking GCS path: $GCS_PATH"
-          if GCS_OUTPUT=$(gsutil ls "$GCS_PATH" 2>&1); then
+          if gsutil stat "$GCS_PATH" >/dev/null 2>&1; then
             echo "should_build=false" >> "$GITHUB_OUTPUT"
             echo "AAB already exists at $GCS_PATH."
             echo "Skipping the build and upload."
           else
-            GCS_STATUS=$?
-            if grep -q 'One or more URLs matched no objects' <<< "$GCS_OUTPUT"; then
-              echo "should_build=true" >> "$GITHUB_OUTPUT"
-              echo "No existing binary found. Proceeding with the build."
-            else
-              echo "$GCS_OUTPUT"
-              echo "::error::Could not verify whether the GCS object exists."
-              exit "$GCS_STATUS"
-            fi
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "No existing binary found. Proceeding with the build."
           fi
-
 
       - name: Write prod server key
         if: steps.precheck_release_binary.outputs.should_build == 'true'
