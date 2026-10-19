@@ -8,14 +8,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
-import org.oppia.android.scripts.gae.GaeAndroidEndpoint
 import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.proto.ImageDownloader
+import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
 import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.android.scripts.proto.DownloadListVersions
 import org.oppia.android.scripts.proto.DownloadListVersions.ChapterInfo
+import org.oppia.android.scripts.proto.DownloadListVersions.QuestionInfo
 import org.oppia.android.scripts.proto.DownloadListVersions.SkillInfo
 import org.oppia.android.scripts.proto.DownloadListVersions.StoryInfo
 import org.oppia.android.scripts.proto.DownloadListVersions.SubtopicInfo
@@ -35,10 +36,11 @@ import java.io.File
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 // TODO: verify that images aren't changed after upload, but this needs to be confirmed (that is, if they need to be changed a new image is added to GCS, instead).
 fun main(vararg args: String) {
-  check(args.size in 6..7) {
+  check(args.size in 6..8) {
     "Expected use: bazel run //scripts:download_lesson_list <base_url> <gcs_base_url>" +
       " <gcs_bucket> </path/to/api/secret.file> </path/to/output_list.textproto>" +
-      " </path/to/download_config.[textproto,pb]> [</path/to/api/debug/dir>]"
+      " </path/to/download_config.[textproto,pb]> [</path/to/api/debug/dir>]" +
+      " [<download_questions=true/false>]"
   }
 
   val baseUrl = args[0]
@@ -47,7 +49,8 @@ fun main(vararg args: String) {
   val apiSecretPath = args[3]
   val outputFilePath = args[4]
   val downloadConfigPath = args[5]
-  val apiDebugPath = args.getOrNull(6)
+  val apiDebugPath = args.getOrNull(6)?.takeIf { it.isNotEmpty() }
+  val downloadQuestions = args.getOrNull(7)?.toBooleanStrict() ?: false
   val apiSecretFile = File(apiSecretPath).absoluteFile.normalize().also {
     check(it.exists() && it.isFile) { "Expected API secret file to exist: $apiSecretPath." }
   }
@@ -75,7 +78,8 @@ fun main(vararg args: String) {
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val downloader = LessonListDownloader(
-      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, apiDebugDir, scriptBgDispatcher, downloadConfig
+      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, apiDebugDir, scriptBgDispatcher, downloadConfig,
+      downloadQuestions
     )
     runBlocking { downloader.downloadLessonListAsync(outputFile).await() }
   }
@@ -88,22 +92,25 @@ class LessonListDownloader(
   apiSecret: String,
   private val apiDebugDir: File?,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val downloadConfig: DownloadConfig
+  private val downloadConfig: DownloadConfig,
+  private val downloadQuestions: Boolean = false,
+  private val webTranslationExtractor: OppiaWebTranslationExtractor? = null
 ) {
   private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
   private val imageDownloader by lazy { ImageDownloader(gcsService, scriptBgDispatcher) }
-  private val androidEndpoint: GaeAndroidEndpoint by lazy {
+  private val androidEndpoint: GaeAndroidEndpointJsonImpl by lazy {
     GaeAndroidEndpointJsonImpl(
       apiSecret,
       gaeBaseUrl,
       apiDebugDir,
       forceCacheLoad = false,
-      downloadQuestions = false,
+      downloadQuestions = downloadQuestions,
       scriptBgDispatcher,
       imageDownloader,
       forcedVersions = null, // Always load latest when creating the pin versions list.
       downloadConfig = downloadConfig,
-      filterInvalidTopics = false // Do this during the main download instead.
+      filterInvalidTopics = false, // Do this during the main download instead.
+      webTranslationExtractor = webTranslationExtractor
     )
   }
 
@@ -120,7 +127,15 @@ class LessonListDownloader(
       println(lessonListOutputFile.path)
       withContext(Dispatchers.IO) {
         lessonListOutputFile.outputStream().bufferedWriter().use {
-          TextFormat.printer().print(listResponse.captureVersions(), it)
+          val versions = listResponse.captureVersions().toBuilder().apply {
+            addAllTrackedQuestionInfo(
+              androidEndpoint.getQuestionVersions().toSortedMap().map {
+                (id, version) ->
+                QuestionInfo.newBuilder().setId(id).setContentVersion(version).build()
+              }
+            )
+          }.build()
+          TextFormat.printer().print(versions, it)
         }
       }
     }

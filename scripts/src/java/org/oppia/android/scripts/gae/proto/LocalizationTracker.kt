@@ -8,6 +8,7 @@ import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.json.GaeClassroom
 import org.oppia.android.scripts.gae.json.GaeEntityTranslations
 import org.oppia.android.scripts.gae.json.GaeExploration
+import org.oppia.android.scripts.gae.json.GaeQuestion
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
@@ -248,7 +249,7 @@ class LocalizationTracker private constructor(
 
     data class Question(val id: String) : ContainerId() {
       override val webTranslatableActivityId = null
-      override val gcsImageContainerType = GcsService.ImageContainerType.SKILL
+      override val gcsImageContainerType = GcsService.ImageContainerType.QUESTION
       override val gcsEntityId = id
     }
 
@@ -333,6 +334,9 @@ class LocalizationTracker private constructor(
         revisionCardId: LocalizedRevisionCardIdDto,
         correspondingGaeSubtopic: GaeSubtopic
       ): ContainerId = RevisionCard(revisionCardId.id, correspondingGaeSubtopic.urlFragment)
+
+      /** Returns the localization container for [gaeQuestion]. */
+      fun createFrom(gaeQuestion: GaeQuestion): ContainerId = Question(gaeQuestion.id)
 
       fun createFrom(gaeExploration: GaeExploration): ContainerId = Exploration(gaeExploration.id)
 
@@ -662,6 +666,15 @@ class LocalizationTracker private constructor(
         OppiaWebTranslationExtractor.createExtractor(), imageDownloader, downloadConfig
       )
     }
+
+    /** Creates a tracker using an existing translation snapshot, without downloading it again. */
+    fun createTracker(
+      imageDownloader: ImageDownloader,
+      downloadConfig: DownloadConfig,
+      webTranslationExtractor: OppiaWebTranslationExtractor
+    ): LocalizationTracker = LocalizationTracker(
+      webTranslationExtractor, imageDownloader, downloadConfig
+    )
 
     fun String.resolveLanguageCode(): LanguageType {
       return when (lowercase()) {

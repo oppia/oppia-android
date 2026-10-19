@@ -72,8 +72,10 @@ kt_jvm_library(
     srcs = [
         "AndroidActivityEndpointApi.kt",
         "AndroidActivityHandlerService.kt",
+        "QuestionRepository.kt",
     ],
     visibility = [
+        "//scripts:oppia_script_test_visibility",
         "//scripts/src/java/org/oppia/android/scripts/gae:__subpackages__",
     ],
     deps = [

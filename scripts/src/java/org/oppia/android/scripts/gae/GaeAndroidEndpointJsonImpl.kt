@@ -13,11 +13,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.withIndex
 import org.oppia.android.scripts.gae.compat.CompleteExploration
 import org.oppia.android.scripts.gae.compat.CompleteTopicPack
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker
 import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityConstraints
+import org.oppia.android.scripts.gae.compat.StructureCompatibilityChecker.CompatibilityResult
+import org.oppia.android.scripts.gae.compat.SubtitledHtmlCollector
 import org.oppia.android.scripts.gae.compat.TopicPackRepository
 import org.oppia.android.scripts.gae.compat.TopicPackRepository.MetricCallbacks.DataGroupType
 import org.oppia.android.scripts.gae.json.AndroidActivityHandlerService
 import org.oppia.android.scripts.gae.json.GaeClassroom
+import org.oppia.android.scripts.gae.json.GaeQuestion
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeStory
 import org.oppia.android.scripts.gae.json.GaeSubtopic
@@ -27,6 +31,7 @@ import org.oppia.android.scripts.gae.proto.ImageDownloader
 import org.oppia.android.scripts.gae.proto.JsonToProtoConverter
 import org.oppia.android.scripts.gae.proto.LocalizationTracker
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
+import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestConceptCardProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestExplorationProtoVersion
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider.createLatestImageProtoVersion
@@ -59,6 +64,7 @@ import org.oppia.proto.v1.api.TopicListRequestDto
 import org.oppia.proto.v1.api.TopicListResponseDto
 import org.oppia.proto.v1.api.TopicListResponseDto.DownloadableTopicDto
 import org.oppia.proto.v1.structure.LanguageType
+import org.oppia.proto.v1.structure.LocalizedQuestionIdDto
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -73,7 +79,8 @@ class GaeAndroidEndpointJsonImpl(
   private val imageDownloader: ImageDownloader,
   private val forcedVersions: DownloadListVersions?,
   private val downloadConfig: DownloadConfig,
-  private val filterInvalidTopics: Boolean
+  private val filterInvalidTopics: Boolean,
+  private val webTranslationExtractor: OppiaWebTranslationExtractor? = null
 ) : GaeAndroidEndpoint {
   private val activityService by lazy {
     AndroidActivityHandlerService(
@@ -135,7 +142,8 @@ class GaeAndroidEndpointJsonImpl(
         topicDependencies,
         imageDownloader,
         downloadConfig,
-        filterInvalidTopics
+        filterInvalidTopics,
+        webTranslationExtractor
       )
 
       val jsonConverter = converterInitializer.getJsonToProtoConverter()
@@ -150,12 +158,6 @@ class GaeAndroidEndpointJsonImpl(
           topicId, topicCountsTracker.topicStructureCountMap.getValue(topicId).metricsCallbacks
         ).also { tracker.reportDownloaded("${topicId}_$index") }
       }.awaitAll().filterNotNull().associateBy { it.topic.id }
-
-      if (downloadQuestions) {
-        val questions = activityService.fetchLatestQuestionsAsync().await()
-        println()
-        println("DEBUG: Downloaded ${questions.size} JSON questions.")
-      }
 
       val missingTopicIds = topicIds - availableTopicPacks.keys
       val futureTopics = missingTopicIds.map { topicId ->
@@ -174,6 +176,42 @@ class GaeAndroidEndpointJsonImpl(
       jsonConverter.trackExplorationTranslations(contentCache.explorations.toPacks())
       jsonConverter.trackConceptCardTranslations(contentCache.skills)
       jsonConverter.trackRevisionCardTranslations(contentCache.subtopics.values.toList())
+      if (downloadQuestions) {
+        val pins = forcedVersions?.trackedQuestionInfoList?.let { entries ->
+          check(entries.map { it.id }.distinct().size == entries.size) {
+            "Question version pins contain duplicate IDs."
+          }
+          entries.associate { it.id to it.contentVersion }
+        }
+        val checker = StructureCompatibilityChecker(
+          constraints, converterInitializer.getLocalizationTracker(),
+          SubtitledHtmlCollector(converterInitializer.getLocalizationTracker())
+        )
+        val referencedSkillIds = contentCache.topics.values.filter {
+          it.practiceTabIsDisplayed
+        }.flatMap { it.subtopics }.flatMap { it.skillIds }.toSet()
+        check(pins == null || pins.isNotEmpty() || referencedSkillIds.isEmpty()) {
+          "Practice is enabled but no question versions are pinned. Regenerate the pinned" +
+            " lesson versions with question downloads enabled before building these assets."
+        }
+        val questions = activityService.fetchLatestQuestionsAsync(pins).await().map { it.payload }
+          .filter { question -> question.linkedSkillIds.any { it in referencedSkillIds } }
+          .filter { question ->
+            when (val result = checker.isQuestionItselfCompatible(question)) {
+              CompatibilityResult.Compatible -> true
+              is CompatibilityResult.Incompatible -> {
+                println("Skipping incompatible question ${question.id}: ${result.failures}")
+                false
+              }
+            }
+          }
+        contentCache.addQuestions(questions)
+        jsonConverter.trackQuestionTranslations(questions)
+        println(
+          "Retained ${questions.size} compatible practice questions for bundled topic skills."
+        )
+      }
+
       jsonConverter.trackTopicTranslations(futureTopics)
 
       tracker.reportDownloaded("data_conversion_finished")
@@ -214,6 +252,51 @@ class GaeAndroidEndpointJsonImpl(
           }
         )
       }.build()
+    }
+  }
+
+  /** Returns the source topic toggles; the writer also checks bundled question coverage. */
+  fun getPracticeEnabledTopicIds(): Set<String> = contentCache.topics.values.filter {
+    downloadQuestions && it.practiceTabIsDisplayed
+  }.map { it.id }.toSet()
+
+  /** Returns the retained question versions for capturing deterministic download pins. */
+  fun getQuestionVersions(): Map<String, Int> =
+    contentCache.questions.mapValues { it.value.version }
+
+  /** Returns solution exclusivity, which the intermediate API DTO does not represent. */
+  fun getQuestionSolutionExclusivity(): Map<String, Boolean> =
+    contentCache.questions.values.mapNotNull { question ->
+      question.questionStateData.interaction?.solution?.let {
+        question.id to it.answerIsExclusive
+      }
+    }.toMap()
+
+  /** Builds requests for retained questions and any available additional language packs. */
+  suspend fun createQuestionDownloadIdentifiers(
+    requestedLanguages: List<LanguageType>
+  ): List<DownloadRequestStructureIdentifierDto> {
+    val tracker = converterInitializer.getLocalizationTracker()
+    return contentCache.questions.values.sortedBy { it.id }.flatMap { question ->
+      val containerId = LocalizationTracker.ContainerId.createFrom(question)
+      val defaultLanguage = question.languageCode.resolveLanguageCode()
+      val localizedId = LocalizedQuestionIdDto.newBuilder().apply {
+        questionId = question.id
+        language = defaultLanguage
+      }.build()
+      val defaultIdentifier = DownloadRequestStructureIdentifierDto.newBuilder().apply {
+        this.question = localizedId
+        contentVersion = question.version
+      }.build()
+      val additionalIdentifiers = requestedLanguages.filter { language ->
+        language != defaultLanguage && tracker.isLanguageSupported(containerId, language)
+      }.map { language ->
+        DownloadRequestStructureIdentifierDto.newBuilder().apply {
+          questionLanguagePack = localizedId.toBuilder().setLanguage(language).build()
+          contentVersion = question.version
+        }.build()
+      }
+      listOf(defaultIdentifier) + additionalIdentifiers
     }
   }
 
@@ -293,8 +376,9 @@ class GaeAndroidEndpointJsonImpl(
         REVISION_CARD_LANGUAGE_PACK -> StructureFetcher.RevisionCardLanguagePack
         CONCEPT_CARD_LANGUAGE_PACK -> StructureFetcher.ConceptCardLanguagePack
         EXPLORATION_LANGUAGE_PACK -> StructureFetcher.ExplorationLanguagePack
-        // Questions aren't yet available from Oppia web & the functionality is disabled in the app.
-        QUESTION_LIST_SKILL_ID, QUESTION, QUESTION_LANGUAGE_PACK -> StructureFetcher.Unsupported
+        QUESTION_LIST_SKILL_ID -> StructureFetcher.QuestionList
+        QUESTION -> StructureFetcher.Question
+        QUESTION_LANGUAGE_PACK -> StructureFetcher.QuestionLanguagePack
         STRUCTURETYPE_NOT_SET, null ->
           error("Encountered invalid request identifier: ${identifier.structureTypeCase}.")
       }
@@ -674,6 +758,63 @@ class GaeAndroidEndpointJsonImpl(
       }
     }
 
+    /** Lists the cached practice questions linked to the requested skill. */
+    object QuestionList : StructureFetcher() {
+      override suspend fun DownloadResultDto.Builder.fetchAndSet(
+        identifier: DownloadRequestStructureIdentifierDto,
+        jsonConverter: JsonToProtoConverter,
+        localizationTracker: LocalizationTracker,
+        contentCache: ContentCache
+      ): Int {
+        questionIdList = TopicContentResponseDto.QuestionIdListDto.newBuilder().apply {
+          addAllQuestionIds(
+            contentCache.questions.values.filter {
+              identifier.questionListSkillId in it.linkedSkillIds
+            }.map { it.id }.sorted()
+          )
+        }.build()
+        return identifier.contentVersion
+      }
+    }
+
+    /** Converts a cached practice question to its downloadable DTO. */
+    object Question : StructureFetcher() {
+      override suspend fun DownloadResultDto.Builder.fetchAndSet(
+        identifier: DownloadRequestStructureIdentifierDto,
+        jsonConverter: JsonToProtoConverter,
+        localizationTracker: LocalizationTracker,
+        contentCache: ContentCache
+      ): Int {
+        val question = contentCache.questions.getValue(identifier.question.questionId)
+        val containerId = LocalizationTracker.ContainerId.createFrom(question)
+        val language = identifier.question.language
+        return if (localizationTracker.isLanguageSupported(containerId, language)) {
+          jsonConverter.convertToQuestion(question, identifier.question.language).also {
+            this@fetchAndSet.question = it
+          }.contentVersion
+        } else setSkippedFromFailure(identifier)
+      }
+    }
+
+    /** Retrieves the available localization for a cached practice question. */
+    object QuestionLanguagePack : StructureFetcher() {
+      override suspend fun DownloadResultDto.Builder.fetchAndSet(
+        identifier: DownloadRequestStructureIdentifierDto,
+        jsonConverter: JsonToProtoConverter,
+        localizationTracker: LocalizationTracker,
+        contentCache: ContentCache
+      ): Int {
+        val id = identifier.questionLanguagePack
+        val question = contentCache.questions.getValue(id.questionId)
+        val containerId = LocalizationTracker.ContainerId.createFrom(question)
+        return if (localizationTracker.isLanguageSupported(containerId, id.language)) {
+          jsonConverter.retrieveQuestionLanguagePack(id, question).also {
+            this@fetchAndSet.questionLanguagePack = it
+          }.contentVersion
+        } else setSkippedFromFailure(identifier)
+      }
+    }
+
     object RevisionCardLanguagePack : StructureFetcher() {
       override suspend fun DownloadResultDto.Builder.fetchAndSet(
         identifier: DownloadRequestStructureIdentifierDto,
@@ -749,7 +890,8 @@ class GaeAndroidEndpointJsonImpl(
     private val topicDependencies: Map<String, Set<String>>,
     private val imageDownloader: ImageDownloader,
     private val downloadConfig: DownloadConfig,
-    private val filterInvalidTopics: Boolean
+    private val filterInvalidTopics: Boolean,
+    private val webTranslationExtractor: OppiaWebTranslationExtractor?
   ) {
     private var localizationTracker: LocalizationTracker? = null
     private var jsonToProtoConverter: JsonToProtoConverter? = null
@@ -766,7 +908,11 @@ class GaeAndroidEndpointJsonImpl(
       topicPackRepositories.getOrPut(constraints) { constructTopicPackRepository(constraints) }
 
     private suspend fun initializeLocalizationTracker(): LocalizationTracker =
-      LocalizationTracker.createTracker(imageDownloader, downloadConfig).also {
+      (
+        webTranslationExtractor?.let {
+          LocalizationTracker.createTracker(imageDownloader, downloadConfig, it)
+        } ?: LocalizationTracker.createTracker(imageDownloader, downloadConfig)
+        ).also {
         this.localizationTracker = it
       }
 
@@ -791,6 +937,7 @@ class GaeAndroidEndpointJsonImpl(
 
   private class ContentCache {
     private val internalTopicPackCache = mutableMapOf<String, CompleteTopicPack>()
+    private val internalQuestionsMap = mutableMapOf<String, GaeQuestion>()
     private val internalTopicsMap = mutableMapOf<String, GaeTopic>()
     private val internalStoriesMap = mutableMapOf<String, GaeStory>()
     private val internalSkillsMap = mutableMapOf<String, GaeSkill>()
@@ -798,12 +945,23 @@ class GaeAndroidEndpointJsonImpl(
     private val internalSubtopicsMap =
       mutableMapOf<SubtopicPageIdDto, Pair<GaeSubtopic, GaeSubtopicPage>>()
 
+    /** The practice questions available for the current download. */
+    val questions: Map<String, GaeQuestion> = internalQuestionsMap
     val topicPackCache: Map<String, CompleteTopicPack> = internalTopicPackCache
     val topics: Map<String, GaeTopic> = internalTopicsMap
     val stories: Map<String, GaeStory> = internalStoriesMap
     val skills: Map<String, GaeSkill> = internalSkillsMap
     val explorations: Map<String, CompleteExploration> = internalExplorationsMap
     val subtopics: Map<SubtopicPageIdDto, Pair<GaeSubtopic, GaeSubtopicPage>> = internalSubtopicsMap
+
+    /** Replaces the practice question inventory, rejecting duplicate question IDs. */
+    fun addQuestions(questions: List<GaeQuestion>) {
+      check(questions.map { it.id }.distinct().size == questions.size) {
+        "Practice questions contain duplicate IDs."
+      }
+      internalQuestionsMap.clear()
+      internalQuestionsMap += questions.associateBy { it.id }
+    }
 
     fun addPacks(packs: Map<String, CompleteTopicPack>) {
       internalTopicPackCache += packs

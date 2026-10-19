@@ -24,6 +24,7 @@ import org.oppia.android.scripts.gae.json.GaeInteractionObject.SignedInt
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableHtmlContentId
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableSetOfNormalizedString
 import org.oppia.android.scripts.gae.json.GaeOutcome
+import org.oppia.android.scripts.gae.json.GaeQuestion
 import org.oppia.android.scripts.gae.json.GaeRuleSpec
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeSolution
@@ -89,8 +90,10 @@ import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto
 import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
 import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
+import org.oppia.proto.v1.structure.LocalizedQuestionIdDto
 import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto
+import org.oppia.proto.v1.structure.MisconceptionDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto
 import org.oppia.proto.v1.structure.NormalizedPoint2dDto
 import org.oppia.proto.v1.structure.NumberWithUnitsDto
@@ -98,6 +101,8 @@ import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.NumericInputInstanceDto
 import org.oppia.proto.v1.structure.OutcomeDto
+import org.oppia.proto.v1.structure.QuestionDto
+import org.oppia.proto.v1.structure.QuestionLanguagePackDto
 import org.oppia.proto.v1.structure.RatioExpressionDto
 import org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.RevisionCardDto
@@ -238,32 +243,7 @@ class JsonToProtoConverter(
       localizationTracker.initializeContainer(containerId, defaultLanguage)
       localizationTracker.trackContainerText(containerId, TITLE, exploration.title)
 
-      // Track all subtitled text in each state of the exploration.
-      exploration.states.values.flatMap { state ->
-        val interaction = state.interaction
-        val baseSubtitles =
-          listOfNotNull(
-            state.content,
-            state.interaction?.defaultOutcome?.feedback,
-            state.interaction?.solution?.explanation
-          )
-        return@flatMap if (interaction != null) {
-          baseSubtitles + interaction.answerGroups.map { answerGroup ->
-            answerGroup.outcome.feedback
-          } + interaction.hints.map { hint ->
-            hint.hintContent
-          } + interaction.customizationArgs.customizationArgs.flatMap { (_, argVal) ->
-            when (argVal) {
-              is GaeImageWithRegions, is GaeCustomizationArgValue.SingleBoolean,
-              is GaeCustomizationArgValue.SingleInteger, is GaeCustomizationArgValue.StringList ->
-                emptyList()
-
-              is GaeCustomizationArgValue.SubtitledTextList -> argVal.value
-              is GaeCustomizationArgValue.SubtitledUnicode -> listOf(argVal.value)
-            }
-          }
-        } else baseSubtitles
-      }.forEach { localizationTracker.trackContainerText(containerId, it) }
+      trackStateText(containerId, exploration.states.values)
 
       // Voiceovers are only tracked after their corresponding content IDs have already been
       // properly defaulted.
@@ -271,33 +251,76 @@ class JsonToProtoConverter(
         localizationTracker.trackVoiceovers(containerId, state.recordedVoiceovers)
       }
 
-      // Track all translatable answer inputs.
-      exploration.states.values.flatMap { state ->
-        state.interaction?.answerGroups?.flatMap { answerGroup ->
-          answerGroup.ruleSpecs.flatMap { ruleSpec ->
-            ruleSpec.inputs.values.mapNotNull { ruleInput ->
-              when (ruleInput) {
-                // Note that translatable content IDs objects are ignored because they don't provide
-                // new translations and should already be tracked in the interaction's customization
-                // arguments.
-                is Fraction, is MathExpression, is NonNegativeInt,
-                is NormalizedString, is RatioExpression, is Real, is SignedInt,
-                is SetOfXlatableContentIds, is SetsOfXlatableContentIds,
-                is TranslatableHtmlContentId, is NumberWithUnits -> null
-                is TranslatableSetOfNormalizedString ->
-                  ruleInput.contentId?.let { it to ruleInput.normalizedStrSet }
-              }
-            }
-          }
-        } ?: emptyList()
-      }.forEach { (contentId, strList) ->
-        localizationTracker.trackContainerText(containerId, contentId, strList)
-      }
-
       // Track translations after all default strings have been established.
       for ((language, translations) in allTranslations) {
         localizationTracker.trackTranslations(containerId, language, translations.payload)
       }
+    }
+  }
+
+  /** Tracks all question content before converting its state and localization. */
+  fun trackQuestionTranslations(questions: Collection<GaeQuestion>) {
+    questions.forEach { question ->
+      val containerId = LocalizationTracker.ContainerId.createFrom(question)
+      localizationTracker.initializeContainer(
+        containerId, question.languageCode.resolveLanguageCode()
+      )
+      trackStateText(containerId, listOf(question.questionStateData.toState()))
+    }
+  }
+
+  private fun trackStateText(
+    containerId: LocalizationTracker.ContainerId,
+    states: Collection<GaeState>
+  ) {
+    // Track all subtitled text in each state of the exploration.
+    states.flatMap { state ->
+      val interaction = state.interaction
+      val baseSubtitles =
+        listOfNotNull(
+          state.content,
+          state.interaction?.defaultOutcome?.feedback,
+          state.interaction?.solution?.explanation
+        )
+      return@flatMap if (interaction != null) {
+        baseSubtitles + interaction.answerGroups.map { answerGroup ->
+          answerGroup.outcome.feedback
+        } + interaction.hints.map { hint ->
+          hint.hintContent
+        } + interaction.customizationArgs.customizationArgs.flatMap { (_, argVal) ->
+          when (argVal) {
+            is GaeImageWithRegions, is GaeCustomizationArgValue.SingleBoolean,
+            is GaeCustomizationArgValue.SingleInteger, is GaeCustomizationArgValue.StringList ->
+              emptyList()
+
+            is GaeCustomizationArgValue.SubtitledTextList -> argVal.value
+            is GaeCustomizationArgValue.SubtitledUnicode -> listOf(argVal.value)
+          }
+        }
+      } else baseSubtitles
+    }.forEach { localizationTracker.trackContainerText(containerId, it) }
+
+    // Track all translatable answer inputs.
+    states.flatMap { state ->
+      state.interaction?.answerGroups?.flatMap { answerGroup ->
+        answerGroup.ruleSpecs.flatMap { ruleSpec ->
+          ruleSpec.inputs.values.mapNotNull { ruleInput ->
+            when (ruleInput) {
+              // Note that translatable content IDs objects are ignored because they don't provide
+              // new translations and should already be tracked in the interaction's customization
+              // arguments.
+              is Fraction, is MathExpression, is NonNegativeInt,
+              is NormalizedString, is RatioExpression, is Real, is SignedInt,
+              is SetOfXlatableContentIds, is SetsOfXlatableContentIds,
+              is TranslatableHtmlContentId, is NumberWithUnits -> null
+              is TranslatableSetOfNormalizedString ->
+                ruleInput.contentId?.let { it to ruleInput.normalizedStrSet }
+            }
+          }
+        }
+      } ?: emptyList()
+    }.forEach { (contentId, strList) ->
+      localizationTracker.trackContainerText(containerId, contentId, strList)
     }
   }
 
@@ -507,6 +530,38 @@ class JsonToProtoConverter(
       // Translations are embedded within concept card cards, so the pack's version is always the
       // same as the concept card's version.
       this.contentVersion = gaeSkill.version
+    }.build()
+  }
+
+  /** Converts a practice question while preserving its linked skills and content version. */
+  suspend fun convertToQuestion(
+    question: GaeQuestion,
+    defaultLanguage: LanguageType
+  ): QuestionDto {
+    val containerId = LocalizationTracker.ContainerId.createFrom(question)
+    return QuestionDto.newBuilder().apply {
+      protoVersion = ProtoVersionProvider.createLatestQuestionProtoVersion()
+      id = question.id
+      questionState = question.questionStateData.toState().toProto(containerId)
+      addAllLinkedSkillIds(question.linkedSkillIds)
+      contentVersion = question.version
+      defaultLocalization =
+        localizationTracker.computeSpecificContentLocalization(containerId, defaultLanguage)
+    }.build()
+  }
+
+  /** Builds a question language pack from the localization available for [question]. */
+  suspend fun retrieveQuestionLanguagePack(
+    id: LocalizedQuestionIdDto,
+    question: GaeQuestion
+  ): QuestionLanguagePackDto {
+    return QuestionLanguagePackDto.newBuilder().apply {
+      protoVersion = ProtoVersionProvider.createLatestQuestionProtoVersion()
+      this.id = id
+      localization = localizationTracker.computeSpecificContentLocalization(
+        LocalizationTracker.ContainerId.createFrom(question), id.language
+      )
+      contentVersion = question.version
     }.build()
   }
 
@@ -1181,6 +1236,16 @@ class JsonToProtoConverter(
   ): BaseAnswerGroupDto {
     return BaseAnswerGroupDto.newBuilder().apply {
       this.outcome = this@toBaseProto.outcome.toProto(containerId)
+      this@toBaseProto.taggedSkillMisconceptionId?.takeIf { it.isNotEmpty() }?.let { id ->
+        val separator = id.lastIndexOf('-')
+        check(separator > 0 && separator < id.lastIndex) {
+          "Invalid tagged skill misconception ID: $id."
+        }
+        this.taggedSkillMisconception = MisconceptionDto.newBuilder().apply {
+          skillId = id.substring(0, separator)
+          misconceptionId = id.substring(separator + 1)
+        }.build()
+      }
     }.build()
   }
 

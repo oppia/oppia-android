@@ -78,6 +78,8 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
   enum class ImageContainerType(val httpRepresentation: String) {
     EXPLORATION(httpRepresentation = "exploration"),
     SKILL(httpRepresentation = "skill"),
+    /** Images belonging to a practice question. */
+    QUESTION(httpRepresentation = "question"),
     TOPIC(httpRepresentation = "topic"),
     STORY(httpRepresentation = "story"),
     CLASSROOM(httpRepresentation = "unknown") // TODO: Figure out what this should be.

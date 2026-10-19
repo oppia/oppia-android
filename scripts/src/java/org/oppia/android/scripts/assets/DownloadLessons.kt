@@ -23,12 +23,12 @@ import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertTo
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToTopicRecord
-import org.oppia.android.scripts.gae.GaeAndroidEndpoint
 import org.oppia.android.scripts.gae.GaeAndroidEndpointJsonImpl
 import org.oppia.android.scripts.gae.gcs.GcsService
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageContainerType
 import org.oppia.android.scripts.gae.gcs.GcsService.ImageType
 import org.oppia.android.scripts.gae.proto.ImageDownloader
+import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor
 import org.oppia.android.scripts.gae.proto.ProtoVersionProvider
 import org.oppia.android.scripts.proto.DownloadConfig
 import org.oppia.android.scripts.proto.DownloadListVersions
@@ -73,6 +73,7 @@ import org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto
 import org.oppia.proto.v1.structure.LocalizableTextDto
 import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
 import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
+import org.oppia.proto.v1.structure.LocalizedQuestionIdDto
 import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
 import org.oppia.proto.v1.structure.OutcomeDto
 import org.oppia.proto.v1.structure.QuestionDto
@@ -225,7 +226,8 @@ class LessonDownloader(
   private val forceCacheLoad: Boolean,
   private val downloadQuestions: Boolean,
   downloadListVersions: DownloadListVersions?,
-  downloadConfig: DownloadConfig
+  downloadConfig: DownloadConfig,
+  private val webTranslationExtractor: OppiaWebTranslationExtractor? = null
 ) {
   private val threadPool by lazy {
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
@@ -236,7 +238,7 @@ class LessonDownloader(
   }
   private val gcsService by lazy { GcsService(gcsBaseUrl, gcsBucket) }
   private val imageDownloader by lazy { ImageDownloader(gcsService, coroutineDispatcher) }
-  private val androidEndpoint: GaeAndroidEndpoint by lazy {
+  private val androidEndpoint: GaeAndroidEndpointJsonImpl by lazy {
     GaeAndroidEndpointJsonImpl(
       apiSecret,
       gaeBaseUrl,
@@ -247,7 +249,8 @@ class LessonDownloader(
       imageDownloader,
       forcedVersions = downloadListVersions,
       downloadConfig = downloadConfig,
-      filterInvalidTopics = true
+      filterInvalidTopics = true,
+      webTranslationExtractor = webTranslationExtractor
     )
   }
   private val textFormat by lazy { TextFormat.printer() }
@@ -484,8 +487,11 @@ class LessonDownloader(
         }
         // The result was a success, but the corresponding ID doesn't correspond to a structure.
         SKIPPED_DOES_NOT_EXIST -> null
-        QUESTION_ID_LIST, QUESTION, QUESTION_LANGUAGE_PACK ->
-          error("Questions aren't yet supported.")
+        QUESTION_ID_LIST -> null // The app filters the combined list by linked skill IDs.
+        QUESTION -> writeProtosAsync(protoV2Dir, result.question.id, result.question)
+        QUESTION_LANGUAGE_PACK -> writeProtosAsync(
+          protoV2Dir, result.questionLanguagePack.id.collapse(), result.questionLanguagePack
+        )
         SKIPPED_SHOULD_RETRY, SKIPPED_FROM_FAILURE, RESULTTYPE_NOT_SET, null ->
           error("Encountered unexpected result: $result.")
       }
@@ -515,6 +521,11 @@ class LessonDownloader(
       keySelector = { it.conceptCardLanguagePack.id.skillId },
       valueTransform = { it.conceptCardLanguagePack }
     )
+
+    val questions = successfulResults.filter { it.resultTypeCase == QUESTION }.map { it.question }
+    val questionPacks = successfulResults.filter {
+      it.resultTypeCase == QUESTION_LANGUAGE_PACK
+    }.map { it.questionLanguagePack }
 
     val explorations = successfulResults.filter {
       it.resultTypeCase == EXPLORATION
@@ -622,9 +633,26 @@ class LessonDownloader(
     val classroomImageReplacements = listResponse.classroomsList.associate { classroom ->
       classroom.id to images.computeReplacements(ImageContainerType.CLASSROOM, classroom.id)
     }
+    val questionImageReplacements = questions.associate { dto ->
+      dto.id to images.computeReplacements(ImageContainerType.QUESTION, dto.id)
+    }
+    val questionList = PracticeQuestionAssets.createQuestionList(
+      questions, questionPacks, questionImageReplacements,
+      androidEndpoint.getQuestionSolutionExclusivity()
+    )
+    val sourcePracticeEnabledTopicIds = androidEndpoint.getPracticeEnabledTopicIds()
     val writeProtoV1AsyncResults = topicSummaries.map { (topicId, topicSummary) ->
       val imageReplacements = images.computeReplacements(ImageContainerType.TOPIC, topicId)
-      writeProtosAsync(protoV1Dir, topicId, topicSummary.convertToTopicRecord(imageReplacements))
+      val hasPracticeQuestions = PracticeQuestionAssets.hasPracticeQuestions(
+        topicSummary, topicId in sourcePracticeEnabledTopicIds, questionList
+      )
+      if (topicId in sourcePracticeEnabledTopicIds && !hasPracticeQuestions) {
+        println("Practice disabled for $topicId: bundled questions do not cover every subtopic.")
+      }
+      writeProtosAsync(
+        protoV1Dir, topicId,
+        topicSummary.convertToTopicRecord(imageReplacements, hasPracticeQuestions)
+      )
     } + upcomingTopics.map { upcomingTopic ->
       val imageReplacements = images.computeReplacements(ImageContainerType.TOPIC, upcomingTopic.id)
       writeProtosAsync(
@@ -677,7 +705,11 @@ class LessonDownloader(
     }
 
     // Wait for all proto writes to finish.
-    (writeProtoV2AsyncResults + writeProtoV1AsyncResults).awaitAll()
+    val questionAssetResults = if (downloadQuestions) {
+      println("Writing ${questionList.questionsCount} offline practice questions to questions.pb.")
+      listOf(writeProtosAsync(protoV1Dir, "questions", questionList))
+    } else emptyList()
+    (writeProtoV2AsyncResults + writeProtoV1AsyncResults + questionAssetResults).awaitAll()
     println("Written proto locations:")
     println("- Proto v2 text protos can be found in: ${textProtoV2Dir.path}")
     println("- Proto v2 binary protos can be found in: ${binaryProtoV2Dir.path}")
@@ -690,10 +722,12 @@ class LessonDownloader(
     upcomingTopics.forEach(analyzer::track)
 //    revisionCards.forEach(analyzer::track)
     explorations.forEach(analyzer::track)
+    questions.forEach(analyzer::track)
 //    conceptCards.forEach(analyzer::track)
 //    revisionCardPacks.values.flatten().forEach(analyzer::track)
 //    conceptCardPacks.values.flatten().forEach(analyzer::track)
     explorationPacks.values.flatten().forEach(analyzer::track)
+    questionPacks.forEach(analyzer::track)
 
     val issues = analyzer.scanForIssues().sorted()
     val imageInvalidExtIssues =
@@ -841,7 +875,7 @@ class LessonDownloader(
 //    println()
   }
 
-  private fun createDownloadContentRequest(
+  private suspend fun createDownloadContentRequest(
     topicSummaries: List<DownloadableTopicSummaryDto>,
     defaultLanguage: LanguageType,
     requestedLanguages: List<LanguageType>
@@ -854,6 +888,7 @@ class LessonDownloader(
       protoVersion = ProtoVersionProvider.createLatestTopicContentProtoVersion()
       clientContext = CLIENT_CONTEXT
       addAllIdentifiers(allIdentifiers.distinct())
+      addAllIdentifiers(androidEndpoint.createQuestionDownloadIdentifiers(requestedLanguages))
       requestedMaxPayloadSizeBytes = 0 // This isn't used for local emulation.
     }.build()
   }
@@ -1229,6 +1264,19 @@ class LessonDownloader(
       dto.statesMap.forEach { (name, state) -> track(container, name, state) }
     }
 
+    /** Tracks the default localization and state images of a practice question. */
+    fun track(dto: QuestionDto) {
+      val container = Container.Question(dto.id)
+      if (dto.hasDefaultLocalization()) track(container, dto.defaultLocalization)
+      track(container, "question", dto.questionState)
+    }
+
+    /** Tracks localized image references belonging to a practice question. */
+    fun track(dto: QuestionLanguagePackDto) {
+      val container = Container.Question(dto.id.questionId)
+      if (dto.hasLocalization()) track(container, dto.localization)
+    }
+
     fun track(dto: RevisionCardLanguagePackDto) {
       val topic = Container.Topic(dto.id.id.topicId)
       val container = Container.RevisionCard(topic, dto.id.id.subtopicIndex)
@@ -1465,8 +1513,8 @@ class LessonDownloader(
       }
     }
 
-    private fun track(exploration: Container.Exploration, name: String, dto: StateDto) {
-      val container = Container.State(exploration, name)
+    private fun track(parent: Container, name: String, dto: StateDto) {
+      val container = Container.State(parent, name)
       if (dto.hasContent()) texts += TextReference.Content(container, dto.content.contentId)
       when (dto.interaction.interactionTypeCase) {
         InteractionTypeCase.CONTINUE_INSTANCE -> {
@@ -1998,7 +2046,8 @@ class LessonDownloader(
         }
       }
 
-      data class State(override val parent: Exploration, val name: String) : Container() {
+      /** Identifies a state within an exploration or practice question. */
+      data class State(override val parent: Container, val name: String) : Container() {
         override val selfReferenceString = "state '$name'"
         override val impliedTypeOrder = 8
 
@@ -2043,6 +2092,20 @@ class LessonDownloader(
 
         private companion object {
           private val COMPARATOR = compareBy(Hint::index)
+        }
+      }
+
+      /** Identifies the practice question containing an image reference. */
+      data class Question(val questionId: String) : Container() {
+        override val parent = null
+        override val selfReferenceString = "question $questionId"
+        override val impliedTypeOrder = 12
+
+        override fun compareToInternal(other: Container): Int =
+          COMPARATOR.compare(this, other as Question)
+
+        private companion object {
+          private val COMPARATOR = compareBy(Question::questionId)
         }
       }
 
@@ -2383,6 +2446,8 @@ class LessonDownloader(
       }.build()
     }
 
+    private fun LocalizedQuestionIdDto.collapse(): String = "$questionId-${language.name}"
+
     private fun LocalizedExplorationIdDto.collapse(): String =
       "${explorationId}_${language.collapse()}"
 
@@ -2486,10 +2551,9 @@ class LessonDownloader(
     }
 
     private fun QuestionDto.collectImageReferences(): List<ImageReference> {
-      // TODO: Should be using skill ID here?
       val container =
         ImageContainer(
-          imageContainerType = ImageContainerType.SKILL,
+          imageContainerType = ImageContainerType.QUESTION,
           entityId = id,
           language = defaultLocalization.language
         )
@@ -2530,7 +2594,7 @@ class LessonDownloader(
       // TODO: Should be using skill ID here?
       val container =
         ImageContainer(
-          imageContainerType = ImageContainerType.SKILL,
+          imageContainerType = ImageContainerType.QUESTION,
           entityId = id.questionId,
           language = id.language
         )

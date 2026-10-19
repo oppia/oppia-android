@@ -5,6 +5,20 @@ Tests corresponding to JSON models used by Oppia web's Android lesson endpoints.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "QuestionRepositoryTest",
+    srcs = ["QuestionRepositoryTest.kt"],
+    data = ["//scripts:assets/practice_question_test.json"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_test(
     name = "GaeStoryContentsTest",
     srcs = ["GaeStoryContentsTest.kt"],
     deps = [

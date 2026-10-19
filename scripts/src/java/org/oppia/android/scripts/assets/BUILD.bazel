@@ -8,7 +8,10 @@ kt_jvm_library(
     name = "download_lesson_list_lib",
     testonly = True,
     srcs = ["DownloadLessonList.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = [
+        "//scripts:oppia_script_binary_visibility",
+        "//scripts:oppia_script_test_visibility",
+    ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/gae",
@@ -22,7 +25,10 @@ kt_jvm_library(
 kt_jvm_library(
     name = "download_lessons_lib",
     srcs = ["DownloadLessons.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = [
+        "//scripts:oppia_script_binary_visibility",
+        "//scripts:oppia_script_test_visibility",
+    ],
     deps = [
         ":dto_proto_to_legacy_proto_converter",
         ":image_repairer",
@@ -35,13 +41,17 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "dto_proto_to_legacy_proto_converter",
-    srcs = ["DtoProtoToLegacyProtoConverter.kt"],
+    srcs = [
+        "DtoProtoToLegacyProtoConverter.kt",
+        "PracticeQuestionAssets.kt",
+    ],
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//model/src/main/proto:exploration_java_proto",
         "//model/src/main/proto:interaction_object_java_proto",
         "//model/src/main/proto:languages_java_proto",
         "//model/src/main/proto:math_java_proto",
+        "//model/src/main/proto:question_java_proto",
         "//model/src/main/proto:topic_java_proto",
         "//model/src/main/proto:translation_java_proto",
         "//third_party:oppia_proto_api_java_protos",

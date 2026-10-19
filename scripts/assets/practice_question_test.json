@@ -1,0 +1,1957 @@
+[
+  {
+    "id": "qDNFrkFwU57X",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place name of 6 in 7689.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_12",
+              "unicode_str": "Enter answer here"
+            }
+          },
+          "rows": {
+            "value": 1
+          },
+          "catchMisspellings": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "hundreds"
+                    ],
+                    "contentId": "rule_input_3"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's correct. </p><p>Since the 6 is located three places from the right, the place name of 6 in 7689 is the hundreds place.</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "tens"
+                    ],
+                    "contentId": "rule_input_5"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "600"
+                    ],
+                    "contentId": "rule_input_7"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 6 in 7689 in numbers. Remember that the question is asking for just the place value's name, so your answer should be written out in letters and not numbers.</p><p>For example, the written place value of 3 in 235 is the tens place, not 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "six hundred"
+                    ],
+                    "contentId": "rule_input_9"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 6 in 7689 instead of its place name. Place names only refer to the units represented in a specific place, while a value refers to the unique number the digit represents.</p><p>For example, the place name of 3 in 235 is the tens place, but the value 3 represents is 30. The tens place will always be the name of the place two spots from the right, but not every digit in the tens place will have a value of 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct.</p><p>If you don't remember how to find the place name, please visit <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview>  to get a quick review.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_10",
+              "html": "<p>Remember that every written place name corresponds to a number. If you change the digit into a 1 and replace the places behind it with 0, you'll find the numerical form of the place name you're trying to find.</p><p>For example, let's say you want to find what place name 3 in 235 holds.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210714_140336_qvc37zmdpm_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p>The diagram above shows that you would find 10 using the method. That means 3 in 235 holds the tens place value.</p><p>Try using this method to find what place name 6 in 7689 is in. </p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": "hundreds",
+          "explanation": {
+            "content_id": "solution_11",
+            "html": "<p>Since the 6 is located three places from the right, the place name of 6 in 7689 is the hundreds place.</p><p>We can substitute 1 for where 6 is in the number 7689 and replace the places behind it with 0. </p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210714_140519_z78j832lkh_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p>The diagram above shows the results. The number 100 means that 6 in the number 7689 is in the <strong>hundreds </strong>place, so our answer is hundreds.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 6,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 13
+  },
+  {
+    "id": "MOCPpPI0ZETL",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place value of the digit '3' in the number 315.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "MultipleChoiceInput",
+        "customization_args": {
+          "choices": {
+            "value": [
+              {
+                "content_id": "ca_choices_7",
+                "html": "<p>Hundreds</p>"
+              },
+              {
+                "content_id": "ca_choices_8",
+                "html": "<p>Tens</p>"
+              },
+              {
+                "content_id": "ca_choices_9",
+                "html": "<p>Ones</p>"
+              },
+              {
+                "content_id": "ca_choices_10",
+                "html": "<p>Hundredths</p>"
+              }
+            ]
+          },
+          "showChoicesInShuffledOrder": {
+            "value": true
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Yes, that is correct! The digit '3' is in the hundreds place.</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that isn't right. Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. There are  no decimal points in this number, so there won't be any respective place values.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct. Try again! If you're having trouble, refer to the hint.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_6",
+              "html": "<p>Here's a hint to help you out: Say the number out loud.This will help you to figure out the place name.</p>"
+            }
+          }
+        ],
+        "solution": null
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 6,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 11
+  },
+  {
+    "id": "VGEmLAoudW9z",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>In the number 38,562, what is the place value of the digit 8?</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "MultipleChoiceInput",
+        "customization_args": {
+          "choices": {
+            "value": [
+              {
+                "content_id": "ca_choices_2",
+                "html": "<p>Thousands&nbsp;</p>"
+              },
+              {
+                "content_id": "ca_choices_3",
+                "html": "<p>Tens</p>"
+              },
+              {
+                "content_id": "ca_choices_4",
+                "html": "<p>Ten Thousands</p>"
+              },
+              {
+                "content_id": "ca_choices_5",
+                "html": "<p>Hundreds</p>"
+              }
+            ]
+          },
+          "showChoicesInShuffledOrder": {
+            "value": true
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>Yes, that's correct! Great job!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p>\n\n<p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct. If you don't remember how to identify the place value of a digit, please visit&nbsp;<oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5UeFU80Yoaf7&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview>&nbsp;for a quick review! Try again.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_6",
+              "html": "<p>Start from the rightmost digit, which is the ones place, and move to the left place value by place value (ones, tens, hundreds, thousands, ten thousands, etc.) until you reach the number.</p>"
+            }
+          }
+        ],
+        "solution": null
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 3,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 9
+  },
+  {
+    "id": "UTBCEoWMw4S6",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place name of 3 in 8309.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_8",
+              "unicode_str": ""
+            }
+          },
+          "rows": {
+            "value": 1
+          },
+          "catchMisspellings": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Contains",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "hundreds"
+                    ],
+                    "contentId": "rule_input_3"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's correct. The place name of 3 in 8309 is the hundreds place.</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Contains",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "tens"
+                    ],
+                    "contentId": "rule_input_5"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p><span><span>No, that's not correct. If you don't remember how to find the place name, please visit <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"><oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5UeFU80Yoaf7&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview></oppia-noninteractive-skillreview>  to get a quick review.</span></span></p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_6",
+              "html": "<p><span><span>If you don't remember how to find the place name, please visit</span></span> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5UeFU80Yoaf7&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview>  to get a quick review.</p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": "hundreds",
+          "explanation": {
+            "content_id": "solution_7",
+            "html": "<p>Since the 3 is the 3rd digit from the right, the place name of 3 in 8309 is the hundreds place.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 7,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 9
+  },
+  {
+    "id": "bDBFPKWvuHW4",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Given the number 12453 and the digit 2, write down the name of the place occupied by that digit.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_8",
+              "unicode_str": ""
+            }
+          },
+          "rows": {
+            "value": 1
+          },
+          "catchMisspellings": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "thousands"
+                    ],
+                    "contentId": "rule_input_3"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That is correct! In the number 12453, the digit 2 occupies the <strong>thousands</strong> place!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "ones",
+                      "tens",
+                      "hundreds"
+                    ],
+                    "contentId": "rule_input_5"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct.</p><p>If you don't remember how to find the place name, please visit the <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;concept card&amp;quot;\"></oppia-noninteractive-skillreview>   for this question to get a quick review, then try again!</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_6",
+              "html": "<p>This number is a big number! It contains digits corresponding to all of the following place names:</p><ul><li>Ten thousands</li><li>Thousands</li><li>Hundreds</li><li>Tens</li><li>Ones</li></ul><p>One of these place names will be the answer to this problem.</p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": "thousands",
+          "explanation": {
+            "content_id": "solution_7",
+            "html": "<p>The solution to this problem is <strong>thousands</strong>. That is because, in the number 12453, the digit 2 represents 2 <strong>thousands</strong>, so the place name corresponding to that digit is <strong>thousands</strong>.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 7,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 9
+  },
+  {
+    "id": "FZW1uX4Gy9a5",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place name of 2 in 24578.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_12",
+              "unicode_str": "Enter answer here"
+            }
+          },
+          "rows": {
+            "value": 1
+          },
+          "catchMisspellings": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "ten thousands"
+                    ],
+                    "contentId": "rule_input_3"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's correct. </p><p>Since the 2 is located five places from the right, the place name of 2 in 24578 is the ten thousands place.</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "ones"
+                    ],
+                    "contentId": "rule_input_5"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "20000"
+                    ],
+                    "contentId": "rule_input_7"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 2 in 24578 in numbers. Remember that the question is asking for just the place value's name, so your answer should be written out in letters and not numbers.</p><p>For example, the written place name of 3 in 235 is the <strong>tens</strong> place, not 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "twenty thousand"
+                    ],
+                    "contentId": "rule_input_9"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 2 in 24578 instead of its place name. Place names only refer to the units represented in a specific place, while a value refers to the unique number the digit represents.</p><p>For example, the place name of 3 in 235 is the tens place, but the value 3 represents is 30. The tens place will always be the name of the place two spots from the right, but not every digit in the tens place will have a value of 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct.<br><br>If you don't remember how to find the place name, please visit <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview> to get a quick review.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_10",
+              "html": "<p>Remember that every written place name corresponds to a number. If you change the digit into a 1 and replace the places behind it with 0, you'll find the numerical form of the place name you're trying to find.</p><p>For example, let's say you want to find what place name 3 in 235 holds.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210714_134728_491cy0i22j_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p>The diagram above shows that you would find 10 using the method. That means 3 in 235 holds the <strong>tens</strong> place value.</p><p>Try using this method to find what place name 2 in 24578 is in. </p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": "ten thousands",
+          "explanation": {
+            "content_id": "solution_11",
+            "html": "<p>Since the 2 is located five places from the right, the place name of 2 in 24578 is the ten thousands place.</p><p>We can substitute 1 for where 2 is in the number 24578 and replace the places behind it with 0. </p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210714_135313_5y719h77o6_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p><br>The diagram above shows the results. The number 10000 means that 2 in the number 24578 is in the <strong>ten thousands</strong> place, so our answer is ten thousands.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 6,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 13
+  },
+  {
+    "id": "eH3oLPKMNeb1",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place value of 6 in 2960.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "NumericInput",
+        "customization_args": {
+          "requireNonnegativeInput": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 60
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That is correct. Since 6 is located in the tens place, the place value of 6 is 60. </p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 10
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. You've got the correct value for the place, but you also need to make use of the digit in that place.<br><br>For example, the place value of 2 in 320 would be 20, not 10. This is because the 2 represents \"2 tens\" (20), not \"1 ten\" (10).<br><br>Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct. </p><p>If you can't remember what the place value refers to, please visit <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview> to get a review. </p><p>Try again. </p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>Start by finding the location of 6 in 2960.</p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": 60.0,
+          "explanation": {
+            "content_id": "solution_5",
+            "html": "<p>Because 6 is located in the tens place, the place value of 6 is 60.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 7,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 6
+  },
+  {
+    "id": "LetpsEKlm2VP",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>In the number 5,784, what is the place name of the digit 7?</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "MultipleChoiceInput",
+        "customization_args": {
+          "choices": {
+            "value": [
+              {
+                "content_id": "ca_choices_2",
+                "html": "<p>Ones</p>"
+              },
+              {
+                "content_id": "ca_choices_3",
+                "html": "<p>Tens</p>"
+              },
+              {
+                "content_id": "ca_choices_4",
+                "html": "<p>Hundreds</p>"
+              },
+              {
+                "content_id": "ca_choices_5",
+                "html": "<p>Thousands</p>"
+              }
+            ]
+          },
+          "showChoicesInShuffledOrder": {
+            "value": true
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_9",
+                "html": "<p>Yes, that's correct! Great job!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not correct. The ones place is the last digit in the number, so the digit in the ones place is 4, not 7. Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p>\n\n<p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_11",
+                "html": "<p>No, that's not correct. The thousands place is the fourth-to-last digit in the number, so the digit in the thousands place is 5, not 7. Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": ""
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_10",
+              "html": "<p>Start from the rightmost digit, which is the ones place, and move to the left place value by place value (ones, tens, hundreds, thousands, ten thousands, etc.) until you reach the number.</p>"
+            }
+          }
+        ],
+        "solution": null
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 2,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 12
+  },
+  {
+    "id": "kGCvb5kVRDTH",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place name of 6 in 45698.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "MultipleChoiceInput",
+        "customization_args": {
+          "choices": {
+            "value": [
+              {
+                "content_id": "ca_choices_5",
+                "html": "<p>Ones</p>"
+              },
+              {
+                "content_id": "ca_choices_6",
+                "html": "<p>Tens</p>"
+              },
+              {
+                "content_id": "ca_choices_7",
+                "html": "<p>Hundreds</p>"
+              },
+              {
+                "content_id": "ca_choices_8",
+                "html": "<p>Thousands</p>"
+              },
+              {
+                "content_id": "ca_choices_9",
+                "html": "<p>Hundred thousands</p>"
+              },
+              {
+                "content_id": "ca_choices_10",
+                "html": "<p>Ten thousands</p>"
+              }
+            ]
+          },
+          "showChoicesInShuffledOrder": {
+            "value": true
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>The answer is correct. Good job!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>The answer is incorrect. The smallest place name is on the right, and the largest is on the right.</p><p>Refer to this <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5UeFU80Yoaf7&amp;quot;\" text-with-value=\"&amp;quot;concept card&amp;quot;\"></oppia-noninteractive-skillreview> if required.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>The smallest place name is on the right and the largest place name is on the left.</p>"
+            }
+          }
+        ],
+        "solution": null
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 7,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 11
+  },
+  {
+    "id": "tVdMvYTZ86cm",
+    "question_state_data": {
+      "content": {
+        "content_id": "content_0",
+        "html": "<p>Identify the place name of 4 in 2425731.</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_12",
+              "unicode_str": "Enter answer here"
+            }
+          },
+          "rows": {
+            "value": 1
+          },
+          "catchMisspellings": {
+            "value": false
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "hundred thousands"
+                    ],
+                    "contentId": "rule_input_3"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's correct. </p><p>Since the 4 is located six places from the right, the place name of 4 in 2425731 is the hundred thousands place.</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "tens"
+                    ],
+                    "contentId": "rule_input_5"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the rightmost digit is in the ones place.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": "5UeFU80Yoaf7-0"
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "400000"
+                    ],
+                    "contentId": "rule_input_7"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 2 in 2425731 in numbers. Remember that the question is asking for just the place value's name, so your answer should be written out in letters and not numbers.</p><p>For example, the written place value of 3 in 235 is the tens place, not 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": {
+                    "normalizedStrSet": [
+                      "four hundred thousands"
+                    ],
+                    "contentId": "rule_input_9"
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": null,
+              "dest_if_really_stuck": null,
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not correct.</p><p>It looks like you wrote the value of 4 in 2425731 instead of its place name. Place names only refer to the units represented in a specific place, while a value refers to the unique number the digit represents.</p><p>For example, the place name of 3 in 235 is the tens place, but the value 3 represents is 30. The tens place will always be the name of the place two spots from the right, but not every digit in the tens place will have a value of 30.</p><p>Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "training_data": [],
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "default_outcome": {
+          "dest": null,
+          "dest_if_really_stuck": null,
+          "feedback": {
+            "content_id": "default_outcome_1",
+            "html": "<p>No, that's not correct.</p><p>If you don't remember how to find the place name, please visit <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;kNnNHaxmb0Db&amp;quot;\" text-with-value=\"&amp;quot;this page&amp;quot;\"></oppia-noninteractive-skillreview>  to get a quick review.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null
+        },
+        "confirmed_unclassified_answers": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_10",
+              "html": "<p>Remember that every written place name corresponds to a number. If you change the digit into a 1 and replace the places behind it with 0, you'll find the numerical form of the place name you're trying to find.</p><p>For example, let's say you want to find what place name 3 in 235 holds.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210716_100544_vli2edam78_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p>The diagram above shows that you would find 10 using the method. That means 3 in 235 holds the tens place value.</p><p>Try using this method to find what place name4 in 2425731 is in. </p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": "hundred thousands",
+          "explanation": {
+            "content_id": "solution_11",
+            "html": "<p>Since the 4 is located six places from the right, the place name of 4 in 2425731 is the hundred thousands place.</p><p>We can substitute 1 for where 4 is in the number 2425731 and replace the places behind it with 0. </p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20210716_100722_l1826u9ed2_height_368_width_490.png&amp;quot;\"></oppia-noninteractive-image><p>The diagram above shows the results. The number 100000 means that 4 in the number 2425731 is in the <strong>hundred thousands </strong>place, so our answer is hundred thousands.</p>"
+          }
+        }
+      },
+      "classifier_model_id": null,
+      "linked_skill_id": null,
+      "solicit_answer_details": false,
+      "card_is_checkpoint": false,
+      "inapplicable_skill_misconception_ids": []
+    },
+    "question_state_data_schema_version": 57,
+    "language_code": "en",
+    "version": 6,
+    "linked_skill_ids": [
+      "5UeFU80Yoaf7"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "next_content_id_index": 13
+  },
+  {
+    "id": "Ep2t5mulNUsi",
+    "question_state_data": {
+      "content": {
+        "content_id": "content",
+        "html": "<p>What is the denominator of the fraction 2/3?</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "NumericInput",
+        "customization_args": {},
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3.0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2.0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. The first number in a fraction is the <strong>numerator</strong>&nbsp;-- it counts, or \"enumerates\", the number of selected parts.&nbsp;Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "UxTGIJqaHMLa-0",
+            "training_data": []
+          }
+        ],
+        "default_outcome": {
+          "dest": "",
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not correct. Your answer should be one of the numbers in the fraction. Try again.</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
+        },
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>A fraction is written as \"numerator\"/\"denominator\". The numerator counts the number of selected pieces, and the denominator counts the total number of pieces in the whole.</p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": true,
+          "correct_answer": 3.0,
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>The denominator of a fraction is the second number in the fraction. (It counts the total number of pieces in the whole.)</p>\n\n<p>So, for 2/3, the denominator is <strong>3</strong>.</p>"
+          }
+        },
+        "confirmed_unclassified_answers": []
+      },
+      "classifier_model_id": "",
+      "solicit_answer_details": false,
+      "next_content_id_index": -1,
+      "linked_skill_id": null,
+      "card_is_checkpoint": false
+    },
+    "language_code": "en",
+    "version": 3,
+    "linked_skill_ids": [
+      "B39yK4cbHZYI"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "question_state_data_schema_version": 55,
+    "next_content_id_index": 1
+  },
+  {
+    "id": "7LcsKDzzfImQ",
+    "question_state_data": {
+      "content": {
+        "content_id": "content",
+        "html": "<p>Amir says the shaded black part of the picture below represents the fraction 1/3.</p>\n\n\n<p>Is Amir correct?</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "MultipleChoiceInput",
+        "customization_args": {
+          "choices": {
+            "value": [
+              {
+                "content_id": "ca_choices_0",
+                "html": "<p>Yes, because there are three parts and only one is shaded.</p>"
+              },
+              {
+                "content_id": "ca_choices_1",
+                "html": "<p>No. There are three parts and two of them are white, so the correct fraction is 2/3.</p>"
+              },
+              {
+                "content_id": "ca_choices_2",
+                "html": "<p>No. Amir needs to divide the picture into equal-sized&nbsp;triangles before writing the fraction.</p>"
+              },
+              {
+                "content_id": "ca_choices_3",
+                "html": "<p>No. Amir has mixed up the numerator and denominator. The correct fraction is 3/1.</p>"
+              }
+            ]
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct! Amir can divide the picture into 4 equal triangles.&nbsp;Two of these are shaded, so the actual answer is 2/4.</p><p>Fixture diagram</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. Amir forgot a step.</p>\n\n<p>To&nbsp;write the denominator of a fraction, you need to know how many pieces there are in the entire object, since the denominator \"names\" the size of each piece. But, first, you need all the pieces to be the same size. That's not true in this case.</p>\n\n<p>Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Read the question again -- Amir is trying to write down the fraction of the part that is shaded <strong>black</strong>,&nbsp;not white. Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. It looks like you've forgotten what a numerator and denominator are. To refresh your memory, take a look at this <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          }
+        ],
+        "default_outcome": {
+          "dest": "",
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": ""
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
+        },
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>To write a fraction, you need to know its&nbsp;denominator, which is the total number of pieces in the whole.&nbsp;All of these pieces should be the same size.</p>"
+            }
+          }
+        ],
+        "solution": null,
+        "confirmed_unclassified_answers": []
+      },
+      "classifier_model_id": "",
+      "solicit_answer_details": false,
+      "next_content_id_index": -1,
+      "linked_skill_id": null,
+      "card_is_checkpoint": false
+    },
+    "language_code": "en",
+    "version": 6,
+    "linked_skill_ids": [
+      "5RM9KPfQxobH"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "question_state_data_schema_version": 55,
+    "next_content_id_index": 1
+  },
+  {
+    "id": "dobbibJorU9T",
+    "question_state_data": {
+      "content": {
+        "content_id": "content",
+        "html": "<p>What fraction is represented by the shaded part of the picture below?</p>"
+      },
+      "param_changes": [],
+      "interaction": {
+        "id": "TextInput",
+        "customization_args": {
+          "rows": {
+            "value": 1
+          },
+          "placeholder": {
+            "value": {
+              "content_id": "ca_placeholder_0",
+              "unicode_str": "Enter a fraction, e.g. 1/9."
+            }
+          }
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": {
+                    "contentId": "90d3aef0-213b-45d5-b1f0-1c2655079c7e",
+                    "normalizedStrSet": [
+                      "1/4"
+                    ]
+                  }
+                }
+              },
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": {
+                    "contentId": "96835528-a82c-486b-83fb-26e0e527b7c5",
+                    "normalizedStrSet": [
+                      "2/8"
+                    ]
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's correct. Well done!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": {
+                    "contentId": "8cbef3d6-4b7c-434e-9d39-ee0534e0507b",
+                    "normalizedStrSet": [
+                      "1/5"
+                    ]
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
+            "training_data": []
+          },
+          {
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": {
+                    "contentId": "11e221ba-cc2d-4501-984c-89b13d7af5e7",
+                    "normalizedStrSet": [
+                      "1/9"
+                    ]
+                  }
+                }
+              }
+            ],
+            "outcome": {
+              "dest": "",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. \"1/9\" is just an example to show you how to enter the fraction, but you need to type in the fraction represented by the shaded part of the picture. Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": "",
+            "training_data": []
+          }
+        ],
+        "default_outcome": {
+          "dest": "",
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not correct. Did you forget to divide the picture into equal parts first?</p>"
+          },
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
+        },
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Before writing a fraction, remember to divide the image into equal parts first. The parts need to all have the same size before you can count the total number of parts (for the fraction's denominator).</p>"
+            }
+          }
+        ],
+        "solution": {
+          "answer_is_exclusive": false,
+          "correct_answer": "1/4",
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Removing one of the lines on the right results in a square that is divided into 4 equal pieces:</p>\n\n\n<p>So, the fraction represented by the shaded area is 1/4.</p>"
+          }
+        },
+        "confirmed_unclassified_answers": []
+      },
+      "classifier_model_id": "",
+      "solicit_answer_details": false,
+      "next_content_id_index": -1,
+      "linked_skill_id": null,
+      "card_is_checkpoint": false
+    },
+    "language_code": "en",
+    "version": 3,
+    "linked_skill_ids": [
+      "5RM9KPfQxobH"
+    ],
+    "inapplicable_skill_misconception_ids": [],
+    "question_state_data_schema_version": 55,
+    "next_content_id_index": 1
+  }
+]

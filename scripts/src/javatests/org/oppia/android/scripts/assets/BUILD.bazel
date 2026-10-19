@@ -5,6 +5,52 @@ Tests corresponding to asset transformation and download scripts.
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "DownloadLessonsTest",
+    srcs = ["DownloadLessonsTest.kt"],
+    data = [
+        "//scripts:assets/practice_download_test.json",
+        "//scripts:assets/practice_question_test.json",
+    ],
+    deps = [
+        "//model/src/main/proto:question_java_proto",
+        "//model/src/main/proto:topic_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/assets:download_lesson_list_lib",
+        "//scripts/src/java/org/oppia/android/scripts/assets:download_lessons_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_config_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
+        "//third_party:com_google_protobuf_protobuf-java",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_test(
+    name = "PracticeQuestionAssetsTest",
+    srcs = ["PracticeQuestionAssetsTest.kt"],
+    data = ["//scripts:assets/practice_question_test.json"],
+    deps = [
+        "//model/src/main/proto:question_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/assets:dto_proto_to_legacy_proto_converter",
+        "//scripts/src/java/org/oppia/android/scripts/gae/compat",
+        "//scripts/src/java/org/oppia/android/scripts/gae/gcs:api",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:api",
+        "//scripts/src/java/org/oppia/android/scripts/gae/json:model",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:json_to_proto_converter",
+        "//scripts/src/java/org/oppia/android/scripts/gae/proto:localization_tracker",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_config_java_proto",
+        "//third_party:com_google_truth_truth",
+        "//third_party:moshi",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_jvm_test(
     name = "ImageRepairerTest",
     srcs = ["ImageRepairerTest.kt"],
     deps = [
