@@ -114,8 +114,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -588,21 +586,33 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun resetProcessLifecycleOwner() {
-    // TODO(#6187): Replace this with a safer hack that doesn't require forcing non-final.
-    // A *VERY* hacky way to force ProcessLifecycleOwner to reset state by recreating its internal
-    // (static) singleton that would otherwise share and leak state across test boundaries. Upgrades
-    // to the Java version may make the 'final' override fail, but if that happens then the
-    // lifecycle package can be updated to a version that has a non-final instance (or an alternate
-    // utility could be used, instead).
+    // Resets the internal ProcessLifecycleOwner singleton between tests to prevent state from
+    // leaking across test boundaries. Uses sun.misc.Unsafe to write to the static final
+    // 'sInstance' field, bypassing java.lang.reflect.Field.set()'s enforcement of 'final'.
+    //
+    // The previous approach stripped the field's 'final' modifier via the inaccessible
+    // 'java.lang.reflect.Field.modifiers' JDK-internal field (a named-module member), which
+    // required Robolectric's implicit --add-opens=java.base/java.lang.reflect=ALL-UNNAMED flag
+    // and was fragile across JVM updates. This version instead uses sun.misc.Unsafe, which is
+    // intentionally exported by the 'jdk.unsupported' module to all unnamed-module (classpath)
+    // code without needing any --add-opens flags.
+    //
+    // See: https://github.com/oppia/oppia-android/issues/6187
     val lifecycleOwnerClass = ProcessLifecycleOwner::class.java
     val constructor = lifecycleOwnerClass.getDeclaredConstructor().also { it.isAccessible = true }
-    val fieldModifiers =
-      Field::class.java.getDeclaredField("modifiers").also { it.isAccessible = true }
-    val instanceField = lifecycleOwnerClass.getDeclaredField("sInstance").also {
-      it.isAccessible = true
-      fieldModifiers.set(it, it.modifiers and Modifier.FINAL.inv())
-    }
-    instanceField.set(null, constructor.newInstance())
+    val instanceField = lifecycleOwnerClass.getDeclaredField("sInstance")
+    val unsafeClass = Class.forName("sun.misc.Unsafe")
+    val unsafe =
+      unsafeClass.getDeclaredField("theUnsafe").also { it.isAccessible = true }.get(null)
+    val base =
+      unsafeClass.getMethod("staticFieldBase", instanceField.javaClass)
+        .invoke(unsafe, instanceField)
+    val offset =
+      unsafeClass.getMethod("staticFieldOffset", instanceField.javaClass)
+        .invoke(unsafe, instanceField) as Long
+    unsafeClass
+      .getMethod("putObject", Any::class.java, Long::class.javaPrimitiveType, Any::class.java)
+      .invoke(unsafe, base, offset, constructor.newInstance())
   }
 
   private fun runInActivityWithScreenName(
