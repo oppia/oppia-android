@@ -343,12 +343,10 @@ class ApplicationLifecycleLoggerTest {
   fun testRecordAppInBackground_logsForegroundTimeSpent() {
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    applicationLifecycleLogger.recordAppInForeground(fakeOppiaClock.getCurrentTimeMs())
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-    applicationLifecycleLogger.recordAppInBackground(
-      TEST_TIMESTAMP_IN_MILLIS_ONE + TimeUnit.SECONDS.toMillis(10)
-    )
+    applicationLifecycleLogger.recordAppInBackground(fakeOppiaClock.getCurrentTimeMs())
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = expectAnalyticsEvent { it.context.hasAppInForegroundTime() }
