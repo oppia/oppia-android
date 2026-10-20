@@ -21,8 +21,11 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -68,6 +71,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private var profileId: LegacyProfileId = LegacyProfileId.getDefaultInstance()
+  private var hasRequestedAllTopicsSpotlight = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -202,7 +206,24 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ALL_TOPICS,
         inflateDataBinding = AllTopicsBinding::inflate,
-        setViewModel = AllTopicsBinding::setViewModel,
+        setViewModel = { binding, viewModel ->
+          binding.viewModel = viewModel
+          if (!hasRequestedAllTopicsSpotlight) {
+            hasRequestedAllTopicsSpotlight = true
+            val manager = activity.supportFragmentManager.findFragmentByTag(
+              SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+            ) as? SpotlightManager
+            manager?.requestSpotlightViewWithDelayedLayout(
+              SpotlightTarget(
+                anchor = binding.allTopicsTextView,
+                hint = resourceHandler.getStringInLocale(
+                  R.string.home_all_topics_spotlight_hint
+                ),
+                feature = Spotlight.FeatureCase.HOME_ALL_TOPICS_HEADER
+              )
+            )
+          }
+        },
         transformViewModel = { it as AllTopicsViewModel }
       )
       .registerViewDataBinder(
