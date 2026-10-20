@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
   <corners android:radius="4dp" />
-  <solid android:color="@color/component_color_shared_white_background_color" />
+  <solid android:color="@color/component_color_onboarding_create_profile_input_background_color" />
   <stroke
     android:width="1dp"
     android:color="@color/component_color_shared_error_color" />

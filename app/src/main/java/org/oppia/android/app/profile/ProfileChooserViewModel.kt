@@ -29,7 +29,7 @@ class ProfileChooserViewModel @Inject constructor(
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
   private val profileClickListener = fragment as ProfileClickListener
 
-  /** Observable field to track if the add profile button should be shown. */
+  /** Observable field indicating whether another profile can be added. */
   val canAddProfile = ObservableField(true)
 
   /** Livedata representing the list of profiles on the app, and a model for the 'add' view. */
