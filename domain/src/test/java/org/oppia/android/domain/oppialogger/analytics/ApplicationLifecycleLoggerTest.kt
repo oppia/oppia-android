@@ -10,6 +10,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -31,6 +35,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
@@ -80,6 +85,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -93,6 +99,7 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -126,6 +133,9 @@ class ApplicationLifecycleLoggerTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
+  @Inject lateinit var fakeConsoleLogger: ConsoleLogger
+  @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+  @Inject lateinit var mockWebServer: MockWebServer
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -140,10 +150,6 @@ class ApplicationLifecycleLoggerTest {
   fun tearDown() {
     TestPlatformParameterModule.reset()
   }
-
-  // ---------------------------------------------------------------------------------------
-  // recordAppOpened
-  // ---------------------------------------------------------------------------------------
 
   @Test
   fun testRecordAppOpened_logsApkSizeAndStorageUsage() {
@@ -193,9 +199,54 @@ class ApplicationLifecycleLoggerTest {
     assertThat(cpuEvents).isEmpty()
   }
 
-  // ---------------------------------------------------------------------------------------
-  // recordAppInForeground
-  // ---------------------------------------------------------------------------------------
+  @Test
+  fun testRecordAppOpened_performanceMetricsDisabled_registersConsoleErrorListener() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
+
+    val testTag = "TestLogger"
+    val testMessage = "Test error message"
+    fakeConsoleLogger.e(testTag, testMessage)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = expectAnalyticsEvent {
+      it.context.hasConsoleLog() && it.context.consoleLog.fullErrorLog == testMessage
+    }
+    assertThat(eventLog.context.consoleLog.logLevel).isEqualTo(LogLevel.ERROR.toString())
+    assertThat(eventLog.context.consoleLog.logTag).isEqualTo(testTag)
+  }
+
+  @Test
+  fun testRecordAppOpened_performanceMetricsDisabled_registersNetworkCallListener() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
+
+    val requestUrl = executeMockNetworkCall(HttpURLConnection.HTTP_OK)
+
+    val eventLog = expectAnalyticsEvent { it.context.hasRetrofitCallContext() }
+    assertThat(eventLog.context.retrofitCallContext.requestUrl).isEqualTo(requestUrl)
+    assertThat(eventLog.context.retrofitCallContext.responseStatusCode)
+      .isEqualTo(HttpURLConnection.HTTP_OK)
+  }
+
+  @Test
+  fun testRecordAppOpened_performanceMetricsDisabled_registersFailedNetworkCallListener() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
+
+    val requestUrl = executeMockNetworkCall(HttpURLConnection.HTTP_NOT_FOUND)
+
+    val eventLog = expectAnalyticsEvent { it.context.hasRetrofitCallFailedContext() }
+    assertThat(eventLog.context.retrofitCallFailedContext.requestUrl).isEqualTo(requestUrl)
+    assertThat(eventLog.context.retrofitCallFailedContext.responseStatusCode)
+      .isEqualTo(HttpURLConnection.HTTP_NOT_FOUND)
+  }
 
   @Test
   fun testRecordAppInForeground_backgroundApp_limitExceeded_updatesSessionId() {
@@ -276,10 +327,6 @@ class ApplicationLifecycleLoggerTest {
     assertThat(getLoggedCpuUsageEvents()).isEmpty()
   }
 
-  // ---------------------------------------------------------------------------------------
-  // recordAppInBackground
-  // ---------------------------------------------------------------------------------------
-
   @Test
   fun testRecordAppInBackground_logsBackgroundEvent() {
     setUpTestApplicationComponent()
@@ -326,10 +373,6 @@ class ApplicationLifecycleLoggerTest {
     assertThat(getLoggedCpuUsageEvents()).isNotEmpty()
   }
 
-  // ---------------------------------------------------------------------------------------
-  // Invalid lifecycle sequences
-  // ---------------------------------------------------------------------------------------
-
   @Test
   fun testRecordAppInBackground_withoutForeground_throwsException() {
     setUpTestApplicationComponent()
@@ -365,10 +408,6 @@ class ApplicationLifecycleLoggerTest {
 
     assertThat(exception).hasMessageThat().contains("already thought to be in the background")
   }
-
-  // ---------------------------------------------------------------------------------------
-  // recordActivityResumed / recordActivityPaused / getCurrentScreen
-  // ---------------------------------------------------------------------------------------
 
   @Test
   fun testGetCurrentScreen_initialValue_isUnspecified() {
@@ -455,10 +494,6 @@ class ApplicationLifecycleLoggerTest {
       .isEqualTo(ScreenName.BACKGROUND_SCREEN)
   }
 
-  // ---------------------------------------------------------------------------------------
-  // Test setup boilerplate
-  // ---------------------------------------------------------------------------------------
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -474,6 +509,21 @@ class ApplicationLifecycleLoggerTest {
     val eventCount = fakeAnalyticsEventLogger.getEventListCount()
     val events = fakeAnalyticsEventLogger.getMostRecentEvents(eventCount)
     return events.firstOrNull(predicate) ?: error("Expected to find event.")
+  }
+
+  private fun executeMockNetworkCall(responseCode: Int): String {
+    val mockWebServerUrl = mockWebServer.url("/")
+    val client = OkHttpClient.Builder().addInterceptor(networkLoggingInterceptor).build()
+    val request = Request.Builder()
+      .url(mockWebServerUrl)
+      .addHeader("api_key", "api_key_value")
+      .build()
+    mockWebServer.enqueue(
+      MockResponse().setResponseCode(responseCode).setBody("{\"test\": \"test\"}")
+    )
+    client.newCall(request).execute()
+    testCoroutineDispatchers.runCurrent()
+    return mockWebServerUrl.toString()
   }
 
   // TODO(#89): Move this to a common test application component.
