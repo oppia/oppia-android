@@ -233,7 +233,7 @@ echo "API Key File: {api_key_path}"
 echo "Output File: $OUTPUT"
 echo "Config File: $CONFIG"
 
-"$TOOL" "{base_url}" "{gcs_base_url}" "{gcs_bucket}" "{api_key_path}" "$OUTPUT" "$CONFIG"
+"$TOOL" "{base_url}" "{gcs_base_url}" "{gcs_bucket}" "{api_key_path}" "$OUTPUT" "$CONFIG"{question_args}
 
 echo "Successfully updated pinned lesson versions!"
 """.format(
@@ -244,6 +244,7 @@ echo "Successfully updated pinned lesson versions!"
             gcs_base_url = ctx.attr.gcs_base_url,
             gcs_bucket = ctx.attr.gcs_bucket,
             api_key_path = api_key_path,
+            question_args = ' "" true' if ctx.attr.download_questions else "",
         )
 
     ctx.actions.write(
@@ -269,6 +270,7 @@ _update_pinned_lesson_versions = rule(
     implementation = _update_pinned_lesson_versions_impl,
     executable = True,
     attrs = dict({
+        "download_questions": attr.bool(default = False),
         "_download_tool": attr.label(
             default = Label("@oppia_android_asset_pipeline//scripts:download_lesson_list"),
             executable = True,
@@ -277,7 +279,7 @@ _update_pinned_lesson_versions = rule(
     }, **_COMMON_ATTRS),
 )
 
-def update_pinned_lesson_versions(name, download_config, pinned_versions, **kwargs):
+def update_pinned_lesson_versions(name, download_config, pinned_versions, download_questions = False, **kwargs):
     """
     Creates a runnable target for regenerating a pinned version list.
 
@@ -292,6 +294,7 @@ def update_pinned_lesson_versions(name, download_config, pinned_versions, **kwar
             exemptions to make during lesson download validation).
         pinned_versions: label. The label to the textproto containing all of the lesson versions
             that should be downloaded (which help provide determinism in the download process).
+        download_questions: bool. Whether to also capture compatible practice question versions.
         **kwargs: additional generic arguments such as tags and visibility.
     """
 
@@ -299,5 +302,6 @@ def update_pinned_lesson_versions(name, download_config, pinned_versions, **kwar
         name = name,
         download_config = download_config,
         pinned_versions = pinned_versions,
+        download_questions = download_questions,
         **kwargs
     )

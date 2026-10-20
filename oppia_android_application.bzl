@@ -141,7 +141,7 @@ def _package_metadata_into_deployable_aab_impl(ctx):
     # Copy over the Proguard map file.
     cp {1} $WORKING_DIR/BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map || exit 255
 
-    $ Repackage the AAB file into the destination.
+    # Repackage the AAB file into the destination.
     DEST_FILE_PATH="$(pwd)/{2}"
     cd $WORKING_DIR
     zip -q -Dur temp.aab BUNDLE-METADATA || exit 255
@@ -207,7 +207,10 @@ def _rename_aab_impl(ctx):
     )
 
 def _generate_universal_apk_impl(ctx):
-    input_aab_file = ctx.attr.input_aab_file.files.to_list()[0]
+    aab_files = [file for file in ctx.files.input_aab_file if not file.is_directory and file.extension == "aab"]
+    if len(aab_files) != 1:
+        fail("Expected exactly one AAB file, found %d." % len(aab_files))
+    input_aab_file = aab_files[0]
     output_apk_file = ctx.outputs.output_apk_file
     debug_keystore_file = ctx.attr.debug_keystore.files.to_list()[0]
     apks_file = ctx.actions.declare_file("%s_processed.apks" % ctx.label.name)
@@ -230,7 +233,7 @@ def _generate_universal_apk_impl(ctx):
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
     ctx.actions.run(
         outputs = [apks_file],
-        inputs = ctx.files.input_aab_file + ctx.files.debug_keystore,
+        inputs = [input_aab_file] + ctx.files.debug_keystore,
         tools = [ctx.executable._bundletool_tool],
         executable = ctx.executable._bundletool_tool.path,
         arguments = generate_universal_apk_arguments,
@@ -310,11 +313,11 @@ _restrict_languages_in_raw_module_zip = rule(
 
 _bundle_module_zip_into_deployable_aab = rule(
     attrs = {
-        "input_file": attr.label(
+        "config_file": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),
-        "config_file": attr.label(
+        "input_file": attr.label(
             allow_single_file = True,
             mandatory = True,
         ),
@@ -336,11 +339,11 @@ _package_metadata_into_deployable_aab = rule(
             allow_single_file = True,
             mandatory = True,
         ),
-        "proguard_map_file": attr.label(
-            allow_single_file = True,
+        "output_aab_file": attr.output(
             mandatory = True,
         ),
-        "output_aab_file": attr.output(
+        "proguard_map_file": attr.label(
+            allow_single_file = True,
             mandatory = True,
         ),
     },
@@ -364,15 +367,15 @@ _rename_aab = rule(
 
 _generate_universal_apk = rule(
     attrs = {
+        "debug_keystore": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
         "input_aab_file": attr.label(
-            allow_single_file = [".aab"],
+            allow_files = [".aab"],
             mandatory = True,
         ),
         "output_apk_file": attr.output(
-            mandatory = True,
-        ),
-        "debug_keystore": attr.label(
-            allow_single_file = True,
             mandatory = True,
         ),
         "_bundletool_tool": attr.label(

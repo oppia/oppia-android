@@ -2,10 +2,12 @@ package org.oppia.android.domain.question
 
 import org.json.JSONObject
 import org.oppia.android.app.model.Question
+import org.oppia.android.app.model.QuestionList
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
+import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class QuestionRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
+  private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets
   private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
@@ -24,9 +27,13 @@ class QuestionRetriever @Inject constructor(
    */
   fun loadQuestions(skillIdsList: List<String>): List<Question> {
     val questionsList = mutableListOf<Question>()
-    // TODO(#2976): Add support for loading questions locally once questions are available on web.
-    check(!loadLessonProtosFromAssets.value) {
-      "No support yet for loading proto questions from assets"
+    if (loadLessonProtosFromAssets.value) {
+      val questions = assetRepository.loadProtoFromLocalAssets(
+        assetName = "questions", baseMessage = QuestionList.getDefaultInstance()
+      ).questionsList
+      return skillIdsList.flatMap { skillId ->
+        questions.filter { skillId in it.linkedSkillIdsList }
+      }
     }
     val questionJsonArray = jsonAssetRetriever.loadJsonFromAsset(
       "questions.json"

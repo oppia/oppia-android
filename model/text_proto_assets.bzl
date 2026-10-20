@@ -22,7 +22,7 @@ def _extract_proto_sources(deps):
 def _gen_binary_proto_from_text_impl(ctx):
     # See: https://docs.bazel.build/versions/master/skylark/lib/actions.html#declare_file.
     output_file = ctx.outputs.output_file
-    input_file = ctx.attr.input_file.files.to_list()[0].short_path
+    input_file = ctx.attr.input_file.files.to_list()[0].path
     input_proto_files = _extract_proto_sources(ctx.attr.proto_deps)
 
     # See 'protoc --help' for specifics on the arguments passed to the tool for converting text

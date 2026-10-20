@@ -32,6 +32,14 @@ class QuestionTrainingController @Inject constructor(
   private val seedRandom = Random(questionTrainingSeed)
 
   /**
+   * Returns whether a training session has been initialized in this process, including a session
+   * that has finished. Restored players can use this to detect when their non-persisted session was
+   * lost after the app process was killed.
+   */
+  fun hasStartedTrainingSession(): Boolean =
+    questionAssessmentProgressController.hasStartedTrainingSession()
+
+  /**
    * Begins a question training session given a list of skill IDs and a total number of questions.
    *
    * [QuestionAssessmentProgressController] should be used to manage the play state, and monitor the

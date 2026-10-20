@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,6 +81,57 @@ class QuestionTrainingControllerTest {
   @Before
   fun setUp() {
     profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testController_beforeStartingTrainingSession_hasStartedTrainingSession_returnsFalse() {
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    assertThat(questionTrainingController.hasStartedTrainingSession()).isFalse()
+  }
+
+  @Test
+  fun testController_afterStartingTrainingSession_hasStartedTrainingSession_returnsTrue() {
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf(TEST_SKILL_ID_0))
+
+    assertThat(questionTrainingController.hasStartedTrainingSession()).isTrue()
+  }
+
+  @Test
+  fun testController_protoAssets_startTrainingSession_succeeds() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    val provider = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(provider)
+    val question = monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.getCurrentQuestion()
+    )
+    assertThat(question.totalQuestionCount).isEqualTo(3)
+    assertThat(question.question.questionId).isEqualTo(TEST_QUESTION_ID_1)
+  }
+
+  @Test
+  fun testController_protoAssets_unknownSkills_startTrainingSession_fails() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    val provider = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf("missing_skill")
+    )
+
+    assertThat(monitorFactory.waitForNextFailureResult(provider)).hasMessageThat()
+      .contains("Expected at least 1 question")
   }
 
   @Test

@@ -142,6 +142,24 @@ config_setting(
     },
 )
 
+# Enable after updating the pipeline revision and capturing question version pins.
+bool_flag(
+    name = "download_practice_questions",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "download_practice_questions_in_alpha",
+    flag_values = {
+        ":assets_type": "alpha",
+        ":download_practice_questions": "True",
+    },
+    visibility = [
+        "//config/src/java/org/oppia/android/config:__pkg__",
+        "//domain:domain_visibility",
+    ],
+)
+
 # Defines a 'bazel run' target to regenerate the pinned lesson versions for both production and
 # alpha builds. This does require some specific parameters to be included in order to ensure the
 # pipeline is properly authenticated. Example CLI run:
@@ -156,10 +174,15 @@ config_setting(
 # textproto file, instead.
 update_pinned_lesson_versions(
     name = "update_pinned_lesson_versions",
+    testonly = True,
     download_config = select({
         "//config:assets_type_alpha": "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
         "//config:assets_type_prod": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
         "//conditions:default": "@oppia_android_asset_pipeline//scripts:assets/prod_download_config.textproto",
+    }),
+    download_questions = select({
+        ":download_practice_questions_in_alpha": True,
+        "//conditions:default": False,
     }),
     pinned_versions = select({
         "//config:assets_type_alpha": "//config:lessons/alpha_pinned_lesson_versions.textproto",
@@ -167,5 +190,4 @@ update_pinned_lesson_versions(
         "//conditions:default": "//config:lessons/prod_pinned_lesson_versions.textproto",
     }),
     tags = ["manual"],
-    testonly = True,
 )
