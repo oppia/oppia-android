@@ -710,6 +710,20 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.pin).isEqualTo("321")
+    assertThat(profile.hasPin).isTrue()
+  }
+
+  @Test
+  fun testUpdatePin_profileWithPin_updatePinToEmpty_checkPinAndHasPinAreCleared() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James", pin = "12345")
+
+    val updateProvider = profileManagementController.updatePin(PROFILE_ID_0, "")
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.pin).isEmpty()
+    assertThat(profile.hasPin).isFalse()
   }
 
   @Test
@@ -2017,6 +2031,80 @@ class ProfileManagementControllerTest {
     assertThat(event).hasEndProfileOnboardingContextThat {
       hasProfileIdThat().isEqualTo(LegacyProfileId.newBuilder().setInternalId(0).build())
     }
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_newProfile_hasNotSeenIntroduction() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+
+    assertThat(profile.hasSeenAdministratorControlsIntroduction).isFalse()
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_markSeen_updatesStoredProfile() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val updateProvider =
+      profileManagementController.markAdministratorControlsIntroductionSeen(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.hasSeenAdministratorControlsIntroduction).isTrue()
+  }
+
+  @Test
+  fun testAdminControlsIntroduction_missingProfile_updateFails() {
+    setUpTestApplicationComponent()
+
+    val updateProvider =
+      profileManagementController.markAdministratorControlsIntroductionSeen(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains(
+      "Profile ID 6 does not match an existing Profile"
+    )
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).isEmpty()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_newProfile_hasNotSeenNotice() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isFalse()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_markSeen_updatesStoredProfile() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "James")
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_0)
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val profile = retrieveProfile(PROFILE_ID_0)
+    assertThat(profile.hasSeenBecomeAdministratorNotice).isTrue()
+  }
+
+  @Test
+  fun testBecomeAdministratorNotice_missingProfile_updateFails() {
+    setUpTestApplicationComponent()
+
+    val updateProvider = profileManagementController.markBecomeAdministratorNoticeSeen(PROFILE_ID_6)
+
+    val error = monitorFactory.waitForNextFailureResult(updateProvider)
+    assertThat(error).hasMessageThat().contains(
+      "Profile ID 6 does not match an existing Profile"
+    )
   }
 
   private fun addTestProfiles() {

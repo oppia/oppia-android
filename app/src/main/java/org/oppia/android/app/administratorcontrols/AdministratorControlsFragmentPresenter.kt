@@ -4,8 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -23,7 +28,12 @@ import org.oppia.android.app.databinding.databinding.AdministratorControlsProfil
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -32,11 +42,14 @@ import javax.inject.Inject
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val profileManagementController: ProfileManagementController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var profileId: LegacyProfileId
+  private var isIntroductionDialogShowing = false
 
   @Inject
   lateinit var administratorControlsViewModel: AdministratorControlsViewModel
@@ -70,10 +83,36 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       this.lifecycleOwner = fragment
     }
 
+    observeAdministratorControlsIntroductionStatusWhenAttached()
+
     return binding.root
   }
 
-  /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
+  private fun observeAdministratorControlsIntroductionStatusWhenAttached() {
+    val rootView = binding.root
+    if (rootView.isAttachedToWindow) {
+      observeAdministratorControlsIntroductionStatusAfterAttach(rootView)
+    } else {
+      rootView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(view: View) {
+          view.removeOnAttachStateChangeListener(this)
+          observeAdministratorControlsIntroductionStatusAfterAttach(view)
+        }
+
+        override fun onViewDetachedFromWindow(view: View) = Unit
+      })
+    }
+  }
+
+  private fun observeAdministratorControlsIntroductionStatusAfterAttach(view: View) {
+    view.post {
+      if (view.isAttachedToWindow) {
+        observeAdministratorControlsIntroductionStatus()
+      }
+    }
+  }
+
+  /** Returns the recyclerview adapter for the controls panel in administrator controls fragment. */
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
       return multiTypeBuilderFactory
@@ -186,6 +225,45 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       APP_VERSION_FRAGMENT -> 4
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
+  }
+
+  private fun observeAdministratorControlsIntroductionStatus() {
+    val internalProfileId = profileId.toProfileIdPreservingZero()
+    profileManagementController.getProfile(internalProfileId).toLiveData().observe(
+      fragment.viewLifecycleOwner
+    ) { profileResult ->
+      if (
+        profileResult is AsyncResult.Success &&
+        !profileResult.value.hasSeenAdministratorControlsIntroduction &&
+        !isIntroductionDialogShowing
+      ) {
+        isIntroductionDialogShowing = true
+        profileManagementController.markAdministratorControlsIntroductionSeen(internalProfileId)
+        showIntroductionDialog()
+      }
+    }
+  }
+
+  private fun showIntroductionDialog() {
+    val dialogHost = activity.findViewById<ViewGroup>(android.R.id.content)
+    val composeView = ComposeView(fragment.requireContext()).apply {
+      ViewTreeLifecycleOwner.set(this, fragment.viewLifecycleOwner)
+      ViewTreeViewModelStoreOwner.set(this, fragment)
+      ViewTreeSavedStateRegistryOwner.set(this, fragment)
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    composeView.setContent {
+      AdministratorControlsDialog(
+        appLanguageResourceHandler = appLanguageResourceHandler,
+        onDismiss = {
+          isIntroductionDialogShowing = false
+          composeView.disposeComposition()
+          dialogHost.removeView(composeView)
+        }
+      )
+    }
+    dialogHost.addView(composeView, ViewGroup.LayoutParams(0, 0))
   }
 
   private enum class ViewType {

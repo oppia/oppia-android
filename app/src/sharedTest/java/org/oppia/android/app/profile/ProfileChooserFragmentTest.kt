@@ -5,6 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -16,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.VerificationModes.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -55,6 +62,7 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
@@ -101,6 +109,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -123,6 +132,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -139,9 +149,11 @@ import javax.inject.Singleton
 class ProfileChooserFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val composeRule = createEmptyComposeRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -441,10 +453,85 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
+  fun testOnboardingV2_soleLearnerFirstAddClick_showsBecomeAdministratorNotice() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(testProfileId, ProfileType.SOLE_LEARNER)
+    )
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_title)
+      ).assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_message)
+      ).assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_description)
+      ).assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_manage_profiles)
+      ).assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_add_learners)
+      ).assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_continue)
+      ).assertIsDisplayed()
+      intended(hasComponent(CreateAdminPinActivity::class.java.name), times(0))
+      val profile = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfile(testProfileId.toProfileIdPreservingZero())
+      )
+      assertThat(profile.hasSeenBecomeAdministratorNotice).isTrue()
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_soleLearnerNotice_clickContinue_opensCreateAdminPinActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(testProfileId, ProfileType.SOLE_LEARNER)
+    )
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_continue)
+      ).performClick()
+
+      composeRule.onAllNodesWithText(
+        context.getString(R.string.profile_selection_become_administrator_notice_title)
+      ).assertCountEquals(0)
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_soleLearnerNoticeAlreadySeen_clickAdd_opensCreateAdminPinDirectly() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(testProfileId, ProfileType.SOLE_LEARNER)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.markBecomeAdministratorNoticeSeen(
+        testProfileId.toProfileIdPreservingZero()
+      )
+    )
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -453,6 +540,34 @@ class ProfileChooserFragmentTest {
 
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(CreateAdminPinActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_upgradedSupervisorWithPin_clickAdd_opensCreateProfileDirectly() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    val profileId = testProfileId.toProfileIdPreservingZero()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updatePin(profileId, "12345")
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.markBecomeAdministratorNoticeSeen(profileId)
+    )
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(CreateProfileActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name), times(0))
+      intended(hasComponent(CreateAdminPinActivity::class.java.name), times(0))
     }
   }
 
