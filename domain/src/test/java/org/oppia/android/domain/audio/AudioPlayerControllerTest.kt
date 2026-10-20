@@ -131,6 +131,7 @@ class AudioPlayerControllerTest {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
 
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
@@ -176,6 +177,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.releaseMediaPlayer()
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(shadowMediaPlayer.state).isEqualTo(ShadowMediaPlayer.State.END)
   }
@@ -342,6 +344,7 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.seekTo(500)
     audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
@@ -444,6 +447,7 @@ class AudioPlayerControllerTest {
 
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)
+    testCoroutineDispatchers.runCurrent()
 
     // After an error, the controller emits:
     // 3. Failure
@@ -452,6 +456,7 @@ class AudioPlayerControllerTest {
 
     // Now explicitly reload to prove recovery
     audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
@@ -581,13 +586,37 @@ class AudioPlayerControllerTest {
     setUpMediaReadyApplication()
     audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
-
-    shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
+
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IOException::class.java)
     assertThat(exception).hasMessageThat().contains("Invalid URL")
+  }
+
+  @Test
+  fun testController_failedFirstAttempt_followedBySuccessfulRequest_prepares() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    // First attempt fails with IOException in setDataSource.
+    audioPlayerController.changeDataSource(TEST_FAIL_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isPending()
+
+    // Second attempt with valid URL succeeds.
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
   }
 
   @Test
@@ -900,10 +929,128 @@ class AudioPlayerControllerTest {
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
+  @Test
+  fun testController_changeDataSource_multipleRapidCalls_preparesLastDataSource() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(shadowMediaPlayer.isPrepared).isTrue()
+    assertThat(shadowMediaPlayer.dataSource).isEqualTo(
+      DataSource.toDataSource(context, Uri.parse(TEST_URL2))
+    )
+  }
+
+  @Test
+  fun testController_changeDataSource_releaseImmediately_cancelsLoadAndReachesEndState() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    audioPlayerController.releaseMediaPlayer()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(shadowMediaPlayer.state).isEqualTo(ShadowMediaPlayer.State.END)
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.CLOSED)
+    }
+  }
+
+  @Test
+  fun testController_releaseMediaPlayer_latePreparedCallback_doesNotUpdateState() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    val releasedPlayer = audioPlayerController.getTestMediaPlayer()
+    val releasedShadowPlayer = Shadows.shadowOf(releasedPlayer)
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    audioPlayerController.releaseMediaPlayer()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(releasedShadowPlayer.state).isEqualTo(ShadowMediaPlayer.State.END)
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.CLOSED)
+    }
+
+    // Simulate late prepared callback arriving from the released player.
+    releasedShadowPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    // Status remains CLOSED and was not updated to PREPARED.
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.CLOSED)
+    }
+  }
+
+  @Test
+  fun testController_abortPendingLoad_immediatelyChangeDataSource_doesNotResetNewLoad() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    audioPlayerController.abortPendingLoad()
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(shadowMediaPlayer.isPrepared).isTrue()
+    assertThat(shadowMediaPlayer.dataSource).isEqualTo(
+      DataSource.toDataSource(context, Uri.parse(TEST_URL2))
+    )
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
+  }
+
+  @Test
+  fun testController_secondAudioRequested_firstAudioPreparedCallback_doesNotUpdateState() {
+    setUpMediaReadyApplication()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+
+    audioPlayerController.changeDataSource(TEST_URL, contentId = null, languageCode = "en")
+    testCoroutineDispatchers.runCurrent()
+
+    val firstAudioPreparedListener = shadowMediaPlayer.onPreparedListener
+    assertThat(firstAudioPreparedListener).isNotNull()
+
+    audioPlayerController.changeDataSource(TEST_URL2, contentId = null, languageCode = "en")
+
+    firstAudioPreparedListener.onPrepared(audioPlayerController.getTestMediaPlayer())
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).isPending()
+
+    testCoroutineDispatchers.runCurrent()
+    shadowMediaPlayer.invokePreparedListener()
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
+  }
+
   private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     audioPlayerController.changeDataSource(TEST_URL, contentId, languageCode)
+    testCoroutineDispatchers.runCurrent()
     shadowMediaPlayer.invokePreparedListener()
     testCoroutineDispatchers.runCurrent()
   }
