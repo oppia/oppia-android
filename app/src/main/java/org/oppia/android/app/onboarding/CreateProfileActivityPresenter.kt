@@ -14,9 +14,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-/** Argument key for [CreateProfileFragment] arguments. */
-const val CREATE_PROFILE_FRAGMENT_ARGS = "CreateProfileFragment.args"
-
 private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
@@ -50,7 +47,7 @@ class CreateProfileActivityPresenter @Inject constructor(
         }
       }
       activity.supportFragmentManager.beginTransaction()
-        .add(R.id.profile_fragment_placeholder, createProfileFragment)
+        .add(R.id.profile_fragment_placeholder, createProfileFragment, TAG_CREATE_PROFILE_FRAGMENT)
         .commitNow()
     }
   }
