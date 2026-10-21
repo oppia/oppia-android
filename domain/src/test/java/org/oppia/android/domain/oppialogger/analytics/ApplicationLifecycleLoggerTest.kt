@@ -143,6 +143,9 @@ class ApplicationLifecycleLoggerTest {
   @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
   var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
 
+  @field:[JvmField Inject LearnerAnalyticsInactivityLimitMillis]
+  var learnerAnalyticsInactivityLimitMillis: Long = Long.MIN_VALUE
+
   @field:[Inject EnableDownloadsSupport]
   lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
 
@@ -258,9 +261,9 @@ class ApplicationLifecycleLoggerTest {
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
     applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_ONE)
-    testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(45))
+    testCoroutineDispatchers.advanceTimeBy(learnerAnalyticsInactivityLimitMillis + 1)
     applicationLifecycleLogger.recordAppInForeground(
-      TEST_TIMESTAMP_IN_MILLIS_ONE + TimeUnit.MINUTES.toMillis(45)
+      TEST_TIMESTAMP_IN_MILLIS_ONE + learnerAnalyticsInactivityLimitMillis + 1
     )
 
     val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
@@ -277,9 +280,9 @@ class ApplicationLifecycleLoggerTest {
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
     applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_ONE)
-    testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(15))
+    testCoroutineDispatchers.advanceTimeBy(learnerAnalyticsInactivityLimitMillis - 1)
     applicationLifecycleLogger.recordAppInForeground(
-      TEST_TIMESTAMP_IN_MILLIS_ONE + TimeUnit.MINUTES.toMillis(15)
+      TEST_TIMESTAMP_IN_MILLIS_ONE + learnerAnalyticsInactivityLimitMillis - 1
     )
 
     val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
