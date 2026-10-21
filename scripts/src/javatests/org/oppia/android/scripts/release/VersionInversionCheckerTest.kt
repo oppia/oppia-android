@@ -177,14 +177,7 @@ class VersionInversionCheckerTest {
     assertThat(exception).hasMessageThat().contains("all alpha version codes")
   }
 
-  // ---------------------------------------------------------------------------
-  // Deploying to GA (production) — must be less than beta and alpha
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Frozen version codes — ordering constraints must ignore confirmed code
-  // (See FrozenReleaseConfig: alpha={16L})
-  // ---------------------------------------------------------------------------
+  // Frozen version codes are excluded from ordering constraints; see FrozenReleaseConfig.
 
   @Test
   fun testVerify_ga_allTracksEmpty_passes() {
