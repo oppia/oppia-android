@@ -154,6 +154,14 @@ class StringToNumberParserTest {
   }
 
   @Test
+  fun testRealTimeError_withStandardNotation_startsWithNegativeDot_returnsFloatingPointError() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("-.5", allowExponentialNotation = false)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.STARTING_WITH_FLOATING_POINT)
+  }
+
+  @Test
   fun testRealTimeError_withStandardNotation_multipleDots_returnsInvalidFormat() {
     val error =
       stringToNumberParser.getRealTimeAnswerError("1.2.3", allowExponentialNotation = false)
@@ -210,11 +218,11 @@ class StringToNumberParserTest {
   }
 
   @Test
-  fun testRealTimeError_withExponentialNotation_validUpperExp_returnsValid() {
+  fun testRealTimeError_withExponentialNotation_upperExp_returnsInvalidFormat() {
     val error =
       stringToNumberParser.getRealTimeAnswerError("1.8E3", allowExponentialNotation = true)
 
-    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
   }
 
   @Test
@@ -226,9 +234,17 @@ class StringToNumberParserTest {
   }
 
   @Test
-  fun testRealTimeError_withExponentialNotation_validNegativeBaseAndExp_returnsValid() {
+  fun testRealTimeError_withExponentialNotation_negativeBaseAndNegativeExp_returnsInvalidFormat() {
     val error =
       stringToNumberParser.getRealTimeAnswerError("-1.8e-3", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_validNegativeBase_returnsValid() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("-1.8e3", allowExponentialNotation = true)
 
     assertThat(error).isEqualTo(NumericInputParsingError.VALID)
   }
@@ -280,6 +296,14 @@ class StringToNumberParserTest {
   fun testRealTimeError_withExponentialNotation_startsWithDot_returnsFloatingPointError() {
     val error =
       stringToNumberParser.getRealTimeAnswerError(".5e3", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.STARTING_WITH_FLOATING_POINT)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_startsWithNegativeDot_returnsFloatingPointError() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("-.5e3", allowExponentialNotation = true)
 
     assertThat(error).isEqualTo(NumericInputParsingError.STARTING_WITH_FLOATING_POINT)
   }
@@ -338,6 +362,44 @@ class StringToNumberParserTest {
       stringToNumberParser.getRealTimeAnswerError("-1e-2-3", allowExponentialNotation = true)
 
     assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_ordinaryInteger_returnsValid() {
+    val error = stringToNumberParser.getRealTimeAnswerError("123", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_ordinaryDecimal_returnsValid() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("123.45", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_ordinaryNegativeDecimal_returnsValid() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("-123.45", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_ordinaryNegativeInteger_returnsValid() {
+    val error =
+      stringToNumberParser.getRealTimeAnswerError("-123", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testRealTimeError_withExponentialNotation_ordinaryZero_returnsValid() {
+    val error = stringToNumberParser.getRealTimeAnswerError("0", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
   }
 
   @Test
@@ -407,10 +469,94 @@ class StringToNumberParserTest {
   }
 
   @Test
-  fun testSubmitTimeError_withExponentialNotation_validNegativeBaseAndExp_returnsValid() {
+  fun testSubmitTimeError_withExponentialNotation_negativeBaseAndExp_returnsInvalidFormat() {
     val error = stringToNumberParser.getSubmitTimeError("-2.5e-4", allowExponentialNotation = true)
 
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_validNegativeBase_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("-1.8e3", allowExponentialNotation = true)
+
     assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_upperExp_returnsInvalidFormat() {
+    val error = stringToNumberParser.getSubmitTimeError("1.8E3", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_ordinaryInteger_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("123", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_ordinaryDecimal_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("123.45", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_ordinaryNegativeDecimal_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("-123.45", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_ordinaryNegativeInteger_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("-123", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_ordinaryZero_returnsValid() {
+    val error = stringToNumberParser.getSubmitTimeError("0", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.VALID)
+  }
+
+  @Test
+  fun testSubmitTimeError_withStandardNotation_startsWithNegativeDot_returnsFloatingPointError() {
+    val error = stringToNumberParser.getSubmitTimeError("-.5", allowExponentialNotation = false)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.STARTING_WITH_FLOATING_POINT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withStandardNotation_trailingDot_returnsInvalidFormat() {
+    val error = stringToNumberParser.getSubmitTimeError("123.", allowExponentialNotation = false)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_trailingDotBeforeExp_returnsInvalidFormat() {
+    val error = stringToNumberParser.getSubmitTimeError("1.e3", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withStandardNotation_floatSuffix_returnsInvalidFormat() {
+    val error = stringToNumberParser.getSubmitTimeError("123f", allowExponentialNotation = false)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
+  }
+
+  @Test
+  fun testSubmitTimeError_withExponentialNotation_explicitPlus_returnsInvalidFormat() {
+    val error = stringToNumberParser.getSubmitTimeError("1.8e+3", allowExponentialNotation = true)
+
+    assertThat(error).isEqualTo(NumericInputParsingError.INVALID_FORMAT)
   }
 
   @Test

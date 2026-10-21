@@ -13,7 +13,7 @@ class StringToNumberParser {
   private val validCharsRegex =
     """^[\d\s.-]+$""".toRegex()
   private val validExponentialCharsRegex =
-    """^[\d\s.\-eE]+$""".toRegex()
+    """^[\d\s.\-e]+$""".toRegex()
 
   /**
    * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the
@@ -34,34 +34,33 @@ class StringToNumberParser {
     if (!allowExponentialNotation) {
       return when {
         !normalized.matches(validCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
-        normalized.startsWith(".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+        normalized.startsWith(".") || normalized.startsWith("-.") ->
+          NumericInputParsingError.STARTING_WITH_FLOATING_POINT
         normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
         normalized.lastIndexOf('-') > 0 -> NumericInputParsingError.INVALID_FORMAT
         else -> NumericInputParsingError.VALID
       }
     }
 
-    val eIndex = normalized.indexOfAny(charArrayOf('e', 'E'))
+    val eIndex = normalized.indexOf('e')
     val dotIndex = normalized.indexOf('.')
-    val minusIndices = normalized.mapIndexedNotNull { index, c ->
-      if (c == '-') index else null
-    }
-    val hasInvalidMinus = minusIndices.any { index ->
-      index != 0 && (normalized[index - 1] != 'e' && normalized[index - 1] != 'E')
-    }
+    val minusIndex = normalized.indexOf('-')
+    val hasInvalidMinus = minusIndex != -1 &&
+      minusIndex != 0 &&
+      normalized[minusIndex - 1] != 'e'
 
     return when {
       !normalized.matches(validExponentialCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
-      normalized.startsWith(".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
-      normalized.startsWith("e") || normalized.startsWith("E") ||
-        normalized.startsWith("-e") || normalized.startsWith("-E") ->
+      normalized.startsWith(".") || normalized.startsWith("-.") ->
+        NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+      normalized.startsWith("e") || normalized.startsWith("-e") ->
         NumericInputParsingError.INVALID_FORMAT
       normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
-      normalized.count { it == 'e' || it == 'E' } > 1 ->
-        NumericInputParsingError.INVALID_FORMAT
+      normalized.count { it == 'e' } > 1 -> NumericInputParsingError.INVALID_FORMAT
       eIndex != -1 && dotIndex != -1 && dotIndex > eIndex ->
         NumericInputParsingError.INVALID_FORMAT
-      hasInvalidMinus || minusIndices.size > 2 -> NumericInputParsingError.INVALID_FORMAT
+      normalized.count { it == '-' } > 1 || hasInvalidMinus ->
+        NumericInputParsingError.INVALID_FORMAT
       else -> NumericInputParsingError.VALID
     }
   }
@@ -87,7 +86,16 @@ class StringToNumberParser {
     if (text.length > 15) {
       return NumericInputParsingError.NUMBER_TOO_LONG
     }
-    if (!allowExponentialNotation && (text.contains('e') || text.contains('E'))) {
+    val realTimeError = getRealTimeAnswerError(text, allowExponentialNotation)
+    if (realTimeError != NumericInputParsingError.VALID) {
+      return realTimeError
+    }
+    if (text == "-" ||
+      text.endsWith("-") ||
+      text.endsWith("e") ||
+      text.endsWith(".") ||
+      text.contains(".e")
+    ) {
       return NumericInputParsingError.INVALID_FORMAT
     }
     return try {

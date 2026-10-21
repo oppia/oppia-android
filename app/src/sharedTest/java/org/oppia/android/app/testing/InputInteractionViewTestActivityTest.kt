@@ -454,12 +454,24 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @DisableAccessibilityChecks
-  fun testNumericInput_withExpEnabled_typingNegativeBaseAndExp_noErrorIsDisplayed() {
+  fun testNumericInput_withExpEnabled_typingNegativeBase_noErrorIsDisplayed() {
     val intent = createNumericInputIntent(allowExponentialNotation = true)
     ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(appendText("-2.5e4"))
       onView(withId(R.id.number_input_error)).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingMultipleMinuses_numberFormatErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("-2.5e-4"))
+      onView(withId(R.id.number_input_error))
+        .check(matches(withText(R.string.number_error_invalid_format)))
     }
   }
 
