@@ -206,8 +206,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
       )
 
       CreateAdminPinErrorText(
-        showError = uiState.showError,
-        errorMessage = uiState.errorMessage
+        errorMessage = uiState.errorMessage.takeIf { uiState.hasErrorMessage() }
       )
 
       Spacer(modifier = Modifier.weight(1f))
@@ -375,8 +374,8 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun CreateAdminPinErrorText(showError: Boolean, errorMessage: String) {
-    if (showError) {
+  private fun CreateAdminPinErrorText(errorMessage: String?) {
+    if (errorMessage != null) {
       Text(
         text = errorMessage,
         textAlign = TextAlign.Center,
@@ -394,7 +393,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
     uiState = uiState.toBuilder()
       .setPin(pin)
-      .setShowError(if (pin.isNotEmpty()) false else uiState.showError)
+      .apply { if (pin.isNotEmpty()) clearErrorMessage() }
       .build()
   }
 
@@ -404,7 +403,7 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
 
     uiState = uiState.toBuilder()
       .setConfirmPin(confirmPin)
-      .setShowError(if (confirmPin.isNotEmpty()) false else uiState.showError)
+      .apply { if (confirmPin.isNotEmpty()) clearErrorMessage() }
       .build()
   }
 
@@ -415,13 +414,12 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
   private fun onSubmit() {
     when (val result = validatePins(uiState.pin, uiState.confirmPin)) {
       PinValidationResult.Valid -> {
-        uiState = uiState.toBuilder().setShowError(false).build()
+        uiState = uiState.toBuilder().clearErrorMessage().build()
         updatePin(uiState.pin)
       }
 
       is PinValidationResult.Invalid -> {
         uiState = uiState.toBuilder()
-          .setShowError(true)
           .setErrorMessage(resourceHandler.getStringInLocaleWithWrapping(result.errorMessageId))
           .build()
       }

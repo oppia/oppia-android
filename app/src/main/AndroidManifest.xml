@@ -373,7 +373,7 @@
     <activity
         android:name=".app.profile.CreateAdminPinActivity"
         android:label="@string/create_admin_pin_activity_title"
-        android:theme="@style/OppiaThemeWithoutActionBar" />
+        android:theme="@style/CreateAdminPinActivityTheme" />
     <activity
       android:name=".app.testing.TextInputLayoutBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
