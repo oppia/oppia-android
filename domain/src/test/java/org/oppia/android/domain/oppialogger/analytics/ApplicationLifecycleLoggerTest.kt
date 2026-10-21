@@ -358,6 +358,18 @@ class ApplicationLifecycleLoggerTest {
   }
 
   @Test
+  fun testRecordAppInBackground_immediatelyAfterForeground_logsZeroForegroundTime() {
+    setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = expectAnalyticsEvent { it.context.hasAppInForegroundTime() }
+    assertThat(eventLog.context.appInForegroundTime.foregroundTime.toLong()).isEqualTo(0L)
+  }
+
+  @Test
   fun testRecordAppInBackground_performanceMetricsEnabled_logsCpuUsage() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
@@ -441,6 +453,23 @@ class ApplicationLifecycleLoggerTest {
     assertThat(latencyEvents).hasSize(1)
     assertThat(latencyEvents[0].loggableMetric.startupLatencyMetric.startupLatencyMillis)
       .isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE - TEST_APP_START_TIME_MILLIS)
+  }
+
+  @Test
+  fun testRecordActivityResumed_firstCall_resumedAtAppStart_logsZeroStartupLatency() {
+    setUpTestApplicationComponent()
+
+    applicationLifecycleLogger.recordActivityResumed(
+      ScreenName.HOME_ACTIVITY, TEST_APP_START_TIME_MILLIS, TEST_APP_START_TIME_MILLIS
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val latencyEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter { it.loggableMetric.hasStartupLatencyMetric() }
+    assertThat(latencyEvents).hasSize(1)
+    assertThat(latencyEvents[0].loggableMetric.startupLatencyMetric.startupLatencyMillis)
+      .isEqualTo(0L)
   }
 
   @Test
