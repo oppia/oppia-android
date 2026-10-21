@@ -302,14 +302,18 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
             colorResource(R.color.component_color_shared_transparent_background_color),
           textColor = colorResource(R.color.component_color_shared_primary_text_color),
           unfocusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color),
-          focusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color)
+          focusedLabelColor = colorResource(R.color.component_color_shared_primary_text_color),
+          errorBorderColor =
+            colorResource(R.color.component_color_shared_text_input_layout_error_color),
+          errorLabelColor =
+            colorResource(R.color.component_color_shared_text_input_layout_error_color)
         )
       )
       Box(modifier = Modifier.height(28.dp)) {
         if (error.isNotEmpty()) {
           Text(
             text = error,
-            color = colorResource(R.color.component_color_shared_error_color),
+            color = colorResource(R.color.component_color_shared_text_input_layout_error_color),
             fontSize = 12.sp,
             modifier = Modifier.padding(start = 16.dp)
           )
@@ -381,7 +385,9 @@ class CreateAdminPinFragmentPresenter @Inject constructor(
         textAlign = TextAlign.Center,
         style = TextStyle(
           fontSize = 14.sp,
-          color = colorResource(id = R.color.component_color_shared_error_color)
+          color = colorResource(
+            id = R.color.component_color_shared_text_input_layout_error_color
+          )
         )
       )
     }
