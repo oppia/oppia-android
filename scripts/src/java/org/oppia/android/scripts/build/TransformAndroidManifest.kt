@@ -196,13 +196,23 @@ private class TransformAndroidManifest(
   }
 
   private fun computeVersionCode(): Int {
+    check(!gitClient.isShallowRepository) {
+      "Cannot compute a version code in a shallow clone of the repository since its commit count" +
+        " is incomplete. Please run 'git fetch --unshallow' and try again."
+    }
     val developCommitCount = gitClient.countCommits(gitClient.branchMergeBase)
     // The number of potential releases since the new version strategy was introduced.
     val possibleReleaseCount = developCommitCount - NEW_VERSION_STRATEGY_STARTING_COMMIT_NUMBER
     val releaseVersionOffset = possibleReleaseCount * VERSION_CODES_PER_RELEASE
     val rcVersionOffset = (releaseCandidateNumber - 1) * MAX_FLAVORS_PER_RC
     val flavorVersionOffset = buildFlavor.index
-    return BASE_VERSION_CODE + releaseVersionOffset + rcVersionOffset + flavorVersionOffset
+    val versionCode =
+      BASE_VERSION_CODE + releaseVersionOffset + rcVersionOffset + flavorVersionOffset
+    check(versionCode > 0) {
+      "Computed version code ($versionCode) is zero or negative. Please verify the versioning" +
+        " inputs used to compute it."
+    }
+    return versionCode
   }
 
   // The format here is defined as part of the app's release process.

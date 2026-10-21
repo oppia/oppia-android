@@ -13,8 +13,34 @@ jobs:
   check-force-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Check exemptions
+        id: exemptions
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { head } = context.payload.pull_request;
+            const repository = `${context.repo.owner}/${context.repo.repo}`;
+
+            const exemptions = [
+              { branch: 'translatewiki-prs', repository: '*' },
+              { branch: 'automated/lesson-versions', repository },
+              { branchPrefix: 'automated/changelog-', repository },
+            ];
+
+            const exempt = exemptions.some(rule =>
+              (rule.branch === head.ref ||
+                (rule.branchPrefix !== undefined && head.ref.startsWith(rule.branchPrefix))) &&
+              (rule.repository === '*' ||
+                rule.repository === head.repo?.full_name)
+            );
+
+            core.setOutput('should_check', String(!exempt));
+            core.info(exempt
+              ? `Skipping exempt branch: ${head.ref}`
+              : `Checking branch: ${head.ref}`);
+
       - name: Detect and close (on change)
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && !(github.event.pull_request.head.ref == 'automated/lesson-versions' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.action == 'synchronize' }}
+        if: ${{ steps.exemptions.outputs.should_check == 'true' && github.event.action == 'synchronize' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -30,7 +56,7 @@ jobs:
             } else core.info(`Standard push detected. Commit history status: ${status}. No action taken.`);
 
       - name: Detect and close reopened force-pushed PRs
-        if: ${{ github.event.pull_request.head.ref != 'translatewiki-prs' && !(github.event.pull_request.head.ref == 'automated/lesson-versions' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.action == 'reopened' }}
+        if: ${{ steps.exemptions.outputs.should_check == 'true' && github.event.action == 'reopened' }}
         uses: actions/github-script@v8
         with:
           script: |

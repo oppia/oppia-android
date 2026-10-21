@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.hasContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -48,6 +49,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LegacyProfileId
@@ -90,6 +92,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -109,8 +112,10 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -461,6 +466,253 @@ class TopicLessonsFragmentTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_lockedChapter_isClickable() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+        .check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_clickLockedChapter_showsPrerequisiteTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+        .check(
+          matches(
+            withText(
+              "Chapter 2: Order is important is currently locked. Please complete chapter 1: " +
+                "What is a Ratio? to unlock this chapter."
+            )
+          )
+        )
+      // Locked chapter must not navigate into ExplorationActivity.
+      intended(hasComponent(ExplorationActivity::class.java.name), times(0))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_clickLockedChapterTwice_hidesPrerequisiteTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadTestTopic_clickTwoDifferentLockedChapters_showsOnlyLatestTooltip() { // ktlint-disable max-line-length
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0
+      )
+    ).use {
+      clickLessonTab()
+      // First Story has three chapters; chapters 2 and 3 start locked.
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 2,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 2,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 2,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+        .check(
+          matches(
+            withText(
+              "Chapter 3: Math Expressions is currently locked. Please complete chapter 2: " +
+                "Image Region Selection Exploration to unlock this chapter."
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_collapseStory_clearsPrerequisiteTooltip() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(isDisplayed()))
+
+      // Collapse story.
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      testCoroutineDispatchers.runCurrent()
+
+      // Re-expand story.
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      testCoroutineDispatchers.runCurrent()
+
+      // Prerequisite tooltip must be cleared rather than remaining visible.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.lessons_locked_chapter_view_prerequisite_tooltip_text_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicLessonsFragment_selectChapterSummary_lockedChapter_doesNotNavigate() {
+    launch<TopicActivity>(
+      createTopicActivityIntent(
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+      )
+    ).use { scenario ->
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicLessonsFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
+
+        topicLessonsFragment.selectChapterSummary(
+          storyId = RATIOS_STORY_ID_0,
+          explorationId = RATIOS_EXPLORATION_ID_1,
+          chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ExplorationActivity::class.java.name), times(0))
+      intended(hasComponent(ResumeLessonActivity::class.java.name), times(0))
     }
   }
 
