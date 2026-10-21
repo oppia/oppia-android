@@ -586,6 +586,33 @@ class BazelClientTest {
   }
 
   @Test
+  fun testComputeInstrumentationFilter_forRootLevelPackageTarget_matchesRootPackageTargets() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val filter = bazelClient.computeInstrumentationFilter(
+      "//app:src/test/java/org/oppia/android/app/home/HomeActivityLocalTest"
+    )
+
+    assertThat(filter).isEqualTo("^//app[/:]")
+    // The filter must match targets declared directly in the root-level package (e.g. //app:app_kt)
+    // as well as targets in its subpackages. The old filter (//app/...) did not match the former.
+    assertThat(Regex(filter).containsMatchIn("//app:app_kt")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//app/src/main:lib")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//application:lib")).isFalse()
+  }
+
+  @Test
+  fun testComputeInstrumentationFilter_forMultiLevelPackageTarget_matchesTopLevelPackage() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val filter = bazelClient.computeInstrumentationFilter(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+
+    assertThat(filter).isEqualTo("^//coverage[/:]")
+  }
+
+  @Test
   fun testRunCoverageForTestTarget_forNonTestTarget_fails() {
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
