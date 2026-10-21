@@ -14,10 +14,21 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-/** Fragment for displaying a new learner profile creation flow. */
+/** Fragment argument key for [CreateProfileFragment]. */
+const val CREATE_PROFILE_ARGUMENTS_KEY = "CreateProfileFragment.arguments"
+
+/** Fragment that contains the profile creation screen. */
 class CreateProfileFragment : InjectableFragment() {
   @Inject
   lateinit var createProfileFragmentPresenter: CreateProfileFragmentPresenter
+
+  private val selectProfilePictureLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+  ) { result ->
+    if (result.resultCode == Activity.RESULT_OK) {
+      createProfileFragmentPresenter.handleOnActivityResult(result.data)
+    }
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -29,30 +40,22 @@ class CreateProfileFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    createProfileFragmentPresenter.activityResultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == Activity.RESULT_OK) {
-        createProfileFragmentPresenter.handleOnActivityResult(result.data)
-      }
+    val arguments = checkNotNull(arguments) {
+      "Expected arguments to be passed to CreateProfileFragment"
     }
-
-    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
-      "Expected CreateProfileFragment to have a profileId argument."
-    }
-    val profileType = checkNotNull(
-      arguments?.getProto(
-        CREATE_PROFILE_FRAGMENT_ARGS, CreateProfileFragmentArguments.getDefaultInstance()
-      )?.profileType
-    ) {
-      "Expected CreateProfileFragment to have a profileType argument."
-    }
+    val profileId = arguments.extractCurrentUserProfileId()
+    val fragmentArguments = arguments.getProto(
+      CREATE_PROFILE_ARGUMENTS_KEY,
+      CreateProfileFragmentArguments.getDefaultInstance()
+    )
 
     return createProfileFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
-      profileType
+      fragmentArguments.profileType,
+      selectProfilePictureLauncher,
+      fragmentArguments.avatarColor.takeIf { fragmentArguments.hasAvatarColor() }
     )
   }
 }

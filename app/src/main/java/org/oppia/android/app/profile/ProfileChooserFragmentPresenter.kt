@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -269,26 +270,35 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun addProfileButtonClickListener() {
-    if (chooserViewModel.adminPin.isEmpty()) {
+    if (chooserViewModel.canAddProfile.get() != true) {
+      showMaximumProfilesReachedDialog()
+    } else if (chooserViewModel.adminPin.isEmpty()) {
       activity.startActivity(
-        AdminPinActivity.createAdminPinActivityIntent(
+        CreateAdminPinActivity.createAdminPinActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          chooserViewModel.adminProfileId
         )
       )
     } else {
       activity.startActivity(
-        AdminAuthActivity.createAdminAuthActivityIntent(
+        ProfileLoginActivity.createProfileLoginForAddProfileIntent(
           activity,
-          chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          chooserViewModel.adminProfileId,
+          ProfileType.ADDITIONAL_LEARNER,
+          selectUniqueRandomColor()
         )
       )
     }
+  }
+
+  private fun showMaximumProfilesReachedDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setMessage(R.string.profile_selection_maximum_profiles_reached_message)
+      .setPositiveButton(R.string.profile_selection_maximum_profiles_reached_close) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .create()
+      .show()
   }
 
   private fun logProfileChooserEvent() {
