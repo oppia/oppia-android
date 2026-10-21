@@ -143,16 +143,24 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
    *     empty list if no coverage data was found while running the test
    */
   fun runCoverageForTestTarget(bazelTestTarget: String): List<List<String>> {
-    val instrumentation = bazelTestTarget.split(":")[0]
-    val computeInstrumentation = instrumentation.split("/").let { "^//${it[2]}[/:]" }
     val coverageCommandOutputLines = executeBazelCommand(
       "coverage",
       bazelTestTarget,
-      "--instrumentation_filter=$computeInstrumentation"
+      "--instrumentation_filter=${computeInstrumentationFilter(bazelTestTarget)}"
     )
     return parseCoverageDataFilePath(bazelTestTarget, coverageCommandOutputLines).map { path ->
       File(path).readLines()
     }
+  }
+
+  /**
+   * Returns the instrumentation filter used when running coverage for [bazelTestTarget]. The filter
+   * matches the target's top-level package both as a package prefix (e.g. //app/...) and as a
+   * root-level package target (e.g. //app:app_kt).
+   */
+  fun computeInstrumentationFilter(bazelTestTarget: String): String {
+    val instrumentation = bazelTestTarget.split(":")[0]
+    return instrumentation.split("/").let { "^//${it[2]}[/:]" }
   }
 
   /**
