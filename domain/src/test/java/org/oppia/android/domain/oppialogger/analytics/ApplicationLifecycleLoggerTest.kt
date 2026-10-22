@@ -379,12 +379,17 @@ class ApplicationLifecycleLoggerTest {
     setUpTestApplicationComponent()
     // The CPU snapshotter is initialized when the app is opened.
     applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
     applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    testCoroutineDispatchers.runCurrent()
 
     applicationLifecycleLogger.recordAppInBackground(TEST_TIMESTAMP_IN_MILLIS_TWO)
+    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
 
-    assertThat(getLoggedCpuUsageEvents()).isNotEmpty()
+    val cpuEvents = getLoggedCpuUsageEvents()
+    assertThat(cpuEvents).isNotEmpty()
+    assertThat(cpuEvents.last().currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
   }
 
   @Test
