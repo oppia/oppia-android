@@ -79,6 +79,34 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
+      - name: Pre-build affected-test scripts
+        run: |
+          # Attempt to build scripts up to 3 times in case there are network flakes during dependency downloads.
+          i=0
+          # Disable exit-on-first-failure.
+          set +e
+          while [ $i -ne 3 ]; do
+            i=$(( $i+1 ))
+            echo "Attempt $i/3 to build affected-test script targets"
+            bazel build --keep_going \
+              //scripts:compute_affected_tests \
+              //scripts:retrieve_affected_tests \
+              //scripts:compute_changed_files
+            last_error_code=$?
+            if [ $last_error_code -eq 0 ]; then
+              break
+            fi
+            # Wait briefly before retrying in case of transient network issues.
+            if [ $i -ne 3 ]; then
+              echo "Build failed on attempt $i, retrying in 3 seconds..."
+              sleep 3
+            fi
+          done
+          # Reenable exit-on-first-failure.
+          set -e
+          # Exit only if the most recent exit was a failure (by using a subshell).
+          (exit $last_error_code)
+
       - name: Check PR for [RunAllTests]
         id: check_pr
         if: ${{ github.event_name == 'pull_request' }}
