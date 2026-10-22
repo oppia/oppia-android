@@ -653,6 +653,32 @@ class BazelClientTest {
   }
 
   @Test
+  fun testRunCoverageForTestTarget_forRootLevelPackageTarget_usesCorrectInstrumentationFilter() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val executedArguments = mutableListOf<Any?>()
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
+      )
+    ).thenAnswer { invocation ->
+      invocation.arguments.forEach { argument ->
+        if (argument is Array<*>) {
+          executedArguments.addAll(argument)
+        } else {
+          executedArguments.add(argument)
+        }
+      }
+      CommandResult(exitCode = 0, output = listOf(), errorOutput = listOf(), command = listOf())
+    }
+
+    bazelClient.runCoverageForTestTarget(
+      "//app:src/test/java/org/oppia/android/app/home/HomeActivityLocalTest"
+    )
+
+    assertThat(executedArguments).contains("--instrumentation_filter=^//app[/:]")
+  }
+
+  @Test
   fun testRetrieveBazelInfo_withMockExecutor_returnsCorrectInfo() {
     val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
     `when`(
