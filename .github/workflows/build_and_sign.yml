@@ -142,15 +142,24 @@ jobs:
             sed -E 's/^oppia-android-[0-9]+\.[0-9]+-rc([0-9]+)-.*/\1')
 
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
+
           echo "Checking GCS path: $GCS_PATH"
-          if gsutil stat "$GCS_PATH" >/dev/null 2>&1; then
+
+          GCS_STATUS=0
+          GCS_OUTPUT=$(gsutil stat "$GCS_PATH" 2>&1) || GCS_STATUS=$?
+
+          if [[ "$GCS_STATUS" -eq 0 ]]; then
             echo "should_build=false" >> "$GITHUB_OUTPUT"
-            echo "AAB already exists at $GCS_PATH."
-            echo "Skipping the build and upload."
-          else
+            echo "AAB already exists at $GCS_PATH. Skipping build."
+          elif grep -q "No URLs matched" <<< "$GCS_OUTPUT"; then
             echo "should_build=true" >> "$GITHUB_OUTPUT"
             echo "No existing binary found. Proceeding with the build."
+          else
+            echo "$GCS_OUTPUT"
+            echo "::error::Unexpected GCS error (exit $GCS_STATUS) while checking $GCS_PATH."
+            exit "$GCS_STATUS"
           fi
+
 
       - name: Write prod server key
         if: steps.precheck_release_binary.outputs.should_build == 'true'
