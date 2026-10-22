@@ -45,6 +45,7 @@
         android:text="@={numericInputViewModel.answerText}"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textColorHint="@color/component_color_shared_edit_text_hint_color"
+        app:allowExponentialNotation="@{numericInputViewModel.allowExponentialNotation}"
         app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
 
       <TextView

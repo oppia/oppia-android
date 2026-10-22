@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel private constructor(
+  interaction: Interaction,
   val hasConversationView: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
@@ -32,6 +33,8 @@ class NumericInputViewModel private constructor(
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
+  val allowExponentialNotation: Boolean =
+    interaction.customizationArgsMap["allowExponentialNotation"]?.boolValue ?: false
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
 
   init {
@@ -64,12 +67,16 @@ class NumericInputViewModel private constructor(
     pendingAnswerError = when (category) {
       AnswerErrorCategory.REAL_TIME ->
         if (answerText.isNotEmpty())
-          stringToNumberParser.getRealTimeAnswerError(answerText.toString())
-            .getErrorMessageFromStringRes(resourceHandler)
+          stringToNumberParser.getRealTimeAnswerError(
+            answerText.toString(),
+            allowExponentialNotation
+          ).getErrorMessageFromStringRes(resourceHandler)
         else null
       AnswerErrorCategory.SUBMIT_TIME ->
-        stringToNumberParser.getSubmitTimeError(answerText.toString())
-          .getErrorMessageFromStringRes(resourceHandler)
+        stringToNumberParser.getSubmitTimeError(
+          answerText.toString(),
+          allowExponentialNotation
+        ).getErrorMessageFromStringRes(resourceHandler)
       else -> null
     }
     errorMessage.set(pendingAnswerError)
@@ -131,6 +138,7 @@ class NumericInputViewModel private constructor(
       wrongAnswerList: List<AnswerAndResponse>
     ): StateItemViewModel {
       return NumericInputViewModel(
+        interaction,
         hasConversationView,
         answerErrorReceiver,
         isSplitView,
