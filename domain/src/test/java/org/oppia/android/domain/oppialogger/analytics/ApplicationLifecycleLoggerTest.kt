@@ -357,8 +357,6 @@ class ApplicationLifecycleLoggerTest {
 
     val eventLog = expectAnalyticsEvent { it.context.hasAppInForegroundTime() }
     assertThat(eventLog.context.hasAppInForegroundTime()).isTrue()
-    // The foreground time is in milliseconds (ApplicationLifecycleObserverTest compares it against
-    // a millisecond value).
     assertThat(eventLog.context.appInForegroundTime.foregroundTime.toLong())
       .isEqualTo(TimeUnit.SECONDS.toMillis(10))
   }
