@@ -2446,7 +2446,8 @@ class LessonDownloader(
       }.build()
     }
 
-    private fun LocalizedQuestionIdDto.collapse(): String = "$questionId-${language.name}"
+    private fun LocalizedQuestionIdDto.collapse(): String =
+      "${questionId}_${language.collapse()}"
 
     private fun LocalizedExplorationIdDto.collapse(): String =
       "${explorationId}_${language.collapse()}"
@@ -2591,7 +2592,6 @@ class LessonDownloader(
     }
 
     private fun QuestionLanguagePackDto.collectImageReferences(): List<ImageReference> {
-      // TODO: Should be using skill ID here?
       val container =
         ImageContainer(
           imageContainerType = ImageContainerType.QUESTION,

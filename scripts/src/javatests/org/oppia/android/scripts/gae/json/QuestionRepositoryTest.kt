@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.gae.json
 
 import com.google.common.truth.Truth.assertThat
-import com.squareup.moshi.Types
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -10,16 +9,55 @@ import java.io.File
 import kotlin.test.assertFailsWith
 
 /** Tests for question pagination, exact-version caching and pinned downloads. */
+// FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class QuestionRepositoryTest {
   @get:Rule val temporaryFolder = TemporaryFolder()
   private val moshi = MoshiFactory.createMoshi()
-  private val question by lazy {
-    val adapter = moshi.adapter<List<GaeQuestion>>(
-      Types.newParameterizedType(List::class.java, GaeQuestion::class.java)
-    )
-    checkNotNull(adapter.fromJson(File("scripts/assets/practice_question_test.json").readText()))[0]
-  }
+  private val question = GaeQuestion(
+    id = "question_0",
+    questionStateData = GaeStateWithoutRecordedVoiceovers(
+      content = GaeSubtitledHtml("content", "<p>Test question</p>"),
+      paramChanges = emptyList(),
+      interaction = GaeInteractionInstance(
+        id = "NumericInput",
+        customizationArgs = GaeInteractionCustomizationArgsMap(emptyMap()),
+        answerGroups = listOf(
+          GaeAnswerGroup(
+            ruleSpecs = listOf(
+              GaeRuleSpec("Equals", mapOf("x" to GaeInteractionObject.Real(1.0)))
+            ),
+            outcome = GaeOutcome(
+              dest = null,
+              destIfReallyStuck = null,
+              feedback = GaeSubtitledHtml("feedback", "<p>Correct</p>"),
+              labelledAsCorrect = true,
+              paramChanges = emptyList(),
+              refresherExplorationId = null,
+              missingPrerequisiteSkillId = null
+            ),
+            trainingData = emptyList(),
+            taggedSkillMisconceptionId = null
+          )
+        ),
+        defaultOutcome = null,
+        confirmedUnclassifiedAnswers = emptyList(),
+        hints = emptyList(),
+        solution = null
+      ),
+      classifierModelId = null,
+      linkedSkillId = null,
+      solicitAnswerDetails = false,
+      cardIsCheckpoint = false,
+      inapplicableSkillMisconceptionIds = emptyList()
+    ),
+    questionStateDataSchemaVersion = 57,
+    languageCode = "en",
+    linkedSkillIds = listOf("skill_0"),
+    inapplicableSkillMisconceptionIds = emptyList(),
+    nextContentIdIndex = 2,
+    version = 1
+  )
 
   @Test
   fun testFetchQuestions_multiplePages_readsUntilEmptyAndUsesPayloadVersions() = runBlocking {

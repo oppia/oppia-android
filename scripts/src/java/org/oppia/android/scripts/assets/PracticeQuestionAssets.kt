@@ -6,9 +6,9 @@ import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
 import org.oppia.proto.v1.structure.QuestionDto
 import org.oppia.proto.v1.structure.QuestionLanguagePackDto
 
-/** Assembles the offline practice asset and determines which topic entry points are playable. */
+/** Converts downloaded question DTOs to Android assets and checks topic practice coverage. */
 object PracticeQuestionAssets {
-  /** Builds one question list, retaining each question once even if it has multiple linked skills. */
+  /** Converts server questions to one asset, retaining each question once across linked skills. */
   fun createQuestionList(
     questions: List<QuestionDto>,
     languagePacks: List<QuestionLanguagePackDto>,

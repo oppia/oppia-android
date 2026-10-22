@@ -873,15 +873,6 @@ class GaeAndroidEndpointJsonImpl(
         } else setSkippedFromFailure(identifier)
       }
     }
-
-    object Unsupported : StructureFetcher() {
-      override suspend fun DownloadResultDto.Builder.fetchAndSet(
-        identifier: DownloadRequestStructureIdentifierDto,
-        jsonConverter: JsonToProtoConverter,
-        localizationTracker: LocalizationTracker,
-        contentCache: ContentCache
-      ): Int = setSkippedFromFailure(identifier)
-    }
   }
 
   private class ConverterInitializer(

@@ -17,9 +17,7 @@ load(
 )
 
 exports_files([
-    "assets/practice_download_test.json",
     "assets/alpha_download_config.textproto",
-    "assets/practice_question_test.json",
     "assets/prod_download_config.textproto",
 ])
 

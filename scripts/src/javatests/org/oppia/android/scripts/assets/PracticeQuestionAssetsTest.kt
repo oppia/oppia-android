@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.assets
 
 import com.google.common.truth.Truth.assertThat
-import com.squareup.moshi.Types
 import com.sun.net.httpserver.HttpServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -32,11 +31,11 @@ import org.oppia.proto.v1.structure.QuestionDto
 import org.oppia.proto.v1.structure.QuestionLanguagePackDto
 import org.oppia.proto.v1.structure.SingleLocalizableTextDto
 import org.oppia.proto.v1.structure.SubtopicSummaryDto
-import java.io.File
 import java.net.InetSocketAddress
 import kotlin.test.assertFailsWith
 
 /** Tests the question JSON-to-DTO-to-app conversion and the offline practice entry-point checks. */
+// FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class PracticeQuestionAssetsTest {
   private lateinit var sourceQuestions: List<GaeQuestion>
@@ -55,11 +54,50 @@ class PracticeQuestionAssetsTest {
     }
     imageServer.start()
     val imageBaseUrl = "http://127.0.0.1:${imageServer.address.port}"
-    val adapter = MoshiFactory.createMoshi().adapter<List<GaeQuestion>>(
-      Types.newParameterizedType(List::class.java, GaeQuestion::class.java)
-    )
-    sourceQuestions = checkNotNull(
-      adapter.fromJson(File("scripts/assets/practice_question_test.json").readText())
+    sourceQuestions = listOf(
+      createQuestion(
+        id = "text_question",
+        interactionId = "TextInput",
+        customizationArgs =
+          """
+          {"placeholder": {"value": {"content_id": "placeholder", "unicode_str": "Answer"}},
+           "rows": {"value": 1}, "catchMisspellings": {"value": false}}
+          """.trimIndent(),
+        ruleType = "FuzzyEquals",
+        ruleInputs =
+          """{"x": {"normalizedStrSet": ["one"], "contentId": "rule_input"}}""",
+        wrongRuleInputs =
+          """{"x": {"normalizedStrSet": ["zero"], "contentId": "wrong_rule_input"}}""",
+        correctAnswer = "\"one\""
+      ),
+      createQuestion(
+        id = "numeric_question",
+        interactionId = "NumericInput",
+        customizationArgs = "{}",
+        ruleType = "Equals",
+        ruleInputs =
+          """{"x": 3.5}""",
+        wrongRuleInputs =
+          """{"x": 0}""",
+        correctAnswer = "3.5",
+        answerIsExclusive = false
+      ),
+      createQuestion(
+        id = "multiple_choice_question",
+        interactionId = "MultipleChoiceInput",
+        customizationArgs =
+          """
+          {"choices": {"value": [{"content_id": "choice_0", "html": "<p>Zero</p>"},
+                                  {"content_id": "choice_1", "html": "<p>One</p>"}]},
+           "showChoicesInShuffledOrder": {"value": false}}
+          """.trimIndent(),
+        ruleType = "Equals",
+        ruleInputs =
+          """{"x": 1}""",
+        wrongRuleInputs =
+          """{"x": 0}""",
+        correctAnswer = null
+      )
     )
     tracker = LocalizationTracker.createTracker(
       ImageDownloader(GcsService(imageBaseUrl, "test"), Dispatchers.Unconfined),
@@ -82,7 +120,7 @@ class PracticeQuestionAssetsTest {
   }
 
   @Test
-  fun testCreateQuestionList_publicAndDeveloperFixtures_roundTripPreservesPlayableContent() {
+  fun testCreateQuestionList_supportedInteractions_roundTripPreservesPlayableContent() {
     val list = PracticeQuestionAssets.createQuestionList(
       questions, emptyList(), emptyMap(), solutionExclusivity
     )
@@ -108,6 +146,13 @@ class PracticeQuestionAssetsTest {
           it.outcome.labelledAsCorrect
         }
       ).inOrder()
+      assertThat(
+        actual.questionState.interaction.answerGroupsList.map { it.outcome.feedback.html }
+      ).containsExactlyElementsIn(
+        interaction.answerGroups.map { it.outcome.feedback.text }
+      ).inOrder()
+      assertThat(actual.questionState.interaction.defaultOutcome.feedback.html)
+        .isEqualTo(interaction.defaultOutcome?.feedback?.text)
       assertThat(actual.questionState.interaction.hintList.map { it.hintContent.html })
         .containsExactlyElementsIn(interaction.hints.map { it.hintContent.text }).inOrder()
       assertThat(
@@ -121,6 +166,8 @@ class PracticeQuestionAssetsTest {
           it.taggedSkillMisconceptionId?.takeIf { id -> id.isNotEmpty() }
         }
       ).inOrder()
+      assertThat(actual.questionState.interaction.hasSolution())
+        .isEqualTo(interaction.solution != null)
       interaction.solution?.let { solution ->
         assertThat(actual.questionState.interaction.solution.answerIsExclusive)
           .isEqualTo(solution.answerIsExclusive)
@@ -132,6 +179,17 @@ class PracticeQuestionAssetsTest {
     }
     assertThat(parsed.questionsList.map { it.questionState.interaction.id }.toSet())
       .containsAtLeast("TextInput", "NumericInput", "MultipleChoiceInput")
+    val solutions = parsed.questionsList.associate {
+      it.questionId to it.questionState.interaction.solution.correctAnswer
+    }
+    assertThat(solutions.getValue("text_question").normalizedString).isEqualTo("one")
+    assertThat(solutions.getValue("numeric_question").real).isEqualTo(3.5)
+    val multipleChoice = parsed.questionsList.single { it.questionId == "multiple_choice_question" }
+      .questionState.interaction
+    assertThat(
+      multipleChoice.answerGroupsList.single { it.outcome.labelledAsCorrect }.ruleSpecsList.single()
+        .inputMap.getValue("x").nonNegativeInt
+    ).isEqualTo(1)
   }
 
   @Test
@@ -337,4 +395,76 @@ class PracticeQuestionAssetsTest {
           .convertToQuestion(emptyMap(), emptyList())
       )
     }.build()
+
+  private fun createQuestion(
+    id: String,
+    interactionId: String,
+    customizationArgs: String,
+    ruleType: String,
+    ruleInputs: String,
+    wrongRuleInputs: String,
+    correctAnswer: String?,
+    answerIsExclusive: Boolean = true
+  ): GaeQuestion {
+    val solution = correctAnswer?.let {
+      """
+      {
+        "answer_is_exclusive": $answerIsExclusive,
+        "correct_answer": $it,
+        "explanation": {"content_id": "solution", "html": "<p>Test explanation</p>"}
+      }
+      """.trimIndent()
+    } ?: "null"
+    return checkNotNull(
+      MoshiFactory.createMoshi().adapter(GaeQuestion::class.java).fromJson(
+        """
+        {
+          "id": "$id",
+          "question_state_data": {
+            "content": {"content_id": "content", "html": "<p>Test question</p>"},
+            "param_changes": [],
+            "interaction": {
+              "id": "$interactionId",
+              "customization_args": $customizationArgs,
+              "answer_groups": [{
+                "rule_specs": [{"rule_type": "$ruleType", "inputs": $ruleInputs}],
+                "outcome": {
+                  "dest": null, "dest_if_really_stuck": null,
+                  "feedback": {"content_id": "feedback", "html": "<p>Correct</p>"},
+                  "labelled_as_correct": true, "param_changes": [],
+                  "refresher_exploration_id": null, "missing_prerequisite_skill_id": null
+                },
+                "training_data": [], "tagged_skill_misconception_id": null
+              }, {
+                "rule_specs": [{"rule_type": "$ruleType", "inputs": $wrongRuleInputs}],
+                "outcome": {
+                  "dest": null, "dest_if_really_stuck": null,
+                  "feedback": {"content_id": "wrong_feedback", "html": "<p>Try another answer</p>"},
+                  "labelled_as_correct": false, "param_changes": [],
+                  "refresher_exploration_id": null, "missing_prerequisite_skill_id": null
+                },
+                "training_data": [], "tagged_skill_misconception_id": "skill_0-1"
+              }],
+              "default_outcome": {
+                "dest": null, "dest_if_really_stuck": null,
+                "feedback": {"content_id": "default_feedback", "html": "<p>Try again</p>"},
+                "labelled_as_correct": false, "param_changes": [],
+                "refresher_exploration_id": null, "missing_prerequisite_skill_id": null
+              },
+              "confirmed_unclassified_answers": [],
+              "hints": [{"hint_content": {"content_id": "hint", "html": "<p>Test hint</p>"}}],
+              "solution": $solution
+            },
+            "classifier_model_id": null, "linked_skill_id": null,
+            "solicit_answer_details": false, "card_is_checkpoint": false,
+            "inapplicable_skill_misconception_ids": []
+          },
+          "question_state_data_schema_version": 57, "language_code": "en", "version": 2,
+          "linked_skill_ids": ["skill_0", "skill_1"],
+          "inapplicable_skill_misconception_ids": [], "next_content_id_index": 10
+        }
+        """.trimIndent()
+      )
+    )
+  }
 }

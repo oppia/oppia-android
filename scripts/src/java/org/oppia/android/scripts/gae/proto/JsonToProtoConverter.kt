@@ -273,7 +273,7 @@ class JsonToProtoConverter(
     containerId: LocalizationTracker.ContainerId,
     states: Collection<GaeState>
   ) {
-    // Track all subtitled text in each state of the exploration.
+    // Track subtitled text shared by exploration and question states.
     states.flatMap { state ->
       val interaction = state.interaction
       val baseSubtitles =
