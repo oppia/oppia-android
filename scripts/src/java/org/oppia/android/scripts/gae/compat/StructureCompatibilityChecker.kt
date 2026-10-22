@@ -28,6 +28,7 @@ import org.oppia.android.scripts.gae.json.GaeHint
 import org.oppia.android.scripts.gae.json.GaeInteractionCustomizationArgsMap
 import org.oppia.android.scripts.gae.json.GaeInteractionInstance
 import org.oppia.android.scripts.gae.json.GaeOutcome
+import org.oppia.android.scripts.gae.json.GaeQuestion
 import org.oppia.android.scripts.gae.json.GaeRecordedVoiceovers
 import org.oppia.android.scripts.gae.json.GaeSkill
 import org.oppia.android.scripts.gae.json.GaeSkillContents
@@ -154,6 +155,16 @@ class StructureCompatibilityChecker(
       ) + checkExplorationCompatibility(
         containerId, completeExploration.exploration, defaultLanguage
       )
+    }
+  }
+
+  /** Checks a question's language, state schema and all interaction content. */
+  fun isQuestionItselfCompatible(question: GaeQuestion): CompatibilityResult {
+    val containerId = ContainerId.createFrom(question)
+    return CompatibilityResult.createFrom {
+      question.languageCode.checkDefaultLanguageCode(containerId) +
+        question.questionStateDataSchemaVersion.checkIsValidStateSchemaVersion(containerId) +
+        checkStateCompatibility(containerId, "question", question.questionStateData.toState())
     }
   }
 

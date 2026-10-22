@@ -32,6 +32,12 @@ message Question {
   int64 updated_on_timestamp_ms = 7;
 }
 
+// The questions available for offline practice, including their linked skills and localized states.
+message QuestionList {
+  // The questions included in this asset bundle.
+  repeated Question questions = 1;
+}
+
 // Corresponds to a question that has been answered in an assessment, or is in the process of being answered, and will
 // disappear once the user finishes the assessment or navigates away from the training session. This has strong
 // correlation with the EphemeralState structure used when playing explorations, and contains an instance of that due to
