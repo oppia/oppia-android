@@ -323,8 +323,11 @@ class ApplicationLifecycleLoggerTest {
   fun testRecordAppInForeground_performanceMetricsDisabled_doesNotLogCpuUsage() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(false)
     setUpTestApplicationComponent()
+    applicationLifecycleLogger.recordAppOpened(TEST_APP_START_TIME_MILLIS)
+    testCoroutineDispatchers.runCurrent()
 
     applicationLifecycleLogger.recordAppInForeground(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
     assertThat(getLoggedCpuUsageEvents()).isEmpty()
