@@ -4,8 +4,18 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
+
+# rules_android setup
+http_archive(
+    name = "rules_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_android"]["sha"],
+    strip_prefix = "rules_android-%s" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"],
+    urls = ["https://github.com/bazelbuild/rules_android/archive/v%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_android"]["version"]],
+)
+
+load("@rules_android//android:rules.bzl", "android_sdk_repository")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -14,6 +24,15 @@ android_sdk_repository(
     name = "androidsdk",
     api_level = BUILD_SDK_VERSION,
     build_tools_version = BUILD_TOOLS_VERSION,
+)
+
+http_archive(
+    name = "rules_license",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_license"]["sha"],
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_license/releases/download/{0}/rules_license-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_license"]["version"]),
+        "https://github.com/bazelbuild/rules_license/releases/download/{0}/rules_license-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_license"]["version"]),
+    ],
 )
 
 # The rules_java contains the java_lite_proto_library rule used for Java generated protos.
@@ -61,26 +80,30 @@ http_archive(
     name = "rules_jvm_external",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["sha"],
     strip_prefix = "rules_jvm_external-%s" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
+    url = "https://github.com/bazelbuild/rules_jvm_external/releases/download/{0}/rules_jvm_external-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"]),
 )
 
-# Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
+http_archive(
+    name = "bazel_features",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["bazel_features"]["sha"],
+    strip_prefix = "bazel_features-%s" % HTTP_DEPENDENCY_VERSIONS["bazel_features"]["version"],
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v{0}/bazel_features-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["bazel_features"]["version"]),
+)
+
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+
+bazel_features_deps()
+
 http_archive(
     name = "io_bazel_rules_kotlin",
     patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
 )
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
 
-# Use the 1.6 compiler since Kotlin 1.6 is the current supported version in the repository.
-kotlin_repositories(
-    compiler_release = kotlinc_version(
-        release = KOTLIN_COMPILER_VERSION,
-        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
-    ),
-)
+kotlin_repositories()
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
@@ -100,11 +123,12 @@ bind(
 )
 
 # The rules_proto contains the proto_library rule used for proto generation.
+
 http_archive(
     name = "rules_proto",
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
     strip_prefix = "rules_proto-%s" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"],
-    urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
+    url = "https://github.com/bazelbuild/rules_proto/releases/download/{0}/rules_proto-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]),
 )
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")

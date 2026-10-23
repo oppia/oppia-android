@@ -465,13 +465,11 @@ class AndroidLintAnalyzer(
     val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
     val javaConfig = JavaConfiguration(bazelInfo)
-    val buildSdkVersion = sdkProperties.buildSdkVersion
-    val kotlinVersion = sdkProperties.kotlinCompilerVersion
     val cliArgs = lintRunner.prepareLintArguments(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
-      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion),
+      kotlinLanguageVersion = sdkProperties.kotlinLanguageVersion,
       suppressLintIssues = additionalDisabledChecks,
       listChecks = listChecks,
       checks = checks
@@ -489,15 +487,6 @@ class AndroidLintAnalyzer(
       changedFiles = changedFiles
     )
     return lintProjectDescription.generateProjectDescriptionXml()
-  }
-
-  private fun extractKotlinMajorVersion(version: String): String {
-    val cleanedVersion = version.substringBefore("-")
-    val parts = cleanedVersion.split(".")
-    return listOfNotNull(
-      parts.getOrNull(0),
-      parts.getOrNull(1)
-    ).joinToString(".")
   }
 }
 
@@ -646,7 +635,7 @@ private class AndroidLintRunner(
     jdkHome: File,
     javaVersion: String,
     buildSdkVersion: String,
-    kotlinCompilerVersion: String,
+    kotlinLanguageVersion: String,
     suppressLintIssues: Set<String>,
     listChecks: Boolean = false,
     checks: List<String> = emptyList()
@@ -671,7 +660,7 @@ private class AndroidLintRunner(
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", getAndroidSdkPath(),
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", kotlinCompilerVersion,
+      "--kotlin-language-level", kotlinLanguageVersion,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath
