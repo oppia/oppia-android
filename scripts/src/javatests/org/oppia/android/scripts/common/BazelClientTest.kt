@@ -610,6 +610,11 @@ class BazelClientTest {
     )
 
     assertThat(filter).isEqualTo("^//coverage[/:]")
+    // The filter must match the top-level package and its subpackages, but not other packages
+    // that merely share the same name prefix.
+    assertThat(Regex(filter).containsMatchIn("//coverage:addnums")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//coverage/main/java/com/example:addnums")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//coveragetools:lib")).isFalse()
   }
 
   @Test
