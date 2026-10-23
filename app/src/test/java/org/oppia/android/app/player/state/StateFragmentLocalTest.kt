@@ -42,8 +42,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -54,7 +52,6 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -156,18 +153,16 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -204,6 +199,7 @@ class StateFragmentLocalTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
     setUpTestApplicationComponent()
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
@@ -235,6 +231,7 @@ class StateFragmentLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
     // during initialization for the next test).
     testCoroutineDispatchers.advanceUntilIdle()
@@ -384,8 +381,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
-  @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
@@ -416,8 +411,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
-  @Ignore("Continue navigation animation behavior fails during testing")
   @Test
   fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -2888,7 +2881,7 @@ class StateFragmentLocalTest {
 
   private fun updateContentLanguage(profileId: LegacyProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
       }.build()
@@ -2992,18 +2985,6 @@ class StateFragmentLocalTest {
   private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
     getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestModule {
-    @Provides
-    @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @LoadImagesFromAssets
-    fun provideLoadImagesFromAssets(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -3025,7 +3006,6 @@ class StateFragmentLocalTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,
@@ -3061,7 +3041,6 @@ class StateFragmentLocalTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
       TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
@@ -3117,6 +3096,9 @@ class StateFragmentLocalTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
   }
 }

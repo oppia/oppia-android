@@ -174,7 +174,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
       // TODO(#5930): Remove this once lint no longer falsely triggers on Iterable#forEach.
       FalsePositiveIssue(
         issueId = "NewApi",
-        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
+        message = "Call requires API level 24 (current min is 23): `java.lang.Iterable#forEach`",
         severity = LintSeverity.ERROR,
         workaroundMessage = "Use safeForEach from IterableExtensions.kt instead of directly" +
           " calling forEach to avoid known lint false positives on API < 24."

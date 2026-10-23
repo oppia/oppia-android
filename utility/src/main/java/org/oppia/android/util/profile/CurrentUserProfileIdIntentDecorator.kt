@@ -21,7 +21,7 @@ object CurrentUserProfileIdIntentDecorator {
    * [extractCurrentUserProfileId] should be used for retrieving the [LegacyProfileId] later.
    */
   fun Intent.decorateWithUserProfileId(profileId: LegacyProfileId) {
-    putProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId.toProfileId())
+    putProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId.toProfileIdPreservingZero())
   }
 
   /**
@@ -40,7 +40,7 @@ object CurrentUserProfileIdIntentDecorator {
    * [extractCurrentUserProfileId] should be used for retrieving the [LegacyProfileId] later.
    */
   fun Bundle.decorateWithUserProfileId(profileId: LegacyProfileId) {
-    putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId.toProfileId())
+    putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId.toProfileIdPreservingZero())
   }
 
   /**

@@ -23,5 +23,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/profile:profile_id_migration_util",
     ],
 )

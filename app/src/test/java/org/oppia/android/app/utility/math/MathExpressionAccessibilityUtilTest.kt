@@ -93,12 +93,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
@@ -1402,7 +1400,6 @@ class MathExpressionAccessibilityUtilTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -1412,7 +1409,6 @@ class MathExpressionAccessibilityUtilTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

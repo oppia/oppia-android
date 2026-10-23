@@ -218,10 +218,14 @@ class MathBitmapModelLoader private constructor(
       }
 
       override fun drawPath(path: Path, paint: Paint) {
-        // TODO(#5927): Migrate to the proper SDK 35+ APIs.
-        @Suppress("DEPRECATION") // The replacement call is added in sdk 36.
-        // Current targetSdk is 35.
-        val pathBounds = RectF().also { path.computeBounds(it, /* unusedExact= */ true) }
+        val pathBounds = RectF().also {
+          if (android.os.Build.VERSION.SDK_INT >= 36) {
+            path.computeBounds(it)
+          } else {
+            @Suppress("DEPRECATION")
+            path.computeBounds(it, true)
+          }
+        }
         currentBounds.union(pathBounds.intersection(currentClip))
       }
 

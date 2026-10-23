@@ -65,7 +65,8 @@ def generate_test_file_assets_list_from_text_protos(
 
 def generate_maven_assets_list_from_text_protos(
         name,
-        maven_dependency_filenames):
+        maven_dependency_filenames,
+        visibility):
     """
     Converts a single list of text proto assets to binary.
 
@@ -73,6 +74,7 @@ def generate_maven_assets_list_from_text_protos(
         name: str. The name of this generation instance. This will be a prefix for derived targets.
         maven_dependency_filenames: The list of maven_dependencies text proto file names under the
             assets directory that should be converted.
+        visibility: list of str. The Bazel access visibility of the generated proto assets.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -86,6 +88,7 @@ def generate_maven_assets_list_from_text_protos(
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
+        visibility = visibility,
     )
 
 def generate_accessibility_label_assets_list_from_text_protos(

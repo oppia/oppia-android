@@ -18,6 +18,7 @@ import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -32,7 +33,8 @@ class TopicActivity :
   RouteToStoryListener,
   RouteToExplorationListener,
   RouteToResumeLessonListener,
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  RouteToStudyGuideListener {
 
   private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
@@ -59,6 +61,11 @@ class TopicActivity :
     }
     storyId = args?.storyId
     topicActivityPresenter.handleOnCreate(profileId, classroomId, topicId, storyId)
+  }
+
+  override fun onRestart() {
+    super.onRestart()
+    topicActivityPresenter.handleOnRestart()
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -100,6 +107,23 @@ class TopicActivity :
         profileId,
         topicId,
         subtopicId,
+        subtopicListSize
+      )
+    )
+  }
+
+  override fun routeToStudyGuide(
+    profileId: LegacyProfileId,
+    topicId: String,
+    subtopicIndex: Int,
+    subtopicListSize: Int
+  ) {
+    startActivity(
+      StudyGuideActivity.createStudyGuideActivityIntent(
+        this,
+        profileId,
+        topicId,
+        subtopicIndex,
         subtopicListSize
       )
     )

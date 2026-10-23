@@ -3,12 +3,22 @@ package org.oppia.android.app.onboarding
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [OnboardingActivity]. */
 @ActivityScope
-class OnboardingActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class OnboardingActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  @EnableEdgeToEdge
+  private val enableEdgeToEdge: PlatformParameterValue<Boolean>
+) {
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     activity.setContentView(R.layout.onboarding_activity)
     if (getOnboardingFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

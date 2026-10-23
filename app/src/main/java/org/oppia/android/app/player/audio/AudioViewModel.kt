@@ -39,6 +39,9 @@ class AudioViewModel @Inject constructor(
   private var autoPlay: Boolean? = null
   private var reloadingMainContent: Boolean? = null
   private var hasFeedback: Boolean? = null
+  private var currentLoadedAudioUri: String? = null
+  private var currentLoadedHasFeedback: Boolean? = null
+  private var currentLoadedContentId: String? = null
 
   private var fallbackLanguageCode: String = defaultLanguage
   var languages = listOf<String>()
@@ -143,7 +146,7 @@ class AudioViewModel @Inject constructor(
    * Loads audio for the given [contentId].
    *
    * This method assumes [contentId] is non-null and non-empty, and that all other required state
-   * (exploration ID, language code, etc.) has been verified by [maybeLoadAudio].
+   * (exploration ID, language code, etc.) have been verified by [maybeLoadAudio].
    *
    * @param contentId the non-empty content ID to load audio for
    * @param state the current [State] to look up voiceover mappings from
@@ -170,8 +173,9 @@ class AudioViewModel @Inject constructor(
         autoPlay = false
         reloadingMainContent = false
         selectedLanguageUnavailable.set(true)
+        selectedLanguageName.set(getLanguageName(selectedLanguageCode))
 
-        ("en".takeIf { it in languages } ?: languages.first()).also {
+        (defaultLanguage.takeIf { it in languages } ?: languages.first()).also {
           fallbackLanguageCode = it
         }
       }
@@ -179,15 +183,65 @@ class AudioViewModel @Inject constructor(
     }
 
     if (languageCodeForDataSource != null) {
-      // TODO(#3791): Remove this dependency.
-      val locale = Locale(languageCodeForDataSource)
-      selectedLanguageName.set(locale.getDisplayLanguage(locale))
-
+      val targetUri = voiceOverToUri(voiceoverMap[languageCodeForDataSource])
+      val currentResult = playProgressResultLiveData.value
+      val currentStatus = (currentResult as? AsyncResult.Success)?.value?.type
+      val isAlreadyLoaded = currentStatus in listOf(
+        PlayStatus.PREPARED,
+        PlayStatus.PLAYING,
+        PlayStatus.PAUSED,
+        PlayStatus.COMPLETED
+      )
+      val isLoading = currentResult is AsyncResult.Pending || currentStatus == PlayStatus.PREPARING
+      val isSameAudioRequested = targetUri == currentLoadedAudioUri &&
+        hasFeedback == currentLoadedHasFeedback &&
+        currentContentId == currentLoadedContentId
+      if (isSameAudioRequested && reloadingMainContent != true) {
+        if (isAlreadyLoaded) {
+          if (autoPlay == true) {
+            when (currentStatus) {
+              PlayStatus.PREPARED,
+              PlayStatus.PAUSED,
+              PlayStatus.COMPLETED -> {
+                audioPlayerController.play(
+                  isPlayingFromAutoPlay = true,
+                  reloadingMainContent = false
+                )
+                autoPlay = false
+              }
+              PlayStatus.PLAYING -> autoPlay = false
+              else -> {}
+            }
+          }
+          return
+        } else if (isLoading) {
+          return
+        }
+      }
+      currentLoadedAudioUri = targetUri
+      currentLoadedHasFeedback = hasFeedback
+      currentLoadedContentId = currentContentId
       audioPlayerController.changeDataSource(
-        voiceOverToUri(voiceoverMap[languageCodeForDataSource]),
+        targetUri,
         currentContentId,
         languageCodeForDataSource
       )
+    }
+  }
+
+  /** Perform display-name lookup independent of locale for Oppia-specific Macaronic Languages. */
+  private fun getLanguageName(languageCode: String): String {
+    return when (languageCode) {
+      "hi-en" -> resourceHandler.getStringInLocale(R.string.hinglish_localized_language_name)
+      "pcm-ng" ->
+        resourceHandler.getStringInLocale(R.string.nigerian_pidgin_localized_language_name)
+      else -> {
+        // TODO(#3791): Remove this dependency.
+        val locale = Locale.Builder()
+          .setLanguage(languageCode)
+          .build()
+        locale.getDisplayLanguage(locale).ifEmpty { languageCode }
+      }
     }
   }
 
@@ -201,6 +255,9 @@ class AudioViewModel @Inject constructor(
     currentContentId = ""
     voiceoverMap = mapOf()
     languages = listOf()
+    currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
   }
 
   /** Plays or pauses AudioController depending on passed in state. */
@@ -226,7 +283,20 @@ class AudioViewModel @Inject constructor(
 
   fun pauseAudio() = audioPlayerController.pause(isFromExplicitUserAction = false)
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
-  fun handleRelease() = audioPlayerController.releaseMediaPlayer()
+
+  fun handleRelease() {
+    currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
+    audioPlayerController.releaseMediaPlayer()
+  }
+
+  fun abortPendingLoad() {
+    currentLoadedAudioUri = null
+    currentLoadedHasFeedback = null
+    currentLoadedContentId = null
+    audioPlayerController.abortPendingLoad()
+  }
 
   fun computeAudioUnavailabilityString(languageName: String): String {
     return resourceHandler.getStringInLocaleWithWrapping(
@@ -269,7 +339,12 @@ class AudioViewModel @Inject constructor(
   ): UiAudioPlayStatus {
     return when (playProgressResult) {
       is AsyncResult.Pending -> UiAudioPlayStatus.LOADING
-      is AsyncResult.Failure -> UiAudioPlayStatus.FAILED
+      is AsyncResult.Failure -> {
+        currentLoadedAudioUri = null
+        currentLoadedHasFeedback = null
+        currentLoadedContentId = null
+        UiAudioPlayStatus.FAILED
+      }
       is AsyncResult.Success -> when (playProgressResult.value.type) {
         PlayStatus.PREPARED -> {
           if (autoPlay == true) {

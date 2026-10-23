@@ -2,6 +2,7 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -37,9 +38,10 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    *
-   * @param shouldOnlyUseSystemLanguage whether only the system language should be used
+   * @param forcedActivityLanguageMode the [ForcedActivityLanguageMode] that indicates how the
+   *     locale should be resolved for an activity.
    */
-  fun initialize(shouldOnlyUseSystemLanguage: Boolean) {
+  fun initialize(forcedActivityLanguageMode: ForcedActivityLanguageMode) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -68,10 +70,20 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    val activityLanguageLocaleDataProvider = when {
-      shouldOnlyUseSystemLanguage -> translationController.getSystemLanguageLocale()
-      currentUserProfileId == null -> translationController.getSystemLanguageLocale()
-      else -> translationController.getAppLanguageLocale(currentUserProfileId)
+    val activityLanguageLocaleDataProvider = when (forcedActivityLanguageMode) {
+      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE ->
+        translationController.getSystemLanguageLocale()
+      ForcedActivityLanguageMode.USE_ENGLISH ->
+        translationController.getEnglishLocale()
+      ForcedActivityLanguageMode.USE_APP_LANGUAGE,
+      ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED,
+      ForcedActivityLanguageMode.UNRECOGNIZED -> {
+        if (currentUserProfileId == null) {
+          translationController.getSystemLanguageLocale()
+        } else {
+          translationController.getAppLanguageLocale(currentUserProfileId)
+        }
+      }
     }
 
     val liveData = activityLanguageLocaleDataProvider.toLiveData()

@@ -39,7 +39,8 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
     MATH_EQUATION_INPUT_INTERACTION,
     FLASHBACK_BUTTON,
     RETURN_TO_QUESTION_BUTTON,
-    FLASHBACK_SOLUTION
+    FLASHBACK_SOLUTION,
+    LESSON_PROGRESS_INDICATOR
   }
 
   /** Factory for creating new [StateItemViewModel]s for interactions. */

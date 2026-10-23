@@ -1,0 +1,17 @@
+"""
+Edge-to-edge window inset handling shared by app UI flows.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "edge_to_edge_helper",
+    srcs = ["EdgeToEdgeHelper.kt"],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_core_core-ktx",
+    ],
+)

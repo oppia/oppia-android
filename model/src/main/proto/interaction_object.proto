@@ -53,6 +53,162 @@ message NumberUnit {
   int32 exponent = 2;
 }
 
+// Represents a number with explicitly-defined units.
+message NumberWithUnitsExpression {
+  // The different types of numeric values that can have units.
+  oneof number_type {
+    // Indicates the value is a real number (decimal or integer).
+    double real = 1;
+
+    // Indicates the value is a fraction.
+    Fraction fraction = 2;
+  }
+
+  // Explicitly captures where units appear relative to the numeric value.
+  // This ensures parser output preserves format-specific semantics.
+  oneof expression_format {
+    // Units precede the value.
+    PrefixValueExpression prefix_value_expression = 3;
+
+    // Units follow the value.
+    ValueSuffixExpression value_suffix_expression = 4;
+
+    // Units appear on both sides of the value.
+    PrefixValueSuffixExpression prefix_value_suffix_expression = 5;
+  }
+}
+
+// Represents expressions where units appear before the number.
+message PrefixValueExpression {
+  repeated NumberUnitExpression prefix_units = 1;
+}
+
+// Represents expressions where units appear after the number.
+message ValueSuffixExpression {
+  repeated NumberUnitExpression suffix_units = 1;
+}
+
+// Represents expressions where units appear both before and after the number.
+message PrefixValueSuffixExpression {
+  repeated NumberUnitExpression prefix_units = 1;
+  repeated NumberUnitExpression suffix_units = 2;
+}
+
+// Represents a specific unit with an exponent.
+message NumberUnitExpression {
+  // Supported SI prefixes.
+  // These are combined with [unit].
+  enum SiPrefix {
+    SI_PREFIX_UNSPECIFIED = 0;
+    DECA = 1;
+    HECTO = 2;
+    KILO = 3;
+    MEGA = 4;
+    GIGA = 5;
+    TERA = 6;
+    PETA = 7;
+    EXA = 8;
+    ZETTA = 9;
+    YOTTA = 10;
+    DECI = 11;
+    CENTI = 12;
+    MILLI = 13;
+    MICRO = 14;
+    NANO = 15;
+    PICO = 16;
+    FEMTO = 17;
+    ATTO = 18;
+    ZEPTO = 19;
+    YOCTO = 20;
+  }
+
+  // The supported base unit types. Prefixed combinations are intentionally not enumerated here.
+  enum Unit {
+    UNIT_UNSPECIFIED = 0;
+
+    // Length units
+    METER = 1;
+    INCH = 2;
+    FOOT = 3;
+    YARD = 4;
+
+    // Mass units
+    GRAM = 5;
+    GRAIN = 6;
+    OUNCE = 7;
+
+    // Area units
+    SQUARE_METER = 8;
+    SQUARE_INCH = 9;
+    SQUARE_FOOT = 10;
+    SQUARE_YARD = 11;
+
+    // Volume unit
+    CUBIC_METER = 12;
+    LITER = 13;
+    CUBIC_CENTIMETER = 14;
+    CUBIC_INCH = 15;
+    CUBIC_FOOT = 16;
+    CUBIC_YARD = 17;
+
+    // Temperature units
+    KELVIN = 18;
+    CELSIUS = 19;
+
+    // Angle units
+    RADIAN = 20;
+    DEGREE = 21;
+
+    // Time units
+    SECOND = 22;
+    MINUTE = 23;
+    HOUR = 24;
+
+    // Frequency units
+    HERTZ = 25;
+
+    // Amount of substance
+    MOLE = 26;
+
+    // Luminous intensity
+    CANDELA = 27;
+
+    // Force
+    NEWTON = 28;
+
+    // Energy
+    JOULE = 29;
+
+    // Power
+    WATT = 30;
+
+    // Pressure
+    PASCAL = 31;
+
+    // Electricity
+    AMPERE = 32;
+    VOLT = 33;
+    OHM = 34;
+
+    // Currency units
+    DOLLAR = 35;
+    CENT = 36;
+    RUPEE = 37;
+    PAISA = 38;
+  }
+
+  // The specific unit value.
+  Unit unit = 1;
+
+  // The exponent (power) of this unit in the expression.
+  // Positive values indicate numerator units, negative values indicate denominator units.
+  int32 exponent = 2;
+
+  // Optional SI prefix used with [unit].
+  // Leave as SI_PREFIX_UNSPECIFIED for units that do not have a prefix.
+  SiPrefix si_prefix = 3;
+}
+
 // Structure for a ListOfString object.
 message ListOfSetsOfHtmlStrings {
   repeated StringList set_of_html_strings = 1;

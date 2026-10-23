@@ -5,7 +5,6 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +18,6 @@ import javax.inject.Singleton
 class PerformanceMetricsLogger @Inject constructor(
   private val performanceMetricsController: PerformanceMetricsController,
   private val performanceMetricsAssessor: PerformanceMetricsAssessor,
-  private val oppiaClock: OppiaClock,
   @EnablePerformanceMetricsCollection
   private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
 ) {
@@ -30,11 +28,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logApkSize(currentScreen: ScreenName) {
+  fun logApkSize(currentScreen: ScreenName, timestamp: Long) {
     if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logLowPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createApkSizeLoggableMetric(performanceMetricsAssessor.getApkSize())
       )
@@ -47,11 +46,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logStorageUsage(currentScreen: ScreenName) {
+  fun logStorageUsage(currentScreen: ScreenName, timestamp: Long) {
     if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logLowPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createStorageUsageLoggableMetric(performanceMetricsAssessor.getUsedStorage())
       )
@@ -64,11 +64,12 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param startupLatency denotes the startup latency value that'll be logged to Firebase
    * @param currentScreen denotes the application screen at which this metric has been logged
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logStartupLatency(startupLatency: Long, currentScreen: ScreenName) {
+  fun logStartupLatency(startupLatency: Long, currentScreen: ScreenName, timestamp: Long) {
     if (startupLatency >= 0 && enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logLowPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createStartupLatencyLoggableMetric(startupLatency)
       )
@@ -81,11 +82,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logMemoryUsage(currentScreen: ScreenName) {
+  fun logMemoryUsage(currentScreen: ScreenName, timestamp: Long) {
     if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logMediumPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createMemoryUsageLoggableMetric(performanceMetricsAssessor.getTotalPssUsed())
       )
@@ -98,11 +100,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logNetworkUsage(currentScreen: ScreenName) {
+  fun logNetworkUsage(currentScreen: ScreenName, timestamp: Long) {
     if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logHighPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createNetworkUsageLoggableMetric(
           performanceMetricsAssessor.getTotalReceivedBytes(),
@@ -119,12 +122,13 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    * @param cpuUsage denotes the relative CPU usage of the application which is measured across two
-   * time-separated points in the application.
+   *     time-separated points in the application
+   * @param timestamp the timestamp to associate with this log
    */
-  fun logCpuUsage(currentScreen: ScreenName, cpuUsage: Double) {
+  fun logCpuUsage(currentScreen: ScreenName, cpuUsage: Double, timestamp: Long) {
     if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logHighPriorityMetricEvent(
-        oppiaClock.getCurrentTimeMs(),
+        timestamp,
         currentScreen,
         createCpuUsageLoggableMetric(cpuUsage)
       )

@@ -37,6 +37,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
@@ -63,13 +64,16 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /**
@@ -99,7 +103,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val appStartupStateController: AppStartupStateController,
   private val resourceHandler: AppLanguageResourceHandler,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
@@ -114,12 +119,23 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
-      getProfileResult(profileManagementController.getProfile(profileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          profileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
 
     getAdminPin()
 
     createComposeView()
 
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToRootView(
+        activity,
+        binding.root,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     return binding.root
   }
 
@@ -127,7 +143,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val adminProfileId = LegacyProfileId.newBuilder().setInternalId(0).build()
 
     adminProfileLiveData =
-      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
+      getProfileResult(
+        profileManagementController.getProfile(
+          adminProfileId.toProfileIdPreservingZero()
+        ).toLiveData()
+      )
   }
 
   private fun createComposeView() {
@@ -226,7 +246,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   private fun loginToProfile(profileId: LegacyProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData()
+    profileManagementController.loginToProfile(profileId.toProfileIdPreservingZero()).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
           activity.startActivity(
@@ -285,6 +305,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       },
       visualTransformation = PasswordVisualTransformation(),
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+      cursorBrush = SolidColor(
+        colorResource(id = R.color.component_color_profile_login_cursor_color)
+      ),
       decorationBox = {
         Row(
           horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -304,30 +327,37 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val pinChar = pinValue.getOrNull(index)?.toString() ?: ""
     val maskedChar = transformedPin.text.getOrNull(index)?.toString() ?: ""
     val isFocused = pinValue.length == index
+    val pinBoxShape = RoundedCornerShape(4.dp)
 
     Box(
       modifier = Modifier
         .size(48.dp)
         .aspectRatio(0.7F)
+        .background(
+          color = colorResource(id = R.color.component_color_profile_login_shared_white_color),
+          shape = pinBoxShape
+        )
         .border(
           width = if (isFocused) 2.dp else 1.dp,
           color = if (isFocused) {
-            colorResource(id = R.color.component_color_profile_login_shared_primary_color)
+            colorResource(id = R.color.component_color_profile_login_focused_outline_color)
           } else {
             colorResource(
               id = R.color.component_color_profile_login_unfocused_outline_color
             )
           },
-          shape = RoundedCornerShape(4.dp)
-        )
-        .background(
-          colorResource(id = R.color.component_color_profile_login_shared_white_color)
+          shape = pinBoxShape
         )
         .testTag(PIN_BOX_TEST_TAG + index)
         .semantics { contentDescription = pinChar },
       contentAlignment = Alignment.Center
     ) {
-      Text(text = maskedChar, style = MaterialTheme.typography.h6)
+      Text(
+        text = maskedChar,
+        style = MaterialTheme.typography.h6.copy(
+          color = colorResource(id = R.color.component_color_profile_login_pin_decoration_color)
+        )
+      )
     }
   }
 
@@ -388,7 +418,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         (R.string.profile_login_activity_forgot_pin_text),
         style = TextStyle(
           fontSize = 16.sp,
-          color = colorResource(id = R.color.component_color_profile_login_shared_primary_color)
+          color = colorResource(id = R.color.component_color_profile_login_button_text_color)
         )
       )
     }
