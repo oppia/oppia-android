@@ -237,3 +237,17 @@ annotation class EnableStudyGuides
 /** Qualifier for the feature flag that controls whether to enable worked examples or not. */
 @Qualifier
 annotation class EnableWorkedExamples
+
+/**
+ * Qualifier for the feature flag that allows an admin profile to unlock all chapters on Alpha
+ * for PACE pilot testing. When enabled, chapter prerequisite locking is bypassed so any lesson
+ * can be accessed regardless of completion state. Does NOT modify learner progress data.
+ */
+@Qualifier
+annotation class EnableAdminUnlockChapters
+
+/** Name of the feature flag that controls whether to enable admin chapter unlocking. */
+const val ADMIN_UNLOCK_CHAPTERS = "android_enable_admin_unlock_chapters"
+
+/** Default value for the feature flag corresponding to [EnableAdminUnlockChapters]. */
+const val ENABLE_ADMIN_UNLOCK_CHAPTERS_DEFAULT_VALUE = false

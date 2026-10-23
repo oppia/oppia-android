@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
@@ -179,5 +180,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.WORKED_EXAMPLES)
   fun bindWorkedExamples(
     @EnableWorkedExamples param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.ADMIN_UNLOCK_CHAPTERS)
+  fun bindAdminUnlockChapters(
+    @EnableAdminUnlockChapters param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }
