@@ -11,6 +11,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
@@ -56,6 +57,8 @@ class SurveyEventsLoggerTest {
   private companion object {
     private const val TEST_SURVEY_ID = "test_survey_id"
     private const val TEST_ANSWER = "Some text response"
+    private const val TEST_LEARNER_ID = "test_learner_id"
+    private const val TEST_INSTALLATION_ID = "test_installation_id"
   }
 
   @Inject
@@ -71,6 +74,12 @@ class SurveyEventsLoggerTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val profileId by lazy { LegacyProfileId.newBuilder().apply { internalId = 0 }.build() }
+  private val learnerDetails by lazy {
+    LearnerDetailsContext.newBuilder().apply {
+      learnerId = TEST_LEARNER_ID
+      installId = TEST_INSTALLATION_ID
+    }.build()
+  }
 
   @Before
   fun setUp() {
@@ -79,7 +88,12 @@ class SurveyEventsLoggerTest {
 
   @Test
   fun testLogAbandonSurvey_logsEventWithCorrectValues() {
-    surveyEventsLogger.logAbandonSurvey(TEST_SURVEY_ID, profileId, SurveyQuestionName.MARKET_FIT)
+    surveyEventsLogger.logAbandonSurvey(
+      TEST_SURVEY_ID,
+      profileId,
+      learnerDetails,
+      SurveyQuestionName.MARKET_FIT
+    )
     testCoroutineDispatchers.runCurrent()
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -88,6 +102,10 @@ class SurveyEventsLoggerTest {
       hasSurveyDetailsThat {
         hasSurveyIdThat().isEqualTo(TEST_SURVEY_ID)
         hasInternalProfileIdThat().isEqualTo("0")
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALLATION_ID)
+        }
       }
       hasQuestionNameThat().isEqualTo(SurveyQuestionName.MARKET_FIT)
     }
@@ -98,6 +116,7 @@ class SurveyEventsLoggerTest {
     surveyEventsLogger.logMandatoryResponses(
       TEST_SURVEY_ID,
       profileId,
+      learnerDetails,
       UserTypeAnswer.LEARNER,
       MarketFitAnswer.DISAPPOINTED,
       npsScore = 8
@@ -110,6 +129,10 @@ class SurveyEventsLoggerTest {
       hasSurveyDetailsThat {
         hasSurveyIdThat().isNotEmpty()
         hasInternalProfileIdThat().isEqualTo("0")
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALLATION_ID)
+        }
       }
       hasUserTypeAnswerThat().isEqualTo(UserTypeAnswer.LEARNER)
       hasMarketFitAnswerThat().isEqualTo(MarketFitAnswer.DISAPPOINTED)
@@ -122,6 +145,7 @@ class SurveyEventsLoggerTest {
     surveyEventsLogger.logOptionalResponse(
       TEST_SURVEY_ID,
       profileId,
+      learnerDetails,
       TEST_ANSWER
     )
     testCoroutineDispatchers.runCurrent()
@@ -132,6 +156,10 @@ class SurveyEventsLoggerTest {
       hasSurveyDetailsThat {
         hasSurveyIdThat().isNotEmpty()
         hasInternalProfileIdThat().isEqualTo("0")
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALLATION_ID)
+        }
       }
       hasFeedbackAnswerThat().isEqualTo(TEST_ANSWER)
     }

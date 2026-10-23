@@ -1,6 +1,7 @@
 package org.oppia.android.domain.oppialogger.survey
 
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
@@ -28,10 +29,11 @@ class SurveyEventsLogger @Inject constructor(
   fun logAbandonSurvey(
     surveyId: String,
     profileId: LegacyProfileId,
+    learnerDetails: LearnerDetailsContext,
     questionName: SurveyQuestionName
   ) {
     analyticsController.logImportantEvent(
-      createAbandonSurveyContext(surveyId, profileId, questionName),
+      createAbandonSurveyContext(surveyId, profileId, learnerDetails, questionName),
       profileId
     )
   }
@@ -40,6 +42,7 @@ class SurveyEventsLogger @Inject constructor(
   fun logMandatoryResponses(
     surveyId: String,
     profileId: LegacyProfileId,
+    learnerDetails: LearnerDetailsContext,
     userTypeAnswer: UserTypeAnswer,
     marketFitAnswer: MarketFitAnswer,
     npsScore: Int
@@ -48,6 +51,7 @@ class SurveyEventsLogger @Inject constructor(
       createMandatorySurveyResponseContext(
         surveyId,
         profileId,
+        learnerDetails,
         userTypeAnswer,
         marketFitAnswer,
         npsScore
@@ -57,9 +61,14 @@ class SurveyEventsLogger @Inject constructor(
   }
 
   /** Logs an event representing the response to the optional survey question. */
-  fun logOptionalResponse(surveyId: String, profileId: LegacyProfileId?, answer: String) {
+  fun logOptionalResponse(
+    surveyId: String,
+    profileId: LegacyProfileId?,
+    learnerDetails: LearnerDetailsContext,
+    answer: String
+  ) {
     dataController.logEvent(
-      createOptionalSurveyResponseContext(surveyId, profileId, answer),
+      createOptionalSurveyResponseContext(surveyId, profileId, learnerDetails, answer),
       profileId
     )
   }
@@ -67,6 +76,7 @@ class SurveyEventsLogger @Inject constructor(
   private fun createMandatorySurveyResponseContext(
     surveyId: String,
     profileId: LegacyProfileId,
+    learnerDetails: LearnerDetailsContext,
     userTypeAnswer: UserTypeAnswer,
     marketFitAnswer: MarketFitAnswer,
     npsScore: Int
@@ -78,7 +88,7 @@ class SurveyEventsLogger @Inject constructor(
           .setMarketFitAnswer(marketFitAnswer)
           .setNpsScoreAnswer(npsScore)
           .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
+            createSurveyResponseContext(surveyId, profileId, learnerDetails)
           )
       )
       .build()
@@ -87,6 +97,7 @@ class SurveyEventsLogger @Inject constructor(
   private fun createAbandonSurveyContext(
     surveyId: String,
     profileId: LegacyProfileId,
+    learnerDetails: LearnerDetailsContext,
     questionName: SurveyQuestionName
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -94,7 +105,7 @@ class SurveyEventsLogger @Inject constructor(
         EventLog.AbandonSurveyContext.newBuilder()
           .setQuestionName(questionName)
           .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
+            createSurveyResponseContext(surveyId, profileId, learnerDetails)
           )
       )
       .build()
@@ -102,17 +113,20 @@ class SurveyEventsLogger @Inject constructor(
 
   private fun createSurveyResponseContext(
     surveyId: String,
-    profileId: LegacyProfileId?
+    profileId: LegacyProfileId?,
+    learnerDetails: LearnerDetailsContext
   ): EventLog.SurveyResponseContext {
     return EventLog.SurveyResponseContext.newBuilder()
       .setProfileId(profileId?.internalId.toString())
       .setSurveyId(surveyId)
+      .setLearnerDetails(learnerDetails)
       .build()
   }
 
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
     profileId: LegacyProfileId?,
+    learnerDetails: LearnerDetailsContext,
     answer: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -120,7 +134,7 @@ class SurveyEventsLogger @Inject constructor(
         EventLog.OptionalSurveyResponseContext.newBuilder()
           .setFeedbackAnswer(answer)
           .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
+            createSurveyResponseContext(surveyId, profileId, learnerDetails)
           )
       )
       .build()
