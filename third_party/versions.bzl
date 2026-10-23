@@ -141,13 +141,13 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
     },
-    "dagger": {
-        "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
-        "version": "2.41",
-    },
     "bazel_features": {
         "sha": "4fd9922d464686820ffd8fcefa28ccffa147f7cdc6b6ac0d8b07fde565c65d66",
         "version": "1.25.0",
+    },
+    "dagger": {
+        "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
+        "version": "2.41",
     },
     "guava_android": {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",

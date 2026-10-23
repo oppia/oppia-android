@@ -6,8 +6,8 @@ Note that:
  of the test suite.
 """
 
-load("@rules_android//android:rules.bzl", "android_binary")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_android//android:rules.bzl", "android_binary")
 
 exports_files(["src/javatests/AndroidManifest.xml"])
 
