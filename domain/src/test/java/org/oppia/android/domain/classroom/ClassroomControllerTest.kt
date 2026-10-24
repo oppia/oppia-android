@@ -209,7 +209,7 @@ class ClassroomControllerTest {
     val topicList = retrieveTopicList(TEST_CLASSROOM_ID_0)
 
     val secondTopic = topicList.getTopicSummary(1).topicSummary
-    assertThat(secondTopic.totalChapterCount).isEqualTo(1)
+    assertThat(secondTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test

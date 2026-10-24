@@ -1,0 +1,997 @@
+{
+  "exploration_id": "test_exp_id_6",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 29,
+  "record_playthrough_probability": 0.0,
+  "exploration": {
+    "init_state_name": "Introduction",
+    "param_changes": [],
+    "param_specs": {},
+    "states": {
+      "Introduction": {
+        "content": {
+          "content_id": "content_11",
+          "html": "<p>Omar wants to be the best long jumper in his sports club. He jumped 321 cm on his first try, but the club\u2019s leaderboard measurements are all in different units, so Omar can\u2019t compare his measurement with the others. Let\u2019s follow Omar as he learns about unit conversion.</p><p>Learning about measurements will require concentration, so find a quiet place to go through this story. If you make a mistake or get stuck, focus on understanding rather than just getting the correct answer as fast as possible. Try to learn from any mistakes!</p><p>Once you\u2019re ready, click Continue to get started!</p>"
+        },
+        "interaction": {
+          "id": "Continue",
+          "customization_args": {
+            "buttonText": {
+              "value": {
+                "content_id": "ca_buttonText_13",
+                "unicode_str": "Continue"
+              }
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": {
+            "dest": "Comparison Practice",
+            "feedback": {
+              "content_id": "default_outcome_12",
+              "html": ""
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Comparison Practice": {
+        "content": {
+          "content_id": "content_0",
+          "html": "<p>Omar was at the sports club and saw Coach Kim.</p><p>\u201cGood morning Coach Kim,\u201d Omar said.</p><p>\u201cHi Omar!\u201d Coach Kim replied.</p><p>Omar looked at the leaderboard with each club member\u2019s long jump measurements on it. \u201cI want to know how to convert units, so that the leaderboard measurements are all in the same units.\u201d he said.</p><p>\u201cLet\u2019s start by reviewing how to compare measurements that are in the same unit,\u201d Coach Kim replied. \u201cWhich of these would be the longest long jump?\u201d</p>"
+        },
+        "interaction": {
+          "id": "MultipleChoiceInput",
+          "customization_args": {
+            "choices": {
+              "value": [
+                {
+                  "content_id": "ca_choices_3",
+                  "html": "<p>400 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_4",
+                  "html": "<p>390 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_5",
+                  "html": "<p>396 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_6",
+                  "html": "<p>381 cm</p>"
+                }
+              ]
+            },
+            "showChoicesInShuffledOrder": {
+              "value": true
+            }
+          },
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit Conversion Intro",
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Comparison Practice",
+            "feedback": {
+              "content_id": "default_outcome_1",
+              "html": "<p>No, that's not correct.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit Conversion Intro": {
+        "content": {
+          "content_id": "content_36",
+          "html": "<p>\u201cThat was easy,\u201d Omar said. He pointed at the leaderboard. \u201cBut the actual long jump measurements are in different units, like meters and centimeters.\u201d</p><p>\u201cLet\u2019s learn how to convert all these measurements to the same unit so you can compare easily,\u201d Coach Kim replied. \u201cIn the metric system, to convert a measurement from one unit to another, you first need to know the relationship between the two units.\u201d</p><p>\u201cWhat is a metric system? And what is the relationship between two units?\u201d Omar asked.</p><p>She continued. \u201cThe metric system is a pattern of measurement based on a decimal system. Many countries decided to follow the same standard for the metric system so it is easier to communicate! It is called the International System of Units (SI). As for relationships between two units, they simply tell us how much of one unit is in another, one example would be that there are 1000 meters in 1 kilometer. That is because \u201ckilo\u201d means 1000, like so.\u201d</p><p>\u201cThese units are part of the metric system, which is a pattern of measurement based on a decimal system and it is used in many countries to make it easier to communicate! We put prefixes before the meter to shift between different units.\u201d</p><p>\u201cNow, if \u201ccenti\u201d means one hundredth (1/100), what is the mathematical relationship between meters and centimeters?\u201d</p>"
+        },
+        "interaction": {
+          "id": "MultipleChoiceInput",
+          "customization_args": {
+            "choices": {
+              "value": [
+                {
+                  "content_id": "ca_choices_39",
+                  "html": "<p>100 cm = 100 m</p>"
+                },
+                {
+                  "content_id": "ca_choices_40",
+                  "html": "<p>100 cm = 1 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_41",
+                  "html": "<p>100 m = 1 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_42",
+                  "html": "<p>1 m = 100 cm</p>"
+                }
+              ]
+            },
+            "showChoicesInShuffledOrder": {
+              "value": true
+            }
+          },
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit Conversion 2",
+                "feedback": {
+                  "content_id": "feedback_38",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit Conversion Intro",
+            "feedback": {
+              "content_id": "default_outcome_37",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit Conversion 2": {
+        "content": {
+          "content_id": "content_76",
+          "html": "<p>\u201cGood job, Omar,\u201d Coach Kim said. \u201cNow you know that 1km = 1000m and that 1m = 100cm. Considering that, which phrases are correct?\u201d</p>"
+        },
+        "interaction": {
+          "id": "ItemSelectionInput",
+          "customization_args": {
+            "choices": {
+              "value": [
+                {
+                  "content_id": "ca_choices_78",
+                  "html": "<p>There are 100 cm in one meter.</p>"
+                },
+                {
+                  "content_id": "ca_choices_79",
+                  "html": "<p>There are 100 cm in one kilometer.&nbsp;</p>"
+                },
+                {
+                  "content_id": "ca_choices_80",
+                  "html": "<p>There are 100 kilometers in one centimeter.&nbsp;</p>"
+                },
+                {
+                  "content_id": "ca_choices_81",
+                  "html": "<p>There are 1000 meters in one kilometer.</p>"
+                },
+                {
+                  "content_id": "ca_choices_82",
+                  "html": "<p>There are 1000 meters in one centimeter.</p>"
+                }
+              ]
+            },
+            "maxAllowableSelectionCount": {
+              "value": 5
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            }
+          },
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "ca_choices_78",
+                      "ca_choices_81"
+                    ]
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit conversion 3",
+                "feedback": {
+                  "content_id": "feedback_83",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit Conversion 2",
+            "feedback": {
+              "content_id": "default_outcome_77",
+              "html": ""
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit conversion 3": {
+        "content": {
+          "content_id": "content_46",
+          "html": "<p>\u201cGreat, we know now that: there are 1000 meters in one kilometer and that there are 100 centimeters in one meter.\u201d Coach Kim said.</p><p>\u201cOkay, but how can we use that to convert units,\u201d asked Omar.</p><p>\u201cRight,\u201d Coach Kim said. \u201cHere is an example:\u201d</p><p>2000 meters is the same as 2 kilometers because we know that 1000 m = 1 km!&nbsp;</p><p>\u201cI see, since I know that 1000 m = 1 km, if I have 5km I know it is the same as 5000m, right?\u201d Omar said. \u201cSo, knowing that 100 cm = 1 m, what is 3 m in centimeters?\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 300.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "cm"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit conversion 4",
+                "feedback": {
+                  "content_id": "feedback_48",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit conversion 3",
+            "feedback": {
+              "content_id": "default_outcome_47",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit conversion 4": {
+        "content": {
+          "content_id": "content_51",
+          "html": "<p>\u201cSo, 3 m = 300 cm?\u201d Omar asked. \u201cJust like 2000 m = 2 km?\u201d</p><p>\u201cThat\u2019s right Omar!\u201d Coach Kim responded. \u201cYou\u2019ve just converted a measurement from meters to centimeters. Let\u2019s try another one:</p><p><strong>\u201cConvert 4.1 m to cm.\u201d</strong></p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 410.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "cm"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit conversion 5",
+                "feedback": {
+                  "content_id": "feedback_53",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit conversion 4",
+            "feedback": {
+              "content_id": "default_outcome_52",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_54",
+                "html": "<p>When converting meters to centimeters you just need to multiply by 100 since 1m = 100cm.</p>"
+              }
+            }
+          ],
+          "solution": null
+        }
+      },
+      "Unit conversion 5": {
+        "content": {
+          "content_id": "content_56",
+          "html": "<p>So, I know how to convert meters to centimeters. But how do we convert a measurement from kilometers to meters?\u201d Omar asked.</p><p>\u201cRemember that 1km = 1000m\u201d Coach Kim said. \u201cTo convert from km to m we multiply by 1000. What\u2019s 5 km to m?\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 5000.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "m"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit Conversion 5a",
+                "feedback": {
+                  "content_id": "feedback_58",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit conversion 5",
+            "feedback": {
+              "content_id": "default_outcome_57",
+              "html": "<p>No, that's not correct. We know that 1 km = 1000 m. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit Conversion 5a": {
+        "content": {
+          "content_id": "content_91",
+          "html": "<p>\u201cNow remember 100cm = 1m,\u201d Coach Kim said. \u201cLet's say we want to convert 600 cm to meters. How many meters would it be?\u201d</p>"
+        },
+        "interaction": {
+          "id": "MultipleChoiceInput",
+          "customization_args": {
+            "choices": {
+              "value": [
+                {
+                  "content_id": "ca_choices_93",
+                  "html": "<p>60 m</p>"
+                },
+                {
+                  "content_id": "ca_choices_94",
+                  "html": "<p>6 m</p>"
+                },
+                {
+                  "content_id": "ca_choices_95",
+                  "html": "<p>6000 m</p>"
+                },
+                {
+                  "content_id": "ca_choices_96",
+                  "html": "<p>60000 m</p>"
+                }
+              ]
+            },
+            "showChoicesInShuffledOrder": {
+              "value": true
+            }
+          },
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit conversion 6",
+                "feedback": {
+                  "content_id": "feedback_97",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit Conversion 5a",
+            "feedback": {
+              "content_id": "default_outcome_92",
+              "html": "<p>That's not correct. Remember that since 100 cm = 1 meter, we need to divide by 100 to convert from centimeters to meters.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit conversion 6": {
+        "content": {
+          "content_id": "content_61",
+          "html": "<p>\u201cGreat, well done,\u201d Coach Kim said. \u201cSo, to convert a measurement from centimeters to meters, we divide by: __\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 100.0,
+                      "type": "real",
+                      "units": []
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Unit conversion 7",
+                "feedback": {
+                  "content_id": "feedback_63",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit conversion 6",
+            "feedback": {
+              "content_id": "default_outcome_62",
+              "html": "<p>No, that's not correct. We know that 100 cm = 1 m. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Unit conversion 7": {
+        "content": {
+          "content_id": "content_66",
+          "html": "<p>\u201cSo to convert a measurement from centimeters to meters, we divide by 100,\u201d Omar said.</p><p>\u201cThat\u2019s right!\u201d Coach Kim said. \u201cTry converting 500 cm to meters.\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 5.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "m"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "IsEquivalentTo Practice 1",
+                "feedback": {
+                  "content_id": "feedback_68",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Unit conversion 7",
+            "feedback": {
+              "content_id": "default_outcome_67",
+              "html": "<p>No, that's not correct. We know 1 m = 100 cm. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "IsEquivalentTo Practice 1": {
+        "content": {
+          "content_id": "content_101",
+          "html": "<p>\u201cThere\u2019s another way to check units too,\u201d Coach Kim said. \u201cTwo measurements can be equivalent even if they\u2019re written with completely different units \u2014 as long as they represent the same real-world amount. For example, 3 m and 300 cm describe the exact same distance, so they\u2019re equivalent.\u201d</p><p>\u201cTry it yourself: enter a measurement equivalent to 3 m, written in centimeters.\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEquivalentTo",
+                  "inputs": {
+                    "f": {
+                      "real": 3.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "m"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "IsEquivalentTo Practice 2",
+                "feedback": {
+                  "content_id": "feedback_102",
+                  "html": "<p>Correct! 300 cm is equivalent to 3 m.</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "IsEquivalentTo Practice 1",
+            "feedback": {
+              "content_id": "default_outcome_103",
+              "html": "<p>No, that's not correct. Remember, 1 m = 100 cm, so find the same distance in centimeters.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_104",
+                "html": "<p>Multiply 3 by 100 to convert meters to centimeters.</p>"
+              }
+            }
+          ],
+          "solution": null
+        }
+      },
+      "IsEquivalentTo Practice 2": {
+        "content": {
+          "content_id": "content_105",
+          "html": "<p>\u201cGreat! Equivalence works for other kinds of units too, not just length,\u201d Coach Kim said. \u201cEnter a mass equivalent to 2 kg, written in grams.\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEquivalentTo",
+                  "inputs": {
+                    "f": {
+                      "real": 2.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "kg"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "IsEquivalentTo Practice 3",
+                "feedback": {
+                  "content_id": "feedback_106",
+                  "html": "<p>Correct! 2000 g is equivalent to 2 kg.</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "IsEquivalentTo Practice 2",
+            "feedback": {
+              "content_id": "default_outcome_107",
+              "html": "<p>No, that's not correct. Remember, 1 kg = 1000 g.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_108",
+                "html": "<p>Multiply 2 by 1000 to convert kilograms to grams.</p>"
+              }
+            }
+          ],
+          "solution": null
+        }
+      },
+      "IsEquivalentTo Practice 3": {
+        "content": {
+          "content_id": "content_109",
+          "html": "<p>\u201cOne more,\u201d Coach Kim said. \u201cEquivalence even works with money. Enter an amount equivalent to $1, written in cents.\u201d</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEquivalentTo",
+                  "inputs": {
+                    "f": {
+                      "real": 1.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "$"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Leaderboard",
+                "feedback": {
+                  "content_id": "feedback_110",
+                  "html": "<p>Correct! 100 cents is equivalent to $1. Now you know IsEquivalentTo works no matter how the units are written, as long as the amount is the same.</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "IsEquivalentTo Practice 3",
+            "feedback": {
+              "content_id": "default_outcome_111",
+              "html": "<p>No, that's not correct. Remember, $1 = 100 cents.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_112",
+                "html": "<p>Multiply 1 by 100 to convert dollars to cents.</p>"
+              }
+            }
+          ],
+          "solution": null
+        }
+      },
+      "Leaderboard": {
+        "content": {
+          "content_id": "content_14",
+          "html": "<p>\u201cGreat, now let's go through the leaderboard,\u201d Coach Kim said.</p><p>How far did Bob jump in cm?</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 200.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "cm"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Leaderboard 2",
+                "feedback": {
+                  "content_id": "feedback_16",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Leaderboard",
+            "feedback": {
+              "content_id": "default_outcome_15",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Leaderboard 2": {
+        "content": {
+          "content_id": "content_19",
+          "html": "<p>How far did Sally jump, in cm?</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 300.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "cm"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Leaderboard 3",
+                "feedback": {
+                  "content_id": "feedback_21",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Leaderboard 2",
+            "feedback": {
+              "content_id": "default_outcome_20",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Leaderboard 3": {
+        "content": {
+          "content_id": "content_24",
+          "html": "<p>How far did John jump, in cm? Note: 10 mm = 1 cm.</p>"
+        },
+        "interaction": {
+          "id": "NumberWithUnits",
+          "customization_args": {},
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualTo",
+                  "inputs": {
+                    "f": {
+                      "real": 350.0,
+                      "type": "real",
+                      "units": [
+                        {
+                          "exponent": 1,
+                          "unit": "cm"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Leaderboard 4",
+                "feedback": {
+                  "content_id": "feedback_26",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Leaderboard 3",
+            "feedback": {
+              "content_id": "default_outcome_25",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Leaderboard 4": {
+        "content": {
+          "content_id": "content_29",
+          "html": "<p>\u201cGreat!\u201d Coach Kim said. The leaderboard measurements are all in the same unit. Now, reorder the leaderboard from best to worst.\u201d</p>"
+        },
+        "interaction": {
+          "id": "DragAndDropSortInput",
+          "customization_args": {
+            "allowMultipleItemsInSamePosition": {
+              "value": false
+            },
+            "choices": {
+              "value": [
+                {
+                  "content_id": "ca_choices_32",
+                  "html": "<p>Bob: 200 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_33",
+                  "html": "<p>Sally: 300 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_34",
+                  "html": "<p>John: 350 cm</p>"
+                },
+                {
+                  "content_id": "ca_choices_35",
+                  "html": "<p>Omar: 321 cm</p>"
+                }
+              ]
+            }
+          },
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualToOrdering",
+                  "inputs": {
+                    "x": [
+                      [
+                        "ca_choices_34"
+                      ],
+                      [
+                        "ca_choices_35"
+                      ],
+                      [
+                        "ca_choices_33"
+                      ],
+                      [
+                        "ca_choices_32"
+                      ]
+                    ]
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": "Happy Ending",
+                "feedback": {
+                  "content_id": "feedback_31",
+                  "html": "<p>Correct!</p>"
+                },
+                "labelled_as_correct": true
+              }
+            }
+          ],
+          "default_outcome": {
+            "dest": "Leaderboard 4",
+            "feedback": {
+              "content_id": "default_outcome_30",
+              "html": "<p>No, that's not correct. Please try again.</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Happy Ending": {
+        "content": {
+          "content_id": "content_8",
+          "html": "<p>Omar looked at the sorted leaderboard. \u201cI\u2019m in second place!\u201d he said. \u201cI want to be first, so I need to jump further than 350 cm.\u201d</p><p>\u201cRight,\u201d Coach Kim replied. \u201cYou\u2019ve done a great job with measurement conversions today and helped fix the leaderboard. Want to go outside and train for the long jump now?\u201d</p><p>\u201cYes!\u201d Omar replied. Omar and Coach Kim walked over to the long jump runway to practice his long jump.</p>"
+        },
+        "interaction": {
+          "id": "Continue",
+          "customization_args": {
+            "buttonText": {
+              "value": {
+                "content_id": "ca_buttonText_10",
+                "unicode_str": "Continue"
+              }
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": {
+            "dest": "Congratulations",
+            "feedback": {
+              "content_id": "default_outcome_9",
+              "html": ""
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "solution": null
+        }
+      },
+      "Congratulations": {
+        "content": {
+          "content_id": "content_7",
+          "html": "<p>Congratulations on completing this lesson about unit conversion! If you want to learn about more unit conversions, click on to the next lesson.</p>"
+        },
+        "interaction": {
+          "id": "EndExploration",
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
+        }
+      }
+    },
+    "objective": "Learn how to convert length measurements between different units.",
+    "language_code": "en",
+    "correctness_feedback_enabled": false,
+    "title": "Measurements Lesson 3"
+  }
+}

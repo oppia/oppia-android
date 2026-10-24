@@ -26,7 +26,6 @@ import org.oppia.android.util.math.NumberWithUnitsParsingError.TrailingTokensErr
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterDivisionError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedAfterSiPrefixError
-import org.oppia.android.util.math.NumberWithUnitsParsingError.UnitExpectedError
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -55,27 +54,39 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_integerOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("42")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_integerOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("42")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(42.0)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_realNumberOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("3.14")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_realNumberOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("3.14")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(3.14)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_negativeIntegerOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("-5")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_negativeIntegerOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("-5")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(-5.0)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
-  fun testParser_negativeRealOnly_noUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("-2.5")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_negativeRealOnly_noUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("-2.5")
+    assertThat(result).apply {
+      hasRealValueThat().isWithin(1e-5).of(-2.5)
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test
@@ -1582,9 +1593,16 @@ class NumberWithUnitsParserTest {
   }
 
   @Test
-  fun testParser_fractionOnlyNoUnit_returnsUnitExpectedError() {
-    val error = parseNumberWithUnitsExpectingFailure("1/2")
-    assertThat(error).isInstanceOf(UnitExpectedError::class.java)
+  fun testParser_fractionOnlyNoUnit_parsesCorrectly() {
+    val result = parseNumberWithUnitsExpectingSuccess("1/2")
+    assertThat(result).apply {
+      hasFractionValueThat().apply {
+        hasNegativePropertyThat().isFalse()
+        hasNumeratorThat().isEqualTo(1)
+        hasDenominatorThat().isEqualTo(2)
+      }
+      hasUnitCountThat().isEqualTo(0)
+    }
   }
 
   @Test

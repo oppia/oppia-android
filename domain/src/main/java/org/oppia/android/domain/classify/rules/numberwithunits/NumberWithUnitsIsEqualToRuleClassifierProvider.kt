@@ -7,6 +7,8 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.toUnitString
+import org.oppia.android.util.math.NumberWithUnitsParser
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
@@ -39,8 +41,14 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
     if (answer.numberTypeCase != input.numberTypeCase) {
       return false
     }
-    // Units must match, but in different orders is fine.
-    if (answer.unitList.toSet() != input.unitList.toSet()) {
+    // Units must match, but in different orders is fine. But duplicates must be preserved.
+    val sortedAnswerUnits = answer.unitList
+      .map { it.toBuilder().setUnit(it.unit.toCanonicalUnit()).build() }
+      .sortedBy { it.unit }
+    val sortedInputUnits = input.unitList
+      .map { it.toBuilder().setUnit(it.unit.toCanonicalUnit()).build() }
+      .sortedBy { it.unit }
+    if (sortedAnswerUnits != sortedInputUnits) {
       return false
     }
     // Otherwise, verify the value itself matches.
@@ -57,5 +65,13 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
 
   private fun fractionMatches(answer: Fraction, input: Fraction): Boolean {
     return input == answer
+  }
+
+  private fun String.toCanonicalUnit(): String {
+    return when (val result = NumberWithUnitsParser.parseUnit(this)) {
+      is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Success ->
+        result.result.toUnitString()
+      is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Failure -> this
+    }
   }
 }

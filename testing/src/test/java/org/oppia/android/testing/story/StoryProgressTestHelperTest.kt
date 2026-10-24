@@ -199,8 +199,12 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterDone_testTopic1_story2_exp4_story2IsDone() {
+  fun testMarkChapterDone_testTopic1_story2_exp4_exp6_story2IsDone() {
     storyProgressTestHelper.markCompletedTestTopic1Story0Exp0(
+      profileId = profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic1Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
