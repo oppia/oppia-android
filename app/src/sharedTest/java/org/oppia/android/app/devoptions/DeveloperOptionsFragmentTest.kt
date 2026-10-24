@@ -48,7 +48,9 @@ import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParse
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -91,6 +93,7 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -125,6 +128,7 @@ class DeveloperOptionsFragmentTest {
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   private val internalProfileId = 0
 
@@ -625,6 +629,149 @@ class DeveloperOptionsFragmentTest {
     assertThat(cause?.message).contains("System.exit()")
   }
 
+  @Test
+  fun testDeveloperOptions_addAndDeleteProfilesIsDisplayedAtPositionFour() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      verifyItemDisplayedOnDeveloperOptionsListItem(
+        itemPosition = 4,
+        targetView = R.id.add_and_delete_profiles_text_view
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.add_and_delete_profiles_text_view,
+        stringIdToMatch = R.string.developer_options_add_and_delete_profiles_label
+      )
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_clickAddOneProfiles_checksOneProfilesAreAdded() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.add_one_profile_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+
+      launch(ProfileChooserActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 3))
+
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 0,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "Admin"
+        )
+
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(2))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 2,
+          targetView = R.id.add_profile_text,
+          stringToMatch = context.getString(R.string.profile_chooser_add)
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_clickAddThreeProfiles_checksThreeProfilesAreAdded() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.add_three_profiles_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+
+      launch(ProfileChooserActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 5))
+
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 0,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "Admin"
+        )
+
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(4))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 4,
+          targetView = R.id.add_profile_text,
+          stringToMatch = context.getString(R.string.profile_chooser_add)
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_clickDeleteAllNonAdminProfiles_checksNonAdminProfilesAreDeleted() {
+    profileTestHelper.initializeProfiles(false)
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 4)
+      onView(withId(R.id.delete_all_non_admin_profiles_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+
+      launch(ProfileChooserActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 2))
+
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 0,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "Admin"
+        )
+        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(1))
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 1,
+          targetView = R.id.add_profile_text,
+          stringToMatch = context.getString(R.string.set_up_multiple_profiles)
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_profileCount_displaysInitialAndUpdatedCount() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+
+      onView(withId(R.id.existing_profile_count_text_view)).check(
+        matches(withText(context.getString(R.string.developer_options_profile_count)))
+      )
+      onView(withId(R.id.profile_count)).check(matches(withText("1")))
+
+      onView(withId(R.id.add_three_profiles_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+
+      onView(withId(R.id.profile_count)).check(matches(withText("4")))
+    }
+  }
+
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
     return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
   }
@@ -662,6 +809,20 @@ class DeveloperOptionsFragmentTest {
         position
       )
     )
+  }
+
+  private fun verifyTextOnProfileListItemAtPosition(
+    itemPosition: Int,
+    targetView: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.profile_recycler_view,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(withText(stringToMatch)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
