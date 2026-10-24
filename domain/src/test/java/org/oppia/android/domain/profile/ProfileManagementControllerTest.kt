@@ -1358,6 +1358,48 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testProfileManagementController_deleteAllNonAdminProfiles_adminProfileIsPreserved() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isTrue()
+    assertThat(profiles.first().name).isEqualTo("Admin")
+  }
+
+  @Test
+  fun testProfileManagementController_getProfileCount_returnsCorrectCount() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    val profileCount = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfileCount()
+    )
+    assertThat(profileCount).isEqualTo(6)
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllNonAdminProfiles_profileCountIsOne() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profileCount = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfileCount()
+    )
+    assertThat(profileCount).isEqualTo(1)
+  }
+
+  @Test
   fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasNotAdded() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Rohit")

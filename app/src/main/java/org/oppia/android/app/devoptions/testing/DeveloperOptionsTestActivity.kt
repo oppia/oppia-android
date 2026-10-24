@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.devoptions.AddOneProfileButtonClickListener
+import org.oppia.android.app.devoptions.AddThreeProfilesButtonClickListener
+import org.oppia.android.app.devoptions.DeleteAllNonAdminProfilesButtonClickListener
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
@@ -28,7 +31,10 @@ class DeveloperOptionsTestActivity :
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
-  RouteToViewEventLogsListener {
+  RouteToViewEventLogsListener,
+  AddOneProfileButtonClickListener,
+  AddThreeProfilesButtonClickListener,
+  DeleteAllNonAdminProfilesButtonClickListener {
 
   private var internalProfileId = -1
 
@@ -82,6 +88,18 @@ class DeveloperOptionsTestActivity :
 
   override fun forceCrash() {
     throw RuntimeException("Force crash occurred")
+  }
+
+  override fun createOneProfile() {
+    getDeveloperOptionsFragment()?.createProfile(1)
+  }
+
+  override fun createThreeProfiles() {
+    getDeveloperOptionsFragment()?.createProfile(3)
+  }
+
+  override fun deleteAllNonAdminProfiles() {
+    getDeveloperOptionsFragment()?.deleteAllNonAdminProfiles()
   }
 
   companion object {
