@@ -6,11 +6,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import org.oppia.android.app.model.InteractionObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.player.state.testing.InteractionObjectTestBuilder
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config

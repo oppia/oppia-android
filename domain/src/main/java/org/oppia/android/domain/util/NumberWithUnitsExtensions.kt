@@ -58,7 +58,7 @@ fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
     }
   }
   return NormalizedNumberWithUnits.newBuilder().apply {
-      setValue(convertedValue)
+    setValue(convertedValue)
     addAllUnit(
       // Sort by enum ordinal for deterministic ordering.
       dimensions.filterValues { it != 0 }

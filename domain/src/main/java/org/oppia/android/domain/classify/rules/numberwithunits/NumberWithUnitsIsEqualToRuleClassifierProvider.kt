@@ -8,8 +8,8 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.toUnitString
-import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.NumberWithUnitsParser
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
 /**
