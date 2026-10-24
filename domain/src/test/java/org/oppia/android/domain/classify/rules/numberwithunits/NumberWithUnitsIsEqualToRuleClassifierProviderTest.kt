@@ -613,6 +613,72 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
+  fun testUnitSynonym_twoKgMeterNegative2VsTwoKgMNegative2_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_2,
+        listOf(UNIT_KG_TO_POWER_1, UNIT_M_TO_POWER_NEGATIVE_2)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_2,
+          listOf(UNIT_KG_TO_POWER_1, UNIT_METER_TO_POWER_NEGATIVE_2)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testUnitSynonym_hundredRupeeVsHundredRupees_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_RUPEES_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_RUPEE_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testUnitSynonym_hundredDollarVsHundredDollars_matches() {
+    val inputs = mapOf(
+      "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+        FRACTION_VALUE_TEST_100,
+        listOf(UNIT_DOLLARS_TITLE_CASE_TO_POWER_1)
+      )
+    )
+
+    val matches =
+      unitsIsEqualsRuleClassifier.matches(
+        answer = InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
+          FRACTION_VALUE_TEST_100,
+          listOf(UNIT_DOLLAR_TO_POWER_1)
+        ),
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
   fun testUnitMismatch_hundredDollarsVsHundredCents_doesNotMatch() {
     val inputs = mapOf(
       "f" to InteractionObjectTestBuilder.createNumberWithUnitsForFraction(

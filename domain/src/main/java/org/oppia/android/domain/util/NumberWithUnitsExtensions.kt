@@ -58,7 +58,7 @@ fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
     }
   }
   return NormalizedNumberWithUnits.newBuilder().apply {
-    value = convertedValue
+      setValue(convertedValue)
     addAllUnit(
       // Sort by enum ordinal for deterministic ordering.
       dimensions.filterValues { it != 0 }
@@ -271,7 +271,7 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
       BaseDimension.TIME to -3,
       BaseDimension.CURRENT to -2
     )
-    NumberUnitExpression.Unit.DOLLAR -> createConversion(100.0, BaseDimension.CURRENCY_DOLLAR to 1)
+    NumberUnitExpression.Unit.DOLLAR -> createConversion(1.0, BaseDimension.CURRENCY_DOLLAR to 1)
     NumberUnitExpression.Unit.CENT -> createConversion(0.01, BaseDimension.CURRENCY_DOLLAR to 1)
     NumberUnitExpression.Unit.RUPEE -> createConversion(1.0, BaseDimension.CURRENCY_RUPEE to 1)
     NumberUnitExpression.Unit.PAISA -> createConversion(0.01, BaseDimension.CURRENCY_RUPEE to 1)
