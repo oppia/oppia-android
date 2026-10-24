@@ -45,6 +45,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
@@ -115,6 +116,8 @@ class TopicController @Inject constructor(
   private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>,
   private val translationController: TranslationController,
   private val classroomController: ClassroomController,
+  @EnableAdminUnlockChapters
+  private val adminUnlockChapters: PlatformParameterValue<Boolean>,
 ) {
 
   /**
@@ -505,7 +508,9 @@ class TopicController @Inject constructor(
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
           } else {
             val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
-            if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
+            if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED ||
+              adminUnlockChapters.value
+            ) {
               chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
             } else {
               chapterBuilder.chapterPlayState =
@@ -584,7 +589,7 @@ class TopicController @Inject constructor(
       val storyBuilder = storySummary.toBuilder()
       storySummary.chapterList.forEachIndexed { index, chapterSummary ->
         val chapterBuilder = chapterSummary.toBuilder()
-        if (index != 0) {
+        if (index != 0 && !adminUnlockChapters.value) {
           chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           chapterBuilder.missingPrerequisiteChapter = storySummary.chapterList[index - 1]
         } else {
