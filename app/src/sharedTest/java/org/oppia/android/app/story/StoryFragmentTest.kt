@@ -46,11 +46,13 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.activity.ActivityComponent
@@ -67,6 +69,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ExplorationActivityParams.ParentScreen.STORY_SCREEN
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.StoryFragmentArguments
@@ -112,6 +115,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
@@ -124,6 +128,10 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_EXPLORATION_0_TITLE
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -164,10 +172,19 @@ class StoryFragmentTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+  @Mock lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
   @Captor lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
+  @Captor lateinit var profileIdCaptor: ArgumentCaptor<LegacyProfileId>
+  @Captor lateinit var classroomIdCaptor: ArgumentCaptor<String>
+  @Captor lateinit var topicIdCaptor: ArgumentCaptor<String>
+  @Captor lateinit var storyIdCaptor: ArgumentCaptor<String>
+  @Captor lateinit var explorationIdCaptor: ArgumentCaptor<String>
+  @Captor lateinit var parentScreenCaptor: ArgumentCaptor<ExplorationActivityParams.ParentScreen>
+  @Captor lateinit var explorationCheckpointCaptor: ArgumentCaptor<ExplorationCheckpoint>
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
@@ -900,6 +917,126 @@ class StoryFragmentTest {
     }
   }
 
+  @Test
+  fun testStoryFragment_notStartedChapter_clickChapter_routesToExploration() {
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToExplorationListener).routeToExploration(
+        capture(profileIdCaptor),
+        capture(classroomIdCaptor),
+        capture(topicIdCaptor),
+        capture(storyIdCaptor),
+        capture(explorationIdCaptor),
+        capture(parentScreenCaptor),
+        eq(true)
+      )
+      assertChapterRoutingArguments()
+      verifyNoMoreInteractions(mockRouteToExplorationListener, mockRouteToResumeLessonListener)
+    }
+  }
+
+  @Test
+  fun testStoryFragment_completedChapter_clickChapter_routesToExplorationAsReplay() {
+    setStoryPartialProgressForFractions()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToExplorationListener).routeToExploration(
+        capture(profileIdCaptor),
+        capture(classroomIdCaptor),
+        capture(topicIdCaptor),
+        capture(storyIdCaptor),
+        capture(explorationIdCaptor),
+        capture(parentScreenCaptor),
+        eq(false)
+      )
+      assertChapterRoutingArguments()
+      verifyNoMoreInteractions(mockRouteToExplorationListener, mockRouteToResumeLessonListener)
+    }
+  }
+
+  @Test
+  fun testStoryFragment_inProgressSavedChapter_clickChapter_routesToResumeLesson() {
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val checkpointSaveStartTime = fakeOppiaClock.getCurrentTimeMs()
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId,
+      FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    val checkpointSaveEndTime = fakeOppiaClock.getCurrentTimeMs()
+    val expectedCheckpoint = ExplorationCheckpoint.newBuilder().apply {
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE
+      explorationVersion = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
+    }.build()
+
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verify(mockRouteToResumeLessonListener).routeToResumeLesson(
+        capture(profileIdCaptor),
+        capture(classroomIdCaptor),
+        capture(topicIdCaptor),
+        capture(storyIdCaptor),
+        capture(explorationIdCaptor),
+        capture(parentScreenCaptor),
+        capture(explorationCheckpointCaptor)
+      )
+      assertChapterRoutingArguments()
+      val checkpoint = explorationCheckpointCaptor.value
+      assertThat(checkpoint.timestampOfFirstCheckpoint).isAtLeast(checkpointSaveStartTime)
+      assertThat(checkpoint.timestampOfFirstCheckpoint).isAtMost(checkpointSaveEndTime)
+      val checkpointWithoutTimestamp = checkpoint.toBuilder()
+        .clearTimestampOfFirstCheckpoint()
+        .build()
+      assertThat(checkpointWithoutTimestamp).isEqualTo(expectedCheckpoint)
+      verifyNoMoreInteractions(mockRouteToExplorationListener, mockRouteToResumeLessonListener)
+    }
+  }
+
   @Config(qualifiers = "+sw600dp")
   @Test
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
@@ -1093,6 +1230,15 @@ class StoryFragmentTest {
     return find { text in it.first }?.second
   }
 
+  private fun assertChapterRoutingArguments() {
+    assertThat(profileIdCaptor.value).isEqualTo(profileId)
+    assertThat(classroomIdCaptor.value).isEqualTo(TEST_CLASSROOM_ID_1)
+    assertThat(topicIdCaptor.value).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(storyIdCaptor.value).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(explorationIdCaptor.value).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(parentScreenCaptor.value).isEqualTo(STORY_SCREEN)
+  }
+
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
@@ -1118,6 +1264,7 @@ class StoryFragmentTest {
     ActivityScenario.launch<StoryFragmentTestActivity>(intent).use { scenario ->
       scenario.onActivity { activity ->
         activity.mockRouteToExplorationListener = mockRouteToExplorationListener
+        activity.mockRouteToResumeLessonListener = mockRouteToResumeLessonListener
         activity.setContentView(R.layout.test_activity)
         activity.supportFragmentManager.beginTransaction()
           .add(R.id.test_fragment_placeholder, fragment)
@@ -1131,6 +1278,7 @@ class StoryFragmentTest {
   class StoryFragmentTestActivity :
     TestActivity(), RouteToExplorationListener, RouteToResumeLessonListener {
     lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+    lateinit var mockRouteToResumeLessonListener: RouteToResumeLessonListener
 
     override fun routeToExploration(
       profileId: LegacyProfileId,
@@ -1161,6 +1309,15 @@ class StoryFragmentTest {
       parentScreen: ExplorationActivityParams.ParentScreen,
       explorationCheckpoint: ExplorationCheckpoint
     ) {
+      mockRouteToResumeLessonListener.routeToResumeLesson(
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        parentScreen,
+        explorationCheckpoint
+      )
     }
   }
 
