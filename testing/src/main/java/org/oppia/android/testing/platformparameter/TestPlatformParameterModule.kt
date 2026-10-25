@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import org.oppia.android.app.model.FeatureFlagId.ADMIN_UNLOCK_CHAPTERS
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDGE_TO_EDGE
@@ -23,6 +22,7 @@ import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.app.model.FeatureFlagId.PACE_ADMIN_UNLOCK_CHAPTERS
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.FeatureFlagId.STUDY_GUIDES
@@ -220,8 +220,8 @@ class TestPlatformParameterModule {
       TestPlatformParameterConfigRetriever.setFlagOverride(WORKED_EXAMPLES, value)
     }
 
-    fun forceEnableAdminUnlockChapters(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(ADMIN_UNLOCK_CHAPTERS, value)
+    fun forceEnablePaceAdminUnlockChapters(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(PACE_ADMIN_UNLOCK_CHAPTERS, value)
     }
 
     fun forcePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(value: Int) {

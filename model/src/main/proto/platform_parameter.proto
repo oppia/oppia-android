@@ -173,7 +173,7 @@ enum FeatureFlagId {
   // Corresponds to a feature that allows an admin profile to unlock chapters on Alpha for PACE
   // pilot testing, without modifying actual learner progress. This is a prototype flag following
   // Ben's suggestion to disable the chapter lock and observe what breaks.
-  ADMIN_UNLOCK_CHAPTERS = 25;
+  PACE_ADMIN_UNLOCK_CHAPTERS = 25;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to

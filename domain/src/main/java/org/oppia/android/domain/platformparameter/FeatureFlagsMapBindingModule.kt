@@ -4,7 +4,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.util.platformparameter.EnableAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
@@ -18,6 +17,7 @@ import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.EnablePaceAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
@@ -185,8 +185,8 @@ interface FeatureFlagsMapBindingModule {
   @Binds
   @IntoMap
   @FeatureFlags
-  @FeatureFlagIdKey(FeatureFlagId.ADMIN_UNLOCK_CHAPTERS)
-  fun bindAdminUnlockChapters(
-    @EnableAdminUnlockChapters param: PlatformParameterValue<Boolean>
+  @FeatureFlagIdKey(FeatureFlagId.PACE_ADMIN_UNLOCK_CHAPTERS)
+  fun bindPaceAdminUnlockChapters(
+    @EnablePaceAdminUnlockChapters param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }

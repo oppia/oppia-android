@@ -39,6 +39,6 @@ feature_flag_definition {
   default_is_enabled: true
 }
 feature_flag_definition {
-  id: ADMIN_UNLOCK_CHAPTERS
+  id: PACE_ADMIN_UNLOCK_CHAPTERS
   default_is_enabled: true
 }

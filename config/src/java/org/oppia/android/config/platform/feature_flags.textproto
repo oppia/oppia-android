@@ -104,7 +104,7 @@ feature_flag_definition {
   default_is_enabled: false
 }
 feature_flag_definition {
-  id: ADMIN_UNLOCK_CHAPTERS
-  remote_server_name: "android_enable_admin_unlock_chapters"
+  id: PACE_ADMIN_UNLOCK_CHAPTERS
+  remote_server_name: "android_enable_pace_admin_unlock_chapters"
   default_is_enabled: false
 }

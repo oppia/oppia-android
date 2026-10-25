@@ -244,10 +244,10 @@ annotation class EnableWorkedExamples
  * can be accessed regardless of completion state. Does NOT modify learner progress data.
  */
 @Qualifier
-annotation class EnableAdminUnlockChapters
+annotation class EnablePaceAdminUnlockChapters
 
 /** Name of the feature flag that controls whether to enable admin chapter unlocking. */
-const val ADMIN_UNLOCK_CHAPTERS = "android_enable_admin_unlock_chapters"
+const val PACE_ADMIN_UNLOCK_CHAPTERS = "android_enable_pace_admin_unlock_chapters"
 
-/** Default value for the feature flag corresponding to [EnableAdminUnlockChapters]. */
-const val ENABLE_ADMIN_UNLOCK_CHAPTERS_DEFAULT_VALUE = false
+/** Default value for the feature flag corresponding to [EnablePaceAdminUnlockChapters]. */
+const val ENABLE_PACE_ADMIN_UNLOCK_CHAPTERS_DEFAULT_VALUE = false
