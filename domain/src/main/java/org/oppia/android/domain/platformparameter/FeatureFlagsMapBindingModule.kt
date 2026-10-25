@@ -17,6 +17,7 @@ import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.EnablePaceAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
@@ -179,5 +180,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.WORKED_EXAMPLES)
   fun bindWorkedExamples(
     @EnableWorkedExamples param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.PACE_ADMIN_UNLOCK_CHAPTERS)
+  fun bindPaceAdminUnlockChapters(
+    @EnablePaceAdminUnlockChapters param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }

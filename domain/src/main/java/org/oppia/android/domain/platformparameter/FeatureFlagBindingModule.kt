@@ -16,6 +16,7 @@ import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.EnablePaceAdminUnlockChapters
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.EnableStudyGuides
@@ -142,6 +143,11 @@ class FeatureFlagBindingModule {
   @EnableWorkedExamples
   fun provideEnableWorkedExamples(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.WORKED_EXAMPLES)
+
+  @Provides
+  @EnablePaceAdminUnlockChapters
+  fun provideEnablePaceAdminUnlockChapters(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.PACE_ADMIN_UNLOCK_CHAPTERS)
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
