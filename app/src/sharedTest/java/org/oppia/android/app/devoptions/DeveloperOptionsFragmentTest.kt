@@ -745,29 +745,42 @@ class DeveloperOptionsFragmentTest {
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 1,
           targetView = R.id.add_profile_text,
-          stringToMatch = context.getString(R.string.set_up_multiple_profiles)
+          stringToMatch = context.getString(R.string.profile_chooser_add)
         )
       }
     }
   }
 
   @Test
-  fun testDeveloperOptions_profileCount_displaysInitialAndUpdatedCount() {
+  fun testDeveloperOptions_profileCount_displaysInitialProfileCount() {
+    profileTestHelper.addOnlyAdminProfile()
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.existing_profile_count_text_view)).check(
         matches(withText(context.getString(R.string.developer_options_profile_count)))
       )
       onView(withId(R.id.profile_count)).check(matches(withText("1")))
+    }
+  }
 
-      onView(withId(R.id.add_three_profiles_text_view)).perform(click())
+  @Test
+  fun testDeveloperOptions_multipleProfiles_displaysCorrectProfileCount() {
+    profileTestHelper.initializeProfiles(false)
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      scrollToPosition(position = 4)
+      testCoroutineDispatchers.runCurrent()
 
+      onView(withId(R.id.existing_profile_count_text_view)).check(
+        matches(withText(context.getString(R.string.developer_options_profile_count)))
+      )
       onView(withId(R.id.profile_count)).check(matches(withText("4")))
     }
   }
