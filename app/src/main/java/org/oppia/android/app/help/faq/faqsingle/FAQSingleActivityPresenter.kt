@@ -70,7 +70,8 @@ class FAQSingleActivityPresenter @Inject constructor(
       displayLocale = resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       answer,
-      answerTextView
+      answerTextView,
+      supportsLinks = true
     )
   }
 }

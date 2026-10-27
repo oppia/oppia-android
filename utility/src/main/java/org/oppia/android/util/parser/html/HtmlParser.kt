@@ -131,11 +131,27 @@ class HtmlParser private constructor(
       )
     )
 
+    // Email addresses are linked first so that the whole address opens a mail app. Otherwise
+    // WEB_URL would only match the domain part (e.g. "oppia.org" in "admin@oppia.org").
+    val emailRanges = mutableListOf<IntRange>()
+    val emailMatcher = Patterns.EMAIL_ADDRESS.matcher(htmlSpannable)
+    while (emailMatcher.find()) {
+      val start = emailMatcher.start()
+      val end = emailMatcher.end()
+      val email = htmlSpannable.subSequence(start, end).toString()
+      htmlSpannable.setSpan(
+        URLSpan("mailto:$email"), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+      )
+      emailRanges += start until end
+    }
+
     val urlPattern = Patterns.WEB_URL
     val matcher = urlPattern.matcher(htmlSpannable)
     while (matcher.find()) {
       val start = matcher.start()
       val end = matcher.end()
+      // Skip URLs that overlap an email address, since the address already has a mailto: link.
+      if (emailRanges.any { start <= it.last && end > it.first }) continue
       val url = htmlSpannable.subSequence(start, end).toString()
       val urlSpan = URLSpan(url)
       htmlSpannable.setSpan(urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
