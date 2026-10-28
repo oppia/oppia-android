@@ -23,41 +23,9 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.profile.PROFILE_AVATAR_COLORS_LIST
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.ui.R
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
-
-private val COLORS_LIST = listOf(
-  R.color.component_color_avatar_background_1_color,
-  R.color.component_color_avatar_background_2_color,
-  R.color.component_color_avatar_background_3_color,
-  R.color.component_color_avatar_background_4_color,
-  R.color.component_color_avatar_background_5_color,
-  R.color.component_color_avatar_background_6_color,
-  R.color.component_color_avatar_background_7_color,
-  R.color.component_color_avatar_background_8_color,
-  R.color.component_color_avatar_background_9_color,
-  R.color.component_color_avatar_background_10_color,
-  R.color.component_color_avatar_background_11_color,
-  R.color.component_color_avatar_background_12_color,
-  R.color.component_color_avatar_background_13_color,
-  R.color.component_color_avatar_background_14_color,
-  R.color.component_color_avatar_background_15_color,
-  R.color.component_color_avatar_background_16_color,
-  R.color.component_color_avatar_background_17_color,
-  R.color.component_color_avatar_background_18_color,
-  R.color.component_color_avatar_background_19_color,
-  R.color.component_color_avatar_background_20_color,
-  R.color.component_color_avatar_background_21_color,
-  R.color.component_color_avatar_background_22_color,
-  R.color.component_color_avatar_background_23_color,
-  R.color.component_color_avatar_background_24_color
-)
 
 private val PRE_DEFINED_NAMES_LIST = listOf(
   "Ben", "Adhiambo", "Sean", "Saptak", "Vishwajit", "Subhajit", "Tanish", "Ayush", "Jinshu",
@@ -185,8 +153,8 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           if (result is AsyncResult.Success) {
             deleteLiveData.removeObserver(this)
             val intent =
-              Intent(fragment.requireContext(), ProfileChooserActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              ProfileChooserActivity.createProfileChooserActivity(fragment.requireContext()).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
               }
             fragment.startActivity(intent)
           } else if (result is AsyncResult.Failure) {
@@ -217,26 +185,24 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
         override fun onChanged(profilesResult: AsyncResult<List<Profile>>) {
           if (profilesResult is AsyncResult.Success) {
             profilesLiveData.removeObserver(this)
-            val existingProfileNames = profilesResult.value.map { it.name }.toSet()
-            val newNames = PRE_DEFINED_NAMES_LIST.filter {
-              it !in existingProfileNames
-            }.shuffled().take(count)
-            newNames.forEach { newName ->
-              val rgbColor = selectRandomColor()
-              profileManagementController.addProfile(
-                name = newName,
-                pin = "",
-                avatarImagePath = null,
-                allowDownloadAccess = true,
-                colorRgb = rgbColor,
-                isAdmin = false
-              )
+            val existingProfiles = profilesResult.value
+            val availableSlots = (10 - existingProfiles.size).coerceAtLeast(0)
+            val profilesToAddCount = minOf(count, availableSlots)
+            if (profilesToAddCount == 0) {
+              val intent =
+                ProfileChooserActivity.createProfileChooserActivity(fragment.requireContext())
+              fragment.startActivity(intent)
+              return
             }
-            val intent =
-              Intent(fragment.requireContext(), ProfileChooserActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              }
-            fragment.startActivity(intent)
+            val existingProfileNames = existingProfiles.map { it.name.lowercase() }.toSet()
+            val newNames = PRE_DEFINED_NAMES_LIST.filter {
+              it.lowercase() !in existingProfileNames
+            }.shuffled().take(profilesToAddCount)
+            addProfilesSequentially(newNames) {
+              val intent =
+                ProfileChooserActivity.createProfileChooserActivity(fragment.requireContext())
+              fragment.startActivity(intent)
+            }
           } else if (profilesResult is AsyncResult.Failure) {
             profilesLiveData.removeObserver(this)
             oppiaLogger.e(
@@ -250,7 +216,44 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
     )
   }
 
+  private fun addProfilesSequentially(names: List<String>, onComplete: () -> Unit) {
+    if (names.isEmpty()) {
+      onComplete()
+      return
+    }
+    val nextName = names.first()
+    val remainingNames = names.drop(1)
+    val rgbColor = selectRandomColor()
+    val addLiveData = profileManagementController.addProfile(
+      name = nextName,
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = rgbColor,
+      isAdmin = false
+    ).toLiveData()
+    addLiveData.observe(
+      fragment,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>) {
+          if (result is AsyncResult.Success) {
+            addLiveData.removeObserver(this)
+            addProfilesSequentially(remainingNames, onComplete)
+          } else if (result is AsyncResult.Failure) {
+            addLiveData.removeObserver(this)
+            oppiaLogger.e(
+              "DeveloperOptionsFragment",
+              "Failed to add profile $nextName",
+              result.error
+            )
+            onComplete()
+          }
+        }
+      }
+    )
+  }
+
   private fun selectRandomColor(): Int {
-    return ContextCompat.getColor(activity, COLORS_LIST.random())
+    return ContextCompat.getColor(activity, PROFILE_AVATAR_COLORS_LIST.random())
   }
 }

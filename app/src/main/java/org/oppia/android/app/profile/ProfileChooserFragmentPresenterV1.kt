@@ -36,32 +36,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
-private val COLORS_LIST = listOf(
-  R.color.component_color_avatar_background_1_color,
-  R.color.component_color_avatar_background_2_color,
-  R.color.component_color_avatar_background_3_color,
-  R.color.component_color_avatar_background_4_color,
-  R.color.component_color_avatar_background_5_color,
-  R.color.component_color_avatar_background_6_color,
-  R.color.component_color_avatar_background_7_color,
-  R.color.component_color_avatar_background_8_color,
-  R.color.component_color_avatar_background_9_color,
-  R.color.component_color_avatar_background_10_color,
-  R.color.component_color_avatar_background_11_color,
-  R.color.component_color_avatar_background_12_color,
-  R.color.component_color_avatar_background_13_color,
-  R.color.component_color_avatar_background_14_color,
-  R.color.component_color_avatar_background_15_color,
-  R.color.component_color_avatar_background_16_color,
-  R.color.component_color_avatar_background_17_color,
-  R.color.component_color_avatar_background_18_color,
-  R.color.component_color_avatar_background_19_color,
-  R.color.component_color_avatar_background_20_color,
-  R.color.component_color_avatar_background_21_color,
-  R.color.component_color_avatar_background_22_color,
-  R.color.component_color_avatar_background_23_color,
-  R.color.component_color_avatar_background_24_color
-)
 
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
@@ -147,7 +121,7 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return COLORS_LIST.map {
+    return PROFILE_AVATAR_COLORS_LIST.map {
       ContextCompat.getColor(context, it)
     }.minus(chooserViewModel.usedColors).random()
   }

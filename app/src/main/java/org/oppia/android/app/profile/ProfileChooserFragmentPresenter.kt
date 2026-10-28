@@ -42,7 +42,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
-private val COLORS_LIST = listOf(
+val PROFILE_AVATAR_COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
   R.color.component_color_avatar_background_2_color,
   R.color.component_color_avatar_background_3_color,
@@ -247,7 +247,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return COLORS_LIST.map {
+    return PROFILE_AVATAR_COLORS_LIST.map {
       ContextCompat.getColor(context, it)
     }.minus(chooserViewModel.usedColors).random()
   }

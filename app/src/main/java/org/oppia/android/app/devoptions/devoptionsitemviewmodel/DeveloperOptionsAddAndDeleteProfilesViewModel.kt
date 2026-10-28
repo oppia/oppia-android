@@ -23,26 +23,24 @@ class DeveloperOptionsAddAndDeleteProfilesViewModel(
   private val oppiaLogger: OppiaLogger
 ) : DeveloperOptionsItemViewModel() {
 
-  private val profileCount: LiveData<Int> = Transformations.map(
+  /** A [LiveData] that represents the profile count as a string. */
+  val profileCountString: LiveData<String> = Transformations.map(
     profileManagementController.getProfileCount().toLiveData(),
     ::processGetProfileCountResult
   )
 
-  /** A [LiveData] that represents the profile count as a string. */
-  val profileCountString: LiveData<String> = Transformations.map(profileCount) { it.toString() }
-
-  private fun processGetProfileCountResult(profileCountResult: AsyncResult<Int>): Int {
+  private fun processGetProfileCountResult(profileCountResult: AsyncResult<Int>): String {
     return when (profileCountResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "DeveloperOptionsFragment",
+          "DeveloperOptionsAddAndDeleteProfilesViewModel",
           "Failed to retrieve profile count",
           profileCountResult.error
         )
-        0
+        ""
       }
-      is AsyncResult.Pending -> 0
-      is AsyncResult.Success -> profileCountResult.value
+      is AsyncResult.Pending -> ""
+      is AsyncResult.Success -> profileCountResult.value.toString()
     }
   }
 

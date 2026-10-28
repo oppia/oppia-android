@@ -64,6 +64,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
         android:text="@{viewModel.profileCountString}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/existing_profile_count_text_view"

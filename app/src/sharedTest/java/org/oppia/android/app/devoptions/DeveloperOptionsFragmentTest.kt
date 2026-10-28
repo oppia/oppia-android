@@ -85,11 +85,13 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -129,6 +131,8 @@ class DeveloperOptionsFragmentTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId = 0
 
@@ -650,6 +654,7 @@ class DeveloperOptionsFragmentTest {
 
   @Test
   fun testDeveloperOptions_clickAddOneProfiles_checksOneProfilesAreAdded() {
+    profileTestHelper.addOnlyAdminProfile()
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -659,31 +664,18 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
 
-      launch(ProfileChooserActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-
-        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 3))
-
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 0,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Admin"
-        )
-
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(2))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 2,
-          targetView = R.id.add_profile_text,
-          stringToMatch = context.getString(R.string.profile_chooser_add)
-        )
-      }
+      val profiles = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfiles()
+      )
+      assertThat(profiles).hasSize(2)
+      assertThat(profiles.any { it.isAdmin }).isTrue()
+      assertThat(profiles.any { !it.isAdmin }).isTrue()
     }
   }
 
   @Test
   fun testDeveloperOptions_clickAddThreeProfiles_checksThreeProfilesAreAdded() {
+    profileTestHelper.addOnlyAdminProfile()
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -693,26 +685,32 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
 
-      launch(ProfileChooserActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
+      val profiles = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfiles()
+      )
+      assertThat(profiles).hasSize(4)
+      assertThat(profiles.any { it.isAdmin }).isTrue()
+      assertThat(profiles.filter { !it.isAdmin }).hasSize(3)
+    }
+  }
 
-        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 5))
+  @Test
+  fun testDeveloperOptions_clickAddThreeProfiles_withNineProfiles_doesNotExceedLimitOfTen() {
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(8)
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.add_three_profiles_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
 
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 0,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Admin"
-        )
-
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(4))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 4,
-          targetView = R.id.add_profile_text,
-          stringToMatch = context.getString(R.string.profile_chooser_add)
-        )
-      }
+      val profiles = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfiles()
+      )
+      assertThat(profiles).hasSize(10)
     }
   }
 
@@ -729,25 +727,31 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
 
-      launch(ProfileChooserActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
+      val profiles = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfiles()
+      )
+      assertThat(profiles).hasSize(1)
+      assertThat(profiles.first().isAdmin).isTrue()
+    }
+  }
 
-        onView(withId(R.id.profile_recycler_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_recycler_view)).check(hasItemCount(count = 2))
+  @Test
+  fun testDeveloperOptions_clickDeleteAllNonAdminProfiles_noNonAdminProfiles_keepsAdmin() {
+    profileTestHelper.addOnlyAdminProfile()
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.delete_all_non_admin_profiles_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
 
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(0))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 0,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Admin"
-        )
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(1))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 1,
-          targetView = R.id.add_profile_text,
-          stringToMatch = context.getString(R.string.profile_chooser_add)
-        )
-      }
+      val profiles = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfiles()
+      )
+      assertThat(profiles).hasSize(1)
+      assertThat(profiles.first().isAdmin).isTrue()
     }
   }
 
@@ -782,6 +786,28 @@ class DeveloperOptionsFragmentTest {
         matches(withText(context.getString(R.string.developer_options_profile_count)))
       )
       onView(withId(R.id.profile_count)).check(matches(withText("4")))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_profileCount_updatesDynamicallyAfterAddingAndDeletingProfiles() {
+    profileTestHelper.addOnlyAdminProfile()
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_count)).check(matches(withText("1")))
+
+      profileTestHelper.addMoreProfiles(1)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_count)).check(matches(withText("2")))
+
+      profileManagementController.deleteAllNonAdminProfiles()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_count)).check(matches(withText("1")))
     }
   }
 

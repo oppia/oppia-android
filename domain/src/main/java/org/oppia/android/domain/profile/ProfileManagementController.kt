@@ -1084,22 +1084,36 @@ class ProfileManagementController @Inject constructor(
    * Deletes all non-admin profiles installed on the device.
    *
    * Unlike [deleteAllProfiles], this will update the in-memory cache and keep the admin profile
-   * intact.
+   * intact. If the currently logged in user is a non-admin profile, they will be logged out.
    */
   fun deleteAllNonAdminProfiles(): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val installationId = loggingIdentifierController.fetchInstallationId()
       val profileDatabaseBuilder = it.toBuilder()
+      var isCurrentProfileDeleted = false
       it.profilesMap.forEach { (internalProfileId, profile) ->
         if (!profile.isAdmin) {
-          directoryManagementUtil.deleteDir(internalProfileId.toString())
+          // Attempt to delete profile directory. If deletion fails, log a warning and proceed
+          // with deleting the profile entry so that directory issues don't halt batch cleanup.
+          if (!directoryManagementUtil.deleteDir(internalProfileId.toString())) {
+            oppiaLogger.w(
+              "ProfileManagementController",
+              "Failed to delete directory for profile $internalProfileId"
+            )
+          }
           learnerAnalyticsLogger.logDeleteProfile(
             installationId,
             profileId = null,
             profile.learnerId
           )
           profileDatabaseBuilder.removeProfiles(internalProfileId)
+          if (currentProfileId == internalProfileId) {
+            isCurrentProfileDeleted = true
+          }
         }
+      }
+      if (isCurrentProfileDeleted) {
+        currentProfileId = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
       }
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }

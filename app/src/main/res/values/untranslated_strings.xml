@@ -21,7 +21,7 @@
   <string name="developer_options_add_and_delete_profiles_label" translatable="false">Add and Delete Profiles</string>
   <string name="developer_options_add_one_profile" translatable="false">Add 1 profile</string>
   <string name="developer_options_add_three_profiles" translatable="false">Add 3 profiles</string>
-  <string name="developer_options_delete_all_non_admin_profiles" translatable="false">Delete all non admin profiles</string>
+  <string name="developer_options_delete_all_non_admin_profiles" translatable="false">Delete all non-admin profiles</string>
   <string name="developer_options_profile_count" translatable="false">Existing Profile Count</string>
   <string name="modify_lesson_progress_all" translatable="false">All</string>
   <string name="modify_lesson_progress_mark_completed_uppercase" translatable="false">MARK COMPLETED</string>
