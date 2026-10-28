@@ -26,7 +26,13 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.profile.PROFILE_AVATAR_COLORS_LIST
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
+/** Predefined list of profile names to use when automatically generating test profiles. */
 private val PRE_DEFINED_NAMES_LIST = listOf(
   "Ben", "Adhiambo", "Sean", "Saptak", "Vishwajit", "Subhajit", "Tanish", "Ayush", "Jinshu",
   "Eduard", "Kenneth", "Manas", "Mohit", "RD", "Oyindamola", "Sandeep", "Yash"

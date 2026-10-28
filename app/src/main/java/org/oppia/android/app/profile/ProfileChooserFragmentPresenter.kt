@@ -42,6 +42,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
+/** List of predefined avatar background color resource IDs. */
 val PROFILE_AVATAR_COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
   R.color.component_color_avatar_background_2_color,
