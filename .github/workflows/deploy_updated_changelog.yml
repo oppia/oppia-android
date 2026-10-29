@@ -6,13 +6,63 @@
 # the version from the filename) or manually via workflow_dispatch (coordinator provides version
 # and optional flavor).
 #
+# Automatic-push eligibility (two independent guards, both in resolve_push):
+#
+#   Guard 1 — version-bump / release-freeze:
+#     A release-freeze commit changes BOTH version.bzl (bumping the minor version) AND a
+#     config/changelogs/<old-version>.md file (finalising the outgoing release notes). Without a
+#     guard, this workflow fires on the changelog-file path filter and immediately tries to upload
+#     release notes for the just-frozen version — even though the binary for that release may not
+#     yet be live on Play Console. The resolve_push job detects version.bzl in the push and sets
+#     skip=true. Coordinators who need to upload notes after a freeze commit must use
+#     workflow_dispatch, which bypasses both guards entirely.
+#
+#   Guard 2 — newly-added base changelog file vs. flavor-specific override:
+#     generate_changelog.yml opens an automated PR that adds a brand-new base changelog file
+#     config/changelogs/<version>.md. When that PR merges to develop, its push satisfies the path
+#     filter and this workflow fires. At that point the binary for that version has not yet been
+#     deployed — deploy_to_play_console.yml has not run.
+#     resolve_push evaluates all changed changelog files in the push:
+#       - A base changelog (config/changelogs/<version>.md) with status "added" is an unreleased
+#         version from generate_changelog.yml and is skipped (ineligible).
+#       - A flavor-specific changelog (config/changelogs/<version>_<flavor>.md) with status "added"
+#         for an existing version (where the base file was not newly added in this push) represents
+#         a legitimate flavor override for an already-live release and is permitted.
+#       - Any changelog with status "modified" represents an editorial update to an existing
+#         changelog and is permitted.
+#     The job iterates over all changed changelog files and selects the first eligible one,
+#     ensuring that mixed pushes (e.g. an ineligible added base changelog alongside an eligible
+#     modified changelog) process the eligible file rather than failing or uploading prematurely.
+#     If no eligible changelog is found, resolve_push sets skip=true and upload_changelog is
+#     skipped, releasing the pipeline without acquiring the Play Console editing lock.
+#
+#   Known Architecture Limitation & Release-State Boundary:
+#     Git file status (added vs. modified) is a trigger heuristic, NOT an authoritative release-state
+#     check. The repository does NOT expose a reliable, read-only release-state check that can run in
+#     an unprivileged runner before acquiring the Play Console lock. Querying the Play Developer API
+#     requires GCP Workload Identity Federation credentials, the oppia-android-release-env environment,
+#     and must be serialized under the play-console-edit-session concurrency group to prevent conflicts.
+#     Consequently, Git inspection cannot distinguish between a legitimate update to an already-live
+#     version versus an editorial modification made to an unreleased changelog after its initial PR merge.
+#     In such cases, the workflow relies on the job-level concurrency lock and the underlying
+#     UploadChangelogToPlayConsole script auditing live Play Console tracks. To prevent premature
+#     uploads, release coordinators must follow the Release Playbook: changelog drafts should be reviewed
+#     and finalized in the generate_changelog PR prior to merging, and workflow_dispatch should be used
+#     for any manual sync once deployment is verified.
+#
+# Concurrency (job-level, not workflow-level):
+#   The play-console-edit-session concurrency group is declared on the upload_changelog job, not
+#   at the workflow level. This ensures that a run whose upload job is skipped (by either guard
+#   above) never holds the Play Console lock, so deploy_to_play_console.yml can start immediately
+#   without waiting for a no-op run to finish.
+#
 # Flavor-specific changelogs (e.g. config/changelogs/0.17_alpha.md) take precedence over the
 # generic changelog (e.g. config/changelogs/0.17.md) for the matching flavor's track.
 #
 # Prerequisites:
-#   - A live release for the changelog version must already exist on Play Console. The script
-#     fails with an error if the version is not yet live (preventing race conditions against the
-#     initial binary deployment done by deploy_to_play_console.yml).
+#   - A live release for the changelog version must already exist on Play Console. The underlying
+#     script (UploadChangelogToPlayConsole) audits live tracks and skips tracks with no live
+#     release, so the upload is always safe even if the version is not yet deployed.
 #   - The GCP service account must have "Release to production" permission in Play Console.
 #
 # Authentication uses Workload Identity Federation, identical to build_and_sign.yml.
@@ -38,20 +88,26 @@ on:
         # workflow_dispatch and causes the workflow to fail at parse time.
         type: string
 
-concurrency:
-  # Only one changelog upload at a time to avoid concurrent edit conflicts on Play Console.
-  # The group is intentionally not scoped to github.ref so that push and dispatch triggers
-  # across different refs are also serialized — Play Console edits must be globally exclusive.
-  group: play-console-edit-session
-  cancel-in-progress: false
+# No workflow-level concurrency — the lock is declared on the upload_changelog job so that a
+# run whose upload is skipped does not occupy the play-console-edit-session group.
 
 jobs:
 
   # Runs only on push: uses the GitHub API to list files changed across the entire push (not just
-  # the head commit) and extracts the changelog version from the filename (e.g. 0.17_alpha.md →
-  # 0.17). The compare endpoint covers all commits in the push so a changelog changed in an
-  # earlier commit is still detected even if the head commit did not touch it.
-  # No checkout required since the GitHub API provides the changed-file list directly.
+  # the head commit) and applies two eligibility guards before allowing the upload to proceed.
+  #
+  # Guard 1 — version.bzl in push:
+  #   Detects a version-bump / release-freeze commit. Sets skip=true.
+  #
+  # Guard 2 — newly-added base changelog vs. flavor-specific / modified changelog:
+  #   Detects the merge of an auto-generated changelog PR (generate_changelog.yml adds a new base
+  #   config/changelogs/<version>.md). The binary for that version is not yet deployed, so
+  #   uploading would be premature.
+  #   Iterates through changed changelog files to find the first eligible file (modified changelog,
+  #   or new flavor-specific override for an existing version). If all changed files are
+  #   ineligible, sets skip=true.
+  #
+  # Both guards are bypassed by workflow_dispatch (handled by resolve_dispatch instead).
   resolve_push:
     name: Resolve version (push)
     if: github.event_name == 'push'
@@ -60,40 +116,141 @@ jobs:
       contents: read
     outputs:
       version: ${{ steps.detect.outputs.version }}
+      skip: ${{ steps.detect.outputs.skip }}
     steps:
-      - name: Detect changed changelog file
+      - name: Detect changed changelog file and check eligibility
         id: detect
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          CHANGED=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
-            --jq '[.files[].filename | select(test("^config/changelogs/.+\\.md$"))] | first // ""')
-          # Only the first changed changelog file is processed. If multiple changelog files are
-          # updated in the same push the coordinator should use workflow_dispatch to trigger a
-          # separate run for each additional version. Handling all files in a single run would
-          # risk concurrent Play Console edit sessions, which are globally exclusive.
+          # Fetch file list with status for the entire push range in one API call.
+          # The compare endpoint covers all commits in the push so a changelog changed in an
+          # earlier commit is still detected even if the head commit did not touch it.
+          COMPARE=$(gh api "repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
+            --jq '{files: [.files[] | {name: .filename, status: .status}]}')
 
-          if [[ -z "$CHANGED" ]]; then
-            echo "No changelog files changed in this push — skipping upload."
+          # Guard 1: if version.bzl was also touched in this push, this is a version-bump /
+          # release-freeze commit. Changelog changes that accompany a version bump are part of
+          # freezing the outgoing release, not a standalone editorial update. Uploading now would
+          # be premature (binary may not be live yet) and would unnecessarily hold the
+          # play-console-edit-session lock, blocking deploy_to_play_console.yml. Coordinators
+          # must use workflow_dispatch after the release is live.
+          VERSION_BZL_CHANGED=$(echo "$COMPARE" | jq -r '[.files[] | select(.name == "version.bzl")] | length > 0')
+          if [[ "$VERSION_BZL_CHANGED" == "true" ]]; then
+            echo "version.bzl was changed in this push (version-bump/release-freeze commit)."
+            echo "Skipping automatic changelog upload — use workflow_dispatch after the release is live."
             echo "version=" >> "$GITHUB_OUTPUT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          BASENAME=$(basename "$CHANGED" .md)
-          VERSION="${BASENAME%%_*}"
-          FLAVOR_SUFFIX="${BASENAME#${VERSION}}"
-          FLAVOR="${FLAVOR_SUFFIX#_}"
+          # Extract all changed changelog files in config/changelogs/
+          CHANGELOG_FILES=$(echo "$COMPARE" | \
+            jq -c '[.files[] | select(.name | startswith("config/changelogs/") and endswith(".md"))]')
+          CHANGELOG_COUNT=$(echo "$CHANGELOG_FILES" | jq 'length')
 
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid version '$VERSION' extracted from '$CHANGED'."
-            exit 1
+          if [[ "$CHANGELOG_COUNT" -eq 0 ]]; then
+            echo "No changelog files changed in this push — skipping upload."
+            echo "version=" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Detected: version=$VERSION, flavor=${FLAVOR:-<generic>}"
+          # Track newly added base changelogs (e.g. config/changelogs/<version>.md with status "added").
+          # Base changelog files have no underscore in their filename. These represent unreleased versions
+          # introduced by generate_changelog.yml PR merges.
+          NEWLY_ADDED_BASE_VERSIONS=$(echo "$CHANGELOG_FILES" | jq -r '
+            [.[] | select(.status == "added" and (.name | contains("_") | not)) | .name | ltrimstr("config/changelogs/") | rtrimstr(".md")] | unique | .[]
+          ')
+
+          # Iterate through changed changelog files to find the first eligible file.
+          # Eligibility rules:
+          #   1. Status "modified": Existing changelog updated for an already-deployed release -> ELIGIBLE.
+          #   2. Status "added" with flavor suffix (<version>_<flavor>.md): Flavor override created for an
+          #      existing release. If the base <version>.md is NOT also newly added in this push, this is
+          #      a legitimate addition for an already-deployed version -> ELIGIBLE.
+          #   3. Status "added" without flavor suffix (<version>.md): Base changelog newly added by
+          #      generate_changelog.yml PR merge. Binary is not yet deployed via deploy_to_play_console.yml -> INELIGIBLE.
+          #   4. Status "added" with flavor suffix where the base <version>.md is ALSO newly added in this push:
+          #      Part of a newly introduced, unreleased version -> INELIGIBLE.
+          SELECTED_VERSION=""
+          SELECTED_FILE=""
+          SELECTED_FLAVOR=""
+          SKIPPED_INELIGIBLE=()
+          ADDITIONAL_ELIGIBLE=()
+
+          while IFS= read -r ENTRY; do
+            [[ -z "$ENTRY" ]] && continue
+
+            FILE_NAME=$(echo "$ENTRY" | jq -r '.name')
+            FILE_STATUS=$(echo "$ENTRY" | jq -r '.status')
+
+            BASENAME=$(basename "$FILE_NAME" .md)
+            VERSION="${BASENAME%%_*}"
+            FLAVOR_SUFFIX="${BASENAME#${VERSION}}"
+            FLAVOR="${FLAVOR_SUFFIX#_}"
+
+            if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Invalid version '$VERSION' extracted from '$FILE_NAME'."
+              exit 1
+            fi
+
+            IS_ELIGIBLE="false"
+            if [[ "$FILE_STATUS" == "modified" ]]; then
+              IS_ELIGIBLE="true"
+            elif [[ "$FILE_STATUS" == "added" ]]; then
+              if [[ -z "$FLAVOR" ]]; then
+                IS_ELIGIBLE="false"
+              else
+                BASE_IS_NEW=$(echo "$NEWLY_ADDED_BASE_VERSIONS" | grep -Fx "$VERSION" || true)
+                if [[ -z "$BASE_IS_NEW" ]]; then
+                  IS_ELIGIBLE="true"
+                else
+                  IS_ELIGIBLE="false"
+                fi
+              fi
+            fi
+
+            if [[ "$IS_ELIGIBLE" == "true" ]]; then
+              if [[ -z "$SELECTED_VERSION" ]]; then
+                SELECTED_VERSION="$VERSION"
+                SELECTED_FILE="$FILE_NAME"
+                SELECTED_FLAVOR="$FLAVOR"
+              else
+                ADDITIONAL_ELIGIBLE+=("$FILE_NAME ($VERSION)")
+              fi
+            else
+              SKIPPED_INELIGIBLE+=("$FILE_NAME ($VERSION, status=$FILE_STATUS)")
+            fi
+          done < <(echo "$CHANGELOG_FILES" | jq -c '.[]')
+
+          if [[ ${#SKIPPED_INELIGIBLE[@]} -gt 0 ]]; then
+            echo "Skipped ineligible changelog file(s) (unreleased version / initial PR merge):"
+            for INELIGIBLE in "${SKIPPED_INELIGIBLE[@]}"; do
+              echo "  - $INELIGIBLE"
+            done
+          fi
+
+          if [[ -z "$SELECTED_VERSION" ]]; then
+            echo "No eligible changelog files found for automatic upload in this push."
+            echo "Skipping upload — deploy binary via deploy_to_play_console.yml first, then use workflow_dispatch."
+            echo "version=" >> "$GITHUB_OUTPUT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ ${#ADDITIONAL_ELIGIBLE[@]} -gt 0 ]]; then
+            echo "::notice::Multiple eligible changelog files detected in this push. Selected $SELECTED_FILE for automatic upload. Additional files must be uploaded via workflow_dispatch: ${ADDITIONAL_ELIGIBLE[*]}"
+          fi
+
+          echo "version=$SELECTED_VERSION" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "Detected eligible changelog: version=$SELECTED_VERSION, flavor=${SELECTED_FLAVOR:-<generic>}, file=$SELECTED_FILE"
 
   # Runs only on workflow_dispatch: reads and validates the version provided by the release
   # coordinator. Inputs are passed via env vars to prevent shell injection before the regex guard.
+  # workflow_dispatch always bypasses the push guards in resolve_push — the coordinator is
+  # responsible for confirming the release is live before triggering a manual upload.
   resolve_dispatch:
     name: Resolve version (dispatch)
     if: github.event_name == 'workflow_dispatch'
@@ -119,16 +276,29 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Resolved: version=$VERSION, flavor=${FLAVOR:-<generic>}"
 
-  # Uploads the changelog to Play Console. Runs only when a version was successfully resolved by
-  # either of the preceding jobs, and shows as skipped in the GitHub Actions UI otherwise.
+  # Uploads the changelog to Play Console. Runs only when:
+  #   - a version was successfully resolved by either of the preceding jobs, AND
+  #   - the push was not skipped by the version-bump or newly-added-file guards.
+  # Shows as skipped in the GitHub Actions UI otherwise.
+  #
+  # The play-console-edit-session concurrency group is declared here at the job level (not at
+  # the workflow level) so that a run whose upload is skipped by either guard does not hold the
+  # lock and block deploy_to_play_console.yml or update_rollout.yml from starting.
   upload_changelog:
     name: Upload changelog to Play Console
     needs: [resolve_push, resolve_dispatch]
     if: |
       always() && !cancelled() &&
+      needs.resolve_push.outputs.skip != 'true' &&
       (needs.resolve_push.outputs.version != '' || needs.resolve_dispatch.outputs.version != '')
     runs-on: ubuntu-24.04
     environment: oppia-android-release-env
+    # Job-level concurrency: only one Play Console edit session at a time across all triggers
+    # (push, dispatch, deploy_to_play_console.yml, update_rollout.yml). cancel-in-progress is
+    # false so an in-flight release edit is never interrupted mid-commit.
+    concurrency:
+      group: play-console-edit-session
+      cancel-in-progress: false
     permissions:
       id-token: write
       contents: read
@@ -184,7 +354,8 @@ jobs:
       #   1. Audits alpha, beta, and production tracks for live releases.
       #   2. For each live track, resolves the changelog file (track-specific first, then shared).
       #   3. Uploads updated notes to any track where a changelog file is found.
-      # The script skips tracks with no matching changelog file silently.
+      # The script skips tracks with no live release silently, so it is safe to run even if
+      # the release is not yet deployed (Belt-and-suspenders safety net behind the push guards).
       - name: Upload updated changelog to Play Console
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
