@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @FragmentScope
 class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
+  private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val questionProgressController: QuestionAssessmentProgressController
 ) {
@@ -32,7 +34,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentQuestionState() {
     ephemeralStateLiveData.observe(
-      activity,
+      fragment,
       Observer<AsyncResult<EphemeralQuestion>> { result ->
         processEphemeralStateResult(result)
       }

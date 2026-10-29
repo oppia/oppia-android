@@ -2,7 +2,7 @@
 This package contains configuration libraries for defining & tweaking app-wide behavior.
 """
 
-load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
+load("//model:text_proto_assets.bzl", "gen_binary_proto_from_text", "generate_proto_binary_assets")
 
 # Language support levels:
 # - all: Indicates all languages/regions technically supported by the app, including ones that may
@@ -70,6 +70,16 @@ _FEATURE_FLAG_CONFIG_ASSETS = generate_proto_binary_assets(
     proto_type_name = "SupportedFeatureFlags",
 )
 
+genrule(
+    name = "alpha_practice_feature_flags_overrides",
+    srcs = [
+        "platform/featureoverrides/alpha/feature_flags_overrides.textproto",
+        "platform/featureoverrides/alpha/practice_questions.textproto",
+    ],
+    outs = ["platform/featureoverrides/alpha/practice_feature_flags_overrides.textproto"],
+    cmd = "cat $(SRCS) > $@",
+)
+
 _FEATURE_FLAG_OVERRIDE_CONFIG_ASSETS = {
     override_type: generate_proto_binary_assets(
         name = "%s_feature_flag_override_config_assets" % override_type,
@@ -82,7 +92,20 @@ _FEATURE_FLAG_OVERRIDE_CONFIG_ASSETS = {
         proto_type_name = "SupportedFeatureFlags",
     )
     for override_type in _FEATURE_FLAG_OVERRIDE_TYPES
+    if override_type != "alpha"
 }
+
+_FEATURE_FLAG_OVERRIDE_CONFIG_ASSETS["alpha"] = [gen_binary_proto_from_text(
+    name = "alpha_feature_flag_override_config_assets",
+    input_file = select({
+        "//config:download_practice_questions_in_alpha": ":alpha_practice_feature_flags_overrides",
+        "//conditions:default": "platform/featureoverrides/alpha/feature_flags_overrides.textproto",
+    }),
+    output_file = "platform/featureoverrides/alpha/feature_flags_overrides.pb",
+    proto_deps = ["//model/src/main/proto:platform_parameter_proto"],
+    proto_type_name = "model.SupportedFeatureFlags",
+    visibility = [],
+)]
 
 filegroup(
     name = "platform_parameter_definitions",

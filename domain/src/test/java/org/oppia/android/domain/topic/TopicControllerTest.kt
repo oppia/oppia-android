@@ -12,7 +12,6 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -630,7 +629,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(
@@ -649,7 +647,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_0))
@@ -666,7 +663,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_1))
@@ -682,7 +678,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_2))
@@ -699,7 +694,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(listOf(RATIOS_SKILL_ID_0))
@@ -715,7 +709,6 @@ class TopicControllerTest {
   }
 
   @Test
-  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(

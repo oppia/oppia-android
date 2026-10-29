@@ -1,0 +1,4 @@
+feature_flag_definition {
+  id: TOPIC_PRACTICE_TAB
+  default_is_enabled: true
+}

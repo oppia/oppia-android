@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +28,7 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -41,17 +43,21 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
+import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -64,6 +70,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -74,6 +81,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.profile.toProfileIdPreservingZero
+import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -100,6 +108,13 @@ class QuestionAssessmentProgressControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var answerClassificationController: AnswerClassificationController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var hintHandlerFactory: HintHandler.Factory
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var topicController: TopicController
 
   private lateinit var profileId1: LegacyProfileId
 
@@ -208,6 +223,29 @@ class QuestionAssessmentProgressControllerTest {
       questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
 
     monitorFactory.waitForNextSuccessfulResult(initiationDataProvider)
+  }
+
+  @Test
+  fun testStopTrainingSession_commandCompletesImmediately_retainsSuccess() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // Run the controller command before scheduling returns to reproduce a fast background thread.
+    // Data-provider notifications still use the repository's test dispatchers and monitor.
+    val controller = QuestionAssessmentProgressController(
+      dataProviders, answerClassificationController, exceptionsController, hintHandlerFactory,
+      translationController, oppiaLogger, oppiaClock, Dispatchers.Unconfined
+    )
+    val trainingController = QuestionTrainingController(
+      controller, topicController, exceptionsController, dataProviders,
+      questionCountPerSession = 3, questionTrainingSeed = 0
+    )
+    monitorFactory.waitForNextSuccessfulResult(
+      trainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
+    )
+    monitorFactory.waitForNextSuccessfulResult(controller.getCurrentQuestion())
+
+    val stopResult = trainingController.stopQuestionTrainingSession()
+
+    monitorFactory.waitForNextSuccessfulResult(stopResult)
   }
 
   @Test

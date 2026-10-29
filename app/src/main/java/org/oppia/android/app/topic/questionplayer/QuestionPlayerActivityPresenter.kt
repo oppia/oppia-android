@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
@@ -13,6 +12,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.QuestionPlayerActivityParams
+import org.oppia.android.app.model.QuestionPlayerFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -27,6 +27,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableEdgeToEdge
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -51,9 +52,23 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var readingTextSize: ReadingTextSize
+  private var isStartingTrainingSession = false
 
   fun handleOnCreate(profileId: LegacyProfileId) {
     this.profileId = profileId
+    if (!questionTrainingController.hasStartedTrainingSession()) {
+      // Fragments survive process restoration, but the training session is only kept in memory.
+      // Remove the restored views before they subscribe to the uninitialized controller.
+      val restoredFragments = activity.supportFragmentManager.fragments.filter {
+        it is QuestionPlayerFragment || it is HintsAndSolutionQuestionManagerFragment ||
+          it is HintsAndSolutionDialogFragment
+      }
+      if (restoredFragments.isNotEmpty()) {
+        activity.supportFragmentManager.beginTransaction().apply {
+          restoredFragments.forEach { remove(it) }
+        }.commitNow()
+      }
+    }
 
     if (enableEdgeToEdge.value) {
       EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
@@ -87,30 +102,52 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
   }
 
-  private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+  private fun loadQuestionPlayerFragment() {
+    if (isStartingTrainingSession) return
+    isStartingTrainingSession = true
     startTrainingSessionWithCallback {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.question_player_fragment_placeholder,
-        QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-        TAG_QUESTION_PLAYER_FRAGMENT
-      ).commitNow()
+      isStartingTrainingSession = false
+      if (getQuestionPlayerFragment() == null) {
+        activity.supportFragmentManager.beginTransaction().add(
+          R.id.question_player_fragment_placeholder,
+          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
+          TAG_QUESTION_PLAYER_FRAGMENT
+        ).commitNow()
+      }
     }
   }
 
   fun loadFragments(readingTextSize: ReadingTextSize) {
     this.readingTextSize = readingTextSize
-    if (getQuestionPlayerFragment() == null) {
-      loadQuestionPlayerFragment(readingTextSize)
-    } else {
+    val playerFragment = getQuestionPlayerFragment()
+    if (playerFragment == null) {
+      loadQuestionPlayerFragment()
+    } else if (
+      playerFragment.requireArguments().getProto(
+        QuestionPlayerFragment.ARGUMENTS_KEY,
+        QuestionPlayerFragmentArguments.getDefaultInstance()
+      ).readingTextSize != readingTextSize
+    ) {
+      // Recreate the views for a new text size while retaining the session and pending answer.
+      val savedState = activity.supportFragmentManager.saveFragmentInstanceState(playerFragment)
+      val replacement = QuestionPlayerFragment.newInstance(profileId, readingTextSize).apply {
+        setInitialSavedState(savedState)
+      }
       activity.supportFragmentManager.beginTransaction()
-        .remove(getQuestionPlayerFragment() as Fragment).commitNow()
-      loadQuestionPlayerFragment(readingTextSize)
+        .remove(playerFragment)
+        .add(R.id.question_player_fragment_placeholder, replacement, TAG_QUESTION_PLAYER_FRAGMENT)
+        .commitNow()
     }
 
+    loadHintsAndSolutionQuestionManagerFragment()
+  }
+
+  private fun loadHintsAndSolutionQuestionManagerFragment() {
     if (getHintsAndSolutionExplorationManagerFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.question_player_fragment_placeholder,
-        HintsAndSolutionQuestionManagerFragment()
+        HintsAndSolutionQuestionManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER
       ).commitNow()
     }
   }
@@ -159,9 +196,10 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   fun restartSession() {
     stopTrainingSessionWithCallback {
-      getQuestionPlayerFragment()?.let { fragment ->
-        activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-      }
+      activity.supportFragmentManager.beginTransaction().apply {
+        getQuestionPlayerFragment()?.let { remove(it) }
+        getHintsAndSolutionExplorationManagerFragment()?.let { remove(it) }
+      }.commitNow()
       startTrainingSessionWithCallback {
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
@@ -169,6 +207,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
           QuestionPlayerFragment.newInstance(profileId, readingTextSize),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
+        loadHintsAndSolutionQuestionManagerFragment()
       }
     }
   }
