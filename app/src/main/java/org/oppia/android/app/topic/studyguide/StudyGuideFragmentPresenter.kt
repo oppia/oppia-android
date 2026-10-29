@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.studyguide
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,11 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.StudyGuideFragmentArguments
+import org.oppia.android.app.model.StudyGuideFragmentStateBundle
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.studyguide.StudyGuideFragment.Companion.STUDY_GUIDE_FRAGMENT_ARGUMENTS_KEY
+import org.oppia.android.app.topic.studyguide.StudyGuideFragment.Companion.STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -24,6 +27,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -52,6 +56,7 @@ class StudyGuideFragmentPresenter @Inject constructor(
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: LegacyProfileId
   private lateinit var topicId: String
+  private lateinit var viewModel: StudyGuideViewModel
 
   /** Handles the [Fragment.onAttach] portion of [StudyGuideFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -65,7 +70,8 @@ class StudyGuideFragmentPresenter @Inject constructor(
     topicId: String,
     subtopicIndex: Int,
     profileId: LegacyProfileId,
-    subtopicListSize: Int
+    subtopicListSize: Int,
+    expandedSectionIndices: List<Int>? = null
   ): View? {
     this.profileId = profileId
     this.topicId = topicId
@@ -76,11 +82,12 @@ class StudyGuideFragmentPresenter @Inject constructor(
         container,
         /* attachToRoot= */ false
       )
-    val viewModel = studyGuideViewModelFactory.create(
+    viewModel = studyGuideViewModelFactory.create(
       topicId,
       subtopicIndex,
       profileId,
-      subtopicListSize
+      subtopicListSize,
+      expandedSectionIndices
     )
 
     logStudyGuideEvent(topicId, subtopicIndex)
@@ -111,6 +118,14 @@ class StudyGuideFragmentPresenter @Inject constructor(
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
   fun dismissConceptCard() {
     ConceptCardFragment.dismissAll(fragment.childFragmentManager)
+  }
+
+  /** Saves the current expanded state of the study guide sections into the given [outState]. */
+  fun handleSaveInstanceState(outState: Bundle) {
+    val stateBundle = StudyGuideFragmentStateBundle.newBuilder().apply {
+      addAllExpandedSectionIndices(viewModel.getExpandedSectionIndices())
+    }.build()
+    outState.putProto(STUDY_GUIDE_FRAGMENT_SAVED_STATE_KEY, stateBundle)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StudyGuideItemViewModel> {

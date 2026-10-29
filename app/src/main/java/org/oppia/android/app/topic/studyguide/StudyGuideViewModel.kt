@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.studyguide
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.EphemeralStudyGuide
@@ -39,10 +40,17 @@ class StudyGuideViewModel private constructor(
   val subtopicIndex: Int,
   val profileId: LegacyProfileId,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  val subtopicListSize: Int
+  val subtopicListSize: Int,
+  private val expandedSectionIndices: List<Int>?
 ) : ObservableViewModel() {
 
   private val routeToStudyGuideListener = activity as RouteToStudyGuideListener
+  private val sectionExpansionStates = mutableMapOf<Int, ObservableBoolean>()
+
+  /** Returns the list of indices of sections that are currently expanded. */
+  fun getExpandedSectionIndices(): List<Int> {
+    return sectionExpansionStates.entries.filter { it.value.get() }.map { it.key }
+  }
 
   /** Called when the previous navigation card is clicked. */
   fun onPreviousCardClicked() {
@@ -78,13 +86,24 @@ class StudyGuideViewModel private constructor(
     ephemeralStudyGuide: EphemeralStudyGuide
   ): List<StudyGuideItemViewModel> {
     val writtenTranslationContext = ephemeralStudyGuide.writtenTranslationContext
-    return ephemeralStudyGuide.studyGuide.sectionsList.flatMap { section ->
+    return ephemeralStudyGuide.studyGuide.sectionsList.flatMapIndexed { index, section ->
+      val isExpanded = sectionExpansionStates.getOrPut(index) {
+        ObservableBoolean(
+          if (expandedSectionIndices != null) {
+            expandedSectionIndices.contains(index)
+          } else {
+            index == 0
+          }
+        )
+      }
       listOf(
         StudyGuideSectionHeadingViewModel(
-          translationController.extractString(section.heading, writtenTranslationContext)
+          translationController.extractString(section.heading, writtenTranslationContext),
+          isExpanded
         ),
         StudyGuideSectionContentViewModel(
-          translationController.extractString(section.content, writtenTranslationContext)
+          translationController.extractString(section.content, writtenTranslationContext),
+          isExpanded
         )
       )
     }
@@ -215,7 +234,8 @@ class StudyGuideViewModel private constructor(
       topicId: String,
       subtopicIndex: Int,
       profileId: LegacyProfileId,
-      subtopicListSize: Int
+      subtopicListSize: Int,
+      expandedSectionIndices: List<Int>? = null
     ): StudyGuideViewModel {
       return StudyGuideViewModel(
         activity,
@@ -227,7 +247,8 @@ class StudyGuideViewModel private constructor(
         subtopicIndex,
         profileId,
         appLanguageResourceHandler,
-        subtopicListSize
+        subtopicListSize,
+        expandedSectionIndices
       )
     }
   }
