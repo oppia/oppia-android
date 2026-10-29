@@ -200,9 +200,8 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
               fragment.startActivity(intent)
               return
             }
-            val existingProfileNames = existingProfiles.map { it.name.lowercase() }.toSet()
-            val newNames = PRE_DEFINED_NAMES_LIST.filter {
-              it.lowercase() !in existingProfileNames
+            val newNames = PRE_DEFINED_NAMES_LIST.filter { candidate ->
+              existingProfiles.none { it.name.equals(candidate, ignoreCase = true) }
             }.shuffled().take(profilesToAddCount)
             addProfilesSequentially(newNames) {
               val intent =

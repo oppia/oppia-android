@@ -1400,7 +1400,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileManagementController_deleteAllNonAdminProfiles_removesNonAdminDirsAndKeepsAdminDir() {
+  fun testDeleteAllNonAdminProfiles_removesNonAdminDirsAndKeepsAdminDir() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Admin")
     addTestProfiles()
@@ -1420,7 +1420,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileManagementController_deleteAllNonAdminProfiles_noNonAdminProfiles_onlyAdminPreserved() {
+  fun testDeleteAllNonAdminProfiles_noNonAdminProfiles_onlyAdminPreserved() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Admin")
 
@@ -1436,7 +1436,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileManagementController_deleteAllNonAdminProfiles_loggedInAsNonAdmin_logsOutUser() {
+  fun testDeleteAllNonAdminProfiles_loggedInAsNonAdmin_logsOutUser() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Admin")
     addTestProfiles()
