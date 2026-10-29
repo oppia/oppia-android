@@ -236,7 +236,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 27
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListActivityPresenter.kt"
@@ -352,7 +352,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 52
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivityPresenter.kt"
@@ -494,7 +494,7 @@ test_file_exemption {
 
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragment.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 39
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
@@ -518,7 +518,7 @@ test_file_exemption {
  }
 test_file_exemption {
    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersFragment.kt"
-   source_file_is_incompatible_with_code_coverage: true
+   override_min_coverage_percent_required: 38
  }
 test_file_exemption {
    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersFragmentPresenter.kt"
@@ -722,7 +722,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/HelpActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 59
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/HelpActivityPresenter.kt"
@@ -851,7 +851,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyListActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 58
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyListActivityPresenter.kt"
@@ -963,7 +963,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 64
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/classroomlist/AllClassroomsViewModel.kt"
@@ -995,11 +995,11 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 29
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 57
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryClickListener.kt"
@@ -1039,7 +1039,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 28
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/DownloadsTabFragment.kt"
@@ -1200,7 +1200,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 66
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivityPresenter.kt"
@@ -1272,7 +1272,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 68
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivityPresenter.kt"
@@ -1336,7 +1336,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/OptionsActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 42
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/OptionsActivityPresenter.kt"
@@ -1492,7 +1492,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt"
@@ -1849,7 +1849,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 32
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressActivityPresenter.kt"
@@ -1921,7 +1921,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 61
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileDeleteSuccessDialogFragment.kt"
@@ -1950,7 +1950,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileListActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 55
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileListActivityPresenter.kt"
@@ -2022,7 +2022,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 64
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightManager.kt"
@@ -2046,7 +2046,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 69
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryActivityPresenter.kt"
@@ -2098,7 +2098,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragment.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 68
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragmentPresenter.kt"
@@ -2426,7 +2426,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/TopicActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 38
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/TopicActivityPresenter.kt"
@@ -2546,7 +2546,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 62
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivityPresenter.kt"
@@ -3092,7 +3092,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classroom/ClassroomController.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 51
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgress.kt"
@@ -3104,7 +3104,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressModule.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetriever.kt"
@@ -3128,7 +3128,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/feedbackreporting/ReportSchemaVersion.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsFromWrongAnswerMillis.kt"
@@ -3156,11 +3156,11 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionDebugModule.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionProdModule.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/locale/LocaleApplicationInjector.kt"
@@ -3212,7 +3212,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/workmanager/debug/DebugWorkerDebugModule.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
@@ -3248,11 +3248,11 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions/UncaughtExceptionLoggerStartupListener.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 68
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulerModule.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 
 test_file_exemption {
@@ -3370,11 +3370,11 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 62
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/InteractionObjectExtensions.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 30
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonAssetRetriever.kt"
@@ -3631,7 +3631,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing/ExplorationCheckpointTestHelper.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 66
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
@@ -3764,7 +3764,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/extensions/StringExtensions.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 50
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/gcsresource/GcsResourceAnnotations.kt"
@@ -4027,7 +4027,7 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterSingleton.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterValue.kt"
