@@ -27,8 +27,6 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    updateTextSize(readingTextSize)
-
     binding.viewModel = readingTextSizeSelectionViewModel
     readingTextSizeSelectionViewModel.selectedTextSize = readingTextSize
     binding.textSizeRecyclerView.apply {

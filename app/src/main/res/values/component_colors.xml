@@ -333,8 +333,7 @@
   <color name="component_color_onboarding_profile_type_label_text_color">@color/color_palette_onboarding_profile_type_label_text_color</color>
   <color name="component_color_onboarding_learner_profile_type_background_color">@color/color_palette_learner_profile_type_background_color</color>
   <color name="component_color_onboarding_supervisor_profile_type_background_color">@color/color_palette_supervisor_profile_type_background_color</color>
-  <color name="component_color_onboarding_profile_edit_icon_color">@color/color_palette_onboarding_edit_icon_color</color>
-  <color name="component_color_onboarding_create_profile_background_color">@color/color_palette_onboarding_create_profile_background_color</color>
+  <color name="component_color_onboarding_profile_edit_icon_color">@color/color_palette_onboarding_edit_icon_color</color><color name="component_color_onboarding_create_profile_background_color">@color/color_palette_onboarding_create_profile_background_color</color>
   <color name="component_color_onboarding_create_profile_checkbox_checked_color">@color/color_palette_onboarding_create_profile_checkbox_checked_color</color>
   <color name="component_color_onboarding_create_profile_checkbox_unchecked_color">@color/color_palette_onboarding_create_profile_checkbox_unchecked_color</color>
   <color name="component_color_onboarding_create_profile_focused_stroke_color">@color/color_palette_onboarding_create_profile_focused_stroke_color</color>
