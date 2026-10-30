@@ -65,6 +65,23 @@ private const val USAGE_STRING =
  *     .app.application.alpha.AlphaOppiaApplication false false
  */
 fun main(args: Array<String>) {
+  if (args.firstOrNull() == "--print-aab-name") {
+    check(args.size == 5) {
+      "Usage: --print-aab-name <repo_root> <build_flavor> <major_version> <minor_version>"
+    }
+    ScriptBackgroundCoroutineDispatcher().use { dispatcher ->
+      println(
+        computeExpectedAabName(
+          repoRoot = File(args[1]),
+          buildFlavor = BuildFlavor.parseFlavor(args[2]),
+          majorVersion = args[3].toIntOrNull() ?: error(USAGE_STRING),
+          minorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
+          dispatcher = dispatcher
+        )
+      )
+    }
+    return
+  }
   check(args.size >= 9) { USAGE_STRING }
 
   val repoRoot = File(args[0]).also { if (!it.exists()) error("File doesn't exist: ${args[0]}") }
@@ -183,16 +200,11 @@ private class TransformAndroidManifest(
   }
 
   private fun computeReleaseCandidateNumber(): Int {
-    // Each commit on the release branch is a potential release candidate.
-    return if (currentBranch.startsWith("release-")) {
-      val commitCountToHead = gitClient.countCommits("HEAD")
-      val commitCountToBranch = gitClient.countCommits(gitClient.branchMergeBase)
-      (commitCountToHead - commitCountToBranch + 1).also {
-        check(it <= MAX_RCS_PER_RELEASE) {
-          "Too many release candidates: $it. Max is $MAX_RCS_PER_RELEASE."
-        }
-      }
-    } else 1 // Non-release branches are always considered the first RC of a release.
+    return computeReleaseCandidateNumber(
+      gitClient = gitClient,
+      currentBranch = currentBranch,
+      maxReleaseCandidates = MAX_RCS_PER_RELEASE
+    )
   }
 
   private fun computeVersionCode(): Int {
@@ -244,12 +256,55 @@ private class TransformAndroidManifest(
     private const val BASE_VERSION_CODE = 300
     // The commit count at the time the new version code strategy was introduced.
     private const val NEW_VERSION_STRATEGY_STARTING_COMMIT_NUMBER = 2289
-    private const val VERSION_CODES_PER_RELEASE = 1000
-    private const val MAX_FLAVORS_PER_RC = 25
-    private const val MAX_RCS_PER_RELEASE = VERSION_CODES_PER_RELEASE / MAX_FLAVORS_PER_RC
 
     private fun NodeList.asSequence() = (0 until length).asSequence().map { item(it) }
   }
+}
+private const val VERSION_CODES_PER_RELEASE = 1000
+private const val MAX_FLAVORS_PER_RC = 25
+private const val MAX_RCS_PER_RELEASE =
+  VERSION_CODES_PER_RELEASE / MAX_FLAVORS_PER_RC
+private fun computeReleaseCandidateNumber(
+  gitClient: GitClient,
+  currentBranch: String,
+  maxReleaseCandidates: Int
+): Int {
+  return if (currentBranch.startsWith("release-")) {
+    val commitCountToHead = gitClient.countCommits("HEAD")
+    val commitCountToBranch = gitClient.countCommits(gitClient.branchMergeBase)
+    (commitCountToHead - commitCountToBranch + 1).also {
+      check(it <= maxReleaseCandidates) {
+        "Too many release candidates: $it. Max is $maxReleaseCandidates."
+      }
+    }
+  } else {
+    1
+  }
+}
+private fun computeExpectedAabName(
+  repoRoot: File,
+  buildFlavor: BuildFlavor,
+  majorVersion: Int,
+  minorVersion: Int,
+  dispatcher: ScriptBackgroundCoroutineDispatcher
+): String {
+  val gitClient = GitClient(
+    repoRoot,
+    "origin/develop",
+    CommandExecutorImpl(dispatcher)
+  )
+  val currentBranch = gitClient.currentBranch
+  val releaseCandidateNumber = computeReleaseCandidateNumber(
+    gitClient = gitClient,
+    currentBranch = currentBranch,
+    maxReleaseCandidates = MAX_RCS_PER_RELEASE
+  )
+  val twoCharMinor = "%02d".format(minorVersion)
+  val twoCharRc = "%02d".format(releaseCandidateNumber)
+  val tenCharHash = gitClient.currentCommit.take(10)
+
+  return "oppia-android-$majorVersion.$twoCharMinor-rc$twoCharRc-" +
+    "${buildFlavor.readableName}-$tenCharHash.aab"
 }
 
 /** Represents the active build flavors and their indices for versioning. */

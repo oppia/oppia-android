@@ -109,17 +109,71 @@ jobs:
           ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
           echo "::add-mask::$ACCESS_TOKEN"
           echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+      - name: Pre-check existing release binary in GCS
+        id: precheck_release_binary
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MAJOR_VERSION=$(sed -n 's/^MAJOR_VERSION = //p' version.bzl)
+          MINOR_VERSION=$(sed -n 's/^MINOR_VERSION = //p' version.bzl)
+
+          BAZEL_OUTPUT=$(bazel run --compilation_mode=opt //scripts:transform_android_manifest -- \
+            --print-aab-name "$(pwd)" "$FLAVOR" \
+            "$MAJOR_VERSION" "$MINOR_VERSION" 2>&1) || {
+              echo "$BAZEL_OUTPUT"
+              echo "::error::Failed to calculate the expected AAB filename."
+              exit 1
+            }
+          AAB_NAME=$(printf '%s\n' "$BAZEL_OUTPUT" |
+            grep -E '^oppia-android-[0-9]+\.[0-9]+-rc[0-9]+-(alpha|beta|ga)-[[:xdigit:]]{10}\.aab$' |
+            tail -n 1) || true
+
+          if [[ -z "$AAB_NAME" ]]; then
+            echo "::error::Could not extract the expected AAB filename."
+            exit 1
+          fi
+
+          VERSION=$(printf '%s' "$AAB_NAME" |
+            sed -E 's/^oppia-android-([0-9]+\.[0-9]+)-rc[0-9]+-.*/\1/')
+          RC_NUM=$(printf '%s' "$AAB_NAME" |
+            sed -E 's/^oppia-android-[0-9]+\.[0-9]+-rc([0-9]+)-.*/\1')
+
+          GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
+
+          echo "Checking GCS path: $GCS_PATH"
+
+          GCS_STATUS=0
+          GCS_OUTPUT=$(gsutil stat "$GCS_PATH" 2>&1) || GCS_STATUS=$?
+
+          if [[ "$GCS_STATUS" -eq 0 ]]; then
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            echo "AAB already exists at $GCS_PATH. Skipping build."
+          elif grep -q "No URLs matched" <<< "$GCS_OUTPUT"; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "No existing binary found. Proceeding with the build."
+          else
+            echo "$GCS_OUTPUT"
+            echo "::error::Unexpected GCS error (exit $GCS_STATUS) while checking $GCS_PATH."
+            exit "$GCS_STATUS"
+          fi
+
 
       - name: Write prod server key
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: echo "${{ secrets.PROD_SERVER_KEY }}" > /tmp/prod_server.key
 
       # Firebase CLI is needed for downloading Firebase configuration during app builds.
       - name: Install Firebase CLI
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: npm install -g firebase-tools
 
       # Pre-build all scripts in opt mode so they are cached before the app binary build.
       # Including sign_release_binary here avoids a rebuild when bazel run is called later.
       - name: "Phase 1: Build scripts"
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           bazel build --compilation_mode=opt \
             //scripts:filter_per_language_resources \
@@ -129,12 +183,14 @@ jobs:
             //scripts:sign_release_binary
 
       - name: Shutdown Bazel after Phase 1
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: bazel shutdown
 
       # Build the deploy JAR — this target is part of the android_binary() build pathway
       # and covers almost everything prior to the Proguard pass. The same flags as Phase 3
       # are required since this is technically part of the binary build (not just source).
       - name: "Phase 2: Build deploy JAR (pre-Proguard)"
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
@@ -150,10 +206,12 @@ jobs:
             --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
       - name: Shutdown Bazel after Phase 2
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: bazel shutdown
 
       # All source is cached from Phase 2. Proguard and AAB packaging run in this step.
       - name: "Phase 3: Build full AAB"
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           ASSETS_TYPE=$([ "$FLAVOR" = "alpha" ] && echo "alpha" || echo "prod")
@@ -169,12 +227,14 @@ jobs:
             --action_env=GOOGLE_APPLICATION_CREDENTIALS
 
       - name: Shutdown Bazel after Phase 3
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: bazel shutdown
 
       # The Bazel rule renames (but does not sign) the AAB to:
       # oppia-android-{MAJOR}.{MINOR}-rc{RC}-{flavor}-{hash10}.aab
       # This step locates the unsigned output and extracts version/RC for the GCS archive path.
       - name: Locate unsigned AAB
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           BAZEL_BIN_REAL=$(readlink -f bazel-bin)
@@ -199,6 +259,7 @@ jobs:
       # certificate, which is required by Play Console.
       # The AAB is first copied to the workspace because Bazel's output directory is read-only.
       - name: Strip pre-existing META-INF signatures from AAB
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           WRITABLE_AAB_PATH="${{ github.workspace }}/unsigned-${AAB_NAME}"
           cp "$UNSIGNED_AAB_PATH" "$WRITABLE_AAB_PATH"
@@ -212,6 +273,7 @@ jobs:
       # --action_env ensures both credential env vars are passed into the Bazel sandbox so the
       # signing tool can authenticate to Cloud KMS (Bazel strips env vars by default).
       - name: Sign AAB with Cloud KMS
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         env:
           GCP_ACCESS_TOKEN: ${{ env.GCP_ACCESS_TOKEN }}
         run: |
@@ -226,14 +288,13 @@ jobs:
           echo "Signed AAB written to: $SIGNED_AAB_PATH"
 
       - name: Upload signed AAB to GCS archive
+        if: steps.precheck_release_binary.outputs.should_build == 'true'
         run: |
           FLAVOR="${{ github.event.inputs.flavor }}"
           GCS_PATH="gs://oppia-android-${FLAVOR}-releases/${VERSION}/RC${RC_NUM}/${AAB_NAME}"
 
-          # TODO(#6292): Check for GCS path existence here (before the build) to save CI
-          #   time when re-running an already-built ref. Requires externalizing the version
-          #   components of TransformAndroidManifest so the AAB name can be derived up-front.
-          # Fail if binary already exists — enforces the build-once guarantee.
+          # Keep this check as a final safeguard against concurrent workflows uploading
+          # the same binary after the pre-build existence check.
           if gsutil ls "$GCS_PATH" 2>/dev/null; then
             echo "::error::Binary already exists at $GCS_PATH."
             echo "::error::Re-running build_and_sign for the same ref is not allowed."
