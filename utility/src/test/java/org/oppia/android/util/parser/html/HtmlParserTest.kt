@@ -524,6 +524,54 @@ class HtmlParserTest {
     }
   }
 
+  @Test
+  fun testHtmlParser_withEmailAddress_linksWholeAddressWithMailto() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val html = "<p>Report a problem by contacting us at admin@oppia.org.</p>"
+
+    runWithLaunchedActivity {
+      val htmlResult = onActivityWithResult {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        htmlParser.parseOppiaHtml(html, textView, supportsLinks = true)
+      }
+      val linkSpans = htmlResult.getSpans(0, htmlResult.length, URLSpan::class.java)
+      assertThat(linkSpans).hasLength(1)
+      val linkSpan = linkSpans.single()
+      val linkedText =
+        htmlResult.subSequence(htmlResult.getSpanStart(linkSpan), htmlResult.getSpanEnd(linkSpan))
+      assertThat(linkedText.toString()).isEqualTo("admin@oppia.org")
+      assertThat(linkSpan.url).isEqualTo("mailto:admin@oppia.org")
+    }
+  }
+
+  @Test
+  fun testHtmlParser_withEmailAddressAndWebUrl_linksBothSeparately() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val html = "<p>Visit https://www.oppia.org or write to admin@oppia.org</p>"
+
+    runWithLaunchedActivity {
+      val htmlResult = onActivityWithResult {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        htmlParser.parseOppiaHtml(html, textView, supportsLinks = true)
+      }
+      val linkSpans = htmlResult.getSpans(0, htmlResult.length, URLSpan::class.java)
+      val urls = linkSpans.map { it.url }
+      assertThat(urls).containsExactly("https://www.oppia.org", "mailto:admin@oppia.org")
+    }
+  }
+
   // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
