@@ -1358,6 +1358,98 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testProfileManagementController_deleteAllNonAdminProfiles_adminProfileIsPreserved() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isTrue()
+    assertThat(profiles.first().name).isEqualTo("Admin")
+  }
+
+  @Test
+  fun testProfileManagementController_getProfileCount_returnsCorrectCount() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    val profileCount = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfileCount()
+    )
+    assertThat(profileCount).isEqualTo(6)
+  }
+
+  @Test
+  fun testProfileManagementController_deleteAllNonAdminProfiles_profileCountIsOne() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profileCount = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfileCount()
+    )
+    assertThat(profileCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testDeleteAllNonAdminProfiles_removesNonAdminDirsAndKeepsAdminDir() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).hasSize(1)
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+    assertThat(File(getAbsoluteDirPath("1")).isDirectory).isFalse()
+    assertThat(File(getAbsoluteDirPath("2")).isDirectory).isFalse()
+    assertThat(File(getAbsoluteDirPath("3")).isDirectory).isFalse()
+    assertThat(File(getAbsoluteDirPath("4")).isDirectory).isFalse()
+    assertThat(File(getAbsoluteDirPath("5")).isDirectory).isFalse()
+  }
+
+  @Test
+  fun testDeleteAllNonAdminProfiles_noNonAdminProfiles_onlyAdminPreserved() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    val profiles = monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfiles()
+    )
+    assertThat(profiles).hasSize(1)
+    assertThat(profiles.first().isAdmin).isTrue()
+    assertThat(profiles.first().name).isEqualTo("Admin")
+    assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
+  }
+
+  @Test
+  fun testDeleteAllNonAdminProfiles_loggedInAsNonAdmin_logsOutUser() {
+    setUpTestApplicationComponent()
+    addAdminProfileAndWait(name = "Admin")
+    addTestProfiles()
+    val loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+    assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(2)
+
+    profileManagementController.deleteAllNonAdminProfiles().ensureExecutes()
+
+    assertThat(profileManagementController.getCurrentProfileId()).isNull()
+  }
+
+  @Test
   fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasNotAdded() {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Rohit")

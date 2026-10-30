@@ -52,6 +52,7 @@ import javax.inject.Singleton
 private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
+private const val GET_PROFILE_COUNT_PROVIDER_ID = "get_profile_count_provider_id"
 private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
   "get_was_profile_ever_added_provider_id"
 private const val GET_DEVICE_SETTINGS_PROVIDER_ID =
@@ -70,6 +71,8 @@ private const val UPDATE_ALL_DOWNLOAD_ACCESS_PROVIDER_ID =
 private const val LOGIN_TO_PROFILE_PROVIDER_ID = "login_to_profile_provider_id"
 private const val UPDATE_SESSION_ID_PROVIDER_ID = "update_session_id_after_login_provider_id"
 private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
+private const val DELETE_ALL_NON_ADMIN_PROFILES_PROVIDER_ID =
+  "delete_all_non_admin_profiles_provider_id"
 private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
@@ -219,6 +222,13 @@ class ProfileManagementController @Inject constructor(
   fun getProfiles(): DataProvider<List<Profile>> {
     return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
       it.profilesMap.values.toList()
+    }
+  }
+
+  /** Returns the number of created profiles. */
+  fun getProfileCount(): DataProvider<Int> {
+    return profileDataStore.transform(GET_PROFILE_COUNT_PROVIDER_ID) {
+      it.profilesMap.size
     }
   }
 
@@ -1066,6 +1076,50 @@ class ProfileManagementController @Inject constructor(
       Pair(clearedDatabase, ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
+      getDeferredResult(profileId = null, name = null, deferred)
+    }
+  }
+
+  /**
+   * Deletes all non-admin profiles installed on the device.
+   *
+   * Unlike [deleteAllProfiles], this will update the in-memory cache and keep the admin profile
+   * intact. If the currently logged in user is a non-admin profile, they will be logged out.
+   */
+  fun deleteAllNonAdminProfiles(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val profileDatabaseBuilder = it.toBuilder()
+      var isCurrentProfileDeleted = false
+      it.profilesMap.forEach { (internalProfileId, profile) ->
+        if (!profile.isAdmin) {
+          // Attempt to delete profile directory. If deletion fails, log a warning and proceed
+          // with deleting the profile entry so that directory issues don't halt batch cleanup.
+          if (!directoryManagementUtil.deleteDir(internalProfileId.toString())) {
+            oppiaLogger.w(
+              "ProfileManagementController",
+              "Failed to delete directory for profile $internalProfileId"
+            )
+          }
+          learnerAnalyticsLogger.logDeleteProfile(
+            installationId,
+            profileId = null,
+            profile.learnerId
+          )
+          profileDatabaseBuilder.removeProfiles(internalProfileId)
+          if (currentProfileId == internalProfileId) {
+            isCurrentProfileDeleted = true
+          }
+        }
+      }
+      if (isCurrentProfileDeleted) {
+        currentProfileId = DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID
+      }
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      DELETE_ALL_NON_ADMIN_PROFILES_PROVIDER_ID
+    ) {
       getDeferredResult(profileId = null, name = null, deferred)
     }
   }

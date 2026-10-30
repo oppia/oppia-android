@@ -391,7 +391,19 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AddOneProfileButtonClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AddThreeProfilesButtonClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeleteAllNonAdminProfilesButtonClickListener.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -496,6 +508,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToPlatformParametersListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsAddAndDeleteProfilesViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
