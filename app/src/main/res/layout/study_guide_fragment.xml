@@ -63,121 +63,47 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.card.MaterialCardView
-          android:id="@+id/study_guide_previous_navigation_card"
-          android:layout_width="144dp"
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/study_guide_previous_navigation_button"
+          style="@style/Widget.MaterialComponents.Button.TextButton"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
           android:layout_marginTop="16dp"
-          android:layout_marginEnd="28dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
-          android:clipToPadding="true"
+          android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.PREVIOUS, viewModel.previousSubtopicLiveData)}"
+          android:minHeight="48dp"
           android:onClick="@{() -> viewModel.onPreviousCardClicked()}"
+          android:text="@string/study_guide_previous_skill"
+          android:textAllCaps="false"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:visibility="@{viewModel.subtopicIndex == 1 ? View.GONE : View.VISIBLE}"
-          app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
-          app:cardCornerRadius="4dp"
-          app:cardElevation="4dp"
-          app:cardMaxElevation="4dp"
+          app:icon="@drawable/ic_arrow_back_black_24_dp"
+          app:iconGravity="textStart"
+          app:iconTint="@color/component_color_shared_primary_text_color"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view">
+          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view" />
 
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <org.oppia.android.app.customview.LessonThumbnailImageView
-              android:id="@+id/study_guide_prev_subtopic_image_view"
-              android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:importantForAccessibility="no"
-              app:entityId="@{viewModel.topicId}"
-              app:entityType="@{viewModel.entityType}"
-              app:layout_constraintDimensionRatio="H,4:3"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent"
-              app:lessonThumbnail="@{viewModel.previousSubtopicLiveData.subtopic.subtopicThumbnail}" />
-
-            <TextView
-              android:id="@+id/study_guide_prev_subtopic_title"
-              style="@style/TextViewStart"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/component_color_shared_revision_card_text_background_color"
-              android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.PREVIOUS, viewModel.previousSubtopicLiveData)}"
-              android:ellipsize="end"
-              android:fontFamily="sans-serif"
-              android:minWidth="144dp"
-              android:minLines="3"
-              android:paddingStart="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_start"
-              android:paddingTop="8dp"
-              android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
-              android:paddingBottom="16dp"
-              android:text="@{viewModel.computeTitleText(viewModel.previousSubtopicLiveData)}"
-              android:textColor="@color/component_color_shared_secondary_4_text_color"
-              android:textSize="14sp"
-              android:textStyle="bold"
-              app:layout_constraintTop_toBottomOf="@id/study_guide_prev_subtopic_image_view" />
-          </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-          android:id="@+id/study_guide_next_navigation_card"
-          android:layout_width="144dp"
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/study_guide_next_navigation_button"
+          style="@style/Widget.MaterialComponents.Button.TextButton"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
           android:layout_marginTop="16dp"
           android:layout_marginEnd="28dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
-          android:clipToPadding="true"
+          android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.NEXT, viewModel.nextSubtopicLiveData)}"
+          android:minHeight="48dp"
           android:onClick="@{() -> viewModel.onNextCardClicked()}"
+          android:text="@string/study_guide_next_skill"
+          android:textAllCaps="false"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:visibility="@{viewModel.subtopicIndex &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
-          app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
-          app:cardCornerRadius="4dp"
-          app:cardElevation="4dp"
-          app:cardMaxElevation="4dp"
+          app:icon="@drawable/ic_arrow_forward_black_24dp"
+          app:iconGravity="textEnd"
+          app:iconTint="@color/component_color_shared_primary_text_color"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view">
-
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <org.oppia.android.app.customview.LessonThumbnailImageView
-              android:id="@+id/study_guide_next_subtopic_image_view"
-              android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:importantForAccessibility="no"
-              app:entityId="@{viewModel.topicId}"
-              app:entityType="@{viewModel.entityType}"
-              app:layout_constraintDimensionRatio="H,4:3"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent"
-              app:lessonThumbnail="@{viewModel.nextSubtopicLiveData.subtopic.subtopicThumbnail}" />
-
-            <TextView
-              android:id="@+id/study_guide_next_subtopic_title"
-              style="@style/TextViewStart"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/component_color_shared_revision_card_text_background_color"
-              android:contentDescription="@{viewModel.computeContentDescriptionText(NavigationCardType.NEXT, viewModel.nextSubtopicLiveData)}"
-              android:ellipsize="end"
-              android:fontFamily="sans-serif"
-              android:minWidth="144dp"
-              android:minLines="3"
-              android:paddingStart="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_start"
-              android:paddingTop="8dp"
-              android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
-              android:paddingBottom="16dp"
-              android:text="@{viewModel.computeTitleText(viewModel.nextSubtopicLiveData)}"
-              android:textColor="@color/component_color_shared_secondary_4_text_color"
-              android:textSize="14sp"
-              android:textStyle="bold"
-              app:layout_constraintTop_toBottomOf="@id/study_guide_next_subtopic_image_view" />
-          </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
+          app:layout_constraintTop_toBottomOf="@id/study_guide_continue_studying_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
   </androidx.core.widget.NestedScrollView>
