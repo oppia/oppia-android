@@ -24,10 +24,38 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Wait for unit tests to checks
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.3.0
+        uses: actions/github-script@v8
         with:
-          workflow: unit_tests.yml
-          sha: auto
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = context.eventName === 'pull_request'
+              ? context.payload.pull_request.head.sha
+              : context.sha;
+
+            while (true) {
+              const response = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: 'unit_tests.yml',
+                head_sha: sha,
+                per_page: 100,
+              });
+              const runs = response.data.workflow_runs;
+
+              if (runs.some(run => run.conclusion === 'success')) {
+                core.info(`Found a successful unit tests run for ${sha}.`);
+                return;
+              }
+
+              if (runs.length > 0 && runs.every(run => run.status === 'completed')) {
+                const conclusions = [...new Set(runs.map(run => run.conclusion))].join(', ');
+                core.setFailed(`All unit tests runs for ${sha} completed without success (${conclusions}).`);
+                return;
+              }
+
+              core.info(`Waiting for a successful unit tests run for ${sha}.`);
+              await new Promise(resolve => setTimeout(resolve, 30_000));
+            }
 
   compute_changed_files:
     name: Compute changed files
