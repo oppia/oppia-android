@@ -586,6 +586,38 @@ class BazelClientTest {
   }
 
   @Test
+  fun testComputeInstrumentationFilter_forRootLevelPackageTarget_matchesRootPackageTargets() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val filter = bazelClient.computeInstrumentationFilter(
+      "//app:src/test/java/org/oppia/android/app/home/HomeActivityLocalTest"
+    )
+
+    assertThat(filter).isEqualTo("^//app[/:]")
+    // The filter must match targets declared directly in the root-level package (e.g. //app:app_kt)
+    // as well as targets in its subpackages. The old filter (//app/...) did not match the former.
+    assertThat(Regex(filter).containsMatchIn("//app:app_kt")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//app/src/main:lib")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//application:lib")).isFalse()
+  }
+
+  @Test
+  fun testComputeInstrumentationFilter_forMultiLevelPackageTarget_matchesTopLevelPackage() {
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val filter = bazelClient.computeInstrumentationFilter(
+      "//coverage/test/java/com/example:AddNumsTest"
+    )
+
+    assertThat(filter).isEqualTo("^//coverage[/:]")
+    // The filter must match the top-level package and its subpackages, but not other packages
+    // that merely share the same name prefix.
+    assertThat(Regex(filter).containsMatchIn("//coverage:addnums")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//coverage/main/java/com/example:addnums")).isTrue()
+    assertThat(Regex(filter).containsMatchIn("//coveragetools:lib")).isFalse()
+  }
+
+  @Test
   fun testRunCoverageForTestTarget_forNonTestTarget_fails() {
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
@@ -623,6 +655,32 @@ class BazelClientTest {
     assertThat(bazelInfo).containsKey("output_path")
 
     assertThat(bazelInfo["workspace"]).isEqualTo(tempFolder.root.absolutePath)
+  }
+
+  @Test
+  fun testRunCoverageForTestTarget_forRootLevelPackageTarget_usesCorrectInstrumentationFilter() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val executedArguments = mutableListOf<Any?>()
+    `when`(
+      mockCommandExecutor.executeCommand(
+        anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()
+      )
+    ).thenAnswer { invocation ->
+      invocation.arguments.forEach { argument ->
+        if (argument is Array<*>) {
+          executedArguments.addAll(argument)
+        } else {
+          executedArguments.add(argument)
+        }
+      }
+      CommandResult(exitCode = 0, output = listOf(), errorOutput = listOf(), command = listOf())
+    }
+
+    bazelClient.runCoverageForTestTarget(
+      "//app:src/test/java/org/oppia/android/app/home/HomeActivityLocalTest"
+    )
+
+    assertThat(executedArguments).contains("--instrumentation_filter=^//app[/:]")
   }
 
   @Test
