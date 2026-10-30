@@ -58,6 +58,7 @@
 
           <TextView
             android:id="@+id/walkthrough_final_no_text_view"
+            style="@style/TextViewCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -93,6 +94,7 @@
 
           <TextView
             android:id="@+id/walkthrough_final_yes_text_view"
+            style="@style/TextViewCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -134,6 +136,7 @@
 
       <TextView
         android:id="@+id/walkthrough_final_title_text_view"
+        style="@style/TextViewCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
