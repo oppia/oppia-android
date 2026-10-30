@@ -12,22 +12,55 @@ import org.oppia.android.util.extensions.normalizeWhitespace
 class StringToNumberParser {
   private val validCharsRegex =
     """^[\d\s.-]+$""".toRegex()
+  private val validExponentialCharsRegex =
+    """^[\d\s.\-e]+$""".toRegex()
 
   /**
    * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the
-   * specified raw text, or [NumericInputParsingError.VALID] if not such issues are found.
+   * specified raw text, or [NumericInputParsingError.VALID] if no such issues are found.
    *
-   * Note that this method returning a valid result does not guarantee the text is a valid number
+   * Note that this method returning a valid result does not guarantee the text is a valid number;
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a
    * quick sanity check for general validity, not for definite correctness.
+   *
+   * @param text the raw string input to validate
+   * @param allowExponentialNotation whether scientific notation (e.g. 1.8e3) is allowed
    */
-  fun getRealTimeAnswerError(text: String): NumericInputParsingError {
+  fun getRealTimeAnswerError(
+    text: String,
+    allowExponentialNotation: Boolean = false
+  ): NumericInputParsingError {
     val normalized = text.normalizeWhitespace()
+    if (!allowExponentialNotation) {
+      return when {
+        !normalized.matches(validCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
+        normalized.startsWith(".") || normalized.startsWith("-.") ->
+          NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+        normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
+        normalized.lastIndexOf('-') > 0 -> NumericInputParsingError.INVALID_FORMAT
+        else -> NumericInputParsingError.VALID
+      }
+    }
+
+    val eIndex = normalized.indexOf('e')
+    val dotIndex = normalized.indexOf('.')
+    val minusIndex = normalized.indexOf('-')
+    val hasInvalidMinus = minusIndex != -1 &&
+      minusIndex != 0 &&
+      normalized[minusIndex - 1] != 'e'
+
     return when {
-      !normalized.matches(validCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
-      normalized.startsWith(".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+      !normalized.matches(validExponentialCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
+      normalized.startsWith(".") || normalized.startsWith("-.") ->
+        NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+      normalized.startsWith("e") || normalized.startsWith("-e") ->
+        NumericInputParsingError.INVALID_FORMAT
       normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
-      normalized.lastIndexOf('-') > 0 -> NumericInputParsingError.INVALID_FORMAT
+      normalized.count { it == 'e' } > 1 -> NumericInputParsingError.INVALID_FORMAT
+      eIndex != -1 && dotIndex != -1 && dotIndex > eIndex ->
+        NumericInputParsingError.INVALID_FORMAT
+      normalized.count { it == '-' } > 1 || hasInvalidMinus ->
+        NumericInputParsingError.INVALID_FORMAT
       else -> NumericInputParsingError.VALID
     }
   }
@@ -39,17 +72,39 @@ class StringToNumberParser {
    *
    * This method should only be used when a user tries submitting an answer. Real-time error
    * detection should be done using [getRealTimeAnswerError], instead.
+   *
+   * @param text the raw string input to validate
+   * @param allowExponentialNotation whether scientific notation (e.g. 1.8e3) is allowed
    */
-  fun getSubmitTimeError(text: String): NumericInputParsingError {
+  fun getSubmitTimeError(
+    text: String,
+    allowExponentialNotation: Boolean = false
+  ): NumericInputParsingError {
     if (text.isBlank()) {
       return NumericInputParsingError.EMPTY_INPUT
     }
     if (text.length > 15) {
       return NumericInputParsingError.NUMBER_TOO_LONG
     }
+    val realTimeError = getRealTimeAnswerError(text, allowExponentialNotation)
+    if (realTimeError != NumericInputParsingError.VALID) {
+      return realTimeError
+    }
+    if (text == "-" ||
+      text.endsWith("-") ||
+      text.endsWith("e") ||
+      text.endsWith(".") ||
+      text.contains(".e")
+    ) {
+      return NumericInputParsingError.INVALID_FORMAT
+    }
     return try {
-      text.toDouble()
-      NumericInputParsingError.VALID
+      val parsedDouble = text.toDouble()
+      if (parsedDouble.isInfinite() || parsedDouble.isNaN()) {
+        NumericInputParsingError.INVALID_FORMAT
+      } else {
+        NumericInputParsingError.VALID
+      }
     } catch (e: Exception) {
       NumericInputParsingError.INVALID_FORMAT
     }

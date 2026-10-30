@@ -35,14 +35,12 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.LegacyProfileId
-import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -195,7 +193,6 @@ class AdminIntroFragmentTest {
   @Test
   fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
     launch(AdminIntroActivity::class.java).use { scenario ->
-
       scenario.onActivity { activity ->
         composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
           .performClick()
@@ -207,21 +204,14 @@ class AdminIntroFragmentTest {
     }
   }
 
-  // This is a placeholder test that should fail when the PIN creation screen has been implemented.
   @Test
-  fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
+  fun testIntroFragment_continueButtonClicked_launchesCreateAdminPinActivity() {
     launchAdminIntroActivity().use {
       composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .performClick()
 
       testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = ProfileChooserActivityParams.newBuilder()
-        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
-        .build()
-
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-      intended(hasProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, expectedParams))
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
       intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
     }
   }

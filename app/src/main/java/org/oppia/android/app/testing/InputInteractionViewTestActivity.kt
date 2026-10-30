@@ -37,8 +37,14 @@ class InputInteractionViewTestActivity :
 
   @Inject
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
-
-  val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
+  val numericInputViewModel by lazy {
+    val params =
+      intent.getProtoExtra(
+        TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
+        InputInteractionViewTestActivityParams.getDefaultInstance()
+      )
+    numericInputViewModelFactory.create<NumericInputViewModel>(params.interaction)
+  }
 
   lateinit var writtenTranslationContext: WrittenTranslationContext
 
