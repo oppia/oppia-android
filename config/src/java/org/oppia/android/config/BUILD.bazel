@@ -2,6 +2,7 @@
 This package contains configuration libraries for defining & tweaking app-wide behavior.
 """
 
+load("@rules_android//android:rules.bzl", "android_library")
 load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 
 # Language support levels:

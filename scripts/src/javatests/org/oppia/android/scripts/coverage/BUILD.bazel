@@ -23,6 +23,8 @@ kt_jvm_test(
 kt_jvm_test(
     name = "CoverageRunnerTest",
     srcs = ["CoverageRunnerTest.kt"],
+    # Ensure nested Bazel calls outside a workspace still use the project's Bazel version.
+    env = {"USE_BAZEL_VERSION": "6.5.0"},
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/coverage:coverage_runner",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
