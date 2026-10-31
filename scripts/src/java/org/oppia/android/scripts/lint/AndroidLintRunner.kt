@@ -468,7 +468,7 @@ class AndroidLintAnalyzer(
     val cliArgs = lintRunner.prepareLintArguments(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
-      buildSdkVersion = buildSdkVersion.toString(),
+      buildSdkVersion = sdkProperties.buildSdkVersion.toString(),
       kotlinLanguageVersion = sdkProperties.kotlinLanguageVersion,
       suppressLintIssues = additionalDisabledChecks,
       listChecks = listChecks,

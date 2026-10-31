@@ -23,7 +23,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.3.1",
-    "androidx.compose.compiler:compiler": "1.4.7",
+    "androidx.compose.compiler:compiler": "1.1.1",
     "androidx.compose.foundation:foundation": "1.1.1",
     "androidx.compose.foundation:foundation-layout": "1.1.1",
     "androidx.compose.material:material": "1.1.1",
@@ -181,8 +181,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "6.9",
     },
     "rules_kotlin": {
-        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b0",
-        "version": "2.1.3",
+        "sha": "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
+        "version": "v1.7.1",
     },
     "rules_license": {
         "sha": "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",

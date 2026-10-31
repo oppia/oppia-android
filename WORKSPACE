@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # rules_android setup
@@ -69,6 +69,15 @@ git_repository(
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
 
+# Declare rules_kotlin before initializeDepsForWorkspace to override the version
+# pulled in by protobuf_deps.
+http_archive(
+    name = "io_bazel_rules_kotlin",
+    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+)
+
 initializeDepsForWorkspace()
 
 load("@oppia_proto_api//repo:toolchains.bzl", "initializeToolchainsForWorkspace")
@@ -94,16 +103,22 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
-http_archive(
-    name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
+
+# Explicitly pin the Kotlin compiler release to match the Kotlin stdlib version in
+# //third_party:versions.bzl. Even when a lower language_version/api_version is configured on
+# define_kt_toolchain (or include_stdlibs = "none" on kt_kotlinc_options), rules_kotlin
+# unconditionally injects the compiler archive's kotlin-stdlib into target JavaInfo dependencies
+# without exposing jvm_stdlibs/jvm_runtime on define_kt_toolchain. Leaving compiler_release at
+# rules_kotlin's default causes split-stdlib version skew against Maven's kotlin-stdlib (such as
+# ProGuard/R8 unresolved reference errors on refactored internal stdlib classes), so this explicit
+# compiler pin should be kept in sync whenever Kotlin is upgraded.
+kotlin_repositories(
+    compiler_release = kotlinc_version(
+        release = KOTLIN_COMPILER_VERSION,
+        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
+    ),
 )
-
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
-
-kotlin_repositories()
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
