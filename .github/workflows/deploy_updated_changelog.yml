@@ -60,9 +60,10 @@
 # generic changelog (e.g. config/changelogs/0.17.md) for the matching flavor's track.
 #
 # Prerequisites:
-#   - A live release for the changelog version must already exist on Play Console. The underlying
-#     script (UploadChangelogToPlayConsole) audits live tracks and skips tracks with no live
-#     release, so the upload is always safe even if the version is not yet deployed.
+#   - A live release matching the changelog version must already exist on Play Console. The
+#     underlying script (UploadChangelogToPlayConsole) audits live tracks and skips tracks with
+#     no live release, but does NOT verify that the live release matches the changelog version.
+#     Coordinators must confirm that the matching release is live before triggering an upload.
 #   - The GCP service account must have "Release to production" permission in Play Console.
 #
 # Authentication uses Workload Identity Federation, identical to build_and_sign.yml.
@@ -354,8 +355,9 @@ jobs:
       #   1. Audits alpha, beta, and production tracks for live releases.
       #   2. For each live track, resolves the changelog file (track-specific first, then shared).
       #   3. Uploads updated notes to any track where a changelog file is found.
-      # The script skips tracks with no live release silently, so it is safe to run even if
-      # the release is not yet deployed (Belt-and-suspenders safety net behind the push guards).
+      # Note: the script skips tracks with no live release but does NOT verify that the live
+      # release matches the changelog version. Automatic-push eligibility does not guarantee that
+      # the matching release has been deployed. Use workflow_dispatch after deployment is confirmed.
       - name: Upload updated changelog to Play Console
         run: |
           bazel run //scripts:upload_changelog_to_play_console -- \
