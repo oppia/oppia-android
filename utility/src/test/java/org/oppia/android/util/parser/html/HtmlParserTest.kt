@@ -572,6 +572,27 @@ class HtmlParserTest {
     }
   }
 
+  @Test
+  fun testHtmlParser_withEmailAddressAndWebUrl_linksNotSupported_createsNoLinks() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val html = "<p>Visit https://www.oppia.org or write to admin@oppia.org</p>"
+
+    runWithLaunchedActivity {
+      val htmlResult = onActivityWithResult {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        htmlParser.parseOppiaHtml(html, textView, supportsLinks = false)
+      }
+      val linkSpans = htmlResult.getSpans(0, htmlResult.length, URLSpan::class.java)
+      assertThat(linkSpans).isEmpty()
+    }
+  }
+
   // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
