@@ -1751,16 +1751,12 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivity.kt"
-  source_file_is_incompatible_with_code_coverage: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinActivityPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragment.kt"
-  source_file_is_incompatible_with_code_coverage: true
+  override_min_coverage_percent_required: 66
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/CreateAdminPinFragmentPresenter.kt"
