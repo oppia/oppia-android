@@ -246,5 +246,8 @@ private fun gcd(x: Int, y: Int): Int {
 /** Returns the least common multiple between two integers. */
 private fun lcm(x: Int, y: Int): Int {
   // Reference: https://en.wikipedia.org/wiki/Least_common_multiple#Calculation.
-  return (x * y).absoluteValue / gcd(x, y)
+  if (x == 0 || y == 0) return 0
+  val gcdVal = gcd(x, y).absoluteValue
+  val computedLcm = (x.toLong().absoluteValue / gcdVal) * y.toLong().absoluteValue
+  return computedLcm.toInt()
 }

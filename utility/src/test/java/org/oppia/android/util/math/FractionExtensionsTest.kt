@@ -804,6 +804,44 @@ class FractionExtensionsTest {
   }
 
   @Test
+  fun testPlus_largeDenominatorsExceedingIntSquareRoot_computesCorrectSum() {
+    val lhsFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 100000
+    }.build()
+    val rhsFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 100000
+    }.build()
+
+    val result = lhsFraction + rhsFraction
+
+    assertThat(result).hasNegativePropertyThat().isFalse()
+    assertThat(result).hasNumeratorThat().isEqualTo(1)
+    assertThat(result).hasDenominatorThat().isEqualTo(50000)
+    assertThat(result).hasWholeNumberThat().isEqualTo(0)
+  }
+
+  @Test
+  fun testPlus_largeDifferentDenominators_computesCorrectSum() {
+    val lhsFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 60000
+    }.build()
+    val rhsFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 70000
+    }.build()
+
+    val result = lhsFraction + rhsFraction
+
+    assertThat(result).hasNegativePropertyThat().isFalse()
+    assertThat(result).hasNumeratorThat().isEqualTo(13)
+    assertThat(result).hasDenominatorThat().isEqualTo(420000)
+    assertThat(result).hasWholeNumberThat().isEqualTo(0)
+  }
+
+  @Test
   fun testMinus_zeroAndZero_returnsZero() {
     val lhsFraction = ZERO_FRACTION
     val rhsFraction = ZERO_FRACTION
@@ -927,6 +965,25 @@ class FractionExtensionsTest {
     assertThat(result).hasNegativePropertyThat().isTrue()
     assertThat(result).hasNumeratorThat().isEqualTo(2)
     assertThat(result).hasDenominatorThat().isEqualTo(3)
+    assertThat(result).hasWholeNumberThat().isEqualTo(0)
+  }
+
+  @Test
+  fun testMinus_largeDenominatorsExceedingIntSquareRoot_computesCorrectDifference() {
+    val lhsFraction = Fraction.newBuilder().apply {
+      numerator = 3
+      denominator = 100000
+    }.build()
+    val rhsFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 100000
+    }.build()
+
+    val result = lhsFraction - rhsFraction
+
+    assertThat(result).hasNegativePropertyThat().isFalse()
+    assertThat(result).hasNumeratorThat().isEqualTo(1)
+    assertThat(result).hasDenominatorThat().isEqualTo(50000)
     assertThat(result).hasWholeNumberThat().isEqualTo(0)
   }
 
