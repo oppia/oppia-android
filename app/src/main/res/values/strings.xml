@@ -555,6 +555,8 @@
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="revision_card_activity_title">Skill revision page</string>
   <string name="study_guide_activity_title">Study guide page</string>
+  <string name="expand_section">Expand section</string>
+  <string name="collapse_section">Collapse section</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>

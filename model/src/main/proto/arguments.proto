@@ -903,6 +903,12 @@ message StudyGuideFragmentArguments {
   ReadingTextSize reading_text_size = 4;
 }
 
+// The bundle of properties that are saved upon configuration changes in StudyGuideFragment.
+message StudyGuideFragmentStateBundle {
+  // List of section indices that are currently expanded.
+  repeated int32 expanded_section_indices = 1;
+}
+
 // Represents the parameters needed to create TestFontScaleConfigurationUtilActivity.
 message TestFontScaleConfigurationUtilActivityParams {
   // The text size at which content in the exploration should be rendered.
