@@ -74,10 +74,12 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -97,6 +99,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -135,6 +138,12 @@ class ReadingTextSizeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val defaultTextSizeInFloat by lazy {
     context.resources.getDimension(R.dimen.default_reading_text_size)
@@ -187,6 +196,30 @@ class ReadingTextSizeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE_INDEX)
       checkTextSizeLabel("Medium")
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testTextSize_openListWithStaleInitialValue_doesNotOverwriteSavedValue() {
+    val profileId = LegacyProfileId.newBuilder().setInternalId(0).build()
+      .toProfileIdPreservingZero()
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.updateReadingTextSize(profileId, MEDIUM_TEXT_SIZE)
+    )
+
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        // Simulate a stale size passed to the list while the profile already stores Medium.
+        activity.optionActivityPresenter.loadReadingTextSizeFragment(SMALL_TEXT_SIZE)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      val profile = monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.getProfile(profileId)
+      )
+      assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     }
   }
 

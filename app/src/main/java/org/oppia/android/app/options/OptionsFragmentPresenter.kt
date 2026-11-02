@@ -200,6 +200,7 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param textSize new textSize to be set as current
    */
   fun updateReadingTextSize(textSize: ReadingTextSize) {
+    optionControlsViewModel.setReadingTextSize(textSize)
     val sizeUpdateResult = profileManagementController.updateReadingTextSize(
       profileId.toProfileIdPreservingZero(), textSize
     )
