@@ -211,3 +211,17 @@ def generate_binary_file_assets_list_from_text_protos(
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     )
+
+def generate_duplicate_dependency_version_assets_list_from_text_protos(
+        name,
+        duplicate_dependency_version_exemptions_name):
+    return generate_proto_binary_assets(
+        name = name,
+        names = duplicate_dependency_version_exemptions_name,
+        proto_dep_name = "script_exemptions",
+        proto_type_name = "DuplicateDependencyVersionExemptions",
+        name_prefix = "duplicate_dependency_version_exemptions",
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    )
