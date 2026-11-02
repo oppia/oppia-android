@@ -234,6 +234,23 @@ class IntroFragmentTest {
   }
 
   @Test
+  fun testFragment_additionalLearner_continueButtonClicked_launchesAudioWithoutStepCount() {
+    launchOnboardingLearnerIntroActivity(PROFILE_CHOOSER_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        this.audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        this.parentScreen =
+          AudioLanguageActivityParams.ParentScreen.ADDITIONAL_LEARNER_INTRO_SCREEN
+      }.build()
+
+      intended(hasProtoExtra("AudioLanguageActivity.params", expectedParams))
+    }
+  }
+
+  @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesAudioLanguageScreen() {
     launchOnboardingLearnerIntroActivity().use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
