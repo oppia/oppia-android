@@ -103,3 +103,8 @@ feature_flag_definition {
   remote_server_name: "android_enable_worked_examples"
   default_is_enabled: false
 }
+feature_flag_definition {
+  id: PACE_ADMIN_UNLOCK_CHAPTERS
+  remote_server_name: "android_enable_pace_admin_unlock_chapters"
+  default_is_enabled: false
+}

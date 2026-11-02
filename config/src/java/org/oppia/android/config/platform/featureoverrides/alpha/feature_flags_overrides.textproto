@@ -38,3 +38,7 @@ feature_flag_definition {
   id: APP_AND_OS_DEPRECATION
   default_is_enabled: true
 }
+feature_flag_definition {
+  id: PACE_ADMIN_UNLOCK_CHAPTERS
+  default_is_enabled: true
+}
