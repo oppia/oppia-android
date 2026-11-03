@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileResetPinFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that resets the profile pin of the user. */
@@ -27,13 +30,15 @@ class ProfileResetPinFragment : InjectableFragment() {
       profileResetPinIsAdmin: Boolean,
     ): ProfileResetPinFragment {
       val args = ProfileResetPinFragmentArguments.newBuilder().apply {
-        this.internalProfileId = profileResetPinProfileId
         this.isAdmin = profileResetPinIsAdmin
       }.build()
+      val legacyProfileId =
+        LegacyProfileId.newBuilder().setInternalId(profileResetPinProfileId).build()
 
       return ProfileResetPinFragment().apply {
         arguments = Bundle().apply {
           putProto(PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY, args)
+          decorateWithUserProfileId(legacyProfileId)
         }
       }
     }
@@ -58,7 +63,7 @@ class ProfileResetPinFragment : InjectableFragment() {
         PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
         ProfileResetPinFragmentArguments.getDefaultInstance()
       )
-    val profileResetPinProfileId = args.internalProfileId
+    val profileResetPinProfileId = arguments.extractCurrentUserProfileId().internalId
     val profileResetPinIsAdmin = args.isAdmin
 
     return profileResetPinFragmentPresenter.handleCreateView(

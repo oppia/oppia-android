@@ -11,10 +11,12 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
 
 /** Controller for handling exception logging. */
+@Singleton
 class ExceptionsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,

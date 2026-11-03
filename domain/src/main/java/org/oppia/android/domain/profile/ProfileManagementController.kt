@@ -16,6 +16,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize
@@ -40,6 +41,7 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
+import org.oppia.android.util.profile.toLegacyProfileId
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
@@ -221,7 +223,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns a single profile, specified by profiledId. */
-  fun getProfile(profileId: LegacyProfileId): DataProvider<Profile> {
+  fun getProfile(profileId: ProfileId): DataProvider<Profile> {
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
@@ -403,7 +405,7 @@ class ProfileManagementController @Inject constructor(
    * @param profileId The ID of the profile to update.
    * @return A [DataProvider] that represents the result of the update operation.
    */
-  fun markProfileOnboardingStarted(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun markProfileOnboardingStarted(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -415,7 +417,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfileBuilder = profile.toBuilder()
       if (!profile.startedProfileOnboarding) {
         updatedProfileBuilder.startedProfileOnboarding = true
-        analyticsController.logProfileOnboardingStartedContext(profileId)
+        analyticsController.logProfileOnboardingStartedContext(profileId.toLegacyProfileId())
       }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
@@ -435,7 +437,7 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID of the profile to update
    * @return a [DataProvider] that represents the result of the update operation
    */
-  fun markProfileOnboardingEnded(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun markProfileOnboardingEnded(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -447,7 +449,7 @@ class ProfileManagementController @Inject constructor(
       val updatedProfileBuilder = profile.toBuilder()
       if (!profile.completedProfileOnboarding) {
         updatedProfileBuilder.completedProfileOnboarding = true
-        analyticsController.logProfileOnboardingEndedContext(profileId)
+        analyticsController.logProfileOnboardingEndedContext(profileId.toLegacyProfileId())
       }
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
@@ -492,7 +494,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateProfileAvatar(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     avatarImagePath: Uri?,
     colorRgb: Int
   ): DataProvider<Any?> {
@@ -539,7 +541,7 @@ class ProfileManagementController @Inject constructor(
    * @param newName new name for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
-  fun updateName(profileId: LegacyProfileId, newName: String): DataProvider<Any?> {
+  fun updateName(profileId: ProfileId, newName: String): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -573,7 +575,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that represents the result of the update operation
    */
   fun updateProfileType(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     profileType: ProfileType
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -614,7 +616,7 @@ class ProfileManagementController @Inject constructor(
    * @param newPin New pin for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
-  fun updatePin(profileId: LegacyProfileId, newPin: String): DataProvider<Any?> {
+  fun updatePin(profileId: ProfileId, newPin: String): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -643,7 +645,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateWifiPermissionDeviceSettings(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     downloadAndUpdateOnWifiOnly: Boolean
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -679,7 +681,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateTopicAutomaticallyPermissionDeviceSettings(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     automaticallyUpdateTopics: Boolean
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -715,7 +717,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateAllowDownloadAccess(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     allowDownloadAccess: Boolean
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -750,7 +752,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation
    */
   fun updateEnableInLessonQuickLanguageSwitching(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     allowInLessonQuickLanguageSwitching: Boolean
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -784,7 +786,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
   fun updateReadingTextSize(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     readingTextSize: ReadingTextSize
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -813,7 +815,7 @@ class ProfileManagementController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile being updated
    */
-  fun initializeLearnerId(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun initializeLearnerId(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -850,7 +852,7 @@ class ProfileManagementController @Inject constructor(
    * The return [DataProvider] will automatically update for subsequent calls to
    * [updateAudioLanguage] for this [profileId].
    */
-  fun getAudioLanguage(profileId: LegacyProfileId): DataProvider<AudioLanguage> {
+  fun getAudioLanguage(profileId: ProfileId): DataProvider<AudioLanguage> {
     return translationController.getAudioTranslationContentLanguage(
       profileId
     ).transform(GET_AUDIO_LANGUAGE_PROVIDER_ID) { oppiaLanguage ->
@@ -874,7 +876,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this update operation
    */
   fun updateAudioLanguage(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     audioLanguage: AudioLanguage
   ): DataProvider<Any?> {
     val audioSelection = AudioTranslationLanguageSelection.newBuilder().apply {
@@ -905,7 +907,7 @@ class ProfileManagementController @Inject constructor(
    * @return [DataProvider] that represents the result of the update operation
    */
   fun updateNewProfileDetails(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     profileType: ProfileType,
     avatarImagePath: Uri?,
     colorRgb: Int,
@@ -971,7 +973,7 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being logged into.
    * @return a [DataProvider] that indicates the success/failure of this login operation.
    */
-  fun loginToProfile(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun loginToProfile(profileId: ProfileId): DataProvider<Any?> {
     return setCurrentProfileId(profileId).transformAsync(LOGIN_TO_PROFILE_PROVIDER_ID) {
       return@transformAsync getDeferredResult(
         profileId,
@@ -986,7 +988,7 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  private fun setCurrentProfileId(profileId: LegacyProfileId): DataProvider<Any?> {
+  private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(SET_CURRENT_PROFILE_ID_PROVIDER_ID) {
       val profileDatabase = profileDataStore.readDataAsync().await()
       if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
@@ -1002,7 +1004,7 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: LegacyProfileId):
+  private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
     Deferred<ProfileActionStatus> {
       return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
         val profile = it.profilesMap[profileId.internalId]
@@ -1025,7 +1027,7 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being deleted.
    * @return a [DataProvider] that indicates the success/failure of this delete operation.
    */
-  fun deleteProfile(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun deleteProfile(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
@@ -1068,10 +1070,10 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  /** Returns the [Profile ID] of the current profile, or null if one hasn't yet been logged into. */
-  fun getCurrentProfileId(): LegacyProfileId? {
+  /** Returns the [ProfileId] of the current profile, or null if one hasn't yet been logged into. */
+  fun getCurrentProfileId(): ProfileId? {
     return currentProfileId.takeIf { it != DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID }?.let {
-      LegacyProfileId.newBuilder().setInternalId(it).build()
+      ProfileId.newBuilder().setInternalId(it).build()
     }
   }
 
@@ -1096,7 +1098,7 @@ class ProfileManagementController @Inject constructor(
    * 3. This method is meant to only be called by background coroutines and should never be used
    *    from UI code.
    */
-  suspend fun fetchLearnerId(profileId: LegacyProfileId): String? {
+  suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId
   }
@@ -1105,13 +1107,13 @@ class ProfileManagementController @Inject constructor(
    * Returns whether the exploration continue button animation has shown (or been disabled) for the
    * specified [profileId], or null if the profile doesn't exist.
    */
-  suspend fun fetchContinueAnimationSeenStatus(profileId: LegacyProfileId): Boolean? {
+  suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
   }
 
   /** Marks that the continue button animation has been seen for the specified profile. */
-  suspend fun markContinueButtonAnimationSeen(profileId: LegacyProfileId) {
+  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
     val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
@@ -1130,7 +1132,7 @@ class ProfileManagementController @Inject constructor(
    * Sets the timestamp when a nps survey was last shown for the specified profile.
    * Returns a [DataProvider] indicating whether the save was a success.
    */
-  fun updateSurveyLastShownTimestamp(profileId: LegacyProfileId): DataProvider<Any?> {
+  fun updateSurveyLastShownTimestamp(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) { profileDatabase ->
@@ -1153,7 +1155,7 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns the timestamp at which the nps survey was last shown. */
   fun retrieveSurveyLastShownTimestamp(
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ): DataProvider<Long> {
     return profileDataStore.transformAsync(RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID) {
       val surveyLastShownTimestampMs =
@@ -1167,7 +1169,7 @@ class ProfileManagementController @Inject constructor(
    * indicating whether the save was a success.
    */
   fun updateLastSelectedClassroomId(
-    profileId: LegacyProfileId,
+    profileId: ProfileId,
     classroomId: String
   ): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
@@ -1195,7 +1197,7 @@ class ProfileManagementController @Inject constructor(
    * [profileId].
    */
   fun retrieveLastSelectedClassroomId(
-    profileId: LegacyProfileId
+    profileId: ProfileId
   ): DataProvider<String?> {
     return profileDataStore.transformAsync(RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID) {
       val lastSelectedClassroomId = it.profilesMap[profileId.internalId]?.lastSelectedClassroomId
@@ -1204,7 +1206,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private suspend fun getDeferredResult(
-    profileId: LegacyProfileId?,
+    profileId: ProfileId?,
     name: String?,
     deferred: Deferred<ProfileActionStatus>
   ): AsyncResult<Any?> {

@@ -10,6 +10,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -18,6 +19,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 private const val OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID =
@@ -35,6 +37,8 @@ class OptionControlsViewModel @Inject constructor(
   private val translationController: TranslationController
 ) : OptionsItemViewModel() {
   private lateinit var profileId: LegacyProfileId
+  private var selectedReadingTextSize: ReadingTextSize? = null
+  private var readingTextSizeViewModel: OptionsReadingTextSizeViewModel? = null
   private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
@@ -67,13 +71,21 @@ class OptionControlsViewModel @Inject constructor(
     this.profileId = profileId
   }
 
+  /** Immediately updates the reading text size shown by the options UI. */
+  fun setReadingTextSize(readingTextSize: ReadingTextSize) {
+    selectedReadingTextSize = readingTextSize
+    readingTextSizeViewModel?.readingTextSize?.set(readingTextSize)
+  }
+
   private fun createOptionsItemViewModelProvider(): DataProvider<List<OptionsItemViewModel>> {
     val appAudioLangProvider =
-      translationController.getAppLanguage(profileId).combineWith(
-        profileManagementController.getAudioLanguage(profileId),
+      translationController.getAppLanguage(profileId.toProfileIdPreservingZero()).combineWith(
+        profileManagementController.getAudioLanguage(profileId.toProfileIdPreservingZero()),
         OPTIONS_ITEM_VIEW_MODEL_APP_AUDIO_LANGUAGE_PROVIDER_ID
       ) { appLanguage, audioLanguage -> appLanguage to audioLanguage }
-    return profileManagementController.getProfile(profileId).combineWith(
+    return profileManagementController.getProfile(
+      profileId.toProfileIdPreservingZero()
+    ).combineWith(
       appAudioLangProvider, OPTIONS_ITEM_VIEW_MODEL_LIST_PROVIDER_ID
     ) { profile, (appLang, audioLang) -> processViewModelList(profile, appLang, audioLang) }
   }
@@ -110,7 +122,10 @@ class OptionControlsViewModel @Inject constructor(
   private fun createReadingTextSizeViewModel(profile: Profile): OptionsReadingTextSizeViewModel {
     return OptionsReadingTextSizeViewModel(
       routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
-    ).also { it.readingTextSize.set(profile.readingTextSize) }
+    ).also {
+      readingTextSizeViewModel = it
+      it.readingTextSize.set(selectedReadingTextSize ?: profile.readingTextSize)
+    }
   }
 
   private fun createAppLanguageViewModel(language: OppiaLanguage): OptionsAppLanguageViewModel? {

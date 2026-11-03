@@ -55,6 +55,9 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -84,7 +87,8 @@ class StateFragmentPresenter @Inject constructor(
   private val stateViewModel: StateViewModel,
   private val accessibilityService: AccessibilityService,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val surveyGatingController: SurveyGatingController
+  private val surveyGatingController: SurveyGatingController,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -107,6 +111,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private var explorationCheckpointState: CheckpointState = CheckpointState.CHECKPOINT_UNSAVED
+
+  /** The [EphemeralState] from the most recent call to [processEphemeralState]. */
+  private var lastRenderedEphemeralState: EphemeralState? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -266,6 +273,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addRedirectionSupport()
+      .addLessonProgressIndicatorSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
@@ -300,6 +308,14 @@ class StateFragmentPresenter @Inject constructor(
 
   fun viewSolution() {
     explorationProgressController.submitSolutionIsViewed()
+  }
+
+  fun pauseHints() {
+    explorationProgressController.pauseHints()
+  }
+
+  fun resumeHints() {
+    explorationProgressController.resumeHints()
   }
 
   private fun getAudioFragment(): Fragment? {
@@ -352,6 +368,18 @@ class StateFragmentPresenter @Inject constructor(
 
     showOrHideAudioByState(ephemeralState.state)
     showOrHideFlashbackToolbar(ephemeralState)
+
+    if (isHintOnlyUpdate(lastRenderedEphemeralState, ephemeralState)) {
+      // Only the HelpIndex changed — notify the hint UI without rebuilding the RecyclerView,
+      // so the soft keyboard is not dismissed during active text input.
+      onHintAvailable(
+        ephemeralState.pendingState.helpIndex,
+        isCurrentStatePendingState = true
+      )
+      lastRenderedEphemeralState = ephemeralState
+      return
+    }
+    lastRenderedEphemeralState = ephemeralState
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -493,16 +521,35 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun markExplorationCompleted() {
     val markStoryCompletedLivedata = storyProgressController.recordCompletedChapter(
-      profileId,
+      profileId.toProfileIdPreservingZero(),
       topicId,
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
     ).toLiveData()
 
-    // Only check gating result when the previous operation has completed because gating depends on
-    // result of saving the time spent in the exploration, at the end of the exploration.
-    markStoryCompletedLivedata.observe(fragment, { maybeShowSurveyDialog(profileId, topicId) })
+    // Wait for chapter recording to finish before checking eligibility. Survey gating separately
+    // flushes the current learning time since the exploration is still active on this exit path.
+    markStoryCompletedLivedata.observe(
+      fragment,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>?) {
+          when (result) {
+            null, is AsyncResult.Pending -> Unit
+            is AsyncResult.Failure -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              oppiaLogger.e("StateFragment", "Failed to record completed chapter", result.error)
+              (activity as StopStatePlayingSessionWithSavedProgressListener)
+                .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+            is AsyncResult.Success -> {
+              markStoryCompletedLivedata.removeObserver(this)
+              maybeShowSurveyDialog(profileId, topicId)
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
@@ -623,6 +670,32 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /**
+   * Returns true if the only difference between [priorEphemeralState] and
+   * [updatedEphemeralState] is the [HelpIndex] inside [EphemeralState.pendingState]. This is
+   * used to avoid triggering a full RecyclerView rebuild (and consequent soft-keyboard
+   * dismissal) when a hint becomes available.
+   */
+  private fun isHintOnlyUpdate(
+    priorEphemeralState: EphemeralState?,
+    updatedEphemeralState: EphemeralState
+  ): Boolean {
+    if (priorEphemeralState == null) return false
+    if (!priorEphemeralState.hasPendingState()) return false
+    if (!updatedEphemeralState.hasPendingState()) return false
+    val priorWithoutHint = priorEphemeralState.toBuilder()
+      .setPendingState(
+        priorEphemeralState.pendingState.toBuilder().clearHelpIndex().build()
+      )
+      .build()
+    val updatedWithoutHint = updatedEphemeralState.toBuilder()
+      .setPendingState(
+        updatedEphemeralState.pendingState.toBuilder().clearHelpIndex().build()
+      )
+      .build()
+    return priorWithoutHint == updatedWithoutHint
   }
 
   /**

@@ -13,12 +13,14 @@ interface CommandExecutor {
    *
    * @param includeErrorOutput whether to include error output in the returned [CommandResult],
    *     otherwise it's discarded
+   * @param inputLines a sequence of strings to pipe to the standard input stream of the process
    * @return a [CommandResult] that includes the error code & application output
    */
   fun executeCommand(
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean = true
+    includeErrorOutput: Boolean = true,
+    inputLines: Sequence<String> = emptySequence()
   ): CommandResult
 }

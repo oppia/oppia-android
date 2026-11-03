@@ -16,6 +16,7 @@ kt_android_library(
         ":tag_handlers",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
+        "//utility:resources",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
@@ -30,6 +31,7 @@ kt_android_library(
         "LiTagHandler.kt",
         "MathTagHandler.kt",
         "PolicyPageTagHandler.kt",
+        "WorkedExampleTagHandler.kt",
     ],
     visibility = ["//utility:__subpackages__"],
     deps = [

@@ -77,7 +77,6 @@ This is a Java/Kotlin layer without Android dependencies. It contains utilities 
 -   **utility/networking** - A utility to get the current connection status of the device.
 -   **utility/parser** - Rich-text parsers (e.g. HtmlParser, UrlParser) ensure that the rich-text from the Oppia backend is parsed correctly to display it properly in the Android app.
 -   **utility/profile** - A utility to manage the creation and deletion of directories.
--   **utility/statusbar** - A utility to change the colour of the status bar.
 -   **utility/system** - A utility that contains system-related utilities.
 
 #### 6. testing

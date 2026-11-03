@@ -123,6 +123,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
+  fun pauseHints() {
+    questionAssessmentProgressController.pauseHints()
+  }
+
+  fun resumeHints() {
+    questionAssessmentProgressController.resumeHints()
+  }
+
   private fun retrieveArguments(): QuestionPlayerFragmentArguments {
     return fragment.requireArguments().getProto(
       QuestionPlayerFragment.ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance()

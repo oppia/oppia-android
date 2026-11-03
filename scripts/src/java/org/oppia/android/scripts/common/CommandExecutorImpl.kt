@@ -32,7 +32,8 @@ class CommandExecutorImpl(
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean
+    includeErrorOutput: Boolean,
+    inputLines: Sequence<String>
   ): CommandResult {
     check(workingDir.isDirectory) {
       "Expected working directory to be an actual directory: $workingDir"
@@ -43,6 +44,9 @@ class CommandExecutorImpl(
         .directory(workingDir)
         .redirectErrorStream(includeErrorOutput)
         .start()
+
+    // Write to the process's standard input before awaiting completion.
+    process.outputStream.bufferedWriter().use { writer -> inputLines.forEach(writer::appendLine) }
 
     // Consume the input & error streams individually, and separately from waiting for the process
     // to complete (since consuming the output channels may be required for the process to actually

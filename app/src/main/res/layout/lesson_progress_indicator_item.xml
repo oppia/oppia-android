@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.LessonProgressViewModel" />
+  </data>
+
+  <org.oppia.android.app.customview.LessonProgressIndicatorView
+    android:id="@+id/lesson_progress_indicator"
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:layout_marginStart="@dimen/general_button_item_exploration_view_margin_start"
+    android:layout_marginTop="@dimen/general_button_item_margin_top"
+    android:layout_marginEnd="@dimen/general_button_item_exploration_view_margin_end"
+    android:layout_marginBottom="0dp"
+    android:contentDescription="@{viewModel.contentDescription}"
+    app:animateLessonProgress="@{viewModel.consumeShouldAnimateProgress()}"
+    app:explorationSplitViewMarginApplicable="@{viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
+    app:explorationSplitViewMarginEnd="@{@dimen/general_button_item_exploration_split_view_margin_end}"
+    app:explorationSplitViewMarginStart="@{@dimen/general_button_item_exploration_split_view_margin_start}"
+    app:explorationSplitViewMarginTop="@{@dimen/general_button_item_split_view_margin_top_right}"
+    app:explorationViewMarginApplicable="@{!viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/space_0dp}"
+    app:explorationViewMarginEnd="@{@dimen/general_button_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/general_button_item_exploration_view_margin_start}"
+    app:explorationViewMarginTop="@{@dimen/general_button_item_margin_top}"
+    app:isLessonProgressBetweenCheckpoints="@{viewModel.isBetweenCheckpoints}"
+    app:lessonProgressCompletedCount="@{viewModel.completedCount}"
+    app:lessonProgressTotalCount="@{viewModel.totalCount}" />
+</layout>

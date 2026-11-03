@@ -11,7 +11,7 @@ build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_
 # reduce code smell & potential bugs during development.
 build --javacopt="-Werror"
 
-# TODO: Remove this.
+# TODO(#6233): Remove this once it's no longer needed with the migration to rules_android 0.7.1.
 # Disable warnings about incompatible source values since these can't be avoided in Bazel 6.x.
 build --javacopt="-Xlint:-options" --host_javacopt="-Xlint:-options"
 

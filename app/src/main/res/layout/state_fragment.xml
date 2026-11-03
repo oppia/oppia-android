@@ -17,7 +17,6 @@
     android:layout_height="match_parent"
     android:background="@color/component_color_shared_state_fragment_background_color"
     android:descendantFocusability="beforeDescendants"
-    android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout

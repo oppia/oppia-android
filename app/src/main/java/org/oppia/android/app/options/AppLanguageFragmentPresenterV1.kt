@@ -14,6 +14,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
@@ -88,7 +89,9 @@ class AppLanguageFragmentPresenterV1 @Inject constructor(
       selectedLanguage = oppiaLanguage
     }.build()
 
-    translationController.updateAppLanguage(profileId, selection).toLiveData().observe(fragment) {
+    translationController.updateAppLanguage(
+      profileId.toProfileIdPreservingZero(), selection
+    ).toLiveData().observe(fragment) {
       when (it) {
         is AsyncResult.Success -> appLanguage = oppiaLanguage
         is AsyncResult.Failure -> {

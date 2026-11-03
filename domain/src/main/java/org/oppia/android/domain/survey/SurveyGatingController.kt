@@ -11,12 +11,14 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.NpsSurveyGracePeriodInDays
 import org.oppia.android.util.platformparameter.NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 private const val GET_TOPIC_LEARNING_TIME_PROVIDER_ID =
   "get_topic_learning_time_provider_id"
+private const val READY_LEARNING_TIME_PROVIDER_ID = "ready_learning_time_provider_id"
 private const val GATING_RESULT_PROVIDER_ID =
   "gating_result_provider_id"
 
@@ -43,7 +45,11 @@ class SurveyGatingController @Inject constructor(
    */
   fun maybeShowSurvey(profileId: LegacyProfileId, topicId: String): DataProvider<Boolean> {
     val lastShownDateProvider = retrieveSurveyLastShownDate(profileId)
-    val learningTimeProvider = retrieveAggregateLearningTime(profileId, topicId)
+    // Both early exit (timer stop queued) and completion (timer still running) must include
+    // the current session before making a gating decision.
+    val learningTimeProvider = activeTimeController.flushLearningTime().combineWith(
+      retrieveAggregateLearningTime(profileId, topicId), READY_LEARNING_TIME_PROVIDER_ID
+    ) { _, learningTimeMs -> learningTimeMs }
     return lastShownDateProvider.combineWith(
       learningTimeProvider, GATING_RESULT_PROVIDER_ID
     ) { lastShownTimestampMs, learningTimeMs ->
@@ -70,7 +76,9 @@ class SurveyGatingController @Inject constructor(
   }
 
   private fun retrieveSurveyLastShownDate(profileId: LegacyProfileId) =
-    profileManagementController.retrieveSurveyLastShownTimestamp(profileId)
+    profileManagementController.retrieveSurveyLastShownTimestamp(
+      profileId.toProfileIdPreservingZero()
+    )
 
   private fun hasReachedMinimumTopicLearningThreshold(topicLearningTimeMs: Long): Boolean {
     return topicLearningTimeMs >= minimumLearningTimeForGatingMillis
@@ -81,7 +89,7 @@ class SurveyGatingController @Inject constructor(
     topicId: String
   ): DataProvider<Long> {
     return activeTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-      profileId, topicId
+      profileId.toProfileIdPreservingZero(), topicId
     ).transform(
       GET_TOPIC_LEARNING_TIME_PROVIDER_ID,
       TopicLearningTime::getTopicLearningTimeMs

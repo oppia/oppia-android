@@ -15,13 +15,27 @@ kt_jvm_library(
     # This ensures downstream targets use the JRE version instead of Android version
     exports = ["//third_party:com_google_guava_guava_jre"],
     deps = [
+        ":lint_check_catalog",
         ":lint_common_lib",
         ":lint_project_description_lib",
         ":lint_reporter_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
         "//third_party:com_android_tools_lint_lint",
         "//third_party:com_google_guava_guava_jre",
+    ],
+)
+
+kt_jvm_library(
+    name = "lint_check_catalog",
+    testonly = True,
+    srcs = [
+        "LintCheckCatalog.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//third_party:com_android_tools_lint_lint",
     ],
 )
 

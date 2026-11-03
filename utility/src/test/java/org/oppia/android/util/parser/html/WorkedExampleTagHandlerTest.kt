@@ -1,0 +1,619 @@
+package org.oppia.android.util.parser.html
+
+import android.app.Application
+import android.content.Context
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.text.Editable
+import android.text.Html
+import android.text.Spannable
+import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
+import android.text.style.StyleSpan
+import android.view.View
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import dagger.Binds
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import org.json.JSONObject
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
+import org.robolectric.annotation.LooperMode
+import org.xml.sax.Attributes
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+
+private const val WORKED_EXAMPLE_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;What is a fraction?&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;A fraction represents part of a whole.&amp;quot;\">" +
+    "</oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITHOUT_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "answer-with-value=\"&amp;quot;A fraction represents part of a whole.&amp;quot;\">" +
+    "</oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITHOUT_ANSWER_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;What is a fraction?&amp;quot;\">" +
+    "</oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_EMPTY_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_EMPTY_ANSWER_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;A question&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_VISUALLY_EMPTY_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;&amp;lt;p&amp;gt;&amp;lt;/p&amp;gt;&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_MALFORMED_QUESTION_MARKUP =
+  "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;Malformed question\" " +
+    "answer-with-value=\"&amp;quot;An answer&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_MALFORMED_ANSWER_MARKUP =
+  "<oppia-noninteractive-workedexample question-with-value=\"&amp;quot;A question&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;Malformed answer\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;&amp;lt;strong&amp;gt;Is 1 &amp;amp;lt; 2?" +
+    "&amp;lt;/strong&amp;gt;&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;&amp;lt;em&amp;gt;Yes, one is less than two." +
+    "&amp;lt;/em&amp;gt;&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP =
+  "<oppia-noninteractive-workedexample " +
+    "question-with-value=\"&amp;quot;&amp;lt;pre&amp;gt;&amp;lt;p&amp;gt;lorem ipsum" +
+    "&amp;lt;/p&amp;gt;&amp;lt;/pre&amp;gt;&amp;quot;\" " +
+    "answer-with-value=\"&amp;quot;&amp;lt;p&amp;gt;A worked answer&amp;lt;/p&amp;gt;" +
+    "&amp;quot;\"></oppia-noninteractive-workedexample>"
+
+private const val CUSTOM_NESTED_TAG = "nested-tag"
+private const val CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE = "text-with-value"
+private const val QUESTION_LABEL = "Question:"
+private const val ANSWER_LABEL = "Answer:"
+private const val WORKED_EXAMPLE_LEADING_MARGIN_PX = 16
+
+/** Tests for [WorkedExampleTagHandler]. */
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+class WorkedExampleTagHandlerTest {
+  @Inject lateinit var consoleLogger: ConsoleLogger
+
+  private lateinit var fakeImageRetriever: FakeImageRetriever
+  private lateinit var nestedTagHandlers: Map<String, CustomTagHandler>
+  private lateinit var tagHandlersWithWorkedExampleSupport: Map<String, CustomTagHandler>
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    fakeImageRetriever = FakeImageRetriever()
+    // Note that the worked example handler is deliberately absent from the handlers used for nested
+    // content since worked examples can't contain other worked examples.
+    nestedTagHandlers = mapOf(
+      CUSTOM_NESTED_TAG to NestedTagHandler(),
+      CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
+      CUSTOM_MATH_TAG to MathTagHandler(
+        consoleLogger,
+        ApplicationProvider.getApplicationContext<Application>().assets,
+        lineHeight = 16f,
+        cacheLatexRendering = true,
+        application = ApplicationProvider.getApplicationContext()
+      ),
+      CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+        object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+          override fun onConceptCardLinkClicked(view: View, skillId: String) {}
+        },
+        consoleLogger
+      )
+    )
+    tagHandlersWithWorkedExampleSupport = nestedTagHandlers +
+      (CUSTOM_WORKED_EXAMPLE_TAG to createWorkedExampleTagHandler(QUESTION_LABEL, ANSWER_LABEL))
+  }
+
+  @Test
+  fun testParseHtml_emptyString_returnsEmptyText() {
+    val parsedHtml = parseHtml("")
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExample_extractsQuestionAndAnswer() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question:\nWhat is a fraction?\n\nAnswer:\nA fraction represents part of a whole.\n"
+    )
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExample_addsBoldQuestionAndAnswerLabels() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
+
+    val boldSpans = parsedHtml.getSpansFromWholeString(StyleSpan::class)
+      .filter { it.style == Typeface.BOLD }
+    assertThat(boldSpans.map { parsedHtml.getTextForSpan(it) })
+      .containsExactly(QUESTION_LABEL, ANSWER_LABEL)
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExample_indentsWholeWorkedExample() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_MARKUP)
+
+    val leadingMarginSpan =
+      parsedHtml.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(parsedHtml.getSpanStart(leadingMarginSpan)).isEqualTo(0)
+    assertThat(parsedHtml.getSpanEnd(leadingMarginSpan)).isEqualTo(parsedHtml.length)
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ true))
+      .isEqualTo(WORKED_EXAMPLE_LEADING_MARGIN_PX)
+    assertThat(leadingMarginSpan.getLeadingMargin(/* first= */ false))
+      .isEqualTo(WORKED_EXAMPLE_LEADING_MARGIN_PX)
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleMissingQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITHOUT_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleMissingAnswer_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITHOUT_ANSWER_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleEmptyQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_EMPTY_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleEmptyAnswer_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_EMPTY_ANSWER_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleVisuallyEmptyQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_VISUALLY_EMPTY_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleMalformedQuestion_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_MALFORMED_QUESTION_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleMalformedAnswer_doesNotAddText() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_MALFORMED_ANSWER_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withWorkedExampleBetweenText_preservesSurroundingText() {
+    val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_MARKUP After")
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Before \n\nQuestion:\nWhat is a fraction?\n\nAnswer:\n" +
+        "A fraction represents part of a whole.\nAfter"
+    )
+    val leadingMarginSpan =
+      parsedHtml.getSpansFromWholeString(LeadingMarginSpan.Standard::class).single()
+    assertThat(parsedHtml.getSpanStart(leadingMarginSpan))
+      .isEqualTo(parsedHtml.toString().indexOf(QUESTION_LABEL))
+    assertThat(parsedHtml.getSpanEnd(leadingMarginSpan))
+      .isEqualTo(parsedHtml.toString().indexOf("After"))
+  }
+
+  @Test
+  fun testParseHtml_withNestedHtml_parsesTextAndPreservesFormattingSpans() {
+    val parsedHtml = parseHtml(WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP)
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question:\nIs 1 < 2?\n\nAnswer:\nYes, one is less than two.\n"
+    )
+    val styleSpans = parsedHtml.getSpansFromWholeString(StyleSpan::class)
+    assertThat(styleSpans.map { it.style })
+      .containsExactly(Typeface.BOLD, Typeface.BOLD, Typeface.BOLD, Typeface.ITALIC)
+    val boldSpan = styleSpans.single {
+      it.style == Typeface.BOLD && parsedHtml.getTextForSpan(it) == "Is 1 < 2?"
+    }
+    val italicSpan = styleSpans.single { it.style == Typeface.ITALIC }
+    assertThat(parsedHtml.getTextForSpan(boldSpan)).isEqualTo("Is 1 < 2?")
+    assertThat(parsedHtml.getTextForSpan(italicSpan)).isEqualTo("Yes, one is less than two.")
+  }
+
+  @Test
+  fun testParseHtml_withNestedBlockHtmlBetweenText_parsesWithoutLiteralMarkup() {
+    val parsedHtml = parseHtml("Before $WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP After")
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Before \n\nQuestion:\nlorem ipsum\n\nAnswer:\nA worked answer\nAfter"
+    )
+    assertThat(parsedHtml.toString()).doesNotContain("&lt;")
+    assertThat(parsedHtml.toString()).doesNotContain("<p>")
+    assertThat(parsedHtml.toString()).doesNotContain("<pre>")
+  }
+
+  @Test
+  fun testParseHtml_withNestedCustomTag_processesNestedTagHandler() {
+    val parsedHtml = parseHtml(createNestedCustomTagMarkup())
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question:\nNested custom content\n\nAnswer:\nNested answer\n"
+    )
+  }
+
+  @Test
+  fun testParseHtml_withNestedImage_processesImageHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """<oppia-noninteractive-image filepath-with-value="test.png" """ +
+          """alt-with-value="A fraction diagram" caption-with-value="Fraction diagram">""" +
+          "</oppia-noninteractive-image>",
+      answerHtml = "The diagram shows one half."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("A fraction diagram")
+    assertThat(parsedHtml.toString()).contains("Fraction diagram")
+    assertThat(parsedHtml.getSpansFromWholeString(ImageSpan::class)).hasLength(1)
+    assertThat(fakeImageRetriever.loadedImageFilenames).containsExactly("test.png")
+  }
+
+  @Test
+  fun testParseHtml_withNestedMath_processesMathHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """Compute <oppia-noninteractive-math render-type="inline" """ +
+          """math_content-with-value="{&quot;raw_latex&quot;:""" +
+          """&quot;\\frac{1}{2}&quot;}"></oppia-noninteractive-math>.""",
+      answerHtml = "The result is one half."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("Compute ")
+    assertThat(parsedHtml.toString()).contains("\uFFFC")
+    assertThat(fakeImageRetriever.loadedMathExpressions).containsExactly("\\frac{1}{2}")
+  }
+
+  @Test
+  fun testParseHtml_withNestedConceptCard_processesConceptCardHandler() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """Review <oppia-noninteractive-skillreview """ +
+          """skill_id-with-value="fraction_skill" text-with-value="fraction concept card">""" +
+          "</oppia-noninteractive-skillreview>.",
+      answerHtml = "Then solve the problem."
+    )
+
+    val parsedHtml = parseHtml(workedExampleMarkup)
+
+    assertThat(parsedHtml.toString()).contains("fraction concept card")
+    assertThat(parsedHtml.getSpansFromWholeString(ClickableSpan::class)).hasLength(1)
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedCustomHandlers_includesAllDescriptions() {
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml =
+        """<oppia-noninteractive-image alt-with-value="A fraction diagram">""" +
+          "</oppia-noninteractive-image> " +
+          """<oppia-noninteractive-math math_content-with-value="{""" +
+          """&quot;raw_latex&quot;:&quot;\\frac{1}{2}&quot;}">""" +
+          "</oppia-noninteractive-math> " +
+          """<oppia-noninteractive-skillreview skill_id-with-value="fraction_skill">""" +
+          "</oppia-noninteractive-skillreview>",
+      answerHtml = "These are the supporting details."
+    )
+
+    val contentDescription = getContentDescription(workedExampleMarkup)
+
+    assertThat(contentDescription).contains("Image illustrating A fraction diagram")
+    assertThat(contentDescription).contains("Math content")
+    assertThat(contentDescription).contains("fraction_skill concept card")
+    assertThat(contentDescription).contains("Answer: These are the supporting details.")
+  }
+
+  @Test
+  fun testParseHtml_withNestedWorkedExample_ignoresNestedWorkedExample() {
+    val nestedWorkedExample = createWorkedExampleMarkup(
+      questionHtml = "Nested question",
+      answerHtml = "Nested answer"
+    )
+    val outerWorkedExample = createWorkedExampleMarkup(
+      questionHtml = nestedWorkedExample,
+      answerHtml = "Outer answer"
+    )
+
+    val parsedHtml = parseHtml(outerWorkedExample)
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withoutWorkedExampleHandler_ignoresWorkedExample() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = WORKED_EXAMPLE_MARKUP,
+      imageRetriever = fakeImageRetriever,
+      customTagHandlers = nestedTagHandlers
+    )
+
+    assertThat(parsedHtml.toString()).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_withRtlLabels_preservesLogicalQuestionThenAnswerOrder() {
+    val rtlTagHandlers = mapOf(
+      CUSTOM_WORKED_EXAMPLE_TAG to createWorkedExampleTagHandler(
+        questionLabel = "السؤال:",
+        answerLabel = "الإجابة:"
+      )
+    )
+    val workedExampleMarkup = createWorkedExampleMarkup(
+      questionHtml = "ما هو الكسر؟",
+      answerHtml = "الكسر هو جزء من الكل."
+    )
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = workedExampleMarkup,
+      imageRetriever = fakeImageRetriever,
+      customTagHandlers = rtlTagHandlers
+    )
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "السؤال:\nما هو الكسر؟\n\nالإجابة:\nالكسر هو جزء من الكل.\n"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withWorkedExample_readsQuestionBeforeAnswer() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedHtml_returnsTextWithoutMarkup() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_WITH_NESTED_HTML_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: Is 1 < 2?\nAnswer: Yes, one is less than two."
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedBlockHtml_preservesLogicalReadingOrder() {
+    val contentDescription =
+      getContentDescription(WORKED_EXAMPLE_WITH_NESTED_BLOCK_HTML_MARKUP)
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: lorem ipsum\nAnswer: A worked answer"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withNestedCustomTag_includesNestedDescription() {
+    val contentDescription = getContentDescription(createNestedCustomTagMarkup())
+
+    assertThat(contentDescription).isEqualTo(
+      "Question: Nested custom content\nAnswer: Nested answer"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withWorkedExampleBetweenText_preservesReadingOrder() {
+    val contentDescription = getContentDescription("Before $WORKED_EXAMPLE_MARKUP After")
+
+    assertThat(contentDescription).isEqualTo(
+      "Before Question: What is a fraction?\n" +
+        "Answer: A fraction represents part of a whole. After"
+    )
+  }
+
+  @Test
+  fun testGetContentDescription_withMissingQuestion_doesNotAddDescription() {
+    val contentDescription = getContentDescription(WORKED_EXAMPLE_WITHOUT_QUESTION_MARKUP)
+
+    assertThat(contentDescription).isEmpty()
+  }
+
+  @Test
+  fun testParseHtml_nullImageRetrieverWithWorkedExample_returnsContentDescription() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = WORKED_EXAMPLE_MARKUP,
+      imageRetriever = null,
+      customTagHandlers = tagHandlersWithWorkedExampleSupport
+    )
+
+    assertThat(parsedHtml.toString()).isEqualTo(
+      "Question: What is a fraction?\nAnswer: A fraction represents part of a whole."
+    )
+  }
+
+  private fun parseHtml(html: String) =
+    CustomHtmlContentHandler.fromHtml(
+      html = html,
+      imageRetriever = fakeImageRetriever,
+      customTagHandlers = tagHandlersWithWorkedExampleSupport
+    )
+
+  private fun getContentDescription(html: String) =
+    CustomHtmlContentHandler.getContentDescription(
+      html = html,
+      customTagHandlers = tagHandlersWithWorkedExampleSupport
+    )
+
+  private fun createWorkedExampleTagHandler(
+    questionLabel: String,
+    answerLabel: String
+  ): WorkedExampleTagHandler {
+    return WorkedExampleTagHandler(
+      consoleLogger,
+      labels = WorkedExampleLabels(questionLabel, answerLabel),
+      leadingMarginPx = WORKED_EXAMPLE_LEADING_MARGIN_PX,
+      nestedHtmlParser = object : WorkedExampleTagHandler.NestedHtmlParser {
+        override fun parseHtml(html: String): Spannable =
+          CustomHtmlContentHandler.fromHtml(html, fakeImageRetriever, nestedTagHandlers)
+
+        override fun parseHtmlForContentDescription(html: String): String =
+          CustomHtmlContentHandler.getContentDescription(html, nestedTagHandlers)
+      }
+    )
+  }
+
+  /**
+   * Returns markup for a worked example whose question contains a custom tag, with that tag encoded
+   * the way it would be if it appeared on its own (that is, with its value wrapped in an encoded
+   * pair of quotes).
+   */
+  private fun createNestedCustomTagMarkup(): String {
+    return createWorkedExampleMarkup(
+      questionHtml =
+        "<$CUSTOM_NESTED_TAG $CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE=" +
+          "\"&amp;quot;Nested custom content&amp;quot;\"></$CUSTOM_NESTED_TAG>",
+      answerHtml = "Nested answer"
+    )
+  }
+
+  private fun createWorkedExampleMarkup(questionHtml: String, answerHtml: String): String {
+    return "<$CUSTOM_WORKED_EXAMPLE_TAG " +
+      "question-with-value=\"${questionHtml.encodeAsWorkedExampleAttribute()}\" " +
+      "answer-with-value=\"${answerHtml.encodeAsWorkedExampleAttribute()}\">" +
+      "</$CUSTOM_WORKED_EXAMPLE_TAG>"
+  }
+
+  private fun String.encodeAsWorkedExampleAttribute(): String {
+    return JSONObject.quote(this)
+      .replace("&", "&amp;amp;")
+      .replace("\"", "&amp;quot;")
+      .replace("<", "&amp;lt;")
+      .replace(">", "&amp;gt;")
+  }
+
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
+
+  private fun Spannable.getTextForSpan(span: Any): String =
+    subSequence(getSpanStart(span), getSpanEnd(span)).toString()
+
+  private fun setUpTestApplicationComponent() {
+    DaggerWorkedExampleTagHandlerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  @Module
+  interface TestModule {
+    @Binds
+    fun provideContext(application: Application): Context
+  }
+
+  @Singleton
+  @Component(
+    modules = [
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
+    ]
+  )
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(workedExampleTagHandlerTest: WorkedExampleTagHandlerTest)
+  }
+
+  /**
+   * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
+   * [CustomHtmlContentHandler.ImageRetriever].
+   */
+  private class FakeImageRetriever :
+    Html.ImageGetter,
+    CustomHtmlContentHandler.ImageRetriever {
+    val loadedImageFilenames = mutableListOf<String>()
+    val loadedMathExpressions = mutableListOf<String>()
+
+    override fun getDrawable(source: String?) = null
+
+    override fun loadDrawable(
+      filename: String,
+      type: CustomHtmlContentHandler.ImageRetriever.Type
+    ): ColorDrawable {
+      loadedImageFilenames += filename
+      return ColorDrawable().apply { setBounds(0, 0, 10, 10) }
+    }
+
+    override fun loadMathDrawable(
+      rawLatex: String,
+      lineHeight: Float,
+      equationColor: Int,
+      type: CustomHtmlContentHandler.ImageRetriever.Type
+    ): ColorDrawable {
+      loadedMathExpressions += rawLatex
+      return ColorDrawable().apply { setBounds(0, 0, 10, 10) }
+    }
+  }
+
+  private class NestedTagHandler :
+    CustomTagHandler,
+    CustomHtmlContentHandler.ContentDescriptionProvider {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    ) {
+      attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)?.let { text ->
+        output.replace(openIndex, closeIndex, text)
+      }
+    }
+
+    override fun getContentDescription(attributes: Attributes): String? =
+      attributes.getJsonStringValue(CUSTOM_NESTED_TAG_TEXT_ATTRIBUTE)
+  }
+}

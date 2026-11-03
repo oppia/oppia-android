@@ -7,17 +7,24 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.FaqListActivityBinding
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [FAQListActivity]. */
 @ActivityScope
 class FAQListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var faqListActivityToolbar: Toolbar
 
   fun handleOnCreate() {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     val binding =
       DataBindingUtil.setContentView<FaqListActivityBinding>(activity, R.layout.faq_list_activity)
     binding.apply {
@@ -32,6 +39,14 @@ class FAQListActivityPresenter @Inject constructor(
 
     binding.faqListActivityToolbar.setNavigationOnClickListener {
       (activity as FAQListActivity).finish()
+    }
+
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToAppBarLayout(
+        activity,
+        faqListActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
     }
 
     if (getFAQListFragment() == null) {

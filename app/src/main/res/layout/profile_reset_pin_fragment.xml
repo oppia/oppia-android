@@ -3,7 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <variable
       name="viewModel"
       type="org.oppia.android.app.settings.profile.ProfileResetPinViewModel" />
@@ -20,8 +19,9 @@
 
     <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:clipToPadding="false"
+      android:fillViewport="true"
       android:overScrollMode="never"
       android:paddingBottom="@dimen/profile_reset_pin_activity_scroll_view_padding_bottom"
       android:scrollbars="none">
@@ -34,9 +34,10 @@
 
         <TextView
           android:id="@+id/profile_reset_pin_main"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="36dp"
+          android:gravity="start|top"
           android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
           android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
           android:text="@string/profile_reset_pin_main"
@@ -101,11 +102,13 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
           android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_save_button_margin_end"
+          android:layout_marginBottom="24dp"
           android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.isButtonActive()}"
           android:enabled="@{viewModel.isButtonActive()}"
           android:text="@string/profile_rename_save"
           android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
       </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -102,7 +103,7 @@ class ModifyLessonProgressController @Inject constructor(
       topic.storyList.forEach { storySummary ->
         storySummary.chapterList.forEach { chapterSummary ->
           storyProgressController.recordCompletedChapter(
-            profileId = profileId,
+            profileId = profileId.toProfileIdPreservingZero(),
             topicId = topic.topicId,
             storyId = storySummary.storyId,
             explorationId = chapterSummary.explorationId,
@@ -125,7 +126,7 @@ class ModifyLessonProgressController @Inject constructor(
       val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
       storySummary.chapterList.forEach { chapterSummary ->
         storyProgressController.recordCompletedChapter(
-          profileId = profileId,
+          profileId = profileId.toProfileIdPreservingZero(),
           topicId = it.value,
           storyId = storySummary.storyId,
           explorationId = chapterSummary.explorationId,
@@ -148,7 +149,7 @@ class ModifyLessonProgressController @Inject constructor(
   ) {
     chapterMap.forEach {
       storyProgressController.recordCompletedChapter(
-        profileId = profileId,
+        profileId = profileId.toProfileIdPreservingZero(),
         topicId = it.value.second,
         storyId = it.value.first,
         explorationId = it.key,
