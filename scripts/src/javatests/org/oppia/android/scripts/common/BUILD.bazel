@@ -8,6 +8,8 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
 kt_jvm_test(
     name = "BazelClientTest",
     srcs = ["BazelClientTest.kt"],
+    # Ensure nested Bazel calls outside a workspace still use the project's Bazel version.
+    env = {"USE_BAZEL_VERSION": "6.5.0"},
     shard_count = 4,
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
