@@ -2,6 +2,7 @@ package org.oppia.android.app.customview.interaction
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_UP
@@ -34,6 +35,20 @@ class NumericInputInteractionView @JvmOverloads constructor(
     // Assume multi-line for the purpose of properly showing long hints.
     isSingleLine = hint != null
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
+    setAllowExponentialNotation(allowExponentialNotation = false)
+  }
+
+  /**
+   * Configures soft keyboard input type based on whether exponential notation is allowed.
+   */
+  fun setAllowExponentialNotation(allowExponentialNotation: Boolean) {
+    inputType = if (allowExponentialNotation) {
+      InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+    } else {
+      InputType.TYPE_CLASS_NUMBER or
+        InputType.TYPE_NUMBER_FLAG_DECIMAL or
+        InputType.TYPE_NUMBER_FLAG_SIGNED
+    }
   }
 
   // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
