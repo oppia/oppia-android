@@ -10,6 +10,7 @@ kt_jvm_library(
         "MavenArtifact.kt",
         "MavenInstallJson.kt",
     ],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )

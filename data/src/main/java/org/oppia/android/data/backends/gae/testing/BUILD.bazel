@@ -22,6 +22,7 @@ kt_android_library(
     name = "feedback_reporting_service_test_orchestrator",
     testonly = True,
     srcs = ["FeedbackReportingServiceTestOrchestrator.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
@@ -35,6 +36,7 @@ kt_android_library(
     name = "platform_parameter_service_test_orchestrator",
     testonly = True,
     srcs = ["PlatformParameterServiceTestOrchestrator.kt"],
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",

@@ -6,10 +6,6 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin", "kt_javac_options", "kt_kotlinc_options")
 load("//:build_vars.bzl", "KOTLIN_LANGUAGE_VERSION")
 
-# This exposes a patch that fixes an issue with duplicate processor arguments. See:
-# github.com/bazelbuild/rules_kotlin/pull/940.
-exports_files(["remove_processor_duplicates.patch"])
-
 string_flag(
     name = "warn_mode",
     build_setting_default = "failure",

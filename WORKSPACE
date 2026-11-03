@@ -73,9 +73,8 @@ load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
 # pulled in by protobuf_deps.
 http_archive(
     name = "io_bazel_rules_kotlin",
-    patches = ["//tools/kotlin:remove_processor_duplicates.patch"],
     sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
-    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
+    url = "https://github.com/bazelbuild/rules_kotlin/releases/download/v{0}/rules_kotlin-v{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]),
 )
 
 initializeDepsForWorkspace()
@@ -103,7 +102,7 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version", "ksp_version")
 
 # Explicitly pin the Kotlin compiler release to match the Kotlin stdlib version in
 # //third_party:versions.bzl. Even when a lower language_version/api_version is configured on
@@ -116,7 +115,11 @@ load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "
 kotlin_repositories(
     compiler_release = kotlinc_version(
         release = KOTLIN_COMPILER_VERSION,
-        sha256 = "432267996d0d6b4b17ca8de0f878e44d4a099b7e9f1587a98edc4d27e76c215a",
+        sha256 = "1fc50d805f9809e92de43e91f089cc8618567c1a350faebdabf8a40c5048bee8",
+    ),
+    ksp_compiler_release = ksp_version(
+        release = "%s-1.0.12" % KOTLIN_COMPILER_VERSION,
+        sha256 = "451bf769621930964d68d117f0176026c661be7668c7c1c783f1350a0746e43f",
     ),
 )
 
