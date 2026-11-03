@@ -164,8 +164,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable:2.1.0"
-  artifact_version: "1.1.1"
+  artifact_name: "androidx.compose.compiler:compiler:1.5.0"
+  artifact_version: "1.5.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1688,18 +1688,6 @@ maven_dependency {
   }
 }
 maven_dependency {
-maven_dependency {
-  artifact_name: "com.google.devtools.ksp:symbol-processing-api:2.1.0-1.0.28"
-  artifact_version: "2.1.0-1.0.28"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-
   artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
   artifact_version: "1.13.0"
   license {
@@ -1765,8 +1753,19 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup:kotlinpoet:1.10.2"
-  artifact_version: "1.10.2"
+  artifact_name: "com.squareup:kotlinpoet:1.13.2"
+  artifact_version: "1.13.2"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.squareup:kotlinpoet-ksp:1.13.2"
+  artifact_version: "1.13.2"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1956,8 +1955,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.9.0"
+  artifact_version: "1.9.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1968,7 +1967,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.9.0"
-  artifact_version: "1.6.21"
+  artifact_version: "1.9.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1979,7 +1978,7 @@ maven_dependency {
 }
 maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.0"
-  artifact_version: "1.6.21"
+  artifact_version: "1.9.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -2066,8 +2065,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.ow2.asm:asm:9.2"
-  artifact_version: "9.2"
+  artifact_name: "org.ow2.asm:asm:9.3"
+  artifact_version: "9.3"
   license {
     license_name: "BSD-3-Clause"
     original_link: "https://asm.ow2.io/license.html"

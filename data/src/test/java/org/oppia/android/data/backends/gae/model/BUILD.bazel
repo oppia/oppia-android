@@ -8,6 +8,7 @@ oppia_android_test(
     name = "GaePlatformParameterValueTest",
     srcs = ["GaePlatformParameterValueTest.kt"],
     custom_package = "org.oppia.android.data.backends.gae.model",
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     test_class = "org.oppia.android.data.backends.gae.model.GaePlatformParameterValueTest",
     test_manifest = "//data:test_manifest",
     deps = [
@@ -18,5 +19,4 @@ oppia_android_test(
         "//third_party:moshi",
         "//third_party:robolectric_android-all",
     ],
-    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )

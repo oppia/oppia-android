@@ -6,10 +6,6 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_compiler_plugin", "kt_javac_options", "kt_kotlinc_options")
 load("//:build_vars.bzl", "KOTLIN_LANGUAGE_VERSION")
 
-# This exposes a patch that fixes an issue with duplicate processor arguments. See:
-# github.com/bazelbuild/rules_kotlin/pull/940.
-exports_files(["remove_processor_duplicates.patch"])
-
 string_flag(
     name = "warn_mode",
     build_setting_default = "failure",
@@ -36,7 +32,6 @@ kt_kotlinc_options(
         ":errors_as_warnings": "report",
     }),
     x_optin = ["kotlin.RequiresOptIn"],
-    x_use_k2 = False,
 )
 
 # TODO(#4936): Fix "warnings as errors" for processor-generated Java code.
@@ -60,8 +55,8 @@ define_kt_toolchain(
 
 kt_compiler_plugin(
     name = "jetpack_compose_compiler_plugin",
-    id = "androidx.compose.compiler.plugins.kotlin",
+    id = "androidx.compose.compiler",
     target_embedded_compiler = True,
     visibility = ["//app:app_visibility"],
-    deps = ["//third_party:org_jetbrains_kotlin_kotlin-compose-compiler-plugin-embeddable"],
+    deps = ["//third_party:androidx_compose_compiler_compiler"],
 )

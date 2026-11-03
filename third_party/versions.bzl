@@ -23,7 +23,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.3.1",
-    "org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable": "2.1.0",
+    "androidx.compose.compiler:compiler": "1.5.0",
     "androidx.compose.foundation:foundation": "1.1.1",
     "androidx.compose.foundation:foundation-layout": "1.1.1",
     "androidx.compose.material:material": "1.1.1",
@@ -60,8 +60,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.github.bumptech.glide:glide": "4.11.0",
     "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.3.0",
-    "com.google.auto.value:auto-value-annotations": "1.9",
-    "com.google.devtools.ksp:symbol-processing-api": "2.1.0-1.0.28",
+    "com.google.auto.value:auto-value-annotations": "1.8.1",
     "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "21.0.0",
     "com.google.firebase:firebase-appcheck": "16.0.0",
@@ -75,7 +74,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.guava:failureaccess": "1.0.1",
     "com.google.j2objc:j2objc-annotations": "1.3",
     "com.google.protobuf:protobuf-javalite": "4.28.3",
-    "com.squareup.moshi:moshi": "1.15.0",
     "com.squareup.moshi:moshi-kotlin": "1.15.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.15.0",
     "com.squareup.okhttp3:okhttp": "4.7.2",
@@ -143,13 +141,13 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
     },
-    "dagger": {
-        "sha": "cc9b29fd12f7dcb18a49340dabdc02010a777d8d28079e6cdcd2e0c8f3ecf1a2",
-        "version": "2.51.1",
-    },
     "bazel_features": {
         "sha": "4fd9922d464686820ffd8fcefa28ccffa147f7cdc6b6ac0d8b07fde565c65d66",
         "version": "1.25.0",
+    },
+    "dagger": {
+        "sha": "fc0fb0fe1ad4f812e39e11984381bc4a95165530a7d51ef5a20e3b9f01abd11a",
+        "version": "2.46",
     },
     "guava_android": {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
@@ -183,8 +181,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "6.9",
     },
     "rules_kotlin": {
-        "sha": "e1448a56b2462407b2688dea86df5c375b36a0991bd478c2ddd94c97168125e2",
-        "version": "2.1.3",
+        "sha": "48e69a22c7098a2bb36bcab3bec3355a0ea1190a285c64216cf4eba3c08bba89",
+        "version": "1.9.2",
     },
     "rules_license": {
         "sha": "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",

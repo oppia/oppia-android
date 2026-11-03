@@ -102,7 +102,7 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version", "ksp_version")
 
 # Explicitly pin the Kotlin compiler release to match the Kotlin stdlib version in
 # //third_party:versions.bzl. Even when a lower language_version/api_version is configured on
@@ -115,7 +115,11 @@ load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "
 kotlin_repositories(
     compiler_release = kotlinc_version(
         release = KOTLIN_COMPILER_VERSION,
-        sha256 = "1ba08a8b45da99339a0601134cc037b54cf85e9bc0edbe76dcbd27c2d684a977",
+        sha256 = "1fc50d805f9809e92de43e91f089cc8618567c1a350faebdabf8a40c5048bee8",
+    ),
+    ksp_compiler_release = ksp_version(
+        release = "%s-1.0.12" % KOTLIN_COMPILER_VERSION,
+        sha256 = "451bf769621930964d68d117f0176026c661be7668c7c1c783f1350a0746e43f",
     ),
 )
 
