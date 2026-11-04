@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
@@ -77,11 +78,14 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
+  private var isInitializingLearnerId = false
+
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    isInitializingLearnerId = false
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,
@@ -177,8 +181,7 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     binding.viewModel = model
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
-      updateLearnerIdIfAbsent(model.profile)
-      loginToProfile(model.profile)
+      onProfileClick(model.profile)
     }
   }
 
@@ -241,11 +244,37 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     )
   }
 
-  private fun updateLearnerIdIfAbsent(profile: Profile) {
-    if (profile.learnerId.isNullOrEmpty()) {
-      // TODO(#4345): Block on the following data provider before allowing the user to log in.
-      profileManagementController.initializeLearnerId(profile.id.toProfileIdPreservingZero())
+  /** Initializes the learner ID before routing to login, allowing failed attempts to be retried. */
+  fun onProfileClick(profile: Profile) {
+    if (isInitializingLearnerId) return
+    if (profile.learnerId.isNotEmpty()) {
+      loginToProfile(profile)
+      return
     }
+    isInitializingLearnerId = true
+    val result = profileManagementController.initializeLearnerId(
+      profile.id.toProfileIdPreservingZero()
+    ).toLiveData()
+    result.observe(
+      fragment.viewLifecycleOwner,
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(value: AsyncResult<Any?>) {
+          when (value) {
+            is AsyncResult.Pending -> Unit
+            is AsyncResult.Success -> {
+              result.removeObserver(this)
+              isInitializingLearnerId = false
+              loginToProfile(profile)
+            }
+            is AsyncResult.Failure -> {
+              result.removeObserver(this)
+              isInitializingLearnerId = false
+              oppiaLogger.e("ProfileChooser", "Failed to initialize learner ID", value.error)
+            }
+          }
+        }
+      }
+    )
   }
 
   private fun loginToProfile(profile: Profile) {
