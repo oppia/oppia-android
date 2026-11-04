@@ -566,6 +566,35 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
+  @Test
+  @Iteration("redundant groups 1", "answer=x", "input=(x)")
+  @Iteration("redundant groups 2", "answer=x", "input=(((x)))")
+  @Iteration("redundant groups 3", "answer=x+3", "input=(x)+(3)")
+  @Iteration("redundant groups 4", "answer=sqrt(x)", "input=(sqrt((x)))")
+  fun testMatches_ruleInputWithRedundantGroups_returnsTrue() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  @Iteration("invalid or different groups 1", "answer=x+3*4", "input=(x+3)*4")
+  @Iteration("invalid or different groups 2", "answer=x", "input=((x)")
+  @Iteration("retained binary group", "answer=x+3", "input=(x+3)")
+  fun testMatches_ruleInputWithInvalidOrDifferentGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  @Iteration("redundant learner answer", "answer=(x)", "input=x")
+  fun testMatches_answerWithRedundantGroups_returnsFalse() {
+    val matches = matchesClassifier(createMathExpression(answer), createMathExpression(input))
+
+    assertThat(matches).isFalse()
+  }
+
   private fun matchesClassifier(
     answerExpression: InteractionObject,
     inputExpression: InteractionObject,
