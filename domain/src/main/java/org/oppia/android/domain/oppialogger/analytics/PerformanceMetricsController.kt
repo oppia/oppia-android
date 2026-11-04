@@ -40,6 +40,11 @@ class PerformanceMetricsController @Inject constructor(
   private val metricLogStore =
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
 
+  // Keep a local diagnostic history separately from the upload queue. Metrics uploaded
+  // immediately while online must still be visible in Developer Options.
+  private val debugMetricLogStore =
+    cacheStoreFactory.create("debug_metric_logs", OppiaMetricLogs.getDefaultInstance())
+
   /**
    * Logs a performance metric occurring at [currentScreen] defined by [loggableMetric]
    * corresponding to a time [timestamp].
@@ -53,7 +58,24 @@ class PerformanceMetricsController @Inject constructor(
     loggableMetric: OppiaMetricLog.LoggableMetric,
     priority: Priority
   ) {
-    uploadOrCacheLog(createMetricLog(timestamp, priority, currentScreen, loggableMetric))
+    val metricLog = createMetricLog(timestamp, priority, currentScreen, loggableMetric)
+    cacheDebugMetricLog(metricLog)
+    uploadOrCacheLog(metricLog)
+  }
+
+  private fun cacheDebugMetricLog(metricLog: OppiaMetricLog) {
+    debugMetricLogStore.storeDataAsync(updateInMemoryCache = true) { logs ->
+      if (metricLogStorageCacheSize <= 0) return@storeDataAsync OppiaMetricLogs.getDefaultInstance()
+      val updatedLogs = logs.toBuilder().addOppiaMetricLog(metricLog)
+      while (updatedLogs.oppiaMetricLogCount > metricLogStorageCacheSize) {
+        updatedLogs.removeOppiaMetricLog(0)
+      }
+      updatedLogs.build()
+    }.invokeOnCompletion {
+      it?.let {
+        consoleLogger.e("PerformanceMetricsController", "Failed to store debug metric log.", it)
+      }
+    }
   }
 
   /** Either uploads or caches [oppiaMetricLog] depending on current internet connectivity. */
@@ -168,6 +190,18 @@ class PerformanceMetricsController @Inject constructor(
    */
   suspend fun getMetricLogStoreList(): List<OppiaMetricLog> {
     return metricLogStore.readDataAsync().await().oppiaMetricLogList
+  }
+
+  /** Returns the bounded local history of performance metrics, including metrics already uploaded. */
+  suspend fun getDebugMetricLogStoreList(): List<OppiaMetricLog> {
+    return debugMetricLogStore.readDataAsync().await().oppiaMetricLogList
+  }
+
+  /** Clears the local developer history without affecting logs waiting to be uploaded. */
+  suspend fun clearMetricLogStore() {
+    debugMetricLogStore.storeDataAsync(updateInMemoryCache = true) {
+      OppiaMetricLogs.getDefaultInstance()
+    }.await()
   }
 
   /** Removes the first metric log report that had been recorded for upload. */

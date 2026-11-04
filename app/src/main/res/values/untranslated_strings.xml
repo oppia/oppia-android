@@ -9,6 +9,15 @@
   <string name="developer_options_mark_topics_completed" translatable="false">Mark Topics Completed</string>
   <string name="developer_options_view_logs_label" translatable="false">View Logs</string>
   <string name="developer_options_event_logs" translatable="false">Event Logs</string>
+  <string name="developer_options_logcat_logs" translatable="false">Logcat Logs</string>
+  <string name="developer_options_performance_metrics" translatable="false">Performance Metrics</string>
+  <string name="view_logcat_activity_title" translatable="false">Logcat Logs</string>
+  <string name="view_performance_metrics_activity_title" translatable="false">Performance Metrics</string>
+  <string name="reset_performance_metrics" translatable="false">Reset performance metrics</string>
+  <string name="no_performance_metrics" translatable="false">No performance metrics have been recorded. Enable “Performance Metrics Collection” in Developer Options &gt; Feature Flags, save, and restart the app. Then use the app to generate metrics.</string>
+  <string name="logcat_unavailable" translatable="false">Logcat output is unavailable on this device.</string>
+  <string name="performance_metrics_error" translatable="false">Unable to load performance metrics.</string>
+  <string name="developer_options_loading" translatable="false">Loading…</string>
   <string name="developer_options_override_app_behaviors_label" translatable="false">Override App Behaviors</string>
   <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
   <string name="developer_options_force_network_type" translatable="false">Force network type</string>

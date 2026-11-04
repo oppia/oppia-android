@@ -80,6 +80,10 @@ class DeveloperOptionsTestActivity :
     startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
   }
 
+  override fun routeToViewLogcatLogs() {}
+
+  override fun routeToViewPerformanceMetrics() {}
+
   override fun forceCrash() {
     throw RuntimeException("Force crash occurred")
   }

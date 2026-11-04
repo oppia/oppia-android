@@ -11,7 +11,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
 
     <TextView
       android:id="@+id/view_logs_text_view"
@@ -41,9 +42,63 @@
       android:paddingBottom="20dp"
       android:text="@string/developer_options_event_logs"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/view_divider1"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/view_logs_text_view" />
+
+    <View
+      android:id="@+id/view_divider1"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintBottom_toTopOf="@id/logcat_logs_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/event_logs_text_view" />
+
+    <TextView
+      android:id="@+id/logcat_logs_text_view"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:background="@color/component_color_shared_screen_tertiary_background_color"
+      android:onClick="@{(v) -> viewModel.onLogcatLogsClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_logcat_logs"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      app:layout_constraintBottom_toTopOf="@id/view_divider2"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider1" />
+
+    <View
+      android:id="@+id/view_divider2"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintBottom_toTopOf="@id/performance_metrics_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/logcat_logs_text_view" />
+
+    <TextView
+      android:id="@+id/performance_metrics_text_view"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:background="@color/component_color_shared_screen_tertiary_background_color"
+      android:onClick="@{(v) -> viewModel.onPerformanceMetricsClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_performance_metrics"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider2" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
