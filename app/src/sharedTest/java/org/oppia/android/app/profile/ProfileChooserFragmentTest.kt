@@ -53,6 +53,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -166,6 +167,119 @@ class ProfileChooserFragmentTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV1_waitsForInitialization() {
+    checkLearnerIdLoginRouting(onboardingV2 = false, behavior = LoginRoutingBehavior.PENDING)
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV1_withoutPin_waitsForInitializationAndLogsIn() {
+    checkLearnerIdLoginRouting(
+      onboardingV2 = false, behavior = LoginRoutingBehavior.PENDING_WITHOUT_PIN
+    )
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV1_initializationFailure_allowsRetry() {
+    checkLearnerIdLoginRouting(onboardingV2 = false, behavior = LoginRoutingBehavior.FAILURE)
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV1_existingLearnerId_routesImmediately() {
+    checkLearnerIdLoginRouting(onboardingV2 = false, behavior = LoginRoutingBehavior.EXISTING_ID)
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV2_waitsForInitialization() {
+    checkLearnerIdLoginRouting(onboardingV2 = true, behavior = LoginRoutingBehavior.PENDING)
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV2_withoutPin_waitsForInitializationAndLogsIn() {
+    checkLearnerIdLoginRouting(
+      onboardingV2 = true, behavior = LoginRoutingBehavior.PENDING_WITHOUT_PIN
+    )
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV2_initializationFailure_allowsRetry() {
+    checkLearnerIdLoginRouting(onboardingV2 = true, behavior = LoginRoutingBehavior.FAILURE)
+  }
+
+  @Test
+  fun testProfileChooserFragment_onboardingV2_existingLearnerId_routesImmediately() {
+    checkLearnerIdLoginRouting(onboardingV2 = true, behavior = LoginRoutingBehavior.EXISTING_ID)
+  }
+
+  private enum class LoginRoutingBehavior { PENDING, PENDING_WITHOUT_PIN, FAILURE, EXISTING_ID }
+
+  private fun checkLearnerIdLoginRouting(
+    onboardingV2: Boolean,
+    behavior: LoginRoutingBehavior
+  ) {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+    val profile = Profile.newBuilder()
+      .setId(testProfileId)
+      .setPin(if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) "" else "123")
+      .setProfileType(ProfileType.SUPERVISOR)
+      .build()
+    val loginActivity = if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
+      HomeActivity::class.java.name
+    } else if (onboardingV2) {
+      ProfileLoginActivity::class.java.name
+    } else {
+      PinPasswordActivity::class.java.name
+    }
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      val initialIntentCount = Intents.getIntents().size
+      fun clickProfile(activity: ProfileChooserActivity, clickedProfile: Profile) {
+        val fragment = activity.supportFragmentManager.fragments
+          .filterIsInstance<ProfileChooserFragment>().single()
+        if (onboardingV2) {
+          fragment.profileChooserFragmentPresenter.onProfileClick(clickedProfile)
+        } else {
+          fragment.profileChooserFragmentPresenterV1.onProfileClick(clickedProfile)
+        }
+      }
+      scenario.onActivity { activity ->
+        when (behavior) {
+          LoginRoutingBehavior.EXISTING_ID -> {
+            clickProfile(activity, profile.toBuilder().setLearnerId("existing-id").build())
+            assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
+          }
+          LoginRoutingBehavior.FAILURE -> {
+            val missingProfile = profile.toBuilder()
+              .setId(LegacyProfileId.newBuilder().setInternalId(999)).build()
+            clickProfile(activity, missingProfile)
+          }
+          LoginRoutingBehavior.PENDING, LoginRoutingBehavior.PENDING_WITHOUT_PIN -> {
+            clickProfile(activity, profile)
+            // A second tap while initialization is pending must not schedule another login.
+            clickProfile(activity, profile)
+            assertThat(Intents.getIntents()).hasSize(initialIntentCount)
+            assertThat(profileManagementController.getCurrentProfileId()).isNull()
+          }
+        }
+      }
+      testCoroutineDispatchers.runCurrent()
+      if (behavior == LoginRoutingBehavior.FAILURE) {
+        assertThat(Intents.getIntents()).hasSize(initialIntentCount)
+        assertThat(profileManagementController.getCurrentProfileId()).isNull()
+        scenario.onActivity { activity -> clickProfile(activity, profile) }
+        testCoroutineDispatchers.runCurrent()
+      }
+      intended(hasComponent(loginActivity))
+      assertThat(Intents.getIntents()).hasSize(initialIntentCount + 1)
+      if (behavior == LoginRoutingBehavior.PENDING_WITHOUT_PIN) {
+        assertThat(profileManagementController.getCurrentProfileId()?.internalId).isEqualTo(0)
+      }
+    }
   }
 
   @Test
@@ -371,6 +485,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
   }
@@ -390,6 +505,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
@@ -408,6 +524,7 @@ class ProfileChooserFragmentTest {
           position = 1
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
@@ -435,6 +552,7 @@ class ProfileChooserFragmentTest {
           position = 1
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(IntroActivity::class.java.name))
     }
   }
@@ -1451,6 +1569,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
