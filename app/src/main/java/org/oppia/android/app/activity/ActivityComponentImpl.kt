@@ -25,6 +25,7 @@ import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParam
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
+import org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsActivity
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentBuilderModule
 import org.oppia.android.app.help.HelpActivity
@@ -227,6 +228,7 @@ interface ActivityComponentImpl :
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(viewBindingAdaptersTestActivity: ViewBindingAdaptersTestActivity)
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
+  fun inject(viewPerformanceMetricsActivity: ViewPerformanceMetricsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
   fun inject(surveyActivity: SurveyActivity)

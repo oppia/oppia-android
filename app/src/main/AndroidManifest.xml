@@ -302,6 +302,14 @@
       android:label="@string/view_event_logs_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.devoptions.viewlogs.ViewLogcatActivity"
+      android:label="@string/view_logcat_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.viewlogs.ViewPerformanceMetricsActivity"
+      android:label="@string/view_performance_metrics_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
