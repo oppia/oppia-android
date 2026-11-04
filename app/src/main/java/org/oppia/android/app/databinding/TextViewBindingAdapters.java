@@ -44,7 +44,6 @@ public final class TextViewBindingAdapters {
     textView.setText(profileLastVisited);
   }
 
-  // TODO(#4345): Add test for this method.
   /** Binds an AndroidX drawable top to the specified text view. */
   @BindingAdapter("drawableTopCompat")
   public static void setDrawableTopCompat(
