@@ -45,8 +45,14 @@ class ViewPerformanceMetricsActivity : InjectableAutoLocalizedAppCompatActivity(
       setTextIsSelectable(true)
       setPadding(0, 16, 0, 16)
     }
-    container.addView(resetButton, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-    container.addView(metricsText, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    container.addView(
+      resetButton, ViewGroup.LayoutParams.MATCH_PARENT,
+      ViewGroup.LayoutParams.WRAP_CONTENT
+    )
+    container.addView(
+      metricsText, ViewGroup.LayoutParams.MATCH_PARENT,
+      ViewGroup.LayoutParams.WRAP_CONTENT
+    )
     setContentView(ScrollView(this).apply { addView(container) })
     refreshMetrics()
   }

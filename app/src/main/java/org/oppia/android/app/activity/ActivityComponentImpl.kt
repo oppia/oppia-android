@@ -24,8 +24,8 @@ import org.oppia.android.app.devoptions.platformparameters.PlatformParametersAct
 import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
+import org.oppia.android.app.devoptions.viewlogs.ViewPerformanceMetricsActivity
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentBuilderModule
 import org.oppia.android.app.help.HelpActivity

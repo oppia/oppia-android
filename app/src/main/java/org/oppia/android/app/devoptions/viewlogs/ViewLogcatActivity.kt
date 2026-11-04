@@ -7,12 +7,12 @@ import android.os.Process
 import android.view.Gravity
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import org.oppia.android.app.ui.R
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.concurrent.Executors
-import org.oppia.android.app.ui.R
 
 /** Displays recent Logcat entries emitted by the Oppia process. */
 class ViewLogcatActivity : AppCompatActivity() {
