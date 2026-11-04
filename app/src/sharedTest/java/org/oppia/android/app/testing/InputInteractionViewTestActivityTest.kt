@@ -1,7 +1,9 @@
 package org.oppia.android.app.testing
 
 import android.app.Application
+import android.content.Intent
 import android.content.res.Configuration
+import android.text.InputType
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -30,9 +32,13 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams
+import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -410,6 +416,146 @@ class InputInteractionViewTestActivityTest {
           )
         )
       )
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpDisabled_typingExpChar_numberFormatErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = false)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("1.8e3"))
+      onView(withId(R.id.number_input_error))
+        .check(matches(withText(R.string.number_error_invalid_format)))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingValidExp_noErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("1.8e3"))
+      onView(withId(R.id.number_input_error)).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingNegativeExp_noErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("1.8e-3"))
+      onView(withId(R.id.number_input_error)).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingNegativeBase_noErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("-2.5e4"))
+      onView(withId(R.id.number_input_error)).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingMultipleMinuses_numberFormatErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("-2.5e-4"))
+      onView(withId(R.id.number_input_error))
+        .check(matches(withText(R.string.number_error_invalid_format)))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_typingMalformedExp_numberFormatErrorIsDisplayed() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use {
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("1e.5"))
+      onView(withId(R.id.number_input_error))
+        .check(matches(withText(R.string.number_error_invalid_format)))
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_submitValidExp_pendingAnswerHasCorrectRealValue() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use { scenario ->
+      onView(withId(R.id.test_number_input_interaction_view))
+        .perform(appendText("1.8e3"))
+      closeSoftKeyboard()
+      scrollToSubmitButton()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      scenario.onActivity { activity ->
+        val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+        assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+        assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+          InteractionObject.ObjectTypeCase.REAL
+        )
+        assertThat(pendingAnswer.answer.real).isEqualTo(1800.0)
+      }
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpDisabled_hasNumericInputType() {
+    val intent = createNumericInputIntent(allowExponentialNotation = false)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use { scenario ->
+      scenario.onActivity { activity ->
+        val view = activity.findViewById<NumericInputInteractionView>(
+          R.id.test_number_input_interaction_view
+        )
+        val expectedInputType = InputType.TYPE_CLASS_NUMBER or
+          InputType.TYPE_NUMBER_FLAG_DECIMAL or
+          InputType.TYPE_NUMBER_FLAG_SIGNED
+        assertThat(view.inputType).isEqualTo(expectedInputType)
+      }
+    }
+  }
+
+  @Test
+  @DisableAccessibilityChecks
+  fun testNumericInput_withExpEnabled_hasTextInputType() {
+    val intent = createNumericInputIntent(allowExponentialNotation = true)
+    ActivityScenario.launch<InputInteractionViewTestActivity>(intent).use { scenario ->
+      scenario.onActivity { activity ->
+        val view = activity.findViewById<NumericInputInteractionView>(
+          R.id.test_number_input_interaction_view
+        )
+        val expectedInputType = InputType.TYPE_CLASS_TEXT or
+          InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+        assertThat(view.inputType).isEqualTo(expectedInputType)
+      }
+    }
+  }
+
+  private fun createNumericInputIntent(allowExponentialNotation: Boolean): Intent {
+    val interaction = Interaction.newBuilder().apply {
+      id = "NumericInput"
+      putCustomizationArgs(
+        "allowExponentialNotation",
+        SchemaObject.newBuilder().setBoolValue(allowExponentialNotation).build()
+      )
+    }.build()
+    val params = InputInteractionViewTestActivityParams.newBuilder().apply {
+      this.interaction = interaction
+    }.build()
+    return InputInteractionViewTestActivity.createIntent(
+      ApplicationProvider.getApplicationContext(),
+      params
+    )
   }
 
   private fun scrollToSubmitButton() {

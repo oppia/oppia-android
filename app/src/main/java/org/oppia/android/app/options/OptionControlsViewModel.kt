@@ -10,6 +10,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -36,6 +37,8 @@ class OptionControlsViewModel @Inject constructor(
   private val translationController: TranslationController
 ) : OptionsItemViewModel() {
   private lateinit var profileId: LegacyProfileId
+  private var selectedReadingTextSize: ReadingTextSize? = null
+  private var readingTextSizeViewModel: OptionsReadingTextSizeViewModel? = null
   private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
@@ -66,6 +69,12 @@ class OptionControlsViewModel @Inject constructor(
   /** Sets the user's profile ID value in this ViewModel. */
   fun setProfileId(profileId: LegacyProfileId) {
     this.profileId = profileId
+  }
+
+  /** Immediately updates the reading text size shown by the options UI. */
+  fun setReadingTextSize(readingTextSize: ReadingTextSize) {
+    selectedReadingTextSize = readingTextSize
+    readingTextSizeViewModel?.readingTextSize?.set(readingTextSize)
   }
 
   private fun createOptionsItemViewModelProvider(): DataProvider<List<OptionsItemViewModel>> {
@@ -113,7 +122,10 @@ class OptionControlsViewModel @Inject constructor(
   private fun createReadingTextSizeViewModel(profile: Profile): OptionsReadingTextSizeViewModel {
     return OptionsReadingTextSizeViewModel(
       routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
-    ).also { it.readingTextSize.set(profile.readingTextSize) }
+    ).also {
+      readingTextSizeViewModel = it
+      it.readingTextSize.set(selectedReadingTextSize ?: profile.readingTextSize)
+    }
   }
 
   private fun createAppLanguageViewModel(language: OppiaLanguage): OptionsAppLanguageViewModel? {

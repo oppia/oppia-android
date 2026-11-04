@@ -184,7 +184,8 @@
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
       android:label="@string/profile_reset_pin_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.splash.SplashActivity"
       android:exported="true"
@@ -371,6 +372,10 @@
         android:name=".app.onboarding.AdminIntroActivity"
         android:label="@string/admin_intro_activity_title"
         android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+        android:name=".app.profile.CreateAdminPinActivity"
+        android:label="@string/create_admin_pin_activity_title"
+        android:theme="@style/CreateAdminPinActivityTheme" />
     <activity
       android:name=".app.testing.TextInputLayoutBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

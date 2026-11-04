@@ -131,6 +131,21 @@ class TestGitRepository(
     executeSuccessfulGitCommand("fast-import", inputLines = commitLines)
   }
 
+  /**
+   * Creates a shallow clone of this repository in [destinationDirectory], truncating its history to
+   * the [depth] most recent commits.
+   */
+  fun cloneShallow(destinationDirectory: File, depth: Int) {
+    verifyInGitRepository()
+    executeSuccessfulGitCommand(
+      "clone",
+      "--depth",
+      depth.toString(),
+      "file://${rootDirectory.absolutePath}",
+      destinationDirectory.absolutePath
+    )
+  }
+
   /** Returns the result of git status. */
   fun status(checkForGitRepository: Boolean = true): String {
     if (checkForGitRepository) verifyInGitRepository()

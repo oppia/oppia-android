@@ -54,6 +54,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -124,6 +128,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -647,6 +652,161 @@ class AudioFragmentTest {
   }
 
   @Test
+  fun testAudioFragment_playAudio_repeatSetStateWithSameAudio_keepsAudioPlaying() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val state = State.newBuilder()
+          .setContent(SubtitledHtml.newBuilder().setContentId("content"))
+          .putRecordedVoiceovers(
+            "content",
+            VoiceoverMapping.newBuilder()
+              .putVoiceoverMapping(
+                "en",
+                Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build()
+              )
+              .build()
+          ).build()
+        audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioPrepared_loadMainContentAudioWithAutoPlay_startsPlayback() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
+        )
+      )
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = true,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioFailed_loadAudioAgain_retriesLoading() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val shadowPlayer = checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer()))
+        invokeErrorListener(shadowPlayer, /* what = */ 0, /* extra = */ 0)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = false,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_loadAudio_failedFirstAttempt_retryRequest_succeedsAndPlays() {
+    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+    addException(dataSource, IOException("Network error"))
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      resetShadowMediaPlayerStaticState()
+      val mediaInfo = createMediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
+      addMediaInfo(dataSource, mediaInfo)
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadFeedbackAudio(contentId = "content", allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
+  @Test
   fun testFragment_initialLoad_audioControlsAreDisplayed() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
@@ -837,6 +997,15 @@ class AudioFragmentTest {
     shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
   }
 
+  /** Calls ShadowMediaPlayer.invokeErrorListener() using reflection. */
+  private fun invokeErrorListener(shadowMediaPlayer: Any, what: Int, extra: Int) {
+    shadowMediaPlayer.javaClass.getMethod(
+      "invokeErrorListener",
+      Int::class.java,
+      Int::class.java
+    ).invoke(shadowMediaPlayer, what, extra)
+  }
+
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
   private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
     val mediaInfoClass = Class.forName(
@@ -870,6 +1039,22 @@ class AudioFragmentTest {
     return checkNotNull(toDataSourceMethod.invoke(/* obj = */ null, context, uri)) {
       "Failed to create DataSource for URI: $uri."
     }
+  }
+
+  /** Calls ShadowMediaPlayer.addException() using reflection. */
+  private fun addException(dataSource: Any, exception: IOException) {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
+    val addExceptionMethod =
+      shadowMediaPlayerClass.getMethod("addException", dataSourceClass, IOException::class.java)
+    addExceptionMethod.invoke(/* obj = */ null, dataSource, exception)
+  }
+
+  /** Calls ShadowMediaPlayer.resetStaticState() using reflection. */
+  private fun resetShadowMediaPlayerStaticState() {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val resetMethod = shadowMediaPlayerClass.getMethod("resetStaticState")
+    resetMethod.invoke(/* obj = */ null)
   }
 
   private fun isOnRobolectric(): Boolean {

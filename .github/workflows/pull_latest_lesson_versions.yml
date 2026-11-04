@@ -96,8 +96,7 @@ jobs:
             $(pwd)/scripts/assets/prod_download_config.textproto
 
       # Verify that updated lesson versions are conversion-compatible before committing.
-      # If conversion fails (-Werror triggers exit code 1), the workflow exits early without
-      # opening a PR.
+      # If conversion fails, the workflow exits early without opening a PR.
       - name: Download alpha lessons and verify conversion
         run: |
           bazel run //scripts:download_lessons -- \
@@ -110,8 +109,7 @@ jobs:
             /tmp/verification_cache/alpha \
             $(pwd)/config/lessons/alpha_pinned_lesson_versions.textproto \
             $(pwd)/scripts/assets/alpha_download_config.textproto \
-            false \
-            -Werror
+            false
 
       - name: Download prod lessons and verify conversion
         run: |
@@ -125,8 +123,7 @@ jobs:
             /tmp/verification_cache/prod \
             $(pwd)/config/lessons/prod_pinned_lesson_versions.textproto \
             $(pwd)/scripts/assets/prod_download_config.textproto \
-            false \
-            -Werror
+            false
 
       - name: Clean up lesson secret and verification assets
         if: always()

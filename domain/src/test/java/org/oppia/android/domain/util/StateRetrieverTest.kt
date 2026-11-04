@@ -9,6 +9,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -386,6 +388,31 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withNumericInput_withNoCustomizationArgs_parsesEmptyCustomizationArgs() {
+    val state = loadStateFromJson(
+      stateName = "NumberInput",
+      explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    assertThat(state.interaction.customizationArgsMap)
+      .doesNotContainKey("allowExponentialNotation")
+  }
+
+  @Test
+  fun testParseState_withNumericInput_parsesCustomizationArgAllowExponentialNotation() {
+    val stateJson = createNumericInputStateJson(
+      allowExponentialNotation = true
+    )
+
+    val state = stateRetriever.createStateFromJson("NumericInput", stateJson)
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("allowExponentialNotation")
+    assertThat(customArgs["allowExponentialNotation"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+    assertThat(customArgs["allowExponentialNotation"]?.boolValue).isTrue()
+  }
+
+  @Test
   fun testParseState_withWrittenTranslations_forMultiAndSingleStrDataFormats_parsesTranslations() {
     val state = loadStateFromJson(
       stateName = "Text",
@@ -698,6 +725,32 @@ class StateRetrieverTest {
         json?.getJSONObject("exploration")?.getJSONObject("states")?.getJSONObject(stateName)
       )
     )
+  }
+
+  private fun createNumericInputStateJson(
+    allowExponentialNotation: Boolean
+  ): JSONObject {
+    return JSONObject().apply {
+      put("content", JSONObject().put("content_id", "content").put("html", "<p>Test</p>"))
+      put("param_changes", JSONArray())
+      put(
+        "interaction",
+        JSONObject().apply {
+          put("id", "NumericInput")
+          put(
+            "customization_args",
+            JSONObject().apply {
+              put(
+                "allowExponentialNotation",
+                JSONObject().put("value", allowExponentialNotation)
+              )
+            }
+          )
+          put("answer_groups", JSONArray())
+          put("hints", JSONArray())
+        }
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {

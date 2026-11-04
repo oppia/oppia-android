@@ -751,8 +751,8 @@ message ProfileListFragmentArguments {
 
 // Represents the parameters needed to create ProfileResetPinActivity.
 message ProfileResetPinActivityParams {
-  // ID of the current profile.
-  int32 internal_profile_id = 1;
+  // Earlier used for the ID of the current profile.
+  reserved 1;
 
   // Indicates whether current user is admin or not.
   bool is_admin = 2;
@@ -760,8 +760,8 @@ message ProfileResetPinActivityParams {
 
 // Arguments required when creating a ProfileResetPinFragment.
 message ProfileResetPinFragmentArguments {
-  // ID of the current profile.
-  int32 internal_profile_id = 1;
+  // Earlier used for the ID of the current profile.
+  reserved 1;
 
   // Indicates whether current user is admin or not.
   bool is_admin = 2;
@@ -997,11 +997,11 @@ message ProfileChooserActivityParams {
     // Indicates that the originating screen isn't actually known.
     PARENT_SCREEN_UNSPECIFIED = 0;
 
-    // Corresponds to the story viewer screen.
+    // Corresponds to the splash screen.
     SPLASH_SCREEN = 1;
 
-    // Corresponds to the admin intro screen.
-    ADMIN_INTRO_SCREEN = 2;
+    // Corresponds to the create admin PIN screen.
+    CREATE_ADMIN_PIN_SCREEN = 2;
 
     // Corresponds to the exit profile dialog.
     EXIT_PROFILE_SCREEN = 3;
