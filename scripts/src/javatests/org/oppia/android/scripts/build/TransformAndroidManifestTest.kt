@@ -862,6 +862,62 @@ class TransformAndroidManifestTest {
   }
 
   @Test
+  fun testMain_printAabName_matchesManifestVersionNameForAllReleaseFlavors() {
+    initializeGitRepositoryWithHistory()
+
+    listOf("alpha", "beta", "ga").forEach { flavor ->
+      val manifestFile = tempFolder.newFile("AndroidManifest-$flavor.xml").apply {
+        writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+      }
+      val transformedManifestFile =
+        File(tempFolder.root, "TransformedAndroidManifest-$flavor.xml")
+
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        transformedManifestFile.absolutePath,
+        flavor,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+
+      val versionNameMatch = Regex(
+        "android:versionName=\"([^\"]+)\""
+      ).find(transformedManifestFile.readText())
+
+      val manifestVersionName = checkNotNull(versionNameMatch).groupValues[1]
+
+      val outputStream = ByteArrayOutputStream()
+      val originalOut = System.out
+      val printStream = PrintStream(outputStream)
+
+      try {
+        System.setOut(printStream)
+        runScript(
+          "--print-aab-name",
+          tempFolder.root.absolutePath,
+          flavor,
+          MAJOR_VERSION,
+          MINOR_VERSION
+        )
+      } finally {
+        System.setOut(originalOut)
+        printStream.close()
+      }
+
+      val predictedAabName = outputStream.toString().trim()
+      val predictedVersionName = predictedAabName
+        .removePrefix("oppia-android-")
+        .removeSuffix(".aab")
+
+      assertThat(predictedVersionName).isEqualTo(manifestVersionName)
+    }
+  }
+
+  @Test
   fun testMain_printAabNameOnReleaseBranch_outputsCorrectRcNumber() {
     initializeGitRepositoryWithHistory()
     testGitRepository.checkoutNewBranch("release-v1.0")

@@ -109,6 +109,7 @@ jobs:
           ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
           echo "::add-mask::$ACCESS_TOKEN"
           echo "GCP_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+
       - name: Pre-check existing release binary in GCS
         id: precheck_release_binary
         env:
@@ -145,21 +146,8 @@ jobs:
 
           echo "Checking GCS path: $GCS_PATH"
 
-          GCS_STATUS=0
-          GCS_OUTPUT=$(gsutil stat "$GCS_PATH" 2>&1) || GCS_STATUS=$?
-
-          if [[ "$GCS_STATUS" -eq 0 ]]; then
-            echo "should_build=false" >> "$GITHUB_OUTPUT"
-            echo "AAB already exists at $GCS_PATH. Skipping build."
-          elif grep -q "No URLs matched" <<< "$GCS_OUTPUT"; then
-            echo "should_build=true" >> "$GITHUB_OUTPUT"
-            echo "No existing binary found. Proceeding with the build."
-          else
-            echo "$GCS_OUTPUT"
-            echo "::error::Unexpected GCS error (exit $GCS_STATUS) while checking $GCS_PATH."
-            exit "$GCS_STATUS"
-          fi
-
+          bash .github/scripts/check_release_binary.sh \
+            "$GCS_PATH" "$GITHUB_OUTPUT"
 
       - name: Write prod server key
         if: steps.precheck_release_binary.outputs.should_build == 'true'

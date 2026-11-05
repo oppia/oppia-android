@@ -234,10 +234,13 @@ private class TransformAndroidManifest(
     minorVersion: Int,
     commitHash: String
   ): String {
-    val twoCharMinor = "%02d".format(minorVersion)
-    val twoCharRc = "%02d".format(releaseCandidateNumber)
-    val tenCharHash = commitHash.take(10)
-    return "$majorVersion.$twoCharMinor-rc$twoCharRc-${buildFlavor.readableName}-$tenCharHash"
+    return computeVersionString(
+      buildFlavor = buildFlavor,
+      majorVersion = majorVersion,
+      minorVersion = minorVersion,
+      releaseCandidateNumber = releaseCandidateNumber,
+      commitHash = commitHash
+    )
   }
 
   private fun DocumentBuilderFactory.parseXmlFile(file: File): Document =
@@ -281,6 +284,21 @@ private fun computeReleaseCandidateNumber(
     1
   }
 }
+
+private fun computeVersionString(
+  buildFlavor: BuildFlavor,
+  majorVersion: Int,
+  minorVersion: Int,
+  releaseCandidateNumber: Int,
+  commitHash: String
+): String {
+  val twoCharMinor = "%02d".format(minorVersion)
+  val twoCharRc = "%02d".format(releaseCandidateNumber)
+  val tenCharHash = commitHash.take(10)
+
+  return "$majorVersion.$twoCharMinor-rc$twoCharRc-${buildFlavor.readableName}-$tenCharHash"
+}
+
 private fun computeExpectedAabName(
   repoRoot: File,
   buildFlavor: BuildFlavor,
@@ -299,12 +317,15 @@ private fun computeExpectedAabName(
     currentBranch = currentBranch,
     maxReleaseCandidates = MAX_RCS_PER_RELEASE
   )
-  val twoCharMinor = "%02d".format(minorVersion)
-  val twoCharRc = "%02d".format(releaseCandidateNumber)
-  val tenCharHash = gitClient.currentCommit.take(10)
+  val versionString = computeVersionString(
+    buildFlavor = buildFlavor,
+    majorVersion = majorVersion,
+    minorVersion = minorVersion,
+    releaseCandidateNumber = releaseCandidateNumber,
+    commitHash = gitClient.currentCommit
+  )
 
-  return "oppia-android-$majorVersion.$twoCharMinor-rc$twoCharRc-" +
-    "${buildFlavor.readableName}-$tenCharHash.aab"
+  return "oppia-android-$versionString.aab"
 }
 
 /** Represents the active build flavors and their indices for versioning. */
