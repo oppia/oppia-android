@@ -206,6 +206,16 @@
   <string name="topic_prefix">Tópico: %s</string>
   <string name="selected_image_region_selection_content_description">Mostrando imagem %1$s</string>
   <string name="unselected_image_region_selection_content_description">Selecione %1$s imagem</string>
+  <string name="flashback_toolbar_title_text">Exemplo</string>
+  <string name="flashback_state_feedback_text">Vamos rever a solução de uma questão anterior.</string>
+  <string name="flashback_viewed_feedback_text">Agora que você viu um exemplo, vamos tentar novamente.</string>
+  <string name="flashback_feedback_prompt">Essa resposta não está correta. Vejamos um exemplo.</string>
+  <string name="submitted_answer_label_text">(Sua resposta enviada)</string>
+  <string name="submitted_answer_label_text_content_description">Sua resposta enviada</string>
+  <string name="selected_option_icon_content_description">Resposta selecionada</string>
+  <string name="unselected_option_icon_content_description">Resposta não selecionada</string>
+  <string name="flashback_submitted_answer_label_text">(Esta é a resposta correta)</string>
+  <string name="flashback_submitted_answer_label_text_content_description">Esta é a resposta correta</string>
   <plurals name="chapter_count">
     <item quantity="one">%s Capítulo</item>
     <item quantity="other">%s Capítulos</item>
@@ -238,6 +248,14 @@
   <string name="set_up_multiple_profiles_description">Adicione até 10 usuários à sua conta. Perfeito para famílias e salas de aula.</string>
   <string name="profile_chooser_administrator_controls">Controles do Administrador</string>
   <string name="profile_chooser_language">Idioma</string>
+  <string name="profile_selection_header">Selecione seu perfil para explorar as aulas.</string>
+  <string name="profile_selection_profile_icon_description">Foto de perfil do usuário</string>
+  <string name="profile_selection_add_icon_description">Adicionar outro perfil</string>
+  <string name="profile_selection_add_profile_text">Adicionar um perfil de aluno</string>
+  <string name="profile_selection_admin_label">Administrador(a)</string>
+  <string name="profile_selection_scroll_left_content_description">Role para a esquerda</string>
+  <string name="profile_selection_scroll_right_content_description">Role para a direita</string>
+  <string name="profile_selection_administrator_controls">Controles do administrador</string>
   <string name="admin_auth_toolbar">Controles do Administrador</string>
   <string name="admin_auth_activity_add_profiles_title">Autorize para adicionar perfis</string>
   <string name="admin_auth_activity_access_controls_title">Autorize para acessar os Controles do Administrador</string>
@@ -250,7 +268,7 @@
   <string name="admin_auth_submit">Enviar</string>
   <string name="admin_auth_close">Fechar</string>
   <string name="admin_pin_requirement_description">Antes de adicionarmos perfis, precisamos proteger sua conta criando um PIN. Isso lhe dá a capacidade de autorizar o gerenciamento de perfis no dispositivo.</string>
-  <string name="admin_pin_pin_description">Use um PIN que você definiu para contas pessoais, como bancos ou previdência social.</string>
+  <string name="admin_pin_pin_description">Não use um PIN que você tenha definido para contas pessoais, como bancárias ou da previdência social.</string>
   <string name="admin_pin_new_pin">Novo PIN de 5 dígitos</string>
   <string name="admin_pin_new_confirm">Confirmar PIN de 5 dígitos</string>
   <string name="admin_pin_error_pin_length">Seu PIN deve ter 5 dígitos.</string>
@@ -389,8 +407,8 @@
   <string name="log_out_dialog_cancel_button">Cancelar</string>
   <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">Tem certeza que deseja sair do seu perfil?</string>
-  <string name="app_version_name">Versão do Aplicativo %s</string>
-  <string name="app_last_update_date">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
+  <string name="app_version_name" fuzzy="true">Versão do Aplicativo %s</string>
+  <string name="app_last_update_date" fuzzy="true">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
   <string name="app_version_activity_title">Versão do Aplicativo</string>
   <string name="app_language_activity_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title">Idioma de áudio preferido</string>
@@ -649,4 +667,23 @@
   <string name="audio_language_fragment_subtitle">Selecione a língua do áudio para ouvir às lições</string>
   <string name="onboarding_step_count_five">Passo 5 de 5</string>
   <string name="arabic_language_display_name_content_description">Árabe</string>
+  <string name="flashback_confirmation_dialog_continue_button_text">Continuar</string>
+  <string name="flashback_confirmation_dialog_not_now_text">Agora não</string>
+  <string name="flashback_confirmation_dialog_title_text">Precisa de ajuda? Sem problema.</string>
+  <string name="flashback_confirmation_dialog_message_text">Revise a solução da questão anterior.</string>
+  <string name="profile_login_activity_title">Login</string>
+  <string name="profile_login_activity_enter_pin_prompt">Por favor, insira seu PIN</string>
+  <string name="profile_login_activity_greeting_text">Bem-vindo de volta, %s!</string>
+  <string name="profile_login_activity_pin_error">Você digitou um PIN incorreto.</string>
+  <string name="profile_login_activity_forgot_pin_text">Esqueci meu PIN</string>
+  <string name="profile_login_forgot_pin_dialog_title">Esqueceu seu PIN?</string>
+  <string name="profile_login_forgot_pin_dialog_message">Para redefinir seu PIN, você precisará apagar todos os dados salvos de %s.\n\nLembre-se de que essa ação apagará todos os perfis e o progresso do usuário, e não poderá ser desfeita. Além disso, o aplicativo será fechado ao concluir o processo e precisará ser aberto novamente.</string>
+  <string name="profile_login_forgot_pin_dialog_reset_button">Redefinir dados de %s</string>
+  <string name="profile_login_forgot_pin_dialog_cancel_button">Cancelar</string>
+  <string name="profile_login_reset_pin_success_dialog_close">Fechar</string>
+  <string name="profile_login_reset_pin_success_dialog_message">PIN alterado com sucesso!</string>
+  <string name="admin_intro_activity_title">Introdução</string>
+  <string name="admin_intro_activity_header">Como administrador do aplicativo, você pode</string>
+  <string name="admin_intro_activity_settings_text">Gerenciar as configurações de perfil de todos os alunos neste dispositivo.</string>
+  <string name="admin_intro_activity_learners_text">Adicionar novos alunos a este dispositivo (até 10)</string>
 </resources>
