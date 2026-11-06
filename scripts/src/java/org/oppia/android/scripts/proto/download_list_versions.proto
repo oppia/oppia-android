@@ -10,6 +10,8 @@ message DownloadListVersions {
   repeated SkillInfo tracked_skill_info = 2;
   // Questions must be pinned separately since they can change independently of their linked skills.
   repeated QuestionInfo tracked_question_info = 3;
+  // Whether question pinning ran, even when it retained no compatible questions.
+  bool questions_pinned = 4;
 
   message TopicInfo {
     string id = 1;

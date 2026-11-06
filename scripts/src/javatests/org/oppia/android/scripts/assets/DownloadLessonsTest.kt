@@ -118,6 +118,63 @@ class DownloadLessonsTest {
   }
 
   @Test
+  fun testDownloadLessons_questionsEnabledThenDisabled_removesStaleQuestionOutputs() {
+    val output = downloadLessons(downloadQuestions = true)
+    val unrelatedFile = File(output, "notes.txt").apply { writeText("Keep this file.") }
+    assertThat(File(output, "protov2/binary/question_0.pb").isFile).isTrue()
+    requests.clear()
+
+    downloadLessons(downloadQuestions = false, output = output)
+
+    assertThat(File(output, "protov1/binary/questions.pb").exists()).isFalse()
+    assertThat(File(output, "protov1/textproto/questions.textproto").exists()).isFalse()
+    assertThat(File(output, "protov2/binary/question_0.pb").exists()).isFalse()
+    assertThat(File(output, "protov2/textproto/question_0.textproto").exists()).isFalse()
+    assertThat(
+      TopicRecord.parseFrom(File(output, "protov1/binary/test_topic.pb").readBytes())
+        .hasPracticeQuestions
+    ).isFalse()
+    assertThat(requests.none { it["activity_type"] == "questions" }).isTrue()
+    assertThat(unrelatedFile.readText()).isEqualTo("Keep this file.")
+  }
+
+  @Test
+  fun testDownloadLessons_multipleChoiceDefaultFeedbackWithLink_reportsIssueWithoutCrashing() {
+    val first = questions[0]
+    val state = first["question_state_data"] as Map<*, *>
+    val interaction = state["interaction"] as Map<*, *>
+    val outcome = interaction["default_outcome"] as Map<*, *>
+    val feedback = mapOf(
+      "content_id" to "default_outcome_1",
+      "html" to "<p>Review <oppia-noninteractive-link></oppia-noninteractive-link>.</p>"
+    )
+    val answerGroup = (interaction["answer_groups"] as List<*>)[0] as Map<*, *>
+    val choices = listOf(
+      mapOf("content_id" to "choice_0", "html" to "<p>One</p>"),
+      mapOf("content_id" to "choice_1", "html" to "<p>Two</p>")
+    )
+    val ruleSpecs = listOf(mapOf("rule_type" to "Equals", "inputs" to mapOf("x" to 0)))
+    val multipleChoice = interaction + mapOf(
+      "id" to "MultipleChoiceInput", "solution" to null,
+      "customization_args" to mapOf("choices" to mapOf("value" to choices)),
+      "answer_groups" to listOf(answerGroup + ("rule_specs" to ruleSpecs)),
+      "default_outcome" to (outcome + ("feedback" to feedback))
+    )
+    questions = listOf(
+      first + ("question_state_data" to (state + ("interaction" to multipleChoice)))
+    ) + questions.drop(1)
+
+    val output = downloadLessons(downloadQuestions = true)
+
+    val asset = QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
+    assertThat(
+      asset.questionsList.first { it.questionId == first["id"] }
+        .questionState.interaction.defaultOutcome.feedback.html
+    )
+      .contains("oppia-noninteractive-link")
+  }
+
+  @Test
   fun testDownloadLessons_emptyQuestionInventory_keepsPracticeHidden() {
     includeQuestions = false
 
@@ -215,18 +272,67 @@ class DownloadLessonsTest {
     assertThat(imagePaths).contains(
       "/test_bucket/question/${first["id"]}/assets/image/question.png"
     )
+
+    downloadLessons(downloadQuestions = false, output = output)
+
+    assertThat(File(output, "images/question.png").exists()).isFalse()
+    assertThat(File(output, "images/thumb.png").isFile).isTrue()
   }
 
   @Test
   fun testDownloadLessons_practiceEnabledWithoutQuestionPins_failsWithInstructions() = runBlocking {
-    val pins = capturePins(temporaryFolder.newFolder()).toBuilder()
-      .clearTrackedQuestionInfo().build()
+    val pins = capturePins(temporaryFolder.newFolder(), downloadQuestions = false)
+    assertThat(pins.questionsPinned).isFalse()
     val error = assertFailsWith<IllegalStateException> {
       downloadLessons(true, pins)
     }
 
     assertThat(error.cause).hasMessageThat().contains("no question versions are pinned")
   }
+
+  @Test
+  fun testDownloadLessonList_emptyQuestionPins_downloadsEmptyAssetAndHidesPractice() = runBlocking {
+    includeQuestions = false
+    val cache = temporaryFolder.newFolder()
+    val pins = capturePins(cache)
+    assertThat(pins.trackedQuestionInfoList).isEmpty()
+    assertThat(pins.questionsPinned).isTrue()
+    // New server questions must not change a deliberately empty pinned inventory.
+    includeQuestions = true
+    requests.clear()
+
+    val output = downloadLessons(true, pins, cache)
+
+    assertThat(
+      QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
+        .questionsCount
+    ).isEqualTo(0)
+    assertThat(
+      TopicRecord.parseFrom(File(output, "protov1/binary/test_topic.pb").readBytes())
+        .hasPracticeQuestions
+    ).isFalse()
+    assertThat(requests.none { it["activity_type"] == "questions" }).isTrue()
+  }
+
+  @Test
+  fun testDownloadLessonList_onlyIncompatibleQuestions_pinnedDownloadKeepsPracticeHidden() =
+    runBlocking {
+      questions = questions.map { it + ("question_state_data_schema_version" to 1000) }
+      val cache = temporaryFolder.newFolder()
+      val pins = capturePins(cache)
+
+      val output = downloadLessons(true, pins, cache)
+
+      assertThat(pins.trackedQuestionInfoList).isEmpty()
+      assertThat(
+        QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
+          .questionsCount
+      ).isEqualTo(0)
+      assertThat(
+        TopicRecord.parseFrom(File(output, "protov1/binary/test_topic.pb").readBytes())
+          .hasPracticeQuestions
+      ).isFalse()
+    }
 
   @Test
   fun testDownloadLessonList_thenPinnedDownload_preservesExactQuestionVersions() = runBlocking {
@@ -236,6 +342,7 @@ class DownloadLessonsTest {
       .containsExactlyEntriesIn(
         questions.associate { it["id"] to (it["version"] as Double).toInt() }
       )
+    questions = questions.map { it + ("version" to ((it["version"] as Double).toInt() + 1)) }
     requests.clear()
 
     val output = downloadLessons(true, pins, cache)
@@ -246,6 +353,18 @@ class DownloadLessonsTest {
         pins.trackedQuestionInfoList.associate { it.id to it.contentVersion }
       )
     assertThat(requests.none { it["activity_type"] == "questions" }).isTrue()
+  }
+
+  @Test
+  fun testDownloadLessons_legacyNonemptyQuestionPins_preservesQuestionInventory() = runBlocking<Unit> {
+    val cache = temporaryFolder.newFolder()
+    val pins = capturePins(cache).toBuilder().clearQuestionsPinned().build()
+
+    val output = downloadLessons(true, pins, cache)
+
+    val asset = QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
+    assertThat(asset.questionsList.associate { it.questionId to it.version })
+      .containsExactlyEntriesIn(pins.trackedQuestionInfoList.associate { it.id to it.contentVersion })
   }
 
   @Test
@@ -274,11 +393,15 @@ class DownloadLessonsTest {
     assertThat(error.cause).hasMessageThat().contains("was not downloaded")
   }
 
-  private suspend fun capturePins(cache: File): DownloadListVersions {
+  private suspend fun capturePins(
+    cache: File,
+    downloadQuestions: Boolean = true
+  ): DownloadListVersions {
     val pinsFile = temporaryFolder.newFile("versions.textproto")
     ScriptBackgroundCoroutineDispatcher().use { dispatcher ->
       LessonListDownloader(
-        baseUrl, baseUrl, "test_bucket", "test_key", cache, dispatcher, createConfig(), true,
+        baseUrl, baseUrl, "test_bucket", "test_key", cache, dispatcher, createConfig(),
+        downloadQuestions,
         OppiaWebTranslationExtractor.createFromTranslations(emptyMap())
       ).downloadLessonListAsync(pinsFile).await()
     }
@@ -296,9 +419,9 @@ class DownloadLessonsTest {
   private fun downloadLessons(
     downloadQuestions: Boolean,
     pins: DownloadListVersions? = null,
-    cache: File = temporaryFolder.newFolder()
+    cache: File = temporaryFolder.newFolder(),
+    output: File = temporaryFolder.newFolder()
   ): File {
-    val output = temporaryFolder.newFolder()
     LessonDownloader(
       baseUrl, baseUrl, "test_bucket", "test_key", cache, false,
       downloadQuestions, pins, createConfig(),

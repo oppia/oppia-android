@@ -190,7 +190,10 @@ class GaeAndroidEndpointJsonImpl(
         val referencedSkillIds = contentCache.topics.values.filter {
           it.practiceTabIsDisplayed
         }.flatMap { it.subtopics }.flatMap { it.skillIds }.toSet()
-        check(pins == null || pins.isNotEmpty() || referencedSkillIds.isEmpty()) {
+        check(
+          pins == null || pins.isNotEmpty() || forcedVersions?.questionsPinned == true ||
+            referencedSkillIds.isEmpty()
+        ) {
           "Practice is enabled but no question versions are pinned. Regenerate the pinned" +
             " lesson versions with question downloads enabled before building these assets."
         }

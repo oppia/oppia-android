@@ -128,6 +128,7 @@ class LessonListDownloader(
       withContext(Dispatchers.IO) {
         lessonListOutputFile.outputStream().bufferedWriter().use {
           val versions = listResponse.captureVersions().toBuilder().apply {
+            questionsPinned = downloadQuestions
             addAllTrackedQuestionInfo(
               androidEndpoint.getQuestionVersions().toSortedMap().map {
                 (id, version) ->

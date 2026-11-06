@@ -452,6 +452,13 @@ class LessonDownloader(
 
     println()
     println("Writing successful results to: ${outputDir.path}/...")
+    // Regenerate owned output directories so disabled questions and their images cannot linger.
+    listOf("protov1", "protov2", "images").forEach { name ->
+      val directory = File(outputDir, name)
+      check(!directory.exists() || directory.deleteRecursively()) {
+        "Failed to clear generated assets: $directory."
+      }
+    }
     val protoV1Dir = File(outputDir, "protov1").also { it.mkdir() }
     val protoV2Dir = File(outputDir, "protov2").also { it.mkdir() }
     val textProtoV2Dir = File(protoV2Dir, "textproto").also { it.mkdir() }
@@ -1584,7 +1591,7 @@ class LessonDownloader(
         InteractionTypeCase.MULTIPLE_CHOICE_INPUT -> {
           val interaction = dto.interaction.multipleChoiceInput
           val args = interaction.customizationArgs
-//          if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
+          if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
           args.choicesList.forEachIndexed { index, choice ->
             texts += TextReference.CustomizationArg.Choice(container, choice.contentId, index)
           }
