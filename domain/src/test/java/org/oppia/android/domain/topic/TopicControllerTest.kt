@@ -315,7 +315,9 @@ class TopicControllerTest {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
     val ephemeralSummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(getExplorationIds(ephemeralSummary)).containsExactly(TEST_EXPLORATION_ID_4)
+    assertThat(getExplorationIds(ephemeralSummary))
+      .containsExactly(TEST_EXPLORATION_ID_4, TEST_EXPLORATION_ID_6)
+      .inOrder()
   }
 
   @Test

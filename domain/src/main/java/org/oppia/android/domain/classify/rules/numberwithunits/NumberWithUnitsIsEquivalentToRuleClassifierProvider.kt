@@ -2,12 +2,16 @@ package org.oppia.android.domain.classify.rules.numberwithunits
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.normalize
+import org.oppia.android.domain.util.toRawExpression
+import org.oppia.android.util.math.NumberWithUnitsParser
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.oppia.android.util.math.isApproximatelyEqualTo
-import org.oppia.android.util.math.toDouble
 import javax.inject.Inject
 
 /**
@@ -29,26 +33,21 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
     )
   }
 
-  // TODO(#209): Determine whether additional normalization of the input is necessary here.
   override fun matches(
     answer: NumberWithUnits,
     input: NumberWithUnits,
     classificationContext: ClassificationContext
   ): Boolean {
-    // Units must match, but in different orders is fine.
-    if (answer.unitList.toSet() != input.unitList.toSet()) {
-      return false
-    }
-
-    // Verify the float version of the value for approximate comparison.
-    return extractRealValue(input).isApproximatelyEqualTo(extractRealValue(answer))
+    val normalizedAnswer = parseExpression(answer.toRawExpression())?.normalize() ?: return false
+    val normalizedInput = parseExpression(input.toRawExpression())?.normalize() ?: return false
+    return normalizedAnswer.unitList.toSet() == normalizedInput.unitList.toSet() &&
+      normalizedAnswer.value.isApproximatelyEqualTo(normalizedInput.value)
   }
 
-  private fun extractRealValue(number: NumberWithUnits): Double {
-    return when (number.numberTypeCase) {
-      NumberWithUnits.NumberTypeCase.REAL -> number.real
-      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toDouble()
-      else -> throw IllegalArgumentException("Invalid number type: ${number.numberTypeCase.name}")
+  private fun parseExpression(rawExpression: String): NumberWithUnitsExpression? {
+    return when (val result = NumberWithUnitsParser.parseNumberWithUnits(rawExpression)) {
+      is NumberWithUnitsParsingResult.Success -> result.result
+      is NumberWithUnitsParsingResult.Failure -> null
     }
   }
 }
