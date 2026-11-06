@@ -330,6 +330,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "question_proto",
     srcs = ["question.proto"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":exploration_proto",
         ":subtitled_html_proto",
@@ -340,6 +341,12 @@ oppia_proto_library(
 java_lite_proto_library(
     name = "question_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
+    deps = [":question_proto"],
+)
+
+java_proto_library(
+    name = "question_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":question_proto"],
 )
 

@@ -270,16 +270,13 @@ class AndroidActivityHandlerService(
     return CoroutineScope(dispatcher).async { fullFetch.await().single() }
   }
 
-  fun fetchLatestQuestionsAsync(): Deferred<List<VersionedStructure<GaeQuestion>>> {
+  /** Retrieves practice questions, requiring exact cached or returned versions when pinned. */
+  fun fetchLatestQuestionsAsync(
+    pinnedVersions: Map<String, Int>? = null
+  ): Deferred<List<VersionedStructure<GaeQuestion>>> {
     return CoroutineScope(dispatcher).async {
-      // TODO: Maybe convert this to a sequence to avoid the var.
-      val collectedQuestions = mutableListOf<VersionedStructure<GaeQuestion>>()
-      var nextQuestions = fetchQuestionsSync(offset = 0)
-      while (nextQuestions.isNotEmpty()) {
-        collectedQuestions += nextQuestions
-        nextQuestions = fetchQuestionsSync(offset = collectedQuestions.size)
-      }
-      return@async collectedQuestions
+      QuestionRepository(cacheDir, forceCacheLoad, moshi, ::fetchQuestionsSync)
+        .fetchQuestions(pinnedVersions)
     }
   }
 
