@@ -35,7 +35,10 @@ class DeveloperOptionsActivity :
   RouteToMathExpressionParserTestListener,
   RouteToFeatureFlagsListener,
   RouteToPlatformParametersListener,
-  AppRestartListener {
+  AppRestartListener,
+  AddOneProfileButtonClickListener,
+  AddThreeProfilesButtonClickListener,
+  DeleteAllNonAdminProfilesButtonClickListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -121,5 +124,17 @@ class DeveloperOptionsActivity :
 
   override fun restartApp() {
     developerOptionsActivityPresenter.restartApp()
+  }
+
+  override fun createOneProfile() {
+    developerOptionsActivityPresenter.createProfile(1)
+  }
+
+  override fun createThreeProfiles() {
+    developerOptionsActivityPresenter.createProfile(3)
+  }
+
+  override fun deleteAllNonAdminProfiles() {
+    developerOptionsActivityPresenter.deleteAllNonAdminProfiles()
   }
 }
