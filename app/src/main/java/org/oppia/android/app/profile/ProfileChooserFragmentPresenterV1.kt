@@ -36,7 +36,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.toProfileIdPreservingZero
 import javax.inject.Inject
 
-
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserFragmentPresenterV1 @Inject constructor(

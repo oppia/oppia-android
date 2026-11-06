@@ -21,6 +21,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.LegacyProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.profile.PROFILE_AVATAR_COLORS_LIST
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
@@ -238,36 +239,6 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
   /** Randomly selects a color for the new profile that is not already in use. */
   private fun selectUniqueRandomColor(): Int {
-    return ContextCompat.getColor(fragment.requireContext(), COLORS_LIST.random())
-  }
-
-  private companion object {
-    private val COLORS_LIST = listOf(
-      R.color.component_color_avatar_background_1_color,
-      R.color.component_color_avatar_background_2_color,
-      R.color.component_color_avatar_background_3_color,
-      R.color.component_color_avatar_background_4_color,
-      R.color.component_color_avatar_background_5_color,
-      R.color.component_color_avatar_background_6_color,
-      R.color.component_color_avatar_background_7_color,
-      R.color.component_color_avatar_background_8_color,
-      R.color.component_color_avatar_background_9_color,
-      R.color.component_color_avatar_background_10_color,
-      R.color.component_color_avatar_background_11_color,
-      R.color.component_color_avatar_background_12_color,
-      R.color.component_color_avatar_background_13_color,
-      R.color.component_color_avatar_background_14_color,
-      R.color.component_color_avatar_background_15_color,
-      R.color.component_color_avatar_background_16_color,
-      R.color.component_color_avatar_background_17_color,
-      R.color.component_color_avatar_background_18_color,
-      R.color.component_color_avatar_background_19_color,
-      R.color.component_color_avatar_background_20_color,
-      R.color.component_color_avatar_background_21_color,
-      R.color.component_color_avatar_background_22_color,
-      R.color.component_color_avatar_background_23_color,
-      R.color.component_color_avatar_background_24_color,
-      R.color.component_color_avatar_background_25_color
-    )
+    return ContextCompat.getColor(fragment.requireContext(), PROFILE_AVATAR_COLORS_LIST.random())
   }
 }

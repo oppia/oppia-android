@@ -32,6 +32,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+private const val MAX_PROFILE_COUNT = 10
+
 /** Predefined list of profile names to use when automatically generating test profiles. */
 private val PRE_DEFINED_NAMES_LIST = listOf(
   "Ben", "Adhiambo", "Sean", "Saptak", "Vishwajit", "Subhajit", "Tanish", "Ayush", "Jinshu",
@@ -166,7 +168,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           } else if (result is AsyncResult.Failure) {
             deleteLiveData.removeObserver(this)
             oppiaLogger.e(
-              "DeveloperOptionsFragment",
+              "DeveloperOptionsFragmentPresenter",
               "Failed to delete all non-admin profiles",
               result.error
             )
@@ -192,7 +194,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           if (profilesResult is AsyncResult.Success) {
             profilesLiveData.removeObserver(this)
             val existingProfiles = profilesResult.value
-            val availableSlots = (10 - existingProfiles.size).coerceAtLeast(0)
+            val availableSlots = (MAX_PROFILE_COUNT - existingProfiles.size).coerceAtLeast(0)
             val profilesToAddCount = minOf(count, availableSlots)
             if (profilesToAddCount == 0) {
               val intent =
@@ -211,7 +213,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           } else if (profilesResult is AsyncResult.Failure) {
             profilesLiveData.removeObserver(this)
             oppiaLogger.e(
-              "DeveloperOptionsFragment",
+              "DeveloperOptionsFragmentPresenter",
               "Failed to retrieve the list of profiles",
               profilesResult.error
             )
@@ -247,7 +249,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
           } else if (result is AsyncResult.Failure) {
             addLiveData.removeObserver(this)
             oppiaLogger.e(
-              "DeveloperOptionsFragment",
+              "DeveloperOptionsFragmentPresenter",
               "Failed to add profile $nextName",
               result.error
             )

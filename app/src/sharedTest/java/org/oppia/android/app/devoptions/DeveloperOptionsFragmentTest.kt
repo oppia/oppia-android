@@ -50,7 +50,6 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -805,14 +804,19 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_count)).check(matches(withText("2")))
 
-      profileManagementController.deleteAllNonAdminProfiles()
+      monitorFactory.ensureDataProviderExecutes(
+        profileManagementController.deleteAllNonAdminProfiles()
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_count)).check(matches(withText("1")))
     }
   }
 
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
+    return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(
+      context,
+      internalProfileId
+    )
   }
 
   private fun verifyItemDisplayedOnDeveloperOptionsListItem(
@@ -848,20 +852,6 @@ class DeveloperOptionsFragmentTest {
         position
       )
     )
-  }
-
-  private fun verifyTextOnProfileListItemAtPosition(
-    itemPosition: Int,
-    targetView: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.profile_recycler_view,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(withText(stringToMatch)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
