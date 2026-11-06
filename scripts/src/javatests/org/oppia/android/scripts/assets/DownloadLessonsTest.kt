@@ -356,16 +356,19 @@ class DownloadLessonsTest {
   }
 
   @Test
-  fun testDownloadLessons_legacyNonemptyQuestionPins_preservesQuestionInventory() = runBlocking<Unit> {
-    val cache = temporaryFolder.newFolder()
-    val pins = capturePins(cache).toBuilder().clearQuestionsPinned().build()
+  fun testDownloadLessons_legacyNonemptyQuestionPins_preservesQuestionInventory() =
+    runBlocking<Unit> {
+      val cache = temporaryFolder.newFolder()
+      val pins = capturePins(cache).toBuilder().clearQuestionsPinned().build()
 
-    val output = downloadLessons(true, pins, cache)
+      val output = downloadLessons(true, pins, cache)
 
-    val asset = QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
-    assertThat(asset.questionsList.associate { it.questionId to it.version })
-      .containsExactlyEntriesIn(pins.trackedQuestionInfoList.associate { it.id to it.contentVersion })
-  }
+      val asset = QuestionList.parseFrom(File(output, "protov1/binary/questions.pb").readBytes())
+      assertThat(asset.questionsList.associate { it.questionId to it.version })
+        .containsExactlyEntriesIn(
+          pins.trackedQuestionInfoList.associate { it.id to it.contentVersion }
+        )
+    }
 
   @Test
   fun testDownloadLessons_pinnedQuestionChanged_failsInsteadOfPackagingLatest() = runBlocking {
