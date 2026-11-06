@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.NumberUnitExpression
 import org.oppia.android.app.model.NumberUnitExpression.SiPrefix
 import org.oppia.android.app.model.NumberUnitExpression.Unit
 import org.oppia.android.app.model.NumberWithUnitsExpression
@@ -14,6 +15,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.NumberWithUnitsSubject.Companion.assertThat
 import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.toUnitString
 import org.oppia.android.util.math.NumberWithUnitsParsingError.DuplicateCurrencyError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.EmptyExpressionError
 import org.oppia.android.util.math.NumberWithUnitsParsingError.InvalidTokenError
@@ -3721,6 +3723,83 @@ class NumberWithUnitsParserTest {
         hasUnitThat().isEqualTo(Unit.METER)
         hasExponentThat().isEqualTo(1)
       }
+    }
+  }
+
+  @Test
+  fun testToUnitString_unprefixedUnit_returnsCanonicalSymbol() {
+    assertThat(createUnit(Unit.LITER).toUnitString()).isEqualTo("L")
+  }
+
+  @Test
+  fun testToUnitString_siPrefixedUnit_returnsCanonicalPrefixAndSymbol() {
+    assertThat(createUnit(Unit.METER, SiPrefix.KILO).toUnitString()).isEqualTo("km")
+  }
+
+  @Test
+  fun testToUnitString_currencyUnitWithPrefixSymbol_returnsPrefixSymbol() {
+    assertThat(createUnit(Unit.DOLLAR).toUnitString()).isEqualTo("$")
+    assertThat(createUnit(Unit.RUPEE).toUnitString()).isEqualTo("Rs")
+  }
+
+  @Test
+  fun testToUnitString_currencyUnitWithoutPrefixSymbol_returnsSuffixSymbol() {
+    assertThat(createUnit(Unit.CENT).toUnitString()).isEqualTo("¢")
+  }
+
+  @Test
+  fun testToUnitString_unspecifiedUnit_returnsEmptyString() {
+    assertThat(createUnit(Unit.UNIT_UNSPECIFIED).toUnitString()).isEmpty()
+  }
+
+  @Test
+  fun testToUnitString_everyUnit_parsesBackToSameUnit() {
+    val units = Unit.values().filter { it != Unit.UNIT_UNSPECIFIED && it != Unit.UNRECOGNIZED }
+    for (unit in units) {
+      val unitString = createUnit(unit).toUnitString()
+      val expression = if (unit == Unit.DOLLAR || unit == Unit.RUPEE) {
+        "$unitString 1"
+      } else "1 $unitString"
+
+      val result = parseNumberWithUnitsExpectingSuccess(expression)
+
+      assertThat(result).hasUnitCountThat().isEqualTo(1)
+      assertThat(result.getOnlyUnit()).isEqualTo(createUnit(unit))
+    }
+  }
+
+  @Test
+  fun testToUnitString_everySiPrefixWithMeter_parsesBackToSameUnit() {
+    val prefixes = SiPrefix.values().filter {
+      it != SiPrefix.SI_PREFIX_UNSPECIFIED && it != SiPrefix.UNRECOGNIZED
+    }
+    for (prefix in prefixes) {
+      val unit = createUnit(Unit.METER, prefix)
+
+      val result = parseNumberWithUnitsExpectingSuccess("1 ${unit.toUnitString()}")
+
+      assertThat(result.getOnlyUnit()).isEqualTo(unit)
+    }
+  }
+
+  private fun createUnit(
+    unit: Unit,
+    siPrefix: SiPrefix = SiPrefix.SI_PREFIX_UNSPECIFIED
+  ): NumberUnitExpression {
+    return NumberUnitExpression.newBuilder().apply {
+      this.unit = unit
+      this.siPrefix = siPrefix
+      exponent = 1
+    }.build()
+  }
+
+  private fun NumberWithUnitsExpression.getOnlyUnit(): NumberUnitExpression {
+    return when (expressionFormatCase) {
+      NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
+        prefixValueExpression.prefixUnitsList.single()
+      NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->
+        valueSuffixExpression.suffixUnitsList.single()
+      else -> error("Expected exactly one unit in: $this")
     }
   }
 

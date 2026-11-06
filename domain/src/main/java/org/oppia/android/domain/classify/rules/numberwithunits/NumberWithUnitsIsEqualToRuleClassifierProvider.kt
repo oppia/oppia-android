@@ -1,14 +1,17 @@
 package org.oppia.android.domain.classify.rules.numberwithunits
 
-import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.NumberUnitExpression
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.NumberWithUnitsExpression
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.toUnitString
+import org.oppia.android.domain.util.getAllUnits
+import org.oppia.android.domain.util.toRawExpression
 import org.oppia.android.util.math.NumberWithUnitsParser
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
@@ -37,41 +40,39 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
     input: NumberWithUnits,
     classificationContext: ClassificationContext
   ): Boolean {
+    val answerExpression = parseExpression(answer.toRawExpression()) ?: return false
+    val inputExpression = parseExpression(input.toRawExpression()) ?: return false
+
     // The number types must match.
-    if (answer.numberTypeCase != input.numberTypeCase) {
+    if (answerExpression.numberTypeCase != inputExpression.numberTypeCase) {
       return false
     }
     // Units must match, but in different orders is fine. But duplicates must be preserved.
-    val sortedAnswerUnits = answer.unitList
-      .map { it.toBuilder().setUnit(it.unit.toCanonicalUnit()).build() }
-      .sortedBy { it.unit }
-    val sortedInputUnits = input.unitList
-      .map { it.toBuilder().setUnit(it.unit.toCanonicalUnit()).build() }
-      .sortedBy { it.unit }
-    if (sortedAnswerUnits != sortedInputUnits) {
+    if (answerExpression.getSortedUnits() != inputExpression.getSortedUnits()) {
       return false
     }
     // Otherwise, verify the value itself matches.
-    return when (answer.numberTypeCase) {
-      NumberWithUnits.NumberTypeCase.REAL -> realMatches(answer.real, input.real)
-      NumberWithUnits.NumberTypeCase.FRACTION -> fractionMatches(answer.fraction, input.fraction)
+    return when (answerExpression.numberTypeCase) {
+      NumberWithUnitsExpression.NumberTypeCase.REAL ->
+        inputExpression.real.isApproximatelyEqualTo(answerExpression.real)
+      NumberWithUnitsExpression.NumberTypeCase.FRACTION ->
+        inputExpression.fraction == answerExpression.fraction
       else -> false // Unknown type never matches.
     }
   }
 
-  private fun realMatches(answer: Double, input: Double): Boolean {
-    return input.isApproximatelyEqualTo(answer)
-  }
-
-  private fun fractionMatches(answer: Fraction, input: Fraction): Boolean {
-    return input == answer
-  }
-
-  private fun String.toCanonicalUnit(): String {
-    return when (val result = NumberWithUnitsParser.parseUnit(this)) {
-      is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Success ->
-        result.result.toUnitString()
-      is NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult.Failure -> this
+  private fun parseExpression(rawExpression: String): NumberWithUnitsExpression? {
+    return when (val result = NumberWithUnitsParser.parseNumberWithUnits(rawExpression)) {
+      is NumberWithUnitsParsingResult.Success -> result.result
+      is NumberWithUnitsParsingResult.Failure -> null
     }
+  }
+
+  private fun NumberWithUnitsExpression.getSortedUnits(): List<NumberUnitExpression> =
+    getAllUnits().sortedWith(UNIT_COMPARATOR)
+
+  private companion object {
+    private val UNIT_COMPARATOR =
+      compareBy<NumberUnitExpression>({ it.unitValue }, { it.siPrefixValue }, { it.exponent })
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.android.domain.util
 
+import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.NormalizedNumberWithUnits
 import org.oppia.android.app.model.NormalizedUnit
 import org.oppia.android.app.model.NormalizedUnit.BaseDimension
@@ -7,48 +8,61 @@ import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberUnitExpression
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.NumberWithUnitsExpression
-import org.oppia.android.util.math.NumberWithUnitsParser
-import org.oppia.android.util.math.NumberWithUnitsParser.Companion.NumberWithUnitsParsingResult
+import org.oppia.android.util.math.NumberWithUnitsParser.Companion.toUnitString
 import org.oppia.android.util.math.toDouble
+import java.math.BigDecimal
 import kotlin.math.pow
 
-/**
- * Aggregates the units in a [NumberWithUnits] by summing the exponents of any duplicate units.
- * This is useful for normalizing [NumberWithUnits] instances for comparison, since the order of
- * units is irrelevant and duplicate units are effectively the same as a single unit with the
- * exponent equal to the sum of the exponents of the duplicate units.
- */
-fun NumberWithUnits.aggregate(): NumberWithUnits {
-  val aggregated = unitList.groupBy { it.unit }
-    .map { (unit, units) ->
-      NumberUnit.newBuilder()
-        .setUnit(unit)
-        .setExponent(units.sumOf { it.exponent })
-        .build()
-    }
+/** Unit strings that are written before the numeric value (e.g. "$5" or "Rs 5"). */
+private val PREFIX_UNIT_STRINGS = setOf("$", "Rs", "₹")
 
-  return toBuilder()
-    .clearUnit()
-    .addAllUnit(aggregated)
-    .build()
+/**
+ * Returns a raw expression representing [this] value that can be parsed by
+ * [org.oppia.android.util.math.NumberWithUnitsParser], e.g. "$ 5", "-3/2 kg m^-2", or "2.5 m s^-1".
+ *
+ * Fractions are always represented in improper form (since the parser doesn't support mixed
+ * numbers), and duplicate units are retained.
+ */
+fun NumberWithUnits.toRawExpression(): String {
+  val valueString = when (numberTypeCase) {
+    NumberWithUnits.NumberTypeCase.REAL -> real.toRawExpression()
+    NumberWithUnits.NumberTypeCase.FRACTION -> fraction.toRawImproperFraction()
+    else -> ""
+  }
+  val (prefixUnits, suffixUnits) =
+    unitList.partition { it.unit in PREFIX_UNIT_STRINGS && it.exponent == 1 }
+  return (prefixUnits.map { it.unit } + valueString + suffixUnits.map { it.toRawExpression() })
+    .filter { it.isNotEmpty() }
+    .joinToString(separator = " ")
 }
 
-/** Converts this value to base units and combines equivalent dimensions. */
-fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
-  var value = when (numberTypeCase) {
-    NumberWithUnits.NumberTypeCase.REAL -> real
-    NumberWithUnits.NumberTypeCase.FRACTION -> fraction.toDouble()
+/** Returns all units of [this] expression, regardless of whether they precede the value. */
+fun NumberWithUnitsExpression.getAllUnits(): List<NumberUnitExpression> {
+  return when (expressionFormatCase) {
+    NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION ->
+      prefixValueExpression.prefixUnitsList
+    NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION ->
+      valueSuffixExpression.suffixUnitsList
+    NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_SUFFIX_EXPRESSION ->
+      prefixValueSuffixExpression.prefixUnitsList + prefixValueSuffixExpression.suffixUnitsList
+    else -> listOf()
+  }
+}
+
+/**
+ * Converts this value to base units and combines equivalent dimensions, or returns null if it
+ * has no value or contains an unsupported unit.
+ */
+fun NumberWithUnitsExpression.normalize(): NormalizedNumberWithUnits? {
+  var convertedValue = when (numberTypeCase) {
+    NumberWithUnitsExpression.NumberTypeCase.REAL -> real
+    NumberWithUnitsExpression.NumberTypeCase.FRACTION -> fraction.toDouble()
     else -> return null
   }
   val dimensions = mutableMapOf<BaseDimension, Int>()
-  var convertedValue = value
-  unitList.forEach { unit ->
-    val parsedUnit = when (val result = NumberWithUnitsParser.parseUnit(unit.unit)) {
-      is NumberWithUnitsParsingResult.Success -> result.result
-      is NumberWithUnitsParsingResult.Failure -> return null
-    }
-    val conversion = parsedUnit.toBaseUnit() ?: return null
-    if (parsedUnit.unit == NumberUnitExpression.Unit.CELSIUS && unit.exponent == 1) {
+  getAllUnits().forEach { unit ->
+    val conversion = unit.toBaseUnit() ?: return null
+    if (unit.unit == NumberUnitExpression.Unit.CELSIUS && unit.exponent == 1) {
       convertedValue += 273.15 // Offset for Celsius to Kelvin.
     }
     convertedValue *= conversion.value.pow(unit.exponent)
@@ -58,7 +72,7 @@ fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
     }
   }
   return NormalizedNumberWithUnits.newBuilder().apply {
-    setValue(convertedValue)
+    value = convertedValue
     addAllUnit(
       // Sort by enum ordinal for deterministic ordering.
       dimensions.filterValues { it != 0 }
@@ -79,109 +93,39 @@ fun NumberWithUnits.normalize(): NormalizedNumberWithUnits? {
  * for use in an InteractionObject.
  */
 fun NumberWithUnitsExpression.toNumberWithUnits(): NumberWithUnits {
-  val builder = NumberWithUnits.newBuilder()
-
-  when (numberTypeCase) {
-    NumberWithUnitsExpression.NumberTypeCase.REAL -> builder.real = real
-    NumberWithUnitsExpression.NumberTypeCase.FRACTION -> builder.fraction = fraction
-    else -> {}
-  }
-
-  val unitsList = mutableListOf<NumberUnitExpression>()
-  when (expressionFormatCase) {
-    NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_EXPRESSION -> {
-      unitsList.addAll(prefixValueExpression.prefixUnitsList)
+  val expression = this
+  return NumberWithUnits.newBuilder().apply {
+    when (expression.numberTypeCase) {
+      NumberWithUnitsExpression.NumberTypeCase.REAL -> real = expression.real
+      NumberWithUnitsExpression.NumberTypeCase.FRACTION -> fraction = expression.fraction
+      else -> {}
     }
-    NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION -> {
-      unitsList.addAll(valueSuffixExpression.suffixUnitsList)
+    expression.getAllUnits().forEach { unitExpression ->
+      addUnit(
+        NumberUnit.newBuilder().apply {
+          unit = unitExpression.toUnitString()
+          exponent = unitExpression.exponent
+        }
+      )
     }
-    NumberWithUnitsExpression.ExpressionFormatCase.PREFIX_VALUE_SUFFIX_EXPRESSION -> {
-      unitsList.addAll(prefixValueSuffixExpression.prefixUnitsList)
-      unitsList.addAll(prefixValueSuffixExpression.suffixUnitsList)
-    }
-    else -> {}
-  }
-
-  unitsList.forEach { expr ->
-    builder.addUnit(
-      NumberUnit.newBuilder().apply {
-        unit = expr.toUnitString()
-        exponent = expr.exponent
-      }
-    )
-  }
-
-  return builder.build()
+  }.build()
 }
 
-/** Converts a [NumberUnitExpression] into its canonical string representation. */
-fun NumberUnitExpression.toUnitString(): String {
-  val prefixStr = when (siPrefix) {
-    NumberUnitExpression.SiPrefix.DECA -> "da"
-    NumberUnitExpression.SiPrefix.HECTO -> "h"
-    NumberUnitExpression.SiPrefix.KILO -> "k"
-    NumberUnitExpression.SiPrefix.MEGA -> "M"
-    NumberUnitExpression.SiPrefix.GIGA -> "G"
-    NumberUnitExpression.SiPrefix.TERA -> "T"
-    NumberUnitExpression.SiPrefix.PETA -> "P"
-    NumberUnitExpression.SiPrefix.EXA -> "E"
-    NumberUnitExpression.SiPrefix.ZETTA -> "Z"
-    NumberUnitExpression.SiPrefix.YOTTA -> "Y"
-    NumberUnitExpression.SiPrefix.DECI -> "d"
-    NumberUnitExpression.SiPrefix.CENTI -> "c"
-    NumberUnitExpression.SiPrefix.MILLI -> "m"
-    NumberUnitExpression.SiPrefix.MICRO -> "u"
-    NumberUnitExpression.SiPrefix.NANO -> "n"
-    NumberUnitExpression.SiPrefix.PICO -> "p"
-    NumberUnitExpression.SiPrefix.FEMTO -> "f"
-    NumberUnitExpression.SiPrefix.ATTO -> "a"
-    NumberUnitExpression.SiPrefix.ZEPTO -> "z"
-    NumberUnitExpression.SiPrefix.YOCTO -> "y"
-    else -> ""
-  }
-  val baseUnitStr = when (unit) {
-    NumberUnitExpression.Unit.METER -> "m"
-    NumberUnitExpression.Unit.INCH -> "in"
-    NumberUnitExpression.Unit.FOOT -> "ft"
-    NumberUnitExpression.Unit.YARD -> "yd"
-    NumberUnitExpression.Unit.GRAM -> "g"
-    NumberUnitExpression.Unit.GRAIN -> "gr"
-    NumberUnitExpression.Unit.OUNCE -> "oz"
-    NumberUnitExpression.Unit.SQUARE_METER -> "m2"
-    NumberUnitExpression.Unit.SQUARE_INCH -> "sqin"
-    NumberUnitExpression.Unit.SQUARE_FOOT -> "sqft"
-    NumberUnitExpression.Unit.SQUARE_YARD -> "sqyd"
-    NumberUnitExpression.Unit.CUBIC_METER -> "m3"
-    NumberUnitExpression.Unit.LITER -> "L"
-    NumberUnitExpression.Unit.CUBIC_CENTIMETER -> "cc"
-    NumberUnitExpression.Unit.CUBIC_INCH -> "cuin"
-    NumberUnitExpression.Unit.CUBIC_FOOT -> "cuft"
-    NumberUnitExpression.Unit.CUBIC_YARD -> "cuyd"
-    NumberUnitExpression.Unit.KELVIN -> "K"
-    NumberUnitExpression.Unit.CELSIUS -> "degC"
-    NumberUnitExpression.Unit.RADIAN -> "rad"
-    NumberUnitExpression.Unit.DEGREE -> "deg"
-    NumberUnitExpression.Unit.SECOND -> "s"
-    NumberUnitExpression.Unit.MINUTE -> "min"
-    NumberUnitExpression.Unit.HOUR -> "h"
-    NumberUnitExpression.Unit.HERTZ -> "Hz"
-    NumberUnitExpression.Unit.MOLE -> "mol"
-    NumberUnitExpression.Unit.CANDELA -> "cd"
-    NumberUnitExpression.Unit.NEWTON -> "N"
-    NumberUnitExpression.Unit.JOULE -> "J"
-    NumberUnitExpression.Unit.WATT -> "W"
-    NumberUnitExpression.Unit.PASCAL -> "Pa"
-    NumberUnitExpression.Unit.AMPERE -> "A"
-    NumberUnitExpression.Unit.VOLT -> "V"
-    NumberUnitExpression.Unit.OHM -> "ohm"
-    NumberUnitExpression.Unit.DOLLAR -> "$"
-    NumberUnitExpression.Unit.CENT -> "¢"
-    NumberUnitExpression.Unit.RUPEE -> "Rs"
-    NumberUnitExpression.Unit.PAISA -> "paisa"
-    else -> ""
-  }
-  return prefixStr + baseUnitStr
+private fun Double.toRawExpression(): String {
+  if (!isFinite()) return toString()
+  // BigDecimal avoids scientific notation (e.g. "1.0E-7"), which the parser doesn't support. A
+  // decimal point is always kept so that large values aren't tokenized as (overflowing) integers.
+  val plainString = BigDecimal.valueOf(this).toPlainString()
+  return if ('.' in plainString) plainString else "$plainString.0"
 }
+
+private fun Fraction.toRawImproperFraction(): String {
+  val sign = if (isNegative) "-" else ""
+  return "$sign${wholeNumber * denominator + numerator}/$denominator"
+}
+
+private fun NumberUnit.toRawExpression(): String =
+  if (exponent == 1) unit else "$unit^$exponent"
 
 private fun createConversion(
   factor: Double,
@@ -278,15 +222,26 @@ private fun NumberUnitExpression.toBaseUnit(): NormalizedNumberWithUnits? {
     else -> return null
   }
   val prefixFactor = when (siPrefix) {
+    NumberUnitExpression.SiPrefix.DECA -> 1e1
+    NumberUnitExpression.SiPrefix.HECTO -> 1e2
     NumberUnitExpression.SiPrefix.KILO -> 1e3
+    NumberUnitExpression.SiPrefix.MEGA -> 1e6
+    NumberUnitExpression.SiPrefix.GIGA -> 1e9
+    NumberUnitExpression.SiPrefix.TERA -> 1e12
+    NumberUnitExpression.SiPrefix.PETA -> 1e15
+    NumberUnitExpression.SiPrefix.EXA -> 1e18
+    NumberUnitExpression.SiPrefix.ZETTA -> 1e21
+    NumberUnitExpression.SiPrefix.YOTTA -> 1e24
+    NumberUnitExpression.SiPrefix.DECI -> 1e-1
     NumberUnitExpression.SiPrefix.CENTI -> 1e-2
     NumberUnitExpression.SiPrefix.MILLI -> 1e-3
     NumberUnitExpression.SiPrefix.MICRO -> 1e-6
-    NumberUnitExpression.SiPrefix.MEGA -> 1e6
-    NumberUnitExpression.SiPrefix.HECTO -> 1e2
-    NumberUnitExpression.SiPrefix.DECA -> 1e1
-    NumberUnitExpression.SiPrefix.DECI -> 1e-1
-    NumberUnitExpression.SiPrefix.GIGA -> 1e9
+    NumberUnitExpression.SiPrefix.NANO -> 1e-9
+    NumberUnitExpression.SiPrefix.PICO -> 1e-12
+    NumberUnitExpression.SiPrefix.FEMTO -> 1e-15
+    NumberUnitExpression.SiPrefix.ATTO -> 1e-18
+    NumberUnitExpression.SiPrefix.ZEPTO -> 1e-21
+    NumberUnitExpression.SiPrefix.YOCTO -> 1e-24
     else -> 1.0
   }
   return if (prefixFactor == 1.0)

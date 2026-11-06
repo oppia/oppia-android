@@ -40,9 +40,9 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   private val DOUBLE_VALUE_TEST =
     InteractionObjectTestBuilder.createReal(value = 3.8).real
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_5 =
-    InteractionObjectTestBuilder.createNumberUnit(unit = "p", exponent = 5)
+    InteractionObjectTestBuilder.createNumberUnit(unit = "s", exponent = 5)
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_3 =
-    InteractionObjectTestBuilder.createNumberUnit(unit = "e", exponent = 3)
+    InteractionObjectTestBuilder.createNumberUnit(unit = "m", exponent = 3)
   private val NUMBER_UNIT_METER_TO_POWER_1 =
     InteractionObjectTestBuilder.createNumberUnit(unit = "meter", exponent = 1)
   private val NUMBER_UNIT_METER_TO_POWER_2 =

@@ -491,58 +491,13 @@ class NumberWithUnitsParser private constructor(
   /** Parses a currency prefix token and returns it as a [NumberUnitExpression] with exponent 1. */
   private fun parseCurrencyPrefixUnit(): NumberUnitExpression? {
     val token = tokens.peek() as? Token.Unit ?: return null
-    val currencyUnit = when (token.unit) {
-      "$" -> NumberUnitExpression.Unit.DOLLAR
-      "₹", "Rs" -> NumberUnitExpression.Unit.RUPEE
-      else -> return null
-    }
+    val currencyUnit = CURRENCY_UNITS_BY_PREFIX_ALIAS[token.unit] ?: return null
     tokens.next()
     return createUnitExpression(currencyUnit)
   }
 
-  private fun parseAnyUnit(token: Token.Unit): NumberUnitExpression.Unit? {
-    return when (token.unit) {
-      "m", "meter", "meters" -> NumberUnitExpression.Unit.METER
-      "m2" -> NumberUnitExpression.Unit.SQUARE_METER
-      "m3" -> NumberUnitExpression.Unit.CUBIC_METER
-      "in", "inch", "inches" -> NumberUnitExpression.Unit.INCH
-      "sqin", "sqinch" -> NumberUnitExpression.Unit.SQUARE_INCH
-      "cuin" -> NumberUnitExpression.Unit.CUBIC_INCH
-      "ft", "foot", "feet" -> NumberUnitExpression.Unit.FOOT
-      "sqft", "sqfeet" -> NumberUnitExpression.Unit.SQUARE_FOOT
-      "cuft" -> NumberUnitExpression.Unit.CUBIC_FOOT
-      "yd", "yard", "yards" -> NumberUnitExpression.Unit.YARD
-      "sqyd", "sqyard" -> NumberUnitExpression.Unit.SQUARE_YARD
-      "cuyd" -> NumberUnitExpression.Unit.CUBIC_YARD
-      "g", "gram", "grams" -> NumberUnitExpression.Unit.GRAM
-      "gr", "grain", "grains" -> NumberUnitExpression.Unit.GRAIN
-      "oz", "ounce", "ounces" -> NumberUnitExpression.Unit.OUNCE
-      "l", "L", "lt", "liter", "litre", "liters", "litres" -> NumberUnitExpression.Unit.LITER
-      "cc" -> NumberUnitExpression.Unit.CUBIC_CENTIMETER
-      "s", "sec", "secs", "second", "seconds" -> NumberUnitExpression.Unit.SECOND
-      "min", "mins", "minute", "minutes" -> NumberUnitExpression.Unit.MINUTE
-      "h", "hr", "hrs", "hour", "hours" -> NumberUnitExpression.Unit.HOUR
-      "K", "kelvin" -> NumberUnitExpression.Unit.KELVIN
-      "degC", "celsius" -> NumberUnitExpression.Unit.CELSIUS
-      "Hz", "hertz" -> NumberUnitExpression.Unit.HERTZ
-      "rad", "radian", "radians" -> NumberUnitExpression.Unit.RADIAN
-      "deg", "degree", "degrees" -> NumberUnitExpression.Unit.DEGREE
-      "mol", "mole", "moles" -> NumberUnitExpression.Unit.MOLE
-      "cd", "candela" -> NumberUnitExpression.Unit.CANDELA
-      "N", "newton", "newtons" -> NumberUnitExpression.Unit.NEWTON
-      "J", "joule", "joules" -> NumberUnitExpression.Unit.JOULE
-      "W", "watt", "watts" -> NumberUnitExpression.Unit.WATT
-      "Pa", "pascal", "pascals" -> NumberUnitExpression.Unit.PASCAL
-      "A", "ampere", "amperes" -> NumberUnitExpression.Unit.AMPERE
-      "V", "volt", "volts" -> NumberUnitExpression.Unit.VOLT
-      "ohm", "ohms" -> NumberUnitExpression.Unit.OHM
-      "USD", "dollar", "dollars", "Dollar", "Dollars" -> NumberUnitExpression.Unit.DOLLAR
-      "¢", "cent", "cents", "Cent", "Cents" -> NumberUnitExpression.Unit.CENT
-      "rupee", "rupees", "Rupee", "Rupees" -> NumberUnitExpression.Unit.RUPEE
-      "paisa", "paise", "Paisa", "Paise" -> NumberUnitExpression.Unit.PAISA
-      else -> null
-    }
-  }
+  private fun parseAnyUnit(token: Token.Unit): NumberUnitExpression.Unit? =
+    UNITS_BY_SUFFIX_ALIAS[token.unit]
 
   private fun NumberUnitExpression.Unit.isPrefixable(): Boolean {
     return this == NumberUnitExpression.Unit.METER ||
@@ -564,8 +519,7 @@ class NumberWithUnitsParser private constructor(
   }
 
   private fun Token.Unit.extractUnitStartIndex(): Int {
-    val match = SI_PREFIX_MAP.keys
-      .sortedByDescending { it.length }
+    val match = SI_PREFIX_ALIASES_BY_LENGTH_DESCENDING
       .firstOrNull { prefix ->
         this.unit.length > prefix.length && this.unit.startsWith(prefix)
       }
@@ -573,9 +527,8 @@ class NumberWithUnitsParser private constructor(
     return match?.length ?: 0
   }
 
-  private fun parseSiPrefix(symbol: String): NumberUnitExpression.SiPrefix? {
-    return Companion.SI_PREFIX_MAP[symbol]
-  }
+  private fun parseSiPrefix(symbol: String): NumberUnitExpression.SiPrefix? =
+    SI_PREFIXES_BY_ALIAS[symbol]
 
   private fun isAtSuffixUnit(): Boolean {
     return tokens.peek() is Token.Unit
@@ -587,10 +540,8 @@ class NumberWithUnitsParser private constructor(
       this == NumberUnitExpression.Unit.RUPEE ||
       this == NumberUnitExpression.Unit.PAISA
 
-  private fun Token?.isCurrencyPrefixToken(): Boolean {
-    if (this !is Token.Unit) return false
-    return unit == "$" || unit == "₹" || unit == "Rs"
-  }
+  private fun Token?.isCurrencyPrefixToken(): Boolean =
+    this is Token.Unit && unit in CURRENCY_UNITS_BY_PREFIX_ALIAS
 
   private fun createUnitExpression(
     unit: NumberUnitExpression.Unit,
@@ -632,19 +583,18 @@ class NumberWithUnitsParser private constructor(
       return NumberWithUnitsParser(normalized, tokens).parseNumberWithUnits()
     }
 
-    /** Parses a single unit using the same aliases and SI-prefix rules as expressions. */
-    fun parseUnit(rawUnit: String): NumberWithUnitsParsingResult<NumberUnitExpression> {
-      return parseNumberWithUnits("1 $rawUnit").flatMap { expression ->
-        when (expression.expressionFormatCase) {
-          NumberWithUnitsExpression.ExpressionFormatCase.VALUE_SUFFIX_EXPRESSION -> {
-            val units = expression.valueSuffixExpression.suffixUnitsList
-            if (units.size == 1) {
-              NumberWithUnitsParsingResult.Success(units.single())
-            } else NumberWithUnitsParsingError.InvalidUnitError(rawUnit).toFailure()
-          }
-          else -> NumberWithUnitsParsingError.InvalidUnitError(rawUnit).toFailure()
-        }
-      }
+    /**
+     * Returns the canonical string representation of [this] unit, e.g. "km" for a kilo-prefixed
+     * meter or "$" for a dollar.
+     *
+     * This is the inverse of the unit parsing performed by [parseNumberWithUnits]: it uses the same
+     * alias tables, so the returned string is always parsed back to an equivalent unit.
+     */
+    fun NumberUnitExpression.toUnitString(): String {
+      val prefixString = SI_PREFIX_ALIASES[siPrefix]?.first() ?: ""
+      val unitString =
+        (CURRENCY_PREFIX_ALIASES[unit] ?: SUFFIX_UNIT_ALIASES[unit])?.first() ?: ""
+      return prefixString + unitString
     }
 
     /** Creates a failed parse result with [this] error. */
@@ -691,69 +641,97 @@ class NumberWithUnitsParser private constructor(
     }
 
     /**
-     * Map of metric/SI prefix abbreviated and full names to their corresponding
-     * [NumberUnitExpression.SiPrefix] enum values.
+     * Map of each supported unit to the raw strings that may follow a number to represent it. The
+     * first alias of each unit is its canonical form (see [toUnitString]).
      */
-    val SI_PREFIX_MAP = mapOf(
-      "da" to NumberUnitExpression.SiPrefix.DECA,
-      "deca" to NumberUnitExpression.SiPrefix.DECA,
-
-      "h" to NumberUnitExpression.SiPrefix.HECTO,
-      "hecto" to NumberUnitExpression.SiPrefix.HECTO,
-
-      "k" to NumberUnitExpression.SiPrefix.KILO,
-      "kilo" to NumberUnitExpression.SiPrefix.KILO,
-
-      "M" to NumberUnitExpression.SiPrefix.MEGA,
-      "mega" to NumberUnitExpression.SiPrefix.MEGA,
-
-      "G" to NumberUnitExpression.SiPrefix.GIGA,
-      "giga" to NumberUnitExpression.SiPrefix.GIGA,
-
-      "T" to NumberUnitExpression.SiPrefix.TERA,
-      "tera" to NumberUnitExpression.SiPrefix.TERA,
-
-      "P" to NumberUnitExpression.SiPrefix.PETA,
-      "peta" to NumberUnitExpression.SiPrefix.PETA,
-
-      "E" to NumberUnitExpression.SiPrefix.EXA,
-      "exa" to NumberUnitExpression.SiPrefix.EXA,
-
-      "Z" to NumberUnitExpression.SiPrefix.ZETTA,
-      "zetta" to NumberUnitExpression.SiPrefix.ZETTA,
-
-      "Y" to NumberUnitExpression.SiPrefix.YOTTA,
-      "yotta" to NumberUnitExpression.SiPrefix.YOTTA,
-
-      "d" to NumberUnitExpression.SiPrefix.DECI,
-      "deci" to NumberUnitExpression.SiPrefix.DECI,
-
-      "c" to NumberUnitExpression.SiPrefix.CENTI,
-      "centi" to NumberUnitExpression.SiPrefix.CENTI,
-
-      "m" to NumberUnitExpression.SiPrefix.MILLI,
-      "milli" to NumberUnitExpression.SiPrefix.MILLI,
-
-      "u" to NumberUnitExpression.SiPrefix.MICRO,
-      "micro" to NumberUnitExpression.SiPrefix.MICRO,
-
-      "n" to NumberUnitExpression.SiPrefix.NANO,
-      "nano" to NumberUnitExpression.SiPrefix.NANO,
-
-      "p" to NumberUnitExpression.SiPrefix.PICO,
-      "pico" to NumberUnitExpression.SiPrefix.PICO,
-
-      "f" to NumberUnitExpression.SiPrefix.FEMTO,
-      "femto" to NumberUnitExpression.SiPrefix.FEMTO,
-
-      "a" to NumberUnitExpression.SiPrefix.ATTO,
-      "atto" to NumberUnitExpression.SiPrefix.ATTO,
-
-      "z" to NumberUnitExpression.SiPrefix.ZEPTO,
-      "zepto" to NumberUnitExpression.SiPrefix.ZEPTO,
-
-      "y" to NumberUnitExpression.SiPrefix.YOCTO,
-      "yocto" to NumberUnitExpression.SiPrefix.YOCTO
+    private val SUFFIX_UNIT_ALIASES: Map<NumberUnitExpression.Unit, List<String>> = mapOf(
+      NumberUnitExpression.Unit.METER to listOf("m", "meter", "meters"),
+      NumberUnitExpression.Unit.SQUARE_METER to listOf("m2"),
+      NumberUnitExpression.Unit.CUBIC_METER to listOf("m3"),
+      NumberUnitExpression.Unit.INCH to listOf("in", "inch", "inches"),
+      NumberUnitExpression.Unit.SQUARE_INCH to listOf("sqin", "sqinch"),
+      NumberUnitExpression.Unit.CUBIC_INCH to listOf("cuin"),
+      NumberUnitExpression.Unit.FOOT to listOf("ft", "foot", "feet"),
+      NumberUnitExpression.Unit.SQUARE_FOOT to listOf("sqft", "sqfeet"),
+      NumberUnitExpression.Unit.CUBIC_FOOT to listOf("cuft"),
+      NumberUnitExpression.Unit.YARD to listOf("yd", "yard", "yards"),
+      NumberUnitExpression.Unit.SQUARE_YARD to listOf("sqyd", "sqyard"),
+      NumberUnitExpression.Unit.CUBIC_YARD to listOf("cuyd"),
+      NumberUnitExpression.Unit.GRAM to listOf("g", "gram", "grams"),
+      NumberUnitExpression.Unit.GRAIN to listOf("gr", "grain", "grains"),
+      NumberUnitExpression.Unit.OUNCE to listOf("oz", "ounce", "ounces"),
+      NumberUnitExpression.Unit.LITER to
+        listOf("L", "l", "lt", "liter", "litre", "liters", "litres"),
+      NumberUnitExpression.Unit.CUBIC_CENTIMETER to listOf("cc"),
+      NumberUnitExpression.Unit.SECOND to listOf("s", "sec", "secs", "second", "seconds"),
+      NumberUnitExpression.Unit.MINUTE to listOf("min", "mins", "minute", "minutes"),
+      NumberUnitExpression.Unit.HOUR to listOf("h", "hr", "hrs", "hour", "hours"),
+      NumberUnitExpression.Unit.KELVIN to listOf("K", "kelvin"),
+      NumberUnitExpression.Unit.CELSIUS to listOf("degC", "celsius"),
+      NumberUnitExpression.Unit.HERTZ to listOf("Hz", "hertz"),
+      NumberUnitExpression.Unit.RADIAN to listOf("rad", "radian", "radians"),
+      NumberUnitExpression.Unit.DEGREE to listOf("deg", "degree", "degrees"),
+      NumberUnitExpression.Unit.MOLE to listOf("mol", "mole", "moles"),
+      NumberUnitExpression.Unit.CANDELA to listOf("cd", "candela"),
+      NumberUnitExpression.Unit.NEWTON to listOf("N", "newton", "newtons"),
+      NumberUnitExpression.Unit.JOULE to listOf("J", "joule", "joules"),
+      NumberUnitExpression.Unit.WATT to listOf("W", "watt", "watts"),
+      NumberUnitExpression.Unit.PASCAL to listOf("Pa", "pascal", "pascals"),
+      NumberUnitExpression.Unit.AMPERE to listOf("A", "ampere", "amperes"),
+      NumberUnitExpression.Unit.VOLT to listOf("V", "volt", "volts"),
+      NumberUnitExpression.Unit.OHM to listOf("ohm", "ohms"),
+      NumberUnitExpression.Unit.DOLLAR to
+        listOf("USD", "dollar", "dollars", "Dollar", "Dollars"),
+      NumberUnitExpression.Unit.CENT to listOf("¢", "cent", "cents", "Cent", "Cents"),
+      NumberUnitExpression.Unit.RUPEE to listOf("rupee", "rupees", "Rupee", "Rupees"),
+      NumberUnitExpression.Unit.PAISA to listOf("paisa", "paise", "Paisa", "Paise")
     )
+
+    /**
+     * Map of each currency unit to the raw strings that may precede a number to represent it. The
+     * first alias of each currency is its canonical form (see [toUnitString]), and takes precedence
+     * over [SUFFIX_UNIT_ALIASES].
+     */
+    private val CURRENCY_PREFIX_ALIASES: Map<NumberUnitExpression.Unit, List<String>> = mapOf(
+      NumberUnitExpression.Unit.DOLLAR to listOf("$"),
+      NumberUnitExpression.Unit.RUPEE to listOf("Rs", "₹")
+    )
+
+    /**
+     * Map of each supported SI prefix to its abbreviated and full names. The first alias of each
+     * prefix is its canonical form (see [toUnitString]).
+     */
+    private val SI_PREFIX_ALIASES: Map<NumberUnitExpression.SiPrefix, List<String>> = mapOf(
+      NumberUnitExpression.SiPrefix.DECA to listOf("da", "deca"),
+      NumberUnitExpression.SiPrefix.HECTO to listOf("h", "hecto"),
+      NumberUnitExpression.SiPrefix.KILO to listOf("k", "kilo"),
+      NumberUnitExpression.SiPrefix.MEGA to listOf("M", "mega"),
+      NumberUnitExpression.SiPrefix.GIGA to listOf("G", "giga"),
+      NumberUnitExpression.SiPrefix.TERA to listOf("T", "tera"),
+      NumberUnitExpression.SiPrefix.PETA to listOf("P", "peta"),
+      NumberUnitExpression.SiPrefix.EXA to listOf("E", "exa"),
+      NumberUnitExpression.SiPrefix.ZETTA to listOf("Z", "zetta"),
+      NumberUnitExpression.SiPrefix.YOTTA to listOf("Y", "yotta"),
+      NumberUnitExpression.SiPrefix.DECI to listOf("d", "deci"),
+      NumberUnitExpression.SiPrefix.CENTI to listOf("c", "centi"),
+      NumberUnitExpression.SiPrefix.MILLI to listOf("m", "milli"),
+      NumberUnitExpression.SiPrefix.MICRO to listOf("u", "micro"),
+      NumberUnitExpression.SiPrefix.NANO to listOf("n", "nano"),
+      NumberUnitExpression.SiPrefix.PICO to listOf("p", "pico"),
+      NumberUnitExpression.SiPrefix.FEMTO to listOf("f", "femto"),
+      NumberUnitExpression.SiPrefix.ATTO to listOf("a", "atto"),
+      NumberUnitExpression.SiPrefix.ZEPTO to listOf("z", "zepto"),
+      NumberUnitExpression.SiPrefix.YOCTO to listOf("y", "yocto")
+    )
+
+    private val UNITS_BY_SUFFIX_ALIAS = SUFFIX_UNIT_ALIASES.invertAliases()
+    private val CURRENCY_UNITS_BY_PREFIX_ALIAS = CURRENCY_PREFIX_ALIASES.invertAliases()
+    private val SI_PREFIXES_BY_ALIAS = SI_PREFIX_ALIASES.invertAliases()
+    private val SI_PREFIX_ALIASES_BY_LENGTH_DESCENDING =
+      SI_PREFIXES_BY_ALIAS.keys.sortedByDescending { it.length }
+
+    /** Returns a map from each alias in [this] map to the value it's an alias of. */
+    private fun <T> Map<T, List<String>>.invertAliases(): Map<String, T> =
+      entries.flatMap { (value, aliases) -> aliases.map { alias -> alias to value } }.toMap()
   }
 }
