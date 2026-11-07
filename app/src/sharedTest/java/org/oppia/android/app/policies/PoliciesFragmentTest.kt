@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.view.Gravity
+import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -100,7 +102,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -108,7 +109,6 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
@@ -171,6 +171,24 @@ class PoliciesFragmentTest {
           .isEqualTo(
             "Please visit this page for the latest version of this privacy policy."
           )
+      }
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_policyTextViews_useLtrDirectionAndStartGravity() {
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
+        val policyDescriptionTextView: TextView =
+          activity.findViewById(R.id.policy_description_text_view)
+        val policyWebLinkTextView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
+
+        assertThat(policyDescriptionTextView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+        assertThat(policyDescriptionTextView.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+          .isEqualTo(Gravity.LEFT)
+        assertThat(policyWebLinkTextView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+        assertThat(policyWebLinkTextView.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+          .isEqualTo(Gravity.LEFT)
       }
     }
   }
@@ -338,7 +356,6 @@ class PoliciesFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -348,7 +365,6 @@ class PoliciesFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

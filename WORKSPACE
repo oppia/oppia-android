@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # rules_android setup
@@ -64,7 +64,7 @@ git_repository(
     name = "oppia_proto_api",
     commit = HTTP_DEPENDENCY_VERSIONS["oppia_proto_api"]["version"],
     remote = "https://github.com/oppia/oppia-proto-api",
-    shallow_since = "1775968956 +0000",
+    shallow_since = "1783966663 -0700",
 )
 
 load("@oppia_proto_api//repo:deps.bzl", "initializeDepsForWorkspace")
@@ -102,12 +102,26 @@ load("@bazel_features//:deps.bzl", "bazel_features_deps")
 
 bazel_features_deps()
 
-# Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version", "ksp_version")
 
-load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories", "kotlinc_version")
-
-kotlin_repositories()
+# Explicitly pin the Kotlin compiler release to match the Kotlin stdlib version in
+# //third_party:versions.bzl. Even when a lower language_version/api_version is configured on
+# define_kt_toolchain (or include_stdlibs = "none" on kt_kotlinc_options), rules_kotlin
+# unconditionally injects the compiler archive's kotlin-stdlib into target JavaInfo dependencies
+# without exposing jvm_stdlibs/jvm_runtime on define_kt_toolchain. Leaving compiler_release at
+# rules_kotlin's default causes split-stdlib version skew against Maven's kotlin-stdlib (such as
+# ProGuard/R8 unresolved reference errors on refactored internal stdlib classes), so this explicit
+# compiler pin should be kept in sync whenever Kotlin is upgraded.
+kotlin_repositories(
+    compiler_release = kotlinc_version(
+        release = KOTLIN_COMPILER_VERSION,
+        sha256 = "1fc50d805f9809e92de43e91f089cc8618567c1a350faebdabf8a40c5048bee8",
+    ),
+    ksp_compiler_release = ksp_version(
+        release = "%s-1.0.12" % KOTLIN_COMPILER_VERSION,
+        sha256 = "451bf769621930964d68d117f0176026c661be7668c7c1c783f1350a0746e43f",
+    ),
+)
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
 
@@ -136,12 +150,11 @@ http_archive(
 )
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+load("@rules_proto//proto:setup.bzl", "rules_proto_setup")
 
 rules_proto_dependencies()
 
-load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
-
-rules_proto_toolchains()
+rules_proto_setup()
 
 # Add support for Dagger
 http_archive(
@@ -288,3 +301,10 @@ pinned_maven_install()
         "jre",
     ]
 ]
+
+# Pinned lesson download pipeline script branch.
+git_repository(
+    name = "oppia_android_asset_pipeline",
+    commit = "95a872ec3f873bedcba65d7d875c4042d154cd1b",
+    remote = "https://github.com/oppia/oppia-android.git",
+)

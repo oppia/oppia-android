@@ -1,6 +1,7 @@
 package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.AnswerAndResponse
+import org.oppia.android.app.model.CheckpointProgress
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
@@ -89,17 +90,24 @@ class StateDeck constructor(
     }
   }
 
-  /** Returns the current [EphemeralState] the learner is viewing. */
+  /**
+   * Returns the current [EphemeralState] the learner is viewing.
+   *
+   * When [totalCheckpointCount] is non-null the returned state carries the learner's
+   * [CheckpointProgress] for the lesson progress indicator. When it's null--because the feature is
+   * disabled or the exploration doesn't support checkpoints--that field is left unset.
+   */
   fun getCurrentEphemeralState(
     helpIndex: HelpIndex,
     timestamp: Long,
-    isContinueButtonAnimationSeen: Boolean
+    isContinueButtonAnimationSeen: Boolean,
+    totalCheckpointCount: Int?
   ): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current
     // state is the top of the deck, and that state is the terminal one. Otherwise the terminal
     // check would never be triggered since the second case assumes the top of the deck must be
     // pending.
-    return when {
+    val ephemeralState = when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
       isCurrentStateTopOfDeck() -> getCurrentPendingState(
         helpIndex,
@@ -108,6 +116,42 @@ class StateDeck constructor(
       )
       else -> getPreviousState()
     }
+    return ephemeralState.withCheckpointProgress(totalCheckpointCount)
+  }
+
+  /**
+   * Returns the number of checkpoints the learner has reached at their current position in the
+   * deck. The initial state always counts as the first checkpoint and the terminal state as the
+   * last (matching how [StateGraph] computes the total), even though neither is flagged in the
+   * lesson data. This decreases when the learner navigates backward.
+   */
+  fun computeCompletedCheckpointCount(): Int {
+    return (0..stateIndex).count { index ->
+      when {
+        // The initial state is always the first checkpoint.
+        index == 0 -> true
+        // The terminal state is always the last checkpoint, once the learner reaches it.
+        index == stateIndex && isCurrentStateTerminal() -> true
+        index < previousStates.size -> previousStates[index].state.isCheckpoint
+        else -> pendingTopState.isCheckpoint
+      }
+    }
+  }
+
+  /**
+   * Returns this state carrying the learner's current [CheckpointProgress], or unchanged when
+   * [totalCheckpointCount] is null (the feature is disabled or the exploration doesn't support
+   * checkpoints).
+   */
+  private fun EphemeralState.withCheckpointProgress(totalCheckpointCount: Int?): EphemeralState {
+    if (totalCheckpointCount == null) return this
+    return toBuilder()
+      .setCheckpointProgress(
+        CheckpointProgress.newBuilder()
+          .setCompletedCheckpointCount(computeCompletedCheckpointCount())
+          .setTotalCheckpointCount(totalCheckpointCount)
+      )
+      .build()
   }
 
   /**
@@ -271,10 +315,15 @@ class StateDeck constructor(
   /**
    * Returns the previously visited [EphemeralState] with the given [stateName], or a default
    * instance if not found.
+   *
+   * [totalCheckpointCount] behaves as in [getCurrentEphemeralState]. Since opening a flashback
+   * doesn't move the learner's position in the deck, the attached [CheckpointProgress] carries
+   * their unchanged pre-flashback completed count.
    */
-  fun getFlashbackEphemeralState(stateName: String): EphemeralState {
-    return previousStates.find { it.state.name == stateName }
-      ?: EphemeralState.getDefaultInstance()
+  fun getFlashbackEphemeralState(stateName: String, totalCheckpointCount: Int?): EphemeralState {
+    val flashbackState = previousStates.find { it.state.name == stateName }
+      ?: return EphemeralState.getDefaultInstance()
+    return flashbackState.withCheckpointProgress(totalCheckpointCount)
   }
 
   /**

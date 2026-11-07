@@ -11,6 +11,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 load("@rules_android//android:rules.bzl", "android_library")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
@@ -59,8 +60,6 @@ alias(
     actual = "@archive_patcher//tools",
     visibility = ["//visibility:public"],
 )
-
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "moshi",

@@ -21,6 +21,13 @@ class GitClient(
   /** The hash of of the latest commit common between the current & HEAD branches. */
   val branchMergeBase: String by lazy { retrieveBranchMergeBase() }
 
+  /** Whether the local Git repository is a shallow clone. */
+  val isShallowRepository: Boolean by lazy { retrieveIsShallowRepository() }
+
+  private val resolvedBaseCommit: String by lazy {
+    executeGitCommandWithOneLineOutput("rev-parse $baseCommit")
+  }
+
   /**
    * The set of files that have been changed in the local branch, including committed, staged,
    * unstaged, and untracked files.
@@ -33,6 +40,12 @@ class GitClient(
       retrieveRenamedFiles()
   }
 
+  /** Returns the number of commits for the specified revision reference. */
+  fun countCommits(revision: String): Int {
+    return executeGitCommandWithOneLineOutput("rev-list --count $revision").toIntOrNull()
+      ?: error("Failed to parse commit count for: $revision")
+  }
+
   private fun retrieveCurrentCommit(): String {
     return executeGitCommandWithOneLineOutput("rev-parse HEAD")
   }
@@ -42,11 +55,15 @@ class GitClient(
   }
 
   private fun retrieveBranchMergeBase(): String {
-    return executeGitCommandWithOneLineOutput("merge-base $baseCommit HEAD").also {
-      if (baseCommit != it) {
-        println("WARNING: Provided base commit $baseCommit doesn't match merge-base: $it.")
+    return executeGitCommandWithOneLineOutput("merge-base $resolvedBaseCommit HEAD").also {
+      if (resolvedBaseCommit != it) {
+        println("WARNING: Provided base commit $resolvedBaseCommit doesn't match merge-base: $it.")
       }
     }
+  }
+
+  private fun retrieveIsShallowRepository(): Boolean {
+    return executeGitCommandWithOneLineOutput("rev-parse --is-shallow-repository").toBooleanStrict()
   }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =

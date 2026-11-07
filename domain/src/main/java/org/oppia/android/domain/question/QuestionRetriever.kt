@@ -6,7 +6,8 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.LoadLessonProtosFromAssets
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class QuestionRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  @LoadLessonProtosFromAssets
+  private val loadLessonProtosFromAssets: PlatformParameterValue<Boolean>
 ) {
   /**
    * Returns a list of [Question]s corresponding to the specified list of skills, loaded from the
@@ -23,7 +25,9 @@ class QuestionRetriever @Inject constructor(
   fun loadQuestions(skillIdsList: List<String>): List<Question> {
     val questionsList = mutableListOf<Question>()
     // TODO(#2976): Add support for loading questions locally once questions are available on web.
-    check(!loadLessonProtosFromAssets) { "No support yet for loading proto questions from assets" }
+    check(!loadLessonProtosFromAssets.value) {
+      "No support yet for loading proto questions from assets"
+    }
     val questionJsonArray = jsonAssetRetriever.loadJsonFromAsset(
       "questions.json"
     )?.getJSONArray("question_dicts")!!

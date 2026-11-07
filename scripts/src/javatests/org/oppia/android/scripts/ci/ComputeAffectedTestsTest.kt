@@ -783,7 +783,6 @@ class ComputeAffectedTestsTest {
     // there's a HEAD commit).
     testGitRepository.init()
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    testGitRepository.checkoutNewBranch("develop")
     testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
   }
 

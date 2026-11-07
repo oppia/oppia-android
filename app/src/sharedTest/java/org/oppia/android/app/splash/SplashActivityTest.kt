@@ -120,13 +120,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -238,6 +236,52 @@ class SplashActivityTest {
       onView(withText(R.string.unsupported_app_version_dialog_title))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOpenApp_initial_deprecationEnabled_appExpired_showsAutomaticExpiryDialog() {
+    TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    launchSplashActivityFully { scenario ->
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testOpenApp_onboardedBeta_deprecationEnabled_expired_showsAutomaticExpiryDialog() {
+    simulateAppAlreadyOnboarded()
+    TestModule.buildFlavor = BuildFlavor.BETA
+    TestPlatformParameterModule.forceEnableAppAndOsDeprecation(true)
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    launchSplashActivityFully { scenario ->
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
     }
   }
 
@@ -1194,6 +1238,38 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_afterDataReset_recreatesActivitySuccessfully() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    // Simulate a data reset by resetting the onboarding state (which deleteAllProfiles would do).
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify the splash activity can successfully launch after reset without crashing.
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_afterDataReset_localeInitialization_succeeds() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    forceDefaultLocale(Locale.ENGLISH)
+    // Simulate a data reset.
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityFully {
+      // Verify locale initialization still works after reset. The locale handler should be
+      // re-initialized with the system's default locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    }
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -1358,7 +1434,6 @@ class SplashActivityTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -1368,7 +1443,6 @@ class SplashActivityTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,
@@ -1465,10 +1539,22 @@ class SplashActivityTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
-    private val NIGERIAN_PIDGIN_LOCALE = Locale("pcm", "NG")
-    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+    private val EGYPT_ARABIC_LOCALE = Locale.Builder()
+      .setLanguage("ar")
+      .setRegion("EG")
+      .build()
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale.Builder()
+      .setLanguage("pt")
+      .setRegion("BR")
+      .build()
+    private val NIGERIAN_PIDGIN_LOCALE = Locale.Builder()
+      .setLanguage("pcm")
+      .setRegion("NG")
+      .build()
+    private val TURKEY_TURKISH_LOCALE = Locale.Builder()
+      .setLanguage("tr")
+      .setRegion("TR")
+      .build()
 
     private fun onDialogView(matcher: Matcher<View>) = onView(matcher).inRoot(isDialog())
   }

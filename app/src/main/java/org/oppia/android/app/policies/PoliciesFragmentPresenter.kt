@@ -1,6 +1,7 @@
 package org.oppia.android.app.policies
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,12 @@ class PoliciesFragmentPresenter @Inject constructor(
     savedInstanceState?.let {
       scrollPosition = it.getInt(KEY_SCROLL_Y, 0)
     }
+
+    // Policy content is always in English, so force LTR text direction and left gravity
+    // to ensure proper alignment of all content including list items (<li> tags) even when
+    // the app is set to an RTL language.
+    setUpPolicyTextView(binding.policyDescriptionTextView)
+    setUpPolicyTextView(binding.policyWebLinkTextView)
 
     setUpContentForTextViews(policiesFragmentArguments.policyPage, binding)
 
@@ -98,6 +105,13 @@ class PoliciesFragmentPresenter @Inject constructor(
       supportsLinks = true,
       supportsConceptCards = false
     )
+  }
+
+  private fun setUpPolicyTextView(textView: android.widget.TextView) {
+    textView.apply {
+      textDirection = View.TEXT_DIRECTION_LTR
+      gravity = Gravity.START
+    }
   }
 
   override fun onPolicyPageLinkClicked(policyType: PolicyType) {

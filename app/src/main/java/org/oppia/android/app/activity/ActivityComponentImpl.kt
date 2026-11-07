@@ -52,6 +52,7 @@ import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
+import org.oppia.android.app.profile.CreateAdminPinActivity
 import org.oppia.android.app.profile.PinPasswordActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profile.ProfileLoginActivity
@@ -103,6 +104,7 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each activity.
@@ -215,6 +217,7 @@ interface ActivityComponentImpl :
   fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(studyGuideActivity: StudyGuideActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(textViewBindingAdaptersTestActivity: TextViewBindingAdaptersTestActivity)
   fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
@@ -234,4 +237,5 @@ interface ActivityComponentImpl :
   fun inject(introActivity: IntroActivity)
   fun inject(profileLoginActivity: ProfileLoginActivity)
   fun inject(adminIntroActivity: AdminIntroActivity)
+  fun inject(createAdminPinActivity: CreateAdminPinActivity)
 }

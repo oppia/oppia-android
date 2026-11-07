@@ -34,8 +34,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -95,7 +95,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -111,13 +110,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -187,7 +184,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_stepCountText_isDisplayed() {
+  fun testFragment_learnerOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(
@@ -206,7 +203,26 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_learner_clickContinueButton_filledNickname_launchesLearnerIntroScreen() {
+  fun testFragment_supervisorOnboardingFlow_stepCountThreeText_isDisplayed() {
+    launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                context.getString(
+                  R.string.onboarding_step_count_three
+                )
+              )
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testLearnerOnboarding_continueClicked_filledNickname_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
@@ -258,7 +274,6 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
@@ -750,7 +765,6 @@ class CreateProfileFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -760,7 +774,6 @@ class CreateProfileFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

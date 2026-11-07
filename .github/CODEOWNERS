@@ -111,6 +111,7 @@
 /testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers
+/testing/src/*/java/org/oppia/android/testing/topic/ @oppia/android-app-infrastructure-reviewers
 
 # All app-specific shared test infrastructure.
 /testing/src/main/AndroidManifest.xml @oppia/android-frontend-reviewers
@@ -159,7 +160,6 @@
 
 # Utilities that are primarily used for frontend/UI purposes.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @oppia/android-frontend-reviewers
-/utility/src/*/java/org/oppia/android/util/statusbar/ @oppia/android-frontend-reviewers
 /utility/src/main/java/org/oppia/android/util/enumfilter/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/extensions/ @oppia/android-frontend-reviewers
 /utility/src/*/java/org/oppia/android/util/parser/html @oppia/android-frontend-reviewers
@@ -215,9 +215,8 @@
 # The list of recorded licenses for all distributed third-party dependencies.
 /scripts/assets/maven_dependencies.textproto @oppia/owners
 
-# Extracted license texts. This file should never change since it's only
-# generated during build time.
-/app/src/main/res/values/third_party_dependencies.xml @oppia/android-dev-workflow-reviewers
+# Configuration and developer-only resources related to third-party licenses.
+/app/src/main/java/org/oppia/android/app/thirdparty/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
 #                         Linter & IDE configurations                          #
@@ -230,6 +229,8 @@
 /.editorconfig @oppia/android-dev-workflow-reviewers
 /.idea/ @oppia/android-dev-workflow-reviewers
 
+# CodeRabbit AI reviewer configuration.
+/.coderabbit.yaml @oppia/android-dev-workflow-reviewers
 
 
 # ---========================== GLOBAL OVERRIDES ==========================--- #
@@ -237,7 +238,7 @@
 
 
 ################################################################################
-#                             Bazel infrastructure                             #
+#                 Bazel infrastructure and app configurations                  #
 ################################################################################
 
 # Broad Bazel files used throughout the codebase.
@@ -255,6 +256,15 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
+
+# Lesson versions pinned for reproducible production builds. These can be updated by release
+# coordinators when new lesson versions should be pulled into the app.
+/config/lessons/alpha_pinned_lesson_versions.textproto @oppia/android-dev-workflow-reviewers @oppia/android-frontend-reviewers
+/config/lessons/prod_pinned_lesson_versions.textproto @oppia/android-dev-workflow-reviewers @oppia/android-frontend-reviewers
+
+# Release changelog and certificate infrastructure for release automation.
+/config/changelogs/ @oppia/android-dev-workflow-reviewers
+/config/certificate/ @oppia/android-dev-workflow-reviewers
 
 # Specific manifest files specifically required for Bazel builds or the Android lint tool.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers

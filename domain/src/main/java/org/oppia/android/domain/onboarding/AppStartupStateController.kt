@@ -133,16 +133,12 @@ class AppStartupStateController @Inject constructor(
     onboardingState: OnboardingState,
     deprecationResponseDatabase: DeprecationResponseDatabase
   ): StartupMode {
-    // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
-    // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    return if (!enableAppAndOsDeprecation.get().value) {
-      return when {
-        hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
-        onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
-        else -> StartupMode.USER_NOT_YET_ONBOARDED
-      }
-    } else {
-      deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
+    return when {
+      hasAppExpired() -> StartupMode.APP_IS_EXPIRED
+      enableAppAndOsDeprecation.get().value ->
+        deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
+      onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
+      else -> StartupMode.USER_NOT_YET_ONBOARDED
     }
   }
 
@@ -158,10 +154,11 @@ class AppStartupStateController @Inject constructor(
       BuildFlavor.BETA -> {
         // Only show the beta notice if the user hasn't permanently dismissed it, and when it's
         // appropriate to show (i.e. they've recently changed to the beta flavor, and their app is
-        // not force-deprecated).
+        // not force-deprecated or expired).
         if (!onboardingState.permanentlyDismissedBetaNotice &&
           onboardingState.lastUsedBuildFlavor != BuildFlavor.BETA &&
-          startupMode != StartupMode.APP_IS_DEPRECATED
+          startupMode != StartupMode.APP_IS_DEPRECATED &&
+          startupMode != StartupMode.APP_IS_EXPIRED
         ) {
           BuildFlavorNoticeMode.SHOW_BETA_NOTICE
         } else BuildFlavorNoticeMode.NO_NOTICE

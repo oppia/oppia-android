@@ -56,6 +56,7 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.topic.studyguide.StudyGuideActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -106,13 +107,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -161,11 +160,6 @@ class TopicRevisionFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
-    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
-    markAllSpotlightsSeen()
   }
 
   @After
@@ -179,8 +173,18 @@ class TopicRevisionFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun initializeApplicationComponent(enableStudyGuides: Boolean) {
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
+    TestPlatformParameterModule.forceEnableStudyGuides(enableStudyGuides)
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+    markAllSpotlightsSeen()
+  }
+
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -195,6 +199,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -214,7 +219,29 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
+  fun testTopicRevisionFragment_studyGuidesEnabled_selectRevisionTopics_opensStudyGuideActivity() {
+    initializeApplicationComponent(enableStudyGuides = true)
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
+      scrollToPosition(position = 0)
+      onView(
+        atPosition(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      intended(hasComponent(StudyGuideActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -240,6 +267,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -255,6 +283,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -281,6 +310,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -300,6 +330,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testFragment_argumentsAreCorrect() {
+    initializeApplicationComponent(enableStudyGuides = false)
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
@@ -403,7 +434,6 @@ class TopicRevisionFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -413,7 +443,6 @@ class TopicRevisionFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       HintsAndSolutionConfigModule::class,

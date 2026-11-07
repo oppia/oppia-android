@@ -4,8 +4,8 @@ work due to kapt not being directly supported (though Java annotation processors
 using java_plugin).
 """
 
-load("@rules_java//java:defs.bzl", "java_plugin")
 load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_ksp_plugin")
+load("@rules_java//java:defs.bzl", "java_plugin")
 
 kt_ksp_plugin(
     name = "moshi_annotation_processor_plugin",

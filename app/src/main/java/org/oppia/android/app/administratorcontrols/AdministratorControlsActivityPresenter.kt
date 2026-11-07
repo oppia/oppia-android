@@ -16,7 +16,10 @@ import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.utility.edgetoedge.EdgeToEdgeHelper
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableEdgeToEdge
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -24,7 +27,8 @@ import javax.inject.Inject
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableEdgeToEdge private val enableEdgeToEdge: PlatformParameterValue<Boolean>
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
@@ -42,11 +46,21 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     selectedProfileId: LegacyProfileId,
     isProfileDeletionDialogVisible: Boolean
   ) {
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.enableEdgeToEdgeDispatch(activity)
+    }
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.administrator_controls_activity
     )
     setUpNavigationDrawer()
+    if (enableEdgeToEdge.value) {
+      EdgeToEdgeHelper.applyToToolbarContainer(
+        activity,
+        binding.administratorControlsActivityToolbar,
+        R.color.component_color_shared_activity_status_bar_color
+      )
+    }
     this.lastLoadedFragment = lastLoadedFragment
     this.selectedProfileId = selectedProfileId
     this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible

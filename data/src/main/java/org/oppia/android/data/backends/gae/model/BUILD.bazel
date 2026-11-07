@@ -16,9 +16,9 @@ kt_android_library(
         "GaeUserSuppliedFeedback.kt",
     ],
     custom_package = "org.oppia.android.data.backends.gae.model",
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:moshi",
     ],
-    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )

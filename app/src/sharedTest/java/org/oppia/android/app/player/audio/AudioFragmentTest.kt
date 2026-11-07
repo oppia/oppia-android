@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -30,6 +31,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -49,7 +52,12 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -93,6 +101,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -104,12 +113,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
@@ -118,8 +125,10 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -160,6 +169,9 @@ class AudioFragmentTest {
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL =
@@ -187,6 +199,15 @@ class AudioFragmentTest {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
       context, profileId
     )
+  }
+
+  private fun updateProfileAudioLanguage(audioLanguage: AudioLanguage) {
+    profileTestHelper.initializeProfiles()
+    val updateProvider = profileManagementController.updateAudioLanguage(
+      profileId.toProfileIdPreservingZero(),
+      audioLanguage
+    )
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
 
   @Test
@@ -541,6 +562,250 @@ class AudioFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_changeNetworkToCellular_reloadContent_showsWarningAndKeepsPlayingAudio() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_pause_description)
+          )
+        )
+      )
+
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadMainContentAudio(allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_description)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testAudioFragment_changeNetworkToNone_reloadMainContent_showsOfflineAndStopsPlayingAudio() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_pause_description)
+          )
+        )
+      )
+
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadMainContentAudio(allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.audio_dialog_offline_positive)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_play_description)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_playAudio_repeatSetStateWithSameAudio_keepsAudioPlaying() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val state = State.newBuilder()
+          .setContent(SubtitledHtml.newBuilder().setContentId("content"))
+          .putRecordedVoiceovers(
+            "content",
+            VoiceoverMapping.newBuilder()
+              .putVoiceoverMapping(
+                "en",
+                Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build()
+              )
+              .build()
+          ).build()
+        audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioPrepared_loadMainContentAudioWithAutoPlay_startsPlayback() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
+        )
+      )
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = true,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_audioFailed_loadAudioAgain_retriesLoading() {
+    addMediaInfo()
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        val shadowPlayer = checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer()))
+        invokeErrorListener(shadowPlayer, /* what = */ 0, /* extra = */ 0)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.audioFragmentPresenter.loadMainContentAudio(
+          allowAutoPlay = false,
+          reloadingContent = false
+        )
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_play_description))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_loadAudio_failedFirstAttempt_retryRequest_succeedsAndPlays() {
+    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+    addException(dataSource, IOException("Network error"))
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isFalse()
+      }
+      onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
+
+      resetShadowMediaPlayerStaticState()
+      val mediaInfo = createMediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
+      addMediaInfo(dataSource, mediaInfo)
+
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadFeedbackAudio(contentId = "content", allowAutoPlay = true)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity {
+        assertThat(audioPlayerController.getTestMediaPlayer().isPlaying).isTrue()
+      }
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(context.getString(R.string.audio_pause_description))
+        )
+      )
+    }
+  }
+
   @Test
   fun testFragment_initialLoad_audioControlsAreDisplayed() {
     addMediaInfo()
@@ -589,6 +854,70 @@ class AudioFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAudioFragment_unsupportedLanguage_showsLanguageUnavailableNoticeWithCorrectLanguage() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ARABIC_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val arabicLanguageName = context.getString(R.string.arabic_localized_language_name)
+      val englishLanguageName = context.getString(R.string.english_localized_language_name)
+
+      onView(withId(R.id.language_unavailable_notice)).check(matches(isDisplayed()))
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withText(containsString(arabicLanguageName))))
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(not(withText(containsString(englishLanguageName)))))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAudioFragment_supportedLanguage_doesNotShowLanguageUnavailableNotice() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testAudioFragment_unsupportedLanguage_changeToSupportedLanguage_hidesUnavailableNotice() {
+    addMediaInfo()
+    updateProfileAudioLanguage(AudioLanguage.ARABIC_LANGUAGE)
+
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice)).check(matches(isDisplayed()))
+
+      onView(withId(R.id.audio_language_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Ok")).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.language_unavailable_notice))
+        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
   }
 
@@ -668,6 +997,15 @@ class AudioFragmentTest {
     shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
   }
 
+  /** Calls ShadowMediaPlayer.invokeErrorListener() using reflection. */
+  private fun invokeErrorListener(shadowMediaPlayer: Any, what: Int, extra: Int) {
+    shadowMediaPlayer.javaClass.getMethod(
+      "invokeErrorListener",
+      Int::class.java,
+      Int::class.java
+    ).invoke(shadowMediaPlayer, what, extra)
+  }
+
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
   private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
     val mediaInfoClass = Class.forName(
@@ -703,6 +1041,22 @@ class AudioFragmentTest {
     }
   }
 
+  /** Calls ShadowMediaPlayer.addException() using reflection. */
+  private fun addException(dataSource: Any, exception: IOException) {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
+    val addExceptionMethod =
+      shadowMediaPlayerClass.getMethod("addException", dataSourceClass, IOException::class.java)
+    addExceptionMethod.invoke(/* obj = */ null, dataSource, exception)
+  }
+
+  /** Calls ShadowMediaPlayer.resetStaticState() using reflection. */
+  private fun resetShadowMediaPlayerStaticState() {
+    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    val resetMethod = shadowMediaPlayerClass.getMethod("resetStaticState")
+    resetMethod.invoke(/* obj = */ null)
+  }
+
   private fun isOnRobolectric(): Boolean {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
@@ -719,7 +1073,6 @@ class AudioFragmentTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -729,7 +1082,6 @@ class AudioFragmentTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

@@ -4,6 +4,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import org.oppia.android.app.ui.R
@@ -17,13 +18,18 @@ fun DataResetConfirmationDialog(
   val appName = stringResource(R.string.app_name)
 
   AlertDialog(
+    backgroundColor = colorResource(R.color.component_color_profile_login_dialog_background_color),
     title = {
       Text(
-        stringResource(R.string.admin_confirm_app_wipe_title, appName)
+        text = stringResource(R.string.admin_confirm_app_wipe_title, appName),
+        color = colorResource(R.color.component_color_profile_login_dialog_title_text_color)
       )
     },
     text = {
-      Text(stringResource(R.string.admin_confirm_app_wipe_message, appName))
+      Text(
+        text = stringResource(R.string.admin_confirm_app_wipe_message, appName),
+        color = colorResource(R.color.component_color_profile_login_dialog_message_text_color)
+      )
     },
     properties = DialogProperties(
       dismissOnClickOutside = false,
@@ -34,7 +40,10 @@ fun DataResetConfirmationDialog(
       TextButton(
         onClick = { onDismissRequest() }
       ) {
-        Text(stringResource(R.string.admin_confirm_app_wipe_negative_button_text))
+        Text(
+          text = stringResource(R.string.admin_confirm_app_wipe_negative_button_text),
+          color = colorResource(R.color.component_color_profile_login_dialog_button_text_color)
+        )
       }
     },
     confirmButton = {
@@ -42,10 +51,11 @@ fun DataResetConfirmationDialog(
         onClick = { deleteAppData() }
       ) {
         Text(
-          stringResource(
+          text = stringResource(
             R.string.admin_confirm_app_wipe_positive_button_text,
             appName
-          )
+          ),
+          color = colorResource(R.color.component_color_profile_login_dialog_button_text_color)
         )
       }
     }

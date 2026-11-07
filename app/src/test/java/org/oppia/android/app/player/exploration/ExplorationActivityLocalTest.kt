@@ -40,6 +40,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.LegacyProfileId
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -66,6 +67,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
+import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
@@ -98,18 +100,17 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.toProfileIdPreservingZero
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -140,9 +141,15 @@ class ExplorationActivityLocalTest {
   @Inject
   lateinit var profileManagementController: ProfileManagementController
 
+  @Inject
+  lateinit var explorationActiveTimeController: ExplorationActiveTimeController
+
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
   private val internalProfileId: Int = 0
+  private val profileId by lazy {
+    ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
   private val afternoonUtcTimestampMillis = 1556101812000
 
   @Before
@@ -161,7 +168,6 @@ class ExplorationActivityLocalTest {
   fun testExploration_onLaunch_logsEvent() {
     setUpTestApplicationComponent()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -177,7 +183,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getOldestEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
@@ -194,7 +200,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -212,7 +217,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -244,7 +249,6 @@ class ExplorationActivityLocalTest {
   fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
     setUpTestWithNpsEnabled()
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -266,7 +270,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -293,7 +297,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -311,7 +314,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -340,6 +343,7 @@ class ExplorationActivityLocalTest {
       // subscribers of an update.
       profileManagementController.updateSurveyLastShownTimestamp(
         LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+          .toProfileIdPreservingZero()
       )
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -358,7 +362,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -376,7 +379,7 @@ class ExplorationActivityLocalTest {
       )
     ).use { scenario ->
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -417,7 +420,6 @@ class ExplorationActivityLocalTest {
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
     getApplicationDependencies(
-      internalProfileId,
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -435,7 +437,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -468,6 +470,9 @@ class ExplorationActivityLocalTest {
   private fun setUpTestWithNpsEnabled() {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     setUpTestApplicationComponent()
+    // TestApplication does not register Oppia's application lifecycle observer. Explicitly mark
+    // this simulated foreground session so its lesson time is included in survey eligibility.
+    explorationActiveTimeController.onAppInForeground()
   }
 
   private fun markAllSpotlightsSeen() {
@@ -477,13 +482,12 @@ class ExplorationActivityLocalTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
-    spotlightStateController.markSpotlightViewed(profileId, feature)
+    val legacyProfileId = LegacyProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(legacyProfileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun getApplicationDependencies(
-    internalProfileId: Int,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -494,7 +498,7 @@ class ExplorationActivityLocalTest {
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingNewExploration(
-          internalProfileId,
+          profileId,
           classroomId,
           topicId,
           storyId,
@@ -540,7 +544,6 @@ class ExplorationActivityLocalTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
-      CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
@@ -550,7 +553,6 @@ class ExplorationActivityLocalTest {
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
-      FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
       GlideImageLoaderModule::class,

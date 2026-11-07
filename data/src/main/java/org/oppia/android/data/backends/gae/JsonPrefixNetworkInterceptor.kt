@@ -4,6 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
+import java.net.HttpURLConnection
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +23,7 @@ class JsonPrefixNetworkInterceptor @Inject constructor(
     val request = chain.request()
     val response = chain.proceed(request)
 
-    if (response.code == Constants.HTTP_OK) {
+    if (response.code == HttpURLConnection.HTTP_OK) {
       response.body?.let { responseBody ->
         var rawJson = responseBody.string()
         rawJson = removeXssiPrefix(rawJson)

@@ -46,8 +46,9 @@ class FeatureFlagsLogger @Inject constructor(
    * loaded (i.e. not too early in the application lifecycle).
    *
    * @param appSessionId denotes the id of the current appInForeground session
+   * @param timestamp the timestamp to associate with the log
    */
-  fun logAllFeatureFlags(appSessionId: String) {
+  fun logAllFeatureFlags(appSessionId: String, timestamp: Long) {
     // TODO(#5341): Set the UUID value for this context
     val featureFlagContext = FeatureFlagListContext.newBuilder()
       .setAppSessionId(appSessionId)
@@ -58,7 +59,8 @@ class FeatureFlagsLogger @Inject constructor(
       EventLog.Context.newBuilder()
         .setFeatureFlagListContext(featureFlagContext)
         .build(),
-      profileId = null
+      profileId = null,
+      timestamp
     )
   }
 

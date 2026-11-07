@@ -12,5 +12,5 @@ class AdminPinViewModel @Inject constructor() : ObservableViewModel() {
   val confirmPinErrorMsg = ObservableField("")
   val savedPin = ObservableField("")
   val savedConfirmPin = ObservableField("")
-  val isButtonActive = ObservableField(false)
+  val isButtonActive = ObservableField(true)
 }

@@ -30,6 +30,7 @@ oppia_android_test(
     name = "NetworkConfigTestModuleTest",
     srcs = ["NetworkConfigTestModuleTest.kt"],
     custom_package = "org.oppia.android.data.backends.gae.testing",
+    plugins = ["//tools:moshi_annotation_processor_plugin"],
     test_class = "org.oppia.android.data.backends.gae.testing.NetworkConfigTestModuleTest",
     test_manifest = "//data:test_manifest",
     deps = [
@@ -44,7 +45,6 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
-    plugins = ["//tools:moshi_annotation_processor_plugin"],
 )
 
 oppia_android_test(
