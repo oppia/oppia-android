@@ -97,7 +97,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     adminProfileId: LegacyProfileId,
     parentScreen: ParentScreen
   ): View? {
-    if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
+    if (parentScreen == ParentScreen.CREATE_ADMIN_PIN_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
       profileManagementController.markProfileOnboardingEnded(
