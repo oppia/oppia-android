@@ -58,12 +58,68 @@ class QuestionRetrieverTest {
     val jsonQuestions = createRetriever(loadProtos = false).loadQuestions(skills)
     val protoQuestions = questionRetriever.loadQuestions(skills)
 
-    assertThat(protoQuestions.map { it.questionId })
-      .containsExactlyElementsIn(jsonQuestions.map { it.questionId }).inOrder()
-    assertThat(protoQuestions.map { it.linkedSkillIdsList })
-      .containsExactlyElementsIn(jsonQuestions.map { it.linkedSkillIdsList }).inOrder()
-    assertThat(protoQuestions.map { it.questionState })
-      .containsExactlyElementsIn(jsonQuestions.map { it.questionState }).inOrder()
+    assertThat(protoQuestions).containsExactlyElementsIn(jsonQuestions).inOrder()
+    assertThat(protoQuestions.map { it.languageCode }.distinct()).containsExactly("en")
+    assertThat(protoQuestions.all { it.version > 0 }).isTrue()
+  }
+
+  @Test
+  fun testLoadQuestions_jsonAssets_filtersAndPreservesPerSkillOrder() {
+    `when`(assetRepository.loadTextFileFromLocalAssets("questions.json")).thenReturn(
+      """{"question_dicts": [
+        {"id": "first", "language_code": "en", "version": 2,
+          "linked_skill_ids": ["skill_0", "skill_1"], "question_state_data": {
+            "content": {"content_id": "content", "html": "First"},
+            "interaction": {"id": "TextInput", "answer_groups": [],
+              "customization_args": {}, "hints": []}}},
+        {"id": "second", "language_code": "en", "version": 3,
+          "linked_skill_ids": ["skill_1"], "question_state_data": {
+            "content": {"content_id": "content", "html": "Second"},
+            "interaction": {"id": "TextInput", "answer_groups": [],
+              "customization_args": {}, "hints": []}}}
+      ]}"""
+    )
+
+    val questions = createRetriever(loadProtos = false)
+      .loadQuestions(listOf("skill_1", "missing_skill", "skill_0"))
+
+    assertThat(questions.map { it.questionId })
+      .containsExactly("first", "second", "first").inOrder()
+    assertThat(questions.map { it.version }).containsExactly(2, 3, 2).inOrder()
+  }
+
+  @Test
+  fun testLoadQuestions_jsonAssets_noMatchingSkills_returnsEmptyList() {
+    `when`(assetRepository.loadTextFileFromLocalAssets("questions.json"))
+      .thenReturn("""{"question_dicts": []}""")
+
+    assertThat(createRetriever(loadProtos = false).loadQuestions(listOf("skill_0"))).isEmpty()
+  }
+
+  @Test
+  fun testLoadQuestions_jsonAssets_missingLinkedSkills_skipsQuestion() {
+    `when`(assetRepository.loadTextFileFromLocalAssets("questions.json")).thenReturn(
+      """{"question_dicts": [{"id": "unlinked"}]}"""
+    )
+
+    assertThat(createRetriever(loadProtos = false).loadQuestions(listOf("skill_0"))).isEmpty()
+  }
+
+  @Test
+  fun testLoadQuestions_protoAssets_retainsQuestionMetadataAndPlayableState() {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    val asset = context.assets.open("questions.pb").use { QuestionList.parseFrom(it) }
+    setQuestions(asset.questionsList)
+    val expected = asset.questionsList.first { it.questionState.interaction.hasSolution() }
+
+    val questions = questionRetriever.loadQuestions(listOf(expected.linkedSkillIdsList.first()))
+
+    assertThat(questions).contains(expected)
+    assertThat(expected.languageCode).isEqualTo("en")
+    assertThat(expected.version).isGreaterThan(0)
+    assertThat(expected.questionState.content.html).isNotEmpty()
+    assertThat(expected.questionState.interaction.hintCount).isGreaterThan(0)
+    assertThat(expected.questionState.interaction.solution.explanation.html).isNotEmpty()
   }
 
   @Test

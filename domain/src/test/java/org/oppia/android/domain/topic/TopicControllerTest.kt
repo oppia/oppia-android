@@ -720,6 +720,36 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveQuestionsForSkillIds_noSkills_returnsEmptyList() {
+    val provider = topicController.retrieveQuestionsForSkillIds(emptyList())
+
+    assertThat(monitorFactory.waitForNextSuccessfulResult(provider)).isEmpty()
+  }
+
+  @Test
+  fun testRetrieveQuestionsForSkillIds_onlyInvalidSkills_returnsEmptyList() {
+    val provider = topicController.retrieveQuestionsForSkillIds(listOf("missing_skill"))
+
+    assertThat(monitorFactory.waitForNextSuccessfulResult(provider)).isEmpty()
+  }
+
+  @Test
+  fun testRetrieveQuestionsForSkillIds_requestedOrder_preservesSharedQuestions() {
+    val provider = topicController.retrieveQuestionsForSkillIds(
+      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_0)
+    )
+
+    val questions = monitorFactory.waitForNextSuccessfulResult(provider)
+
+    assertThat(questions.map { it.questionId }).containsExactly(
+      TEST_QUESTION_ID_0, TEST_QUESTION_ID_3,
+      TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2
+    ).inOrder()
+    assertThat(questions.all { it.languageCode == "en" && it.version > 0 }).isTrue()
+    assertThat(questions.all { it.questionState.content.html.isNotEmpty() }).isTrue()
+  }
+
+  @Test
   fun testGetTopic_invalidTopicId_getTopic_noResultFound() {
     val topicProvider = topicController.getTopic(profileId1, INVALID_TOPIC_ID_1)
 

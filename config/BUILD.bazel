@@ -142,6 +142,7 @@ config_setting(
     },
 )
 
+# Controls question asset downloads only. TOPIC_PRACTICE_TAB separately controls the runtime UI.
 # Enable after updating the pipeline revision and capturing question version pins.
 bool_flag(
     name = "download_practice_questions",
@@ -155,7 +156,6 @@ config_setting(
         ":download_practice_questions": "True",
     },
     visibility = [
-        "//config/src/java/org/oppia/android/config:__pkg__",
         "//domain:domain_visibility",
     ],
 )

@@ -56,6 +56,8 @@ class QuestionRetriever @Inject constructor(
   private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {
     return Question.newBuilder()
       .setQuestionId(questionJson.getStringFromObject("id"))
+      .setLanguageCode(questionJson.getStringFromObject("language_code"))
+      .setVersion(questionJson.getInt("version"))
       .setQuestionState(
         stateRetriever.createStateFromJson(
           "question", questionJson.getJSONObject("question_state_data")
