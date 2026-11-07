@@ -4,6 +4,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.QuestionPlayerActivityBinding
@@ -26,6 +27,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
@@ -52,10 +54,15 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var readingTextSize: ReadingTextSize
+  private var sessionStartResult: DataProvider<Any?>? = null
   private var isStartingTrainingSession = false
+  private var isStoppingTrainingSession = false
 
-  fun handleOnCreate(profileId: LegacyProfileId) {
+  fun handleOnCreate(profileId: LegacyProfileId, isRecreated: Boolean) {
     this.profileId = profileId
+    if (isRecreated) {
+      sessionStartResult = questionTrainingController.getCurrentSessionStartResult()
+    }
     if (!questionTrainingController.hasStartedTrainingSession()) {
       // Fragments survive process restoration, but the training session is only kept in memory.
       // Remove the restored views before they subscribe to the uninitialized controller.
@@ -95,6 +102,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       activity.onBackPressedDispatcher.onBackPressed()
     }
 
+    if (isRecreated) {
+      questionTrainingController.getCurrentSessionStopResult()?.let {
+        isStoppingTrainingSession = true
+        subscribeToStopResult(it)
+      }
+    }
     retrieveReadingTextSize().observe(
       activity as QuestionPlayerActivity
     ) { result ->
@@ -107,6 +120,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     isStartingTrainingSession = true
     startTrainingSessionWithCallback {
       isStartingTrainingSession = false
+      if (isStoppingTrainingSession) return@startTrainingSessionWithCallback
       if (getQuestionPlayerFragment() == null) {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
@@ -119,6 +133,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   fun loadFragments(readingTextSize: ReadingTextSize) {
     this.readingTextSize = readingTextSize
+    if (isStoppingTrainingSession) return
     val playerFragment = getQuestionPlayerFragment()
     if (playerFragment == null) {
       loadQuestionPlayerFragment()
@@ -189,27 +204,26 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   fun stopTrainingSession() {
-    stopTrainingSessionWithCallback {
-      activity.finish()
-    }
+    if (isStoppingTrainingSession) return
+    isStoppingTrainingSession = true
+    subscribeToStopResult(questionTrainingController.stopQuestionTrainingSession())
   }
 
   fun restartSession() {
-    stopTrainingSessionWithCallback {
-      activity.supportFragmentManager.beginTransaction().apply {
-        getQuestionPlayerFragment()?.let { remove(it) }
-        getHintsAndSolutionExplorationManagerFragment()?.let { remove(it) }
-      }.commitNow()
-      startTrainingSessionWithCallback {
-        // Re-add the player fragment when the new session is ready.
-        activity.supportFragmentManager.beginTransaction().add(
-          R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-          TAG_QUESTION_PLAYER_FRAGMENT
-        ).commitNow()
-        loadHintsAndSolutionQuestionManagerFragment()
-      }
-    }
+    if (isStartingTrainingSession || isStoppingTrainingSession) return
+    val playerFragment = getQuestionPlayerFragment() ?: return
+    // Restored players can handle Replay before the profile's reading size has loaded.
+    val currentReadingTextSize = playerFragment.requireArguments().getProto(
+      QuestionPlayerFragment.ARGUMENTS_KEY,
+      QuestionPlayerFragmentArguments.getDefaultInstance()
+    ).readingTextSize
+    activity.supportFragmentManager.beginTransaction().apply {
+      remove(playerFragment)
+      getHintsAndSolutionExplorationManagerFragment()?.let { remove(it) }
+    }.commitNow()
+    // Starting a training session replaces the previous one without an intermediate stop callback.
+    sessionStartResult = null
+    loadFragments(currentReadingTextSize)
   }
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
@@ -225,43 +239,57 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
     }
 
-    val startDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
-    startDataProvider.toLiveData().observe(
+    val startDataProvider = sessionStartResult ?: questionTrainingController
+      .startQuestionTrainingSession(profileId, skillIds).also { sessionStartResult = it }
+    val startLiveData = startDataProvider.toLiveData()
+    startLiveData.observe(
       activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
-            callback()
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>) {
+          when (result) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
+            is AsyncResult.Failure -> {
+              startLiveData.removeObserver(this)
+              oppiaLogger.e(
+                "QuestionPlayerActivity", "Failed to start training session", result.error
+              )
+              activity.finish() // Can't recover from the session failing to start.
+            }
+            is AsyncResult.Success -> {
+              startLiveData.removeObserver(this)
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
+              callback()
+            }
           }
         }
       }
     )
   }
 
-  private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
+  private fun subscribeToStopResult(stopDataProvider: DataProvider<Any?>) {
+    val stopLiveData = stopDataProvider.toLiveData()
+    stopLiveData.observe(
       activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
-            setReadingTextSizeNormal()
-            activity.finish() // Can't recover from the session failing to stop.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
-            setReadingTextSizeNormal()
-            callback()
+      object : Observer<AsyncResult<Any?>> {
+        override fun onChanged(result: AsyncResult<Any?>) {
+          when (result) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
+            is AsyncResult.Failure -> {
+              stopLiveData.removeObserver(this)
+              oppiaLogger.e(
+                "QuestionPlayerActivity", "Failed to stop training session", result.error
+              )
+              setReadingTextSizeNormal()
+              activity.finish() // Can't recover from the session failing to stop.
+            }
+            is AsyncResult.Success -> {
+              stopLiveData.removeObserver(this)
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
+              setReadingTextSizeNormal()
+              activity.finish()
+            }
           }
         }
       }

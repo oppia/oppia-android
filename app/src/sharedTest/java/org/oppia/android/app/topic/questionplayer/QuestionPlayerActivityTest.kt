@@ -117,6 +117,7 @@ import org.oppia.android.domain.question.MaxMasteryLossPerQuestion
 import org.oppia.android.domain.question.MaxScorePerQuestion
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.domain.question.QuestionCountPerTrainingSession
+import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.question.ViewHintMasteryPenalty
 import org.oppia.android.domain.question.ViewHintScorePenalty
@@ -180,6 +181,7 @@ class QuestionPlayerActivityTest {
   @Inject lateinit var translationController: TranslationController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @field:[Inject BackgroundDispatcher]
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -421,6 +423,170 @@ class QuestionPlayerActivityTest {
         assertThat(
           activity.findViewById<View>(R.id.question_progress_bar).importantForAccessibility
         ).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_NO)
+      }
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_loadingSession_activityRecreatedTwice_hintMatchesCurrentQuestion() {
+    ActivityScenario.launch<QuestionPlayerActivity>(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST), profileId
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.questionPlayerActivityPresenter.loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+        assertThat(activity.supportFragmentManager.findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT))
+          .isNull()
+      }
+      val startResult = questionTrainingController.getCurrentSessionStartResult()
+
+      scenario.recreate()
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+      assertThat(questionTrainingController.getCurrentSessionStartResult())
+        .isSameInstanceAs(startResult)
+      val question = monitorFactory.waitForNextSuccessfulResult(
+        questionAssessmentProgressController.getCurrentQuestion()
+      )
+      val hintText = HtmlCompat.fromHtml(
+        question.ephemeralState.state.interaction.getHint(0).hintContent.html,
+        HtmlCompat.FROM_HTML_MODE_LEGACY
+      ).toString().trim()
+      testCoroutineDispatchers.advanceTimeBy(1) // The fast-show test module uses a 1 ms hint delay.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString(hintText))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_replayingSession_activityRecreated_startsFreshSession() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+      typeTextInput("1/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeTextInput("3/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      scenario.onActivity { activity ->
+        activity.findViewById<View>(R.id.replay_button).performClick()
+      }
+
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.question_progress_text)).check(matches(withText("Question 1 of 3")))
+      assertThat(
+        monitorFactory.waitForNextSuccessfulResult(
+          questionAssessmentProgressController.getCurrentQuestion()
+        ).totalQuestionCount
+      ).isEqualTo(3)
+      scenario.onActivity { activity ->
+        assertThat(
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<QuestionPlayerFragment>()
+        ).hasSize(1)
+        assertThat(
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<HintsAndSolutionQuestionManagerFragment>()
+        ).hasSize(1)
+      }
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_recreatedCompletion_replayedBeforeProfileLoads_startsFreshSession() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+      typeTextInput("1/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeTextInput("3/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      scenario.recreate()
+      scenario.onActivity { activity -> activity.restartSession() }
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.question_progress_text)).check(matches(withText("Question 1 of 3")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_stoppingSession_activityRecreated_finishesActivity() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      scenario.onActivity { activity -> activity.stopSession() }
+
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_loadingSession_stoppedThenRecreated_finishesActivity() {
+    ActivityScenario.launch<QuestionPlayerActivity>(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST), profileId
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.questionPlayerActivityPresenter.loadFragments(ReadingTextSize.MEDIUM_TEXT_SIZE)
+        activity.stopSession()
+      }
+
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_sessionStopped_newActivity_startsFreshSession() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+      scenario.onActivity { activity -> activity.stopSession() }
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launchForSkillList(SKILL_ID_LIST).use {
+      onView(withId(R.id.question_progress_text)).check(matches(withText("Question 1 of 3")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testQuestionPlayer_correctSelection_rtl_tickDoesNotOverlapChoices() {
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        activity.window.decorView.requestLayout()
+      }
+      testCoroutineDispatchers.runCurrent()
+      selectMultipleChoiceOption(optionPosition = 2)
+
+      scenario.onActivity { activity ->
+        val tick = activity.findViewById<View>(R.id.answer_tick)
+        val choices = activity.findViewById<View>(R.id.submitted_answer_recycler_view_container)
+        assertThat(tick.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+        assertThat(choices.width).isGreaterThan(0)
+        assertThat(tick.visibility).isEqualTo(View.VISIBLE)
+        assertThat(tick.right).isAtMost(choices.left)
       }
     }
   }

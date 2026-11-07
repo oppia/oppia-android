@@ -30,6 +30,8 @@ class QuestionTrainingController @Inject constructor(
 ) {
 
   private val seedRandom = Random(questionTrainingSeed)
+  private var currentSessionStartResult: DataProvider<Any?>? = null
+  private var currentSessionStopResult: DataProvider<Any?>? = null
 
   /**
    * Returns whether a training session has been initialized in this process, including a session
@@ -38,6 +40,18 @@ class QuestionTrainingController @Inject constructor(
    */
   fun hasStartedTrainingSession(): Boolean =
     questionAssessmentProgressController.hasStartedTrainingSession()
+
+  /**
+   * Returns the most recent session's start result, or null if no session has been started in this
+   * process. Recreated players can observe this result without starting another session.
+   */
+  fun getCurrentSessionStartResult(): DataProvider<Any?>? = currentSessionStartResult
+
+  /**
+   * Returns the current session's stop result, or null if stopping has not been requested. A new
+   * session clears this result so that its player does not observe a previous session's stop.
+   */
+  fun getCurrentSessionStopResult(): DataProvider<Any?>? = currentSessionStopResult
 
   /**
    * Begins a question training session given a list of skill IDs and a total number of questions.
@@ -56,7 +70,7 @@ class QuestionTrainingController @Inject constructor(
     profileId: LegacyProfileId,
     skillIdsList: List<String>
   ): DataProvider<Any?> {
-    return try {
+    val startResult: DataProvider<Any?> = try {
       val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       val beginSessionDataProvider =
         questionAssessmentProgressController.beginQuestionTrainingSession(
@@ -74,6 +88,9 @@ class QuestionTrainingController @Inject constructor(
         AsyncResult.Failure(e)
       }
     }
+    currentSessionStartResult = startResult
+    currentSessionStopResult = null
+    return startResult
   }
 
   private fun retrieveQuestionsForSkillIds(
@@ -133,5 +150,7 @@ class QuestionTrainingController @Inject constructor(
    * started.
    */
   fun stopQuestionTrainingSession(): DataProvider<Any?> =
-    questionAssessmentProgressController.finishQuestionTrainingSession()
+    questionAssessmentProgressController.finishQuestionTrainingSession().also {
+      currentSessionStopResult = it
+    }
 }
