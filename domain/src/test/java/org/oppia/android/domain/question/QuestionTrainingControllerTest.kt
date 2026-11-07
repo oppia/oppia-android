@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,6 +81,130 @@ class QuestionTrainingControllerTest {
   @Before
   fun setUp() {
     profileId1 = LegacyProfileId.newBuilder().setInternalId(1).build()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testController_beforeStartingTrainingSession_hasStartedTrainingSession_returnsFalse() {
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    assertThat(questionTrainingController.hasStartedTrainingSession()).isFalse()
+  }
+
+  @Test
+  fun testController_afterStartingTrainingSession_hasStartedTrainingSession_returnsTrue() {
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf(TEST_SKILL_ID_0))
+
+    assertThat(questionTrainingController.hasStartedTrainingSession()).isTrue()
+  }
+
+  @Test
+  fun testController_startTrainingSession_retrievedStartResult_completesSameSession() {
+    setUpTestApplicationComponent(questionSeed = 0)
+    val startResult = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf(TEST_SKILL_ID_0)
+    )
+
+    val restoredResult = checkNotNull(questionTrainingController.getCurrentSessionStartResult())
+
+    assertThat(restoredResult).isSameInstanceAs(startResult)
+    monitorFactory.waitForNextSuccessfulResult(restoredResult)
+    assertThat(
+      monitorFactory.waitForNextSuccessfulResult(
+        questionAssessmentProgressController.getCurrentQuestion()
+      ).currentQuestionIndex
+    ).isEqualTo(0)
+  }
+
+  @Test
+  fun testController_stopTrainingSession_retrievedStopResult_completesStop() {
+    setUpTestApplicationComponent(questionSeed = 0)
+    monitorFactory.waitForNextSuccessfulResult(
+      questionTrainingController.startQuestionTrainingSession(profileId1, listOf(TEST_SKILL_ID_0))
+    )
+    val stopResult = questionTrainingController.stopQuestionTrainingSession()
+
+    val restoredResult = checkNotNull(questionTrainingController.getCurrentSessionStopResult())
+
+    assertThat(restoredResult).isSameInstanceAs(stopResult)
+    monitorFactory.waitForNextSuccessfulResult(restoredResult)
+  }
+
+  @Test
+  fun testController_startSessionAfterStopping_replacesStartResultAndClearsStopResult() {
+    setUpTestApplicationComponent(questionSeed = 0)
+    val firstResult = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf(TEST_SKILL_ID_0)
+    )
+    monitorFactory.waitForNextSuccessfulResult(firstResult)
+    monitorFactory.waitForNextSuccessfulResult(
+      questionTrainingController.stopQuestionTrainingSession()
+    )
+
+    val nextResult = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf(TEST_SKILL_ID_1)
+    )
+
+    assertThat(questionTrainingController.getCurrentSessionStartResult())
+      .isSameInstanceAs(nextResult)
+    assertThat(nextResult).isNotSameInstanceAs(firstResult)
+    assertThat(questionTrainingController.getCurrentSessionStopResult()).isNull()
+    monitorFactory.waitForNextSuccessfulResult(nextResult)
+    assertThat(
+      monitorFactory.waitForNextSuccessfulResult(
+        questionAssessmentProgressController.getCurrentQuestion()
+      ).currentQuestionIndex
+    ).isEqualTo(0)
+  }
+
+  @Test
+  fun testController_invalidSkills_retrievedStartResult_reportsFailure() {
+    setUpTestApplicationComponent(questionSeed = 0)
+    val startResult = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf("missing_skill")
+    )
+
+    val restoredResult = checkNotNull(questionTrainingController.getCurrentSessionStartResult())
+
+    assertThat(restoredResult).isSameInstanceAs(startResult)
+    assertThat(monitorFactory.waitForNextFailureResult(restoredResult)).hasMessageThat()
+      .contains("Expected at least 1 question")
+  }
+
+  @Test
+  fun testController_protoAssets_startTrainingSession_succeeds() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    val provider = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(provider)
+    val question = monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.getCurrentQuestion()
+    )
+    assertThat(question.totalQuestionCount).isEqualTo(3)
+    assertThat(question.question.questionId).isEqualTo(TEST_QUESTION_ID_1)
+  }
+
+  @Test
+  fun testController_protoAssets_unknownSkills_startTrainingSession_fails() {
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    setUpTestApplicationComponent(questionSeed = 0)
+
+    val provider = questionTrainingController.startQuestionTrainingSession(
+      profileId1, listOf("missing_skill")
+    )
+
+    assertThat(monitorFactory.waitForNextFailureResult(provider)).hasMessageThat()
+      .contains("Expected at least 1 question")
   }
 
   @Test
