@@ -2,8 +2,8 @@
 Imports required data-binding annotation processor.
 """
 
-load("@rules_java//java:defs.bzl", "java_plugin")
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@rules_java//java:defs.bzl", "java_binary", "java_plugin")
 
 java_plugin(
     name = "compiler_annotation_processor",
