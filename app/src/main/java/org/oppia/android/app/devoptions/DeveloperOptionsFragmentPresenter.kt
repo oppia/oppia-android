@@ -30,6 +30,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 private const val MAX_PROFILE_COUNT = 10
@@ -47,7 +48,8 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
 
   private lateinit var binding: DeveloperOptionsFragmentBinding
@@ -203,7 +205,9 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
               return
             }
             val newNames = PRE_DEFINED_NAMES_LIST.filter { candidate ->
-              existingProfiles.none { it.name.equals(candidate, ignoreCase = true) }
+              existingProfiles.none {
+                machineLocale.run { it.name.equalsIgnoreCase(candidate) }
+              }
             }.shuffled().take(profilesToAddCount)
             addProfilesSequentially(newNames) {
               val intent =
