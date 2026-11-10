@@ -1270,6 +1270,27 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_afterDataReset_localeInitialization_skippedIfAlreadySet() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    forceDefaultLocale(Locale.ENGLISH)
+
+    launchSplashActivityFully {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+    val displayLocaleBeforeReset = appLanguageLocaleHandler.getDisplayLocale()
+
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+      assertThat(appLanguageLocaleHandler.getDisplayLocale())
+        .isEqualTo(displayLocaleBeforeReset)
+    }
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
