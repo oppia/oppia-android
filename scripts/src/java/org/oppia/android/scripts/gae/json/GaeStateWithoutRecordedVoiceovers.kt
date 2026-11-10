@@ -17,6 +17,19 @@ data class GaeStateWithoutRecordedVoiceovers(
     name = "inapplicable_skill_misconception_ids"
   ) val inapplicableSkillMisconceptionIds: List<String>?
 ) {
+  /** Returns this question state in the common state format used by the converters. */
+  fun toState(): GaeState = GaeState(
+    content = content,
+    paramChanges = paramChanges,
+    interaction = interaction,
+    classifierModelId = classifierModelId,
+    linkedSkillId = linkedSkillId,
+    recordedVoiceovers = GaeRecordedVoiceovers(emptyMap()),
+    solicitAnswerDetails = solicitAnswerDetails,
+    cardIsCheckpoint = cardIsCheckpoint,
+    inapplicableSkillMisconceptionIds = inapplicableSkillMisconceptionIds
+  )
+
   fun computeReferencedSkillIds(): List<String> =
     listOfNotNull(linkedSkillId) + (interaction?.computeReferencedSkillIds() ?: emptyList())
 }

@@ -2,13 +2,18 @@ package org.oppia.android.scripts.assets
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToSubtopicRecord
 import org.oppia.proto.v1.structure.ContentLocalizationDto
+import org.oppia.proto.v1.structure.EndExplorationInstanceDto
+import org.oppia.proto.v1.structure.ExplorationDto
+import org.oppia.proto.v1.structure.InteractionInstanceDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.LocalizableTextDto
 import org.oppia.proto.v1.structure.ReferencedImageDto
 import org.oppia.proto.v1.structure.RevisionCardDto
 import org.oppia.proto.v1.structure.SingleLocalizableTextDto
+import org.oppia.proto.v1.structure.StateDto
 import org.oppia.proto.v1.structure.StudyGuideSectionDto
 import org.oppia.proto.v1.structure.SubtitledTextDto
 import org.oppia.proto.v1.structure.SubtopicPageIdDto
@@ -87,6 +92,36 @@ class DtoProtoToLegacyProtoConverterTest {
     }
 
     assertThat(exception).hasMessageThat().contains("Expected at least one study guide section")
+  }
+
+  @Test
+  fun testConvertExploration_renamedStateImage_rewritesDefaultContent() {
+    val image = "<oppia-noninteractive-image filepath-with-value=\"&amp;quot;old.svg&amp;quot;\">" +
+      "</oppia-noninteractive-image>"
+    val exploration = ExplorationDto.newBuilder().apply {
+      id = "test_exploration"
+      initStateName = "End"
+      title = createSubtitledText("title")
+      defaultLocalization = ContentLocalizationDto.newBuilder().apply {
+        language = LanguageType.ENGLISH
+        putLocalizableTextContentMapping("title", createLocalizableText("Test exploration"))
+        putLocalizableTextContentMapping("content", createLocalizableText(image))
+      }.build()
+      putStates(
+        "End",
+        StateDto.newBuilder().apply {
+          content = createSubtitledText("content")
+          interaction = InteractionInstanceDto.newBuilder()
+            .setEndExploration(EndExplorationInstanceDto.getDefaultInstance()).build()
+        }.build()
+      )
+    }.build()
+
+    val actual = exploration.convertToExploration(mapOf("old.svg" to "repaired.png"), emptyList())
+
+    assertThat(actual.statesMap.getValue("End").content.html)
+      .isEqualTo(image.replace("old.svg", "repaired.png"))
+    assertThat(actual.translatableTitle.html).isEqualTo("Test exploration")
   }
 
   private fun createRevisionCard(sections: List<StudyGuideSection>): RevisionCardDto {

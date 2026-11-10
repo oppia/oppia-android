@@ -23,6 +23,7 @@ import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SchemaObject
@@ -96,6 +97,8 @@ import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.NumericInputInstanceDto
 import org.oppia.proto.v1.structure.OutcomeDto
+import org.oppia.proto.v1.structure.QuestionDto
+import org.oppia.proto.v1.structure.QuestionLanguagePackDto
 import org.oppia.proto.v1.structure.RatioExpressionDto
 import org.oppia.proto.v1.structure.RatioExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.RevisionCardDto
@@ -142,7 +145,8 @@ object DtoProtoToLegacyProtoConverter {
   }
 
   fun DownloadableTopicSummaryDto.convertToTopicRecord(
-    imageReferenceReplacements: Map<String, String>
+    imageReferenceReplacements: Map<String, String>,
+    hasPracticeQuestions: Boolean = false
   ): TopicRecord {
     val dto = this
     return TopicRecord.newBuilder().apply {
@@ -153,6 +157,7 @@ object DtoProtoToLegacyProtoConverter {
       addAllCanonicalStoryIds(dto.storySummariesList.map { it.id })
       addAllSubtopicIds(dto.subtopicSummariesList.map { it.index })
       this.isPublished = true
+      this.hasPracticeQuestions = hasPracticeQuestions
       this.topicThumbnail = dto.localizations.extractDefaultThumbnail(imageReferenceReplacements)
     }.build()
   }
@@ -272,6 +277,29 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
+  /** Converts a downloaded practice question using the same state conversion as lessons. */
+  fun QuestionDto.convertToQuestion(
+    imageReferenceReplacements: Map<String, String>,
+    languagePackDtos: List<QuestionLanguagePackDto>
+  ): Question {
+    val dto = this
+    check(
+      languagePackDtos.all {
+        it.id.questionId == dto.id && it.contentVersion == dto.contentVersion
+      }
+    ) { "Question language packs must match question ${dto.id} and its content version." }
+    return Question.newBuilder().apply {
+      questionId = dto.id
+      questionState = dto.questionState.convertToState(
+        "question", dto.defaultLocalization, languagePackDtos.map { it.localization },
+        imageReferenceReplacements
+      )
+      addAllLinkedSkillIds(dto.linkedSkillIdsList)
+      languageCode = dto.defaultLocalization.language.toLegacyLanguageCode()
+      version = dto.contentVersion
+    }.build()
+  }
+
   fun ClassroomDto.convertToClassroomRecord(
     topicSummaryMap: Map<String, DownloadableTopicSummaryDto>,
     imageReferenceReplacements: Map<String, String>
@@ -336,7 +364,7 @@ object DtoProtoToLegacyProtoConverter {
     // The content IDs associated with translations and voiceovers for a state should only
     // correspond to those actually used within that state (since the new structure stores IDs at
     // the structure level).
-    val contentIdTracker = ContentIdTracker(defaultLocalizationDto)
+    val contentIdTracker = ContentIdTracker(defaultLocalizationDto, imageReferenceReplacements)
     val allLocalizations = localizations + defaultLocalizationDto
     return State.newBuilder().apply {
       this.name = name
@@ -1489,7 +1517,9 @@ object DtoProtoToLegacyProtoConverter {
   ): LessonThumbnail = thumbnail.toThumbnail(imageReferenceReplacements)
 
   private fun ContentIdTracker.extractSubtitledHtml(text: SubtitledTextDto): SubtitledHtml =
-    localizationDto.extractSubtitledHtml(text).also { trackContentId(text.contentId) }
+    localizationDto.extractSubtitledHtml(text).let {
+      it.toBuilder().setHtml(it.html.fixImageReferences(imageReferenceReplacements)).build()
+    }.also { trackContentId(text.contentId) }
 
   private fun ContentIdTracker.extractSubtitledUnicode(text: SubtitledTextDto) =
     localizationDto.extractSubtitledUnicode(text).also { trackContentId(text.contentId) }
@@ -1884,7 +1914,10 @@ object DtoProtoToLegacyProtoConverter {
     }
   }
 
-  private class ContentIdTracker(val localizationDto: ContentLocalizationDto) {
+  private class ContentIdTracker(
+    val localizationDto: ContentLocalizationDto,
+    val imageReferenceReplacements: Map<String, String> = emptyMap()
+  ) {
     private val internalContentIds by lazy { mutableSetOf<String>() }
     val contentIds: Set<String> get() = internalContentIds
 
