@@ -10,7 +10,9 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -788,6 +790,159 @@ class TransformAndroidManifestTest {
     val expectedDateString = expectedExpirationDate.format(formatter)
     assertThat(transformedManifest).containsMatch(
       "<meta-data android:name=\"expiration_date\" android:value=\"$expectedDateString\""
+    )
+  }
+
+  @Test
+  fun testMain_printAabName_wrongArgumentCount_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript("--print-aab-name", "/repo")
+    }
+
+    assertThat(exception).hasMessageThat().contains(
+      "Usage: --print-aab-name"
+    )
+  }
+
+  @Test
+  fun testMain_printAabName_invalidMajorVersion_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        "--print-aab-name",
+        "/repo",
+        BUILD_FLAVOR,
+        "invalid_major",
+        MINOR_VERSION
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testMain_printAabName_invalidMinorVersion_failsWithUsageString() {
+    val exception = assertThrows<IllegalStateException>() {
+      runScript(
+        "--print-aab-name",
+        "/repo",
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        "invalid_minor"
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testMain_printAabName_outputsExpectedFilename() {
+    initializeGitRepositoryWithHistory()
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val outputStream = ByteArrayOutputStream()
+    val originalOut = System.out
+    val printStream = PrintStream(outputStream)
+
+    try {
+      System.setOut(printStream)
+      runScript(
+        "--print-aab-name",
+        tempFolder.root.absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION
+      )
+    } finally {
+      System.setOut(originalOut)
+      printStream.close()
+    }
+
+    assertThat(outputStream.toString().trim()).isEqualTo(
+      "oppia-android-1.03-rc01-beta-${latestCommit.take(10)}.aab"
+    )
+  }
+
+  @Test
+  fun testMain_printAabName_matchesManifestVersionNameForAllReleaseFlavors() {
+    initializeGitRepositoryWithHistory()
+
+    listOf("alpha", "beta", "ga").forEach { flavor ->
+      val manifestFile = tempFolder.newFile("AndroidManifest-$flavor.xml").apply {
+        writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
+      }
+      val transformedManifestFile =
+        File(tempFolder.root, "TransformedAndroidManifest-$flavor.xml")
+
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        transformedManifestFile.absolutePath,
+        flavor,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "false",
+        "false"
+      )
+
+      val versionNameMatch = Regex(
+        "android:versionName=\"([^\"]+)\""
+      ).find(transformedManifestFile.readText())
+
+      val manifestVersionName = checkNotNull(versionNameMatch).groupValues[1]
+
+      val outputStream = ByteArrayOutputStream()
+      val originalOut = System.out
+      val printStream = PrintStream(outputStream)
+
+      try {
+        System.setOut(printStream)
+        runScript(
+          "--print-aab-name",
+          tempFolder.root.absolutePath,
+          flavor,
+          MAJOR_VERSION,
+          MINOR_VERSION
+        )
+      } finally {
+        System.setOut(originalOut)
+        printStream.close()
+      }
+
+      val predictedAabName = outputStream.toString().trim()
+      val predictedVersionName = predictedAabName
+        .removePrefix("oppia-android-")
+        .removeSuffix(".aab")
+
+      assertThat(predictedVersionName).isEqualTo(manifestVersionName)
+    }
+  }
+
+  @Test
+  fun testMain_printAabNameOnReleaseBranch_outputsCorrectRcNumber() {
+    initializeGitRepositoryWithHistory()
+    testGitRepository.checkoutNewBranch("release-v1.0")
+    testGitRepository.commit(message = "Release CP 1", allowEmpty = true)
+    val latestCommit = getMostRecentCommitOnCurrentBranch()
+    val outputStream = ByteArrayOutputStream()
+    val originalOut = System.out
+    val printStream = PrintStream(outputStream)
+
+    try {
+      System.setOut(printStream)
+      runScript(
+        "--print-aab-name",
+        tempFolder.root.absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION
+      )
+    } finally {
+      System.setOut(originalOut)
+      printStream.close()
+    }
+
+    assertThat(outputStream.toString().trim()).isEqualTo(
+      "oppia-android-1.03-rc02-beta-${latestCommit.take(10)}.aab"
     )
   }
 
