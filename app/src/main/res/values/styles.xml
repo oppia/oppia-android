@@ -245,6 +245,22 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="CreateProfilePinTextInputLayout" parent="TextInputLayout">
+    <item name="boxBackgroundColor">@color/component_color_onboarding_create_profile_input_background_color</item>
+    <item name="boxStrokeColor">@color/component_color_onboarding_create_profile_input_stroke_selector</item>
+    <item name="boxStrokeErrorColor">@color/component_color_shared_error_color</item>
+    <item name="errorIconTint">@color/component_color_shared_error_color</item>
+    <item name="errorTextColor">@color/component_color_shared_error_color</item>
+    <item name="hintTextColor">@color/component_color_onboarding_create_profile_text_color</item>
+    <item name="helperTextTextColor">@color/component_color_onboarding_create_profile_text_color</item>
+    <item name="android:textColorHint">@color/component_color_onboarding_create_profile_text_color</item>
+  </style>
+
+  <style name="CreateProfilePinTextInputEditText" parent="TextInputEditText">
+    <item name="android:textColor">@color/component_color_onboarding_create_profile_text_color</item>
+    <item name="android:textColorHint">@color/component_color_onboarding_create_profile_text_color</item>
+  </style>
+
   <style name="Heading1" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">24sp</item>
@@ -815,7 +831,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:inputType">text|textCapSentences</item>
-    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_create_profile_text_color</item>
   </style>
 
   <style name="NicknameLabelStyle" parent="TextViewStart">
@@ -823,7 +839,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">@dimen/onboarding_shared_text_size_medium</item>
-    <item name="android:textColor">@color/component_color_onboarding_shared_text_color</item>
+    <item name="android:textColor">@color/component_color_onboarding_create_profile_text_color</item>
   </style>
 
   <style name="OnboardingErrorStyle" parent="TextViewStart">

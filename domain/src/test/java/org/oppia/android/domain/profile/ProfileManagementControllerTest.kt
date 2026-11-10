@@ -199,6 +199,7 @@ class ProfileManagementControllerTest {
     val profile = profileDatabase.profilesMap[0]!!
     assertThat(profile.name).isEqualTo("James")
     assertThat(profile.pin).isEqualTo("123")
+    assertThat(profile.hasPin).isTrue()
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
@@ -220,6 +221,7 @@ class ProfileManagementControllerTest {
     val profile = profileDatabase.profilesMap[0]!!
     assertThat(profile.name).isEqualTo("James")
     assertThat(profile.pin).isEqualTo("")
+    assertThat(profile.hasPin).isFalse()
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)

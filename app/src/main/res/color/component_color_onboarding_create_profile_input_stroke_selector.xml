@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:color="@color/component_color_onboarding_create_profile_focused_stroke_color" android:state_focused="true" />
+  <item android:color="@color/component_color_onboarding_create_profile_input_stroke_color" />
+</selector>

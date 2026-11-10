@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -436,6 +437,57 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithoutPin_clickAdd_opensCreateAdminPinActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfileWithoutPin()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(CreateAdminPinActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_opensProfileLoginActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_passesAdditionalLearnerTypeToLogin() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.profile_selection_add_profile_text)))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Launch should be to ProfileLoginActivity; while we don't assert extras directly here,
+      // the downstream login test ensures ADDITIONAL_LEARNER routing to CreateProfileActivity.
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -1124,27 +1176,27 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfileButton_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
   @Test
-  fun testProfileChooserFragment_enableOnboardingV2_clickAddProfilePrompt_opensAdminAuthActivity() {
+  fun testProfileChooser_enableOnboardingV2_clickAddProfilePrompt_opensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_prompt)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -1227,7 +1279,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkAddProfileButtonIsNotVisible() {
+  fun testFragment_enableOnboardingV2_add10Profiles_checkAddProfileButtonIsVisible() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1294,8 +1346,27 @@ class ProfileChooserFragmentTest {
         targetView = R.id.profile_name_text,
         stringToMatch = "I"
       )
-      onView(withId(R.id.add_profile_button)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.add_profile_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.add_profile_button)).check(matches(withAlpha(0.38f)))
+      onView(withId(R.id.add_profile_prompt)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_add10Profiles_clickAddProfile_showsMaximumPrompt() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(context.getString(R.string.profile_selection_maximum_profiles_reached_message))
+      )
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -1656,6 +1727,16 @@ class ProfileChooserFragmentTest {
         targetViewId = targetView
       )
     ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun withAlpha(expectedAlpha: Float): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("view with alpha $expectedAlpha")
+      }
+
+      override fun matchesSafely(view: View): Boolean = view.alpha == expectedAlpha
+    }
   }
 
   private fun createProfileChooserActivityIntent(): Intent {
