@@ -100,6 +100,7 @@
         android:layout_marginStart="@dimen/question_player_progress_bar_margin_start"
         android:layout_marginEnd="@dimen/question_player_progress_bar_margin_end"
         android:max="100"
+        android:importantForAccessibility="no"
         android:progress="@{viewModel.progressPercentage}"
         android:progressDrawable="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"

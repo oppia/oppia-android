@@ -64,6 +64,7 @@ local_assets_library(
         "tIoSb3HZFN6e",
     ],
     json_assets = glob(["src/main/assets/dev/**/*.json"]),
+    question_list_file_names = ["questions"],
     skills_file_names = [
         "skills",
     ],
@@ -136,6 +137,10 @@ local_assets_library(
 downloaded_assets_library(
     name = "domain_alpha_assets",
     download_config = "@oppia_android_asset_pipeline//scripts:assets/alpha_download_config.textproto",
+    download_questions = select({
+        "//config:download_practice_questions_in_alpha": True,
+        "//conditions:default": False,
+    }),
     output_log_name = "domain_alpha_assets_output.log",
     pinned_versions = "//config:lessons/alpha_pinned_lesson_versions.textproto",
     tags = ["manual"],
