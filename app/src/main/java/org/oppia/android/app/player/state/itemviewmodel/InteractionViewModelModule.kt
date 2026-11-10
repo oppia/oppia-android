@@ -77,6 +77,13 @@ interface InteractionViewModelModule {
     factoryImpl: RatioExpressionInputInteractionViewModel.FactoryImpl
   ): StateItemViewModel.InteractionItemFactory
 
+  @Binds
+  @IntoMap
+  @StringKey("NumberWithUnits")
+  fun provideNumberWithUnitsInputViewModelFactory(
+    factoryImpl: NumberWithUnitsInputViewModel.FactoryImpl
+  ): StateItemViewModel.InteractionItemFactory
+
   // Note that Dagger doesn't support mixing binds & provides methods. See
   // https://stackoverflow.com/a/54592300 for the origin of this approach.
   @Module

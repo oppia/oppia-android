@@ -31,6 +31,7 @@ import org.oppia.android.app.databinding.databinding.LessonProgressIndicatorItem
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
+import org.oppia.android.app.databinding.databinding.NumberWithUnitsInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousResponsesHeaderItemBinding
@@ -74,6 +75,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInte
 import org.oppia.android.app.player.state.itemviewmodel.LessonProgressViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
+import org.oppia.android.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
@@ -1541,6 +1543,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = TextInputInteractionItemBinding::inflate,
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NUMBER_WITH_UNITS_INPUT_INTERACTION,
+        inflateDataBinding = NumberWithUnitsInputInteractionItemBinding::inflate,
+        setViewModel = NumberWithUnitsInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as NumberWithUnitsInputViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION,
         inflateDataBinding = RatioInputInteractionItemBinding::inflate,
