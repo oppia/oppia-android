@@ -25,9 +25,11 @@ import org.oppia.proto.v1.api.TopicListRequestDto
 import org.oppia.proto.v1.api.TopicListResponseDto
 import org.oppia.proto.v1.api.TopicListResponseDto.AvailableTopicDto.AvailabilityTypeCase.DOWNLOADABLE_TOPIC
 import org.oppia.proto.v1.structure.ChapterSummaryDto
+import org.oppia.proto.v1.structure.ContentLocalizationsDto
 import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.StorySummaryDto
+import org.oppia.proto.v1.structure.SubtitledTextDto
 import org.oppia.proto.v1.structure.SubtopicSummaryDto
 import java.io.File
 
@@ -119,9 +121,7 @@ class LessonListDownloader(
       println("Writing captured lesson structure versions to:")
       println(lessonListOutputFile.path)
       withContext(Dispatchers.IO) {
-        lessonListOutputFile.outputStream().bufferedWriter().use {
-          TextFormat.printer().print(listResponse.captureVersions(), it)
-        }
+        writePinnedLessonVersions(listResponse, lessonListOutputFile)
       }
     }
   }
@@ -162,12 +162,18 @@ class LessonListDownloader(
     return listResponse
   }
 
-  private companion object {
+  companion object {
     private val CLIENT_CONTEXT = AndroidClientContextDto.newBuilder().apply {
       appVersionName = checkNotNull(LessonListDownloader::class.qualifiedName)
       appVersionCode = 0
     }.build()
     private const val CONSOLE_COLUMN_COUNT = 80
+
+    /** Writes the pinned versions and default-language titles for the downloadable lessons. */
+    fun writePinnedLessonVersions(topicList: TopicListResponseDto, outputFile: File) {
+      val versions = topicList.captureVersions()
+      outputFile.bufferedWriter().use { TextFormat.printer().print(versions, it) }
+    }
 
     private fun TopicListResponseDto.captureVersions(): DownloadListVersions {
       val downloadableTopics = availableTopicsList.filter { availableTopic ->
@@ -202,6 +208,7 @@ class LessonListDownloader(
       return TopicInfo.newBuilder().apply {
         this.id = this@captureVersions.id
         this.contentVersion = this@captureVersions.contentVersion
+        this.title = this@captureVersions.localizations.resolveTitle(this@captureVersions.name)
         addAllStoryInfo(this@captureVersions.storySummariesList.map { it.captureVersions() })
         addAllSubtopicInfo(this@captureVersions.subtopicSummariesList.map { it.captureVersion() })
       }.build()
@@ -211,6 +218,7 @@ class LessonListDownloader(
       return StoryInfo.newBuilder().apply {
         this.id = this@captureVersions.id
         this.contentVersion = this@captureVersions.contentVersion
+        this.title = this@captureVersions.localizations.resolveTitle(this@captureVersions.title)
         addAllChapterInfo(this@captureVersions.chaptersList.map { it.captureVersion() })
       }.build()
     }
@@ -219,8 +227,13 @@ class LessonListDownloader(
       return ChapterInfo.newBuilder().apply {
         this.explorationId = this@captureVersion.explorationId
         this.explorationContentVersion = this@captureVersion.contentVersion
+        this.title = this@captureVersion.localizations.resolveTitle(this@captureVersion.title)
       }.build()
     }
+
+    private fun ContentLocalizationsDto.resolveTitle(title: SubtitledTextDto): String =
+      defaultMapping.localizableTextContentMappingMap.getValue(title.contentId)
+        .singleLocalizableText.text
 
     private fun SubtopicSummaryDto.captureVersion(): SubtopicInfo {
       return SubtopicInfo.newBuilder().apply {

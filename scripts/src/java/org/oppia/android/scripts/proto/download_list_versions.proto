@@ -14,17 +14,20 @@ message DownloadListVersions {
     int32 content_version = 2;
     repeated StoryInfo story_info = 3;
     repeated SubtopicInfo subtopic_info = 4;
+    string title = 5;
   }
 
   message StoryInfo {
     string id = 1;
     int32 content_version = 2;
     repeated ChapterInfo chapter_info = 3;
+    string title = 4;
   }
 
   message ChapterInfo {
     string exploration_id = 1;
     int32 exploration_content_version = 2;
+    string title = 3;
   }
 
   message SubtopicInfo {
