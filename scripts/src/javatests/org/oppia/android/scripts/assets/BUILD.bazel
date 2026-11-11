@@ -67,3 +67,15 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "DownloadLessonListTest",
+    srcs = ["DownloadLessonListTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/assets:download_lesson_list_lib",
+        "//scripts/src/java/org/oppia/android/scripts/proto:download_list_versions_java_proto",
+        "//third_party:com_google_truth_truth",
+        "//third_party:oppia_proto_api_java_protos",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
