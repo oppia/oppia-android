@@ -109,6 +109,38 @@ class DownloadLessonListTest {
     assertThat(chapter.explorationContentVersion).isEqualTo(3)
   }
 
+  @Test
+  fun testWritePinnedLessonVersions_preservesQuestionPinsInSortedOrder() {
+    val output = tempFolder.newFile("question_versions.textproto")
+
+    LessonListDownloader.writePinnedLessonVersions(
+      TopicListResponseDto.getDefaultInstance(),
+      output,
+      questionsPinned = true,
+      questionVersions = mapOf("question-b" to 7, "question-a" to 4)
+    )
+
+    val actual = TextFormat.parse(output.readText(), DownloadListVersions::class.java)
+    assertThat(actual.questionsPinned).isTrue()
+    assertThat(actual.trackedQuestionInfoList.map { it.id })
+      .containsExactly("question-a", "question-b").inOrder()
+    assertThat(actual.trackedQuestionInfoList.map { it.contentVersion })
+      .containsExactly(4, 7).inOrder()
+  }
+
+  @Test
+  fun testWritePinnedLessonVersions_emptyQuestionPins_preservesPinningFlag() {
+    val output = tempFolder.newFile("empty_question_versions.textproto")
+
+    LessonListDownloader.writePinnedLessonVersions(
+      TopicListResponseDto.getDefaultInstance(), output, questionsPinned = true
+    )
+
+    val actual = TextFormat.parse(output.readText(), DownloadListVersions::class.java)
+    assertThat(actual.questionsPinned).isTrue()
+    assertThat(actual.trackedQuestionInfoList).isEmpty()
+  }
+
   private fun titleReference(): SubtitledTextDto =
     SubtitledTextDto.newBuilder().setContentId("title").build()
 

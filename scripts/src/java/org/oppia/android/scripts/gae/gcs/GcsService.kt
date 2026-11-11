@@ -76,10 +76,17 @@ class GcsService(private val baseUrl: String, private val gcsBucket: String) {
   }
 
   enum class ImageContainerType(val httpRepresentation: String) {
+    /** Images stored under an exploration's assets directory. */
     EXPLORATION(httpRepresentation = "exploration"),
+    /** Images stored under a skill's assets directory. */
     SKILL(httpRepresentation = "skill"),
+    /** Images stored under a practice question's assets directory. */
+    QUESTION(httpRepresentation = "question"),
+    /** Images stored under a topic's assets directory. */
     TOPIC(httpRepresentation = "topic"),
+    /** Images stored under a story's assets directory. */
     STORY(httpRepresentation = "story"),
+    /** Classroom images, whose storage directory is not yet supported. */
     CLASSROOM(httpRepresentation = "unknown") // TODO: Figure out what this should be.
   }
 

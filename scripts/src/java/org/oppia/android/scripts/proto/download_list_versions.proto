@@ -8,6 +8,10 @@ option java_multiple_files = true;
 message DownloadListVersions {
   repeated TopicInfo tracked_topic_info = 1;
   repeated SkillInfo tracked_skill_info = 2;
+  // Questions must be pinned separately since they can change independently of their linked skills.
+  repeated QuestionInfo tracked_question_info = 3;
+  // Whether question pinning ran, even when it retained no compatible questions.
+  bool questions_pinned = 4;
 
   message TopicInfo {
     string id = 1;
@@ -36,6 +40,11 @@ message DownloadListVersions {
   }
 
   message SkillInfo {
+    string id = 1;
+    int32 content_version = 2;
+  }
+
+  message QuestionInfo {
     string id = 1;
     int32 content_version = 2;
   }

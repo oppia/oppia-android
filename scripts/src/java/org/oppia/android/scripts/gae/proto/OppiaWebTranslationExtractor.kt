@@ -74,6 +74,13 @@ class OppiaWebTranslationExtractor private constructor(
       it != LanguageType.LANGUAGE_CODE_UNSPECIFIED && it != LanguageType.UNRECOGNIZED
     }
 
+    /** Creates an extractor from a previously downloaded Web translation mapping. */
+    fun createFromTranslations(
+      translations: Map<LanguageType, Map<String, String>>
+    ): OppiaWebTranslationExtractor = OppiaWebTranslationExtractor(
+      SUPPORTED_LANGUAGES.associateWith { translations[it] ?: emptyMap() }
+    )
+
     suspend fun createExtractor(): OppiaWebTranslationExtractor =
       OppiaWebTranslationExtractor(downloadTranslationMaps())
 
