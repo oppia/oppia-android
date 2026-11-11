@@ -9,6 +9,7 @@ load(
     "generate_accessibility_label_assets_list_from_text_protos",
     "generate_android_lint_assets_list_from_text_protos",
     "generate_binary_file_assets_list_from_text_protos",
+    "generate_duplicate_dependency_version_assets_list_from_text_protos",
     "generate_kdoc_validity_assets_list_from_text_protos",
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
@@ -372,6 +373,21 @@ kt_jvm_binary(
     data = BINARY_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.binary.BinaryFileCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/binary:binary_file_check_lib"],
+)
+
+DUPLICATE_DEPENDENCY_VERSION_EXEMPTION_ASSETS = generate_duplicate_dependency_version_assets_list_from_text_protos(
+    name = "duplicate_dependency_version_exemption_assets",
+    duplicate_dependency_version_exemptions_name = ["duplicate_dependency_version_exemptions"],
+)
+
+kt_jvm_binary(
+    name = "duplicate_dependency_version_check",
+    testonly = True,
+    data = DUPLICATE_DEPENDENCY_VERSION_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.maven.DuplicateDependencyVersionCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/maven:duplicate_dependency_version_check_lib",
+    ],
 )
 
 # Release automation binaries — invoked by GitHub Actions release workflows.
