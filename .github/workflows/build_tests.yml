@@ -32,9 +32,9 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 6.5.0
+        uses: bazel-contrib/setup-bazel@0.15.0
+        env:
+          USE_BAZEL_VERSION: 6.5.0
 
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment

@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 6.5.0
+        uses: bazel-contrib/setup-bazel@0.15.0
+        env:
+          USE_BAZEL_VERSION: 6.5.0
 
       - name: Check out introduce-asset-download-script branch
         uses: actions/checkout@v6
