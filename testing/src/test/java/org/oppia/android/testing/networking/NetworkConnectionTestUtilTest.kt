@@ -5,7 +5,9 @@ package org.oppia.android.testing.networking
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.NetworkInfo
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -107,6 +109,39 @@ class NetworkConnectionTestUtilTest {
     assertThat(connectivityManager.getActiveType()).isEqualTo(NO_CONNECTION)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.DISCONNECTED)
   }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testSetNetworkCapabilities_wifi_capabilitiesAreWifi() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_WIFI
+    )
+    val capabilities = connectivityManager.getActiveCapabilities()
+    assertThat(capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)).isTrue()
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testSetNetworkCapabilities_cellular_capabilitiesAreCellular() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR
+    )
+    val capabilities = connectivityManager.getActiveCapabilities()
+    assertThat(capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)).isTrue()
+  }
+
+  @Test
+  @Config(sdk = [Build.VERSION_CODES.Q])
+  fun testSetNoActiveNetwork_afterSettingCapabilities_hasNoActiveNetwork() {
+    networkConnectionTestUtil.setNetworkCapabilities(
+      transportType = NetworkCapabilities.TRANSPORT_CELLULAR
+    )
+    networkConnectionTestUtil.setNoActiveNetwork()
+    assertThat(connectivityManager.activeNetwork).isNull()
+  }
+
+  private fun ConnectivityManager.getActiveCapabilities() =
+    activeNetwork?.let(this::getNetworkCapabilities)
 
   private fun ConnectivityManager.getActiveType() = activeNetworkInfo?.type
 
