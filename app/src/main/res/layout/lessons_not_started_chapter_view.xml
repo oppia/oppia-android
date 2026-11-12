@@ -20,7 +20,8 @@
     android:background="@drawable/chapter_white_bg_with_bright_green_border"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="vertical"
-    android:storyIndex="@{viewModel.storyIndex}">
+    android:storyIndex="@{viewModel.storyIndex}"
+    android:chapterIndex="@{viewModel.index}">
 
     <TextView
       android:id="@+id/chapter_index"
