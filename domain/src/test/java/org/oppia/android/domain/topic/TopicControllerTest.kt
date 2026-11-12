@@ -748,6 +748,20 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testGetTopic_withAdminUnlockChaptersEnabled_withoutAnyProgress_allChaptersArePlayable() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+  }
+
+  @Test
   fun testGetTopic_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
 
@@ -781,6 +795,21 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.title)
       .isEqualTo(storySummary.chapterList[0].title)
+  }
+
+  @Test
+  fun testGetStory_withAdminUnlockChaptersEnabled_withoutAnyProgress_allChaptersArePlayable() {
+    reinitializeWithAdminUnlockChaptersEnabled()
+
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(storySummary.chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(storySummary.chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
   }
 
   @Test
@@ -1267,7 +1296,15 @@ class TopicControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().reinitializeComponent(this)
+  }
+
+  private fun reinitializeWithAdminUnlockChaptersEnabled() {
+    TestPlatformParameterModule.reset()
+    TestPlatformParameterModule.forceLoadLessonProtosFromAssets(true)
+    TestPlatformParameterModule.forceEnableAdminUnlockChapters(true)
+    setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   /**
@@ -1400,17 +1437,34 @@ class TopicControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerTopicControllerTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
+    private var component: TestApplicationComponent? = null
+
+    private fun getComponent(): TestApplicationComponent {
+      val currentComponent = component
+      return if (currentComponent != null) {
+        currentComponent
+      } else {
+        val newComponent = DaggerTopicControllerTest_TestApplicationComponent.builder()
+          .setApplication(this)
+          .build()
+        component = newComponent
+        newComponent
+      }
     }
 
     fun inject(topicControllerTest: TopicControllerTest) {
-      component.inject(topicControllerTest)
+      getComponent().inject(topicControllerTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    fun reinitializeComponent(topicControllerTest: TopicControllerTest) {
+      val newComponent = DaggerTopicControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+      component = newComponent
+      newComponent.inject(topicControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = getComponent()
   }
 
   private companion object {
